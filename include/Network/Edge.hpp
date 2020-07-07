@@ -1,9 +1,11 @@
+#pragma once
 #include<memory>
 
 // To use the class one always has to pretend Network::
 
 namespace Network {
 
+  
   //This is a "forward declaration", so that one can use the Node class here:
   class Node;
 

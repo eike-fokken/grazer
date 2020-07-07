@@ -1,9 +1,7 @@
 #pragma once
-
 #include<memory>
 #inlcude<set>
-#include<iostream>
-#include <stdexcept>
+
 
 namespace Network {
 
@@ -13,17 +11,27 @@ namespace Network {
   class Node
   {
   public:
-    Node();
-    Node(std::set<std::weak_ptr<Network::Edge>> start_edges,std::set<std::weak_ptr<Network::Edge>> end_edges):starting_edges(start_edges), ending_edges(end_edges) {};
+    // Default constructor not allowed:
+    Node() = delete;
 
-    void remove_edge(std::weak_ptr<Network::Edge> to_remove);
+    //Constructor must at least provide an id:k
+    Node(int _id):id(_id) {};
+    //Destructor:
+    ~Node();
 
-    void attach_starting_edge(std::weak_ptr<Network::Edge> to_attach);
+    void attach_starting_edge(std::shared_ptr<Network::Edge> to_attach);
 
-    void attach_ending_edge(std::weak_ptr<Network::Edge> to_attach);
+    void attach_ending_edge(std::shared_ptr<Network::Edge> to_attach);
+
+    int get_id();
+    bool has_id(const int id);
+    
 
 
+
+    
   private:
+    int id;
     std::set<std::weak_ptr<Network::Edge>> starting_edges;
     std::set<std::weak_ptr<Network::Edge>> ending_edges;
 
