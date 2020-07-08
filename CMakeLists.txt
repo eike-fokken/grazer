@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.12...3.18)
 
-
+project(NetworkClass)
 
 
 
@@ -26,3 +26,4 @@ endif()
 
 
 add_subdirectory(src)
+add_subdirectory(tests)

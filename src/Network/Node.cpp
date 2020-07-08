@@ -1,19 +1,28 @@
 #include "../../include/Network/Node.hpp"
 #include<memory>
-#inlcude<set>
 #include <stdexcept>
 
 
-void Network::Node::remove_edge(std::weak_ptr<Network::Edge> to_remove)
+void Network::Node::remove_edge(std::shared_ptr<Network::Edge> to_remove)
 {
-  auto is_starting_edge = starting_edges.erase(to_remove);
-  if(!is_starting_edge)
+  bool edge_was_connected=false;
+  for(auto it = starting_edges.begin(); it != starting_edges.end(); ++it) {
+    if((*it).lock() == to_remove)
+      {
+        edge_was_connected=true;
+        starting_edges.erase(it);
+      }
+  }
+  for (auto it = ending_edges.begin(); it != ending_edges.end(); ++it) {
+    if ((*it).lock() == to_remove) {
+      edge_was_connected = true;
+      ending_edges.erase(it);
+    }
+  }
+
+  if(!edge_was_connected)
     {
-      auto is_ending_edge = ending_edges.erase(to_remove);
-      if(!is_ending_edge)
-        {
-          throw std::invalid_argument( "The edge is not attached to the node" );
-        }
+      throw std::invalid_argument( "The edge is not attached to the node" );
     }
 
 }
@@ -34,3 +43,4 @@ void Network::Node::attach_ending_edge(std::shared_ptr<Network::Edge> to_attach)
 {
   //to be implemented
 }
+

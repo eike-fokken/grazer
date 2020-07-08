@@ -1,7 +1,6 @@
 #pragma once
 #include<memory>
-#include<set>
-
+#include <vector>
 
 namespace Network {
 
@@ -23,6 +22,8 @@ namespace Network {
 
     void attach_ending_edge(std::shared_ptr<Network::Edge> to_attach);
 
+    void remove_edge(std::shared_ptr<Network::Edge> to_remove);
+
     int get_id();
     bool has_id(const int id);
     
@@ -32,8 +33,8 @@ namespace Network {
     
   private:
     int id;
-    std::set<std::weak_ptr<Network::Edge>> starting_edges;
-    std::set<std::weak_ptr<Network::Edge>> ending_edges;
+    std::vector<std::weak_ptr<Network::Edge>> starting_edges;
+    std::vector<std::weak_ptr<Network::Edge>> ending_edges;
 
   };
 

@@ -1,1 +1,1 @@
-add_library(network SHARED Net.cpp Edge.cpp Node.cpp)
+add_library(network STATIC Net.cpp Edge.cpp Node.cpp)

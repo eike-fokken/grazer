@@ -35,5 +35,9 @@ bool Network::Net::exists_edge_between(const int node_id_1, const int node_id_2)
     }
   };
 
-  std::find_if(edges.begin(), edges.end(), find_endpoints);
+  auto it = std::find_if(edges.begin(), edges.end(), find_endpoints);
+  if(it !=edges.end())
+    {return true;}
+  else
+    {return false;}
 }
