@@ -2,6 +2,12 @@ cmake_minimum_required (VERSION 3.12...3.18)
 
 project(NetworkClass)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+#for multiple compiler compatibility:
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 
 
 # for Release types add link-time optimization
