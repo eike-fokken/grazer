@@ -8,10 +8,7 @@ namespace Network {
 class Net
 {
 
-
-  Net();
-
-  ~Net();
+public:
 
   int new_node();
   void make_edge_between(int start,int end);

@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #for multiple compiler compatibility:
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # for Release types add link-time optimization
 # for Debug types add warnings instead!
@@ -33,3 +33,10 @@ endif()
 
 add_subdirectory(src)
 add_subdirectory(tests)
+
+
+add_custom_target(cclean COMMAND cd ${CMAKE_SOURCE_DIR} && rm -r ${CMAKE_SOURCE_DIR}/build/ && mkdir ${CMAKE_SOURCE_DIR}/build/ && cd ${CMAKE_SOURCE_DIR}/build/
+  USES_TERMINAL
+  )
+
+

@@ -31,8 +31,6 @@ int Network::Node::get_id()
 {
   return id;
 }
-bool Network::Node::has_id(const int id)
-{ return get_id() == id; }
 
 void Network::Node::attach_starting_edge(std::shared_ptr<Network::Edge> to_attach)
 {

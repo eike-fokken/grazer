@@ -15,8 +15,7 @@ namespace Network {
 
     //Constructor must at least provide an id:k
     Node(int _id):id(_id) {};
-    //Destructor:
-    ~Node();
+
 
     void attach_starting_edge(std::shared_ptr<Network::Edge> to_attach);
 
