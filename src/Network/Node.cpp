@@ -34,11 +34,23 @@ int Network::Node::get_id()
 
 void Network::Node::attach_starting_edge(std::shared_ptr<Network::Edge> to_attach)
 {
-  //to be implemented
+    //to be implemented, K:
+    starting_edges.push_back(to_attach);
 }
 
 void Network::Node::attach_ending_edge(std::shared_ptr<Network::Edge> to_attach)
 {
-  //to be implemented
+    //to be implemented, K:
+    ending_edges.push_back(to_attach);
 }
 
+//K:
+bool Network::Node::has_id(const int pos_id) {
+
+    if (pos_id == id){
+        return true;
+    }
+    else {
+        return false;
+    }
+}

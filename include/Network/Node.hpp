@@ -29,8 +29,8 @@ namespace Network {
 
 
 
-    
-  private:
+  //wieder auf private setzen
+  public:
     int id;
     std::vector<std::weak_ptr<Network::Edge>> starting_edges;
     std::vector<std::weak_ptr<Network::Edge>> ending_edges;
