@@ -35,12 +35,14 @@ int Network::Node::get_id()
 void Network::Node::attach_starting_edge(std::shared_ptr<Network::Edge> to_attach)
 {
     //to be implemented, K:
-    starting_edges.push_back(to_attach);
+  std::weak_ptr<Network::Edge> weak_to_attach = to_attach;
+  starting_edges.push_back(weak_to_attach);
 }
 
 void Network::Node::attach_ending_edge(std::shared_ptr<Network::Edge> to_attach)
 {
     //to be implemented, K:
+    std::weak_ptr<Network::Edge> weak_to_attach = to_attach;
     ending_edges.push_back(to_attach);
 }
 
