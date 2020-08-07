@@ -5,6 +5,9 @@ project(NetworkClass)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+enable_testing()
+add_subdirectory(googletest)
+
 #for multiple compiler compatibility:
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -33,6 +36,7 @@ endif()
 
 add_subdirectory(src)
 add_subdirectory(tests)
+add_subdirectory(testingWithGoogle)
 
 
 add_custom_target(cclean COMMAND cd ${CMAKE_SOURCE_DIR} && rm -r ${CMAKE_SOURCE_DIR}/build/ && mkdir ${CMAKE_SOURCE_DIR}/build/ && cd ${CMAKE_SOURCE_DIR}/build/
