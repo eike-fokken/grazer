@@ -9,6 +9,8 @@ namespace Network {
   //This is a "forward declaration", so that one can use the Node class here:
   class Node;
 
+  class Net;
+
   class Edge
   {
   public:
@@ -25,6 +27,7 @@ namespace Network {
     //This means a node will only be destroyed when the last edge connected to it is destroyed.
     std::shared_ptr<Network::Node> starting_node;
     std::shared_ptr<Network::Node> ending_node;
-
+    
+    //friend class Network::Net; 
   };
 }

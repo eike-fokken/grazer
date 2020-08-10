@@ -1,9 +1,10 @@
 #pragma once
 #include<memory>
-#include <vector>
+#include<vector>
 
 namespace Network {
 
+  class Net;
 
   class Edge;
 
@@ -23,18 +24,18 @@ namespace Network {
 
     void remove_edge(std::shared_ptr<Network::Edge> to_remove);
 
+    std::vector<std::weak_ptr<Network::Edge> > get_starting_edges();
+    std::vector<std::weak_ptr<Network::Edge> > get_ending_edges();
+
     int get_id();
     bool has_id(const int id);
     
-
-
-
-  //wieder auf private setzen
-  public:
+  private:
     int id;
-    std::vector<std::weak_ptr<Network::Edge>> starting_edges;
-    std::vector<std::weak_ptr<Network::Edge>> ending_edges;
+    std::vector<std::weak_ptr<Network::Edge> > starting_edges;
+    std::vector<std::weak_ptr<Network::Edge> > ending_edges;
 
+    //friend class Network::Net;
   };
 
 }

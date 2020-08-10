@@ -38,7 +38,6 @@ add_subdirectory(src)
 add_subdirectory(tests)
 add_subdirectory(testingWithGoogle)
 
-
 add_custom_target(cclean COMMAND cd ${CMAKE_SOURCE_DIR} && rm -r ${CMAKE_SOURCE_DIR}/build/ && mkdir ${CMAKE_SOURCE_DIR}/build/ && cd ${CMAKE_SOURCE_DIR}/build/
   USES_TERMINAL
   )

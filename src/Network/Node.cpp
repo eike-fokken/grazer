@@ -24,12 +24,18 @@ void Network::Node::remove_edge(std::shared_ptr<Network::Edge> to_remove)
     {
       throw std::invalid_argument( "The edge is not attached to the node" );
     }
-
 }
 
-int Network::Node::get_id()
-{
+int Network::Node::get_id(){
   return id;
+}
+
+std::vector<std::weak_ptr<Network::Edge> > Network::Node::get_starting_edges(){
+    return starting_edges;
+}
+
+std::vector<std::weak_ptr<Network::Edge> > Network::Node::get_ending_edges(){
+    return ending_edges;
 }
 
 void Network::Node::attach_starting_edge(std::shared_ptr<Network::Edge> to_attach)

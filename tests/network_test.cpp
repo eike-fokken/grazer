@@ -67,7 +67,7 @@ int main()
   std::cout << "get ending node of edge1: " << end_edge1_id << std::endl;
     
   //schaue starting_edges und ending_edges von Node4 an
-  std::vector<std::weak_ptr<Network::Edge>> g1 = node4_ptr->starting_edges; //iwas stimmt hier nicht
+  /*std::vector<std::weak_ptr<Network::Edge>> g1 = node4_ptr->starting_edges; //iwas stimmt hier nicht
   
   for (auto it = g1.begin(); it != g1.end(); it++){
       //it is ein pointer vom Typ Network::Edge, mit .lock() machen wir daraus shared_ptr und können auf diesen zugreifen
@@ -75,5 +75,5 @@ int main()
       std::cout << "( " << s;
       int e = (*it).lock() -> get_ending_node() -> get_id();
       std::cout << " )" << e;
-  }
+  }*/
 }
