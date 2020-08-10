@@ -36,3 +36,5 @@ build/**
 .ccls-cache
 .DS_Store
 compile_commands.json
+.vscode
+
