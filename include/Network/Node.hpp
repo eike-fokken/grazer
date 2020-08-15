@@ -11,12 +11,6 @@ namespace Network {
   class Node
   {
   public:
-    // Default constructor not allowed:
-    Node() = delete;
-
-    //Constructor must at least provide an id:k
-    Node(int _id):id(_id) {};
-
 
     void attach_starting_edge(std::shared_ptr<Network::Edge> to_attach);
 
@@ -31,11 +25,18 @@ namespace Network {
     bool has_id(const int id);
     
   private:
+
+     // Default constructor not allowed:
+    Node() = delete;
+
+    //Constructor must at least provide an id:k
+    Node(int _id):id(_id) {};
+
     int id;
     std::vector<std::weak_ptr<Network::Edge> > starting_edges;
     std::vector<std::weak_ptr<Network::Edge> > ending_edges;
 
-    //friend class Network::Net;
+    friend class Network::Net;
   };
 
 }

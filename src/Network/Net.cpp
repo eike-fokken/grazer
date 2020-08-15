@@ -23,6 +23,19 @@ void Network::Net::make_edge_between(int start, int end) {
   }
 }
 
+std::shared_ptr<Network::Node> Network::Net::get_node_by_id(int id){
+    return nodes[id];
+}
+
+std::shared_ptr<Network::Edge> Network::Net::get_edge_by_node_ids(int node_id_1, int node_id_2){
+
+  for(int i = 0; i <= edges.size(); i++){
+    if ((edges[i] -> get_starting_node()-> get_id() == node_id_1) && (edges[i] -> get_ending_node() -> get_id() == node_id_2)){
+      return edges[i];
+    }
+  }
+}
+
 bool Network::Net::exists_edge_between(const int node_id_1, const int node_id_2) const {
 
   auto find_endpoints = [node_id_1, node_id_2](const std::shared_ptr<Network::Edge> edge) {
