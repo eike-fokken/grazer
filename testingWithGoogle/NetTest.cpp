@@ -30,6 +30,51 @@ TEST(testNet, test_NewNode_MakeEdgeBetween_ExistsEdgeBetween) {
   EXPECT_EQ(v, false);
 }
 
+TEST(testNet, test_RemoveEdgeBetween) {
+  Network::Net net;
+
+  net.new_node();
+  net.new_node();
+
+  net.make_edge_between(0,1);
+  net.remove_edge_between(0,1);
+
+  bool u = net.exists_edge_between(0,1);
+
+  EXPECT_EQ(u, false);
+
+}
+
+TEST(testNet, test_get_valid_node_ids) {
+
+  Network::Net net;
+
+  net.new_node();
+  net.new_node();
+
+  auto vect = net.get_valid_node_ids();
+
+  std::vector<int> BeautifulArray = {0,1};
+
+  EXPECT_EQ(vect, BeautifulArray);
+
+}
+
+TEST(testNet, test_RemoveNode) {
+  Network::Net net;
+
+  net.new_node();
+  net.new_node();
+  net.new_node();
+
+  net.remove_node(1);
+
+  auto vect = net.get_valid_node_ids();
+  std::vector<int> BeautifulArray = {0,2};
+
+  EXPECT_EQ(vect, BeautifulArray);
+}
+
 TEST(testNode, test_GetId) {
     
     Network::Net net;
@@ -41,7 +86,6 @@ TEST(testNode, test_GetId) {
     int v = node1_ptr->get_id(); 
 
     EXPECT_EQ(v,1);
-
 }
 
 TEST(testNode, test_HasId) {
@@ -60,7 +104,6 @@ TEST(testNode, test_HasId) {
 
 TEST(testNode, test_attachStartingEdge_getStartingEdges) {
     
-
     Network::Net net;
     int id0 = net.new_node();
     int id1 = net.new_node();
@@ -97,8 +140,8 @@ TEST(testNode, test_attachEndingEdge_getEndingEdges) {
 
 }
 
+//hat Eike implementiert, etwas stimmt hier nicht
 TEST(testEdge, test_removeEdge) {
-
 
     Network::Net net;
     int id0 = net.new_node();
@@ -115,7 +158,7 @@ TEST(testEdge, test_removeEdge) {
 
     std::weak_ptr<Network::Edge> starting_edge_ptr = node0_ptr -> get_starting_edges()[0];
     
-    //EXPECT_EQ(starting_edge_ptr.lock(), edge_ptr);
+    EXPECT_EQ(starting_edge_ptr.lock(), edge_ptr);
 
 
 

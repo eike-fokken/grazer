@@ -16,7 +16,7 @@ namespace Network {
 
     void attach_ending_edge(std::shared_ptr<Network::Edge> to_attach);
 
-    void remove_edge(std::shared_ptr<Network::Edge> to_remove);
+    void remove_edge(std::shared_ptr<Network::Edge> to_remove); //etwas ist hier falsch
 
     std::vector<std::weak_ptr<Network::Edge> > get_starting_edges();
     std::vector<std::weak_ptr<Network::Edge> > get_ending_edges();
