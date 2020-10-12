@@ -1,8 +1,6 @@
 #pragma once
 #include<memory>
 
-// To use the class one always has to pretend Network::
-
 namespace Network {
 
   
@@ -11,11 +9,18 @@ namespace Network {
 
   class Net;
 
+  /// The class edge contains functions for getting information
+  /// about the nodes attached to object Edge.
   class Edge
   {
   public:
 
+    /// Function returns starting node of Edge object.
+    /// @returns Starting node of type std::shared_ptr<Network::Node>
     std::shared_ptr<Network::Node> get_starting_node();
+
+    /// Function returns ending node of Edge object.
+    /// @returns Ending node of type std::shared_ptr<Network::Node>
     std::shared_ptr<Network::Node> get_ending_node();
 
   private:
