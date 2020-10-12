@@ -33,6 +33,17 @@ else()# empty build type
 endif()
 
 
+find_package(Doxygen)
+if(NOT Doxygen_FOUND)
+  message(STATUS "Doxygen not found! building without docs")
+else()
+  add_subdirectory(docs)
+  ## build the docs, if type is release 
+  if(${CMAKE_BUILD_TYPE} MATCHES "Release")
+    add_custom_target(release ALL)
+    add_dependencies(release docs)
+  endif()
+endif()
 
 add_subdirectory(src)
 add_subdirectory(tests)
