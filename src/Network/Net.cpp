@@ -1,4 +1,5 @@
-#include "../../include/Network/Net.hpp"
+#include <Net.hpp>
+
 #include <algorithm>
 #include <iostream>
 

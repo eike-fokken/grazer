@@ -1,4 +1,6 @@
-#include "../../include/Network/Node.hpp"
+#include <Node.hpp>
+
+
 #include<memory>
 #include <stdexcept>
 
