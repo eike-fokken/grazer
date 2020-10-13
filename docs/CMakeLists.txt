@@ -4,4 +4,5 @@ set(DOXYGEN_RECURSIVE YES)
 #set(DOXYGEN_EXTRACT_PRIVATE YES)
 
 
-doxygen_add_docs(docs src WORKING_DIRECTORY  "${PROJECT_SOURCE_DIR}")
+doxygen_add_docs(docs include WORKING_DIRECTORY  "${PROJECT_SOURCE_DIR}")
+
