@@ -32,7 +32,6 @@ else()# empty build type
   endif()
 endif()
 
-set(DOXYGEN_EXECUTABLE "")
 find_package(Doxygen)
 if(NOT Doxygen_FOUND)
   message(STATUS "Doxygen not found! building without docs")
