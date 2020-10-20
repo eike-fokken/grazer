@@ -14,7 +14,7 @@ public:
   // The constructor needs to declare Delta_t
   Model(double delta_t) : Delta_t(delta_t){};
 
-  void add_subproblem(Subproblem subproblem);
+  void add_subproblem(std::unique_ptr<Subproblem> subproblem_ptr);
 
   void reserve_indices();
 

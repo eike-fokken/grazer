@@ -7,8 +7,8 @@ namespace Model {
 
 // class Model;
 
-void Model::add_subproblem(Subproblem subproblem) {
-  subproblems.push_back(std::make_unique<Subproblem>(subproblem));
+void Model::add_subproblem(std::unique_ptr<Subproblem> subproblem_ptr) {
+  subproblems.push_back(std::move(subproblem_ptr));
 }
 
 void Model::reserve_indices() {
