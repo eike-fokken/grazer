@@ -14,7 +14,7 @@ class Net {
 public:
   /// This function creates a new node.
   /// It gives the new node simply an id equal to the number of the previosly
-  /// exiting nodes in the net.
+  /// existing nodes in the net.
   /// @returns Id of new node
   int new_node();
 
@@ -37,7 +37,7 @@ public:
 
   /// This function returns a vector of ids of all existing nodes in the net.
   /// @returns Vector of ids of the existing nodes
-  std::vector<int> get_valid_node_ids();
+  std::vector<int> get_valid_node_ids() const;
 
   /// This function indicates whether an edge between two nodes exists or not.
   /// The order of nodes in the edge is not relevant. Its reverse edge is thus
@@ -52,7 +52,7 @@ public:
   /// <Network::Node>.
   /// @param id Nodes id
   /// @returns Returns shared pointer of type <Network::Node>
-  std::shared_ptr<Network::Node> get_node_by_id(int id);
+  std::shared_ptr<Network::Node> get_node_by_id(int id) const;
 
   /// Similiar to Network::Net:get_node_by_id(int) this function returns
   /// a shared pointer of type <Network::Edge> given the corresponding nodes id.
@@ -60,8 +60,8 @@ public:
   /// @param node_id_1 Nodes id of starting node
   /// @param node_id_2 Nodes id of ending node
   /// @returns Returns shared pointer of type < Network::Edge >
-  std::shared_ptr<Network::Edge> get_edge_by_node_ids(int node_id_1,
-                                                      int node_id_2);
+  std::shared_ptr<Network::Edge> get_edge_by_node_ids(int const node_id_1,
+                                                      int const node_id_2) const;
 
   // std::set< std::pair<int,int > > get_edges() const;
 

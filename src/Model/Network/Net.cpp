@@ -41,11 +41,11 @@ void Network::Net::make_edge_between(int start, int end) {
   }
 }
 
-std::shared_ptr<Network::Node> Network::Net::get_node_by_id(int id) {
+std::shared_ptr<Network::Node> Network::Net::get_node_by_id(int id) const {
   return nodes[id];
 }
 
-std::vector<int> Network::Net::get_valid_node_ids() {
+std::vector<int> Network::Net::get_valid_node_ids() const {
 
   std::vector<int> vector_of_nodes_ids;
   for (int i = 0; i < nodes.size(); ++i) {
@@ -56,7 +56,7 @@ std::vector<int> Network::Net::get_valid_node_ids() {
 }
 
 std::shared_ptr<Network::Edge>
-Network::Net::get_edge_by_node_ids(int node_id_1, int node_id_2) {
+Network::Net::get_edge_by_node_ids(int node_id_1, int node_id_2) const {
 
   for (int i = 0; i < edges.size(); i++) {
     if ((edges[i]->get_starting_node()->get_id() == node_id_1) &&

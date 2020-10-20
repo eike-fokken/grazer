@@ -14,11 +14,11 @@ class Edge {
 public:
   /// Function returns starting node of Edge object.
   /// @returns Starting node of type std::shared_ptr<Network::Node>
-  std::shared_ptr<Network::Node> get_starting_node();
+  std::shared_ptr<Network::Node> get_starting_node() const;
 
   /// Function returns ending node of Edge object.
   /// @returns Ending node of type std::shared_ptr<Network::Node>
-  std::shared_ptr<Network::Node> get_ending_node();
+  std::shared_ptr<Network::Node> get_ending_node() const;
 
 private:
   // The edge holds a shared pointer to its start and end nodes.
