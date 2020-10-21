@@ -23,7 +23,7 @@ void Network::Node::remove_edge(std::shared_ptr<Network::Edge> to_remove) {
   }
 }
 
-int Network::Node::get_id() const { return id; }
+unsigned int Network::Node::get_id() const { return id; }
 
 std::vector<std::weak_ptr<Network::Edge>> Network::Node::get_starting_edges() const {
   return starting_edges;
@@ -48,7 +48,7 @@ void Network::Node::attach_ending_edge(
 }
 
 // K:
-bool Network::Node::has_id(const int pos_id) const {
+bool Network::Node::has_id(const unsigned int pos_id) const {
 
   if (pos_id == id) {
     return true;

@@ -28,6 +28,7 @@ private:
   // collection of sub-problems
   std::vector<std::unique_ptr<Subproblem>> subproblems;
 
+protected:
   // The time stepsize, which is immutable.
   const double Delta_t;
 };
