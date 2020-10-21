@@ -1,4 +1,5 @@
 #include <Net.hpp>
+#include <Exception.hpp>
 
 #include <algorithm>
 #include <iostream>
