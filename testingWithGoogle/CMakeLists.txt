@@ -4,7 +4,7 @@ target_link_libraries(net_test PRIVATE model)
 
 target_link_libraries(net_test PUBLIC network gtest gtest_main)
 
-# target_include_directories(net_test PUBLIC "${PROJECT_SOURCE_DIR}/include/Model/Network")
+
 
 
 add_test(
