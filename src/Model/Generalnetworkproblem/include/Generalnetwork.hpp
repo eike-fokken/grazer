@@ -1,8 +1,8 @@
 #pragma once
 #include <Subproblem.hpp>
-#include <Network/Net.hpp>
-#include <Network/Edge.hpp>
-#include <Network/Node.hpp>
+#include <Net.hpp>
+#include <Edge.hpp>
+#include <Node.hpp>
 
 
 #include <memory>

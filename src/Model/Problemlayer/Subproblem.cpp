@@ -16,8 +16,4 @@ unsigned int Subproblem::reserve_indices(unsigned int next_free_index) {
     return after_state_index;
   }
 
-// void Subproblem::set_sporadic_state_indices(std::vector<unsigned int> indices) {
-//   sporadic_state_indices = indices;
-// }
-
 } // namespace Model

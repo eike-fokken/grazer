@@ -8,11 +8,11 @@ namespace Model {
 // forward declaration:
 class Subproblem;
 
-class Model {
+class Problem {
 
 public:
   // The constructor needs to declare Delta_t
-  Model(double delta_t) : Delta_t(delta_t){};
+  Problem(double delta_t) : Delta_t(delta_t){};
 
   void add_subproblem(std::unique_ptr<Subproblem> subproblem_ptr);
 
