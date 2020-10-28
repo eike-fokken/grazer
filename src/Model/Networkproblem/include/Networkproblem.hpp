@@ -10,14 +10,16 @@
     namespace Model {
 
   // This class implements a Subproblem, that builds the model equations from a network.
-  class Generalnetwork : public Subproblem{
+  class Networkproblem : public Subproblem{
 
   public:
+    
 
 
   private:
-    std::vector<std::unique_ptr<Network::Edge> > edges;
-    std::vector<std::unique_ptr<Network::Node> > nodes;
+    Network::Net network;
+    std::vector<std::unique_ptr<Network::Edge> > equationedges;
+    std::vector<std::unique_ptr<Network::Node> > equationnodes;
   };
 
 } // namespace Model

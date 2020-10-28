@@ -1,3 +1,0 @@
-add_library(generalnetworkproblem STATIC Generalnetworkproblem.cpp Equationcomponent.cpp)
-target_link_libraries(generalnetworkproblem PRIVATE problemlayer network)
-target_include_directories(generalnetworkproblem PUBLIC "include")
