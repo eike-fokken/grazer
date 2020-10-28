@@ -11,7 +11,6 @@ add_subdirectory(googletest)
 
 #for multiple compiler compatibility:
 set(CMAKE_CXX_EXTENSIONS OFF)
-
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # for Release types add link-time optimization
@@ -33,6 +32,22 @@ else()# empty build type
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
   endif()
 endif()
+
+
+
+
+find_package (Eigen3 3.3 REQUIRED NO_MODULE)
+if (NOT EIGEN3_FOUND)
+  if(NOT EIGEN3_INCLUDE_DIR)
+    message(STATUS " Eigen Include dir: ${EIGEN_INCLUDE_DIR}")
+    message(FATAL_ERROR "Eigen was not found and no include directory was given. Please provide EIGEN3_INCLUDE_DIR with the commandline option
+-DEIGEN_INCLUDE_DIR='path/to/eigen'")
+  else()
+    include_directories (SYSTEM ${EIGEN3_INCLUDE_DIR})
+  endif()
+endif()
+
+
 
 find_package(Doxygen)
 if(NOT Doxygen_FOUND)
