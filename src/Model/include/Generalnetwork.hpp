@@ -1,10 +1,15 @@
 #pragma once
 #include <Subproblem.hpp>
-#include <vector>
+#include <Network/Net.hpp>
+#include <Network/Edge.hpp>
+#include <Network/Node.hpp>
+
+
 #include <memory>
-namespace Model {
+#include <vector>
+    namespace Model {
 
-
+  // This class implements a Subproblem, that builds the model equations from a network.
   class Generalnetwork : public Subproblem{
 
   public:

@@ -5,4 +5,4 @@ target_link_libraries(network PRIVATE exception)
 
 
 
-target_include_directories(network PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../../../include/Model/Network/")
+target_include_directories(network PUBLIC "include")

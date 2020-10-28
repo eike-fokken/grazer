@@ -12,10 +12,9 @@ void Model::add_subproblem(std::unique_ptr<Subproblem> subproblem_ptr) {
 }
 
 void Model::reserve_indices() {
-  int next_free_index(0);
+  unsigned int next_free_index(0);
   for (auto it = subproblems.begin(); it != subproblems.end(); it++) {
     next_free_index = (*it)->reserve_indices(next_free_index);
-    // TODO: work on sporadic indices.
   }
 }
 
