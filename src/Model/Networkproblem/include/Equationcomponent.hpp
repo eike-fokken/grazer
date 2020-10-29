@@ -1,7 +1,7 @@
 #pragma once
 #include <Eigen/Sparse>
 
-namespace Model {
+namespace Model::Networkproblem {
 
 
 

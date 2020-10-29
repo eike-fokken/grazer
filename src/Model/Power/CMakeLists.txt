@@ -2,4 +2,4 @@ add_library(power STATIC Powernode.cpp Vphinode.cpp PQnode.cpp PVnode.cpp Transm
 
 target_include_directories(power PRIVATE "include")
 
-target_link_libraries(power PRIVATE network)
+target_link_libraries(power PRIVATE network networkproblem)

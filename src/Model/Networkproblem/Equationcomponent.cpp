@@ -1,7 +1,7 @@
 #include <Equationcomponent.hpp>
 #include <Eigen/Sparse>
 
-namespace Model {
+namespace Model::Networkproblem {
 
 unsigned int Equationcomponent::reserve_indices(unsigned int next_free_index) {
   start_state_index = next_free_index;

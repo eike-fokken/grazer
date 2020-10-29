@@ -3,13 +3,12 @@
 
 
 
-namespace Model {
+namespace Model::Networkproblem {
 
-  namespace Network {
-class powernode: public Network::Node, public Model::Equationcomponent{
+
+  class powernode: public Network::Node, public Equationcomponent{
 
 
 };
-    
-} // namespace Network
-} // namespace Model
+
+  } // namespace Model::Networkproblem
