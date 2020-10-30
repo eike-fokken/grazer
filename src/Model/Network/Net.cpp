@@ -14,7 +14,7 @@
     int id = highest_free_id;
     ++highest_free_id;
     std::shared_ptr<Network::Node> node_ptr (new Node(id));
-    nodes.push_back(node_ptr);
+    nodes.push_back(std::move(node_ptr));
     return id;
   }
 
@@ -62,7 +62,7 @@ void Network::Net::make_edge_between(int const start, int const end) {
 
   auto start_ptr = get_node_by_id(start);
   if(!start_ptr)
-    {gthrow("nullpointer end");}
+    {gthrow("nullpointer start");}
   auto end_ptr = get_node_by_id(end);
   if (!end_ptr) {
     gthrow("nullpointer end");
@@ -71,7 +71,7 @@ void Network::Net::make_edge_between(int const start, int const end) {
   std::shared_ptr<Network::Edge> edge_ptr(new Network::Edge(start_ptr,end_ptr));
   start_ptr->attach_starting_edge(edge_ptr);
   end_ptr->attach_ending_edge(edge_ptr);
-  edges.push_back(edge_ptr);
+  edges.push_back(std::move(edge_ptr));
 }
 
 std::shared_ptr<Network::Node> Network::Net::get_node_by_id(int const id) const {
@@ -80,20 +80,12 @@ std::shared_ptr<Network::Node> Network::Net::get_node_by_id(int const id) const 
     ss << "Nodes can't have negative ids, node id is " << id << std::endl;
     gthrow(ss.str().c_str());
   }
-  // bool found=0;
-  // auto ptr = std::shared_ptr<Network::Node>();
   for (auto itr = nodes.begin(); itr != nodes.end(); itr++) {
     if ((*itr)->get_id() == id) {
-      // found=1;
       return (*itr);
     }
   }
-  // if(!found)
-  //   {
     return std::shared_ptr<Network::Node>();
-  //   }
-  // else 
-  //   {return ptr;}
 }
 std::vector<int> Network::Net::get_valid_node_ids() const {
 
