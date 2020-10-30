@@ -3,6 +3,7 @@
 #include "Exception.hpp"
 #include "Node.hpp"
 #include <Exception.hpp>
+#include <algorithm>
 #include <gtest/gtest.h>
 
 
@@ -33,12 +34,19 @@ TEST(testNet, test_RemoveEdgeBetween) {
   net.new_node();
   net.new_node();
 
-    auto node_ids= net.get_valid_node_ids();
-    net.make_edge_between(node_ids[0], node_ids[1]);
-    net.remove_edge_between(node_ids[0], node_ids[1]);
+  
+    net.make_edge_between(0, 1);
+    net.remove_edge_between(0, 1);
 
-  bool u = net.exists_edge_between(0, 1);
-  EXPECT_EQ(u, false);
+    bool u = net.exists_edge_between(0,1);
+    auto nodes = net.get_nodes();
+
+    int count(0);
+    for(auto & node : nodes) {
+      count += node->get_starting_edges().size() + node->get_ending_edges().size();
+    }
+    EXPECT_EQ(count, 0);
+    EXPECT_EQ(u, false);
 }
 
 TEST(testNet, test_get_valid_node_ids) {

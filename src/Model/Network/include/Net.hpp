@@ -43,9 +43,12 @@ public:
   /// @returns Vector of ids of the existing nodes
   std::vector<int> get_valid_node_ids() const;
 
-  /// This function indicates whether an edge between two nodes exists or not.
-  /// The order of nodes in the edge is not relevant. Its reverse edge is thus
-  /// also checked.
+  std::vector<std::shared_ptr<Network::Node>> get_nodes();
+
+  std::vector<std::shared_ptr<Network::Edge>> get_edges();
+  /// This function indicates whether an edge between two nodes exists or
+  /// not. The order of nodes in the edge is not relevant. Its reverse edge
+  /// is thus also checked.
   /// @param node_id_1 Starting Node of edge
   /// @param node_id_2 Ending Node of edge
   /// @returns Return True if the given edge or its reverse edge exists and

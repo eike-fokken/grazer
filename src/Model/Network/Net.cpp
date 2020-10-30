@@ -7,8 +7,6 @@
 #include <string>
 
 
-/// A new net starts with first free id = 0
-
 
   int Network::Net::new_node() {
     int id = highest_free_id;
@@ -36,6 +34,14 @@
       return;
     }
   }
+}
+
+std::vector<std::shared_ptr<Network::Node>> Network::Net::get_nodes() {
+  return nodes;
+}
+
+std::vector<std::shared_ptr<Network::Edge>> Network::Net::get_edges() {
+  return edges;
 }
 
 void Network::Net::remove_node(int const id) {
