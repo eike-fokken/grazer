@@ -42,22 +42,22 @@ public:
   std::vector<std::weak_ptr<Network::Edge>> get_ending_edges() const;
 
   /// This function returns the id of object node
-  /// @returns unsigned int
-  unsigned int get_id() const;
+  /// @returns int
+  int get_id() const;
 
   /// This function returns 1, if id is equal to nodes true id and 0 otherwise.
   /// @param id Possible nodes id
   /// @returns 1 (true) or 0 (false)
-  bool has_id(const unsigned int id) const;
+  bool has_id(const int id) const;
 
 private:
   // Default constructor not allowed:
   Node() = delete;
 
   // Constructor must at least provide an id:k
-  Node(unsigned int _id) : id(_id){};
+  Node(int _id) : id(_id){};
 
-  unsigned int id;
+  int id;
   std::vector<std::weak_ptr<Network::Edge>> starting_edges;
   std::vector<std::weak_ptr<Network::Edge>> ending_edges;
 

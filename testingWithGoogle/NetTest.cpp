@@ -1,8 +1,10 @@
 #include "Net.hpp"
 #include "Edge.hpp"
+#include "Exception.hpp"
 #include "Node.hpp"
+#include <Exception.hpp>
 #include <gtest/gtest.h>
-#include <iostream>
+
 
 struct NetTest : public ::testing ::Test {
   virtual void SetUp() override {}
@@ -31,11 +33,11 @@ TEST(testNet, test_RemoveEdgeBetween) {
   net.new_node();
   net.new_node();
 
-  net.make_edge_between(0, 1);
-  net.remove_edge_between(0, 1);
+    auto node_ids= net.get_valid_node_ids();
+    net.make_edge_between(node_ids[0], node_ids[1]);
+    net.remove_edge_between(node_ids[0], node_ids[1]);
 
   bool u = net.exists_edge_between(0, 1);
-
   EXPECT_EQ(u, false);
 }
 
@@ -48,7 +50,7 @@ TEST(testNet, test_get_valid_node_ids) {
 
   auto vect = net.get_valid_node_ids();
 
-  std::vector<unsigned int> BeautifulArray = {0, 1};
+  std::vector<int> BeautifulArray = {0, 1};
 
   EXPECT_EQ(vect, BeautifulArray);
 }
@@ -63,7 +65,7 @@ TEST(testNet, test_RemoveNode) {
   net.remove_node(1);
 
   auto vect = net.get_valid_node_ids();
-  std::vector<unsigned int> BeautifulArray = {0, 2};
+  std::vector<int> BeautifulArray = {0, 2};
 
   EXPECT_EQ(vect, BeautifulArray);
 }
@@ -72,11 +74,11 @@ TEST(testNode, test_GetId) {
 
   Network::Net net;
   net.new_node();
-  unsigned int id = net.new_node();
+  int id = net.new_node();
 
   auto node1_ptr = net.get_node_by_id(id);
 
-  unsigned int v = node1_ptr->get_id();
+  int v = node1_ptr->get_id();
 
   EXPECT_EQ(v, 1);
 }
@@ -84,7 +86,7 @@ TEST(testNode, test_GetId) {
 TEST(testNode, test_HasId) {
 
   Network::Net net;
-  unsigned int id = net.new_node();
+  int id = net.new_node();
   auto node1_ptr = net.get_node_by_id(id);
 
   bool v = node1_ptr->has_id(0);
@@ -97,8 +99,8 @@ TEST(testNode, test_HasId) {
 TEST(testNode, test_attachStartingEdge_getStartingEdges) {
 
   Network::Net net;
-  unsigned int id0 = net.new_node();
-  unsigned int id1 = net.new_node();
+  int id0 = net.new_node();
+  int id1 = net.new_node();
 
   auto node0_ptr = net.get_node_by_id(id0);
   auto node1_ptr = net.get_node_by_id(id1);
@@ -116,8 +118,8 @@ TEST(testNode, test_attachStartingEdge_getStartingEdges) {
 TEST(testNode, test_attachEndingEdge_getEndingEdges) {
 
   Network::Net net;
-  unsigned int id0 = net.new_node();
-  unsigned int id1 = net.new_node();
+  int id0 = net.new_node();
+  int id1 = net.new_node();
 
   auto node0_ptr = net.get_node_by_id(id0);
   auto node1_ptr = net.get_node_by_id(id1);
@@ -136,8 +138,8 @@ TEST(testNode, test_attachEndingEdge_getEndingEdges) {
 TEST(testEdge, test_removeEdge) {
 
   Network::Net net;
-  unsigned int id0 = net.new_node();
-  unsigned int id1 = net.new_node();
+  int id0 = net.new_node();
+  int id1 = net.new_node();
 
   auto node0_ptr = net.get_node_by_id(id0);
   auto node1_ptr = net.get_node_by_id(id1);
@@ -173,8 +175,8 @@ TEST(testEdge, test_removeEdge) {
 TEST(testEdge, test_getStartingNode) {
 
   Network::Net net;
-  unsigned int id0 = net.new_node(); // das braucht man, sonst gibt es keinen node dafür
-  unsigned int id1 = net.new_node();
+  int id0 = net.new_node(); // das braucht man, sonst gibt es keinen node dafür
+  int id1 = net.new_node();
 
   auto node0_ptr = net.get_node_by_id(id0);
   auto node1_ptr = net.get_node_by_id(id1);
@@ -182,7 +184,7 @@ TEST(testEdge, test_getStartingNode) {
   net.make_edge_between(1, 0);
   auto edge_ptr = net.get_edge_by_node_ids(1, 0);
 
-  unsigned int start_edge1_id = edge_ptr->get_starting_node()->get_id();
+  int start_edge1_id = edge_ptr->get_starting_node()->get_id();
 
   EXPECT_EQ(start_edge1_id, 1);
 }
@@ -190,8 +192,8 @@ TEST(testEdge, test_getStartingNode) {
 TEST(testEdge, test_getEndingNode) {
 
   Network::Net net;
-  unsigned int id0 = net.new_node(); // das braucht man, sonst gibt es keinen node dafür
-  unsigned int id1 = net.new_node();
+  int id0 = net.new_node(); // das braucht man, sonst gibt es keinen node dafür
+  int id1 = net.new_node();
 
   auto node0_ptr = net.get_node_by_id(id0);
   auto node1_ptr = net.get_node_by_id(id1);
@@ -199,7 +201,7 @@ TEST(testEdge, test_getEndingNode) {
   net.make_edge_between(1, 0);
   auto edge_ptr = net.get_edge_by_node_ids(1, 0);
 
-  unsigned int ending_edge1_id = edge_ptr->get_ending_node()->get_id();
+  int ending_edge1_id = edge_ptr->get_ending_node()->get_id();
 
   EXPECT_EQ(ending_edge1_id, 0);
 }

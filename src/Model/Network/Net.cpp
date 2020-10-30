@@ -1,76 +1,129 @@
-#include <Net.hpp>
+#include "Edge.hpp"
 #include <Exception.hpp>
+#include <Net.hpp>
 
 #include <algorithm>
-#include <iostream>
+#include <sstream>
+#include <string>
 
-unsigned int Network::Net::new_node() {
-  unsigned int id = static_cast<unsigned int>(nodes.size());
-  Network::Node node(id);
-  auto node_ptr = std::make_shared<Network::Node>(node);
-  nodes.push_back(node_ptr);
-  return id;
-}
 
-void Network::Net::remove_edge_between(unsigned int node_1, unsigned int node_2) {
-  for (unsigned int i = 0; i < edges.size(); i++) {
-    if ((edges[i]->get_starting_node()->get_id() == node_1) &&
-        (edges[i]->get_ending_node()->get_id() == node_2)) {
-      edges.erase(edges.begin() + i);
+/// A new net starts with first free id = 0
+
+
+  int Network::Net::new_node() {
+    int id = highest_free_id;
+    ++highest_free_id;
+    std::shared_ptr<Network::Node> node_ptr (new Node(id));
+    nodes.push_back(node_ptr);
+    return id;
+  }
+
+  void Network::Net::remove_edge_between(int node_1, int node_2) {
+    if (node_1 < 0 || node_2 < 0) {
+      std::stringstream ss;
+      ss << "Nodes can't have negative ids."  << node_1 << " and " << node_2 << std::endl;
+      gthrow(ss.str().c_str());
+    }
+
+
+  for (auto itr = edges.begin(); itr != edges.end(); itr++) {
+    if (((*itr)->get_starting_node()->get_id() == node_1) &&
+        ((*itr)->get_ending_node()->get_id() == node_2)) {
+      (*itr)->get_ending_node()->remove_edge((*itr));
+      (*itr)->get_starting_node()->remove_edge((*itr));
+      edges.erase(itr);
+
+      return;
     }
   }
 }
 
-void Network::Net::remove_node(unsigned int node_id) {
-  for (unsigned int i = 0; i < nodes.size(); i++) {
-    if (nodes[i]->get_id() == node_id) {
-      nodes.erase(nodes.begin() + i);
+void Network::Net::remove_node(int const id) {
+  if (id < 0) {
+    std::stringstream ss;
+    ss << "Nodes can't have negative ids, node id is " << id << std::endl;
+    gthrow(ss.str().c_str());
+  }
+
+  for (auto itr = nodes.begin(); itr != nodes.end(); itr++) {
+    if ((*itr)->get_id() == id) {
+      nodes.erase(itr);
     }
   }
 }
 
-void Network::Net::make_edge_between(unsigned int start, unsigned int end) {
+void Network::Net::make_edge_between(int const start, int const end) {
   if (exists_edge_between(start, end)) {
-    gthrow("There is already an edge!");
-  } else {
-
-    Network::Edge newedge(nodes[start], nodes[end]);
-    auto edge_ptr = std::make_shared<Network::Edge>(newedge);
-    nodes[start]->attach_starting_edge(edge_ptr);
-    nodes[end]->attach_ending_edge(edge_ptr);
-    edges.push_back(edge_ptr);
+    std::stringstream ss;
+    ss << "There is already an edge between node " << start << " and " << end
+       << std::endl;
+    gthrow(ss.str().c_str());
   }
+
+  auto start_ptr = get_node_by_id(start);
+  if(!start_ptr)
+    {gthrow("nullpointer end");}
+  auto end_ptr = get_node_by_id(end);
+  if (!end_ptr) {
+    gthrow("nullpointer end");
+  }
+
+  std::shared_ptr<Network::Edge> edge_ptr(new Network::Edge(start_ptr,end_ptr));
+  start_ptr->attach_starting_edge(edge_ptr);
+  end_ptr->attach_ending_edge(edge_ptr);
+  edges.push_back(edge_ptr);
 }
 
-std::shared_ptr<Network::Node> Network::Net::get_node_by_id(unsigned int id) const {
-  return nodes[id];
+std::shared_ptr<Network::Node> Network::Net::get_node_by_id(int const id) const {
+  if (id < 0) {
+    std::stringstream ss;
+    ss << "Nodes can't have negative ids, node id is " << id << std::endl;
+    gthrow(ss.str().c_str());
+  }
+  // bool found=0;
+  // auto ptr = std::shared_ptr<Network::Node>();
+  for (auto itr = nodes.begin(); itr != nodes.end(); itr++) {
+    if ((*itr)->get_id() == id) {
+      // found=1;
+      return (*itr);
+    }
+  }
+  // if(!found)
+  //   {
+    return std::shared_ptr<Network::Node>();
+  //   }
+  // else 
+  //   {return ptr;}
 }
+std::vector<int> Network::Net::get_valid_node_ids() const {
 
-std::vector<unsigned int> Network::Net::get_valid_node_ids() const {
-
-  std::vector<unsigned int> vector_of_nodes_ids;
-  for (unsigned int i = 0; i < nodes.size(); ++i) {
-    unsigned int id = nodes[i]->get_id();
+  std::vector<int> vector_of_nodes_ids;
+  for (auto itr = nodes.begin(); itr != nodes.end(); itr++) {
+    int id = (*itr)->get_id();
     vector_of_nodes_ids.push_back(id);
   }
   return vector_of_nodes_ids;
 }
 
 std::shared_ptr<Network::Edge>
-Network::Net::get_edge_by_node_ids(unsigned int node_id_1, unsigned int node_id_2) const {
+Network::Net::get_edge_by_node_ids(int node_1, int node_2) const {
 
-  for (unsigned int i = 0; i < edges.size(); i++) {
-    if ((edges[i]->get_starting_node()->get_id() == node_id_1) &&
-        (edges[i]->get_ending_node()->get_id() == node_id_2)) {
-      return edges[i];
+  if (node_1 < 0 || node_2 < 0) {
+    gthrow("Nodes can't have negative ids.")
+  }
+
+  for (auto itr = edges.begin(); itr != edges.end(); itr++) {
+    if (((*itr)->get_starting_node()->get_id() == node_1) &&
+        ((*itr)->get_ending_node()->get_id() == node_2)) {
+      return (*itr);
     }
   }
-  std::shared_ptr<Network::Edge> nulledge;
-  return nulledge;
+
+  return std::shared_ptr<Network::Edge>();
 }
 
-bool Network::Net::exists_edge_between(const unsigned int node_id_1,
-                                       const unsigned int node_id_2) const {
+bool Network::Net::exists_edge_between(const int node_id_1,
+                                       const int node_id_2) const {
 
   auto find_endpoints = [node_id_1,
                          node_id_2](const std::shared_ptr<Network::Edge> edge) {
