@@ -6,11 +6,11 @@
 void Network::Node::remove_edge(std::shared_ptr<Network::Edge> to_remove) {
   bool edge_was_connected = false;
 
-   for (auto it = starting_edges.begin(); it != starting_edges.end(); ++it) {
+  for (auto it = starting_edges.begin(); it != starting_edges.end(); ++it) {
     if ((*it).lock().get() == to_remove.get()) {
       edge_was_connected = true;
       starting_edges.erase(it);
-      break;
+      return;
     }
   }
 
@@ -18,12 +18,11 @@ void Network::Node::remove_edge(std::shared_ptr<Network::Edge> to_remove) {
     if ((*it).lock().get() == to_remove.get()) {
       edge_was_connected = true;
       ending_edges.erase(it);
-      break;
-      }
+      return;
     }
-
-    if (!edge_was_connected) {
-      gthrow("edge was not connected.")
+  }
+  if (!edge_was_connected) {
+    gthrow("edge was not connected.")
   }
 }
 
@@ -41,10 +40,9 @@ Network::Node::get_ending_edges() const {
 
 void Network::Node::attach_starting_edge(
     std::shared_ptr<Network::Edge> to_attach) {
-  if(to_attach.get()==nullptr)
-    {
-      gthrow("can't attach an edge nullptr ")
-    }
+  if (to_attach.get() == nullptr) {
+    gthrow("can't attach an edge nullptr ")
+  }
 
   std::weak_ptr<Network::Edge> weak_to_attach = to_attach;
   starting_edges.push_back(weak_to_attach);
