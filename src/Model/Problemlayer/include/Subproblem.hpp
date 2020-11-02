@@ -6,7 +6,7 @@ namespace Model {
 class Subproblem {
 
 public:
-  virtual ~Subproblem();
+  virtual ~Subproblem() {};
 
 
   // purely virtual functions:

@@ -11,7 +11,11 @@ class Net;
 /// The class edge contains functions for getting information
 /// about the nodes attached to object Edge.
 class Edge {
+
+
+
 public:
+  virtual ~Edge() {};
   /// Function returns starting node of Edge object.
   /// @returns Starting node of type std::shared_ptr<Network::Node>
   std::shared_ptr<Network::Node> get_starting_node() const;
@@ -33,6 +37,7 @@ private:
   Edge(std::shared_ptr<Network::Node> start_node,
        std::shared_ptr<Network::Node> end_node)
       : starting_node(start_node), ending_node(end_node){};
+
 
   std::shared_ptr<Network::Node> starting_node;
   std::shared_ptr<Network::Node> ending_node;

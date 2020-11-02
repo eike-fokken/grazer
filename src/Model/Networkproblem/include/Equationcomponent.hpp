@@ -1,16 +1,15 @@
 #pragma once
 #include <Eigen/Sparse>
+#include <Node.hpp>
+#include <Edge.hpp>
 
 namespace Model::Networkproblem {
 
-
-
-class Equationcomponent
-{
+/// This class defines all network components, that supply model equations.
+class Equationcomponent {
 
 public:
-
-  virtual ~Equationcomponent();
+  virtual ~Equationcomponent(){};
 
   virtual void evaluate(const Eigen::VectorXd &current_state,
                         Eigen::VectorXd &new_state) = 0;
@@ -31,7 +30,17 @@ public:
 protected:
   unsigned int start_state_index;
   unsigned int after_state_index;
-
 };
 
-} // namespace Model
+/// This is an interface class, that defines objects that are nodes and have
+/// equations.
+class Equationnode : public Equationcomponent, public Network::Node {
+  virtual ~Equationnode(){};
+};
+/// This is an interface class, that defines objects that are edges and have
+/// equations.
+class Equationedge : public Equationcomponent, public Network::Edge {
+  virtual ~Equationedge(){};
+};
+
+} // namespace Model::Networkproblem

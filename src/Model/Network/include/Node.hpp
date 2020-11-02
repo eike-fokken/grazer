@@ -12,7 +12,11 @@ class Edge;
 /// removement of edges as well as providing information about the nodes id.
 
 class Node {
+
+
+
 public:
+  virtual ~Node() {};
   /// This function attaches an edge to object of type node.
   /// Attention: Here object node has to be the starting node in the edge you
   /// provide.
@@ -56,6 +60,9 @@ private:
 
   // Constructor must at least provide an id:k
   Node(int _id) : id(_id){};
+
+  
+
 
   int id;
   std::vector<std::weak_ptr<Network::Edge>> starting_edges;
