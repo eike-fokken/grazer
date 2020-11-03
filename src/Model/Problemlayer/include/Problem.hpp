@@ -20,7 +20,7 @@ public:
 
   void add_subproblem(std::unique_ptr<Subproblem> subproblem_ptr);
 
-  void reserve_indices();
+  unsigned int set_indices();
 
   void evaluate(const Eigen::VectorXd &current_state,
                 Eigen::VectorXd &new_state);
@@ -29,6 +29,7 @@ public:
                                  Eigen::SparseMatrix<double> &);
 
 private:
+  
   /// collection of sub-problems
   std::vector<std::unique_ptr<Subproblem>> subproblems;
 
