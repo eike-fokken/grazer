@@ -1,8 +1,17 @@
 #include "Net.hpp"
 #include "Edge.hpp"
 #include "Node.hpp"
+#include "MockSubproblem.hpp"
+#include "Model.hpp"
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include <iostream>
+#include <memory>
+
+
+//For GMock
+using ::testing::AtLeast;   
+using ::testing::Return;
 
 struct NetTest : public ::testing ::Test {
   virtual void SetUp() override {}
@@ -154,9 +163,9 @@ TEST(testEdge, test_removeEdge) {
 
   EXPECT_EQ(starting_edge_ptr.lock(), edge_ptr);
 
-  //    Network::Node node4(4);
+  //Network::Node node4(4);
   //    Network::Node node3(3);
-  //    auto node4_ptr = std::make_shared<Network::Node>(node4);
+  //auto node4_ptr = std::make_shared<Network::Node>(node4);
   //    auto node3_ptr = std::make_shared<Network::Node>(node3);
 
   //    Network::Edge edge1(node3_ptr, node4_ptr);
@@ -190,7 +199,7 @@ TEST(testEdge, test_getStartingNode) {
 TEST(testEdge, test_getEndingNode) {
 
   Network::Net net;
-  unsigned int id0 = net.new_node(); // das braucht man, sonst gibt es keinen node dafür
+  unsigned int id0 = net.new_node(); 
   unsigned int id1 = net.new_node();
 
   auto node0_ptr = net.get_node_by_id(id0);
@@ -202,4 +211,40 @@ TEST(testEdge, test_getEndingNode) {
   unsigned int ending_edge1_id = edge_ptr->get_ending_node()->get_id();
 
   EXPECT_EQ(ending_edge1_id, 0);
+}
+
+TEST(modelTest, get_number_of_states) {
+
+  //Test how often this class is being called
+  Model::MockSubproblem mocksub;
+  EXPECT_CALL(mocksub, get_number_of_states())
+    .Times(1);
+
+    mocksub.get_number_of_states();
+}
+
+TEST(modelTest, Model_evaluate) {
+
+  Model::Model model(1); 
+
+  //make unique pointer of mocksub1 and mocksub2
+    std::unique_ptr<Model::MockSubproblem> mock1_ptr = std::make_unique<Model::MockSubproblem>();
+    auto mock2_ptr = std::make_unique<Model::MockSubproblem>(); //another kind of definition
+  
+  //add subproblem to model
+   model.add_subproblem(std::move(mock1_ptr)); 
+   model.add_subproblem(std::move(mock2_ptr));
+
+  //call model.evaluate
+   Eigen::VectorXd v1(2);
+   v1(0)=2;
+   v1(1)=3;
+   Eigen::VectorXd v2(2);
+   v1(0)=3;
+   v1(1)=4;
+   model.evaluate(v1,v2);
+
+  //test how often submodel is called?
+   EXPECT_EQ(mock1_ptr, nullptr); //placeholder for test
+
 }

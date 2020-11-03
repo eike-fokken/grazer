@@ -6,7 +6,7 @@ namespace Model {
 class Subproblem {
 
 public:
-  virtual ~Subproblem();
+  virtual ~Subproblem() {};
 
 
   // purely virtual functions:
@@ -14,7 +14,7 @@ public:
                         Eigen::VectorXd &new_state) = 0;
   virtual void evaluate_state_derivative(const Eigen::VectorXd &,
                                          Eigen::SparseMatrix<double> &) = 0;
-  virtual unsigned int get_number_of_states();
+  virtual unsigned int get_number_of_states()=0;
 
   // Reserves indices from the state vector
   // @param int next_free_index the first non-reserved index of the state
