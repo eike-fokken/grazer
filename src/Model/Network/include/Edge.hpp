@@ -12,20 +12,18 @@ class Net;
 /// about the nodes attached to object Edge.
 class Edge {
 
-
-
 public:
-  virtual ~Edge() {};
+  virtual ~Edge(){};
   /// Function returns starting node of Edge object.
   /// @returns Starting node of type std::shared_ptr<Network::Node>
   std::shared_ptr<Network::Node> get_starting_node() const;
 
   void set_starting_node(std::shared_ptr<Network::Node>);
+  void set_ending_node(std::shared_ptr<Network::Node>);
 
   /// Function returns ending node of Edge object.
   /// @returns Ending node of type std::shared_ptr<Network::Node>
   std::shared_ptr<Network::Node> get_ending_node() const;
-  void set_ending_node(std::shared_ptr<Network::Node>);
 
 private:
   // The edge holds a shared pointer to its start and end nodes.
@@ -38,10 +36,9 @@ private:
        std::shared_ptr<Network::Node> end_node)
       : starting_node(start_node), ending_node(end_node){};
 
-
   std::shared_ptr<Network::Node> starting_node;
   std::shared_ptr<Network::Node> ending_node;
 
   friend class Network::Net;
-};
+  };
 } // namespace Network

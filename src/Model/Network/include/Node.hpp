@@ -13,10 +13,9 @@ class Edge;
 
 class Node {
 
-
-
 public:
-  virtual ~Node() {};
+  virtual ~Node(){};
+
   /// This function attaches an edge to object of type node.
   /// Attention: Here object node has to be the starting node in the edge you
   /// provide.
@@ -34,8 +33,7 @@ public:
   /// Therefore the function goes through all starting_edges and ending_edges
   /// (it does not remove the reverse one, if such exists).
   /// @param to_remove Edge that has to be removed
-  void remove_edge(
-      std::shared_ptr<Network::Edge> to_remove); // etwas ist hier falsch
+  void remove_edge(std::shared_ptr<Network::Edge> to_remove);
 
   /// This function returns vector of weak pointer of starting edges
   /// @returns  std::vector<std::weak_ptr<Network::Edge> > starting_edges
@@ -60,9 +58,6 @@ private:
 
   // Constructor must at least provide an id:k
   Node(int _id) : id(_id){};
-
-  
-
 
   int id;
   std::vector<std::weak_ptr<Network::Edge>> starting_edges;

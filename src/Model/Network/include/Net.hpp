@@ -13,10 +13,8 @@ namespace Network {
 class Net {
 
 public:
+  Net() : highest_free_id(0){};
 
-  Net(): highest_free_id(0) {};
-
-  void reset_free_ids();
   /// This function creates a new node.
   /// It gives the new node simply an id equal to the number of the previosly
   /// existing nodes in the net.
@@ -68,8 +66,8 @@ public:
   /// @param node_id_1 Nodes id of starting node
   /// @param node_id_2 Nodes id of ending node
   /// @returns Returns shared pointer of type < Network::Edge >
-  std::shared_ptr<Network::Edge> get_edge_by_node_ids(int const node_id_1,
-                                                      int const node_id_2) const;
+  std::shared_ptr<Network::Edge>
+  get_edge_by_node_ids(int const node_id_1, int const node_id_2) const;
 
   // std::set< std::pair<int,int > > get_edges() const;
 
