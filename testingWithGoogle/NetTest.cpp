@@ -1,9 +1,10 @@
 #include "Net.hpp"
 #include "Edge.hpp"
-#include "Exception.hpp"
 #include "Node.hpp"
 #include <Exception.hpp>
 #include <algorithm>
+#include "MockSubproblem.hpp"
+#include "Problem.hpp"
 #include <gtest/gtest.h>
 
 
@@ -34,12 +35,11 @@ TEST(testNet, test_RemoveEdgeBetween) {
   net.new_node();
   net.new_node();
 
-  
-    net.make_edge_between(0, 1);
-    net.remove_edge_between(0, 1);
+  net.make_edge_between(0, 1);
+  net.remove_edge_between(0, 1);
 
-    bool u = net.exists_edge_between(0,1);
-    auto nodes = net.get_nodes();
+  bool u = net.exists_edge_between(0,1);
+  auto nodes = net.get_nodes();
 
     int count(0);
     for(auto & node : nodes) {
@@ -213,3 +213,45 @@ TEST(testEdge, test_getEndingNode) {
 
   EXPECT_EQ(ending_edge1_id, 0);
 }
+
+TEST(modelTest, get_number_of_states) {
+
+  //Test how often this class is being called
+  Model::MockSubproblem mocksub;
+  EXPECT_CALL(mocksub, reserve_indices(0)).Times(1);
+
+  mocksub.set_indices(0);
+}
+
+TEST(modelTest, Model_evaluate) {
+
+  Model::Problem problem(1); 
+
+  //make unique pointer of mocksub1 and mocksub2
+    auto mock1_ptr = std::make_unique<Model::MockSubproblem>();
+    auto mock2_ptr = std::make_unique<Model::MockSubproblem>();
+  
+  //add subproblem to problem
+   problem.add_subproblem(std::move(mock1_ptr)); 
+   problem.add_subproblem(std::move(mock2_ptr));
+
+  //call problem.evaluate
+   Eigen::VectorXd v1(2);
+   v1(0)=2;
+   v1(1)=3;
+   Eigen::VectorXd v2(2);
+   v1(0)=3;
+   v1(1)=4;
+
+   // expect the call to evaluate on the subproblems.
+   // The cast magic is necessary to have the right type at hand...
+   EXPECT_CALL(*dynamic_cast<Model::MockSubproblem*>((*problem.get_subproblems())[0].get()), evaluate(v1,v2)).Times(1);
+   EXPECT_CALL(*dynamic_cast<Model::MockSubproblem*>((*problem.get_subproblems())[1].get()), evaluate(v1,v2)).Times(1);
+
+   problem.evaluate(v1,v2);
+
+  //test how often subproblem is called?
+   // EXPECT_EQ(mock1_ptr, nullptr); //placeholder for test
+
+}
+

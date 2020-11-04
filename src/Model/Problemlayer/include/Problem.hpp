@@ -4,8 +4,9 @@
 #include <vector>
 
 /*! \namespace Model
- *  This namespace holds all data for setting up model equations and for taking derivatives thereof.
-*/
+ *  This namespace holds all data for setting up model equations and for taking
+ * derivatives thereof.
+ */
 namespace Model {
 
 // forward declaration:
@@ -28,8 +29,11 @@ public:
   void evaluate_state_derivative(const Eigen::VectorXd &,
                                  Eigen::SparseMatrix<double> &);
 
+  /// As we have unique pointers, we can only give back a pointer to our
+  /// subproblems.
+  std::vector<std::unique_ptr<Subproblem>> *get_subproblems();
+
 private:
-  
   /// collection of sub-problems
   std::vector<std::unique_ptr<Subproblem>> subproblems;
 
