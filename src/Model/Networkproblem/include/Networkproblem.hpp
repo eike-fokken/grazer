@@ -15,27 +15,26 @@ namespace Network{
 namespace Model::Networkproblem {
 
 
-
-
-
   // This class implements a Subproblem, that builds the model equations from a network.
-  class Networkproblem : public Subproblem{
+  class Networkproblem: public Subproblem{
 
   public:
-    virtual ~Networkproblem() {};
+    virtual ~Networkproblem() override{};
 
     Networkproblem(std::unique_ptr<Network::Net> _network);
 
     virtual void evaluate(const Eigen::VectorXd &current_state,
-                          Eigen::VectorXd &new_state);
+                          Eigen::VectorXd &new_state) override;
     virtual void evaluate_state_derivative(const Eigen::VectorXd &,
-                                           Eigen::SparseMatrix<double> &);
-    virtual unsigned int get_number_of_states();
-
+                                           Eigen::SparseMatrix<double> &) override;
+    
   private:
     std::unique_ptr<Network::Net> network;
     std::vector<Equationedge *> equationedges;
     std::vector<Equationnode *> equationnodes;
+
+    virtual unsigned int
+    reserve_indices(unsigned int const next_free_index) override;
   };
 
 } // namespace Model

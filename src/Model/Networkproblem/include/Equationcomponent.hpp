@@ -1,11 +1,12 @@
 #pragma once
+#include <Edge.hpp>
 #include <Eigen/Sparse>
 #include <Node.hpp>
-#include <Edge.hpp>
 
 namespace Model::Networkproblem {
 
 /// This class defines all network components, that supply model equations.
+/// Inheriting classes must especially override the private get_number_of_states().
 class Equationcomponent {
 
 public:
@@ -15,21 +16,22 @@ public:
                         Eigen::VectorXd &new_state) = 0;
   virtual void evaluate_state_derivative(const Eigen::VectorXd &,
                                          Eigen::SparseMatrix<double> &) = 0;
+
+  /// Returns number of state variables needed by this component.
+  /// Usually this will be implemented by a function returning a literal
+  /// unsigned int like 2.
   virtual unsigned int get_number_of_states() = 0;
 
-  // Reserves indices from the state vector
-  // @param int next_free_index the first non-reserved index of the state
-  // vector.
-  // @returns int next_free_index the new first non-reserved index of the state
-  // vector.
-  unsigned int reserve_indices(unsigned int next_free_index);
+  unsigned int set_indices(unsigned int const next_free_index);
 
-  unsigned int get_start_state_index();
-  unsigned int get_after_state_index();
+  unsigned int get_start_state_index() const;
+  unsigned int get_after_state_index() const;
 
-protected:
+private:
   unsigned int start_state_index;
   unsigned int after_state_index;
+
+
 };
 
 /// This is an interface class, that defines objects that are nodes and have
