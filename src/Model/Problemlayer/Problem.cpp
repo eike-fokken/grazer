@@ -33,9 +33,13 @@ void Problem::evaluate_state_derivative(const Eigen::VectorXd &current_state,
   }
 }
 
-  std::vector<std::unique_ptr<Subproblem>> * Problem::get_subproblems()
+  std::vector<Subproblem*> Problem::get_subproblems()
   {
-    return &subproblems;
+    std::vector<Subproblem *> pointer_vector;
+    for (auto & uptr : subproblems) {
+      pointer_vector.push_back(uptr.get());
+    }
+    return pointer_vector;
   }
 
 } // namespace Model

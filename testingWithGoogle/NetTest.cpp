@@ -245,8 +245,8 @@ TEST(modelTest, Model_evaluate) {
 
    // expect the call to evaluate on the subproblems.
    // The cast magic is necessary to have the right type at hand...
-   EXPECT_CALL(*dynamic_cast<Model::MockSubproblem*>((*problem.get_subproblems())[0].get()), evaluate(v1,v2)).Times(1);
-   EXPECT_CALL(*dynamic_cast<Model::MockSubproblem*>((*problem.get_subproblems())[1].get()), evaluate(v1,v2)).Times(1);
+   EXPECT_CALL(*dynamic_cast<Model::MockSubproblem*>(problem.get_subproblems()[0]), evaluate(v1,v2)).Times(1);
+   EXPECT_CALL(*dynamic_cast<Model::MockSubproblem*>(problem.get_subproblems()[1]), evaluate(v1,v2)).Times(1);
 
    problem.evaluate(v1,v2);
 

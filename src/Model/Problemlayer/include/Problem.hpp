@@ -31,7 +31,7 @@ public:
 
   /// As we have unique pointers, we can only give back a pointer to our
   /// subproblems.
-  std::vector<std::unique_ptr<Subproblem>> *get_subproblems();
+  std::vector<Subproblem*> get_subproblems();
 
 private:
   /// collection of sub-problems
