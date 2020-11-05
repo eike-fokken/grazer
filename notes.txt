@@ -1,0 +1,8 @@
+Net should probably hold unique pointers to edges and nodes.
+
+
+
+Boundaryvalue should be templated to hold int N boundary values or maybe even hold a matrix instead of a map.
+
+
+Declare all classes where it is appropriate final.
