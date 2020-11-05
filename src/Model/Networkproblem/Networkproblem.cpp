@@ -30,24 +30,24 @@ Networkproblem::Networkproblem(std::unique_ptr<Network::Net> _network)
   }
 }
 
-void Networkproblem::evaluate(const Eigen::VectorXd &current_state,
+void Networkproblem::evaluate(double current_time, double next_time, const Eigen::VectorXd &current_state,
                               Eigen::VectorXd &new_state) {
   for (Model::Networkproblem::Equationedge *eqedge : equationedges) {
-    eqedge->evaluate(current_state, new_state);
+    eqedge->evaluate(current_time, next_time, current_state, new_state);
   }
   for (Model::Networkproblem::Equationnode *eqnode : equationnodes) {
-    eqnode->evaluate(current_state, new_state);
+    eqnode->evaluate(current_time, next_time, current_state, new_state);
   }
 }
 
-void Networkproblem::evaluate_state_derivative(
+  void Networkproblem::evaluate_state_derivative(double current_time, double next_time,
     const Eigen::VectorXd &current_state,
     Eigen::SparseMatrix<double> &Jacobian) {
   for (Model::Networkproblem::Equationedge *eqedge : equationedges) {
-    eqedge->evaluate_state_derivative(current_state, Jacobian);
+    eqedge->evaluate_state_derivative(current_time, next_time, current_state, Jacobian);
   }
   for (Model::Networkproblem::Equationnode *eqnode : equationnodes) {
-    eqnode->evaluate_state_derivative(current_state, Jacobian);
+    eqnode->evaluate_state_derivative(current_time, next_time, current_state, Jacobian);
   }
 }
 

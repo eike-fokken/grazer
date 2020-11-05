@@ -23,11 +23,12 @@ public:
 
   unsigned int set_indices();
 
-  void evaluate(const Eigen::VectorXd &current_state,
+  void evaluate(double current_time, double next_time, const Eigen::VectorXd &current_state,
                 Eigen::VectorXd &new_state);
 
-  void evaluate_state_derivative(const Eigen::VectorXd &,
-                                 Eigen::SparseMatrix<double> &);
+  void evaluate_state_derivative(double current_time, double next_time,
+                                 const Eigen::VectorXd &current_state,
+                                 Eigen::SparseMatrix<double> &new_state);
 
   /// As we have unique pointers, we can only give back a pointer to our
   /// subproblems.

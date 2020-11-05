@@ -19,17 +19,17 @@ unsigned int Problem::set_indices() {
   return next_free_index;
 }
 
-void Problem::evaluate(const Eigen::VectorXd &current_state,
+void Problem::evaluate(double current_time, double next_time, const Eigen::VectorXd &current_state,
                      Eigen::VectorXd &new_state) {
   for (auto it = subproblems.begin(); it != subproblems.end(); it++) {
-    (*it)->evaluate(current_state, new_state);
+    (*it)->evaluate(current_time, next_time,current_state, new_state);
   }
 }
 
-void Problem::evaluate_state_derivative(const Eigen::VectorXd &current_state,
+void Problem::evaluate_state_derivative(double current_time, double next_time, const Eigen::VectorXd &current_state,
                                       Eigen::SparseMatrix<double> &jacobian) {
   for (auto it = subproblems.begin(); it != subproblems.end(); it++) {
-    (*it)->evaluate_state_derivative(current_state, jacobian);
+    (*it)->evaluate_state_derivative(current_time, next_time,current_state, jacobian);
   }
 }
 
