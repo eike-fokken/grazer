@@ -31,32 +31,32 @@ Networkproblem::Networkproblem(std::unique_ptr<Network::Net> _network)
 }
 
 void Networkproblem::evaluate(Eigen::VectorXd &rootfunction,
-                              double current_time, double next_time,
+                              double last_time, double new_time,
                               const Eigen::VectorXd &last_state,
-                              Eigen::VectorXd &current_state) {
+                              Eigen::VectorXd &new_state) {
   for (Model::Networkproblem::Equationedge *eqedge : equationedges) {
-    eqedge->evaluate(rootfunction, current_time, next_time, last_state,
-                     current_state);
+    eqedge->evaluate(rootfunction, last_time, new_time, last_state,
+                     new_state);
   }
   for (Model::Networkproblem::Equationnode *eqnode : equationnodes) {
-    eqnode->evaluate(rootfunction, current_time, next_time, last_state,
-                     current_state);
+    eqnode->evaluate(rootfunction, last_time, new_time, last_state,
+                     new_state);
   }
 }
 
 void Networkproblem::evaluate_state_derivative(
     Eigen::SparseMatrix<double> &jacobian,
-    double current_time,
-    double next_time,
+    double last_time,
+    double new_time,
     const Eigen::VectorXd &last_state,
-    Eigen::VectorXd &current_state) {
+    Eigen::VectorXd &new_state) {
   for (Model::Networkproblem::Equationedge *eqedge : equationedges) {
-    eqedge->evaluate_state_derivative(jacobian, current_time, next_time,
-                                      last_state, current_state);
+    eqedge->evaluate_state_derivative(jacobian, last_time, new_time,
+                                      last_state, new_state);
   }
   for (Model::Networkproblem::Equationnode *eqnode : equationnodes) {
-    eqnode->evaluate_state_derivative(jacobian, current_time, next_time,
-                                      last_state, current_state);
+    eqnode->evaluate_state_derivative(jacobian, last_time, new_time,
+                                      last_state, new_state);
   }
 }
 

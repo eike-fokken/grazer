@@ -10,10 +10,10 @@ public:
 
 
   // purely virtual functions:
-  virtual void evaluate(Eigen::VectorXd & rootfunction, double current_time, double next_time, const Eigen::VectorXd &last_state,
-                        Eigen::VectorXd &current_state) = 0;
-  virtual void evaluate_state_derivative(Eigen::SparseMatrix<double> & jacobian, double current_time, double next_time, const Eigen::VectorXd &,
-                                         Eigen::VectorXd & current_state) = 0;
+  virtual void evaluate(Eigen::VectorXd & rootfunction, double last_time, double new_time, const Eigen::VectorXd &last_state,
+                        Eigen::VectorXd &new_state) = 0;
+  virtual void evaluate_state_derivative(Eigen::SparseMatrix<double> & jacobian, double last_time, double new_time, const Eigen::VectorXd &,
+                                         Eigen::VectorXd & new_state) = 0;
   
   // Reserves indices from the state vector
   // @param int next_free_index the first non-reserved index of the state
