@@ -6,23 +6,21 @@
 #include <sstream>
 #include <string>
 
+int Network::Net::new_node() {
+  int id = highest_free_id;
+  ++highest_free_id;
+  std::shared_ptr<Network::Node> node_ptr(new Node(id));
+  nodes.push_back(std::move(node_ptr));
+  return id;
+}
 
-
-  int Network::Net::new_node() {
-    int id = highest_free_id;
-    ++highest_free_id;
-    std::shared_ptr<Network::Node> node_ptr (new Node(id));
-    nodes.push_back(std::move(node_ptr));
-    return id;
+void Network::Net::remove_edge_between(int node_1, int node_2) {
+  if (node_1 < 0 || node_2 < 0) {
+    std::stringstream ss;
+    ss << "Nodes can't have negative ids." << node_1 << " and " << node_2
+       << std::endl;
+    gthrow(ss.str().c_str());
   }
-
-  void Network::Net::remove_edge_between(int node_1, int node_2) {
-    if (node_1 < 0 || node_2 < 0) {
-      std::stringstream ss;
-      ss << "Nodes can't have negative ids."  << node_1 << " and " << node_2 << std::endl;
-      gthrow(ss.str().c_str());
-    }
-
 
   for (auto itr = edges.begin(); itr != edges.end(); itr++) {
     if (((*itr)->get_starting_node()->get_id() == node_1) &&
@@ -67,20 +65,23 @@ void Network::Net::make_edge_between(int const start, int const end) {
   }
 
   auto start_ptr = get_node_by_id(start);
-  if(!start_ptr)
-    {gthrow("nullpointer start");}
+  if (!start_ptr) {
+    gthrow("nullpointer start");
+  }
   auto end_ptr = get_node_by_id(end);
   if (!end_ptr) {
     gthrow("nullpointer end");
   }
 
-  std::shared_ptr<Network::Edge> edge_ptr(new Network::Edge(start_ptr,end_ptr));
+  std::shared_ptr<Network::Edge> edge_ptr(
+      new Network::Edge(start_ptr, end_ptr));
   start_ptr->attach_starting_edge(edge_ptr);
   end_ptr->attach_ending_edge(edge_ptr);
   edges.push_back(std::move(edge_ptr));
 }
 
-std::shared_ptr<Network::Node> Network::Net::get_node_by_id(int const id) const {
+std::shared_ptr<Network::Node>
+Network::Net::get_node_by_id(int const id) const {
   if (id < 0) {
     std::stringstream ss;
     ss << "Nodes can't have negative ids, node id is " << id << std::endl;
@@ -91,7 +92,7 @@ std::shared_ptr<Network::Node> Network::Net::get_node_by_id(int const id) const 
       return (*itr);
     }
   }
-    return std::shared_ptr<Network::Node>();
+  return std::shared_ptr<Network::Node>();
 }
 std::vector<int> Network::Net::get_valid_node_ids() const {
 

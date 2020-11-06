@@ -30,33 +30,28 @@ Networkproblem::Networkproblem(std::unique_ptr<Network::Net> _network)
   }
 }
 
-void Networkproblem::evaluate(Eigen::VectorXd &rootfunction,
-                              double last_time, double new_time,
+void Networkproblem::evaluate(Eigen::VectorXd &rootfunction, double last_time,
+                              double new_time,
                               const Eigen::VectorXd &last_state,
-                              Eigen::VectorXd &new_state) {
+                              Eigen::VectorXd const &new_state) {
   for (Model::Networkproblem::Equationedge *eqedge : equationedges) {
-    eqedge->evaluate(rootfunction, last_time, new_time, last_state,
-                     new_state);
+    eqedge->evaluate(rootfunction, last_time, new_time, last_state, new_state);
   }
   for (Model::Networkproblem::Equationnode *eqnode : equationnodes) {
-    eqnode->evaluate(rootfunction, last_time, new_time, last_state,
-                     new_state);
+    eqnode->evaluate(rootfunction, last_time, new_time, last_state, new_state);
   }
 }
 
 void Networkproblem::evaluate_state_derivative(
-    Eigen::SparseMatrix<double> &jacobian,
-    double last_time,
-    double new_time,
-    const Eigen::VectorXd &last_state,
-    Eigen::VectorXd &new_state) {
+    Eigen::SparseMatrix<double> &jacobian, double last_time, double new_time,
+    const Eigen::VectorXd &last_state, Eigen::VectorXd const &new_state) {
   for (Model::Networkproblem::Equationedge *eqedge : equationedges) {
-    eqedge->evaluate_state_derivative(jacobian, last_time, new_time,
-                                      last_state, new_state);
+    eqedge->evaluate_state_derivative(jacobian, last_time, new_time, last_state,
+                                      new_state);
   }
   for (Model::Networkproblem::Equationnode *eqnode : equationnodes) {
-    eqnode->evaluate_state_derivative(jacobian, last_time, new_time,
-                                      last_state, new_state);
+    eqnode->evaluate_state_derivative(jacobian, last_time, new_time, last_state,
+                                      new_state);
   }
 }
 

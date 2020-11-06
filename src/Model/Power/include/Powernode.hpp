@@ -1,15 +1,13 @@
 #include <Equationcomponent.hpp>
 
-
 namespace Model::Networkproblem::Power {
 
+class Powernode : public Equationnode {
 
-  class Powernode: public Equationnode{
+public:
+  virtual ~Powernode(){};
 
-  public:
-    virtual ~Powernode() {};
+  virtual unsigned int get_number_of_states() override final { return 2; };
+};
 
-    virtual unsigned int get_number_of_states() override final {return 2;};
-  };
-
-  } // namespace Model::Networkproblem
+} // namespace Model::Networkproblem::Power

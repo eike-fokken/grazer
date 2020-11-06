@@ -5,13 +5,13 @@
 #include <string>
 
 class Exception : public std::runtime_error {
-    std::string msg;
+  std::string msg;
 
 public:
   std::string rawmsg;
 
   Exception(const std::string &_rawmsg, const char *file, int line);
-    
+
   ~Exception() noexcept {};
   const char *what() const noexcept;
 };

@@ -7,7 +7,7 @@ namespace Model::Networkproblem {
 template <typename T, int N> class Boundaryvalue {
 
 public:
-  Boundaryvalue(std::map<double, Eigen::Matrix<double, N, 1> > _boundary_values)
+  Boundaryvalue(std::map<double, Eigen::Matrix<double, N, 1>> _boundary_values)
       : boundary_values(_boundary_values){};
 
   Eigen::VectorXd operator()(double t) const {

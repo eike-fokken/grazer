@@ -6,16 +6,20 @@
 namespace Model::Networkproblem {
 
 /// This class defines all network components, that supply model equations.
-/// Inheriting classes must especially override the private get_number_of_states().
+/// Inheriting classes must especially override the private
+/// get_number_of_states().
 class Equationcomponent {
 
 public:
   virtual ~Equationcomponent(){};
 
-  virtual void evaluate(Eigen::VectorXd & rootfunction, double last_time, double new_time, const Eigen::VectorXd &last_state,
-                        Eigen::VectorXd &new_state) = 0;
-  virtual void evaluate_state_derivative(Eigen::SparseMatrix<double> & jacobian, double last_time, double new_time, const Eigen::VectorXd &,
-                                         Eigen::VectorXd & new_state) = 0;
+  virtual void evaluate(Eigen::VectorXd &rootfunction, double last_time,
+                        double new_time, const Eigen::VectorXd &last_state,
+                        Eigen::VectorXd const &new_state) = 0;
+  virtual void evaluate_state_derivative(Eigen::SparseMatrix<double> &jacobian,
+                                         double last_time, double new_time,
+                                         const Eigen::VectorXd &,
+                                         Eigen::VectorXd const &new_state) = 0;
 
   /// Returns number of state variables needed by this component.
   /// Usually this will be implemented by a function returning a literal
@@ -30,8 +34,6 @@ public:
 private:
   unsigned int start_state_index;
   unsigned int after_state_index;
-
-
 };
 
 /// This is an interface class, that defines objects that are nodes and have

@@ -40,5 +40,5 @@ private:
   std::shared_ptr<Network::Node> ending_node;
 
   friend class Network::Net;
-  };
+};
 } // namespace Network

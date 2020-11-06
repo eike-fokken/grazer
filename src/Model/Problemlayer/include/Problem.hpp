@@ -23,16 +23,18 @@ public:
 
   unsigned int set_indices();
 
-  void evaluate(Eigen::VectorXd & rootfunction, double last_time, double new_time, const Eigen::VectorXd &last_state,
-                Eigen::VectorXd &new_state);
+  void evaluate(Eigen::VectorXd &rootfunction, double last_time,
+                double new_time, const Eigen::VectorXd &last_state,
+                Eigen::VectorXd const &new_state);
 
-  void evaluate_state_derivative(Eigen::SparseMatrix<double> & jacobian, double last_time, double new_time,
+  void evaluate_state_derivative(Eigen::SparseMatrix<double> &jacobian,
+                                 double last_time, double new_time,
                                  const Eigen::VectorXd &last_state,
-                                 Eigen::VectorXd & new_state);
+                                 Eigen::VectorXd const &new_state);
 
   /// As we have unique pointers, we can only give back a pointer to our
   /// subproblems.
-  std::vector<Subproblem*> get_subproblems();
+  std::vector<Subproblem *> get_subproblems();
 
 private:
   /// collection of sub-problems
