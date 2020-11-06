@@ -10,9 +10,9 @@ class Exception : public std::runtime_error {
 public:
   std::string rawmsg;
 
-  Exception(const std::string &_rawmsg, const char *file, int line);
+  Exception(std::string const &_rawmsg, char const *file, int line);
 
   ~Exception() noexcept {};
-  const char *what() const noexcept;
+  char const *what() const noexcept;
 };
 #define gthrow(rawmsg) throw Exception(rawmsg, __FILE__, __LINE__);

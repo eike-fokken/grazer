@@ -20,7 +20,7 @@ unsigned int Problem::set_indices() {
 }
 
 void Problem::evaluate(Eigen::VectorXd &rootfunction, double last_time,
-                       double new_time, const Eigen::VectorXd &last_state,
+                       double new_time, Eigen::VectorXd const &last_state,
                        Eigen::VectorXd const &new_state) {
   for (auto it = subproblems.begin(); it != subproblems.end(); it++) {
     (*it)->evaluate(rootfunction, last_time, new_time, last_state, new_state);
@@ -29,7 +29,7 @@ void Problem::evaluate(Eigen::VectorXd &rootfunction, double last_time,
 
 void Problem::evaluate_state_derivative(Eigen::SparseMatrix<double> &jacobian,
                                         double last_time, double new_time,
-                                        const Eigen::VectorXd &last_state,
+                                        Eigen::VectorXd const &last_state,
                                         Eigen::VectorXd const &new_state) {
   for (auto it = subproblems.begin(); it != subproblems.end(); it++) {
     (*it)->evaluate_state_derivative(jacobian, last_time, new_time, last_state,

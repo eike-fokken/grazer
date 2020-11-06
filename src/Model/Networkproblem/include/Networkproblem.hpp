@@ -24,12 +24,12 @@ public:
   Networkproblem(std::unique_ptr<Network::Net> _network);
 
   virtual void evaluate(Eigen::VectorXd &rootfunction, double last_time,
-                        double new_time, const Eigen::VectorXd &last_state,
+                        double new_time, Eigen::VectorXd const &last_state,
                         Eigen::VectorXd const &new_state) override;
   virtual void
   evaluate_state_derivative(Eigen::SparseMatrix<double> &jacobian,
                             double last_time, double new_time,
-                            const Eigen::VectorXd &last_state,
+                            Eigen::VectorXd const &last_state,
                             Eigen::VectorXd const &new_state) override;
 
 private:
