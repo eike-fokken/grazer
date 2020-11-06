@@ -238,6 +238,7 @@ TEST(modelTest, Model_evaluate) {
   //call problem.evaluate
    double current_time(0.0);
    double next_time(1.0);
+   Eigen::VectorXd rootfunction(2);
    Eigen::VectorXd v1(2);
    v1(0)=2;
    v1(1)=3;
@@ -249,14 +250,14 @@ TEST(modelTest, Model_evaluate) {
    // The cast magic is necessary to have the right type at hand...
    EXPECT_CALL(
        *dynamic_cast<Model::MockSubproblem *>(problem.get_subproblems()[0]),
-       evaluate(current_time, next_time, v1, v2))
+       evaluate(rootfunction, current_time, next_time, v1, v2))
        .Times(1);
    EXPECT_CALL(
        *dynamic_cast<Model::MockSubproblem *>(problem.get_subproblems()[1]),
-       evaluate(current_time, next_time, v1, v2))
+       evaluate(rootfunction, current_time, next_time, v1, v2))
        .Times(1);
 
-   problem.evaluate(current_time,next_time,v1,v2);
+   problem.evaluate(rootfunction, current_time,next_time,v1,v2);
 
   //test how often subproblem is called?
    // EXPECT_EQ(mock1_ptr, nullptr); //placeholder for test

@@ -23,7 +23,7 @@ public:
 
   unsigned int set_indices();
 
-  void evaluate(double current_time, double next_time, const Eigen::VectorXd &current_state,
+  void evaluate(Eigen::VectorXd & rootfunction, double current_time, double next_time, const Eigen::VectorXd &current_state,
                 Eigen::VectorXd &new_state);
 
   void evaluate_state_derivative(double current_time, double next_time,

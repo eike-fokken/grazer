@@ -30,13 +30,13 @@ Networkproblem::Networkproblem(std::unique_ptr<Network::Net> _network)
   }
 }
 
-void Networkproblem::evaluate(double current_time, double next_time, const Eigen::VectorXd &current_state,
+void Networkproblem::evaluate(Eigen::VectorXd & rootfunction, double current_time, double next_time, const Eigen::VectorXd &current_state,
                               Eigen::VectorXd &new_state) {
   for (Model::Networkproblem::Equationedge *eqedge : equationedges) {
-    eqedge->evaluate(current_time, next_time, current_state, new_state);
+    eqedge->evaluate(rootfunction, current_time, next_time, current_state, new_state);
   }
   for (Model::Networkproblem::Equationnode *eqnode : equationnodes) {
-    eqnode->evaluate(current_time, next_time, current_state, new_state);
+    eqnode->evaluate(rootfunction, current_time, next_time, current_state, new_state);
   }
 }
 

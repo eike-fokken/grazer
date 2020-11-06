@@ -10,7 +10,7 @@ public:
 
 
   // purely virtual functions:
-  virtual void evaluate(double current_time, double next_time, const Eigen::VectorXd &current_state,
+  virtual void evaluate(Eigen::VectorXd & rootfunction, double current_time, double next_time, const Eigen::VectorXd &current_state,
                         Eigen::VectorXd &new_state) = 0;
   virtual void evaluate_state_derivative(double current_time, double next_time, const Eigen::VectorXd &,
                                          Eigen::SparseMatrix<double> &) = 0;

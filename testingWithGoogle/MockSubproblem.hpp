@@ -9,7 +9,7 @@ class MockSubproblem : public Subproblem {
 
 public:
   MOCK_METHOD(void, evaluate,
-              ((double), (double), (const Eigen::VectorXd &),
+              ((Eigen::VectorXd &),(double), (double), (const Eigen::VectorXd &),
                (Eigen::VectorXd &)),
               (override));
   MOCK_METHOD(void, evaluate_state_derivative,
