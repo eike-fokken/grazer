@@ -1,4 +1,4 @@
-add_library(power STATIC Powernode.cpp Vphinode.cpp PQnode.cpp PVnode.cpp Transmissionline.cpp)
+add_library(power STATIC Vphinode.cpp PQnode.cpp PVnode.cpp Transmissionline.cpp)
 
 target_include_directories(power PRIVATE "include")
 
