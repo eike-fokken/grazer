@@ -1,7 +1,7 @@
 #include <Equationcomponent.hpp>
-#include <Node.hpp>
 #include <Net.hpp>
 #include <Networkproblem.hpp>
+#include <Node.hpp>
 #include <memory>
 #include <utility>
 #include <vector>
@@ -30,24 +30,33 @@ Networkproblem::Networkproblem(std::unique_ptr<Network::Net> _network)
   }
 }
 
-void Networkproblem::evaluate(Eigen::VectorXd & rootfunction, double current_time, double next_time, const Eigen::VectorXd &current_state,
-                              Eigen::VectorXd &new_state) {
+void Networkproblem::evaluate(Eigen::VectorXd &rootfunction,
+                              double current_time, double next_time,
+                              const Eigen::VectorXd &last_state,
+                              Eigen::VectorXd &current_state) {
   for (Model::Networkproblem::Equationedge *eqedge : equationedges) {
-    eqedge->evaluate(rootfunction, current_time, next_time, current_state, new_state);
+    eqedge->evaluate(rootfunction, current_time, next_time, last_state,
+                     current_state);
   }
   for (Model::Networkproblem::Equationnode *eqnode : equationnodes) {
-    eqnode->evaluate(rootfunction, current_time, next_time, current_state, new_state);
+    eqnode->evaluate(rootfunction, current_time, next_time, last_state,
+                     current_state);
   }
 }
 
-  void Networkproblem::evaluate_state_derivative(double current_time, double next_time,
-    const Eigen::VectorXd &current_state,
-    Eigen::SparseMatrix<double> &Jacobian) {
+void Networkproblem::evaluate_state_derivative(
+    Eigen::SparseMatrix<double> &jacobian,
+    double current_time,
+    double next_time,
+    const Eigen::VectorXd &last_state,
+    Eigen::VectorXd &current_state) {
   for (Model::Networkproblem::Equationedge *eqedge : equationedges) {
-    eqedge->evaluate_state_derivative(current_time, next_time, current_state, Jacobian);
+    eqedge->evaluate_state_derivative(jacobian, current_time, next_time,
+                                      last_state, current_state);
   }
   for (Model::Networkproblem::Equationnode *eqnode : equationnodes) {
-    eqnode->evaluate_state_derivative(current_time, next_time, current_state, Jacobian);
+    eqnode->evaluate_state_derivative(jacobian, current_time, next_time,
+                                      last_state, current_state);
   }
 }
 

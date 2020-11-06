@@ -7,8 +7,8 @@ namespace Model::Networkproblem::Power {
   //////
   //////
   void Model::Networkproblem::Power::Vphinode::evaluate(Eigen::VectorXd & rootfunction,
-    double current_time, double next_time, const Eigen::VectorXd &current_state,
-    Eigen::VectorXd &new_state) {
+    double current_time, double next_time, const Eigen::VectorXd &last_state,
+    Eigen::VectorXd &current_state) {
   auto index = get_start_state_index();
   rootfunction[index] = boundaryvalue(next_time)[0] - current_state[index];
   index++;

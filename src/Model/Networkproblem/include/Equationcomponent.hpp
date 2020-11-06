@@ -12,10 +12,10 @@ class Equationcomponent {
 public:
   virtual ~Equationcomponent(){};
 
-  virtual void evaluate(Eigen::VectorXd & rootfunction, double current_time, double next_time, const Eigen::VectorXd &current_state,
-                        Eigen::VectorXd &new_state) = 0;
-  virtual void evaluate_state_derivative(double current_time, double next_time, const Eigen::VectorXd &,
-                                         Eigen::SparseMatrix<double> &) = 0;
+  virtual void evaluate(Eigen::VectorXd & rootfunction, double current_time, double next_time, const Eigen::VectorXd &last_state,
+                        Eigen::VectorXd &current_state) = 0;
+  virtual void evaluate_state_derivative(Eigen::SparseMatrix<double> & jacobian, double current_time, double next_time, const Eigen::VectorXd &,
+                                         Eigen::VectorXd & current_state) = 0;
 
   /// Returns number of state variables needed by this component.
   /// Usually this will be implemented by a function returning a literal
