@@ -1,3 +1,4 @@
+#pragma once
 #include <Exception.hpp>
 #include <Powernode.hpp>
 

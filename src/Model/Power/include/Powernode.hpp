@@ -1,3 +1,4 @@
+#pragma once
 #include <Equationcomponent.hpp>
 
 namespace Model::Networkproblem::Power {

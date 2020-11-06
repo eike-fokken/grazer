@@ -1,3 +1,4 @@
+#pragma once
 #include "gmock/gmock.h"
 #include <Eigen/Sparse>
 #include <Subproblem.hpp>

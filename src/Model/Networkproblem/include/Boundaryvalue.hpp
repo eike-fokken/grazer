@@ -1,3 +1,4 @@
+#pragma once
 #include <Eigen/Sparse>
 #include <Exception.hpp>
 #include <map>
