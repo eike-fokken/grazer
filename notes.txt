@@ -1,8 +1,7 @@
 Net should probably hold unique pointers to edges and nodes.
 
-
-
-Boundaryvalue should be templated to hold int N boundary values or maybe even hold a matrix instead of a map.
-
+Boundaryvalue maybe should hold a matrix instead of a map. (requires testing of performance)
 
 Declare all classes where it is appropriate final.
+
+make subproblems inherit from nodes and define connecting problems as edges. --> Problem should hold a network of subproblems.
