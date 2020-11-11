@@ -7,6 +7,7 @@ namespace Aux {
   class Matrixhandler {
 
   public:
+    Matrixhandler() = delete;
     Matrixhandler(Eigen::SparseMatrix<double> *_matrix) : matrix(_matrix){};
 
     virtual ~Matrixhandler(){};
@@ -23,6 +24,9 @@ namespace Aux {
   class Triplethandler final : public Matrixhandler {
 
   public:
+    Triplethandler(Eigen::SparseMatrix<double> *_matrix)
+        : Matrixhandler(_matrix){};
+
     virtual ~Triplethandler() override{};
 
     virtual void set_coefficient(unsigned int row, unsigned int col,
@@ -37,6 +41,9 @@ namespace Aux {
   class Coeffrefhandler final : public Matrixhandler {
 
   public:
+    Coeffrefhandler(Eigen::SparseMatrix<double> *_matrix)
+        : Matrixhandler(_matrix){};
+
     virtual ~Coeffrefhandler() override{};
 
     virtual void set_coefficient(unsigned int row, unsigned int col,
