@@ -3,6 +3,6 @@
 
 namespace Model {
 
-class Transmissionline : public Network::Edge {};
+  class Transmissionline : public Network::Edge {};
 
 } // namespace Model
