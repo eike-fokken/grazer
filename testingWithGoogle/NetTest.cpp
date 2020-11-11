@@ -1,7 +1,7 @@
 #include "Net.hpp"
+#include "Boundaryvalue.hpp"
 #include "Edge.hpp"
 #include "MockSubproblem.hpp"
-#include "Boundaryvalue.hpp"
 #include "Node.hpp"
 #include "Problem.hpp"
 #include <Exception.hpp>
@@ -259,50 +259,67 @@ TEST(modelSubproblem, Model_evaluate) {
       .Times(1);
 
   problem.evaluate(rootfunction, last_time, new_time, v1, v2);
-
 }
 
-TEST(Boundaryvalue,Operator) {
+TEST(Boundaryvalue, Operator) {
 
-  //ARRANGE
-  typedef Eigen::Matrix<double,2,1> Matrix2f; //2x1 matrix of double
+  // ARRANGE
+  typedef Eigen::Matrix<double, 2, 1> Matrix2f; // 2x1 matrix of double
 
   Matrix2f a;
-  a(0,0)=0.0;
-  a(1,0)=1.0;
+  a(0, 0) = 0.0;
+  a(1, 0) = 1.0;
 
   Matrix2f b;
-  b(0,0)=1.0;
-  b(1,0)=2.0;
+  b(0, 0) = 1.0;
+  b(1, 0) = 2.0;
 
   Matrix2f c;
-  c(0,0)=2.0;
-  c(1,0)=3.0;
+  c(0, 0) = 2.0;
+  c(1, 0) = 3.0;
 
   std::map<double, Eigen::Matrix<double, 2, 1>> MapOfBdrValues;
-  MapOfBdrValues.insert(std::make_pair(1.0,a));
-  MapOfBdrValues.insert(std::make_pair(2.0,b));
-  MapOfBdrValues.insert(std::make_pair(3.0,c));
+  MapOfBdrValues.insert(std::make_pair(1.0, a));
+  MapOfBdrValues.insert(std::make_pair(2.0, b));
+  MapOfBdrValues.insert(std::make_pair(3.0, c));
 
-  Model::Networkproblem::Boundaryvalue <double,2> myBdrclass(MapOfBdrValues);
-  
-  //TEST1
+  Model::Networkproblem::Boundaryvalue<double, 2> myBdrclass(MapOfBdrValues);
 
-  //ASSERT & ACT
-  //Throw exception (der gleiche Test für zB 0.5 funktioniert nicht, ich weiß nicht warum. 
-  //Vllt habe ich etwas missverstanden)
+  // TEST1
+
+  // ASSERT & ACT
+  // Throw exception (der gleiche Test für zB 0.5 funktioniert nicht, ich weiß
+  // nicht warum. Vllt habe ich etwas missverstanden)
   EXPECT_ANY_THROW(myBdrclass.operator()(3.5));
+  EXPECT_ANY_THROW(myBdrclass.operator()(0.5));
 
+  // TEST2
+  {
+    Eigen::VectorXd v2(2);
+    Eigen::VectorXd v(2);
+    v = myBdrclass.operator()(1.0);
+    v2 = a;
+    // ACT
+    EXPECT_EQ(v, v2);
+  }
 
-  //TEST2
+  {
+    Eigen::VectorXd v2(2);
+    Eigen::VectorXd v(2);
+    v = myBdrclass.operator()(3.0);
+    v2 = c;
+    // ACT
+    EXPECT_EQ(v, v2);
+  }
 
-  //ASSERT
-  //Test that returns value of interpolation for specific time step
-  Eigen::VectorXd v2(2);
-  Eigen::VectorXd v(2);
-  v = myBdrclass.operator()(2.5);
-  v2(0)=1.5;
-  v2(1)=2.5;
-  //ACT
-  EXPECT_EQ(v, v2);
-} 
+  // ASSERT
+  // Test that returns value of interpolation for specific time step
+  {
+    Eigen::VectorXd v2(2);
+    Eigen::VectorXd v(2);
+    v = myBdrclass.operator()(2.5);
+    v2 = 0.5 * (b + c);
+    // ACT
+    EXPECT_EQ(v, v2);
+  }
+}
