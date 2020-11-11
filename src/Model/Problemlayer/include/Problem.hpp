@@ -1,5 +1,6 @@
 #pragma once
 #include <Eigen/Sparse>
+#include <Subproblem.hpp>
 #include <memory>
 #include <vector>
 
@@ -13,9 +14,6 @@ namespace Aux {
  * derivatives thereof.
  */
 namespace Model {
-
-  // forward declaration:
-  class Subproblem;
 
   class Problem {
 
