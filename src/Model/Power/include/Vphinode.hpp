@@ -4,6 +4,11 @@
 
 #include <Boundaryvalue.hpp>
 
+namespace Aux {
+
+  class Matrixhandler;
+}
+
 namespace Model::Networkproblem::Power {
 
   class Vphinode : public Powernode {
@@ -15,7 +20,7 @@ namespace Model::Networkproblem::Power {
                           Eigen::VectorXd const &new_state) override final;
 
     virtual void
-    evaluate_state_derivative(Eigen::SparseMatrix<double> &jacobian,
+    evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,
                               double last_time, double new_time,
                               Eigen::VectorXd const &,
                               Eigen::VectorXd const &new_state) override final;

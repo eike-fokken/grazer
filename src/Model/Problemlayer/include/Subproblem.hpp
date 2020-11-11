@@ -1,6 +1,11 @@
 #pragma once
 #include <Eigen/Sparse>
 
+namespace Aux {
+
+  class Matrixhandler;
+}
+
 namespace Model {
 
   class Subproblem {
@@ -12,11 +17,9 @@ namespace Model {
     virtual void evaluate(Eigen::VectorXd &rootfunction, double last_time,
                           double new_time, Eigen::VectorXd const &last_state,
                           Eigen::VectorXd const &new_state) = 0;
-    virtual void
-    evaluate_state_derivative(Eigen::SparseMatrix<double> &jacobian,
-                              double last_time, double new_time,
-                              Eigen::VectorXd const &,
-                              Eigen::VectorXd const &new_state) = 0;
+    virtual void evaluate_state_derivative(
+        Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
+        Eigen::VectorXd const &, Eigen::VectorXd const &new_state) = 0;
 
     // Reserves indices from the state vector
     // @param int next_free_index the first non-reserved index of the state

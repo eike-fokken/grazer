@@ -27,8 +27,8 @@ namespace Model::Networkproblem {
                           double new_time, Eigen::VectorXd const &last_state,
                           Eigen::VectorXd const &new_state) override;
     virtual void
-    evaluate_state_derivative(Eigen::SparseMatrix<double> &jacobian,
-                              double last_time, double new_time,
+    evaluate_state_derivative(Aux::Matrixhandler *jacobian, double last_time,
+                              double new_time,
                               Eigen::VectorXd const &last_state,
                               Eigen::VectorXd const &new_state) override;
 

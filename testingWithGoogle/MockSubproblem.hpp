@@ -1,6 +1,7 @@
 #pragma once
 #include "gmock/gmock.h"
 #include <Eigen/Sparse>
+#include <Matrixhandler.hpp>
 #include <Subproblem.hpp>
 
 namespace Model {
@@ -13,7 +14,7 @@ namespace Model {
                  (Eigen::VectorXd const &), (Eigen::VectorXd const &)),
                 (override));
     MOCK_METHOD(void, evaluate_state_derivative,
-                ((Eigen::SparseMatrix<double> &), (double), (double),
+                ((Aux::Matrixhandler *), (double), (double),
                  (Eigen::VectorXd const &last_state),
                  (Eigen::VectorXd const &new_state)),
                 (override));

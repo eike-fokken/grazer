@@ -3,6 +3,11 @@
 #include <memory>
 #include <vector>
 
+namespace Aux {
+
+  class Matrixhandler;
+}
+
 namespace Model {
 
   // class Model;
@@ -27,12 +32,12 @@ namespace Model {
     }
   }
 
-  void Problem::evaluate_state_derivative(Eigen::SparseMatrix<double> &jacobian,
+  void Problem::evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,
                                           double last_time, double new_time,
                                           Eigen::VectorXd const &last_state,
                                           Eigen::VectorXd const &new_state) {
     for (auto it = subproblems.begin(); it != subproblems.end(); it++) {
-      (*it)->evaluate_state_derivative(jacobian, last_time, new_time,
+      (*it)->evaluate_state_derivative(jacobianhandler, last_time, new_time,
                                        last_state, new_state);
     }
   }

@@ -45,14 +45,14 @@ namespace Model::Networkproblem {
   }
 
   void Networkproblem::evaluate_state_derivative(
-      Eigen::SparseMatrix<double> &jacobian, double last_time, double new_time,
+      Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
       Eigen::VectorXd const &last_state, Eigen::VectorXd const &new_state) {
     for (Model::Networkproblem::Equationedge *eqedge : equationedges) {
-      eqedge->evaluate_state_derivative(jacobian, last_time, new_time,
+      eqedge->evaluate_state_derivative(jacobianhandler, last_time, new_time,
                                         last_state, new_state);
     }
     for (Model::Networkproblem::Equationnode *eqnode : equationnodes) {
-      eqnode->evaluate_state_derivative(jacobian, last_time, new_time,
+      eqnode->evaluate_state_derivative(jacobianhandler, last_time, new_time,
                                         last_state, new_state);
     }
   }

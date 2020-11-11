@@ -3,6 +3,11 @@
 #include <memory>
 #include <vector>
 
+namespace Aux {
+
+  class Matrixhandler;
+}
+
 /*! \namespace Model
  *  This namespace holds all data for setting up model equations and for taking
  * derivatives thereof.
@@ -27,7 +32,7 @@ namespace Model {
                   double new_time, Eigen::VectorXd const &last_state,
                   Eigen::VectorXd const &new_state);
 
-    void evaluate_state_derivative(Eigen::SparseMatrix<double> &jacobian,
+    void evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,
                                    double last_time, double new_time,
                                    Eigen::VectorXd const &last_state,
                                    Eigen::VectorXd const &new_state);
