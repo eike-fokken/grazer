@@ -1,6 +1,7 @@
 #include "Net.hpp"
 #include "Edge.hpp"
 #include "MockSubproblem.hpp"
+#include "Boundaryvalue.hpp"
 #include "Node.hpp"
 #include "Problem.hpp"
 #include <Exception.hpp>
@@ -223,7 +224,7 @@ TEST(modelTest, get_number_of_states) {
   mocksub.set_indices(0);
 }
 
-TEST(modelTest, Model_evaluate) {
+TEST(modelSubproblem, Model_evaluate) {
 
   Model::Problem problem(1);
 
@@ -259,6 +260,49 @@ TEST(modelTest, Model_evaluate) {
 
   problem.evaluate(rootfunction, last_time, new_time, v1, v2);
 
-  // test how often subproblem is called?
-  // EXPECT_EQ(mock1_ptr, nullptr); //placeholder for test
 }
+
+TEST(Boundaryvalue,Operator) {
+
+  //ARRANGE
+  typedef Eigen::Matrix<double,2,1> Matrix2f; //2x1 matrix of double
+
+  Matrix2f a;
+  a(0,0)=0.0;
+  a(1,0)=1.0;
+
+  Matrix2f b;
+  b(0,0)=1.0;
+  b(1,0)=2.0;
+
+  Matrix2f c;
+  c(0,0)=2.0;
+  c(1,0)=3.0;
+
+  std::map<double, Eigen::Matrix<double, 2, 1>> MapOfBdrValues;
+  MapOfBdrValues.insert(std::make_pair(1.0,a));
+  MapOfBdrValues.insert(std::make_pair(2.0,b));
+  MapOfBdrValues.insert(std::make_pair(3.0,c));
+
+  Model::Networkproblem::Boundaryvalue <double,2> myBdrclass(MapOfBdrValues);
+  
+  //TEST1
+
+  //ASSERT & ACT
+  //Throw exception (der gleiche Test für zB 0.5 funktioniert nicht, ich weiß nicht warum. 
+  //Vllt habe ich etwas missverstanden)
+  EXPECT_ANY_THROW(myBdrclass.operator()(3.5));
+
+
+  //TEST2
+
+  //ASSERT
+  //Test that returns value of interpolation for specific time step
+  Eigen::VectorXd v2(2);
+  Eigen::VectorXd v(2);
+  v = myBdrclass.operator()(2.5);
+  v2(0)=1.5;
+  v2(1)=2.5;
+  //ACT
+  EXPECT_EQ(v, v2);
+} 
