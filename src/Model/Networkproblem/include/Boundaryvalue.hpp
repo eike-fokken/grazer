@@ -36,6 +36,10 @@ public:
   }
   Eigen::VectorXd operator()(double t) {
     auto next = boundary_values.lower_bound(t);
+    if(next->first == t)
+      {
+        return next->second;
+      }
 
     auto previous = std::prev(next);
     if (next == boundary_values.end()) {
