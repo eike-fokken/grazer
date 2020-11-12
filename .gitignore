@@ -33,6 +33,9 @@
 
 
 build/**
+debug/**
+release/**
+relwithdebinfo/**
 .ccls-cache
 .DS_Store
 compile_commands.json
