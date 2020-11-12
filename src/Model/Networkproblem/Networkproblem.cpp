@@ -14,17 +14,14 @@ namespace Model::Networkproblem {
   /// Nodes actually hold equations to solve
   Networkproblem::Networkproblem(std::unique_ptr<Network::Net> _network)
       : network(std::move(_network)) {
-
-    for (std::shared_ptr<Network::Node> node : network->get_nodes()) {
-      if (auto equationnode =
-              std::dynamic_pointer_cast<Equationnode>(node).get()) {
+    for (Network::Node *node : network->get_nodes()) {
+      if (auto equationnode = dynamic_cast<Equationnode *>(node)) {
         equationnodes.push_back(equationnode);
       }
     }
 
-    for (std::shared_ptr<Network::Edge> edge : network->get_edges()) {
-      if (auto equationedge =
-              std::dynamic_pointer_cast<Equationedge>(edge).get()) {
+    for (Network::Edge *edge : network->get_edges()) {
+      if (auto equationedge = dynamic_cast<Equationedge *>(edge)) {
         equationedges.push_back(equationedge);
       }
     }

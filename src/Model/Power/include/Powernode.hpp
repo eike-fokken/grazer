@@ -1,16 +1,17 @@
 #pragma once
 #include "Boundaryvalue.hpp"
 #include <Equationcomponent.hpp>
+#include <string>
 
 namespace Model::Networkproblem::Power {
 
   class Powernode : public Equationnode {
 
   public:
-    Powernode(int id,
+    Powernode(std::string name,
               std::map<double, Eigen::Matrix<double, 2, 1>> _boundary_values,
               double _G, double _B)
-        : Equationnode(id), boundaryvalue(_boundary_values), G(_G), B(_B){};
+        : Equationnode(name), boundaryvalue(_boundary_values), G(_G), B(_B){};
 
     virtual ~Powernode(){};
 

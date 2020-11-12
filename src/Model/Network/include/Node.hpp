@@ -1,5 +1,5 @@
 #pragma once
-#include <memory>
+#include <string>
 #include <vector>
 
 namespace Network {
@@ -17,7 +17,7 @@ namespace Network {
   public:
     Node() = delete;
 
-    Node(int _id) : id(_id){};
+    Node(std::string _name) : name(_name){};
 
     virtual ~Node(){};
 
@@ -25,47 +25,35 @@ namespace Network {
     /// Attention: Here object node has to be the starting node in the edge you
     /// provide.
     /// @param to_attach Edge to attach
-    void attach_starting_edge(std::shared_ptr<Network::Edge> to_attach);
+    bool attach_starting_edge(Network::Edge *to_attach);
 
     /// This function attaches an edge to object of type node.
     /// Attention: Here object node has to be the ending node in the edge you
     /// provide.
     /// @param to_attach Edge to attach
-    void attach_ending_edge(std::shared_ptr<Network::Edge> to_attach);
+    bool attach_ending_edge(Network::Edge *to_attach);
 
-    /// This function removes the edge to_remove from the object node.
-    /// If such edge does not exist, it throws an error message.
-    /// Therefore the function goes through all starting_edges and ending_edges
-    /// (it does not remove the reverse one, if such exists).
+    /// This function removes the edge to_remove from the node.
+    /// If successful it returns true.
+    /// Else it does nothing but returns false.
     /// @param to_remove Edge that has to be removed
-    void remove_edge(std::shared_ptr<Network::Edge> to_remove);
+    bool remove_edge(Network::Edge *to_remove);
 
-    /// This function returns vector of weak pointer of starting edges
-    /// @returns  std::vector<std::weak_ptr<Network::Edge> > starting_edges
-    std::vector<std::weak_ptr<Network::Edge>> get_starting_edges() const;
+    /// This function returns vector pointers of starting edges
+    std::vector<Network::Edge *> get_starting_edges() const;
 
-    /// This function returns vector of weak pointer of ending edges
-    /// @returns  std::vector<std::weak_ptr<Network::Edge> > ending_edges
-    std::vector<std::weak_ptr<Network::Edge>> get_ending_edges() const;
+    /// This function returns vector pointers of ending edges
+    std::vector<Network::Edge *> get_ending_edges() const;
 
-    /// This function returns the id of object node
-    /// @returns int
-    int get_id() const;
-
-    /// This function returns 1, if id is equal to nodes true id and 0
-    /// otherwise.
-    /// @param id Possible nodes id
-    /// @returns 1 (true) or 0 (false)
-    bool has_id(const int id) const;
+    /// This function returns the name of the node.
+    std::string get_name() const;
 
   private:
-    // Constructor must at least provide an id:k
+    /// A unique name for the node.
+    std::string name;
 
-    int id;
-    std::vector<std::weak_ptr<Network::Edge>> starting_edges;
-    std::vector<std::weak_ptr<Network::Edge>> ending_edges;
-
-    friend class Network::Net;
+    std::vector<Network::Edge *> starting_edges;
+    std::vector<Network::Edge *> ending_edges;
   };
 
 } // namespace Network

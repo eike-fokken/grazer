@@ -1,66 +1,48 @@
-#include "Exception.hpp"
+#include "Edge.hpp"
 #include <Node.hpp>
-
 #include <memory>
+#include <vector>
 
-void Network::Node::remove_edge(std::shared_ptr<Network::Edge> to_remove) {
-  bool edge_was_connected = false;
-
+bool Network::Node::remove_edge(Network::Edge *to_remove) {
   for (auto it = starting_edges.begin(); it != starting_edges.end(); ++it) {
-    if ((*it).lock().get() == to_remove.get()) {
-      edge_was_connected = true;
+    if ((*it) == to_remove) {
       starting_edges.erase(it);
-      return;
+      return true;
     }
   }
 
   for (auto it = ending_edges.begin(); it != ending_edges.end(); ++it) {
-    if ((*it).lock().get() == to_remove.get()) {
-      edge_was_connected = true;
+    if ((*it) == to_remove) {
       ending_edges.erase(it);
-      return;
+      return true;
     }
   }
-  if (!edge_was_connected) {
-    gthrow("edge was not connected.")
-  }
+
+  return false;
 }
 
-int Network::Node::get_id() const { return id; }
+std::string Network::Node::get_name() const { return name; }
 
-std::vector<std::weak_ptr<Network::Edge>>
-Network::Node::get_starting_edges() const {
+std::vector<Network::Edge *> Network::Node::get_starting_edges() const {
   return starting_edges;
 }
 
-std::vector<std::weak_ptr<Network::Edge>>
-Network::Node::get_ending_edges() const {
+std::vector<Network::Edge *> Network::Node::get_ending_edges() const {
   return ending_edges;
 }
 
-void Network::Node::attach_starting_edge(
-    std::shared_ptr<Network::Edge> to_attach) {
-  if (to_attach.get() == nullptr) {
-    gthrow("can't attach an edge nullptr ")
-  }
-
-  std::weak_ptr<Network::Edge> weak_to_attach = to_attach;
-  starting_edges.push_back(weak_to_attach);
-}
-
-void Network::Node::attach_ending_edge(
-    std::shared_ptr<Network::Edge> to_attach) {
-  // to be implemented, K:
-  std::weak_ptr<Network::Edge> weak_to_attach = to_attach;
-  ending_edges.push_back(to_attach);
-}
-
-// K:
-bool Network::Node::has_id(const int pos_id) const {
-
-  if (pos_id == id) {
-    return true;
-  } else {
+bool Network::Node::attach_starting_edge(Network::Edge *to_attach) {
+  if (to_attach->get_starting_node().get() != this) {
     return false;
   }
+  starting_edges.push_back(to_attach);
+  return true;
+}
+
+bool Network::Node::attach_ending_edge(Network::Edge *to_attach) {
+  if (to_attach->get_ending_node().get() != this) {
+    return false;
+  }
+  ending_edges.push_back(to_attach);
+  return true;
 }
