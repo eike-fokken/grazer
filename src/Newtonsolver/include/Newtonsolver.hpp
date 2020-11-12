@@ -82,7 +82,7 @@ namespace Solver {
     double tolerance;
 
     /// highest number of iterations after which to throw an exception
-    static int const maximal_iterations{30};
+    int maximal_iterations;
 
     /// technical constant of the solve algorithm.
     constexpr static double const decrease_value{0.01};
