@@ -1,48 +1,46 @@
 #include <Eigen/Sparse>
 #include <Matrixhandler.hpp>
 #include <Newtonsolver.hpp>
-#include <Problem.hpp>
 
 namespace Solver {
 
   void Newtonsolver::evaluate_state_derivative_triplets(
-      Model::Problem &problem, double last_time, double new_time,
+      derivative df, double last_time, double new_time,
       Eigen::VectorXd const &last_state, Eigen::VectorXd const &new_state) {
     {
       jacobian.resize(new_state.size(), new_state.size());
       Aux::Triplethandler handler(&jacobian);
       Aux::Triplethandler *const handler_ptr = &handler;
-      problem.evaluate_state_derivative(handler_ptr, last_time, new_time,
-                                        last_state, new_state);
+      df(handler_ptr, last_time, new_time, last_state, new_state);
       handler.set_matrix();
     }
     sparselusolver.analyzePattern(jacobian);
   }
 
   void Newtonsolver::evaluate_state_derivative_coeffref(
-      Model::Problem &problem, double last_time, double new_time,
+      derivative df, double last_time, double new_time,
       Eigen::VectorXd const &last_state, Eigen::VectorXd const &new_state) {
     Aux::Coeffrefhandler handler(&jacobian);
     Aux::Coeffrefhandler *const handler_ptr = &handler;
-    problem.evaluate_state_derivative(handler_ptr, last_time, new_time,
-                                      last_state, new_state);
+    df(handler_ptr, last_time, new_time, last_state, new_state);
   }
 
-  Solutionstruct Newtonsolver::solve(Eigen::VectorXd &new_state,
-                                     Model::Problem &problem, double last_time,
-                                     double new_time,
+  Solutionstruct Newtonsolver::solve(rootfunction f, derivative df,
+                                     bool new_jacobian_structure,
+                                     Eigen::VectorXd &new_state,
+                                     double last_time, double new_time,
                                      Eigen::VectorXd const &last_state) {
     Solutionstruct solstruct;
     // If the structure of the jacobian changed one should generate it from
     // triplets anew:
-    if (last_state.size() != new_state.size()) {
-      evaluate_state_derivative_triplets(problem, last_time, new_time,
-                                         last_state, new_state);
+    if (new_jacobian_structure) {
+      evaluate_state_derivative_triplets(df, last_time, new_time, last_state,
+                                         new_state);
     }
     // If the non-zero elements are the same, just update them:
     else {
-      evaluate_state_derivative_coeffref(problem, last_time, new_time,
-                                         last_state, new_state);
+      evaluate_state_derivative_coeffref(df, last_time, new_time, last_state,
+                                         new_state);
     }
 
     Eigen::VectorXd temp1(new_state.size());
@@ -61,15 +59,15 @@ namespace Solver {
     double stepsize;
 
     *vec1 = new_state;
-    problem.evaluate(function, last_time, new_time, last_state, *vec1);
+    f(function, last_time, new_time, last_state, *vec1);
     solstruct.residual = function.lpNorm<Eigen::Infinity>();
 
     while (solstruct.residual > tolerance &&
            solstruct.used_iterations < maximal_iterations) {
       // compute new derivative before the next step:
-      problem.evaluate(function, last_time, new_time, last_state, *vec2);
-      evaluate_state_derivative_coeffref(problem, last_time, new_time,
-                                         last_state, *vec1);
+      f(function, last_time, new_time, last_state, *vec2);
+      evaluate_state_derivative_coeffref(df, last_time, new_time, last_state,
+                                         *vec1);
       sparselusolver.factorize(jacobian);
       step = sparselusolver.solve(-function);
       oldstepsizeparameter = step.lpNorm<2>();
@@ -81,7 +79,7 @@ namespace Solver {
       do {
         stepsize *= 0.5;
         *vec2 = *vec1 + stepsize * step;
-        problem.evaluate(function, last_time, new_time, last_state, *vec2);
+        f(function, last_time, new_time, last_state, *vec2);
         stepsizeparameter = sparselusolver.solve(-function).lpNorm<2>();
       } while ((stepsizeparameter >
                 (1 - decrease_value * stepsize) * oldstepsizeparameter) &&

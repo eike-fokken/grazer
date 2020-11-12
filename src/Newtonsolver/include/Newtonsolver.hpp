@@ -2,11 +2,20 @@
 #include <Eigen/Sparse>
 #include <Eigen/SparseLU>
 
-namespace Model {
-  class Problem;
+namespace Aux {
+  class Matrixhandler;
 }
 
 namespace Solver {
+
+  typedef void(rootfunction)(Eigen::VectorXd &rootfunction, double last_time,
+                             double new_time, Eigen::VectorXd const &last_state,
+                             Eigen::VectorXd const &new_state);
+
+  typedef void(derivative)(Aux::Matrixhandler *jacobianhandler,
+                           double last_time, double new_time,
+                           Eigen::VectorXd const &last_state,
+                           Eigen::VectorXd const &new_state);
 
   struct Solutionstruct {
     bool success{false};
@@ -21,19 +30,20 @@ namespace Solver {
     Newtonsolver(double _tolerance, int _maximal_iterations)
         : tolerance(_tolerance), maximal_iterations(_maximal_iterations){};
 
-    void evaluate_state_derivative_triplets(Model::Problem &problem,
-                                            double last_time, double new_time,
+    void evaluate_state_derivative_triplets(derivative df, double last_time,
+                                            double new_time,
                                             Eigen::VectorXd const &last_state,
                                             Eigen::VectorXd const &new_state);
 
-    void evaluate_state_derivative_coeffref(Model::Problem &problem,
-                                            double last_time, double new_time,
+    void evaluate_state_derivative_coeffref(derivative df, double last_time,
+                                            double new_time,
                                             Eigen::VectorXd const &last_state,
                                             Eigen::VectorXd const &new_state);
 
-    Solutionstruct solve(Eigen::VectorXd &new_state, Model::Problem &problem,
-                         double last_time, double new_time,
-                         Eigen::VectorXd const &last_state);
+    Solutionstruct solve(rootfunction f, derivative df,
+                         bool new_jacobian_structure,
+                         Eigen::VectorXd &new_state, double last_time,
+                         double new_time, Eigen::VectorXd const &last_state);
 
   private:
     /// Holds an instance of the actual solver, to save computation time it is
