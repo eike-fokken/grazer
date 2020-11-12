@@ -6,23 +6,36 @@ namespace Aux {
   class Matrixhandler;
 }
 
+/// \brief This namespace holds tools for solving numerical problems, e.g.
+/// finding the root of a non-linear function.
 namespace Solver {
 
-  typedef void(rootfunction)(Eigen::VectorXd &rootfunction, double last_time,
+  /// \brief The function, whose zero we are searching. Its signature is that of
+  /// the evaluate methods of our model classes.
+  typedef void(rootfunction)(Eigen::VectorXd &rootvalue, double last_time,
                              double new_time, Eigen::VectorXd const &last_state,
                              Eigen::VectorXd const &new_state);
 
+  /// \brief The derivative of the root function.
   typedef void(derivative)(Aux::Matrixhandler *jacobianhandler,
                            double last_time, double new_time,
                            Eigen::VectorXd const &last_state,
                            Eigen::VectorXd const &new_state);
 
+  /// \brief This struct holds info on the solution of a solve-execution.
+  ///
+  /// @param success is true, if solve found a solution.
+  /// @param residual is the absolute value of f(new_state) after solve.
+  /// #param the number of Newton steps need.
   struct Solutionstruct {
     bool success{false};
     double residual{std::numeric_limits<double>::quiet_NaN()};
     int used_iterations{0};
   };
 
+  /// \brief Manages solving non-linear systems and (to be implemented)
+  ///        computing derivatives with respect to controls.
+  ///
   /// This class holds a SparseMatrix and a corresponding Sparse-matrix solver,
   /// so it can compute the solution of a non-linear problem.
   class Newtonsolver {
@@ -40,6 +53,14 @@ namespace Solver {
                                             Eigen::VectorXd const &last_state,
                                             Eigen::VectorXd const &new_state);
 
+    /// \brief This method computes a solution to f(new_state) == 0.
+    ///
+    ///
+    /// If new_jacobian_structure is true, it first completely rebuilds the
+    /// jacobian and re-analyzes the sparsity pattern for the lu-solver. It uses
+    /// an affine-invariant Newton solution described in chapter 4.2 in
+    /// "Deuflhard and Hohmann: Numerical Analysis in Modern Scientific
+    /// Computing". Afterwards there should hold f(new_state) == 0.
     Solutionstruct solve(rootfunction f, derivative df,
                          bool new_jacobian_structure,
                          Eigen::VectorXd &new_state, double last_time,
@@ -61,9 +82,11 @@ namespace Solver {
     double tolerance;
 
     /// highest number of iterations after which to throw an exception
-    int maximal_iterations;
+    static int const maximal_iterations{30};
 
+    /// technical constant of the solve algorithm.
     constexpr static double const decrease_value{0.01};
+    /// The minimal stepsize of a Newton step.
     constexpr static double const minimal_stepsize{1e-10};
   };
 
