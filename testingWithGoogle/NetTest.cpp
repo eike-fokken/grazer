@@ -4,8 +4,6 @@
 #include "MockSubproblem.hpp"
 #include "Node.hpp"
 #include "Problem.hpp"
-#include <Exception.hpp>
-#include <algorithm>
 #include <gtest/gtest.h>
 
 struct NetTest : public ::testing ::Test {
