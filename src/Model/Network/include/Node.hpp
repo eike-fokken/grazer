@@ -15,6 +15,10 @@ namespace Network {
   class Node {
 
   public:
+    Node() = delete;
+
+    Node(int _id) : id(_id){};
+
     virtual ~Node(){};
 
     /// This function attaches an edge to object of type node.
@@ -55,11 +59,7 @@ namespace Network {
     bool has_id(const int id) const;
 
   private:
-    // Default constructor not allowed:
-    Node() = delete;
-
     // Constructor must at least provide an id:k
-    Node(int _id) : id(_id){};
 
     int id;
     std::vector<std::weak_ptr<Network::Edge>> starting_edges;

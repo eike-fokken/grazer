@@ -1,8 +1,6 @@
 #pragma once
-#include <Exception.hpp>
-#include <Powernode.hpp>
-
 #include <Boundaryvalue.hpp>
+#include <Powernode.hpp>
 
 namespace Aux {
 
@@ -11,9 +9,11 @@ namespace Aux {
 
 namespace Model::Networkproblem::Power {
 
-  class Vphinode : public Powernode {
+  class Vphinode final : public Powernode {
 
   public:
+    using Powernode::Powernode;
+
     /// In this node we just set V and phi to their respective boundary values.
     virtual void evaluate(Eigen::VectorXd &rootfunction, double last_time,
                           double new_time, Eigen::VectorXd const &last_state,
@@ -24,9 +24,6 @@ namespace Model::Networkproblem::Power {
                               double last_time, double new_time,
                               Eigen::VectorXd const &,
                               Eigen::VectorXd const &new_state) override final;
-
-  private:
-    Boundaryvalue<Vphinode, 2> boundaryvalue;
   };
 
 } // namespace Model::Networkproblem::Power
