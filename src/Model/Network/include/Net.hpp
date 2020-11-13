@@ -51,6 +51,8 @@ namespace Network {
     Edge *get_edge_by_node_names(std::string const name1,
                                  std::string const name2) const;
 
+    Edge *get_edge_by_name(std::string const name) const;
+
   private:
     std::vector<std::unique_ptr<Node>> nodes;
     std::vector<std::unique_ptr<Edge>> edges;

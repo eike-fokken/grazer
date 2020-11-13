@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <string>
 
 namespace Network {
 
@@ -18,9 +19,11 @@ namespace Network {
     // end node is prohibited:
     Edge(){};
     // Instead creating the edge with start and end node is a good idea:
-    Edge(Node *start_node, Node *end_node);
+    Edge(std::string _name, Node *start_node, Node *end_node);
 
     virtual ~Edge(){};
+
+    std::string get_name();
 
     /// Function returns starting node of Edge object.
     /// @returns Starting node of type std::shared_ptr<Network::Node>
@@ -31,6 +34,7 @@ namespace Network {
     Node *get_ending_node() const;
 
   private:
+    std::string name;
     Node *starting_node;
     Node *ending_node;
   };

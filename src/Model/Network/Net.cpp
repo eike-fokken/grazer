@@ -103,32 +103,19 @@ namespace Network {
     return nullptr;
   }
 
+  Edge *Net::get_edge_by_name(std::string const name) const {
+
+    for (auto &edge : edges) {
+      if (edge->get_name() == name) {
+        return edge.get();
+      }
+    }
+
+    return nullptr;
+  }
+
   bool Net::exists_edge_between(std::string const name1,
                                 std::string const name2) const {
-
-    // std::vector<Edge *> raw_edges;
-    // for(auto & edge_uptr: edges){
-    //   raw_edges.push_back(edge_uptr.get());
-    // }
-
-    //     auto find_endpoints =
-    //         [name1, name2](Edge* const & edge) {
-    //           if ((edge->get_starting_node()->get_name() == name1) &&
-    //               (edge->get_ending_node()->get_name() == name2)) {
-    //             return true;
-    //           } else if ((edge->get_starting_node()->get_name() == name2) &&
-    //                      (edge->get_ending_node()->get_name() == name1)) {
-    //             return true;
-    //           } else {
-    //             return false;
-    //           }
-    //         };
-    // auto it = std::find_if(raw_edges.begin(), raw_edges.end(),
-    // find_endpoints); if (it != raw_edges.end()) {
-    //   return true;
-    // } else {
-    //   return false;
-    // }
 
     auto find_endpoints = [name1, name2](std::unique_ptr<Edge> const &edge) {
       if ((edge->get_starting_node()->get_name() == name1) &&
