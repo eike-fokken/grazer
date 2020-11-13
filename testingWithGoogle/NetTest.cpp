@@ -138,203 +138,175 @@ TEST(testNode, test_get_starting_edges) {
   EXPECT_EQ(startedges, expected_start_edges);
 }
 
-// TEST(testNode, test_attachEndingEdge_getEndingEdges) {
+TEST(testNode, test_attachEndingEdge_getEndingEdges) {
 
-//   Network::Net net;
-//   int id0 = net.new_node();
-//   int id1 = net.new_node();
+  std::vector<std::unique_ptr<Network::Node>> nodes;
+  for (unsigned int i = 0; i != 5; ++i) {
+    std::string s("N");
+    s.append(std::to_string(i));
+    nodes.push_back(std::unique_ptr<Network::Node>(new Network::Node(s)));
+  }
 
-//   auto node0_ptr = net.get_node_by_id(id0);
-//   auto node1_ptr = net.get_node_by_id(id1);
+  std::vector<std::unique_ptr<Network::Edge>> edges;
+  edges.push_back(std::unique_ptr<Network::Edge>(
+      new Network::Edge(nodes[3].get(), nodes[4].get())));
 
-//   net.make_edge_between(0, 1);
-//   auto edge_ptr = net.get_edge_by_node_ids(0, 1);
+  for (unsigned int i = 1; i != 3; ++i) {
+    auto e = std::unique_ptr<Network::Edge>(
+        new Network::Edge(nodes[i].get(), nodes[0].get()));
+    edges.push_back(std::move(e));
+  }
 
-//   node0_ptr->attach_ending_edge(edge_ptr);
-//   std::weak_ptr<Network::Edge> ending_edge_ptr =
-//       node0_ptr->get_ending_edges()[0];
+  auto endedges = nodes[0]->get_ending_edges();
 
-//   EXPECT_EQ(ending_edge_ptr.lock(), edge_ptr);
-// }
+  std::vector<Network::Edge *> expected_end_edges;
 
-// // hat Eike implementiert, etwas stimmt hier nicht
-// TEST(testEdge, test_removeEdge) {
+  for (unsigned int i = 1; i != 3; ++i) {
+    expected_end_edges.push_back(edges[i].get());
+  }
 
-//   Network::Net net;
-//   int id0 = net.new_node();
-//   int id1 = net.new_node();
+  auto startedges = nodes[0]->get_starting_edges();
 
-//   auto node0_ptr = net.get_node_by_id(id0);
-//   auto node1_ptr = net.get_node_by_id(id1);
+  EXPECT_EQ(startedges.size(), 0);
+  EXPECT_EQ(endedges, expected_end_edges);
+}
 
-//   net.make_edge_between(0, 1);
-//   auto edge_ptr = net.get_edge_by_node_ids(0, 1);
+TEST(testEdge, test_getStartingNode) {
 
-//   node0_ptr->attach_starting_edge(edge_ptr);
-//   node0_ptr->remove_edge(
-//       edge_ptr); // da wird nichts removed, Befehl funktioniert nicht
+  std::vector<std::unique_ptr<Network::Node>> nodes;
+  for (unsigned int i = 0; i != 2; ++i) {
+    std::string s("N");
+    s.append(std::to_string(i));
+    nodes.push_back(std::unique_ptr<Network::Node>(new Network::Node(s)));
+  }
 
-//   std::weak_ptr<Network::Edge> starting_edge_ptr =
-//       node0_ptr->get_starting_edges()[0];
+  auto edge = std::unique_ptr<Network::Edge>(
+      new Network::Edge(nodes[0].get(), nodes[1].get()));
 
-//   EXPECT_EQ(starting_edge_ptr.lock(), edge_ptr);
+  EXPECT_EQ(edge->get_starting_node(), nodes[0].get());
+}
 
-//   //    Network::Node node4(4);
-//   //    Network::Node node3(3);
-//   //    auto node4_ptr = std::make_shared<Network::Node>(node4);
-//   //    auto node3_ptr = std::make_shared<Network::Node>(node3);
+TEST(testEdge, test_getEndingNode) {
 
-//   //    Network::Edge edge1(node3_ptr, node4_ptr);
-//   //    auto edge1_ptr = std::make_shared<Network::Edge>(edge1);
-//   //    node3.attach_starting_edge(edge1_ptr);
-//   //    node3.remove_edge(edge1_ptr);
+  std::vector<std::unique_ptr<Network::Node>> nodes;
+  for (unsigned int i = 0; i != 2; ++i) {
+    std::string s("N");
+    s.append(std::to_string(i));
+    nodes.push_back(std::unique_ptr<Network::Node>(new Network::Node(s)));
+  }
 
-//   //    //std::weak_ptr<Network::Edge> weak_edge1_ptr =
-//   //    node3.get_starting_edges()[0];
+  auto edge = std::unique_ptr<Network::Edge>(
+      new Network::Edge(nodes[1].get(), nodes[0].get()));
 
-//   //    EXPECT_EQ(1,1);
-// }
+  EXPECT_EQ(edge->get_ending_node(), nodes[0].get());
+}
 
-// TEST(testEdge, test_getStartingNode) {
+TEST(modelTest, get_number_of_states) {
 
-//   Network::Net net;
-//   int id0 = net.new_node(); // das braucht man, sonst gibt es keinen node
-//   dafür int id1 = net.new_node();
+  // Test how often this class is being called
+  Model::MockSubproblem mocksub;
+  EXPECT_CALL(mocksub, reserve_indices(0)).Times(1);
 
-//   auto node0_ptr = net.get_node_by_id(id0);
-//   auto node1_ptr = net.get_node_by_id(id1);
+  mocksub.set_indices(0);
+}
 
-//   net.make_edge_between(1, 0);
-//   auto edge_ptr = net.get_edge_by_node_ids(1, 0);
+TEST(modelSubproblem, Model_evaluate) {
 
-//   int start_edge1_id = edge_ptr->get_starting_node()->get_id();
+  Model::Problem problem(1);
 
-//   EXPECT_EQ(start_edge1_id, 1);
-// }
+  // make unique pointer of mocksub1 and mocksub2
+  auto mock1_ptr = std::make_unique<Model::MockSubproblem>();
+  auto mock2_ptr = std::make_unique<Model::MockSubproblem>();
 
-// TEST(testEdge, test_getEndingNode) {
+  // add subproblem to problem
+  problem.add_subproblem(std::move(mock1_ptr));
+  problem.add_subproblem(std::move(mock2_ptr));
 
-//   Network::Net net;
-//   int id0 = net.new_node(); // das braucht man, sonst gibt es keinen node
-//   dafür int id1 = net.new_node();
+  // call problem.evaluate
+  double last_time(0.0);
+  double new_time(1.0);
+  Eigen::VectorXd rootfunction(2);
+  Eigen::VectorXd v1(2);
+  v1(0) = 2;
+  v1(1) = 3;
+  Eigen::VectorXd v2(2);
+  v1(0) = 3;
+  v1(1) = 4;
 
-//   auto node0_ptr = net.get_node_by_id(id0);
-//   auto node1_ptr = net.get_node_by_id(id1);
+  // expect the call to evaluate on the subproblems.
+  // The cast magic is necessary to have the right type at hand...
+  EXPECT_CALL(
+      *dynamic_cast<Model::MockSubproblem *>(problem.get_subproblems()[0]),
+      evaluate(rootfunction, last_time, new_time, v1, v2))
+      .Times(1);
+  EXPECT_CALL(
+      *dynamic_cast<Model::MockSubproblem *>(problem.get_subproblems()[1]),
+      evaluate(rootfunction, last_time, new_time, v1, v2))
+      .Times(1);
 
-//   net.make_edge_between(1, 0);
-//   auto edge_ptr = net.get_edge_by_node_ids(1, 0);
+  problem.evaluate(rootfunction, last_time, new_time, v1, v2);
+}
 
-//   int ending_edge1_id = edge_ptr->get_ending_node()->get_id();
+TEST(Boundaryvalue, Operator) {
 
-//   EXPECT_EQ(ending_edge1_id, 0);
-// }
+  // ARRANGE
+  typedef Eigen::Matrix<double, 2, 1> Matrix2f; // 2x1 matrix of double
 
-// TEST(modelTest, get_number_of_states) {
+  Matrix2f a;
+  a(0, 0) = 0.0;
+  a(1, 0) = 1.0;
 
-//   // Test how often this class is being called
-//   Model::MockSubproblem mocksub;
-//   EXPECT_CALL(mocksub, reserve_indices(0)).Times(1);
+  Matrix2f b;
+  b(0, 0) = 1.0;
+  b(1, 0) = 2.0;
 
-//   mocksub.set_indices(0);
-// }
+  Matrix2f c;
+  c(0, 0) = 2.0;
+  c(1, 0) = 3.0;
 
-// TEST(modelSubproblem, Model_evaluate) {
+  std::map<double, Eigen::Matrix<double, 2, 1>> MapOfBdrValues;
+  MapOfBdrValues.insert(std::make_pair(1.0, a));
+  MapOfBdrValues.insert(std::make_pair(2.0, b));
+  MapOfBdrValues.insert(std::make_pair(3.0, c));
 
-//   Model::Problem problem(1);
+  Model::Networkproblem::Boundaryvalue<double, 2> myBdrclass(MapOfBdrValues);
 
-//   // make unique pointer of mocksub1 and mocksub2
-//   auto mock1_ptr = std::make_unique<Model::MockSubproblem>();
-//   auto mock2_ptr = std::make_unique<Model::MockSubproblem>();
+  // TEST1
 
-//   // add subproblem to problem
-//   problem.add_subproblem(std::move(mock1_ptr));
-//   problem.add_subproblem(std::move(mock2_ptr));
+  // ASSERT & ACT
+  // Throw exception (der gleiche Test für zB 0.5 funktioniert nicht, ich
+  // weiß
+  // nicht warum. Vllt habe ich etwas missverstanden)
+  EXPECT_ANY_THROW(myBdrclass.operator()(3.5));
+  EXPECT_ANY_THROW(myBdrclass.operator()(0.5));
 
-//   // call problem.evaluate
-//   double last_time(0.0);
-//   double new_time(1.0);
-//   Eigen::VectorXd rootfunction(2);
-//   Eigen::VectorXd v1(2);
-//   v1(0) = 2;
-//   v1(1) = 3;
-//   Eigen::VectorXd v2(2);
-//   v1(0) = 3;
-//   v1(1) = 4;
+  // TEST2
+  {
+    Eigen::VectorXd v2(2);
+    Eigen::VectorXd v(2);
+    v = myBdrclass.operator()(1.0);
+    v2 = a;
+    // ACT
+    EXPECT_EQ(v, v2);
+  }
 
-//   // expect the call to evaluate on the subproblems.
-//   // The cast magic is necessary to have the right type at hand...
-//   EXPECT_CALL(
-//       *dynamic_cast<Model::MockSubproblem *>(problem.get_subproblems()[0]),
-//       evaluate(rootfunction, last_time, new_time, v1, v2))
-//       .Times(1);
-//   EXPECT_CALL(
-//       *dynamic_cast<Model::MockSubproblem *>(problem.get_subproblems()[1]),
-//       evaluate(rootfunction, last_time, new_time, v1, v2))
-//       .Times(1);
+  {
+    Eigen::VectorXd v2(2);
+    Eigen::VectorXd v(2);
+    v = myBdrclass.operator()(3.0);
+    v2 = c;
+    // ACT
+    EXPECT_EQ(v, v2);
+  }
 
-//   problem.evaluate(rootfunction, last_time, new_time, v1, v2);
-// }
-
-// TEST(Boundaryvalue, Operator) {
-
-//   // ARRANGE
-//   typedef Eigen::Matrix<double, 2, 1> Matrix2f; // 2x1 matrix of double
-
-//   Matrix2f a;
-//   a(0, 0) = 0.0;
-//   a(1, 0) = 1.0;
-
-//   Matrix2f b;
-//   b(0, 0) = 1.0;
-//   b(1, 0) = 2.0;
-
-//   Matrix2f c;
-//   c(0, 0) = 2.0;
-//   c(1, 0) = 3.0;
-
-//   std::map<double, Eigen::Matrix<double, 2, 1>> MapOfBdrValues;
-//   MapOfBdrValues.insert(std::make_pair(1.0, a));
-//   MapOfBdrValues.insert(std::make_pair(2.0, b));
-//   MapOfBdrValues.insert(std::make_pair(3.0, c));
-
-//   Model::Networkproblem::Boundaryvalue<double, 2> myBdrclass(MapOfBdrValues);
-
-//   // TEST1
-
-//   // ASSERT & ACT
-//   // Throw exception (der gleiche Test für zB 0.5 funktioniert nicht, ich
-//   weiß
-//   // nicht warum. Vllt habe ich etwas missverstanden)
-//   EXPECT_ANY_THROW(myBdrclass.operator()(3.5));
-//   EXPECT_ANY_THROW(myBdrclass.operator()(0.5));
-
-//   // TEST2
-//   {
-//     Eigen::VectorXd v2(2);
-//     Eigen::VectorXd v(2);
-//     v = myBdrclass.operator()(1.0);
-//     v2 = a;
-//     // ACT
-//     EXPECT_EQ(v, v2);
-//   }
-
-//   {
-//     Eigen::VectorXd v2(2);
-//     Eigen::VectorXd v(2);
-//     v = myBdrclass.operator()(3.0);
-//     v2 = c;
-//     // ACT
-//     EXPECT_EQ(v, v2);
-//   }
-
-//   // ASSERT
-//   // Test that returns value of interpolation for specific time step
-//   {
-//     Eigen::VectorXd v2(2);
-//     Eigen::VectorXd v(2);
-//     v = myBdrclass.operator()(2.5);
-//     v2 = 0.5 * (b + c);
-//     // ACT
-//     EXPECT_EQ(v, v2);
-//   }
-//}
+  // ASSERT
+  // Test that returns value of interpolation for specific time step
+  {
+    Eigen::VectorXd v2(2);
+    Eigen::VectorXd v(2);
+    v = myBdrclass.operator()(2.5);
+    v2 = 0.5 * (b + c);
+    // ACT
+    EXPECT_EQ(v, v2);
+  }
+}
