@@ -1,10 +1,12 @@
 #pragma once
-// #include <vector>
+#include <Problem.hpp>
+#include <nlohmann/json.hpp>
 
-// class Problem {
+namespace grazer {
 
-//   void setup_subproblems();
+  class Grazer {
 
-// private:
-//   std::vector<Grazer::Subproblem>
-// }
+    void setup_problem();
+  };
+
+} // namespace grazer
