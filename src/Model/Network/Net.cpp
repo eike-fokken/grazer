@@ -9,34 +9,40 @@
 
 namespace Network {
 
-  Net::Net(std::vector<std::shared_ptr<Network::Node>> _nodes,
+  Net::Net(std::vector<std::unique_ptr<Network::Node>> _nodes,
            std::vector<std::unique_ptr<Network::Edge>> _edges)
       : nodes(std::move(_nodes)), edges(std::move(_edges)) {
     for (auto &edge : edges) {
       {
-        auto start = exists_node(edge->get_starting_node().get());
+        auto start = edge->get_starting_node();
         if (!start) {
-          auto name = edge->get_starting_node()->get_name();
+          gthrow("edge doesn't have a starting node!");
+        }
+
+        auto node_in_net = exists_node(start);
+        if (!node_in_net) {
+          auto name = start->get_name();
           std::stringstream ss;
           ss << "The node " << name
              << "is not part of the net object but attached to an edge!"
              << '\n';
           gthrow(ss.str());
-        } else {
-          start->attach_starting_edge(edge.get());
         }
       }
       {
-        auto end = exists_node(edge->get_ending_node().get());
+        auto end = edge->get_ending_node();
         if (!end) {
-          auto name = edge->get_ending_node()->get_name();
+          gthrow("edge doesn't have an ending node!");
+        }
+
+        auto node_in_net = exists_node(end);
+        if (!node_in_net) {
+          auto name = end->get_name();
           std::stringstream ss;
           ss << "The node " << name
              << "is not part of the net object but attached to an edge!"
              << '\n';
           gthrow(ss.str());
-        } else {
-          end->attach_ending_edge(edge.get());
         }
       }
     }

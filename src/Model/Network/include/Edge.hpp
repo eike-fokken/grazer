@@ -18,22 +18,20 @@ namespace Network {
     // end node is prohibited:
     Edge(){};
     // Instead creating the edge with start and end node is a good idea:
-    Edge(std::shared_ptr<Network::Node> start_node,
-         std::shared_ptr<Network::Node> end_node)
-        : starting_node(start_node), ending_node(end_node){};
+    Edge(Node *start_node, Node *end_node);
 
     virtual ~Edge(){};
 
     /// Function returns starting node of Edge object.
     /// @returns Starting node of type std::shared_ptr<Network::Node>
-    std::shared_ptr<Network::Node> get_starting_node() const;
+    Node *get_starting_node() const;
 
     /// Function returns ending node of Edge object.
     /// @returns Ending node of type std::shared_ptr<Network::Node>
-    std::shared_ptr<Network::Node> get_ending_node() const;
+    Node *get_ending_node() const;
 
   private:
-    std::shared_ptr<Network::Node> const starting_node;
-    std::shared_ptr<Network::Node> const ending_node;
+    Node *starting_node;
+    Node *ending_node;
   };
 } // namespace Network

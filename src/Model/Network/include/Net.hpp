@@ -13,7 +13,7 @@ namespace Network {
 
   public:
     Net() = delete;
-    Net(std::vector<std::shared_ptr<Node>> _nodes,
+    Net(std::vector<std::unique_ptr<Node>> _nodes,
         std::vector<std::unique_ptr<Edge>> _edges);
 
     /// This function returns a vector of ids of all existing nodes in the
@@ -52,7 +52,7 @@ namespace Network {
                                  std::string const name2) const;
 
   private:
-    std::vector<std::shared_ptr<Node>> nodes;
+    std::vector<std::unique_ptr<Node>> nodes;
     std::vector<std::unique_ptr<Edge>> edges;
   };
 

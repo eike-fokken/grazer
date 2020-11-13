@@ -7,8 +7,8 @@ namespace Model::Networkproblem::Power {
   class Transmissionline : public Network::Edge {
 
   public:
-    Transmissionline(std::shared_ptr<Network::Node> start,
-                     std::shared_ptr<Network::Node> end, double _G, double _B)
+    Transmissionline(Network::Node *start, Network::Node *end, double _G,
+                     double _B)
         : Edge(start, end), G(_G), B(_B){};
 
     double get_G();

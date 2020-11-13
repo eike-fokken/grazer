@@ -32,7 +32,7 @@ std::vector<Network::Edge *> Network::Node::get_ending_edges() const {
 }
 
 bool Network::Node::attach_starting_edge(Network::Edge *to_attach) {
-  if (to_attach->get_starting_node().get() != this) {
+  if (to_attach->get_starting_node() != this) {
     return false;
   }
   starting_edges.push_back(to_attach);
@@ -40,7 +40,7 @@ bool Network::Node::attach_starting_edge(Network::Edge *to_attach) {
 }
 
 bool Network::Node::attach_ending_edge(Network::Edge *to_attach) {
-  if (to_attach->get_ending_node().get() != this) {
+  if (to_attach->get_ending_node() != this) {
     return false;
   }
   ending_edges.push_back(to_attach);
