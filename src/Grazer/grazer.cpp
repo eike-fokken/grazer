@@ -43,21 +43,29 @@ int main() {
     std::ofstream o("data/pretty.json");
     o << std::setw(4) << newnetdata << std::endl;
   }
+  {
+    json newjson;
+    std::ifstream jsonfilestream("data/pretty.json");
 
-  json newjson;
-  std::ifstream jsonfilestream("data/pretty.json");
+    jsonfilestream >> newjson;
 
-  jsonfilestream >> newjson;
+    std::vector<double> times;
+    std::vector<double> values;
 
-  std::vector<double> times;
-  std::vector<double> values;
+    times = newjson["boundarycondition"][0]["data"]["times"]
+                .get<std::vector<double>>();
 
-  times = newjson["boundarycondition"][0]["data"]["times"]
-              .get<std::vector<double>>();
-
-  for (auto it = times.begin(); it != times.end(); ++it) {
-    std::cout << *it << '\n';
+    for (auto it = times.begin(); it != times.end(); ++it) {
+      std::cout << *it << '\n';
+    }
   }
+  json boundary;
+
+  std::ifstream jsonfilestream("data/stationary.json");
+  jsonfilestream >> boundary;
+
+  std::ofstream o("data/stationary.json");
+  o << std::setw(4) << boundary << std::endl;
 }
 
 // #include <grazer.hpp>
