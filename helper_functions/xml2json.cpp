@@ -111,18 +111,18 @@ int main(int argc, char *argv[]) {
 
   if (std::filesystem::exists(argv[2])) {
     std::cout << "output file exists, overwrite?" << '\n';
-  }
-  std::string answer;
-  std::cin >> answer;
+    std::string answer;
+    std::cin >> answer;
 
-  if (answer == "n" or answer == "no") {
-    std::cout << "Ok, I won't overwrite and exit now." << std::endl;
-    return 0;
-  }
+    if (answer == "n" or answer == "no") {
+      std::cout << "Ok, I won't overwrite and exit now." << std::endl;
+      return 0;
+    }
 
-  if (answer != "y" and answer != "yes") {
-    std::cout << "You must answer yes/no or y/n, aborting!" << std::endl;
-    return 1;
+    if (answer != "y" and answer != "yes") {
+      std::cout << "You must answer yes/no or y/n, aborting!" << std::endl;
+      return 1;
+    }
   }
 
   json boundarydata;
