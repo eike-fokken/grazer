@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 
 std::string getnodetype(json node) {
 
@@ -170,9 +170,66 @@ int main(int argc, char *argv[]) {
           }
         }
       }
+    } else if (nodetype == "PV") {
+      (*res)["type"] = nodetype;
+      for (auto datapoint : (*itr)["data"]) {
+        bool time_found = false;
+        auto lintype = getlintype(*itr);
+        for (auto present = (*res)["data"].begin();
+             present != (*res)["data"].end(); ++present) {
+          if ((*present)[0] == datapoint["time"]) {
+            time_found = true;
+            if (lintype == "P") {
+              (*present)[1] = datapoint["value"];
+            } else if (lintype == "V") {
+              (*present)[2] = datapoint["value"];
+            }
+          }
+        }
+        if (time_found == false) {
+
+          if (lintype == "P") {
+            (*res)["data"].push_back(
+                {datapoint["time"], datapoint["value"].get<double>(), 0.0});
+          } else if (lintype == "V") {
+            (*res)["data"].push_back(
+                {datapoint["time"], 0.0, datapoint["value"].get<double>()});
+          }
+        }
+      }
+    } else if (nodetype == "PQ") {
+      (*res)["type"] = nodetype;
+      for (auto datapoint : (*itr)["data"]) {
+        bool time_found = false;
+        auto lintype = getlintype(*itr);
+        for (auto present = (*res)["data"].begin();
+             present != (*res)["data"].end(); ++present) {
+          if ((*present)[0] == datapoint["time"]) {
+            time_found = true;
+            if (lintype == "P") {
+              (*present)[1] = datapoint["value"];
+            } else if (lintype == "Q") {
+              (*present)[2] = datapoint["value"];
+            }
+          }
+        }
+        if (time_found == false) {
+
+          if (lintype == "P") {
+            (*res)["data"].push_back(
+                {datapoint["time"], datapoint["value"].get<double>(), 0.0});
+          } else if (lintype == "Q") {
+            (*res)["data"].push_back(
+                {datapoint["time"], 0.0, datapoint["value"].get<double>()});
+          }
+        }
+      }
     }
   }
 
+  for (auto &node : bdcond) {
+    node.erase("var");
+  }
   newnetdata["boundarycondition"] = bdcond;
   std::ofstream o("data/testo.json");
   o << std::setw(4) << newnetdata << std::endl;
