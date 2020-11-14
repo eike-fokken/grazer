@@ -1,3 +1,3 @@
-add_executable(xml2json EXCLUDE_FROM_ALL xml2json.cpp)
+add_executable(boundaryprettyfy EXCLUDE_FROM_ALL boundaryprettyfy.cpp)
 
-target_link_libraries(xml2json PRIVATE nlohmann_json)
+target_link_libraries(boundaryprettyfy PRIVATE nlohmann_json)
