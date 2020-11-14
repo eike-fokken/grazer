@@ -1,8 +1,8 @@
 #include <algorithm>
+#include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <memory>
 #include <nlohmann/json.hpp>
 #include <string>
 #include <vector>
@@ -102,9 +102,26 @@ json get_node_type_json(json boundarydata) {
 
 int main(int argc, char *argv[]) {
 
-  if (argc == 1) {
-    std::cout << "You must specify an xml file on the command line!"
+  if (argc != 3) {
+    std::cout << "You must specify an input json file and an outputjson file "
+                 "on the command line!"
               << std::endl;
+    return 1;
+  }
+
+  if (std::filesystem::exists(argv[2])) {
+    std::cout << "output file exists, overwrite?" << '\n';
+  }
+  std::string answer;
+  std::cin >> answer;
+
+  if (answer == "n" or answer == "no") {
+    std::cout << "Ok, I won't overwrite and exit now." << std::endl;
+    return 0;
+  }
+
+  if (answer != "y" and answer != "yes") {
+    std::cout << "You must answer yes/no or y/n, aborting!" << std::endl;
     return 1;
   }
 
@@ -231,79 +248,8 @@ int main(int argc, char *argv[]) {
     node.erase("var");
   }
   newnetdata["boundarycondition"] = bdcond;
-  std::ofstream o("data/testo.json");
+  std::ofstream o(argv[2]);
   o << std::setw(4) << newnetdata << std::endl;
+
+  return 0;
 }
-
-// if (current_lin == pressurelin) {
-//   json node;
-//   node["type"]="gaspressure";
-//   nodes.push_back(node);
-// } else if (current_lin == flowlin) {
-//   json node;
-//   node["type"] = "gasflow";
-//   nodes.push_back(node);
-// } else if (current_lin.size() == 4) {
-//   auto liniterator = lin.find((*itr)["id"].get<std::string>());
-//   if (liniterator ==lin.end()) {
-//     lin[(*itr)["id"].get<std::string>()] = current_lin;
-//   }
-//   else {
-//     std::vector<int> Plin = {1, 0, 0, 0};
-//     std::vector<int> Qlin = {0, 1, 0, 0};
-//     std::vector<int> Vlin = {0, 0, 1, 0};
-//     std::vector<int> philin = {0, 0, 0, 1};
-//     if ((current_lin == Plin && (*liniterator).second == Vlin) &&
-//         (current_lin == Vlin && (*liniterator).second == Plin)) {
-//       json node;
-//       node["type"]="PV";
-//       nodes.push_back(node);
-//     }
-//   }
-//}
-//       json data = (*itr)["data"];
-//       node["data"]["times"] = json::array();
-//       node["data"]["values"] = json::array();
-//       for (auto date = data.begin(); date != data.end(); ++date) {
-//         double time = std::stod((*date)["time"].get_ref<std::string &>());
-//         double value = std::stod((*date)["value"].get_ref<std::string &>());
-//         node["data"]["times"].push_back(time);
-//         node["data"]["values"].push_back(value);
-//       }
-//       newnetdata["boundarycondition"].push_back(node);
-//   }
-//   std::cout << newnetdata["boundarycondition"][0];
-
-//   std::ofstream o("data/pretty.json");
-//   o << std::setw(4) << newnetdata << std::endl;
-// }
-// {
-//   json newjson;
-//   std::ifstream jsonfilestream("data/pretty.json");
-
-//   jsonfilestream >> newjson;
-
-//   std::vector<double> times;
-//   std::vector<double> values;
-
-//   times = newjson["boundarycondition"][0]["data"]["times"]
-//               .get<std::vector<double>>();
-
-//   for (auto it = times.begin(); it != times.end(); ++it) {
-//     std::cout << *it << '\n';
-//   }
-// }
-// json boundary;
-
-// std::ifstream jsonfilestream("data/stationary.json");
-// jsonfilestream >> boundary;
-
-// std::ofstream o("data/stationary.json");
-// o << std::setw(4) << boundary << std::endl;
-//} //end main
-
-// #include <grazer.hpp>
-
-// namespace Grazer {
-
-// int solver() {}
