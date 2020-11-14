@@ -8,7 +8,7 @@
 
 using json = nlohmann::ordered_json;
 
-int getlintype(json node) {
+std::string getlintype(json node) {
   auto current_lin = node["lin"].get<std::vector<int>>();
   std::vector<int> pressurelin = {1, 0};
   std::vector<int> flowlin = {0, 1};
@@ -18,19 +18,19 @@ int getlintype(json node) {
   std::vector<int> philin = {0, 0, 0, 1};
 
   if (current_lin == pressurelin) {
-    return 0;
+    return "pressure";
   } else if (current_lin == flowlin) {
-    return 1;
+    return "flow";
   } else if (current_lin == Plin) {
-    return 2;
+    return "P";
   } else if (current_lin == Qlin) {
-    return 3;
+    return "Q";
   } else if (current_lin == Vlin) {
-    return 4;
+    return "V";
   } else if (current_lin == philin) {
-    return 5;
+    return "phi";
   } else {
-    return 100;
+    return "unkown";
   }
 }
 
@@ -54,43 +54,26 @@ int main(int argc, char *argv[]) {
 
   std::map<std::string, std::vector<int>> lin;
 
+  json conditions =
+      boundarydata["boundaryConditions"]["linearBoundaryCondition"];
+
   json nodes;
-  for (auto itr = boundarydata["boundaryConditions"]["linearBoundaryCondition"]
-                      .begin();
-       itr !=
-       boundarydata["boundaryConditions"]["linearBoundaryCondition"].end();
-       ++itr) {
-    int lintype = getlintype(*itr);
-    json node;
-    switch (lintype) {
-    case 0:
-      node["var"].push_back("pressure");
+  for (auto itr = conditions.begin(); itr != conditions.end(); ++itr) {
+
+    std::string var = getlintype(*itr);
+
+    auto res = std::find_if(nodes.begin(), nodes.end(), [itr](const json &x) {
+      auto it = x.find("id");
+      return it != x.end() and it.value() == (*itr)["id"];
+    });
+
+    if (res == nodes.end()) {
+      json node;
+      node["id"] = (*itr)["id"];
+      node["var"].push_back(var);
       nodes.push_back(node);
-      break;
-    case 1:
-      node["var"].push_back("flow");
-      nodes.push_back(node);
-      break;
-    case 2:
-      node["var"].push_back("P");
-      nodes.push_back(node);
-      break;
-    case 3:
-      node["var"].push_back("Q");
-      nodes.push_back(node);
-      break;
-    case 4:
-      node["var"].push_back("V");
-      nodes.push_back(node);
-      break;
-    case 5:
-      node["var"].push_back("phi");
-      nodes.push_back(node);
-      break;
-    default:
-      node["var"].push_back("unknown");
-      nodes.push_back(node);
-      break;
+    } else {
+      (*res)["var"].push_back(var);
     }
   }
   newnetdata["boundarycondition"].push_back(nodes);
