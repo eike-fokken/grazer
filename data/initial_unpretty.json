@@ -1,6 +1,5 @@
 {
-   "schemaLocation": "http://mathematik.tu-darmstadt.de/opt/framework/XMLSchema /home/eike/uni/anaconda/Framework/schema/InitialConditions.xsd",
-   "objectCondition": [
+    "objectCondition": [
       {
          "id": "p_br2",
          "data": [

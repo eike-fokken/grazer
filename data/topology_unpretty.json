@@ -1,6 +1,5 @@
 {
-   "schemaLocation": "http://mathematik.tu-darmstadt.de/opt/gas/XMLSchema /home/eike/uni/anaconda/Gas/schema/Gas.xsd",
-   "information": {
+    "information": {
       "title": "greek",
       "type": "gas",
       "author": "automatic conversion",
