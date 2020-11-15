@@ -3,13 +3,13 @@
 
 namespace Model::Networkproblem::Power {
 
-  void PVnode::evaluate(Eigen::VectorXd &rootfunction, double last_time,
-                        double new_time, Eigen::VectorXd const &last_state,
+  void PVnode::evaluate(Eigen::VectorXd &rootfunction, double, double new_time,
+                        Eigen::VectorXd const &,
                         Eigen::VectorXd const &new_state) {
-    int index1 = static_cast<int>(get_start_state_index());
+    int index1 = get_start_state_index();
     int index2 = index1 + 1;
     double G_i = get_G();
-    double B_i = get_B();
+
     double V_i = new_state[index1];
     double phi_i = new_state[index2];
 
@@ -20,7 +20,7 @@ namespace Model::Networkproblem::Power {
       double G_ik = line->get_G();
       double B_ik = line->get_B();
       auto othernode = dynamic_cast<Powernode *>(start_edge->get_ending_node());
-      int index1_k = static_cast<int>(othernode->get_start_state_index());
+      int index1_k = othernode->get_start_state_index();
       int index2_k = index1_k + 1;
       double V_k = new_state[index1_k];
       double phi_k = new_state[index2_k];
@@ -34,7 +34,7 @@ namespace Model::Networkproblem::Power {
       double B_ik = line->get_B();
       Powernode *othernode =
           dynamic_cast<Powernode *>(end_edge->get_starting_node());
-      int index1_k = static_cast<int>(othernode->get_start_state_index());
+      int index1_k = othernode->get_start_state_index();
       int index2_k = index1_k + 1;
       double V_k = new_state[index1_k];
       double phi_k = new_state[index2_k];

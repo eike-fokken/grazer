@@ -4,8 +4,8 @@
 namespace Model {
 
   int Subproblem::get_number_of_states() const {
-    int int_start = static_cast<int>(start_state_index);
-    int int_after = static_cast<int>(after_state_index);
+    int int_start = start_state_index;
+    int int_after = after_state_index;
 
     // Be careful: We expect number of states to be GREATER than zero.
     if (int number_of_states = int_after - int_start > 0) {
