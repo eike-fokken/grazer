@@ -102,15 +102,17 @@ json get_node_type_json(json boundarydata) {
 
 int main(int argc, char *argv[]) {
 
-  if (argc != 3) {
-    std::cout << "You must specify an input json file and an outputjson file "
-                 "on the command line!"
-              << std::endl;
+  if (argc != 5) {
+    std::cout
+        << "You must specify input files as: boundary_input.json "
+           "boundary_output.json topology_input.json topology_output.json."
+           "on the command line!"
+        << std::endl;
     return 1;
   }
 
-  if (std::filesystem::exists(argv[2])) {
-    std::cout << "output file exists, overwrite?" << '\n';
+  if (std::filesystem::exists(argv[2]) or std::filesystem::exists(argv[4])) {
+    std::cout << "one of the output files exists, overwrite?" << '\n';
     std::string answer;
     std::cin >> answer;
 
@@ -126,10 +128,16 @@ int main(int argc, char *argv[]) {
   }
 
   json boundarydata;
+  json topologydata;
 
-  std::ifstream jsonfilestream(argv[1]);
-
-  jsonfilestream >> boundarydata;
+  {
+    std::ifstream boundary_filestream(argv[1]);
+    boundary_filestream >> boundarydata;
+  }
+  {
+    std::ifstream topology_filestream(argv[3]);
+    topology_filestream >> topologydata;
+  }
 
   json newnetdata = get_node_type_json(boundarydata);
 
@@ -248,8 +256,69 @@ int main(int argc, char *argv[]) {
     node.erase("var");
   }
   newnetdata["boundarycondition"] = bdcond;
+
+  json nodes = topologydata["nodes"];
+
+  json PV;
+  json PQ;
+  json Vphi;
+  for (auto &powernode : nodes["Powernode"]) {
+    auto res =
+        std::find_if(bdcond.begin(), bdcond.end(), [powernode](const json &x) {
+          auto it = x.find("id");
+          return it != x.end() and it.value() == powernode["id"];
+        });
+    if ((*res)["type"] == "PV") {
+      PV.push_back(powernode);
+    }
+    if ((*res)["type"] == "PQ") {
+      PQ.push_back(powernode);
+    }
+    if ((*res)["type"] == "Vphi") {
+      Vphi.push_back(powernode);
+    }
+  }
+
+  nodes["Vphi_nodes"] = Vphi;
+  nodes["PV_nodes"] = PV;
+  nodes["PQ_nodes"] = PQ;
+
+  nodes.erase("Powernode");
+
+  // for(auto & source: nodes["source"])
+  //   {
+  //     auto res = std::find_if(bdcond.begin(), bdcond.end(), [source](const
+  //     json& x) {
+  //                                                             auto it =
+  //                                                             x.find("id");
+  //                                                             return it !=
+  //                                                             x.end() and
+  //                                                             it.value() ==
+  //                                                             source["id"];
+  //                                                           });
+  //     source["type"] = (*res)["type"];
+  //   }
+  // for(auto & sink: nodes["sink"])
+  //   {
+  //     auto res = std::find_if(bdcond.begin(), bdcond.end(), [sink](const
+  //     json& x) {
+  //                                                             auto it =
+  //                                                             x.find("id");
+  //                                                             return it !=
+  //                                                             x.end() and
+  //                                                             it.value() ==
+  //                                                             sink["id"];
+  //                                                           });
+  //     sink["type"] = (*res)["type"];
+  //   }
+
+  topologydata["nodes"] = nodes;
+
   std::ofstream o(argv[2]);
   o << std::setw(4) << newnetdata << std::endl;
+
+  std::ofstream otop(argv[4]);
+  otop << std::setw(4) << topologydata << std::endl;
 
   return 0;
 }
