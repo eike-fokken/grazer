@@ -4,10 +4,10 @@
       "type": "gas",
       "author": "automatic conversion",
       "date": "2016-10-19",
-      "documentation": "greek gas network"
+      "documentation": "Gaslib134 network combined with ieee-case300 and adapted."
    },
    "nodes": {
-      "powerGridNode": [
+      "Powernode": [
          {
             "B": "-232.5962084027",
             "G": "27.0270270270",
