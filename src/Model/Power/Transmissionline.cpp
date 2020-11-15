@@ -2,8 +2,8 @@
 
 namespace Model::Networkproblem::Power {
 
-  double Transmissionline::get_G() { return G; }
+  double Transmissionline::get_G() const { return G; }
 
-  double Transmissionline::get_B() { return B; }
+  double Transmissionline::get_B() const { return B; }
 
 } // namespace Model::Networkproblem::Power

@@ -5,15 +5,15 @@
 
 namespace Model::Networkproblem::Power {
 
-  class Transmissionline : public Network::Edge {
+  class Transmissionline final : public Network::Edge {
 
   public:
     Transmissionline(std::string name, Network::Node *start, Network::Node *end,
                      double _G, double _B)
         : Edge(name, start, end), G(_G), B(_B){};
 
-    double get_G();
-    double get_B();
+    double get_G() const;
+    double get_B() const;
 
   private:
     double G;
