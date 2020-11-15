@@ -12,6 +12,7 @@ namespace Aux {
 
     virtual ~Matrixhandler(){};
 
+    virtual void add_to_coefficient(int row, int col, double value) = 0;
     virtual void set_coefficient(int row, int col, double value) = 0;
 
     virtual void set_matrix() = 0;
@@ -28,6 +29,8 @@ namespace Aux {
 
     virtual ~Triplethandler() override{};
 
+    virtual void add_to_coefficient(int row, int col,
+                                    double value) override final;
     virtual void set_coefficient(int row, int col, double value) override final;
 
     virtual void set_matrix() override final;
@@ -44,8 +47,9 @@ namespace Aux {
 
     virtual ~Coeffrefhandler() override{};
 
+    virtual void add_to_coefficient(int row, int col,
+                                    double value) override final;
     virtual void set_coefficient(int row, int col, double value) override final;
-
     virtual void set_matrix() override final;
   };
 
