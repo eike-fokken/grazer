@@ -20,7 +20,7 @@ namespace Model {
   public:
     /// The constructor needs to declare Delta_t
     ///
-    Problem(double delta_t) : Delta_t(delta_t){};
+    Problem(){};
 
     void add_subproblem(std::unique_ptr<Subproblem> subproblem_ptr);
 
@@ -44,8 +44,6 @@ namespace Model {
     std::vector<std::unique_ptr<Subproblem>> subproblems;
 
   protected:
-    /// The time stepsize, which is immutable.
-    const double Delta_t;
   };
 
 } // namespace Model

@@ -218,7 +218,7 @@ TEST(modelTest, get_number_of_states) {
 
 TEST(modelSubproblem, Model_evaluate) {
 
-  Model::Problem problem(1);
+  Model::Problem problem;
 
   // make unique pointer of mocksub1 and mocksub2
   auto mock1_ptr = std::make_unique<Model::MockSubproblem>();
