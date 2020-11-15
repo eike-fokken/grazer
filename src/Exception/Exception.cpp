@@ -4,11 +4,13 @@
 #include <stdexcept>
 #include <string>
 
-void gthrow(std::vector<std::string> stringvector) {
-  std::string rawmsg = std::accumulate(stringvector.begin(), stringvector.end(),
-                                       std::string(""));
-  throw Exception(rawmsg, __FILE__, __LINE__);
-}
+// void exception_builder(std::vector<std::string> stringvector, char const *
+// file, int line) {
+//   std::string rawmsg = std::accumulate(stringvector.begin(),
+//   stringvector.end(),
+//                                        std::string(""));
+//   throw Exception(rawmsg, file, line);
+// }
 
 Exception::Exception(std::string const &arg, char const *file, int line)
     : std::runtime_error(arg), rawmsg(arg) {
@@ -16,4 +18,12 @@ Exception::Exception(std::string const &arg, char const *file, int line)
   o << file << ":" << line << ": " << arg;
   msg = o.str();
 }
+
 char const *Exception::what() const noexcept { return msg.c_str(); }
+
+void exception_builder(std::vector<std::string> stringvector, char const *file,
+                       int line) {
+  std::string rawmsg = std::accumulate(stringvector.begin(), stringvector.end(),
+                                       std::string(""));
+  throw Exception(rawmsg, file, line);
+}

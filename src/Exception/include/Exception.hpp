@@ -5,7 +5,8 @@
 #include <string>
 #include <vector>
 
-[[noreturn]] void gthrow(std::vector<std::string> stringvector);
+[[noreturn]] void exception_builder(std::vector<std::string> stringvector,
+                                    char const *file, int line);
 
 class Exception : public std::runtime_error {
   std::string msg;
@@ -18,5 +19,6 @@ public:
   ~Exception() noexcept {};
   char const *what() const noexcept;
 };
-// #define gthrow(std::vector<std::string> stringvector) throw Exception(rawmsg,
-// __FILE__, __LINE__);
+// #define gthrow(a) exception_builder(a, __FILE__, __LINE__);
+
+#define gthrow(...) exception_builder(__VA_ARGS__, __FILE__, __LINE__);

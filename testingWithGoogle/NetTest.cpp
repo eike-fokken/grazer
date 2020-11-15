@@ -284,6 +284,15 @@ TEST(Boundaryvalue, Operator) {
   // weiß
   // nicht warum. Vllt habe ich etwas missverstanden)
   EXPECT_ANY_THROW(myBdrclass.operator()(3.5));
+  try {
+    myBdrclass(3.5);
+  } catch (Exception &e) {
+    std::string message(e.what());
+    std::string expected_message(
+        "../src/Model/Networkproblem/include/Boundaryvalue.hpp:50: Requested "
+        "boundary value is at a later time than the given values.");
+    EXPECT_EQ(message, expected_message);
+  }
   EXPECT_ANY_THROW(myBdrclass.operator()(0.5));
 
   // TEST2
