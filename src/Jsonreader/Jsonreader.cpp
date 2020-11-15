@@ -3,10 +3,14 @@
 #include <Jsonreader.hpp>
 #include <Net.hpp>
 #include <Node.hpp>
+#include <PQnode.hpp>
+#include <PVnode.hpp>
 #include <Problem.hpp>
+#include <Vphinode.hpp>
 #include <fstream>
 #include <iostream>
 #include <memory>
+
 namespace Jsonreader {
 
   using json = nlohmann::ordered_json;
@@ -34,12 +38,12 @@ namespace Jsonreader {
     std::map<std::string, std::map<double, Eigen::Vector2d>>
         power_boundary_map = get_power_boundaries(boundaryjson);
 
-    std::vector<std::unique_ptr<Network::Node>> nodes;
-    std::vector<std::unique_ptr<Network::Edge>> edges;
-
-    std::unique_ptr<Network::Net> net_ptr =
-        construct_network(topologyjson, power_boundary_map, nodes, edges);
-
+    try {
+      Network::Net net = construct_network(topologyjson, power_boundary_map);
+    } catch (Exception &e) {
+      std::cout << e.what() << std::endl;
+      throw e;
+    }
     auto problem_ptr = std::unique_ptr<Model::Problem>(new Model::Problem);
     return problem_ptr;
   }
@@ -68,22 +72,54 @@ namespace Jsonreader {
     return powerboundaryvalues;
   }
 
-  // std::unique_ptr<Network::Net>
-  // construct_network(json topologyjson,
-  //                   std::map<std::string, std::map<double, Eigen::Vector2d>>
-  //                       power_boundary_map,
-  //                   std::vector<std::unique_ptr<Network::Node>> &nodes,
-  //                   std::vector<std::unique_ptr<Network::Edge>> &edges) {
+  Network::Net
+  construct_network(json topologyjson,
+                    std::map<std::string, std::map<double, Eigen::Vector2d>>
+                        power_boundary_map) {
+    std::vector<std::unique_ptr<Network::Node>> nodes;
+    std::vector<std::unique_ptr<Network::Edge>> edges;
+    for (auto &node : topologyjson["nodes"]["Vphi_nodes"]) {
+      auto bd_iterator = power_boundary_map.find(node["id"]);
+      if (bd_iterator == power_boundary_map.end()) {
+        gthrow({"The node with ", node["id"],
+                " has no boundary condition in the boundary value file."});
+      } else {
+        // strange as it seems: Here we actually construct a Vphi node:
+        nodes.push_back(std::unique_ptr<Model::Networkproblem::Power::Vphinode>(
+            new Model::Networkproblem::Power::Vphinode(
+                node["id"], (*bd_iterator).second, node["G"], node["B"])));
+      }
+    }
+    for (auto &node : topologyjson["nodes"]["PQ_nodes"]) {
+      auto bd_iterator = power_boundary_map.find(node["id"]);
+      if (bd_iterator == power_boundary_map.end()) {
+        gthrow({"The node with ", node["id"],
+                " has no boundary condition in the boundary value file."});
+      } else {
+        nodes.push_back(std::unique_ptr<Model::Networkproblem::Power::PQnode>(
+            new Model::Networkproblem::Power::PQnode(
+                node["id"], (*bd_iterator).second, node["G"], node["B"])));
+      }
+    }
+    for (auto &node : topologyjson["nodes"]["PV_nodes"]) {
+      auto bd_iterator = power_boundary_map.find(node["id"]);
+      if (bd_iterator == power_boundary_map.end()) {
+        gthrow({"The node with ", node["id"],
+                " has no boundary condition in the boundary value file."});
+      } else {
+        nodes.push_back(std::unique_ptr<Model::Networkproblem::Power::PVnode>(
+            new Model::Networkproblem::Power::PVnode(
+                node["id"], (*bd_iterator).second, node["G"], node["B"])));
+      }
+    }
 
-  //   for(auto & node: topologyjson["nodes"]["Powernode"])
-  //     {
-  //       auto bd_iterator = power_boundary_map.find(node["id"]);
-  //       if(bd_iterator == power_boundary_map.end()){
+    for (auto &transmissionline :
+         topologyjson["connections"]["transmissionLine"]) {
+      // geht the pointer from the node vector and put it in the line!
+    }
 
-  //         gthrow({"This ", "is ", "the ","exception."});
-  //       }
-  //     }
-
-  // }
+    Network::Net net(std::move(nodes), std::move(edges));
+    return net;
+  }
 
 } // namespace Jsonreader

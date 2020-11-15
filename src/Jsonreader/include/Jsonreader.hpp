@@ -34,11 +34,9 @@ namespace Jsonreader {
   std::map<std::string, std::map<double, Eigen::Vector2d>>
   get_power_boundaries(json boundaryjson);
 
-  std::unique_ptr<Network::Net>
+  Network::Net
   construct_network(json topologyjson,
                     std::map<std::string, std::map<double, Eigen::Vector2d>>
-                        power_boundary_map,
-                    std::vector<std::unique_ptr<Network::Node>> &nodes,
-                    std::vector<std::unique_ptr<Network::Edge>> &edges);
+                        power_boundary_map);
 
 } // namespace Jsonreader
