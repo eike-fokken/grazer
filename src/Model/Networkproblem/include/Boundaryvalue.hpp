@@ -21,12 +21,12 @@ namespace Model::Networkproblem {
 
       auto previous = std::prev(next);
       if (next == boundary_values.end()) {
-        gthrow("Requested boundary value is at a later time than the given "
-               "values.");
+        gthrow({"Requested boundary value is at a later time than the "
+                "givenvalues."});
       }
       if (next == boundary_values.begin()) {
-        gthrow("Requested boundary value is at an earlier time than the given "
-               "values.");
+        gthrow({"Requested boundary value is at an earlier time than the given "
+                "values."});
       }
 
       double t_minus = previous->first;
@@ -47,12 +47,12 @@ namespace Model::Networkproblem {
 
       auto previous = std::prev(next);
       if (next == boundary_values.end()) {
-        gthrow("Requested boundary value is at a later time than the given "
-               "values.");
+        gthrow({"Requested boundary value is at a later time than the given "
+                "values."});
       }
       if (next == boundary_values.begin()) {
-        gthrow("Requested boundary value is at an earlier time than the given "
-               "values.");
+        gthrow({"Requested boundary value is at an earlier time than the given "
+                "values."});
       }
 
       double t_minus = previous->first;

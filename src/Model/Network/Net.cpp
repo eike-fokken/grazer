@@ -16,33 +16,29 @@ namespace Network {
       {
         auto start = edge->get_starting_node();
         if (!start) {
-          gthrow("edge doesn't have a starting node!");
+          gthrow({"edge doesn't have a starting node!"});
         }
 
         auto node_in_net = exists_node(start);
         if (!node_in_net) {
           auto name = start->get_name();
-          std::stringstream ss;
-          ss << "The node " << name
-             << "is not part of the net object but attached to an edge!"
-             << '\n';
-          gthrow(ss.str());
+          gthrow({"The node ", name,
+                  "is not part of the net object but attached to an edge!",
+                  "\n"});
         }
       }
       {
         auto end = edge->get_ending_node();
         if (!end) {
-          gthrow("edge doesn't have an ending node!");
+          gthrow({"edge does not have an ending node!"});
         }
 
         auto node_in_net = exists_node(end);
         if (!node_in_net) {
           auto name = end->get_name();
-          std::stringstream ss;
-          ss << "The node " << name
-             << "is not part of the net object but attached to an edge!"
-             << '\n';
-          gthrow(ss.str());
+          gthrow({"The node ", name,
+                  "is not part of the net object but attached to an edge!",
+                  "\n"});
         }
       }
     }

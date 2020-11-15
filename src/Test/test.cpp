@@ -4,10 +4,10 @@
 int main() {
   try {
     try {
-      gthrow("asdfasdfasdf")
+      gthrow({"asdfasdfasdf"})
     } catch (const Exception &e) {
       std::cout << e.what() << std::endl;
-      gthrow(e.rawmsg)
+      gthrow({e.rawmsg})
     }
   } catch (const Exception &e) {
     std::cout << e.what() << std::endl;

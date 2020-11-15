@@ -11,7 +11,7 @@ namespace Model {
     if (int number_of_states = int_after - int_start > 0) {
       return number_of_states;
     } else {
-      gthrow("Number of states is negative or zero!");
+      gthrow({"Number of states is negative or zero!"});
     }
   }
 
