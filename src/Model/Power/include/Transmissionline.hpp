@@ -1,6 +1,5 @@
 #pragma once
 #include <Edge.hpp>
-#include <memory>
 #include <string>
 
 namespace Model::Networkproblem::Power {

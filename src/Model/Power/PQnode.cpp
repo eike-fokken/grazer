@@ -1,5 +1,3 @@
-#include "Node.hpp"
-#include "Powernode.hpp"
 #include "Transmissionline.hpp"
 #include <PQnode.hpp>
 #include <cmath>
@@ -7,7 +5,7 @@
 
 namespace Model::Networkproblem::Power {
 
-  void PQnode::evaluate(Eigen::VectorXd &rootfunction, double, double next_time,
+  void PQnode::evaluate(Eigen::VectorXd &rootfunction, double, double new_time,
                         Eigen::VectorXd const &,
                         Eigen::VectorXd const &new_state) {
     int index1 = static_cast<int>(get_start_state_index());
@@ -17,8 +15,8 @@ namespace Model::Networkproblem::Power {
     double V_i = new_state[index1];
     double phi_i = new_state[index2];
 
-    double P = -boundaryvalue(next_time)[0];
-    double Q = -boundaryvalue(next_time)[1];
+    double P = -boundaryvalue(new_time)[0];
+    double Q = -boundaryvalue(new_time)[1];
     P += G_i * V_i * V_i;
     Q -= B_i * V_i * V_i;
     for (auto &start_edge : get_starting_edges()) {

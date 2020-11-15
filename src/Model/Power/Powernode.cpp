@@ -2,8 +2,10 @@
 
 namespace Model::Networkproblem::Power {
 
-  double Powernode::get_G() { return G; }
+  int Powernode::get_number_of_states() const { return 2; }
 
-  double Powernode::get_B() { return B; }
+  double Powernode::get_G() const { return G; }
+
+  double Powernode::get_B() const { return B; }
 
 } // namespace Model::Networkproblem::Power

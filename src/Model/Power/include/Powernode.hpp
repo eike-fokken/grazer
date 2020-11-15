@@ -1,5 +1,5 @@
 #pragma once
-#include "Boundaryvalue.hpp"
+#include <Boundaryvalue.hpp>
 #include <Equationcomponent.hpp>
 #include <string>
 
@@ -15,10 +15,10 @@ namespace Model::Networkproblem::Power {
 
     virtual ~Powernode(){};
 
-    virtual unsigned int get_number_of_states() override final { return 2; };
+    virtual int get_number_of_states() const override final;
 
-    double get_G();
-    double get_B();
+    double get_G() const;
+    double get_B() const;
 
   protected:
     Boundaryvalue<Powernode, 2> boundaryvalue;

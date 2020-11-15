@@ -8,14 +8,15 @@ namespace Model::Networkproblem::Power {
   //////
   void Vphinode::evaluate(Eigen::VectorXd &rootfunction, double // last_time
                           ,
-                          double next_time,
+                          double new_time,
                           Eigen::VectorXd const & // last_state
                           ,
                           Eigen::VectorXd const &new_state) {
-    auto index = get_start_state_index();
-    rootfunction[index] = boundaryvalue(next_time)[0] - new_state[index];
-    index++;
-    rootfunction[index] = boundaryvalue(next_time)[1] - new_state[index];
+    int index1 = static_cast<int>(get_start_state_index());
+    int index2 = index1 + 1;
+    rootfunction[index1] = new_state[index1] - boundaryvalue(new_time)[0];
+
+    rootfunction[index2] = new_state[index2] - boundaryvalue(new_time)[1];
   }
 
   void Vphinode::evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,
@@ -26,10 +27,10 @@ namespace Model::Networkproblem::Power {
                                            Eigen::VectorXd const &,
                                            Eigen::VectorXd const & // new_state
   ) {
-    auto start_index = get_start_state_index();
-    auto end_index = get_after_state_index();
-    jacobianhandler->set_coefficient(start_index, start_index, -1.0);
-    jacobianhandler->set_coefficient(end_index, end_index, -1.0);
+    int index1 = static_cast<int>(get_start_state_index());
+    int index2 = index1 + 1;
+    jacobianhandler->set_coefficient(index1, index1, 1.0);
+    jacobianhandler->set_coefficient(index2, index2, 1.0);
   }
 
 } // namespace Model::Networkproblem::Power
