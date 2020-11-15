@@ -1,15 +1,19 @@
+#include <Edge.hpp>
+#include <Exception.hpp>
 #include <Jsonreader.hpp>
+#include <Net.hpp>
+#include <Node.hpp>
 #include <Problem.hpp>
 #include <fstream>
 #include <iostream>
-
+#include <memory>
 namespace Jsonreader {
 
   using json = nlohmann::ordered_json;
 
-  Model::Problem setup_problem(std::filesystem::path topology,
-                               std::filesystem::path initial,
-                               std::filesystem::path boundary) {
+  std::unique_ptr<Model::Problem>
+  setup_problem(std::filesystem::path topology, std::filesystem::path initial,
+                std::filesystem::path boundary) {
 
     json topologyjson;
     {
@@ -29,6 +33,15 @@ namespace Jsonreader {
 
     std::map<std::string, std::map<double, Eigen::Vector2d>>
         power_boundary_map = get_power_boundaries(boundaryjson);
+
+    std::vector<std::unique_ptr<Network::Node>> nodes;
+    std::vector<std::unique_ptr<Network::Edge>> edges;
+
+    std::unique_ptr<Network::Net> net_ptr =
+        construct_network(topologyjson, power_boundary_map, nodes, edges);
+
+    auto problem_ptr = std::unique_ptr<Model::Problem>(new Model::Problem);
+    return problem_ptr;
   }
 
   std::map<std::string, std::map<double, Eigen::Vector2d>>
@@ -54,4 +67,23 @@ namespace Jsonreader {
     }
     return powerboundaryvalues;
   }
+
+  // std::unique_ptr<Network::Net>
+  // construct_network(json topologyjson,
+  //                   std::map<std::string, std::map<double, Eigen::Vector2d>>
+  //                       power_boundary_map,
+  //                   std::vector<std::unique_ptr<Network::Node>> &nodes,
+  //                   std::vector<std::unique_ptr<Network::Edge>> &edges) {
+
+  //   for(auto & node: topologyjson["nodes"]["Powernode"])
+  //     {
+  //       auto bd_iterator = power_boundary_map.find(node["id"]);
+  //       if(bd_iterator == power_boundary_map.end()){
+
+  //         gthrow({"This ", "is ", "the ","exception."});
+  //       }
+  //     }
+
+  // }
+
 } // namespace Jsonreader
