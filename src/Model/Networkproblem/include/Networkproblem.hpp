@@ -37,8 +37,7 @@ namespace Model::Networkproblem {
     std::vector<Equationedge *> equationedges;
     std::vector<Equationnode *> equationnodes;
 
-    virtual unsigned int
-    reserve_indices(unsigned int const next_free_index) override;
+    virtual int reserve_indices(int const next_free_index) override;
   };
 
 } // namespace Model::Networkproblem

@@ -27,25 +27,24 @@ namespace Model {
     // @returns int next_free_index the new first non-reserved index of the
     // state vector.
 
-    unsigned int set_indices(unsigned int const next_free_index);
+    int set_indices(int const next_free_index);
 
-    unsigned int get_number_of_states() const;
-    unsigned int get_start_state_index() const;
-    unsigned int get_after_state_index() const;
+    int get_number_of_states() const;
+    int get_start_state_index() const;
+    int get_after_state_index() const;
 
-    // void set_sporadic_state_indices(std::vector<unsigned int> indices);
+    // void set_sporadic_state_indices(std::vector<int> indices);
 
   private:
-    unsigned int start_state_index{0};
-    unsigned int after_state_index{0};
-    // std::vector<unsigned int> sporadic_state_indices;
+    int start_state_index{0};
+    int after_state_index{0};
+    // std::vector<int> sporadic_state_indices;
 
     /// This function should reserve indices, e.g. by setting start and end
     /// indices of subobjects
     /// @param The current smallest non-reserved index.
     /// @returns new smallest non-reserved index.
-    virtual unsigned int
-    reserve_indices(unsigned int const next_free_index) = 0;
+    virtual int reserve_indices(int const next_free_index) = 0;
 
     // have to think about the implementation of connecting problems.
 

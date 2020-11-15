@@ -54,9 +54,8 @@ namespace Model::Networkproblem {
     }
   }
 
-  unsigned int
-  Networkproblem::reserve_indices(unsigned int const next_free_index) {
-    unsigned int free_index = next_free_index;
+  int Networkproblem::reserve_indices(int const next_free_index) {
+    int free_index = next_free_index;
     for (Model::Networkproblem::Equationedge *eqedge : equationedges) {
       free_index = eqedge->set_indices(free_index);
     }

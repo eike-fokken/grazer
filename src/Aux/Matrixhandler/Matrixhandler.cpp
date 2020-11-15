@@ -3,10 +3,8 @@
 
 namespace Aux {
 
-  void Triplethandler::set_coefficient(unsigned int row, unsigned int col,
-                                       double value) {
-    Eigen::Triplet<double> newtriplet(static_cast<int>(row),
-                                      static_cast<int>(col), value);
+  void Triplethandler::set_coefficient(int row, int col, double value) {
+    Eigen::Triplet<double> newtriplet(row, col, value);
     tripletlist.push_back(newtriplet);
   }
 
@@ -14,9 +12,8 @@ namespace Aux {
     matrix->setFromTriplets(tripletlist.begin(), tripletlist.end());
   }
 
-  void Coeffrefhandler::set_coefficient(unsigned int row, unsigned int col,
-                                        double value) {
-    matrix->coeffRef(static_cast<int>(row), static_cast<int>(col)) = value;
+  void Coeffrefhandler::set_coefficient(int row, int col, double value) {
+    matrix->coeffRef(row, col) = value;
   }
 
 } // namespace Aux

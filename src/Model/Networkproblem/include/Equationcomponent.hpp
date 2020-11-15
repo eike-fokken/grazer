@@ -27,17 +27,17 @@ namespace Model::Networkproblem {
 
     /// Returns number of state variables needed by this component.
     /// Usually this will be implemented by a function returning a literal
-    /// unsigned int like 2.
-    virtual unsigned int get_number_of_states() = 0;
+    /// int like 2.
+    virtual int get_number_of_states() const = 0;
 
-    unsigned int set_indices(unsigned int const next_free_index);
+    int set_indices(int const next_free_index);
 
-    unsigned int get_start_state_index() const;
-    unsigned int get_after_state_index() const;
+    int get_start_state_index() const;
+    int get_after_state_index() const;
 
   private:
-    unsigned int start_state_index{};
-    unsigned int after_state_index{};
+    int start_state_index{};
+    int after_state_index{};
   };
 
   /// This is an interface class, that defines objects that are nodes and have

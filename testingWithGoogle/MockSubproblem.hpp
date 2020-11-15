@@ -18,7 +18,6 @@ namespace Model {
                  (Eigen::VectorXd const &last_state),
                  (Eigen::VectorXd const &new_state)),
                 (override));
-    MOCK_METHOD(unsigned int, reserve_indices,
-                (unsigned int const next_free_index), (override));
+    MOCK_METHOD(int, reserve_indices, (int const next_free_index), (override));
   };
 } // namespace Model

@@ -24,7 +24,7 @@ namespace Model {
 
     void add_subproblem(std::unique_ptr<Subproblem> subproblem_ptr);
 
-    unsigned int set_indices();
+    int set_indices();
 
     void evaluate(Eigen::VectorXd &rootfunction, double last_time,
                   double new_time, Eigen::VectorXd const &last_state,

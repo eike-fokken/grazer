@@ -16,8 +16,8 @@ namespace Model {
     subproblems.push_back(std::move(subproblem_ptr));
   }
 
-  unsigned int Problem::set_indices() {
-    unsigned int next_free_index(0);
+  int Problem::set_indices() {
+    int next_free_index(0);
     for (auto it = subproblems.begin(); it != subproblems.end(); it++) {
       next_free_index = (*it)->set_indices(next_free_index);
     }
