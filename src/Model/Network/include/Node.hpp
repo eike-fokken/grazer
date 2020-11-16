@@ -50,6 +50,9 @@ namespace Network {
 
     virtual void display();
 
+  protected:
+    void print_id();
+
   private:
     /// A unique id for the node.
     std::string id;

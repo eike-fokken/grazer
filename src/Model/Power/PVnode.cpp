@@ -111,7 +111,7 @@ namespace Model::Networkproblem::Power {
   }
 
   void PVnode::display() {
-    Node::display();
+    Node::print_id();
     std::cout << "type: PV, G: " << G << ", B: " << B << "\n";
   }
 

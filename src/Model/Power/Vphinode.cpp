@@ -34,6 +34,7 @@ namespace Model::Networkproblem::Power {
   }
 
   void Vphinode::display() {
+    Node::print_id();
     std::cout << "type: Vphi, G: " << G << ", B: " << B << "\n";
   }
 

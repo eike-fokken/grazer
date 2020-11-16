@@ -49,3 +49,5 @@ bool Network::Node::attach_ending_edge(Network::Edge *to_attach) {
 }
 
 void Network::Node::display() { std::cout << "id: " << id << "\n"; }
+
+void Network::Node::print_id() { std::cout << "id: " << id << ", "; }

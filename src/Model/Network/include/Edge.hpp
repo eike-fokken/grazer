@@ -35,6 +35,9 @@ namespace Network {
 
     virtual void display();
 
+  protected:
+    void print_id();
+
   private:
     std::string id;
     Node *starting_node;

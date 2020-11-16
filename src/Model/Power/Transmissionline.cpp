@@ -8,7 +8,7 @@ namespace Model::Networkproblem::Power {
   double Transmissionline::get_B() const { return B; }
 
   void Transmissionline::display() {
-    Edge::display();
+    Edge::print_id();
     std::cout << "type: TL, G: " << G << ", B: " << B << "\n";
   }
 
