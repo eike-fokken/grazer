@@ -5,10 +5,9 @@
 
 int main() {
 
-  auto p = Jsonreader::setup_problem("data/topology_pretty.json",
+  auto p = Jsonreader::setup_problem("data/topology_with_doubles.json",
                                      "data/boundary_pretty.json",
                                      "data/boundary_pretty.json");
-  std::cout << "success" << std::endl;
 
   p->display();
 }
