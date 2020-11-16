@@ -15,18 +15,19 @@ namespace Model::Networkproblem {
   class Networkproblem : public Subproblem {
 
   public:
-    virtual ~Networkproblem() override{};
+    ~Networkproblem() override{};
 
     Networkproblem(std::unique_ptr<Network::Net> _network);
 
-    virtual void evaluate(Eigen::VectorXd &rootfunction, double last_time,
-                          double new_time, Eigen::VectorXd const &last_state,
-                          Eigen::VectorXd const &new_state) override;
-    virtual void
-    evaluate_state_derivative(Aux::Matrixhandler *jacobian, double last_time,
-                              double new_time,
-                              Eigen::VectorXd const &last_state,
-                              Eigen::VectorXd const &new_state) override;
+    void evaluate(Eigen::VectorXd &rootfunction, double last_time,
+                  double new_time, Eigen::VectorXd const &last_state,
+                  Eigen::VectorXd const &new_state) override;
+    void evaluate_state_derivative(Aux::Matrixhandler *jacobian,
+                                   double last_time, double new_time,
+                                   Eigen::VectorXd const &last_state,
+                                   Eigen::VectorXd const &new_state) override;
+
+    void display() override;
 
   private:
     std::unique_ptr<Network::Net> network;

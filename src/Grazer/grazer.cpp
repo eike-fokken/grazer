@@ -10,5 +10,5 @@ int main() {
                                      "data/boundary_pretty.json");
   std::cout << "success" << std::endl;
 
-  p->set_indices();
+  p->display();
 }

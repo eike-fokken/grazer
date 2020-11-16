@@ -17,13 +17,14 @@ namespace Model::Networkproblem::Power {
     /// for P.
     virtual void evaluate(Eigen::VectorXd &rootfunction, double last_time,
                           double new_time, Eigen::VectorXd const &last_state,
-                          Eigen::VectorXd const &new_state) override final;
+                          Eigen::VectorXd const &new_state) final;
 
-    virtual void
-    evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,
-                              double last_time, double new_time,
-                              Eigen::VectorXd const &,
-                              Eigen::VectorXd const &new_state) override final;
+    void evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,
+                                   double last_time, double new_time,
+                                   Eigen::VectorXd const &,
+                                   Eigen::VectorXd const &new_state) final;
+
+    void display() final;
   };
 
 } // namespace Model::Networkproblem::Power

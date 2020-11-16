@@ -65,4 +65,13 @@ namespace Model::Networkproblem {
     return free_index;
   }
 
+  void Networkproblem::display() {
+    for (auto &nodeptr : network->get_nodes()) {
+      nodeptr->display();
+    }
+    for (auto &edgeptr : network->get_edges()) {
+      edgeptr->display();
+    }
+  }
+
 } // namespace Model::Networkproblem

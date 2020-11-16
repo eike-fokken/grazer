@@ -48,6 +48,8 @@ namespace Network {
     /// This function returns the id of the node.
     std::string get_id() const;
 
+    virtual void display();
+
   private:
     /// A unique id for the node.
     std::string id;

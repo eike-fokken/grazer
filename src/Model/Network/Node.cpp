@@ -1,5 +1,6 @@
 #include "Edge.hpp"
 #include <Node.hpp>
+#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -46,3 +47,5 @@ bool Network::Node::attach_ending_edge(Network::Edge *to_attach) {
   ending_edges.push_back(to_attach);
   return true;
 }
+
+void Network::Node::display() { std::cout << "id: " << id << "\n"; }

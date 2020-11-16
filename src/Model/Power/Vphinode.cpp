@@ -33,4 +33,8 @@ namespace Model::Networkproblem::Power {
     jacobianhandler->set_coefficient(index2, index2, 1.0);
   }
 
+  void Vphinode::display() {
+    std::cout << "type: Vphi, G: " << G << ", B: " << B << "\n";
+  }
+
 } // namespace Model::Networkproblem::Power

@@ -19,5 +19,6 @@ namespace Model {
                  (Eigen::VectorXd const &new_state)),
                 (override));
     MOCK_METHOD(int, reserve_indices, (int const next_free_index), (override));
+    MOCK_METHOD(void, display, (), (override));
   };
 } // namespace Model

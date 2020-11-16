@@ -141,4 +141,8 @@ namespace Model::Networkproblem::Power {
     }
   }
 
+  void PQnode::display() {
+    std::cout << "type: PQ, G: " << G << ", B: " << B << "\n";
+  }
+
 } // namespace Model::Networkproblem::Power
