@@ -21,12 +21,13 @@ namespace Model {
         Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
         Eigen::VectorXd const &, Eigen::VectorXd const &new_state) = 0;
 
+    virtual void display() = 0;
+
     // Reserves indices from the state vector
     // @param int next_free_index the first non-reserved index of the state
     // vector.
     // @returns int next_free_index the new first non-reserved index of the
     // state vector.
-
     int set_indices(int const next_free_index);
 
     int get_number_of_states() const;

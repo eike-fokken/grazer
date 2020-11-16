@@ -39,6 +39,8 @@ namespace Model {
     /// subproblems.
     std::vector<Subproblem *> get_subproblems();
 
+    void display();
+
   private:
     /// collection of sub-problems
     std::vector<std::unique_ptr<Subproblem>> subproblems;

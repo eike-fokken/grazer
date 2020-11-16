@@ -110,4 +110,9 @@ namespace Model::Networkproblem::Power {
     jacobianhandler->set_coefficient(index2, index2, 1.0);
   }
 
+  void PVnode::display() {
+    Node::print_id();
+    std::cout << "type: PV, G: " << G << ", B: " << B << "\n";
+  }
+
 } // namespace Model::Networkproblem::Power

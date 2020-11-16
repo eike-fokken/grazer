@@ -33,6 +33,11 @@ namespace Network {
     /// @returns Ending node of type std::shared_ptr<Network::Node>
     Node *get_ending_node() const;
 
+    virtual void display();
+
+  protected:
+    void print_id();
+
   private:
     std::string id;
     Node *starting_node;

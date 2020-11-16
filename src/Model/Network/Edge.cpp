@@ -20,4 +20,7 @@ namespace Network {
 
   Node *Edge::get_ending_node() const { return ending_node; }
 
+  void Edge::display() { std::cout << "id: " << id << "\n"; }
+
+  void Edge::print_id() { std::cout << "id: " << id << ", "; }
 } // namespace Network

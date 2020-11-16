@@ -50,4 +50,10 @@ namespace Model {
     return pointer_vector;
   }
 
+  void Problem::display() {
+    for (auto &subproblem_ptr : subproblems) {
+      subproblem_ptr->display();
+    }
+  }
+
 } // namespace Model

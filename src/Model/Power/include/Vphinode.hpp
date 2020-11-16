@@ -14,15 +14,16 @@ namespace Model::Networkproblem::Power {
     using Powernode::Powernode;
 
     /// In this node we just set V and phi to their respective boundary values.
-    virtual void evaluate(Eigen::VectorXd &rootfunction, double last_time,
-                          double new_time, Eigen::VectorXd const &last_state,
-                          Eigen::VectorXd const &new_state) override final;
+    void evaluate(Eigen::VectorXd &rootfunction, double last_time,
+                  double new_time, Eigen::VectorXd const &last_state,
+                  Eigen::VectorXd const &new_state) final;
 
-    virtual void
-    evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,
-                              double last_time, double new_time,
-                              Eigen::VectorXd const &,
-                              Eigen::VectorXd const &new_state) override final;
+    void evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,
+                                   double last_time, double new_time,
+                                   Eigen::VectorXd const &,
+                                   Eigen::VectorXd const &new_state) final;
+
+    void display() override;
   };
 
 } // namespace Model::Networkproblem::Power
