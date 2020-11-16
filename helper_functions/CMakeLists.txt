@@ -1,3 +1,3 @@
-add_executable(boundaryprettyfy EXCLUDE_FROM_ALL boundaryprettyfy.cpp)
+add_executable(boundaryprettyfy boundaryprettyfy.cpp)
 
 target_link_libraries(boundaryprettyfy PRIVATE nlohmann_json)
