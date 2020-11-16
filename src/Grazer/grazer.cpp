@@ -1,13 +1,16 @@
+#include <Exception.hpp>
 #include <Jsonreader.hpp>
 #include <Problem.hpp>
 #include <iostream>
 #include <memory>
 
-int main() {
+int main(int argc, char **argv) {
 
-  auto p = Jsonreader::setup_problem("data/topology_with_doubles.json",
-                                     "data/boundary_pretty.json",
-                                     "data/boundary_pretty.json");
+  if (argc != 3) {
+    gthrow({" Wrong number of arguments."})
+  }
+
+  auto p = Jsonreader::setup_problem(argv[1], argv[2], argv[3]);
 
   p->display();
 }

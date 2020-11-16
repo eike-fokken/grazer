@@ -24,19 +24,25 @@ namespace Jsonreader {
                 std::filesystem::path boundary) {
 
     json topologyjson;
-    {
+    try {
       std::ifstream jsonfilestream(topology);
       jsonfilestream >> topologyjson;
+    } catch (...) {
+      gthrow({"Couldn't load topology file: ", topology.string()});
     }
     json initialjson;
-    {
+    try {
       std::ifstream jsonfilestream(initial);
       jsonfilestream >> initialjson;
+    } catch (...) {
+      gthrow({"Couldn't load initial value file: ", initial.string()});
     }
     json boundaryjson;
-    {
+    try {
       std::ifstream jsonfilestream(boundary);
       jsonfilestream >> boundaryjson;
+    } catch (...) {
+      gthrow({"Couldn't load boundary value file: ", boundary.string()});
     }
 
     std::map<std::string, std::map<double, Eigen::Vector2d>>
@@ -46,7 +52,6 @@ namespace Jsonreader {
       std::vector<std::unique_ptr<Network::Edge>> edges;
       auto netptr =
           construct_network(topologyjson, two_value_boundary_map, nodes, edges);
-      std::cout << "test" << std::endl;
 
       auto netprobptr = std::unique_ptr<Model::Subproblem>(
           new Model::Networkproblem::Networkproblem(std::move(netptr)));
@@ -55,7 +60,7 @@ namespace Jsonreader {
       return probptr;
     } catch (Exception &e) {
       std::cout << e.what() << std::endl;
-      throw e;
+      throw;
     }
   }
 
@@ -63,22 +68,40 @@ namespace Jsonreader {
   get_two_value_boundaries(json boundaryjson) {
     std::map<std::string, std::map<double, Eigen::Vector2d>>
         powerboundaryvalues;
-    for (auto &node : boundaryjson["boundarycondition"]) {
-      if (node["type"] == "PQ" or node["type"] == "PV" or
-          node["type"] == "Vphi") {
-        std::map<double, Eigen::Vector2d> node_boundary;
-        for (auto &datapoint : node["data"]) {
-          Eigen::Vector2d value;
-          value[0] = datapoint[1];
-          value[1] = datapoint[2];
-          node_boundary.insert({datapoint[0], value});
+    try {
+      for (auto &node : boundaryjson["boundarycondition"]) {
+        if (node["type"] == "PQ" or node["type"] == "PV" or
+            node["type"] == "Vphi") {
+          std::map<double, Eigen::Vector2d> node_boundary;
+          for (auto &datapoint : node["data"]) {
+            try {
+              if (node["data"].size() != 3) {
+                gthrow(
+                    {"data in node with id ", node["id"], " is not of size 3."})
+              };
+            } catch (Exception &e) {
+              std::cout << e.what() << std::endl;
+              throw;
+            }
+            Eigen::Vector2d value;
+            try {
+              value[0] = datapoint[1];
+              value[1] = datapoint[2];
+            } catch (...) {
+              gthrow({"data in node with id ", node["id"],
+                      " couldn't be assignd in vector, not a double?"})
+            }
+            node_boundary.insert({datapoint[0], value});
+          }
+          powerboundaryvalues.insert(
+              {node["id"].get<std::string>(), node_boundary});
+        } else {
+          std::cout << "not implemented yet: boundary values for nodes of type "
+                    << node["type"] << " node: " << node["id"] << '\n';
         }
-        powerboundaryvalues.insert(
-            {node["id"].get<std::string>(), node_boundary});
-      } else {
-        std::cout << "not implemented yet: boundary values for nodes of type "
-                  << node["type"] << " node: " << node["id"] << '\n';
       }
+    } catch (...) {
+      gthrow({"Failed to read in field \"boundarycondition\"."})
     }
     return powerboundaryvalues;
   }
