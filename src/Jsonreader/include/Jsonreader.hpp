@@ -31,12 +31,18 @@ namespace Jsonreader {
 
   /// This function reads boundary data for power nodes into a map for
   /// integration into the actual construction of Powernode s.
+  /// It will be changed into accepting all double-valued boundary conditions
+  /// should the need arise.
   std::map<std::string, std::map<double, Eigen::Vector2d>>
-  get_power_boundaries(json boundaryjson);
+  get_two_value_boundaries(json boundaryjson);
 
-  Network::Net
+  /// This function constructs a network from a vector of nodes, edges and
+  /// boundary conditions. Up to now only double-valued boundary conditions (for
+  /// power) are implemented.
+  std::unique_ptr<Network::Net>
   construct_network(json topologyjson,
                     std::map<std::string, std::map<double, Eigen::Vector2d>>
-                        power_boundary_map);
-
+                        two_value_boundary_map,
+                    std::vector<std::unique_ptr<Network::Node>> &nodes,
+                    std::vector<std::unique_ptr<Network::Edge>> &edges);
 } // namespace Jsonreader

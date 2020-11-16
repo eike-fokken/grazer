@@ -258,7 +258,6 @@ int main(int argc, char *argv[]) {
   newnetdata["boundarycondition"] = bdcond;
 
   json nodes = topologydata["nodes"];
-
   json PV;
   json PQ;
   json Vphi;
@@ -268,6 +267,14 @@ int main(int argc, char *argv[]) {
           auto it = x.find("id");
           return it != x.end() and it.value() == powernode["id"];
         });
+    std::string Gstring = powernode["G"];
+    std::string Bstring = powernode["B"];
+    double G = std::stod(Gstring);
+    double B = std::stod(Bstring);
+    powernode.erase("G");
+    powernode.erase("B");
+    powernode["G"] = G;
+    powernode["B"] = B;
     if ((*res)["type"] == "PV") {
       PV.push_back(powernode);
     }
@@ -285,34 +292,22 @@ int main(int argc, char *argv[]) {
 
   nodes.erase("Powernode");
 
-  // for(auto & source: nodes["source"])
-  //   {
-  //     auto res = std::find_if(bdcond.begin(), bdcond.end(), [source](const
-  //     json& x) {
-  //                                                             auto it =
-  //                                                             x.find("id");
-  //                                                             return it !=
-  //                                                             x.end() and
-  //                                                             it.value() ==
-  //                                                             source["id"];
-  //                                                           });
-  //     source["type"] = (*res)["type"];
-  //   }
-  // for(auto & sink: nodes["sink"])
-  //   {
-  //     auto res = std::find_if(bdcond.begin(), bdcond.end(), [sink](const
-  //     json& x) {
-  //                                                             auto it =
-  //                                                             x.find("id");
-  //                                                             return it !=
-  //                                                             x.end() and
-  //                                                             it.value() ==
-  //                                                             sink["id"];
-  //                                                           });
-  //     sink["type"] = (*res)["type"];
-  //   }
-
   topologydata["nodes"] = nodes;
+
+  json tlines = topologydata["connections"]["transmissionLine"];
+
+  for (auto &tline : tlines) {
+    std::string Gstring = tline["G"];
+    std::string Bstring = tline["B"];
+    double G = std::stod(Gstring);
+    double B = std::stod(Bstring);
+    tline.erase("G");
+    tline.erase("B");
+    tline["G"] = G;
+    tline["B"] = B;
+  }
+
+  topologydata["connections"]["transmissionLine"] = tlines;
 
   std::ofstream o(argv[2]);
   o << std::setw(4) << newnetdata << std::endl;
@@ -322,3 +317,30 @@ int main(int argc, char *argv[]) {
 
   return 0;
 }
+
+// for(auto & source: nodes["source"])
+//   {
+//     auto res = std::find_if(bdcond.begin(), bdcond.end(), [source](const
+//     json& x) {
+//                                                             auto it =
+//                                                             x.find("id");
+//                                                             return it !=
+//                                                             x.end() and
+//                                                             it.value() ==
+//                                                             source["id"];
+//                                                           });
+//     source["type"] = (*res)["type"];
+//   }
+// for(auto & sink: nodes["sink"])
+//   {
+//     auto res = std::find_if(bdcond.begin(), bdcond.end(), [sink](const
+//     json& x) {
+//                                                             auto it =
+//                                                             x.find("id");
+//                                                             return it !=
+//                                                             x.end() and
+//                                                             it.value() ==
+//                                                             sink["id"];
+//                                                           });
+//     sink["type"] = (*res)["type"];
+//   }

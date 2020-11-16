@@ -1,3 +1,4 @@
+#include "Networkproblem.hpp"
 #include <Edge.hpp>
 #include <Exception.hpp>
 #include <Jsonreader.hpp>
@@ -6,7 +7,10 @@
 #include <PQnode.hpp>
 #include <PVnode.hpp>
 #include <Problem.hpp>
+#include <Subproblem.hpp>
+#include <Transmissionline.hpp>
 #include <Vphinode.hpp>
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -36,20 +40,27 @@ namespace Jsonreader {
     }
 
     std::map<std::string, std::map<double, Eigen::Vector2d>>
-        power_boundary_map = get_power_boundaries(boundaryjson);
-
+        two_value_boundary_map = get_two_value_boundaries(boundaryjson);
     try {
-      Network::Net net = construct_network(topologyjson, power_boundary_map);
+      std::vector<std::unique_ptr<Network::Node>> nodes;
+      std::vector<std::unique_ptr<Network::Edge>> edges;
+      auto netptr =
+          construct_network(topologyjson, two_value_boundary_map, nodes, edges);
+      std::cout << "test" << std::endl;
+
+      auto netprobptr = std::unique_ptr<Model::Subproblem>(
+          new Model::Networkproblem::Networkproblem(std::move(netptr)));
+      std::unique_ptr<Model::Problem> probptr(new Model::Problem);
+      probptr->add_subproblem(std::move(netprobptr));
+      return probptr;
     } catch (Exception &e) {
       std::cout << e.what() << std::endl;
       throw e;
     }
-    auto problem_ptr = std::unique_ptr<Model::Problem>(new Model::Problem);
-    return problem_ptr;
   }
 
   std::map<std::string, std::map<double, Eigen::Vector2d>>
-  get_power_boundaries(json boundaryjson) {
+  get_two_value_boundaries(json boundaryjson) {
     std::map<std::string, std::map<double, Eigen::Vector2d>>
         powerboundaryvalues;
     for (auto &node : boundaryjson["boundarycondition"]) {
@@ -72,15 +83,15 @@ namespace Jsonreader {
     return powerboundaryvalues;
   }
 
-  Network::Net
+  std::unique_ptr<Network::Net>
   construct_network(json topologyjson,
                     std::map<std::string, std::map<double, Eigen::Vector2d>>
-                        power_boundary_map) {
-    std::vector<std::unique_ptr<Network::Node>> nodes;
-    std::vector<std::unique_ptr<Network::Edge>> edges;
+                        two_value_boundary_map,
+                    std::vector<std::unique_ptr<Network::Node>> &nodes,
+                    std::vector<std::unique_ptr<Network::Edge>> &edges) {
     for (auto &node : topologyjson["nodes"]["Vphi_nodes"]) {
-      auto bd_iterator = power_boundary_map.find(node["id"]);
-      if (bd_iterator == power_boundary_map.end()) {
+      auto bd_iterator = two_value_boundary_map.find(node["id"]);
+      if (bd_iterator == two_value_boundary_map.end()) {
         gthrow({"The node with ", node["id"],
                 " has no boundary condition in the boundary value file."});
       } else {
@@ -91,8 +102,8 @@ namespace Jsonreader {
       }
     }
     for (auto &node : topologyjson["nodes"]["PQ_nodes"]) {
-      auto bd_iterator = power_boundary_map.find(node["id"]);
-      if (bd_iterator == power_boundary_map.end()) {
+      auto bd_iterator = two_value_boundary_map.find(node["id"]);
+      if (bd_iterator == two_value_boundary_map.end()) {
         gthrow({"The node with ", node["id"],
                 " has no boundary condition in the boundary value file."});
       } else {
@@ -102,8 +113,8 @@ namespace Jsonreader {
       }
     }
     for (auto &node : topologyjson["nodes"]["PV_nodes"]) {
-      auto bd_iterator = power_boundary_map.find(node["id"]);
-      if (bd_iterator == power_boundary_map.end()) {
+      auto bd_iterator = two_value_boundary_map.find(node["id"]);
+      if (bd_iterator == two_value_boundary_map.end()) {
         gthrow({"The node with ", node["id"],
                 " has no boundary condition in the boundary value file."});
       } else {
@@ -113,12 +124,38 @@ namespace Jsonreader {
       }
     }
 
-    for (auto &transmissionline :
-         topologyjson["connections"]["transmissionLine"]) {
-      // geht the pointer from the node vector and put it in the line!
+    for (auto &tline : topologyjson["connections"]["transmissionLine"]) {
+      // get the pointer from the node vector and put it in the line!
+
+      auto start = std::find_if(nodes.begin(), nodes.end(),
+                                [tline](std::unique_ptr<Network::Node> &x) {
+                                  auto nodeid = x->get_id();
+                                  return nodeid == tline["from"];
+                                });
+      if (start == nodes.end()) {
+        gthrow({"The starting node ", tline["from"],
+                ", given by transmission line ", tline["id"],
+                ",\n is not defined in the nodes part of the topology file!"});
+      }
+      auto end = std::find_if(nodes.begin(), nodes.end(),
+                              [tline](std::unique_ptr<Network::Node> &x) {
+                                auto nodeid = x->get_id();
+                                return nodeid == tline["to"];
+                              });
+      if (end == nodes.end()) {
+        gthrow({"The ending node ", tline["to"],
+                ", given by transmission line ", tline["id"],
+                ",\n is not defined in the nodes part of the topology file!"});
+      }
+      edges.push_back(
+          std::unique_ptr<Model::Networkproblem::Power::Transmissionline>(
+              new Model::Networkproblem::Power::Transmissionline(
+                  tline["id"], (*start).get(), (*end).get(), tline["G"],
+                  tline["B"])));
     }
 
-    Network::Net net(std::move(nodes), std::move(edges));
+    std::unique_ptr<Network::Net> net(
+        new Network::Net(std::move(nodes), std::move(edges)));
     return net;
   }
 

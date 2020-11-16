@@ -1,14 +1,10 @@
 #pragma once
 #include "Equationcomponent.hpp"
 #include <Eigen/Sparse>
+#include <Net.hpp>
 #include <Subproblem.hpp>
 #include <memory>
 #include <vector>
-
-// forward declarations:
-namespace Network {
-  class Net;
-} // namespace Network
 
 // This namespace holds all data relating to problems that construct the model
 // equations from a network from the namespace Network.
