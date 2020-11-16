@@ -17,7 +17,7 @@ namespace Network {
   public:
     Node() = delete;
 
-    Node(std::string _name) : name(_name){};
+    Node(std::string _id) : id(_id){};
 
     virtual ~Node(){};
 
@@ -45,12 +45,12 @@ namespace Network {
     /// This function returns vector pointers of ending edges
     std::vector<Network::Edge *> get_ending_edges() const;
 
-    /// This function returns the name of the node.
-    std::string get_name() const;
+    /// This function returns the id of the node.
+    std::string get_id() const;
 
   private:
-    /// A unique name for the node.
-    std::string name;
+    /// A unique id for the node.
+    std::string id;
 
     std::vector<Network::Edge *> starting_edges;
     std::vector<Network::Edge *> ending_edges;

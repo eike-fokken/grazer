@@ -8,10 +8,10 @@ namespace Model::Networkproblem::Power {
   class Powernode : public Equationnode {
 
   public:
-    Powernode(std::string name,
+    Powernode(std::string id,
               std::map<double, Eigen::Matrix<double, 2, 1>> _boundary_values,
               double _G, double _B)
-        : Equationnode(name), boundaryvalue(_boundary_values), G(_G), B(_B){};
+        : Equationnode(id), boundaryvalue(_boundary_values), G(_G), B(_B){};
 
     virtual ~Powernode(){};
 

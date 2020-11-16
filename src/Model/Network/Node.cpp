@@ -21,7 +21,7 @@ bool Network::Node::remove_edge(Network::Edge *to_remove) {
   return false;
 }
 
-std::string Network::Node::get_name() const { return name; }
+std::string Network::Node::get_id() const { return id; }
 
 std::vector<Network::Edge *> Network::Node::get_starting_edges() const {
   return starting_edges;

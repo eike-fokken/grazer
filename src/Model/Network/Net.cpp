@@ -21,8 +21,8 @@ namespace Network {
 
         auto node_in_net = exists_node(start);
         if (!node_in_net) {
-          auto name = start->get_name();
-          gthrow({"The node ", name,
+          auto id = start->get_id();
+          gthrow({"The node ", id,
                   "is not part of the net object but attached to an edge!",
                   "\n"});
         }
@@ -35,8 +35,8 @@ namespace Network {
 
         auto node_in_net = exists_node(end);
         if (!node_in_net) {
-          auto name = end->get_name();
-          gthrow({"The node ", name,
+          auto id = end->get_id();
+          gthrow({"The node ", id,
                   "is not part of the net object but attached to an edge!",
                   "\n"});
         }
@@ -60,9 +60,9 @@ namespace Network {
     return raw_edges;
   }
 
-  Node *Net::get_node_by_name(std::string const name) const {
+  Node *Net::get_node_by_id(std::string const id) const {
     for (auto itr = nodes.begin(); itr != nodes.end(); itr++) {
-      if ((*itr)->get_name() == name) {
+      if ((*itr)->get_id() == id) {
         return (*itr).get();
       }
     }
@@ -78,20 +78,20 @@ namespace Network {
     return nullptr;
   }
 
-  std::vector<std::string> Net::get_valid_node_names() const {
-    std::vector<std::string> vector_of_node_names;
+  std::vector<std::string> Net::get_valid_node_ids() const {
+    std::vector<std::string> vector_of_node_ids;
     for (auto itr = nodes.begin(); itr != nodes.end(); itr++) {
-      auto name = (*itr)->get_name();
-      vector_of_node_names.push_back(name);
+      auto id = (*itr)->get_id();
+      vector_of_node_ids.push_back(id);
     }
-    return vector_of_node_names;
+    return vector_of_node_ids;
   }
 
-  Edge *Net::get_edge_by_node_names(std::string const name1,
-                                    std::string const name2) const {
+  Edge *Net::get_edge_by_node_ids(std::string const id1,
+                                  std::string const id2) const {
     for (auto itr = edges.begin(); itr != edges.end(); itr++) {
-      if (((*itr)->get_starting_node()->get_name() == name1) &&
-          ((*itr)->get_ending_node()->get_name() == name2)) {
+      if (((*itr)->get_starting_node()->get_id() == id1) &&
+          ((*itr)->get_ending_node()->get_id() == id2)) {
         return (*itr).get();
       }
     }
@@ -99,10 +99,10 @@ namespace Network {
     return nullptr;
   }
 
-  Edge *Net::get_edge_by_name(std::string const name) const {
+  Edge *Net::get_edge_by_id(std::string const id) const {
 
     for (auto &edge : edges) {
-      if (edge->get_name() == name) {
+      if (edge->get_id() == id) {
         return edge.get();
       }
     }
@@ -110,15 +110,15 @@ namespace Network {
     return nullptr;
   }
 
-  bool Net::exists_edge_between(std::string const name1,
-                                std::string const name2) const {
+  bool Net::exists_edge_between(std::string const id1,
+                                std::string const id2) const {
 
-    auto find_endpoints = [name1, name2](std::unique_ptr<Edge> const &edge) {
-      if ((edge->get_starting_node()->get_name() == name1) &&
-          (edge->get_ending_node()->get_name() == name2)) {
+    auto find_endpoints = [id1, id2](std::unique_ptr<Edge> const &edge) {
+      if ((edge->get_starting_node()->get_id() == id1) &&
+          (edge->get_ending_node()->get_id() == id2)) {
         return true;
-      } else if ((edge->get_starting_node()->get_name() == name2) &&
-                 (edge->get_ending_node()->get_name() == name1)) {
+      } else if ((edge->get_starting_node()->get_id() == id2) &&
+                 (edge->get_ending_node()->get_id() == id1)) {
         return true;
       } else {
         return false;

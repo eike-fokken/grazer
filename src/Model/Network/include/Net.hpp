@@ -19,7 +19,7 @@ namespace Network {
     /// This function returns a vector of ids of all existing nodes in the
     /// net.
     /// @returns Vector of ids of the existing nodes
-    std::vector<std::string> get_valid_node_names() const;
+    std::vector<std::string> get_valid_node_ids() const;
 
     std::vector<Node *> get_nodes();
 
@@ -31,14 +31,14 @@ namespace Network {
     /// @param node_id_2 Ending Node of edge
     /// @returns Return True if the given edge or its reverse edge exists and
     /// false if neither exist.
-    bool exists_edge_between(std::string const name1,
-                             std::string const name2) const;
+    bool exists_edge_between(std::string const id1,
+                             std::string const id2) const;
 
     /// This function returns (by providing the nodes id) a pointer of type
     /// <Node>.
     /// @param id Nodes id
     /// @returns Returns shared pointer of type <Node>
-    Node *get_node_by_name(std::string const name) const;
+    Node *get_node_by_id(std::string const id) const;
 
     Node *exists_node(Node *node) const;
 
@@ -48,10 +48,10 @@ namespace Network {
     /// @param node_id_1 Nodes id of starting node
     /// @param node_id_2 Nodes id of ending node
     /// @returns Returns shared pointer of type < Edge >
-    Edge *get_edge_by_node_names(std::string const name1,
-                                 std::string const name2) const;
+    Edge *get_edge_by_node_ids(std::string const id1,
+                               std::string const id2) const;
 
-    Edge *get_edge_by_name(std::string const name) const;
+    Edge *get_edge_by_id(std::string const id) const;
 
   private:
     std::vector<std::unique_ptr<Node>> nodes;

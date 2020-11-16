@@ -51,7 +51,7 @@ TEST(testNet, test_get_valid_node_ids) {
 
   Network::Net net(std::move(nodes), std::move(edges));
 
-  auto vect = net.get_valid_node_names();
+  auto vect = net.get_valid_node_ids();
   std::vector<std::string> BeautifulArray;
   for (unsigned int i = 0; i != 5; ++i) {
     std::string s("N");
@@ -75,9 +75,9 @@ TEST(testNode, test_GetId) {
       new Network::Edge("edge", nodes[0].get(), nodes[3].get()));
   edges.push_back(std::move(E1));
   Network::Net net(std::move(nodes), std::move(edges));
-  auto node1_ptr = net.get_node_by_name("N3");
+  auto node1_ptr = net.get_node_by_id("N3");
 
-  auto v = node1_ptr->get_name();
+  auto v = node1_ptr->get_id();
 
   EXPECT_EQ(v, "N3");
 }
@@ -289,7 +289,7 @@ TEST(Boundaryvalue, Operator) {
   } catch (Exception &e) {
     std::string message(e.what());
     std::string expected_message(
-        "../src/Model/Networkproblem/include/Boundaryvalue.hpp:50: Requested "
+        "../src/Model/Networkproblem/include/Boundaryvalue.hpp:51: Requested "
         "boundary value is at a later time than the given values.");
     EXPECT_EQ(message, expected_message);
   }
