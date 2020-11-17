@@ -1,7 +1,10 @@
-Net should probably hold unique pointers to edges and nodes.
+DONE:  Net should probably hold unique pointers to edges and nodes.
 
-Boundaryvalue maybe should hold a matrix instead of a map. (requires testing of performance)
+TODO: Declare all classes where it is appropriate final.
 
-Declare all classes where it is appropriate final.
+TODO: Boundaryvalue maybe should hold a matrix instead of a map. (requires testing of performance)
 
-make subproblems inherit from nodes and define connecting problems as edges. --> Problem should hold a network of subproblems.
+TODO: make subproblems inherit from nodes and define connecting problems as edges. --> Problem should hold a network of subproblems.
+
+
+
