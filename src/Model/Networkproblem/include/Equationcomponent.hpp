@@ -2,7 +2,7 @@
 #include <Edge.hpp>
 #include <Eigen/Sparse>
 #include <Node.hpp>
-
+#include <map>
 namespace Aux {
 
   class Matrixhandler;
@@ -30,17 +30,23 @@ namespace Model::Networkproblem {
     /// int like 2.
     virtual int get_number_of_states() const = 0;
 
+    /// This function sets the index.
+    /// @returns the new lowest free index.
     int set_indices(int const next_free_index);
 
     int get_start_state_index() const;
     int get_after_state_index() const;
 
   protected:
+    void push_to_values(double t, std::vector<std::map<double, double>>);
     void print_indices();
 
   private:
-    int start_state_index{};
-    int after_state_index{};
+    /// This must be refactored into a container of times and values.
+    std::vector<double> times;
+    std::vector<std::vector<std::map<double, double>>> values;
+    int start_state_index{-1};
+    int after_state_index{-1};
   };
 
 } // namespace Model::Networkproblem
