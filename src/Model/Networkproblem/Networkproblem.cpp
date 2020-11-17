@@ -15,14 +15,14 @@ namespace Model::Networkproblem {
   Networkproblem::Networkproblem(std::unique_ptr<Network::Net> _network)
       : network(std::move(_network)) {
     for (Network::Node *node : network->get_nodes()) {
-      if (auto equationnode = dynamic_cast<Equationnode *>(node)) {
-        equationnodes.push_back(equationnode);
+      if (auto equationcomponent = dynamic_cast<Equationcomponent *>(node)) {
+        equationcomponents.push_back(equationcomponent);
       }
     }
 
     for (Network::Edge *edge : network->get_edges()) {
-      if (auto equationedge = dynamic_cast<Equationedge *>(edge)) {
-        equationedges.push_back(equationedge);
+      if (auto equationcomponent = dynamic_cast<Equationcomponent *>(edge)) {
+        equationcomponents.push_back(equationcomponent);
       }
     }
   }
@@ -31,47 +31,32 @@ namespace Model::Networkproblem {
                                 double new_time,
                                 Eigen::VectorXd const &last_state,
                                 Eigen::VectorXd const &new_state) {
-    for (Model::Networkproblem::Equationedge *eqedge : equationedges) {
-      eqedge->evaluate(rootfunction, last_time, new_time, last_state,
-                       new_state);
-    }
-    for (Model::Networkproblem::Equationnode *eqnode : equationnodes) {
-      eqnode->evaluate(rootfunction, last_time, new_time, last_state,
-                       new_state);
+    for (Model::Networkproblem::Equationcomponent *eqcomponent :
+         equationcomponents) {
+      eqcomponent->evaluate(rootfunction, last_time, new_time, last_state,
+                            new_state);
     }
   }
 
   void Networkproblem::evaluate_state_derivative(
       Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
       Eigen::VectorXd const &last_state, Eigen::VectorXd const &new_state) {
-    for (Model::Networkproblem::Equationedge *eqedge : equationedges) {
-      eqedge->evaluate_state_derivative(jacobianhandler, last_time, new_time,
-                                        last_state, new_state);
-    }
-    for (Model::Networkproblem::Equationnode *eqnode : equationnodes) {
-      eqnode->evaluate_state_derivative(jacobianhandler, last_time, new_time,
-                                        last_state, new_state);
+    for (Model::Networkproblem::Equationcomponent *eqcomponent :
+         equationcomponents) {
+      eqcomponent->evaluate_state_derivative(jacobianhandler, last_time,
+                                             new_time, last_state, new_state);
     }
   }
 
   int Networkproblem::reserve_indices(int const next_free_index) {
     int free_index = next_free_index;
-    for (Model::Networkproblem::Equationedge *eqedge : equationedges) {
-      free_index = eqedge->set_indices(free_index);
-    }
-    for (Model::Networkproblem::Equationnode *eqnode : equationnodes) {
-      free_index = eqnode->set_indices(free_index);
+    for (Model::Networkproblem::Equationcomponent *eqcomponent :
+         equationcomponents) {
+      free_index = eqcomponent->set_indices(free_index);
     }
     return free_index;
   }
 
-  void Networkproblem::display() {
-    for (auto &nodeptr : network->get_nodes()) {
-      nodeptr->display();
-    }
-    for (auto &edgeptr : network->get_edges()) {
-      edgeptr->display();
-    }
-  }
+  void Networkproblem::display() { network->display(); }
 
 } // namespace Model::Networkproblem

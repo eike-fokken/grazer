@@ -2,7 +2,7 @@
 #include <Edge.hpp>
 #include <Eigen/Sparse>
 #include <Node.hpp>
-
+#include <map>
 namespace Aux {
 
   class Matrixhandler;
@@ -30,31 +30,23 @@ namespace Model::Networkproblem {
     /// int like 2.
     virtual int get_number_of_states() const = 0;
 
+    /// This function sets the index.
+    /// @returns the new lowest free index.
     int set_indices(int const next_free_index);
 
     int get_start_state_index() const;
     int get_after_state_index() const;
 
-  private:
-    int start_state_index{};
-    int after_state_index{};
-  };
+  protected:
+    void push_to_values(double t, std::vector<std::map<double, double>>);
+    void print_indices();
 
-  /// This is an interface class, that defines objects that are nodes and have
-  /// equations.
-  class Equationnode : public Equationcomponent, public Network::Node {
-  public:
-    using Node::Node;
-    virtual ~Equationnode(){};
-  };
-  /// This is an interface class, that defines objects that are edges and have
-  /// equations.
-  class Equationedge : public Equationcomponent, public Network::Edge {
-  public:
-    // Equationedge(std::shared_ptr<Network::Node>
-    // start,std::shared_ptr<Network::Node> end):Edge(start,end) {};
-    using Edge::Edge;
-    virtual ~Equationedge(){};
+  private:
+    /// This must be refactored into a container of times and values.
+    std::vector<double> times;
+    std::vector<std::vector<std::map<double, double>>> values;
+    int start_state_index{-1};
+    int after_state_index{-1};
   };
 
 } // namespace Model::Networkproblem
