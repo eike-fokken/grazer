@@ -75,7 +75,8 @@ namespace Jsonreader {
           std::map<double, Eigen::Vector2d> node_boundary;
           for (auto &datapoint : node["data"]) {
             try {
-              if (node["data"].size() != 3) {
+
+              if (datapoint.size() != 3) {
                 gthrow(
                     {"data in node with id ", node["id"], " is not of size 3."})
               };
@@ -101,6 +102,7 @@ namespace Jsonreader {
         }
       }
     } catch (...) {
+
       gthrow({"Failed to read in field \"boundarycondition\"."})
     }
     return powerboundaryvalues;
