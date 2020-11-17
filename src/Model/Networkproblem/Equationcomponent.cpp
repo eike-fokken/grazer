@@ -1,5 +1,6 @@
 #include <Eigen/Sparse>
 #include <Equationcomponent.hpp>
+#include <iostream>
 
 namespace Model::Networkproblem {
 
@@ -15,6 +16,11 @@ namespace Model::Networkproblem {
   }
   int Equationcomponent::get_after_state_index() const {
     return after_state_index;
+  }
+
+  void Equationcomponent::print_indices() {
+    std::cout << "start: " << start_state_index
+              << ", end: " << after_state_index << ", ";
   }
 
 } // namespace Model::Networkproblem

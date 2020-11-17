@@ -35,6 +35,9 @@ namespace Model::Networkproblem {
     int get_start_state_index() const;
     int get_after_state_index() const;
 
+  protected:
+    void print_indices();
+
   private:
     int start_state_index{};
     int after_state_index{};

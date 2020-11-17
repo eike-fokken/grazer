@@ -112,6 +112,7 @@ namespace Model::Networkproblem::Power {
 
   void PVnode::display() {
     Node::print_id();
+    Equationcomponent::print_indices();
     std::cout << "type: PV, G: " << G << ", B: " << B << "\n";
   }
 

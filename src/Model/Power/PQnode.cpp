@@ -143,6 +143,7 @@ namespace Model::Networkproblem::Power {
 
   void PQnode::display() {
     Node::print_id();
+    Equationcomponent::print_indices();
     std::cout << "type: PQ, G: " << G << ", B: " << B << "\n";
   }
 

@@ -12,5 +12,8 @@ int main(int argc, char **argv) {
 
   auto p = Jsonreader::setup_problem(argv[1], argv[2], argv[3]);
 
+  int number = p->set_indices();
+  std::cout << number << "\n";
+
   p->display();
 }
