@@ -5,13 +5,13 @@
 
 namespace Model::Networkproblem::Power {
 
-  class Powernode : public Equationnode {
+  class Powernode : public Equationcomponent, public Network::Node {
 
   public:
     Powernode(std::string id,
               std::map<double, Eigen::Matrix<double, 2, 1>> _boundary_values,
               double _G, double _B)
-        : Equationnode(id), boundaryvalue(_boundary_values), G(_G), B(_B){};
+        : Node(id), boundaryvalue(_boundary_values), G(_G), B(_B){};
 
     virtual ~Powernode(){};
 

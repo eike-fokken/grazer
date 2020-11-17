@@ -40,21 +40,4 @@ namespace Model::Networkproblem {
     int after_state_index{};
   };
 
-  /// This is an interface class, that defines objects that are nodes and have
-  /// equations.
-  class Equationnode : public Equationcomponent, public Network::Node {
-  public:
-    using Node::Node;
-    virtual ~Equationnode(){};
-  };
-  /// This is an interface class, that defines objects that are edges and have
-  /// equations.
-  class Equationedge : public Equationcomponent, public Network::Edge {
-  public:
-    // Equationedge(std::shared_ptr<Network::Node>
-    // start,std::shared_ptr<Network::Node> end):Edge(start,end) {};
-    using Edge::Edge;
-    virtual ~Equationedge(){};
-  };
-
 } // namespace Model::Networkproblem
