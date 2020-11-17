@@ -9,6 +9,11 @@
 
 using json = nlohmann::ordered_json;
 
+// declarations to circumvent the warning: no prior declaration.
+std::string getnodetype(json node);
+json get_node_type_json(json boundarydata);
+std::string getlintype(json node);
+
 std::string getnodetype(json node) {
 
   std::vector<std::string> current_var = node["var"];
