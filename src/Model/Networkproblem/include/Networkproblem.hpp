@@ -31,8 +31,7 @@ namespace Model::Networkproblem {
 
   private:
     std::unique_ptr<Network::Net> network;
-    std::vector<Equationedge *> equationedges;
-    std::vector<Equationnode *> equationnodes;
+    std::vector<Equationcomponent *> equationcomponents;
 
     virtual int reserve_indices(int const next_free_index) override;
   };
