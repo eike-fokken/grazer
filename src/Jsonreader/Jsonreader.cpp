@@ -65,7 +65,7 @@ namespace Jsonreader {
   }
 
   std::map<std::string, std::map<double, Eigen::Vector2d>>
-  get_two_value_boundaries(json boundaryjson) {
+  get_two_value_boundaries(json const &boundaryjson) {
     std::map<std::string, std::map<double, Eigen::Vector2d>>
         powerboundaryvalues;
     try {
@@ -108,12 +108,12 @@ namespace Jsonreader {
     return powerboundaryvalues;
   }
 
-  std::unique_ptr<Network::Net>
-  construct_network(json topologyjson,
-                    std::map<std::string, std::map<double, Eigen::Vector2d>>
-                        two_value_boundary_map,
-                    std::vector<std::unique_ptr<Network::Node>> &nodes,
-                    std::vector<std::unique_ptr<Network::Edge>> &edges) {
+  std::unique_ptr<Network::Net> construct_network(
+      json const &topologyjson,
+      std::map<std::string, std::map<double, Eigen::Vector2d>> const
+          &two_value_boundary_map,
+      std::vector<std::unique_ptr<Network::Node>> &nodes,
+      std::vector<std::unique_ptr<Network::Edge>> &edges) {
     for (auto &node : topologyjson["nodes"]["Vphi_nodes"]) {
       auto bd_iterator = two_value_boundary_map.find(node["id"]);
       if (bd_iterator == two_value_boundary_map.end()) {
@@ -183,5 +183,7 @@ namespace Jsonreader {
         new Network::Net(std::move(nodes), std::move(edges)));
     return net;
   }
+
+  void set_initial_values(json const &initialjson, Model::Problem const &net) {}
 
 } // namespace Jsonreader
