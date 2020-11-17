@@ -37,15 +37,13 @@ namespace Model {
 
     /// As we have unique pointers, we can only give back a pointer to our
     /// subproblems.
-    std::vector<Subproblem *> get_subproblems();
+    std::vector<Subproblem *> get_subproblems() const;
 
     void display();
 
   private:
     /// collection of sub-problems
     std::vector<std::unique_ptr<Subproblem>> subproblems;
-
-  protected:
   };
 
 } // namespace Model

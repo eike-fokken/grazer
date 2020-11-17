@@ -20,7 +20,7 @@ namespace Jsonreader {
   using json = nlohmann::ordered_json;
 
   std::unique_ptr<Model::Problem>
-  setup_problem(std::filesystem::path topology, std::filesystem::path initial,
+  setup_problem(std::filesystem::path topology,
                 std::filesystem::path boundary) {
 
     json topologyjson;
@@ -176,6 +176,11 @@ namespace Jsonreader {
     return net;
   }
 
-  void set_initial_values(json const &initialjson, Model::Problem const &net) {}
+  void set_initial_values(json const &initialjson,
+                          Model::Problem const &problem) {
+    auto subproblems = problem.get_subproblems();
+    for (auto &subproblem : subproblems) {
+    }
+  }
 
 } // namespace Jsonreader

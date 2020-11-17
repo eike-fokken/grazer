@@ -1,6 +1,7 @@
 #pragma once
 #include <Eigen/Sparse>
-
+#include <string>
+#include <utility>
 namespace Aux {
 
   class Matrixhandler;
@@ -29,6 +30,9 @@ namespace Model {
     // @returns int next_free_index the new first non-reserved index of the
     // state vector.
     int set_indices(int const next_free_index);
+
+    virtual std::map<std::string, std::pair<int, int>>
+    get_initializer_list() const = 0;
 
     int get_number_of_states() const;
     int get_start_state_index() const;

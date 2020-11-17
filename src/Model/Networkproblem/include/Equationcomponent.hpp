@@ -39,6 +39,8 @@ namespace Model::Networkproblem {
 
     virtual void push_values(double time, Eigen::VectorXd const &state) = 0;
 
+    void print_out_files();
+
   protected:
     void push_to_values(double t, std::vector<std::map<double, double>>);
     void print_indices();

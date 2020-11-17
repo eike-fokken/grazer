@@ -12,7 +12,7 @@ namespace Model::Networkproblem {
 
   // This class implements a Subproblem, that builds the model equations from a
   // network.
-  class Networkproblem : public Subproblem {
+  class Networkproblem final : public Subproblem {
 
   public:
     ~Networkproblem() override{};
@@ -21,19 +21,22 @@ namespace Model::Networkproblem {
 
     void evaluate(Eigen::VectorXd &rootfunction, double last_time,
                   double new_time, Eigen::VectorXd const &last_state,
-                  Eigen::VectorXd const &new_state) override;
+                  Eigen::VectorXd const &new_state) final;
     void evaluate_state_derivative(Aux::Matrixhandler *jacobian,
                                    double last_time, double new_time,
                                    Eigen::VectorXd const &last_state,
-                                   Eigen::VectorXd const &new_state) override;
+                                   Eigen::VectorXd const &new_state) final;
 
     void display() override;
+
+    std::map<std::string, std::pair<int, int>>
+    get_initializer_list() const final;
 
   private:
     std::unique_ptr<Network::Net> network;
     std::vector<Equationcomponent *> equationcomponents;
 
-    virtual int reserve_indices(int const next_free_index) override;
+    int reserve_indices(int const next_free_index) final;
   };
 
 } // namespace Model::Networkproblem

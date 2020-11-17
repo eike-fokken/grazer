@@ -48,15 +48,26 @@ namespace Model::Networkproblem {
     }
   }
 
+  void Networkproblem::display() { network->display(); }
+
+  std::map<std::string, std::pair<int, int>>
+  Networkproblem::get_initializer_list() const {
+    // std::map<std::string,std::pair<int,int>> list;
+    // for (Equationcomponent *eqcomponent : equationcomponents) {
+    // here: eqcomponents need ids! (also later for printing!)
+    //     maybe just cast...
+    //   list.insert({eqcomponent->get_id(),{get_start_state_index(),get_after_state_index()}});
+    // }
+    std::map<std::string, std::pair<int, int>> m;
+    return m;
+  }
+
   int Networkproblem::reserve_indices(int const next_free_index) {
     int free_index = next_free_index;
-    for (Model::Networkproblem::Equationcomponent *eqcomponent :
-         equationcomponents) {
+    for (Equationcomponent *eqcomponent : equationcomponents) {
       free_index = eqcomponent->set_indices(free_index);
     }
     return free_index;
   }
-
-  void Networkproblem::display() { network->display(); }
 
 } // namespace Model::Networkproblem

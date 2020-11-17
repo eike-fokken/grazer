@@ -26,7 +26,6 @@ namespace Jsonreader {
 
   /// This function returns a full-fledged problem for solving with grazer.
   std::unique_ptr<Model::Problem> setup_problem(std::filesystem::path topology,
-                                                std::filesystem::path initial,
                                                 std::filesystem::path boundary);
 
   /// This function reads boundary data for power nodes into a map for
@@ -46,7 +45,8 @@ namespace Jsonreader {
       std::vector<std::unique_ptr<Network::Node>> &nodes,
       std::vector<std::unique_ptr<Network::Edge>> &edges);
 
-  void set_initial_values(json const &initialjson,
+  void set_initial_values(Eigen::VectorXd &initial_state,
+                          json const &initialjson,
                           Model::Problem const &problem);
 
 } // namespace Jsonreader

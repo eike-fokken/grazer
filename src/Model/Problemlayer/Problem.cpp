@@ -42,7 +42,7 @@ namespace Model {
     }
   }
 
-  std::vector<Subproblem *> Problem::get_subproblems() {
+  std::vector<Subproblem *> Problem::get_subproblems() const {
     std::vector<Subproblem *> pointer_vector;
     for (auto &uptr : subproblems) {
       pointer_vector.push_back(uptr.get());
