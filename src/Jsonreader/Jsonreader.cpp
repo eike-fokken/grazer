@@ -74,25 +74,18 @@ namespace Jsonreader {
             node["type"] == "Vphi") {
           std::map<double, Eigen::Vector2d> node_boundary;
           for (auto &datapoint : node["data"]) {
-            try {
-
-              if (datapoint.size() != 3) {
-                gthrow(
-                    {"data in node with id ", node["id"], " is not of size 3."})
-              };
-            } catch (Exception &e) {
-              std::cout << e.what() << std::endl;
-              throw;
+            if (datapoint["values"].size() != 2) {
+              gthrow({"Wrong number of boundary values in node ", node["id"]});
             }
             Eigen::Vector2d value;
             try {
-              value[0] = datapoint[1];
-              value[1] = datapoint[2];
+              value[0] = datapoint["values"][0];
+              value[1] = datapoint["values"][1];
             } catch (...) {
               gthrow({"data in node with id ", node["id"],
                       " couldn't be assignd in vector, not a double?"})
             }
-            node_boundary.insert({datapoint[0], value});
+            node_boundary.insert({datapoint["time"], value});
           }
           powerboundaryvalues.insert(
               {node["id"].get<std::string>(), node_boundary});
@@ -102,8 +95,7 @@ namespace Jsonreader {
         }
       }
     } catch (...) {
-
-      gthrow({"Failed to read in field \"boundarycondition\"."})
+      gthrow({"Failed to read a field in \"boundarycondition\"."})
     }
     return powerboundaryvalues;
   }
