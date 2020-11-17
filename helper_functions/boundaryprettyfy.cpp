@@ -102,16 +102,17 @@ json get_node_type_json(json boundarydata) {
 
 int main(int argc, char *argv[]) {
 
-  if (argc != 5) {
-    std::cout
-        << "You must specify input files as: boundary_input.json "
-           "boundary_output.json topology_input.json topology_output.json."
-           "on the command line!"
-        << std::endl;
+  if (argc != 7) {
+    std::cout << "You must specify input files as: boundary_input.json "
+                 "boundary_output.json topology_input.json "
+                 "topology_output.json initial_input.json initial_output.json."
+                 "on the command line!"
+              << std::endl;
     return 1;
   }
 
-  if (std::filesystem::exists(argv[2]) or std::filesystem::exists(argv[4])) {
+  if (std::filesystem::exists(argv[2]) or std::filesystem::exists(argv[4]) or
+      std::filesystem::exists(argv[6])) {
     std::cout << "one of the output files exists, overwrite?" << '\n';
     std::string answer;
     std::cin >> answer;
@@ -129,6 +130,7 @@ int main(int argc, char *argv[]) {
 
   json boundarydata;
   json topologydata;
+  json initialdata;
 
   {
     std::ifstream boundary_filestream(argv[1]);
@@ -137,6 +139,11 @@ int main(int argc, char *argv[]) {
   {
     std::ifstream topology_filestream(argv[3]);
     topology_filestream >> topologydata;
+  }
+
+  {
+    std::ifstream initial_filestream(argv[5]);
+    initial_filestream >> initialdata;
   }
 
   json newnetdata = get_node_type_json(boundarydata);
@@ -292,6 +299,7 @@ int main(int argc, char *argv[]) {
 
   nodes.erase("Powernode");
 
+  ////// Topology: remove strings, make doubles.
   topologydata["nodes"] = nodes;
 
   json tlines = topologydata["connections"]["transmissionLine"];
@@ -309,11 +317,54 @@ int main(int argc, char *argv[]) {
 
   topologydata["connections"]["transmissionLine"] = tlines;
 
-  std::ofstream o(argv[2]);
-  o << std::setw(4) << newnetdata << std::endl;
+  json initialconditions = initialdata["objectCondition"];
+
+  for (auto &condition : initialconditions) {
+    std::cout << condition["id"] << "\n";
+    if (condition["data"].type() == json::value_t::array) {
+      for (auto &datapoint : condition["data"]) {
+        std::string xstring = datapoint["x"];
+        double x = std::stod(xstring);
+        datapoint["x"] = x;
+        if (datapoint["value"].type() == json::value_t::array) {
+          for (auto &valuepoint : datapoint["value"]) {
+            std::string valuestring = valuepoint;
+            double value = std::stod(valuestring);
+            valuepoint = value;
+          }
+        } else if (datapoint["value"].type() == json::value_t::object) {
+          std::string valuestring = datapoint["value"];
+          double value = std::stod(valuestring);
+          datapoint["value"] = value;
+        }
+      }
+    } else if (condition["data"].type() == json::value_t::object) {
+      std::string xstring = condition["data"]["x"];
+      double x = std::stod(xstring);
+      condition["data"]["x"] = x;
+      if (condition["data"]["value"].type() == json::value_t::array) {
+        for (auto &valuepoint : condition["data"]["value"]) {
+          std::string valuestring = valuepoint;
+          double value = std::stod(valuestring);
+          valuepoint = value;
+        }
+
+      } else if (condition["data"]["value"].type() == json::value_t::object) {
+        std::string valuestring = condition["data"]["value"];
+        double value = std::stod(valuestring);
+        condition["data"]["value"] = value;
+      }
+    }
+  }
+
+  std::ofstream obound(argv[2]);
+  obound << std::setw(4) << newnetdata << std::endl;
 
   std::ofstream otop(argv[4]);
   otop << std::setw(4) << topologydata << std::endl;
+
+  std::ofstream oinit(argv[6]);
+  oinit << std::setw(4) << initialconditions << std::endl;
 
   return 0;
 }
