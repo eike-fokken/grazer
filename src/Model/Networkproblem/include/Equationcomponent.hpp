@@ -37,9 +37,13 @@ namespace Model::Networkproblem {
     int get_start_state_index() const;
     int get_after_state_index() const;
 
+    virtual void push_values(double time, Eigen::VectorXd const &state) = 0;
+
   protected:
     void push_to_values(double t, std::vector<std::map<double, double>>);
     void print_indices();
+
+    void write_to_files();
 
   private:
     /// This must be refactored into a container of times and values.

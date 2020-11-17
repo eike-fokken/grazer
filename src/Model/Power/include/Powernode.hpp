@@ -21,6 +21,7 @@ namespace Model::Networkproblem::Power {
     double get_B() const;
 
   protected:
+    void push_values(double time, Eigen::VectorXd const &state) override;
     double P(double new_time, Eigen::VectorXd const &new_state);
     double Q(double new_time, Eigen::VectorXd const &new_state);
     void evaluate_P_derivative(Aux::Matrixhandler *jacobianhandler,

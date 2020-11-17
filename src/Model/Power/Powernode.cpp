@@ -10,6 +10,15 @@ namespace Model::Networkproblem::Power {
 
   double Powernode::get_B() const { return B; }
 
+  void Powernode::push_values(double time, Eigen::VectorXd const &state) {
+    std::vector<std::map<double, double>> value_vector;
+    for (int i = get_start_state_index(); i != get_after_state_index(); ++i) {
+      std::map<double, double> m({{0.0, state[i]}});
+      value_vector.push_back(m);
+    }
+    Equationcomponent::push_to_values(time, value_vector);
+  }
+
   double Powernode::P(double new_time, Eigen::VectorXd const &new_state) {
     int index1 = get_start_state_index();
     int index2 = index1 + 1;
