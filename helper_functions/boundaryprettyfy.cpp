@@ -262,6 +262,20 @@ int main(int argc, char *argv[]) {
   for (auto &node : bdcond) {
     node.erase("var");
   }
+
+  for (auto &node : bdcond) {
+    json newdata;
+    for (auto &datum : node["data"]) {
+      json newdatapoint;
+      newdatapoint["time"] = datum[0];
+      for (auto itr = ++datum.begin(); itr != datum.end(); ++itr) {
+        newdatapoint["values"].push_back((*itr));
+      }
+      newdata.push_back(newdatapoint);
+    }
+    node["data"] = newdata;
+  }
+
   newnetdata["boundarycondition"] = bdcond;
 
   json nodes = topologydata["nodes"];
@@ -320,7 +334,6 @@ int main(int argc, char *argv[]) {
   json initialconditions = initialdata["objectCondition"];
 
   for (auto &condition : initialconditions) {
-    std::cout << condition["id"] << "\n";
     if (condition["data"].type() == json::value_t::array) {
       for (auto &datapoint : condition["data"]) {
         std::string xstring = datapoint["x"];
