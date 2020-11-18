@@ -23,4 +23,6 @@ namespace Aux {
     matrix->coeffRef(row, col) += value;
   }
 
+  void Coeffrefhandler::set_matrix() {}
+
 } // namespace Aux

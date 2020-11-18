@@ -4,13 +4,11 @@
 #include "MockSubproblem.hpp"
 #include "Node.hpp"
 #include "Problem.hpp"
+#include <Eigen/Dense>
 #include <gtest/gtest.h>
 #include <memory>
 #include <string>
 #include <vector>
-#include "Rootfct.hpp"
-#include "DevRootfct.hpp"
-#include <Eigen/Dense>
 
 struct NetTest : public ::testing ::Test {
   virtual void SetUp() override {}
@@ -327,32 +325,4 @@ TEST(Boundaryvalue, Operator) {
     // ACT
     EXPECT_EQ(v, v2);
   }
-}
-
-TEST(Newtonsolver, SolveWithRoot) {
-  double tol = 0.00001;
-  int max_it = 10000;
-  
-  //ARRANGE
-  Solver::Newtonsolver Solver(tol, max_it);
-  //bool new_jacobian_structure = 1;
-  Eigen::VectorXd new_state(2), last_state(2);
-  new_state(0)=5; //Wähle Funktionswert, der weit weg ist
-  new_state(1)=3; 
-
-  last_state(0)=0; 
-  last_state(1)=0;
-
-  //double last_time = 0; 
-  //double new_time = 0;
-
-  //ASSERT
-  //Solver.solve(f, df,
-  //             new_jacobian_structure,
-  //             new_state, last_time,
-  //             new_time, last_state);  
-  
-  //ACT
- 
-
 }
