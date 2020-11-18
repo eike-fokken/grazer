@@ -24,7 +24,7 @@ namespace Model::Networkproblem::Power {
                                    Eigen::VectorXd const &,
                                    Eigen::VectorXd const &new_state) final;
 
-    void display() final;
+    void display() const final;
   };
 
 } // namespace Model::Networkproblem::Power

@@ -43,7 +43,7 @@ namespace Model::Networkproblem {
 
   protected:
     void push_to_values(double t, std::vector<std::map<double, double>>);
-    void print_indices();
+    void print_indices() const;
 
     void write_to_files();
 

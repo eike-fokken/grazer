@@ -27,10 +27,10 @@ namespace Model::Networkproblem {
                                    Eigen::VectorXd const &last_state,
                                    Eigen::VectorXd const &new_state) final;
 
-    void display() override;
+    void display() const override;
 
-    std::map<std::string, std::pair<int, int>>
-    get_initializer_list() const final;
+    void get_initializer_list(
+        std::vector<std::tuple<std::string, int, int>> &list) const final;
 
   private:
     std::unique_ptr<Network::Net> network;

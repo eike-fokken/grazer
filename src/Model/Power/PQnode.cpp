@@ -26,7 +26,7 @@ namespace Model::Networkproblem::Power {
     evaluate_Q_derivative(jacobianhandler, new_state);
   }
 
-  void PQnode::display() {
+  void PQnode::display() const {
     Node::print_id();
     Equationcomponent::print_indices();
     std::cout << "type: PQ, G: " << G << ", B: " << B << "\n";

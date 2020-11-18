@@ -131,7 +131,7 @@ namespace Network {
       return false;
     }
   }
-  void Net::display() {
+  void Net::display() const {
     for (auto &node : nodes) {
       node->display();
     }

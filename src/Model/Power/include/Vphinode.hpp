@@ -23,7 +23,7 @@ namespace Model::Networkproblem::Power {
                                    Eigen::VectorXd const &,
                                    Eigen::VectorXd const &new_state) final;
 
-    void display() override;
+    void display() const override;
   };
 
 } // namespace Model::Networkproblem::Power

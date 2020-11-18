@@ -24,7 +24,7 @@ namespace Model::Networkproblem {
     return after_state_index;
   }
 
-  void Equationcomponent::print_indices() {
+  void Equationcomponent::print_indices() const {
     std::cout << "start: " << start_state_index
               << ", end: " << after_state_index << ", ";
   }

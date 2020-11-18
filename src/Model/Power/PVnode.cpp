@@ -25,7 +25,7 @@ namespace Model::Networkproblem::Power {
     jacobianhandler->set_coefficient(index2, index2, 1.0);
   }
 
-  void PVnode::display() {
+  void PVnode::display() const {
     Node::print_id();
     Equationcomponent::print_indices();
     std::cout << "type: PV, G: " << G << ", B: " << B << "\n";

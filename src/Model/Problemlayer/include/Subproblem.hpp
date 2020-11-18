@@ -22,7 +22,7 @@ namespace Model {
         Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
         Eigen::VectorXd const &, Eigen::VectorXd const &new_state) = 0;
 
-    virtual void display() = 0;
+    virtual void display() const = 0;
 
     // Reserves indices from the state vector
     // @param int next_free_index the first non-reserved index of the state
@@ -31,8 +31,8 @@ namespace Model {
     // state vector.
     int set_indices(int const next_free_index);
 
-    virtual std::map<std::string, std::pair<int, int>>
-    get_initializer_list() const = 0;
+    virtual void get_initializer_list(
+        std::vector<std::tuple<std::string, int, int>> &list) const = 0;
 
     int get_number_of_states() const;
     int get_start_state_index() const;

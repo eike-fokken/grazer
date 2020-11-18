@@ -14,7 +14,7 @@ namespace Model::Networkproblem::Power {
     double get_G() const;
     double get_B() const;
 
-    void display() override;
+    void display() const override;
 
   private:
     double G;

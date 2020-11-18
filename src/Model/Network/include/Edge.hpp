@@ -1,4 +1,5 @@
 #pragma once
+#include <Idobject.hpp>
 #include <memory>
 #include <string>
 
@@ -11,19 +12,17 @@ namespace Network {
 
   /// The class edge contains functions for getting information
   /// about the nodes attached to object Edge.
-  class Edge {
+  class Edge : public Idobject {
 
   public:
     // The edge holds a shared pointer to its start and end nodes.
     // Creating an edge without also providing its start and
     // end node is prohibited:
-    Edge(){};
+    Edge() = delete;
     // Instead creating the edge with start and end node is a good idea:
     Edge(std::string _id, Node *start_node, Node *end_node);
 
     virtual ~Edge(){};
-
-    std::string get_id();
 
     /// Function returns starting node of Edge object.
     /// @returns Starting node of type std::shared_ptr<Network::Node>
@@ -33,13 +32,7 @@ namespace Network {
     /// @returns Ending node of type std::shared_ptr<Network::Node>
     Node *get_ending_node() const;
 
-    virtual void display();
-
-  protected:
-    void print_id();
-
   private:
-    std::string id;
     Node *starting_node;
     Node *ending_node;
   };

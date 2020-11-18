@@ -1,8 +1,10 @@
 #include <Equationcomponent.hpp>
+#include <Exception.hpp>
 #include <Net.hpp>
 #include <Networkproblem.hpp>
 #include <Node.hpp>
 #include <memory>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -48,18 +50,20 @@ namespace Model::Networkproblem {
     }
   }
 
-  void Networkproblem::display() { network->display(); }
+  void Networkproblem::display() const { network->display(); }
 
-  std::map<std::string, std::pair<int, int>>
-  Networkproblem::get_initializer_list() const {
-    // std::map<std::string,std::pair<int,int>> list;
-    // for (Equationcomponent *eqcomponent : equationcomponents) {
-    // here: eqcomponents need ids! (also later for printing!)
-    //     maybe just cast...
-    //   list.insert({eqcomponent->get_id(),{get_start_state_index(),get_after_state_index()}});
-    // }
-    std::map<std::string, std::pair<int, int>> m;
-    return m;
+  void Networkproblem::get_initializer_list(
+      std::vector<std::tuple<std::string, int, int>> &list) const {
+
+    for (Equationcomponent *eqcomponent : equationcomponents) {
+      auto idcomponent = dynamic_cast<Network::Idobject *>(eqcomponent);
+      if (idcomponent == nullptr) {
+        gthrow({"An equation component is not of type Idobject, which should "
+                "never happen."});
+      }
+      list.push_back({idcomponent->get_id(), get_start_state_index(),
+                      get_after_state_index()});
+    }
   }
 
   int Networkproblem::reserve_indices(int const next_free_index) {

@@ -1,5 +1,5 @@
 #pragma once
-#include <string>
+#include <Idobject.hpp>
 #include <vector>
 
 namespace Network {
@@ -12,12 +12,12 @@ namespace Network {
   /// and removement of edges as well as providing information about the nodes
   /// id.
 
-  class Node {
+  class Node : public Idobject {
 
   public:
     Node() = delete;
 
-    Node(std::string _id) : id(_id){};
+    using Idobject::Idobject;
 
     virtual ~Node(){};
 
@@ -45,18 +45,7 @@ namespace Network {
     /// This function returns vector pointers of ending edges
     std::vector<Network::Edge *> get_ending_edges() const;
 
-    /// This function returns the id of the node.
-    std::string get_id() const;
-
-    virtual void display();
-
-  protected:
-    void print_id();
-
   private:
-    /// A unique id for the node.
-    std::string id;
-
     std::vector<Network::Edge *> starting_edges;
     std::vector<Network::Edge *> ending_edges;
   };

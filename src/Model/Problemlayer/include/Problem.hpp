@@ -39,7 +39,7 @@ namespace Model {
     /// subproblems.
     std::vector<Subproblem *> get_subproblems() const;
 
-    void display();
+    void display() const;
 
   private:
     /// collection of sub-problems

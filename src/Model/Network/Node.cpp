@@ -22,8 +22,6 @@ bool Network::Node::remove_edge(Network::Edge *to_remove) {
   return false;
 }
 
-std::string Network::Node::get_id() const { return id; }
-
 std::vector<Network::Edge *> Network::Node::get_starting_edges() const {
   return starting_edges;
 }
@@ -47,7 +45,3 @@ bool Network::Node::attach_ending_edge(Network::Edge *to_attach) {
   ending_edges.push_back(to_attach);
   return true;
 }
-
-void Network::Node::display() { std::cout << "id: " << id << "\n"; }
-
-void Network::Node::print_id() { std::cout << "id: " << id << ", "; }
