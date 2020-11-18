@@ -1,3 +1,4 @@
+#include <Eigen/Sparse>
 #include <Exception.hpp>
 #include <Jsonreader.hpp>
 #include <Problem.hpp>
@@ -21,6 +22,11 @@ int main(int argc, char **argv) {
         << std::endl;
     return 1;
   }
+
+  //////////////////////////////////////////////////
+  ////////////////// SANITIZE INPUT FIRST!!!!
+  //////////////////////////////////////////////////
+  // Important task: validate the json before using it.
 
   std::filesystem::path output_dir("output");
 
@@ -48,10 +54,9 @@ int main(int argc, char **argv) {
 
   auto p = Jsonreader::setup_problem(argv[1], argv[3]);
 
-  Eigen::VectorXd initial_state;
-  Jsonreader::set_initial_values(initial_state, argv[2], *p);
-
   int number = p->set_indices();
-  std::cout << number;
-  // p->display();
+
+  Eigen::VectorXd initial_state(number);
+
+  Jsonreader::set_initial_values(initial_state, argv[2], p);
 }

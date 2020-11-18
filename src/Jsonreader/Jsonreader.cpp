@@ -30,13 +30,6 @@ namespace Jsonreader {
     } catch (...) {
       gthrow({"Couldn't load topology file: ", topology.string()});
     }
-    json initialjson;
-    try {
-      std::ifstream jsonfilestream(initial);
-      jsonfilestream >> initialjson;
-    } catch (...) {
-      gthrow({"Couldn't load initial value file: ", initial.string()});
-    }
     json boundaryjson;
     try {
       std::ifstream jsonfilestream(boundary);
@@ -176,11 +169,22 @@ namespace Jsonreader {
     return net;
   }
 
-  void set_initial_values(json const &initialjson,
-                          Model::Problem const &problem) {
-    auto subproblems = problem.get_subproblems();
-    for (auto &subproblem : subproblems) {
-    }
+  void set_initial_values(Eigen::VectorXd &initial_state,
+                          std::filesystem::path initial,
+                          std::unique_ptr<Model::Problem> &problem) {
+    // json initialjson;
+    // try {
+    //   std::ifstream jsonfilestream(initial);
+    //   jsonfilestream >> initialjson;
+    // } catch (...) {
+    //   gthrow({"Couldn't load initial value file: ", initial.string()});
+    // }
+
+    // auto subproblems = problem->get_subproblems();
+    // std::vector<std::tuple<std::string,int,int>> initializer_list;
+    // for (auto &subproblem : subproblems) {
+    //   subproblem->get_initializer_list(initializer_list);
+    // }
   }
 
 } // namespace Jsonreader
