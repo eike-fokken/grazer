@@ -8,3 +8,4 @@ TODO: make subproblems inherit from nodes and define connecting problems as edge
 
 TODO: Think about how initial values should be handled for non-network problems!
 
+TODO: Validate the json!
