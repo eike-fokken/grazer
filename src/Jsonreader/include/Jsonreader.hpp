@@ -38,12 +38,10 @@ namespace Jsonreader {
   /// This function constructs a network from a vector of nodes, edges and
   /// boundary conditions. Up to now only double-valued boundary conditions (for
   /// power) are implemented.
-  std::unique_ptr<Network::Net> construct_network(
-      json const &topologyjson,
-      std::map<std::string, std::map<double, Eigen::Vector2d>> const
-          &two_value_boundary_map,
-      std::vector<std::unique_ptr<Network::Node>> &nodes,
-      std::vector<std::unique_ptr<Network::Edge>> &edges);
+  std::unique_ptr<Network::Net>
+  construct_network(json &topologyjson, json &boundary_json,
+                    std::vector<std::unique_ptr<Network::Node>> &nodes,
+                    std::vector<std::unique_ptr<Network::Edge>> &edges);
 
   void set_initial_values(Eigen::VectorXd &initial_state,
                           std::filesystem::path initial,

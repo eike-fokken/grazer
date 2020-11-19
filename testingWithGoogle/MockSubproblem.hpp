@@ -20,8 +20,7 @@ namespace Model {
                 (override));
     MOCK_METHOD(int, reserve_indices, (int const next_free_index), (override));
     MOCK_METHOD(void, display, (), (override, const));
-    MOCK_METHOD((void), get_initializer_list,
-                ((std::vector<std::tuple<std::string, int, int>> &)),
-                (override, const));
+    MOCK_METHOD((void), set_initial_values,
+                (Eigen::VectorXd &, nlohmann::ordered_json), (override));
   };
 } // namespace Model

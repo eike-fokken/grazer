@@ -1,5 +1,6 @@
 #pragma once
 #include <Boundaryvalue.hpp>
+#include <Eigen/Sparse>
 #include <Equationcomponent.hpp>
 #include <Node.hpp>
 #include <nlohmann/json.hpp>
@@ -9,8 +10,8 @@ namespace Model::Networkproblem::Power {
   class Powernode : public Equationcomponent, public Network::Node {
 
   public:
-    Powernode(std::string _id, nlohmann::ordered_json _boundaryvalues,
-              double _G, double _B);
+    Powernode(std::string _id, nlohmann::ordered_json boundary_json, double _G,
+              double _B);
 
     virtual ~Powernode(){};
 
@@ -18,6 +19,9 @@ namespace Model::Networkproblem::Power {
 
     double get_G() const;
     double get_B() const;
+
+    void set_initial_values(Eigen::VectorXd &new_state,
+                            nlohmann::ordered_json initial_json) final;
 
   protected:
     void push_values(double time, Eigen::VectorXd const &state) override;
@@ -33,6 +37,9 @@ namespace Model::Networkproblem::Power {
     double G;
     /// Imaginary part of the admittance of this node
     double B;
+
+  private:
+    void set_boundary_condition(nlohmann::ordered_json boundary_json);
   };
 
 } // namespace Model::Networkproblem::Power

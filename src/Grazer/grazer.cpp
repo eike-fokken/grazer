@@ -14,9 +14,12 @@ int main(int argc, char **argv) {
     gthrow({" Wrong number of arguments."})
   }
 
-  if (!std::filesystem::is_regular_file(argv[1]) or
-      !std::filesystem::is_regular_file(argv[2]) or
-      !std::filesystem::is_regular_file(argv[3])) {
+  std::filesystem::path topology(argv[1]);
+  std::filesystem::path initial(argv[2]);
+  std::filesystem::path boundary(argv[3]);
+  if (!std::filesystem::is_regular_file(topology) or
+      !std::filesystem::is_regular_file(initial) or
+      !std::filesystem::is_regular_file(boundary)) {
     std::cout
         << "One of the given files is not a regular file, I will abort now."
         << std::endl;
@@ -52,11 +55,12 @@ int main(int argc, char **argv) {
   std::filesystem::create_directory(output_dir);
   std::cout << output_dir << std::endl;
 
-  auto p = Jsonreader::setup_problem(argv[1], argv[3]);
+  auto p = Jsonreader::setup_problem(topology, boundary);
 
   int number = p->set_indices();
-
+  std::cout << number << std::endl;
   Eigen::VectorXd initial_state(number);
 
-  Jsonreader::set_initial_values(initial_state, argv[2], p);
+  Jsonreader::set_initial_values(initial_state, initial, p);
+  p->display();
 }

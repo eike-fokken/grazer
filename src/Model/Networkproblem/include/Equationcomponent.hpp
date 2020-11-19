@@ -1,5 +1,6 @@
 #pragma once
 #include <Eigen/Sparse>
+#include <nlohmann/json.hpp>
 
 namespace Aux {
 
@@ -38,8 +39,8 @@ namespace Model::Networkproblem {
     virtual void push_values(double time, Eigen::VectorXd const &state) = 0;
 
     void print_out_files();
-
-    // virtual void set_initial_values() = 0;
+    virtual void set_initial_values(Eigen::VectorXd &new_state,
+                                    nlohmann::ordered_json initial_json) = 0;
 
   protected:
     void push_to_values(double t, std::vector<std::map<double, double>>);

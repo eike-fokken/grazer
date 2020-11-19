@@ -33,8 +33,8 @@ namespace Model::Networkproblem {
 
     void display() const override;
 
-    void get_initializer_list(
-        std::vector<std::tuple<std::string, int, int>> &list) const final;
+    virtual void set_initial_values(Eigen::VectorXd &new_state,
+                                    nlohmann::ordered_json initial_json) final;
 
   private:
     std::unique_ptr<Network::Net> network;

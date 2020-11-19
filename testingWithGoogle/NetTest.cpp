@@ -278,21 +278,15 @@ TEST(Boundaryvalue, Operator) {
 
   Model::Networkproblem::Boundaryvalue<double, 2> myBdrclass(MapOfBdrValues);
 
-  // TEST1
-
-  // ASSERT & ACT
-  // Throw exception (der gleiche Test für zB 0.5 funktioniert nicht, ich
-  // weiß
-  // nicht warum. Vllt habe ich etwas missverstanden)
   EXPECT_ANY_THROW(myBdrclass.operator()(3.5));
   try {
     myBdrclass(3.5);
   } catch (Exception &e) {
     std::string message(e.what());
-    std::string expected_message(
-        "../src/Model/Networkproblem/include/Boundaryvalue.hpp:51: Requested "
-        "boundary value is at a later time than the given values.");
-    EXPECT_EQ(message, expected_message);
+    bool is_right_message =
+        (message.find("Requested boundary value is at a later time than the "
+                      "given values") != std::string::npos);
+    EXPECT_EQ(is_right_message, true);
   }
   EXPECT_ANY_THROW(myBdrclass.operator()(0.5));
 

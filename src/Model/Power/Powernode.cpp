@@ -4,6 +4,7 @@
 #include <Matrixhandler.hpp>
 #include <Powernode.hpp>
 #include <Transmissionline.hpp>
+#include <iostream>
 #include <map>
 
 namespace Model::Networkproblem::Power {
@@ -11,6 +12,10 @@ namespace Model::Networkproblem::Power {
   Powernode::Powernode(std::string _id, nlohmann::ordered_json boundary_json,
                        double _G, double _B)
       : Node(_id), G(_G), B(_B) {
+    set_boundary_condition(boundary_json);
+  }
+
+  void Powernode::set_boundary_condition(nlohmann::ordered_json boundary_json) {
     std::map<double, Eigen::Vector2d> boundary_map;
     for (auto &datapoint : boundary_json["data"]) {
       if (datapoint["values"].size() != 2) {
@@ -28,6 +33,26 @@ namespace Model::Networkproblem::Power {
       boundary_map.insert({datapoint["time"], value});
     }
     boundaryvalue = Boundaryvalue<Powernode, 2>(boundary_map);
+  }
+
+  void Powernode::set_initial_values(Eigen::VectorXd &new_state,
+                                     nlohmann::ordered_json initial_json) {
+
+    if (get_start_state_index() == -1) {
+      gthrow({"This function may only be called if set_indices  has been "
+              "called beforehand!"});
+    }
+    // this must change!
+    if (initial_json["data"]["value"].size() != 4) {
+      std::cout << "The initial json for this power node is given by:"
+                << "\n";
+      std::cout << initial_json << std::endl;
+      gthrow({"This is not a power initial condition!"});
+    }
+    int index1 = get_start_state_index();
+    int index2 = index1 + 1;
+    new_state[index1] = initial_json["data"]["value"][2];
+    new_state[index2] = initial_json["data"]["value"][3];
   }
 
   int Powernode::get_number_of_states() const { return 2; }

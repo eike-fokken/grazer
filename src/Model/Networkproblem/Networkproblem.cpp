@@ -53,17 +53,22 @@ namespace Model::Networkproblem {
 
   void Networkproblem::display() const { network->display(); }
 
-  void Networkproblem::get_initializer_list(
-      std::vector<std::tuple<std::string, int, int>> &list) const {
-
+  void Networkproblem::set_initial_values(Eigen::VectorXd &new_state,
+                                          nlohmann::ordered_json initial_json) {
     for (Equationcomponent *eqcomponent : equationcomponents) {
       auto idcomponent = dynamic_cast<Network::Idobject *>(eqcomponent);
       if (idcomponent == nullptr) {
         gthrow({"An equation component is not of type Idobject, which should "
                 "never happen."});
       }
-      list.push_back({idcomponent->get_id(), get_start_state_index(),
-                      get_after_state_index()});
+      auto component_id = idcomponent->get_id();
+      auto finder = [component_id](nlohmann::ordered_json &x) {
+        auto it = x.find("id");
+        return it != x.end() and it.value() == component_id;
+      };
+      auto initjson =
+          std::find_if(initial_json.begin(), initial_json.end(), finder);
+      eqcomponent->set_initial_values(new_state, *initjson);
     }
   }
 

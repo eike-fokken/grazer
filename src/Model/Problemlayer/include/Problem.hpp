@@ -39,6 +39,9 @@ namespace Model {
     /// subproblems.
     std::vector<Subproblem *> get_subproblems() const;
 
+    void set_initial_values(Eigen::VectorXd &new_state,
+                            nlohmann::ordered_json initialjson);
+
     void display() const;
 
   private:

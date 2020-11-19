@@ -77,4 +77,11 @@ namespace Model {
     }
   }
 
+  void Problem::set_initial_values(Eigen::VectorXd &new_state,
+                                   nlohmann::ordered_json initialjson) {
+    for (auto it = subproblems.begin(); it != subproblems.end(); it++) {
+      (*it)->set_initial_values(new_state, initialjson);
+    }
+  }
+
 } // namespace Model
