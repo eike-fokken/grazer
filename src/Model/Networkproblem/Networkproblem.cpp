@@ -51,6 +51,13 @@ namespace Model::Networkproblem {
     }
   }
 
+  void Networkproblem::save_values(double time, Eigen::VectorXd &new_state) {
+    for (Model::Networkproblem::Equationcomponent *eqcomponent :
+         equationcomponents) {
+      eqcomponent->save_values(time, new_state);
+    }
+  }
+
   void Networkproblem::display() const { network->display(); }
 
   void Networkproblem::set_initial_values(Eigen::VectorXd &new_state,

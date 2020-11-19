@@ -35,6 +35,7 @@ namespace Model {
                                    Eigen::VectorXd const &last_state,
                                    Eigen::VectorXd const &new_state);
 
+    void save_values(double time, Eigen::VectorXd &new_state);
     /// As we have unique pointers, we can only give back a pointer to our
     /// subproblems.
     std::vector<Subproblem *> get_subproblems() const;

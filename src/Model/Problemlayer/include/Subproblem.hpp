@@ -23,6 +23,8 @@ namespace Model {
         Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
         Eigen::VectorXd const &, Eigen::VectorXd const &new_state) = 0;
 
+    virtual void save_values(double time, Eigen::VectorXd &new_state) = 0;
+
     virtual void display() const = 0;
 
     // Reserves indices from the state vector

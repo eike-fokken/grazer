@@ -63,6 +63,12 @@ namespace Model {
     }
   }
 
+  void Problem::save_values(double time, Eigen::VectorXd &new_state) {
+    for (auto &uptr : subproblems) {
+      uptr->save_values(time, new_state);
+    }
+  }
+
   std::vector<Subproblem *> Problem::get_subproblems() const {
     std::vector<Subproblem *> pointer_vector;
     for (auto &uptr : subproblems) {

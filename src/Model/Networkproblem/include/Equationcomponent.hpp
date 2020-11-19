@@ -36,7 +36,7 @@ namespace Model::Networkproblem {
     int get_start_state_index() const;
     int get_after_state_index() const;
 
-    virtual void push_values(double time, Eigen::VectorXd const &state) = 0;
+    virtual void save_values(double time, Eigen::VectorXd const &state) = 0;
 
     void print_out_files();
     virtual void set_initial_values(Eigen::VectorXd &new_state,

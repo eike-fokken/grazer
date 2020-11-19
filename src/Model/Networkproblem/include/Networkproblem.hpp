@@ -31,6 +31,8 @@ namespace Model::Networkproblem {
                                    Eigen::VectorXd const &last_state,
                                    Eigen::VectorXd const &new_state) final;
 
+    void save_values(double time, Eigen::VectorXd &new_state) final;
+
     void display() const override;
 
     virtual void set_initial_values(Eigen::VectorXd &new_state,
