@@ -1,11 +1,6 @@
 #pragma once
 #include <Powernode.hpp>
 
-namespace Aux {
-
-  class Matrixhandler;
-}
-
 namespace Model::Networkproblem::Power {
 
   class PQnode final : public Powernode {

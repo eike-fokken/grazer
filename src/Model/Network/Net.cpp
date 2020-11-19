@@ -1,10 +1,9 @@
-#include "Edge.hpp"
+#include <Edge.hpp>
 #include <Exception.hpp>
 #include <Net.hpp>
 #include <Node.hpp>
 
 #include <algorithm>
-#include <sstream>
 #include <string>
 
 namespace Network {

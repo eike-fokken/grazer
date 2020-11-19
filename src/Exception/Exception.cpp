@@ -1,8 +1,6 @@
 #include <Exception.hpp>
-#include <iostream>
 #include <numeric>
-#include <stdexcept>
-#include <string>
+#include <sstream>
 
 // void exception_builder(std::vector<std::string> stringvector, char const *
 // file, int line) {

@@ -1,10 +1,11 @@
 #pragma once
-#include "Edge.hpp"
-#include "Node.hpp"
 #include <memory>
 #include <vector>
 
 namespace Network {
+
+  class Node;
+  class Edge;
 
   /// The class Net contains functions for creating nodes, connecting edges
   /// and also removing both.

@@ -1,7 +1,7 @@
 #pragma once
 #include <Boundaryvalue.hpp>
 #include <Equationcomponent.hpp>
-#include <string>
+#include <Node.hpp>
 
 namespace Model::Networkproblem::Power {
 

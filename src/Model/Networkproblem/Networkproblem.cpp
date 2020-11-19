@@ -1,3 +1,4 @@
+#include <Edge.hpp>
 #include <Equationcomponent.hpp>
 #include <Exception.hpp>
 #include <Net.hpp>

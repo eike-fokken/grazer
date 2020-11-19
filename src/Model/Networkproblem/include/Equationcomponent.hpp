@@ -1,8 +1,6 @@
 #pragma once
-#include <Edge.hpp>
 #include <Eigen/Sparse>
-#include <Node.hpp>
-#include <map>
+
 namespace Aux {
 
   class Matrixhandler;
@@ -40,6 +38,8 @@ namespace Model::Networkproblem {
     virtual void push_values(double time, Eigen::VectorXd const &state) = 0;
 
     void print_out_files();
+
+    // virtual void set_initial_values() = 0;
 
   protected:
     void push_to_values(double t, std::vector<std::map<double, double>>);

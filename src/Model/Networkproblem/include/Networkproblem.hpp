@@ -1,14 +1,18 @@
 #pragma once
-#include "Equationcomponent.hpp"
 #include <Eigen/Sparse>
-#include <Net.hpp>
 #include <Subproblem.hpp>
 #include <memory>
 #include <vector>
 
+namespace Network {
+  class Net;
+}
+
 // This namespace holds all data relating to problems that construct the model
 // equations from a network from the namespace Network.
 namespace Model::Networkproblem {
+
+  class Equationcomponent;
 
   // This class implements a Subproblem, that builds the model equations from a
   // network.
