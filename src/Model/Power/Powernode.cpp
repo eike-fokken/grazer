@@ -1,8 +1,34 @@
+#include "Boundaryvalue.hpp"
+#include "nlohmann/json.hpp"
+#include <Exception.hpp>
 #include <Matrixhandler.hpp>
 #include <Powernode.hpp>
 #include <Transmissionline.hpp>
+#include <map>
 
 namespace Model::Networkproblem::Power {
+
+  Powernode::Powernode(std::string _id, nlohmann::ordered_json boundary_json,
+                       double _G, double _B)
+      : Node(_id), G(_G), B(_B) {
+    std::map<double, Eigen::Vector2d> boundary_map;
+    for (auto &datapoint : boundary_json["data"]) {
+      if (datapoint["values"].size() != 2) {
+        gthrow(
+            {"Wrong number of boundary values in node ", boundary_json["id"]});
+      }
+      Eigen::Vector2d value;
+      try {
+        value[0] = datapoint["values"][0];
+        value[1] = datapoint["values"][1];
+      } catch (...) {
+        gthrow({"data in node with id ", boundary_json["id"],
+                " couldn't be assignd in vector, not a double?"})
+      }
+      boundary_map.insert({datapoint["time"], value});
+    }
+    boundaryvalue = Boundaryvalue<Powernode, 2>(boundary_map);
+  }
 
   int Powernode::get_number_of_states() const { return 2; }
 
