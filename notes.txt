@@ -6,5 +6,5 @@ TODO: Boundaryvalue maybe should hold a matrix instead of a map. (requires testi
 
 TODO: make subproblems inherit from nodes and define connecting problems as edges. --> Problem should hold a network of subproblems.
 
-
+TODO: replace all eigen indices by long (instead of int)
 

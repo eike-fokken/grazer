@@ -4,6 +4,21 @@
 #include <gtest/gtest.h>
 #include <iostream>
 
+Eigen::VectorXd f(Eigen::VectorXd x) {
+  Eigen::Matrix2d A;
+  A << 2, 1, 0, 3;
+  Eigen::Vector2d b;
+  b << 1, 0;
+  return A * x + b;
+};
+
+Eigen::SparseMatrix<double> df(Eigen::VectorXd x) {
+
+  Eigen::Matrix2d A;
+  A << 2, 1, 0, 3;
+  return A.sparseView();
+};
+
 TEST(Newtonsolver, SolveWithRoot) {
   double tol = 1e-12;
   int max_it = 10000;
@@ -22,13 +37,13 @@ TEST(Newtonsolver, SolveWithRoot) {
 
   double last_time = 0;
   double new_time = 1;
-  TestProblem problem;
+
+  TestProblem problem(f, df);
   Solver::Solutionstruct a;
 
   a = Solver.solve(new_state, problem, new_jacobian_structure, last_time,
                    new_time, last_state);
 
-  std::cout << new_state << std::endl;
   EXPECT_EQ(a.success, true);
 
   EXPECT_DOUBLE_EQ(new_state(0), solution(0));

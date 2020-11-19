@@ -10,32 +10,34 @@
  * derivatives thereof.
  */
 
+using Rootfunction = Eigen::VectorXd(Eigen::VectorXd);
+using Derivative = Eigen::SparseMatrix<double>(Eigen::VectorXd);
+
 class TestProblem {
 
 public:
   /// The constructor needs to declare Delta_t
   ///
-  TestProblem(){};
+  TestProblem(Rootfunction _f, Derivative _df) : f(_f), df(_df){};
 
-  void evaluate(Eigen::VectorXd &rootfunction, double last_time,
-                double new_time, Eigen::VectorXd const &last_state,
-                Eigen::VectorXd const &new_state) {
+  void evaluate(Eigen::VectorXd &rootfunction, double, double,
+                Eigen::VectorXd const &, Eigen::VectorXd const &new_state) {
 
-    Eigen::Matrix2d A;
-    A << 2, 1, 0, 3;
-    Eigen::Vector2d b;
-    b << 1, 0;
-
-    rootfunction = A * new_state + b;
+    rootfunction = f(new_state);
   };
 
-  void evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,
-                                 double last_time, double new_time,
-                                 Eigen::VectorXd const &last_state,
+  void evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler, double,
+                                 double, Eigen::VectorXd const &,
                                  Eigen::VectorXd const &new_state) {
 
-    jacobianhandler->set_coefficient(0, 0, 2.);
-    jacobianhandler->set_coefficient(0, 1, 1.);
-    jacobianhandler->set_coefficient(1, 1, 3.);
+    Eigen::SparseMatrix<double> mat = df(new_state);
+    for (int k = 0; k < mat.outerSize(); ++k)
+      for (Eigen::SparseMatrix<double>::InnerIterator it(mat, k); it; ++it) {
+        jacobianhandler->set_coefficient(
+            static_cast<int>(it.row()), static_cast<int>(it.col()), it.value());
+      }
   };
+
+  Rootfunction *f;
+  Derivative *df;
 };
