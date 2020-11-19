@@ -1,12 +1,10 @@
+#include <Eigen/Dense>
+#include <Matrixhandler.hpp>
 #include <Problem.hpp>
 #include <Subproblem.hpp>
+#include <iostream>
 #include <memory>
 #include <vector>
-
-namespace Aux {
-
-  class Matrixhandler;
-}
 
 namespace Model {
 
@@ -23,6 +21,29 @@ namespace Model {
     }
     return next_free_index;
   }
+
+  // void Problem::evaluate(Eigen::VectorXd &rootfunction, double last_time,
+  //                        double new_time, Eigen::VectorXd const &last_state,
+  //                        Eigen::VectorXd const &new_state) {
+
+  //   Eigen::Matrix2d A;
+  //   A << 2, 1, 0, 3;
+  //   Eigen::Vector2d b;
+  //   b << 1, 0;
+
+  //   rootfunction = A * new_state + b;
+  // }
+
+  // void Problem::evaluate_state_derivative(Aux::Matrixhandler
+  // *jacobianhandler,
+  //                                         double, double,
+  //                                         Eigen::VectorXd const &,
+  //                                         Eigen::VectorXd const &) {
+
+  //   jacobianhandler->set_coefficient(0, 0, 2.);
+  //   jacobianhandler->set_coefficient(0, 1, 1.);
+  //   jacobianhandler->set_coefficient(1, 1, 3.);
+  // }
 
   void Problem::evaluate(Eigen::VectorXd &rootfunction, double last_time,
                          double new_time, Eigen::VectorXd const &last_state,

@@ -6,6 +6,9 @@ TODO: Boundaryvalue maybe should hold a matrix instead of a map. (requires testi
 
 TODO: make subproblems inherit from nodes and define connecting problems as edges. --> Problem should hold a network of subproblems.
 
-TODO: Think about how initial values should be handled for non-network problems!
+TODO: replace all eigen indices by long (instead of int)
 
 TODO: Validate the json!
+
+TODO: Think about how initial values should be handled for non-network problems!
+

@@ -4,6 +4,7 @@
 #include "MockSubproblem.hpp"
 #include "Node.hpp"
 #include "Problem.hpp"
+#include <Eigen/Dense>
 #include <gtest/gtest.h>
 #include <memory>
 #include <string>
