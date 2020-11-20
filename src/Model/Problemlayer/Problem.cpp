@@ -16,40 +16,18 @@ namespace Model {
 
   int Problem::set_indices() {
     int next_free_index(0);
-    for (auto it = subproblems.begin(); it != subproblems.end(); it++) {
-      next_free_index = (*it)->set_indices(next_free_index);
+    for (auto &subproblem : subproblems) {
+      next_free_index = subproblem->set_indices(next_free_index);
     }
     return next_free_index;
   }
 
-  // void Problem::evaluate(Eigen::VectorXd &rootfunction, double last_time,
-  //                        double new_time, Eigen::VectorXd const &last_state,
-  //                        Eigen::VectorXd const &new_state) {
-
-  //   Eigen::Matrix2d A;
-  //   A << 2, 1, 0, 3;
-  //   Eigen::Vector2d b;
-  //   b << 1, 0;
-
-  //   rootfunction = A * new_state + b;
-  // }
-
-  // void Problem::evaluate_state_derivative(Aux::Matrixhandler
-  // *jacobianhandler,
-  //                                         double, double,
-  //                                         Eigen::VectorXd const &,
-  //                                         Eigen::VectorXd const &) {
-
-  //   jacobianhandler->set_coefficient(0, 0, 2.);
-  //   jacobianhandler->set_coefficient(0, 1, 1.);
-  //   jacobianhandler->set_coefficient(1, 1, 3.);
-  // }
-
   void Problem::evaluate(Eigen::VectorXd &rootfunction, double last_time,
                          double new_time, Eigen::VectorXd const &last_state,
                          Eigen::VectorXd const &new_state) {
-    for (auto it = subproblems.begin(); it != subproblems.end(); it++) {
-      (*it)->evaluate(rootfunction, last_time, new_time, last_state, new_state);
+    for (auto &subproblem : subproblems) {
+      subproblem->evaluate(rootfunction, last_time, new_time, last_state,
+                           new_state);
     }
   }
 
@@ -57,36 +35,42 @@ namespace Model {
                                           double last_time, double new_time,
                                           Eigen::VectorXd const &last_state,
                                           Eigen::VectorXd const &new_state) {
-    for (auto it = subproblems.begin(); it != subproblems.end(); it++) {
-      (*it)->evaluate_state_derivative(jacobianhandler, last_time, new_time,
-                                       last_state, new_state);
+    for (auto &subproblem : subproblems) {
+      subproblem->evaluate_state_derivative(jacobianhandler, last_time,
+                                            new_time, last_state, new_state);
     }
   }
 
   void Problem::save_values(double time, Eigen::VectorXd &new_state) {
-    for (auto &uptr : subproblems) {
-      uptr->save_values(time, new_state);
+    for (auto &subproblem : subproblems) {
+      subproblem->save_values(time, new_state);
     }
   }
 
   std::vector<Subproblem *> Problem::get_subproblems() const {
     std::vector<Subproblem *> pointer_vector;
-    for (auto &uptr : subproblems) {
-      pointer_vector.push_back(uptr.get());
+    for (auto &subproblem : subproblems) {
+      pointer_vector.push_back(subproblem.get());
     }
     return pointer_vector;
   }
 
+  void Problem::print_to_files(std::filesystem::path &output_directory) {
+    for (auto &subproblem : subproblems) {
+      subproblem->print_to_files(output_directory);
+    }
+  }
+
   void Problem::display() const {
-    for (auto &subproblem_ptr : subproblems) {
-      subproblem_ptr->display();
+    for (auto &subproblem : subproblems) {
+      subproblem->display();
     }
   }
 
   void Problem::set_initial_values(Eigen::VectorXd &new_state,
                                    nlohmann::ordered_json initialjson) {
-    for (auto it = subproblems.begin(); it != subproblems.end(); it++) {
-      (*it)->set_initial_values(new_state, initialjson);
+    for (auto &subproblem : subproblems) {
+      subproblem->set_initial_values(new_state, initialjson);
     }
   }
 

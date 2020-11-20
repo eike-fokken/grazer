@@ -1,7 +1,9 @@
 #pragma once
 #include <Eigen/Sparse>
-#include <Subproblem.hpp>
+#include <Subproblem.hpp> // This is really needed here!
+#include <filesystem>
 #include <memory>
+#include <nlohmann/json.hpp>
 #include <vector>
 
 namespace Aux {
@@ -14,6 +16,8 @@ namespace Aux {
  * derivatives thereof.
  */
 namespace Model {
+
+  class Subproblem;
 
   class Problem {
 
@@ -42,6 +46,8 @@ namespace Model {
 
     void set_initial_values(Eigen::VectorXd &new_state,
                             nlohmann::ordered_json initialjson);
+
+    void print_to_files(std::filesystem::path &output_directory);
 
     void display() const;
 
