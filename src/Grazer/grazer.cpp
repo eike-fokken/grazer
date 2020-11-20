@@ -1,6 +1,7 @@
 #include <Eigen/Sparse>
 #include <Exception.hpp>
 #include <Jsonreader.hpp>
+#include <Printguard.hpp>
 #include <Problem.hpp>
 #include <chrono>
 #include <filesystem>
@@ -55,12 +56,28 @@ int main(int argc, char **argv) {
   std::filesystem::create_directory(output_dir);
   std::cout << output_dir << std::endl;
 
-  auto p = Jsonreader::setup_problem(topology, boundary);
+  auto p = Jsonreader::setup_problem(topology, boundary, output_dir);
 
   int number = p->set_indices();
   std::cout << number << std::endl;
   Eigen::VectorXd initial_state(number);
 
   Jsonreader::set_initial_values(initial_state, initial, p);
-  p->display();
+  p->save_values(0.0, initial_state);
+  try {
+    Aux::Printguard guard(p);
+    double T = 3600;
+
+    double delta_t = T / 24.0;
+
+    for (int i = 0; i != 25; ++i) {
+    }
+
+  } catch (...) {
+    std::cout << "An uncaught exception was thrown!\n"
+              << "All available data has been printed to output files.\n"
+              << "\nUse with caution!\n"
+              << std::endl;
+    throw;
+  }
 }

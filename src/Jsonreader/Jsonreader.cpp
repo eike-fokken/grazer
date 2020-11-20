@@ -19,9 +19,10 @@ namespace Jsonreader {
 
   using json = nlohmann::ordered_json;
 
-  std::unique_ptr<Model::Problem>
-  setup_problem(std::filesystem::path topology,
-                std::filesystem::path boundary) {
+  std::shared_ptr<Model::Problem>
+  setup_problem(std::filesystem::path const &topology,
+                std::filesystem::path const &boundary,
+                std::filesystem::path const &output_directory) {
 
     json topologyjson;
     try {
@@ -45,7 +46,8 @@ namespace Jsonreader {
 
       auto netprobptr = std::unique_ptr<Model::Subproblem>(
           new Model::Networkproblem::Networkproblem(std::move(netptr)));
-      std::unique_ptr<Model::Problem> probptr(new Model::Problem);
+      std::shared_ptr<Model::Problem> probptr(
+          new Model::Problem(output_directory));
       probptr->add_subproblem(std::move(netprobptr));
       return probptr;
     } catch (Exception &e) {
@@ -136,8 +138,8 @@ namespace Jsonreader {
   }
 
   void set_initial_values(Eigen::VectorXd &new_state,
-                          std::filesystem::path initial,
-                          std::unique_ptr<Model::Problem> &problem) {
+                          std::filesystem::path const &initial,
+                          std::shared_ptr<Model::Problem> &problem) {
     json initialjson;
     try {
       std::ifstream jsonfilestream(initial);

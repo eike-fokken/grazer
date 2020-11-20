@@ -55,7 +55,7 @@ namespace Model {
     return pointer_vector;
   }
 
-  void Problem::print_to_files(std::filesystem::path &output_directory) {
+  void Problem::print_to_files() {
     for (auto &subproblem : subproblems) {
       subproblem->print_to_files(output_directory);
     }
@@ -72,6 +72,10 @@ namespace Model {
     for (auto &subproblem : subproblems) {
       subproblem->set_initial_values(new_state, initialjson);
     }
+  }
+
+  std::filesystem::path const &Problem::get_output_directory() const {
+    return output_directory;
   }
 
 } // namespace Model

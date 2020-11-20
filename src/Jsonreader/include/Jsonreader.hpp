@@ -25,8 +25,10 @@ namespace Jsonreader {
   using json = nlohmann::ordered_json;
 
   /// This function returns a full-fledged problem for solving with grazer.
-  std::unique_ptr<Model::Problem> setup_problem(std::filesystem::path topology,
-                                                std::filesystem::path boundary);
+  std::shared_ptr<Model::Problem>
+  setup_problem(std::filesystem::path const &topology,
+                std::filesystem::path const &boundary,
+                std::filesystem::path const &output_directory);
 
   /// This function reads boundary data for power nodes into a map for
   /// integration into the actual construction of Powernode s.
@@ -44,7 +46,7 @@ namespace Jsonreader {
                     std::vector<std::unique_ptr<Network::Edge>> &edges);
 
   void set_initial_values(Eigen::VectorXd &initial_state,
-                          std::filesystem::path initial,
-                          std::unique_ptr<Model::Problem> &problem);
+                          std::filesystem::path const &initial,
+                          std::shared_ptr<Model::Problem> &problem);
 
 } // namespace Jsonreader

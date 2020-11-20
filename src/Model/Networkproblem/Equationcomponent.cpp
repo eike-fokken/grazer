@@ -37,4 +37,12 @@ namespace Model::Networkproblem {
     values.push_back(value_vector);
   }
 
+  std::vector<double> const &Equationcomponent::get_times() const {
+    return times;
+  }
+  std::vector<std::vector<std::map<double, double>>> const &
+  Equationcomponent::get_values() const {
+    return values;
+  }
+
 } // namespace Model::Networkproblem

@@ -24,7 +24,8 @@ namespace Model {
   public:
     /// The constructor needs to declare Delta_t
     ///
-    Problem(){};
+    Problem(std::filesystem::path const &_output_directory)
+        : output_directory(_output_directory){};
 
     void add_subproblem(std::unique_ptr<Subproblem> subproblem_ptr);
 
@@ -47,13 +48,17 @@ namespace Model {
     void set_initial_values(Eigen::VectorXd &new_state,
                             nlohmann::ordered_json initialjson);
 
-    void print_to_files(std::filesystem::path &output_directory);
+    void print_to_files();
 
     void display() const;
+
+    std::filesystem::path const &get_output_directory() const;
 
   private:
     /// collection of sub-problems
     std::vector<std::unique_ptr<Subproblem>> subproblems;
+
+    std::filesystem::path const output_directory;
   };
 
 } // namespace Model

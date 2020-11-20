@@ -37,7 +37,8 @@ namespace Model::Networkproblem {
     int get_start_state_index() const;
     int get_after_state_index() const;
 
-    virtual void print_to_files(std::filesystem::path &output_directory) = 0;
+    virtual void
+    print_to_files(std::filesystem::path const &output_directory) = 0;
 
     virtual void save_values(double time, Eigen::VectorXd const &state) = 0;
 
@@ -50,6 +51,10 @@ namespace Model::Networkproblem {
     void print_indices() const;
 
     void write_to_files();
+
+    std::vector<double> const &get_times() const;
+    std::vector<std::vector<std::map<double, double>>> const &
+    get_values() const;
 
   private:
     /// This must be refactored into a container of times and values.
