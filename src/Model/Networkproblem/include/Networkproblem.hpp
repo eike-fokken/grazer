@@ -33,6 +33,8 @@ namespace Model::Networkproblem {
 
     void save_values(double time, Eigen::VectorXd &new_state) final;
 
+    void print_to_files(std::filesystem::path &output_directory) final;
+
     void display() const override;
 
     virtual void set_initial_values(Eigen::VectorXd &new_state,

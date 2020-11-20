@@ -20,6 +20,8 @@ namespace Model::Networkproblem::Power {
     double get_G() const;
     double get_B() const;
 
+    void print_to_files(std::filesystem::path &output_directory) final;
+
     void set_initial_values(Eigen::VectorXd &new_state,
                             nlohmann::ordered_json initial_json) final;
 

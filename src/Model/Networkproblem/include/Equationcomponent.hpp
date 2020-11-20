@@ -1,5 +1,6 @@
 #pragma once
 #include <Eigen/Sparse>
+#include <filesystem>
 #include <nlohmann/json.hpp>
 
 namespace Aux {
@@ -35,6 +36,8 @@ namespace Model::Networkproblem {
 
     int get_start_state_index() const;
     int get_after_state_index() const;
+
+    virtual void print_to_files(std::filesystem::path &output_directory) = 0;
 
     virtual void save_values(double time, Eigen::VectorXd const &state) = 0;
 

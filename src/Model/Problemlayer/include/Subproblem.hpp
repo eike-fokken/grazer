@@ -1,8 +1,10 @@
 #pragma once
 #include <Eigen/Sparse>
+#include <filesystem>
 #include <nlohmann/json.hpp>
 #include <string>
 #include <utility>
+
 namespace Aux {
 
   class Matrixhandler;
@@ -24,6 +26,8 @@ namespace Model {
         Eigen::VectorXd const &, Eigen::VectorXd const &new_state) = 0;
 
     virtual void save_values(double time, Eigen::VectorXd &new_state) = 0;
+
+    virtual void print_to_files(std::filesystem::path &output_directory) = 0;
 
     virtual void display() const = 0;
 

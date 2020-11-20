@@ -61,6 +61,8 @@ namespace Model::Networkproblem::Power {
 
   double Powernode::get_B() const { return B; }
 
+  void Powernode::print_to_files(std::filesystem::path &output_directory) {}
+
   void Powernode::save_values(double time, Eigen::VectorXd const &state) {
     std::vector<std::map<double, double>> value_vector;
     for (int i = get_start_state_index(); i != get_after_state_index(); ++i) {

@@ -23,5 +23,6 @@ namespace Model {
     MOCK_METHOD((void), set_initial_values,
                 (Eigen::VectorXd &, nlohmann::ordered_json), (override));
     MOCK_METHOD((void), save_values, (double, Eigen::VectorXd &), (override));
+    MOCK_METHOD((void), print_to_files, (std::filesystem::path &), (override));
   };
 } // namespace Model

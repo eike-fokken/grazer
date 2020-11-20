@@ -58,6 +58,13 @@ namespace Model::Networkproblem {
     }
   }
 
+  void Networkproblem::print_to_files(std::filesystem::path &output_directory) {
+    for (Model::Networkproblem::Equationcomponent *eqcomponent :
+         equationcomponents) {
+      eqcomponent->print_to_files(output_directory);
+    }
+  }
+
   void Networkproblem::display() const { network->display(); }
 
   void Networkproblem::set_initial_values(Eigen::VectorXd &new_state,
