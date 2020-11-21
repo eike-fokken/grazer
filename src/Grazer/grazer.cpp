@@ -62,17 +62,17 @@ int main(int argc, char **argv) {
   std::cout << number << std::endl;
   Eigen::VectorXd initial_state(number);
 
-  Jsonreader::set_initial_values(initial_state, initial, p);
-  p->save_values(0.0, initial_state);
   try {
     Aux::Printguard guard(p);
-    double T = 3600;
+    Jsonreader::set_initial_values(initial_state, initial, p);
+    p->save_values(0.0, initial_state);
+    // double T = 3600;
 
-    double delta_t = T / 24.0;
+    // double delta_t = T / 24.0;
 
-    for (int i = 0; i != 25; ++i) {
-    }
-
+    // for (int i = 0; i != 25; ++i) {
+    // }
+    gthrow({"Test exception."});
   } catch (...) {
     std::cout << "An uncaught exception was thrown!\n"
               << "All available data has been printed to output files.\n"

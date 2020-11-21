@@ -1,11 +1,15 @@
-#include "Boundaryvalue.hpp"
-#include "nlohmann/json.hpp"
+#include "PQnode.hpp"
+#include "PVnode.hpp"
+#include "Vphinode.hpp"
+#include <Boundaryvalue.hpp>
 #include <Exception.hpp>
 #include <Matrixhandler.hpp>
 #include <Powernode.hpp>
 #include <Transmissionline.hpp>
+#include <fstream>
 #include <iostream>
 #include <map>
+#include <nlohmann/json.hpp>
 
 namespace Model::Networkproblem::Power {
 
@@ -42,7 +46,7 @@ namespace Model::Networkproblem::Power {
       gthrow({"This function may only be called if set_indices  has been "
               "called beforehand!"});
     }
-    // this must change!
+
     if (initial_json["data"]["value"].size() != 4) {
       std::cout << "The initial json for this power node is given by:"
                 << "\n";
@@ -57,20 +61,62 @@ namespace Model::Networkproblem::Power {
 
   int Powernode::get_number_of_states() const { return 2; }
 
+  // int Powernode::get_number_of_printout_states() const { return 4;}
+
   double Powernode::get_G() const { return G; }
 
   double Powernode::get_B() const { return B; }
 
   void
   Powernode::print_to_files(std::filesystem::path const &output_directory) {
-    output_directory / get_id().insert(0, "Power_");
+    std::filesystem::path node_output_directory(output_directory /
+                                                (get_id().insert(0, "Power_")));
+    std::cout << node_output_directory << std::endl;
+
+    std::ofstream output(node_output_directory);
+
+    output << "time,\t P,\t Q,\t V,\t phi\n";
+    auto times = get_times();
+    auto values = get_values();
+
+    for (unsigned i = 0; i != times.size(); ++i) {
+      output << times[i];
+      for (auto const &var : values[i]) {
+        output << ",\t " << var.at(0.0);
+      }
+      output << std::endl;
+    }
+    output << std::endl;
   }
 
   void Powernode::save_values(double time, Eigen::VectorXd const &state) {
+
+    std::map<double, double> Pmap;
+    std::map<double, double> Qmap;
+    std::map<double, double> Vmap;
+    std::map<double, double> phimap;
     std::vector<std::map<double, double>> value_vector;
-    for (int i = get_start_state_index(); i != get_after_state_index(); ++i) {
-      std::map<double, double> m({{0.0, state[i]}});
-      value_vector.push_back(m);
+    for (int i = 0; i != 4; ++i) {
+      double P_val;
+      double Q_val;
+      if (dynamic_cast<PQnode *>(this)) {
+        P_val = boundaryvalue(time)[0];
+        Q_val = boundaryvalue(time)[1];
+      } else if (dynamic_cast<PVnode *>(this)) {
+        P_val = boundaryvalue(time)[0];
+        Q_val = Q(time, state);
+      } else if (dynamic_cast<Vphinode *>(this)) {
+        P_val = P(time, state);
+        Q_val = Q(time, state);
+      } else {
+        gthrow({"Node with id: ", get_id(),
+                " is not of type PQ,PV or Vphi.  Aborting..."});
+      }
+      Pmap = {{0.0, P_val}};
+      Qmap = {{0.0, Q_val}};
+      Vmap = {{0.0, state[get_start_state_index()]}};
+      phimap = {{0.0, state[get_start_state_index() + 1]}};
+      value_vector = {Pmap, Qmap, Vmap, phimap};
     }
     Equationcomponent::push_to_values(time, value_vector);
   }

@@ -30,6 +30,11 @@ namespace Model::Networkproblem {
     /// int like 2.
     virtual int get_number_of_states() const = 0;
 
+    // /// Determines the number of state variables to be printed into output
+    // /// files.  Defaults to get_number_of_states() but can be overridden.
+    // /// @returns Number of states to be printed out.
+    // virtual int get_number_of_printout_states() const;
+
     /// This function sets the index.
     /// @returns the new lowest free index.
     int set_indices(int const next_free_index);

@@ -17,6 +17,8 @@ namespace Model::Networkproblem::Power {
 
     int get_number_of_states() const final;
 
+    // int get_number_of_printout_states() const final;
+
     double get_G() const;
     double get_B() const;
 
@@ -26,7 +28,7 @@ namespace Model::Networkproblem::Power {
                             nlohmann::ordered_json initial_json) final;
 
   protected:
-    void save_values(double time, Eigen::VectorXd const &state) override;
+    void save_values(double time, Eigen::VectorXd const &state) final;
     double P(double new_time, Eigen::VectorXd const &new_state);
     double Q(double new_time, Eigen::VectorXd const &new_state);
     void evaluate_P_derivative(Aux::Matrixhandler *jacobianhandler,

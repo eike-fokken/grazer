@@ -7,15 +7,20 @@
 
 namespace Model::Networkproblem {
 
+  // int Equationcomponent::get_number_of_printout_states() const {
+  //   return get_number_of_states();
+  // }
+
   int Equationcomponent::set_indices(int const next_free_index) {
     start_state_index = next_free_index;
     int number_of_states = get_number_of_states();
 
     after_state_index = next_free_index + number_of_states;
-    if (values.empty()) {
-      values = std::vector<std::vector<std::map<double, double>>>(
-          static_cast<unsigned int>(get_number_of_states()));
-    }
+    // // This doesn't work, because the overall vector has number_of_time_steps
+    // // many entries, this is for the inner vector... if (values.empty()) {
+    //   values = std::vector<std::vector<std::map<double, double>>>(
+    //       static_cast<unsigned int>(get_number_of_printout_states()));
+    // }
     return after_state_index;
   }
 
