@@ -29,8 +29,8 @@ namespace Model::Networkproblem::Power {
 
   protected:
     void save_values(double time, Eigen::VectorXd const &state) final;
-    double P(double new_time, Eigen::VectorXd const &new_state);
-    double Q(double new_time, Eigen::VectorXd const &new_state);
+    double P(Eigen::VectorXd const &new_state);
+    double Q(Eigen::VectorXd const &new_state);
     void evaluate_P_derivative(Aux::Matrixhandler *jacobianhandler,
                                Eigen::VectorXd const &new_state);
     void evaluate_Q_derivative(Aux::Matrixhandler *jacobianhandler,

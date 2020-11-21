@@ -103,10 +103,10 @@ namespace Model::Networkproblem::Power {
         Q_val = boundaryvalue(time)[1];
       } else if (dynamic_cast<PVnode *>(this)) {
         P_val = boundaryvalue(time)[0];
-        Q_val = Q(time, state);
+        Q_val = Q(state);
       } else if (dynamic_cast<Vphinode *>(this)) {
-        P_val = P(time, state);
-        Q_val = Q(time, state);
+        P_val = P(state);
+        Q_val = Q(state);
       } else {
         gthrow({"Node with id: ", get_id(),
                 " is not of type PQ,PV or Vphi.  Aborting..."});
@@ -120,7 +120,7 @@ namespace Model::Networkproblem::Power {
     Equationcomponent::push_to_values(time, value_vector);
   }
 
-  double Powernode::P(double new_time, Eigen::VectorXd const &new_state) {
+  double Powernode::P(Eigen::VectorXd const &new_state) {
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
     double G_i = get_G();
@@ -128,10 +128,14 @@ namespace Model::Networkproblem::Power {
     double V_i = new_state[V_index];
     double phi_i = new_state[phi_index];
 
-    double P = -boundaryvalue(new_time)[0];
+    double P = 0.0; // -boundaryvalue(new_time)[0];
     P += G_i * V_i * V_i;
     for (auto &start_edge : get_starting_edges()) {
       auto line = dynamic_cast<Transmissionline const *>(start_edge);
+      if (!line) {
+        gthrow(
+            {"For now only transmission lines can be attached to powernodes!"})
+      };
       double G_ik = line->get_G();
       double B_ik = line->get_B();
       auto othernode = dynamic_cast<Powernode *>(start_edge->get_ending_node());
@@ -145,6 +149,10 @@ namespace Model::Networkproblem::Power {
 
     for (auto &end_edge : get_ending_edges()) {
       auto line = dynamic_cast<Transmissionline const *>(end_edge);
+      if (!line) {
+        gthrow(
+            {"For now only transmission lines can be attached to powernodes!"})
+      };
       double G_ik = line->get_G();
       double B_ik = line->get_B();
       Powernode *othernode =
@@ -154,12 +162,12 @@ namespace Model::Networkproblem::Power {
       double V_k = new_state[V_index_k];
       double phi_k = new_state[phi_index_k];
       double phi_ik = phi_i - phi_k;
-      P += V_i * V_k * (G_ik * cos(phi_ik) - B_ik * sin(phi_ik));
+      P += V_i * V_k * (G_ik * cos(phi_ik) + B_ik * sin(phi_ik));
     }
     return P;
   }
 
-  double Powernode::Q(double new_time, Eigen::VectorXd const &new_state) {
+  double Powernode::Q(Eigen::VectorXd const &new_state) {
 
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
@@ -167,10 +175,14 @@ namespace Model::Networkproblem::Power {
     double V_i = new_state[V_index];
     double phi_i = new_state[phi_index];
 
-    double Q = -boundaryvalue(new_time)[1];
+    double Q = 0.0; // -boundaryvalue(new_time)[1];
     Q -= B_i * V_i * V_i;
     for (auto &start_edge : get_starting_edges()) {
       auto line = dynamic_cast<Transmissionline const *>(start_edge);
+      if (!line) {
+        gthrow(
+            {"For now only transmission lines can be attached to powernodes!"})
+      };
       double G_ik = line->get_G();
       double B_ik = line->get_B();
       auto othernode = dynamic_cast<Powernode *>(start_edge->get_ending_node());
@@ -184,6 +196,10 @@ namespace Model::Networkproblem::Power {
 
     for (auto &end_edge : get_ending_edges()) {
       auto line = dynamic_cast<Transmissionline const *>(end_edge);
+      if (!line) {
+        gthrow(
+            {"For now only transmission lines can be attached to powernodes!"})
+      };
       double G_ik = line->get_G();
       double B_ik = line->get_B();
       Powernode *othernode =
@@ -225,11 +241,12 @@ namespace Model::Networkproblem::Power {
       jacobianhandler->add_to_coefficient(
           V_index, phi_index,
           V_i * V_k * (-G_ik * sin(phi_ik) + B_ik * cos(phi_ik)));
+
       jacobianhandler->set_coefficient(
           V_index, V_index_k, V_i * (G_ik * cos(phi_ik) + B_ik * sin(phi_ik)));
       jacobianhandler->set_coefficient(
           V_index, phi_index_k,
-          V_i * V_k * (G_ik * sin(phi_ik) + B_ik * cos(phi_ik)));
+          V_i * V_k * (G_ik * sin(phi_ik) - B_ik * cos(phi_ik)));
     }
 
     for (auto &end_edge : get_ending_edges()) {
@@ -252,7 +269,7 @@ namespace Model::Networkproblem::Power {
           V_index, V_index_k, V_i * (G_ik * cos(phi_ik) + B_ik * sin(phi_ik)));
       jacobianhandler->set_coefficient(
           V_index, phi_index_k,
-          V_i * V_k * (G_ik * sin(phi_ik) + B_ik * cos(phi_ik)));
+          V_i * V_k * (G_ik * sin(phi_ik) - B_ik * cos(phi_ik)));
     }
   }
 

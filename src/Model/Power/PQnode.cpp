@@ -12,8 +12,8 @@ namespace Model::Networkproblem::Power {
                         Eigen::VectorXd const &new_state) {
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
-    rootfunction[V_index] = P(new_time, new_state);
-    rootfunction[phi_index] = Q(new_time, new_state);
+    rootfunction[V_index] = P(new_state) - boundaryvalue(new_time)[0];
+    rootfunction[phi_index] = Q(new_state) - boundaryvalue(new_time)[1];
   }
 
   void PQnode::evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,
