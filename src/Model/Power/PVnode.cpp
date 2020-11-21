@@ -11,7 +11,7 @@ namespace Model::Networkproblem::Power {
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
     rootfunction[V_index] = P(new_state) - boundaryvalue(new_time)[0];
-    ;
+
     rootfunction[phi_index] = new_state[V_index] - boundaryvalue(new_time)[1];
   }
 

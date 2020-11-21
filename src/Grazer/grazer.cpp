@@ -1,9 +1,11 @@
 #include <Eigen/Sparse>
 #include <Exception.hpp>
 #include <Jsonreader.hpp>
+#include <Newtonsolver.hpp>
 #include <Printguard.hpp>
 #include <Problem.hpp>
 #include <chrono>
+#include <eigen3/Eigen/src/Core/Matrix.h>
 #include <filesystem>
 #include <iostream>
 #include <memory>
@@ -54,25 +56,45 @@ int main(int argc, char **argv) {
     std::cout << "result files will be saved to " << output_dir << std::endl;
   }
   std::filesystem::create_directory(output_dir);
-  std::cout << output_dir << std::endl;
 
   auto p = Jsonreader::setup_problem(topology, boundary, output_dir);
 
   int number = p->set_indices();
-  std::cout << number << std::endl;
-  Eigen::VectorXd initial_state(number);
 
   try {
     Aux::Printguard guard(p);
-    Jsonreader::set_initial_values(initial_state, initial, p);
-    p->save_values(0.0, initial_state);
-    // double T = 3600;
 
-    // double delta_t = T / 24.0;
+    Solver::Newtonsolver<Model::Problem> solver(1e-8, 200);
+    double T = 3600 * 24;
 
-    // for (int i = 0; i != 25; ++i) {
-    // }
-    gthrow({"Test exception."});
+    double N = 96.0;
+    double delta_t = T / N;
+    Eigen::VectorXd state1(number);
+    Jsonreader::set_initial_values(state1, initial, p);
+    Eigen::VectorXd state2 = state1;
+    // auto statepointer1 = &state1;
+    // auto statepointer2 = &state2;
+
+    double new_time(delta_t);
+    double last_time(0.0);
+
+    for (int i = 1; i != N + 1; ++i) {
+      auto solstruct =
+          solver.solve(state1, *p, true, last_time, new_time, state2);
+      p->save_values(new_time, state1);
+
+      std::cout << new_time << ": ";
+      std::cout << solstruct.residual << ", ";
+      std::cout << solstruct.used_iterations << std::endl;
+
+      // write new_state to last state:
+      state2 = state1;
+
+      // set next time step:
+      new_time = last_time + i * delta_t;
+    }
+
+    p->print_to_files();
   } catch (...) {
     std::cout << "An uncaught exception was thrown!\n"
               << "All available data has been printed to output files.\n"
