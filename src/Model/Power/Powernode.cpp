@@ -71,7 +71,6 @@ namespace Model::Networkproblem::Power {
   Powernode::print_to_files(std::filesystem::path const &output_directory) {
     std::filesystem::path node_output_directory(output_directory /
                                                 (get_id().insert(0, "Power_")));
-    std::cout << node_output_directory << std::endl;
 
     std::ofstream output(node_output_directory);
 
