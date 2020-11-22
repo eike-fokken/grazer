@@ -5,7 +5,6 @@
 #include <Printguard.hpp>
 #include <Problem.hpp>
 #include <chrono>
-#include <eigen3/Eigen/src/Core/Matrix.h>
 #include <filesystem>
 #include <iostream>
 #include <memory>
@@ -13,21 +12,34 @@
 
 int main(int argc, char **argv) {
 
-  if (argc != 4) {
+  if (argc != 4 and argc != 1) {
     gthrow({" Wrong number of arguments."})
   }
 
-  std::filesystem::path topology(argv[1]);
-  std::filesystem::path initial(argv[2]);
-  std::filesystem::path boundary(argv[3]);
-  if (!std::filesystem::is_regular_file(topology) or
-      !std::filesystem::is_regular_file(initial) or
-      !std::filesystem::is_regular_file(boundary)) {
-    std::cout
-        << "One of the given files is not a regular file, I will abort now."
-        << std::endl;
-    return 1;
+  std::filesystem::path topology;
+  std::filesystem::path initial;
+  std::filesystem::path boundary;
+  if (argc == 4) {
+    topology = argv[1];
+    initial = argv[2];
+    boundary = argv[3];
+    if (!std::filesystem::is_regular_file(topology) or
+        !std::filesystem::is_regular_file(initial) or
+        !std::filesystem::is_regular_file(boundary)) {
+      std::cout
+          << "One of the given files is not a regular file, I will abort now."
+          << std::endl;
+      return 1;
+    }
+  } else {
+    topology = "topology_with_doubles.json";
+    initial = "initial_pretty.json";
+    boundary = "boundary_pretty.json";
   }
+
+  //   std::filesystem::path topology(argv[1]);
+  // std::filesystem::path initial(argv[2]);
+  // std::filesystem::path boundary(argv[3]);
 
   //////////////////////////////////////////////////
   ////////////////// SANITIZE INPUT FIRST!!!!
@@ -47,10 +59,10 @@ int main(int argc, char **argv) {
         std::chrono::system_clock::now().time_since_epoch());
     std::string milli = std::to_string(ms_since_epoch.count());
     std::string moved_output_dir;
-    moved_output_dir = output_dir;
+    moved_output_dir = output_dir.string();
     moved_output_dir.append("_");
     moved_output_dir.append(milli);
-    std::filesystem::rename(output_dir, moved_output_dir);
+    std::filesystem::rename(output_dir.string(), moved_output_dir);
     std::cout << "moved old directory " << output_dir << " to "
               << moved_output_dir << std::endl;
     std::cout << "result files will be saved to " << output_dir << std::endl;

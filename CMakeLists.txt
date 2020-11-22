@@ -16,6 +16,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # for Release types add link-time optimization
 # for Debug types add warnings instead!
 check_ipo_supported(RESULT ipo_is_supported)
+add_compile_options($<$<CXX_COMPILER_ID:CLANG>:-fcolor-diagnostics>
+  $<$<CXX_COMPILER_ID:GNU>:-fdiagnostics-color>)
 if(CMAKE_BUILD_TYPE)
   if(${CMAKE_BUILD_TYPE} MATCHES "Release" OR ${CMAKE_BUILD_TYPE} MATCHES "Relwithdebinfo")
     if(ipo_is_supported)
@@ -23,7 +25,6 @@ if(CMAKE_BUILD_TYPE)
     endif()
   else()
     add_compile_options(
-      -fcolor-diagnostics
       -Og -Werror -Wconversion -pedantic-errors -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wmissing-declarations -Wmissing-include-dirs  -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo  -Wstrict-overflow=5 -Wswitch-default -Wundef -Wunused -Wno-error=unused-parameter -Wno-error=unused-private-field -Wno-error=unused-variable
       # -Wall -Wextra -pedantic -Werror
       )
@@ -38,7 +39,6 @@ endif()
 
 
 find_package (Eigen3 3.3 REQUIRED NO_MODULE)
-if (NOT EIGEN3_FOUND)
   if(NOT EIGEN3_INCLUDE_DIR)
     message(STATUS " Eigen Include dir: ${EIGEN_INCLUDE_DIR}")
     message(FATAL_ERROR "Eigen was not found and no include directory was given. Please provide EIGEN3_INCLUDE_DIR with the commandline option
@@ -46,7 +46,6 @@ if (NOT EIGEN3_FOUND)
   else()
     include_directories (SYSTEM ${EIGEN3_INCLUDE_DIR})
   endif()
-endif()
 
 
 

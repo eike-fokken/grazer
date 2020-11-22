@@ -5,7 +5,6 @@
 #include <Eigen/SparseQR>
 #include <Matrixhandler.hpp>
 #include <Problem.hpp>
-#include <eigen3/Eigen/src/Core/Matrix.h>
 #include <iostream>
 
 namespace Model {}
