@@ -86,9 +86,9 @@ int main(int argc, char **argv) {
           solver.solve(state1, *p, true, last_time, new_time, state2);
       p->save_values(new_time, state1);
 
-      // std::cout << new_time << ": ";
-      // std::cout << solstruct.residual << ", ";
-      // std::cout << solstruct.used_iterations << std::endl;
+      std::cout << new_time << ": ";
+      std::cout << solstruct.residual << ", ";
+      std::cout << solstruct.used_iterations << std::endl;
 
       // write new_state to last state:
       state2 = state1;
