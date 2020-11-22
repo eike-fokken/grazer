@@ -1,8 +1,11 @@
 #pragma once
-#include "Problem.hpp"
+#include "../../testingWithGoogle/TestProblem.hpp"
 #include <Eigen/Sparse>
 #include <Eigen/SparseLU>
+#include <Eigen/SparseQR>
 #include <Matrixhandler.hpp>
+#include <Problem.hpp>
+#include <iostream>
 
 namespace Model {}
 
@@ -26,15 +29,16 @@ namespace Solver {
   ///
   /// This class holds a SparseMatrix and a corresponding Sparse-matrix solver,
   /// so it can compute the solution of a non-linear problem.
-  template <typename Problemtype> class Newtonsolver {
+  template <typename Problemtype> class Newtonsolver_temp {
   public:
-    Newtonsolver(double _tolerance, int _maximal_iterations)
+    Newtonsolver_temp(double _tolerance, int _maximal_iterations)
         : tolerance(_tolerance), maximal_iterations(_maximal_iterations){};
 
     void evaluate_state_derivative_triplets(Problemtype &problem,
                                             double last_time, double new_time,
                                             Eigen::VectorXd const &last_state,
-                                            Eigen::VectorXd const &new_state) {
+                                            Eigen::VectorXd &new_state) {
+      new_state = last_state;
       {
         jacobian.resize(new_state.size(), new_state.size());
         Aux::Triplethandler handler(&jacobian);
@@ -64,7 +68,8 @@ namespace Solver {
     /// jacobian and re-analyzes the sparsity pattern for the lu-solver. It uses
     /// an affine-invariant Newton solution described in chapter 4.2 in
     /// "Deuflhard and Hohmann: Numerical Analysis in Modern Scientific
-    /// Computing". Afterwards there should hold f(new_state) == 0.
+    /// Computing". Afterwards there should hold f(new_state) == 0 (up to
+    /// tolerance).
     Solutionstruct solve(Eigen::VectorXd &new_state, Problemtype &problem,
                          bool new_jacobian_structure, double last_time,
                          double new_time, Eigen::VectorXd const &last_state) {
@@ -94,17 +99,19 @@ namespace Solver {
       double oldstepsizeparameter;
       double stepsize;
 
+      // set initial guess to new_state:
       *vec1 = new_state;
+      *vec2 = new_state;
       problem.evaluate(function, last_time, new_time, last_state, *vec1);
       solstruct.residual = function.lpNorm<Eigen::Infinity>();
 
       while (solstruct.residual > tolerance &&
              solstruct.used_iterations < maximal_iterations) {
-        // compute new derivative before the next step:
-        problem.evaluate(function, last_time, new_time, last_state, *vec2);
-        evaluate_state_derivative_coeffref(problem, last_time, new_time,
+
+        problem.evaluate(function, last_time, new_time, last_state, *vec1);
+        evaluate_state_derivative_triplets(problem, last_time, new_time,
                                            last_state, *vec1);
-        sparselusolver.factorize(jacobian);
+        sparselusolver.compute(jacobian);
         step = sparselusolver.solve(-function);
         oldstepsizeparameter = step.lpNorm<2>();
         stepsize = 2.0; // This is set to 2.0, so that in the first run of the
@@ -118,6 +125,7 @@ namespace Solver {
           problem.evaluate(function, last_time, new_time, last_state, *vec2);
           stepsizeparameter =
               sparselusolver.solve(-function).template lpNorm<2>();
+          // std::cout << stepsizeparameter << " ";
         } while ((stepsizeparameter >
                   (1 - decrease_value * stepsize) * oldstepsizeparameter) &&
                  stepsize > minimal_stepsize);
@@ -160,9 +168,10 @@ namespace Solver {
     int maximal_iterations;
 
     /// technical constant of the solve algorithm.
-    constexpr static double const decrease_value{0.01};
+    constexpr static double const decrease_value{0.001};
     /// The minimal stepsize of a Newton step.
     constexpr static double const minimal_stepsize{1e-10};
   };
-
+  typedef Newtonsolver_temp<Model::Problem> Newtonsolver;
+  typedef Newtonsolver_temp<TestProblem> Newtonsolver_test;
 } // namespace Solver
