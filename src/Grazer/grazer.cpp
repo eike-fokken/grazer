@@ -64,34 +64,36 @@ int main(int argc, char **argv) {
   try {
     Aux::Printguard guard(p);
 
-    Solver::Newtonsolver<Model::Problem> solver(1e-8, 200);
+    Solver::Newtonsolver solver(1e-8, 200);
     double T = 3600 * 24;
 
-    double N = 96.0;
+    double N = 48.0;
     double delta_t = T / N;
     Eigen::VectorXd state1(number);
-    Jsonreader::set_initial_values(state1, initial, p);
-    Eigen::VectorXd state2 = state1;
-    // auto statepointer1 = &state1;
-    // auto statepointer2 = &state2;
 
-    double new_time(delta_t);
+    Jsonreader::set_initial_values(state1, initial, p);
+
+    Eigen::VectorXd state2 = state1;
+
+    double new_time(0.0);
     double last_time(0.0);
 
-    for (int i = 1; i != N + 1; ++i) {
+    std::cout << "data read" << std::endl;
+
+    for (int i = 0; i != N + 1; ++i) {
+      new_time = i * delta_t;
       auto solstruct =
           solver.solve(state1, *p, true, last_time, new_time, state2);
       p->save_values(new_time, state1);
 
-      std::cout << new_time << ": ";
-      std::cout << solstruct.residual << ", ";
-      std::cout << solstruct.used_iterations << std::endl;
+      // std::cout << new_time << ": ";
+      // std::cout << solstruct.residual << ", ";
+      // std::cout << solstruct.used_iterations << std::endl;
 
       // write new_state to last state:
       state2 = state1;
-
       // set next time step:
-      new_time = last_time + i * delta_t;
+      last_time = new_time;
     }
 
     p->print_to_files();

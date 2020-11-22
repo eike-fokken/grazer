@@ -24,6 +24,16 @@ namespace Network {
           gthrow({"The node ", id,
                   "is not part of the net object but attached to an edge!",
                   "\n"});
+        } else {
+          bool found(false);
+          for (auto &edgeptr : node_in_net->get_starting_edges()) {
+            if (edgeptr == edge.get()) {
+              found = true;
+            }
+          }
+          if (!found) {
+            gthrow({"edge not attached at its starting node!"});
+          }
         }
       }
       {
@@ -38,6 +48,16 @@ namespace Network {
           gthrow({"The node ", id,
                   "is not part of the net object but attached to an edge!",
                   "\n"});
+        } else {
+          bool found(false);
+          for (auto &edgeptr : node_in_net->get_ending_edges()) {
+            if (edgeptr == edge.get()) {
+              found = true;
+            }
+          }
+          if (!found) {
+            gthrow({"edge not attached at its ending node!"});
+          }
         }
       }
     }

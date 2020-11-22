@@ -5,6 +5,7 @@
 #include <Eigen/SparseQR>
 #include <Matrixhandler.hpp>
 #include <Problem.hpp>
+#include <eigen3/Eigen/src/Core/Matrix.h>
 #include <iostream>
 
 namespace Model {}
@@ -75,70 +76,47 @@ namespace Solver {
                          double new_time, Eigen::VectorXd const &last_state) {
       Solutionstruct solstruct;
 
-      // If the structure of the jacobian changed one should generate it from
-      // triplets anew:
-      if (new_jacobian_structure) {
-        evaluate_state_derivative_triplets(problem, last_time, new_time,
-                                           last_state, new_state);
-      }
-      // If the non-zero elements are the same, just update them:
-      else {
-        evaluate_state_derivative_coeffref(problem, last_time, new_time,
-                                           last_state, new_state);
-      }
+      Eigen::VectorXd rootvalues(new_state.size());
 
-      Eigen::VectorXd temp1(new_state.size());
-      Eigen::VectorXd temp2(new_state.size());
-      Eigen::VectorXd *vec1 = &temp1;
-      Eigen::VectorXd *vec2 = &temp2;
-      Eigen::VectorXd *temp;
+      // compute f(x_k);
+      problem.evaluate(rootvalues, last_time, new_time, last_state, new_state);
+      // compute f'(x_k) and write it to the jacobian.
+      evaluate_state_derivative_triplets(problem, last_time, new_time,
+                                         last_state, new_state);
 
-      Eigen::VectorXd function(new_state.size());
-      Eigen::VectorXd step(new_state.size());
-      double stepsizeparameter;
-      double oldstepsizeparameter;
-      double stepsize;
-
-      // set initial guess to new_state:
-      *vec1 = new_state;
-      *vec2 = new_state;
-      problem.evaluate(function, last_time, new_time, last_state, *vec1);
-      solstruct.residual = function.lpNorm<Eigen::Infinity>();
-
-      while (solstruct.residual > tolerance &&
+      while (rootvalues.norm() > tolerance &&
              solstruct.used_iterations < maximal_iterations) {
-
-        problem.evaluate(function, last_time, new_time, last_state, *vec1);
-        evaluate_state_derivative_triplets(problem, last_time, new_time,
-                                           last_state, *vec1);
         sparselusolver.compute(jacobian);
-        step = sparselusolver.solve(-function);
-        oldstepsizeparameter = step.lpNorm<2>();
-        stepsize = 2.0; // This is set to 2.0, so that in the first run of the
-                        // following loop the stepsize is decreased to the
-                        // correct initial value of 1.0.
+        // compute Dx_k:
+        Eigen::VectorXd step = -sparselusolver.solve(rootvalues);
 
-        // Stepsize computation:
-        do {
-          stepsize *= 0.5;
-          *vec2 = *vec1 + stepsize * step;
-          problem.evaluate(function, last_time, new_time, last_state, *vec2);
-          stepsizeparameter =
-              sparselusolver.solve(-function).template lpNorm<2>();
-          // std::cout << stepsizeparameter << " ";
-        } while ((stepsizeparameter >
-                  (1 - decrease_value * stepsize) * oldstepsizeparameter) &&
-                 stepsize > minimal_stepsize);
+        double lambda = 1.0;
+        // candidate for x_{k+1}
+        Eigen::VectorXd candidate_vector = new_state + lambda * step;
 
-        solstruct.residual = function.lpNorm<Eigen::Infinity>();
-        temp = vec1;
-        vec1 = vec2; // we switch pointers in order to not copy data and still
-                     // have access to the last value.
-        vec2 = temp;
+        // f(x_{k+1}
+        Eigen::VectorXd candidate_values(new_state.size());
+        problem.evaluate(candidate_values, last_time, new_time, last_state,
+                         candidate_vector);
+
+        // Delta^bar x_k+1
+        Eigen::VectorXd delta_x_bar = -sparselusolver.solve(candidate_values);
+
+        double current_norm = delta_x_bar.norm();
+
+        double testnorm = step.norm();
+        while (current_norm > (1 - 0.5 * lambda) * testnorm) {
+          lambda *= 0.5;
+          candidate_vector = new_state + lambda * step;
+          problem.evaluate(candidate_values, last_time, new_time, last_state,
+                           candidate_vector);
+          current_norm = (-sparselusolver.solve(candidate_values)).norm();
+        }
+        new_state = candidate_vector;
+        rootvalues = candidate_values;
         ++solstruct.used_iterations;
+        solstruct.residual = rootvalues.norm();
       }
-      new_state = *vec1;
-
       if (solstruct.used_iterations == maximal_iterations) {
         solstruct.success = false;
       } else {
