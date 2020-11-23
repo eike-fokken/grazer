@@ -24,7 +24,6 @@ TEST(Newtonsolver, SolveWithRoot) {
   int max_it = 10000;
 
   Solver::Newtonsolver_test Solver(tol, max_it);
-  bool new_jacobian_structure = true;
   Eigen::VectorXd new_state(2), last_state(2), solution(2);
   new_state(0) = 5; // Wähle Funktionswert, der weit weg ist
   new_state(1) = 3;
