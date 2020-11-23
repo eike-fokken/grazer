@@ -37,6 +37,7 @@ build/**
 debug/**
 release/**
 mingw/**
+gcc-rel/**
 relwithdebinfo/**
 .ccls-cache
 .DS_Store
