@@ -37,15 +37,11 @@ endif()
 
 
 
+## Hacky eigen include:
+# find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 
-find_package (Eigen3 3.3 REQUIRED NO_MODULE)
-  if(NOT EIGEN3_INCLUDE_DIR)
-    message(STATUS " Eigen Include dir: ${EIGEN_INCLUDE_DIR}")
-    message(FATAL_ERROR "Eigen was not found and no include directory was given. Please provide EIGEN3_INCLUDE_DIR with the commandline option
--DEIGEN_INCLUDE_DIR='path/to/eigen'")
-  else()
-    include_directories (SYSTEM ${EIGEN3_INCLUDE_DIR})
-  endif()
+include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/eigen/")
+
 
 
 
