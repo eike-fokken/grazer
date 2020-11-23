@@ -41,8 +41,7 @@ TEST(Newtonsolver, SolveWithRoot) {
   TestProblem problem(f, df);
   Solver::Solutionstruct a;
 
-  a = Solver.solve(new_state, problem, new_jacobian_structure, last_time,
-                   new_time, last_state);
+  a = Solver.solve(new_state, problem, last_time, new_time, last_state);
 
   EXPECT_EQ(a.success, true);
 

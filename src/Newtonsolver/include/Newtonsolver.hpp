@@ -63,16 +63,14 @@ namespace Solver {
 
     /// \brief This method computes a solution to f(new_state) == 0.
     ///
-    ///
-    /// If new_jacobian_structure is true, it first completely rebuilds the
-    /// jacobian and re-analyzes the sparsity pattern for the lu-solver. It uses
-    /// an affine-invariant Newton solution described in chapter 4.2 in
+    /// It uses
+    /// an affine-invariant Newton method described in chapter 4.2 in
     /// "Deuflhard and Hohmann: Numerical Analysis in Modern Scientific
     /// Computing". Afterwards there should hold f(new_state) == 0 (up to
     /// tolerance).
     Solutionstruct solve(Eigen::VectorXd &new_state, Problemtype &problem,
-                         bool new_jacobian_structure, double last_time,
-                         double new_time, Eigen::VectorXd const &last_state) {
+                         double last_time, double new_time,
+                         Eigen::VectorXd const &last_state) {
       Solutionstruct solstruct;
 
       Eigen::VectorXd rootvalues(new_state.size());

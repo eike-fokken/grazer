@@ -83,19 +83,17 @@ int main(int argc, char **argv) {
     double delta_t = T / N;
     Eigen::VectorXd state1(number);
 
-    Jsonreader::set_initial_values(state1, initial, p);
-
-    Eigen::VectorXd state2 = state1;
-
     double new_time(0.0);
     double last_time(0.0);
 
     std::cout << "data read" << std::endl;
 
+    Jsonreader::set_initial_values(state1, initial, p);
+    Eigen::VectorXd state2 = state1;
+
     for (int i = 0; i != N + 1; ++i) {
       new_time = i * delta_t;
-      auto solstruct =
-          solver.solve(state1, *p, true, last_time, new_time, state2);
+      auto solstruct = solver.solve(state1, *p, last_time, new_time, state2);
       p->save_values(new_time, state1);
 
       std::cout << new_time << ": ";
