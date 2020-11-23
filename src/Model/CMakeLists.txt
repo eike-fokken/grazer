@@ -1,6 +1,5 @@
 
 add_subdirectory(Problemlayer)
-add_subdirectory(Power)
 add_subdirectory(Network)
 add_subdirectory(Networkproblem)
 
