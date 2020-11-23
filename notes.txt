@@ -1,14 +1,11 @@
-DONE:  Net should probably hold unique pointers to edges and nodes.
-
 TODO: Declare all classes where it is appropriate final.
 
 TODO: Boundaryvalue maybe should hold a matrix instead of a map. (requires testing of performance)
 
 TODO: make subproblems inherit from nodes and define connecting problems as edges. --> Problem should hold a network of subproblems.
 
-TODO: replace all eigen indices by long (instead of int)
+TODO: replace all eigen indices by long (instead of int), requires performance testing.
 
 TODO: Validate the json!
 
 TODO: Think about how initial values should be handled for non-network problems!
-
