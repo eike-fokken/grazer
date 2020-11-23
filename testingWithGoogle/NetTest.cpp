@@ -211,7 +211,7 @@ TEST(testEdge, test_getEndingNode) {
 TEST(modelTest, get_number_of_states) {
 
   // Test how often this class is being called
-  Model::MockSubproblem mocksub;
+  GrazerTest::MockSubproblem mocksub;
   EXPECT_CALL(mocksub, reserve_indices(0)).Times(1);
 
   mocksub.set_indices(0);
@@ -222,8 +222,8 @@ TEST(modelSubproblem, Model_evaluate) {
   Model::Problem problem("");
 
   // make unique pointer of mocksub1 and mocksub2
-  auto mock1_ptr = std::make_unique<Model::MockSubproblem>();
-  auto mock2_ptr = std::make_unique<Model::MockSubproblem>();
+  auto mock1_ptr = std::make_unique<GrazerTest::MockSubproblem>();
+  auto mock2_ptr = std::make_unique<GrazerTest::MockSubproblem>();
 
   // add subproblem to problem
   problem.add_subproblem(std::move(mock1_ptr));
@@ -243,11 +243,11 @@ TEST(modelSubproblem, Model_evaluate) {
   // expect the call to evaluate on the subproblems.
   // The cast magic is necessary to have the right type at hand...
   EXPECT_CALL(
-      *dynamic_cast<Model::MockSubproblem *>(problem.get_subproblems()[0]),
+      *dynamic_cast<GrazerTest::MockSubproblem *>(problem.get_subproblems()[0]),
       evaluate(rootfunction, last_time, new_time, v1, v2))
       .Times(1);
   EXPECT_CALL(
-      *dynamic_cast<Model::MockSubproblem *>(problem.get_subproblems()[1]),
+      *dynamic_cast<GrazerTest::MockSubproblem *>(problem.get_subproblems()[1]),
       evaluate(rootfunction, last_time, new_time, v1, v2))
       .Times(1);
 

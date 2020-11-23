@@ -57,7 +57,7 @@ TEST(Newtonsolver, LinearSolveWithRoot_InitialValue1) {
   double last_time = 0;
   double new_time = 1;
 
-  TestProblem problem(f, df);
+  GrazerTest::TestProblem problem(f, df);
   Solver::Solutionstruct a;
 
   a = Solver.solve(new_state, problem, last_time, new_time, last_state);
@@ -86,7 +86,7 @@ TEST(Newtonsolver, LinearSolveWithRoot_InitialValue2) {
   double last_time = 0;
   double new_time = 1;
 
-  TestProblem problem(f, df);
+  GrazerTest::TestProblem problem(f, df);
   Solver::Solutionstruct a;
 
   a = Solver.solve(new_state, problem, last_time,
@@ -119,7 +119,7 @@ TEST(Newtonsolver, NonlinearSolveWithRoot) {
   double last_time = 0;
   double new_time = 1;
 
-  TestProblem problem(f2, df2);
+  GrazerTest::TestProblem problem(f2, df2);
   Solver::Solutionstruct a;
   a = Solver.solve(new_state, problem, last_time, new_time, last_state);
 
@@ -147,7 +147,7 @@ TEST(Newtonsolver, SingularJacobian) {
   double last_time = 0;
   double new_time = 1;
 
-  TestProblem problem(f2, df2);
+  GrazerTest::TestProblem problem(f2, df2);
   Solver::Solutionstruct a;
 
   EXPECT_ANY_THROW( a = Solver.solve(new_state, problem, last_time, new_time, last_state););

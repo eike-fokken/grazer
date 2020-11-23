@@ -10,6 +10,8 @@
  * derivatives thereof.
  */
 
+namespace GrazerTest {
+
 using Rootfunction = Eigen::VectorXd(Eigen::VectorXd);
 using Derivative = Eigen::SparseMatrix<double>(Eigen::VectorXd);
 
@@ -41,3 +43,4 @@ public:
   Rootfunction *f;
   Derivative *df;
 };
+}

@@ -4,9 +4,9 @@
 #include <Matrixhandler.hpp>
 #include <Subproblem.hpp>
 
-namespace Model {
+namespace GrazerTest {
 
-  class MockSubproblem : public Subproblem {
+  class MockSubproblem : public Model::Subproblem {
 
   public:
     MOCK_METHOD(void, evaluate,

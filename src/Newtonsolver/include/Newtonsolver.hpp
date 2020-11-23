@@ -1,15 +1,16 @@
 #pragma once
-#include "../../testingWithGoogle/TestProblem.hpp"
 #include <Eigen/Sparse>
 #include <Eigen/SparseLU>
 #include <Eigen/SparseQR>
-#include <Matrixhandler.hpp>
-#include <Problem.hpp>
-#include <iostream>
-#include <Exception.hpp>
-#include <string>
 
-namespace Model {}
+namespace GrazerTest {
+class TestProblem;
+}
+
+namespace Model {
+  class Problem;  
+} // namespace Model
+
 
 /// \brief This namespace holds tools for solving numerical problems, e.g.
 /// finding the root of a non-linear function.
@@ -39,30 +40,30 @@ namespace Solver {
     void evaluate_state_derivative_triplets(Problemtype &problem,
                                             double last_time, double new_time,
                                             Eigen::VectorXd const &last_state,
-                                            Eigen::VectorXd &new_state) {
+                                            Eigen::VectorXd &new_state);//  {
 
-      {
-        jacobian.resize(new_state.size(), new_state.size());
-        Aux::Triplethandler handler(&jacobian);
+    //   {
+    //     jacobian.resize(new_state.size(), new_state.size());
+    //     Aux::Triplethandler handler(&jacobian);
 
-        Aux::Triplethandler * const handler_ptr = &handler;
-        problem.evaluate_state_derivative(handler_ptr, last_time, new_time,
-                                          last_state, new_state);
-        handler.set_matrix();
-      }
-      lusolver.analyzePattern(jacobian);
-    };
+    //     Aux::Triplethandler * const handler_ptr = &handler;
+    //     problem.evaluate_state_derivative(handler_ptr, last_time, new_time,
+    //                                       last_state, new_state);
+    //     handler.set_matrix();
+    //   }
+    //   lusolver.analyzePattern(jacobian);
+    // };
 
     void evaluate_state_derivative_coeffref(Problemtype &problem,
                                             double last_time, double new_time,
                                             Eigen::VectorXd const &last_state,
-                                            Eigen::VectorXd const &new_state) {
-      Aux::Coeffrefhandler handler(&jacobian);
-      Aux::Coeffrefhandler *const handler_ptr = &handler;
-      problem.evaluate_state_derivative(handler_ptr, last_time, new_time,
-                                        last_state, new_state);
+                                            Eigen::VectorXd const &new_state);//  {
+    //   Aux::Coeffrefhandler handler(&jacobian);
+    //   Aux::Coeffrefhandler *const handler_ptr = &handler;
+    //   problem.evaluate_state_derivative(handler_ptr, last_time, new_time,
+    //                                     last_state, new_state);
       
-    };
+    // };
 
     /// \brief This method computes a solution to f(new_state) == 0.
     ///
@@ -73,70 +74,70 @@ namespace Solver {
     /// tolerance).
     Solutionstruct solve(Eigen::VectorXd &new_state, Problemtype &problem,
                          double last_time, double new_time,
-                         Eigen::VectorXd const &last_state) {
-      Solutionstruct solstruct;
+                         Eigen::VectorXd const &last_state); //  {
+    //   Solutionstruct solstruct;
 
-      Eigen::VectorXd rootvalues(new_state.size());
+    //   Eigen::VectorXd rootvalues(new_state.size());
 
-      // compute f(x_k);
-      problem.evaluate(rootvalues, last_time, new_time, last_state, new_state);
+    //   // compute f(x_k);
+    //   problem.evaluate(rootvalues, last_time, new_time, last_state, new_state);
 
-      // check if already there:
-      if(rootvalues.norm() <= tolerance){
-        solstruct.success = true;
-        solstruct.residual= rootvalues.norm();
-        solstruct.used_iterations=0;
-        return solstruct;
-      }
+    //   // check if already there:
+    //   if(rootvalues.norm() <= tolerance){
+    //     solstruct.success = true;
+    //     solstruct.residual= rootvalues.norm();
+    //     solstruct.used_iterations=0;
+    //     return solstruct;
+    //   }
 
-      // compute f'(x_k) and write it to the jacobian.
-      evaluate_state_derivative_triplets(problem, last_time, new_time,
-                                         last_state, new_state);
+    //   // compute f'(x_k) and write it to the jacobian.
+    //   evaluate_state_derivative_triplets(problem, last_time, new_time,
+    //                                      last_state, new_state);
 
-      while (rootvalues.norm() > tolerance &&
-             solstruct.used_iterations < maximal_iterations) {
-        lusolver.compute(jacobian);
-        if(lusolver.info()!=Eigen::Success) {
-          gthrow({"Couldn't decompose a Jacobian, it may be non-invertible.\n time: ",std::to_string(new_time), "\n Note, that only LU decomposition is implemented."})
-        }
-        // compute Dx_k:
-        Eigen::VectorXd step = -lusolver.solve(rootvalues);
+    //   while (rootvalues.norm() > tolerance &&
+    //          solstruct.used_iterations < maximal_iterations) {
+    //     lusolver.compute(jacobian);
+    //     if(lusolver.info()!=Eigen::Success) {
+    //       gthrow({"Couldn't decompose a Jacobian, it may be non-invertible.\n time: ",std::to_string(new_time), "\n Note, that only LU decomposition is implemented."})
+    //     }
+    //     // compute Dx_k:
+    //     Eigen::VectorXd step = -lusolver.solve(rootvalues);
 
-        double lambda = 1.0;
-        // candidate for x_{k+1}
-        Eigen::VectorXd candidate_vector = new_state + lambda * step;
+    //     double lambda = 1.0;
+    //     // candidate for x_{k+1}
+    //     Eigen::VectorXd candidate_vector = new_state + lambda * step;
 
-        // f(x_{k+1}
-        Eigen::VectorXd candidate_values(new_state.size());
-        problem.evaluate(candidate_values, last_time, new_time, last_state,
-                         candidate_vector);
+    //     // f(x_{k+1}
+    //     Eigen::VectorXd candidate_values(new_state.size());
+    //     problem.evaluate(candidate_values, last_time, new_time, last_state,
+    //                      candidate_vector);
 
-        // Delta^bar x_k+1
-        Eigen::VectorXd delta_x_bar = -lusolver.solve(candidate_values);
+    //     // Delta^bar x_k+1
+    //     Eigen::VectorXd delta_x_bar = -lusolver.solve(candidate_values);
 
-        double current_norm = delta_x_bar.norm();
+    //     double current_norm = delta_x_bar.norm();
 
-        double testnorm = step.norm();
-        while (current_norm > (1 - 0.5 * lambda) * testnorm) {
-          lambda *= 0.5;
-          candidate_vector = new_state + lambda * step;
-          problem.evaluate(candidate_values, last_time, new_time, last_state,
-                           candidate_vector);
-          current_norm = (-lusolver.solve(candidate_values)).norm();
-        }
-        new_state = candidate_vector;
-        rootvalues = candidate_values;
-        ++solstruct.used_iterations;
-        solstruct.residual = rootvalues.norm();
-      }
-      if (solstruct.used_iterations == maximal_iterations) {
-        solstruct.success = false;
-      } else {
-        solstruct.success = true;
-      }
+    //     double testnorm = step.norm();
+    //     while (current_norm > (1 - 0.5 * lambda) * testnorm) {
+    //       lambda *= 0.5;
+    //       candidate_vector = new_state + lambda * step;
+    //       problem.evaluate(candidate_values, last_time, new_time, last_state,
+    //                        candidate_vector);
+    //       current_norm = (-lusolver.solve(candidate_values)).norm();
+    //     }
+    //     new_state = candidate_vector;
+    //     rootvalues = candidate_values;
+    //     ++solstruct.used_iterations;
+    //     solstruct.residual = rootvalues.norm();
+    //   }
+    //   if (solstruct.used_iterations == maximal_iterations) {
+    //     solstruct.success = false;
+    //   } else {
+    //     solstruct.success = true;
+    //   }
 
-      return solstruct;
-    };
+    //   return solstruct;
+    // };
 
   private:
     /// Holds an instance of the actual solver, to save computation time it
@@ -170,7 +171,8 @@ namespace Solver {
   };
 
   extern template class Newtonsolver_temp<Model::Problem>;
-  extern template class Newtonsolver_temp<TestProblem>;
+  extern template class Newtonsolver_temp<GrazerTest::TestProblem>;
+
   typedef Newtonsolver_temp<Model::Problem> Newtonsolver;
-  typedef Newtonsolver_temp<TestProblem> Newtonsolver_test;
+  typedef Newtonsolver_temp<GrazerTest::TestProblem> Newtonsolver_test;
 } // namespace Solver
