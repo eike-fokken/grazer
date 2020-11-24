@@ -62,17 +62,13 @@ namespace Jsonreader {
                     std::vector<std::unique_ptr<Network::Edge>> &edges) {
 
     json allpowernodes;
-    for (auto &node : topologyjson["nodes"]["Vphi_nodes"]) {
-      node["type"] = "Vphi";
-      allpowernodes.push_back(node);
-    }
-    for (auto &node : topologyjson["nodes"]["PV_nodes"]) {
-      node["type"] = "PV";
-      allpowernodes.push_back(node);
-    }
-    for (auto &node : topologyjson["nodes"]["PQ_nodes"]) {
-      node["type"] = "PQ";
-      allpowernodes.push_back(node);
+
+    std::vector<std::string> powernodetypes({"Vphi", "PV", "PQ"});
+    for (auto &powernodetype : powernodetypes) {
+      for (auto &powernode : topologyjson["nodes"][powernodetype]) {
+        powernode["type"] = powernodetype;
+        allpowernodes.push_back(powernode);
+      }
     }
 
     for (auto &node : allpowernodes) {
@@ -101,6 +97,9 @@ namespace Jsonreader {
                                                      node["G"], node["B"])));
       }
     }
+
+
+
 
     for (auto &tline : topologyjson["connections"]["transmissionLine"]) {
 

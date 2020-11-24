@@ -312,9 +312,9 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  nodes["Vphi_nodes"] = Vphi;
-  nodes["PV_nodes"] = PV;
-  nodes["PQ_nodes"] = PQ;
+  nodes["Vphi"] = Vphi;
+  nodes["PV"] = PV;
+  nodes["PQ"] = PQ;
 
   nodes.erase("Powernode");
 
