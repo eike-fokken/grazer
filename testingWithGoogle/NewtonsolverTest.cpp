@@ -60,7 +60,7 @@ TEST(Newtonsolver, LinearSolveWithRoot_InitialValue1) {
   GrazerTest::TestProblem problem(f, df);
   Solver::Solutionstruct a;
 
-  a = Solver.solve(new_state, problem, last_time, new_time, last_state);
+  a = Solver.solve(new_state, problem, true,last_time, new_time, last_state);
 
   EXPECT_EQ(a.success, true);
 
@@ -89,7 +89,7 @@ TEST(Newtonsolver, LinearSolveWithRoot_InitialValue2) {
   GrazerTest::TestProblem problem(f, df);
   Solver::Solutionstruct a;
 
-  a = Solver.solve(new_state, problem, last_time,
+  a = Solver.solve(new_state, problem, true, last_time,
                    new_time, last_state);
 
   EXPECT_EQ(a.success, true); //passed
@@ -121,7 +121,7 @@ TEST(Newtonsolver, NonlinearSolveWithRoot) {
 
   GrazerTest::TestProblem problem(f2, df2);
   Solver::Solutionstruct a;
-  a = Solver.solve(new_state, problem, last_time, new_time, last_state);
+  a = Solver.solve(new_state, problem, true,last_time, new_time, last_state);
 
 
   EXPECT_EQ(a.success,false);
@@ -150,5 +150,5 @@ TEST(Newtonsolver, SingularJacobian) {
   GrazerTest::TestProblem problem(f2, df2);
   Solver::Solutionstruct a;
 
-  EXPECT_ANY_THROW( a = Solver.solve(new_state, problem, last_time, new_time, last_state););
+  EXPECT_ANY_THROW( a = Solver.solve(new_state, problem, true,last_time, new_time, last_state););
 }

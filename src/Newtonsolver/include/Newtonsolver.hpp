@@ -73,7 +73,7 @@ namespace Solver {
     /// Computing". Afterwards there should hold f(new_state) == 0 (up to
     /// tolerance).
     Solutionstruct solve(Eigen::VectorXd &new_state, Problemtype &problem,
-                         double last_time, double new_time,
+                         bool newjac, double last_time, double new_time,
                          Eigen::VectorXd const &last_state); //  {
     //   Solutionstruct solstruct;
 

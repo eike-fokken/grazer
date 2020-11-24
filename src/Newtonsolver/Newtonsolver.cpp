@@ -38,7 +38,7 @@ void Newtonsolver_temp<Problemtype>::evaluate_state_derivative_coeffref(Problemt
 
 template <typename Problemtype>
 Solutionstruct Newtonsolver_temp<Problemtype>::solve(Eigen::VectorXd &new_state, Problemtype &problem,
-                     double last_time, double new_time,
+                                                     bool newjac, double last_time, double new_time,
                      Eigen::VectorXd const &last_state) {
   Solutionstruct solstruct;
 
@@ -56,12 +56,16 @@ Solutionstruct Newtonsolver_temp<Problemtype>::solve(Eigen::VectorXd &new_state,
   }
 
   // compute f'(x_k) and write it to the jacobian.
+  if(newjac){
   evaluate_state_derivative_triplets(problem, last_time, new_time, last_state,
                                      new_state);
-
+  } else {
+    evaluate_state_derivative_coeffref(problem, last_time, new_time, last_state,
+                                       new_state);
+  }
   while (rootvalues.norm() > tolerance &&
          solstruct.used_iterations < maximal_iterations) {
-    lusolver.compute(jacobian);
+    lusolver.factorize(jacobian);
     if (lusolver.info() != Eigen::Success) {
       gthrow(
           {"Couldn't decompose a Jacobian, it may be non-invertible.\n time: ",
