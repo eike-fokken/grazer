@@ -8,7 +8,7 @@
 #include <string>
 #include <utility>
 #include <vector>
-
+// #include <execution>
 #include <Eigen/Sparse>
 
 namespace Model::Networkproblem {
@@ -34,6 +34,15 @@ namespace Model::Networkproblem {
                                 double new_time,
                                 Eigen::VectorXd const &last_state,
                                 Eigen::VectorXd const &new_state) {
+
+    // // This should evaluate in parallel, test on bigger problems later on:
+    // std::for_each(std::execution::par_unseq, equationcomponents.begin(),
+    //               equationcomponents.end(),[&](auto&& eqcomponent)
+    // {
+    // eqcomponent->evaluate(rootfunction, last_time, new_time, last_state,
+    //                       new_state);
+    // } 
+    // );
     for (Model::Networkproblem::Equationcomponent *eqcomponent :
          equationcomponents) {
       eqcomponent->evaluate(rootfunction, last_time, new_time, last_state,
@@ -44,6 +53,15 @@ namespace Model::Networkproblem {
   void Networkproblem::evaluate_state_derivative(
       Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
       Eigen::VectorXd const &last_state, Eigen::VectorXd const &new_state) {
+
+    // // This should evaluate in parallel, test on bigger problems later on:
+    // std::for_each(std::execution::par_unseq, equationcomponents.begin(),
+    //               equationcomponents.end(), [&](auto &&eqcomponent) {
+    //                 eqcomponent->evaluate_state_derivative(
+    //                     jacobianhandler, last_time, new_time, last_state,
+    //                     new_state);
+    //               });
+
     for (Model::Networkproblem::Equationcomponent *eqcomponent :
          equationcomponents) {
       eqcomponent->evaluate_state_derivative(jacobianhandler, last_time,
