@@ -29,14 +29,18 @@ namespace Jsonreader {
       std::ifstream jsonfilestream(topology);
       jsonfilestream >> topologyjson;
     } catch (...) {
-      gthrow({"Couldn't load topology file: ", topology.string()});
+      std::cout << __FILE__ <<":" << __LINE__ << ": Couldn't load topology file: " << topology.string() << std::endl;
+      throw;
     }
     json boundaryjson;
     try {
       std::ifstream jsonfilestream(boundary);
       jsonfilestream >> boundaryjson;
     } catch (...) {
-      gthrow({"Couldn't load boundary value file: ", boundary.string()});
+      std::cout << __FILE__ << ":" << __LINE__
+                << ": Couldn't load boundary file: " << boundary.string()
+                << std::endl;
+      throw;
     }
 
     try {
@@ -144,7 +148,10 @@ namespace Jsonreader {
       std::ifstream jsonfilestream(initial);
       jsonfilestream >> initialjson;
     } catch (...) {
-      gthrow({"Couldn't load initial value file: ", initial.string()});
+      std::cout << __FILE__ << ":" << __LINE__
+                << ": Couldn't load initial file: " << initial.string()
+                << std::endl;
+      throw;
     }
 
     problem->set_initial_values(new_state, initialjson);
