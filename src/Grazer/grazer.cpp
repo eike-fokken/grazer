@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
       return 1;
     }
   } else {
-    topology = "topology_with_doubles.json";
+    topology = "topology_pretty.json";
     initial = "initial_pretty.json";
     boundary = "boundary_pretty.json";
   }

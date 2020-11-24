@@ -51,7 +51,7 @@ Invoking grazer can be done like this:
 
 Calling grazer without arguments is equivalent to calling:
 
-``` grazer topology_with_doubles.json initial_pretty.json boundary_pretty.json```
+``` grazer topology_pretty.json initial_pretty.json boundary_pretty.json```
 
 
 
