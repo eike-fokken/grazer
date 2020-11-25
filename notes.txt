@@ -10,6 +10,17 @@ TODO: Validate the json!
 
 TODO: Think about how initial values should be handled for non-network problems!
 
+TODO: Go back to strings in json files.
 
 
 TODO:  Review, whether parallel exectuion in Networkproblem is worth it and whether it produces bugs!
+
+
+TODO: Try GCC ubsan to check for undefined behaviour! Also:
+
+Clang++ -fsanitize=undefined:
+
+Also: Check out scan-build!
+
+
+Note: python xq
