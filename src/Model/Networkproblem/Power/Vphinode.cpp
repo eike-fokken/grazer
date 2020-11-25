@@ -4,9 +4,6 @@
 
 namespace Model::Networkproblem::Power {
 
-  // Careful: new state and old state and function value needed!
-  //////
-  //////
   void Vphinode::evaluate(Eigen::VectorXd &rootfunction, double // last_time
                           ,
                           double new_time,

@@ -14,6 +14,7 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <Gasboundarynode.hpp>
 
 namespace Jsonreader {
 
@@ -75,70 +76,109 @@ namespace Jsonreader {
       }
     }
 
-    for (auto &node : allpowernodes) {
-      std::string nodeid = node["id"].get<std::string>();
-      auto finder = [nodeid](json &x) {
-        auto it = x.find("id");
-        return it != x.end() and it.value() == nodeid;
-      };
-      auto bdjson =
-          std::find_if(boundary_json["boundarycondition"].begin(),
-                       boundary_json["boundarycondition"].end(), finder);
+    json allgasnodes;
 
-      if (node["type"] == "Vphi") {
-        nodes.push_back(std::unique_ptr<Model::Networkproblem::Power::Vphinode>(
-            new Model::Networkproblem::Power::Vphinode(node["id"], *bdjson,
-                                                       node["G"], node["B"])));
-      }
-      if (node["type"] == "PV") {
-        nodes.push_back(std::unique_ptr<Model::Networkproblem::Power::PVnode>(
-            new Model::Networkproblem::Power::PVnode(node["id"], *bdjson,
-                                                     node["G"], node["B"])));
-      }
-      if (node["type"] == "PQ") {
-        nodes.push_back(std::unique_ptr<Model::Networkproblem::Power::PQnode>(
-            new Model::Networkproblem::Power::PQnode(node["id"], *bdjson,
-                                                     node["G"], node["B"])));
+    std::vector<std::string> gasnodetypes({"source", "sink", "innode"});
+    for (auto &gasnodetype : gasnodetypes) {
+      for (auto &gasnode : topologyjson["nodes"][gasnodetype]) {
+        gasnode["type"] = gasnodetype;
+        allgasnodes.push_back(gasnode);
       }
     }
 
+    for (auto &gasnode : allgasnodes) {
+        std::string nodeid = gasnode["id"].get<std::string>();
+        auto finder = [nodeid](json &x) {
+          auto it = x.find("id");
+          return it != x.end() and it.value() == nodeid;
+        };
+        auto bdjson =
+            std::find_if(boundary_json["boundarycondition"].begin(),
+                         boundary_json["boundarycondition"].end(), finder);
 
+        if (gasnode["type"] == "source") {
+          nodes.push_back(
+              std::unique_ptr<Model::Networkproblem::Gas::Gasboundarynode>(
+                  new Model::Networkproblem::Gas::Gasboundarynode(
+                      gasnode["id"], *bdjson, gasnode)));
+        }
+        // if (gasnode["type"] == "PV") {
+        //   // nodes.push_back(std::unique_ptr<Model::Networkproblem::Gas::Source>(
+        //   // new Model::Networkproblem::Gas::Source(gasnode["id"], *bdjson,
+        //   //                                          gasnode["G"], gasnode["B"])));
+        // }
+        // if (gasnode["type"] == "PQ") {
+        //   // nodes.push_back(std::unique_ptr<Model::Networkproblem::Power::PVnode>(
+        //   //                                                                       new Model::Networkproblem::Power::PVnode(
+        //   //         gasnode["id"], *bdjson, gasnode["G"], gasnode["B"])));
+        // }
+    }
 
+      for (auto &node : allpowernodes) {
+        std::string nodeid = node["id"].get<std::string>();
+        auto finder = [nodeid](json &x) {
+          auto it = x.find("id");
+          return it != x.end() and it.value() == nodeid;
+        };
+        auto bdjson =
+            std::find_if(boundary_json["boundarycondition"].begin(),
+                         boundary_json["boundarycondition"].end(), finder);
 
-    for (auto &tline : topologyjson["connections"]["transmissionLine"]) {
+        if (node["type"] == "Vphi") {
+          nodes.push_back(
+              std::unique_ptr<Model::Networkproblem::Power::Vphinode>(
+                  new Model::Networkproblem::Power::Vphinode(
+                      node["id"], *bdjson, node["G"], node["B"])));
+        }
+        if (node["type"] == "PV") {
+          nodes.push_back(std::unique_ptr<Model::Networkproblem::Power::PVnode>(
+              new Model::Networkproblem::Power::PVnode(node["id"], *bdjson,
+                                                       node["G"], node["B"])));
+        }
+        if (node["type"] == "PQ") {
+          nodes.push_back(std::unique_ptr<Model::Networkproblem::Power::PQnode>(
+              new Model::Networkproblem::Power::PQnode(node["id"], *bdjson,
+                                                       node["G"], node["B"])));
+        }
+      }
 
-      // get the pointer from the node vector and put it in the line!
-      auto start = std::find_if(nodes.begin(), nodes.end(),
+      for (auto &tline : topologyjson["connections"]["transmissionLine"]) {
+
+        // get the pointer from the node vector and put it in the line!
+        auto start = std::find_if(nodes.begin(), nodes.end(),
+                                  [tline](std::unique_ptr<Network::Node> &x) {
+                                    auto nodeid = x->get_id();
+                                    return nodeid == tline["from"];
+                                  });
+        if (start == nodes.end()) {
+          gthrow(
+              {"The starting node ", tline["from"],
+               ", given by transmission line ", tline["id"],
+               ",\n is not defined in the nodes part of the topology file!"});
+        }
+        auto end = std::find_if(nodes.begin(), nodes.end(),
                                 [tline](std::unique_ptr<Network::Node> &x) {
                                   auto nodeid = x->get_id();
-                                  return nodeid == tline["from"];
+                                  return nodeid == tline["to"];
                                 });
-      if (start == nodes.end()) {
-        gthrow({"The starting node ", tline["from"],
-                ", given by transmission line ", tline["id"],
-                ",\n is not defined in the nodes part of the topology file!"});
+        if (end == nodes.end()) {
+          gthrow(
+              {"The ending node ", tline["to"], ", given by transmission line ",
+               tline["id"],
+               ",\n is not defined in the nodes part of the topology file!"});
+        }
+        edges.push_back(
+            std::unique_ptr<Model::Networkproblem::Power::Transmissionline>(
+                new Model::Networkproblem::Power::Transmissionline(
+                    tline["id"], (*start).get(), (*end).get(), tline["G"],
+                    tline["B"])));
       }
-      auto end = std::find_if(nodes.begin(), nodes.end(),
-                              [tline](std::unique_ptr<Network::Node> &x) {
-                                auto nodeid = x->get_id();
-                                return nodeid == tline["to"];
-                              });
-      if (end == nodes.end()) {
-        gthrow({"The ending node ", tline["to"],
-                ", given by transmission line ", tline["id"],
-                ",\n is not defined in the nodes part of the topology file!"});
-      }
-      edges.push_back(
-          std::unique_ptr<Model::Networkproblem::Power::Transmissionline>(
-              new Model::Networkproblem::Power::Transmissionline(
-                  tline["id"], (*start).get(), (*end).get(), tline["G"],
-                  tline["B"])));
-    }
+
 
     std::unique_ptr<Network::Net> net(
         new Network::Net(std::move(nodes), std::move(edges)));
     return net;
-  }
+    }
 
   void set_initial_values(Eigen::VectorXd &new_state,
                           std::filesystem::path const &initial,
