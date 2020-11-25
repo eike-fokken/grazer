@@ -13,6 +13,12 @@ TODO: Think about how initial values should be handled for non-network problems!
 TODO: Go back to strings in json files.
 
 
+TODO:  Think about how to implement boundary conditions: In power they are distinguised by type, in gas by member enum.
+Cons: not symmetric
+pros: For power they are really totally different, for gas its not the defining property of a node.
+
+
+
 TODO:  Review, whether parallel exectuion in Networkproblem is worth it and whether it produces bugs!
 
 
