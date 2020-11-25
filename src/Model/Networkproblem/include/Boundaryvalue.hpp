@@ -3,6 +3,7 @@
 #include <Exception.hpp>
 #include <map>
 #include <vector>
+#include <nlohmann/json.hpp>
 
 namespace Model::Networkproblem {
   template <typename T, int N> class Boundaryvalue {
@@ -67,6 +68,28 @@ namespace Model::Networkproblem {
     //       (t - t_minus) * (value_plus - value_minus) / (t_plus - t_minus);
     //   return value;
     // }
+
+    void set_boundary_condition(nlohmann::ordered_json boundary_json) {
+    
+      for (auto &datapoint : boundary_json["data"]) {
+        if (datapoint["values"].size() != N) {
+          gthrow(
+                 {"Wrong number of boundary values in node ", boundary_json["id"]});
+        }
+        Eigen::Matrix<double, N, 1> value;
+        try {
+          for (unsigned int i =0 ; i<N ; ++i) {
+            // auto ijson= static_cast<nlohmann::basic_json::size_type>(i);
+          value[i] = datapoint["values"][i];
+          }
+        } catch (...) {
+          gthrow({"Boundary data in node with id ", boundary_json["id"],
+                  " couldn't be assignd in vector, not a double?"})
+            }
+        boundary_values.insert({datapoint["time"], value});
+      }
+    }
+
 
   private:
     std::map<double, Eigen::Matrix<double, N, 1>> boundary_values;

@@ -6,6 +6,10 @@
 
 namespace Model::Networkproblem::Gas {
 
+  /// This enum type distinguishes pressure boundaries and flow boundaries.
+  enum Boundarytype {pressure, flow, negflow};
+
+
 class Gasboundarynode final: public Network::Node,
                public Model::Networkproblem::Equationcomponent {
 
@@ -37,8 +41,9 @@ public:
 
 
 private:
-  std::string boundarytype;
+  
   Boundaryvalue<Gasboundarynode, 1> boundaryvalue;
+  Boundarytype btype;
   };
 
 } // namespace Model::Networkproblem::Gas

@@ -42,8 +42,6 @@ namespace Model::Networkproblem::Power {
     /// Imaginary part of the admittance of this node
     double B;
 
-  private:
-    void set_boundary_condition(nlohmann::ordered_json boundary_json);
   };
 
 } // namespace Model::Networkproblem::Power
