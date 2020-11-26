@@ -2,6 +2,7 @@
 #include <Matrixhandler.hpp>
 #include <Exception.hpp>
 #include <iostream>
+#include <fstream>
 
 namespace Model::Networkproblem::Gas {
 
@@ -28,6 +29,24 @@ namespace Model::Networkproblem::Gas {
     jacobianhandler->set_coefficient(start_equation_index, end_p_index, -1.0);
     jacobianhandler->set_coefficient(end_equation_index, start_q_index, 1.0);
     jacobianhandler->set_coefficient(end_equation_index, end_q_index, -1.0);
+  }
+
+
+  int Shortpipe::get_number_of_states() const { return 4; }
+
+  void Shortpipe::save_values(double time, Eigen::VectorXd const &state) {
+
+    std::map<double, double> pressure_map;
+    std::map<double, double> flow_map;
+
+    auto start_state= get_starting_state(state);
+    auto end_state = get_ending_state(state);
+
+    pressure_map = {{0.0, start_state[0]},{1.0, end_state[0]}};
+    flow_map = {{0.0, start_state[1]}, {1.0, end_state[1]}};
+
+    std::vector<std::map<double, double>> value_vector({pressure_map, flow_map});
+    Equationcomponent::push_to_values(time, value_vector);
   }
 
   void Shortpipe::set_initial_values(Eigen::VectorXd &new_state,

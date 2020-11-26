@@ -17,7 +17,7 @@ namespace Model::Networkproblem::Gas {
     //maybe we should override display?
     //void display() const override;
 
-    int get_number_of_states() const override {return 4;};
+    int get_number_of_states() const override;
 
     
     void print_to_files(std::filesystem::path const &output_directory) override;
