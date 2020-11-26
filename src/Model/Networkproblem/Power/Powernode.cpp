@@ -76,7 +76,6 @@ namespace Model::Networkproblem::Power {
     std::map<double, double> Vmap;
     std::map<double, double> phimap;
     std::vector<std::map<double, double>> value_vector;
-    for (int i = 0; i != 4; ++i) {
       double P_val;
       double Q_val;
       if (dynamic_cast<PQnode *>(this)) {
@@ -97,8 +96,7 @@ namespace Model::Networkproblem::Power {
       Vmap = {{0.0, state[get_start_state_index()]}};
       phimap = {{0.0, state[get_start_state_index() + 1]}};
       value_vector = {Pmap, Qmap, Vmap, phimap};
-    }
-    Equationcomponent::push_to_values(time, value_vector);
+      Equationcomponent::push_to_values(time, value_vector);
   }
 
   double Powernode::P(Eigen::VectorXd const &new_state) const{
