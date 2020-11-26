@@ -18,8 +18,11 @@ Cons: not symmetric
 pros: For power they are really totally different, for gas its not the defining property of a node.
 
 
+TODO: Maybe refactor some small base classes into composition, e.g. Gasedge.
 
-TODO:  Review, whether parallel exectuion in Networkproblem is worth it and whether it produces bugs!
+
+
+TODO:  Review, whether parallel execution in Networkproblem is worth it and whether it produces bugs!
 
 
 TODO: Try GCC ubsan to check for undefined behaviour! Also:
