@@ -25,11 +25,11 @@ namespace Model::Networkproblem {
 
     void evaluate(Eigen::VectorXd &rootfunction, double last_time,
                   double new_time, Eigen::VectorXd const &last_state,
-                  Eigen::VectorXd const &new_state) final;
+                  Eigen::VectorXd const &new_state) const final;
     void evaluate_state_derivative(Aux::Matrixhandler *jacobian,
                                    double last_time, double new_time,
                                    Eigen::VectorXd const &last_state,
-                                   Eigen::VectorXd const &new_state) final;
+                                   Eigen::VectorXd const &new_state) const override;
 
     void save_values(double time, Eigen::VectorXd &new_state) final;
 

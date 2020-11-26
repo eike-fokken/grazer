@@ -29,12 +29,12 @@ namespace Model::Networkproblem::Power {
 
   protected:
     void save_values(double time, Eigen::VectorXd const &state) final;
-    double P(Eigen::VectorXd const &new_state);
-    double Q(Eigen::VectorXd const &new_state);
+    double P(Eigen::VectorXd const &new_state) const;
+    double Q(Eigen::VectorXd const &new_state) const;
     void evaluate_P_derivative(Aux::Matrixhandler *jacobianhandler,
-                               Eigen::VectorXd const &new_state);
+                               Eigen::VectorXd const &new_state) const;
     void evaluate_Q_derivative(Aux::Matrixhandler *jacobianhandler,
-                               Eigen::VectorXd const &new_state);
+                               Eigen::VectorXd const &new_state) const;
 
     Boundaryvalue<Powernode, 2> boundaryvalue;
     /// Real part of the admittance of this node

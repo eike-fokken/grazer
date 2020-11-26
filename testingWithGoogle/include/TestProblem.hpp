@@ -23,14 +23,14 @@ public:
   TestProblem(Rootfunction _f, Derivative _df) : f(_f), df(_df){};
 
   void evaluate(Eigen::VectorXd &rootfunction, double, double,
-                Eigen::VectorXd const &, Eigen::VectorXd const &new_state) {
+                Eigen::VectorXd const &, Eigen::VectorXd const &new_state) const{
 
     rootfunction = f(new_state);
   };
 
   void evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler, double,
                                  double, Eigen::VectorXd const &,
-                                 Eigen::VectorXd const &new_state) {
+                                 Eigen::VectorXd const &new_state) const{
 
     Eigen::SparseMatrix<double> mat = df(new_state);
     for (int k = 0; k < mat.outerSize(); ++k)

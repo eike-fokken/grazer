@@ -24,12 +24,12 @@ namespace Model::Networkproblem::Gas {
 
   void Gasboundarynode::evaluate(Eigen::VectorXd &rootfunction, double last_time,
                 double new_time, Eigen::VectorXd const &last_state,
-                Eigen::VectorXd const &new_state) {
+                Eigen::VectorXd const &new_state) const{
   }
   void Gasboundarynode::evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,
                                  double last_time, double new_time,
                                  Eigen::VectorXd const &,
-                                 Eigen::VectorXd const &new_state) {
+                                 Eigen::VectorXd const &new_state) const{
     // std::cout << "you have to implement me!!!" << __FILE__ << ":" << __LINE__
     //           << ", function: " << __FUNCTION__ << std::endl;
   }
