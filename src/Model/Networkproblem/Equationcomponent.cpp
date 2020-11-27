@@ -7,13 +7,14 @@
 
 namespace Model::Networkproblem {
 
+  void Equationcomponent::setup() {}
 
   int Equationcomponent::set_indices(int const next_free_index) {
     start_state_index = next_free_index;
     int number_of_states = get_number_of_states();
-
     after_state_index = next_free_index + number_of_states;
 
+    setup();
     return after_state_index;
   }
 

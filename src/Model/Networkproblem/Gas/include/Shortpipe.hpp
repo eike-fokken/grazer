@@ -2,10 +2,10 @@
 
 namespace Model::Networkproblem::Gas {
 
-  class Shortpipe final: public Gasedge<2> {
+  class Shortpipe final: public Gasedge {
 
   public:
-    using Gasedge<2>::Gasedge;
+    using Gasedge::Gasedge;
 
 
     void evaluate(Eigen::VectorXd &rootfunction, double last_time,
@@ -19,7 +19,6 @@ namespace Model::Networkproblem::Gas {
 
     int get_number_of_states() const override;
 
-    
     void print_to_files(std::filesystem::path const &output_directory) override;
 
     void save_values(double time, Eigen::VectorXd const &state) override;

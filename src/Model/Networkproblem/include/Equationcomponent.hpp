@@ -25,10 +25,18 @@ namespace Model::Networkproblem {
         Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
         Eigen::VectorXd const &, Eigen::VectorXd const &new_state) const = 0;
 
+
+
     /// Returns number of state variables needed by this component.
     /// Usually this will be implemented by a function returning a literal
     /// int like 2.
-    virtual int get_number_of_states() const = 0;
+        virtual int get_number_of_states() const = 0;
+
+    /// is called during set_indices to do something.
+    /// Usually does nothing, but for example gas nodes
+    /// claim indices from their attached gas edges.
+    virtual void setup();
+
 
     // /// Determines the number of state variables to be printed into output
     // /// files.  Defaults to get_number_of_states() but can be overridden.
