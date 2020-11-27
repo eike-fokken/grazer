@@ -31,11 +31,40 @@ namespace Model::Networkproblem::Gas {
     jacobianhandler->set_coefficient(end_equation_index, end_q_index, -1.0);
   }
 
+  void Shortpipe::print_to_files(std::filesystem::path const &output_directory) {
+    std::filesystem::path shortpipe_output_pressure(output_directory /
+                                                (get_id().insert(0, "Gas_Shortpipe_p_")));
+    std::filesystem::path shortpipe_output_flow(
+        output_directory / (get_id().insert(0, "Gas_Shortpipe_q_")));
+
+    std::ofstream outputpressure(shortpipe_output_pressure);
+    std::ofstream outputflow(shortpipe_output_flow);
+
+    outputpressure << "t-x,\t 0.0,\t 1.0\n";
+    auto times = get_times();
+    auto values = get_values();
+
+    //write out pressures:
+    for (unsigned i = 0; i != times.size(); ++i) {
+      outputpressure << times[i];
+      auto var = values[i][0];
+        outputpressure << ",\t " << var.at(0.0);
+        outputpressure << ",\t " << var.at(1.0);
+        outputpressure << std::endl;
+    }
+    //write out flows:
+    for (unsigned i = 0; i != times.size(); ++i) {
+      outputflow << times[i];
+      auto var = values[i][1];
+      outputflow << ",\t " << var.at(0.0);
+      outputflow << ",\t " << var.at(1.0);
+      outputflow << std::endl;
+    }
+  }
 
   int Shortpipe::get_number_of_states() const { return 4; }
 
   void Shortpipe::save_values(double time, Eigen::VectorXd const &state) {
-
     std::map<double, double> pressure_map;
     std::map<double, double> flow_map;
 
