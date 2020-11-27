@@ -14,28 +14,21 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # for Release types add link-time optimization
-# for Debug types add warnings instead!
-check_ipo_supported(RESULT ipo_is_supported)
-add_compile_options($<$<CXX_COMPILER_ID:CLANG>:-fcolor-diagnostics>
-  $<$<CXX_COMPILER_ID:GNU>:-fdiagnostics-color>)
-if(CMAKE_BUILD_TYPE)
-  if(${CMAKE_BUILD_TYPE} MATCHES "Release" OR ${CMAKE_BUILD_TYPE} MATCHES "Relwithdebinfo")
-    if(ipo_is_supported)
-      set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
-    endif()
-  else()
-    add_compile_options(
-      -Og -Werror -Wconversion -pedantic-errors -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wmissing-declarations -Wmissing-include-dirs  -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo  -Wstrict-overflow=5 -Wswitch-default -Wundef -Wunused -Wno-error=unused-parameter -Wno-error=unused-private-field -Wno-error=unused-variable
-      # -Wall -Wextra -pedantic -Werror
-      )
-  endif()
-else()# empty build type
-  if(ipo_is_supported)
-    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
-  endif()
+
+check_ipo_supported(RESULT is_ipo_supported OUTPUT lto_error)
+if(is_ipo_supported)
+  set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
+  set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_DEBUG OFF)
 endif()
 
 
+set(MY_DEBUG_WARNINGS "-Og;-Werror;-Wconversion;-pedantic-errors;-pedantic;-Wall;-Wextra;-Wcast-align;-Wcast-qual;-Wctor-dtor-privacy;-Wdisabled-optimization;-Wformat=2;-Winit-self;-Wmissing-declarations;-Wmissing-include-dirs;;-Wold-style-cast;-Woverloaded-virtual;-Wredundant-decls;-Wshadow;-Wsign-conversion;-Wsign-promo;;-Wstrict-overflow=5;-Wswitch-default;-Wundef;-Wunused;-Wno-error=unused-parameter;-Wno-error=unused-private-field;-Wno-error=unused-variable;"
+  )
+# Add warnings:
+add_compile_options("$<$<CONFIG:DEBUG>:${MY_DEBUG_WARNINGS}>"
+  "$<$<CXX_COMPILER_ID:Clang,AppleClang>:-fcolor-diagnostics>"
+  "$<$<CXX_COMPILER_ID:GNU>:-fdiagnostics-color>"
+  )
 
 ## Hacky eigen include:
 # find_package (Eigen3 3.3 REQUIRED NO_MODULE)
