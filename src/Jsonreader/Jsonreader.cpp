@@ -15,6 +15,7 @@
 #include <iostream>
 #include <memory>
 #include <Gasboundarynode.hpp>
+#include <Innode.hpp>
 
 namespace Jsonreader {
 
@@ -102,6 +103,24 @@ namespace Jsonreader {
                   new Model::Networkproblem::Gas::Gasboundarynode(
                       gasnode["id"], *bdjson, gasnode)));
         }
+
+        if (gasnode["type"] == "sink") {
+          json sinkboundaryjson = *bdjson;
+          for (auto & datapoint : sinkboundaryjson["data"]){
+            double value = datapoint["values"][0].get<double>();
+            datapoint["values"][0] = -value;
+          }
+          nodes.push_back(std::unique_ptr<Model::Networkproblem::Gas::Gasboundarynode>
+                          (new Model::Networkproblem::Gas::Gasboundarynode(gasnode["id"], sinkboundaryjson, gasnode)));
+
+        }
+        if (gasnode["type"] == "innode") {
+
+          nodes.push_back(std::unique_ptr<Model::Networkproblem::Gas::Innode>
+                          (new Model::Networkproblem::Gas::Innode(gasnode["id"])));
+
+        }
+
         // if (gasnode["type"] == "PV") {
         //   // nodes.push_back(std::unique_ptr<Model::Networkproblem::Gas::Source>(
         //   // new Model::Networkproblem::Gas::Source(gasnode["id"], *bdjson,

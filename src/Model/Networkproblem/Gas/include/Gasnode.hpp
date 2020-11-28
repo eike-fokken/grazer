@@ -1,4 +1,5 @@
 #pragma once
+#include "Gasedge.hpp"
 #include <Node.hpp>
 #include <Equationcomponent.hpp>
 
@@ -10,17 +11,35 @@ namespace Model::Networkproblem::Gas {
 
   public:
 
+    using Node::Node;
+
     /// Claims outer indices of attached edges.
     void setup() override;
 
     /// Returns zero, because the indices are owned by the attached edges, see
     /// setup().
-    int get_number_of_states() const override;
+    int get_number_of_states() const final;
 
-  private:
-    std::vector<int> writable_indices;
+    void print_to_files(std::filesystem::path const &) final{};
 
+    void save_values(double, Eigen::VectorXd const &) final{};
+
+    void set_initial_values(Eigen::VectorXd &, nlohmann::ordered_json)
+      final{};
+
+  protected:
+    void evaluate_flow_node_balance(Eigen::VectorXd &rootvalues,
+                                    Eigen::VectorXd const &state,
+                                    double prescribed_flow) const;
+    void evaluate_pressure_node_balance(Eigen::VectorXd &rootvalues,
+                                        Eigen::VectorXd const &state,
+                                        double prescribed_pressure) const;
+
+    void evaluate_flow_node_derivative(Aux::Matrixhandler *jacobianhandler,
+                                       Eigen::VectorXd const &state) const;
+    void evaluate_pressure_node_derivative(Aux::Matrixhandler *jacobianhandler,
+                                           Eigen::VectorXd const &) const;
+
+    std::vector<std::pair<int, Gasedge *>> directed_attached_gas_edges;
   };
-
-
 }
