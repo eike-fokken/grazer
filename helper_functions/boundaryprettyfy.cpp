@@ -175,7 +175,7 @@ int main(int argc, char *argv[]) {
         (*res)["data"].push_back({datapoint["time"], datapoint["value"]});
       }
     } else if (nodetype == "negflow") {
-      (*res)["type"] = nodetype;
+      (*res)["type"] = "flow";
       for (auto datapoint : (*itr)["data"]) {
         (*res)["data"].push_back(
             {datapoint["time"], -datapoint["value"].get<double>()});

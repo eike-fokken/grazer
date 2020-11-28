@@ -704,7 +704,7 @@
         },
         {
             "id": "node_80",
-            "type": "negflow",
+            "type": "flow",
             "data": [
                 {
                     "time": 0,
