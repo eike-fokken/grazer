@@ -21,6 +21,8 @@ pros: For power they are really totally different, for gas its not the defining 
 TODO: Maybe refactor some small base classes into composition, e.g. Gasedge.
 
 
+TODO: The current design of gas nodes is bad, think more about it
+
 
 TODO:  Review, whether parallel execution in Networkproblem is worth it and whether it produces bugs!
 
@@ -33,3 +35,6 @@ Also: Check out scan-build!
 
 
 Note: python xq
+
+
+think about providing a -march=native target
