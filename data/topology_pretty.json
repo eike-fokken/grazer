@@ -10408,7 +10408,7 @@
           }
         }
       ],
-      "compressorStation": {
+        "compressorStation": [{
         "alias": "",
         "from": "node_29",
         "fuelGasVertex": "node_29",
@@ -10440,8 +10440,8 @@
           "unit": "bar",
           "value": "100.0"
         }
-      },
-      "controlValve": {
+      }],
+      "controlValve": [{
         "alias": "",
         "from": "node_65",
         "gasPreheaterExisting": "0",
@@ -10480,6 +10480,6 @@
           "unit": "bar",
           "value": "0.0"
         }
-      }
+      }]
     }
 }

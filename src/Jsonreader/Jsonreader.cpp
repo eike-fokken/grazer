@@ -1,11 +1,17 @@
 #include "Networkproblem.hpp"
 #include <Edge.hpp>
 #include <Exception.hpp>
+#include <Gasboundarynode.hpp>
+#include <Innode.hpp>
 #include <Jsonreader.hpp>
 #include <Net.hpp>
 #include <Node.hpp>
 #include <PQnode.hpp>
 #include <PVnode.hpp>
+#include <Pipe.hpp>
+#include <Shortpipe.hpp>
+#include <Compressorstation.hpp>
+#include <Controlvalve.hpp>
 #include <Problem.hpp>
 #include <Subproblem.hpp>
 #include <Transmissionline.hpp>
@@ -14,8 +20,6 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
-#include <Gasboundarynode.hpp>
-#include <Innode.hpp>
 
 namespace Jsonreader {
 
@@ -93,11 +97,12 @@ namespace Jsonreader {
           auto it = x.find("id");
           return it != x.end() and it.value() == nodeid;
         };
-        auto bdjson =
-            std::find_if(boundary_json["boundarycondition"].begin(),
-                         boundary_json["boundarycondition"].end(), finder);
 
         if (gasnode["type"] == "source") {
+          auto bdjson =
+              std::find_if(boundary_json["boundarycondition"].begin(),
+                           boundary_json["boundarycondition"].end(), finder);
+
           nodes.push_back(
               std::unique_ptr<Model::Networkproblem::Gas::Gasboundarynode>(
                   new Model::Networkproblem::Gas::Gasboundarynode(
@@ -105,6 +110,10 @@ namespace Jsonreader {
         }
 
         if (gasnode["type"] == "sink") {
+          auto bdjson =
+              std::find_if(boundary_json["boundarycondition"].begin(),
+                           boundary_json["boundarycondition"].end(), finder);
+
           json sinkboundaryjson = *bdjson;
           for (auto & datapoint : sinkboundaryjson["data"]){
             double value = datapoint["values"][0].get<double>();
@@ -115,24 +124,12 @@ namespace Jsonreader {
 
         }
         if (gasnode["type"] == "innode") {
-
           nodes.push_back(std::unique_ptr<Model::Networkproblem::Gas::Innode>
                           (new Model::Networkproblem::Gas::Innode(gasnode["id"])));
-
         }
 
-        // if (gasnode["type"] == "PV") {
-        //   // nodes.push_back(std::unique_ptr<Model::Networkproblem::Gas::Source>(
-        //   // new Model::Networkproblem::Gas::Source(gasnode["id"], *bdjson,
-        //   //                                          gasnode["G"], gasnode["B"])));
-        // }
-        // if (gasnode["type"] == "PQ") {
-        //   // nodes.push_back(std::unique_ptr<Model::Networkproblem::Power::PVnode>(
-        //   //                                                                       new Model::Networkproblem::Power::PVnode(
-        //   //         gasnode["id"], *bdjson, gasnode["G"], gasnode["B"])));
-        // }
-    }
 
+    }
       for (auto &node : allpowernodes) {
         std::string nodeid = node["id"].get<std::string>();
         auto finder = [nodeid](json &x) {
@@ -192,6 +189,74 @@ namespace Jsonreader {
                     tline["id"], (*start).get(), (*end).get(), tline["G"],
                     tline["B"])));
       }
+
+      json allgasedges;
+
+      std::vector<std::string> gasedgetype( {"shortPipe", "controlValve", "compressorStation", "pipe"});
+      for(auto & edgetype : gasedgetype) {
+        for (auto & gasedge: topologyjson["connections"][edgetype]) {
+          gasedge["type"] = edgetype;
+          allgasedges.push_back(gasedge);
+        }
+      }
+      
+
+      for (auto &edge : allgasedges) {
+        std::string edgeid = edge["id"];
+        // get the pointer from the node vector and put it in the line!
+        auto finder = [edgeid](json &x) {
+          auto it = x.find("id");
+          return it != x.end() and it.value() == edgeid;
+        };
+
+        // check whether the attached nodes are in the network already:
+        auto start = std::find_if(nodes.begin(), nodes.end(),
+                                  [edge](std::unique_ptr<Network::Node> &x) {
+                                    auto nodeid = x->get_id();
+                                    return nodeid == edge["from"];
+                                  });
+        if (start == nodes.end()) {
+          gthrow(
+              {"The starting node ", edge["from"],
+               ", given by edge ", edge["id"],
+               ",\n is not defined in the nodes part of the topology file!"});
+        }
+        auto end = std::find_if(nodes.begin(), nodes.end(),
+                                [edge](std::unique_ptr<Network::Node> &x) {
+                                  auto nodeid = x->get_id();
+                                  return nodeid == edge["to"];
+                                });
+        if (end == nodes.end()) {
+          gthrow(
+              {"The ending node ", edge["to"], ", given by edge ",
+               edge["id"],
+               ",\n is not defined in the nodes part of the topology file!"});
+        }
+        if(edge["type"] == "pipe"){
+          // edges.push_back(std::unique_ptr<Model::Networkproblem::Gas::Pipe>(
+          //     new Model::Networkproblem::Gas::Pipe(edge["id"], (*start).get(),
+          //                                          (*end).get())));
+        } else if (edge["type"] == "shortPipe") {
+          edges.push_back(std::unique_ptr<Model::Networkproblem::Gas::Shortpipe>(
+              new Model::Networkproblem::Gas::Shortpipe(edge["id"], (*start).get(),
+                                                   (*end).get())));
+        } else if (edge["type"] == "compressorStation") {
+          // edges.push_back(
+          //     std::unique_ptr<Model::Networkproblem::Gas::Compressorstation>(
+          //         new Model::Networkproblem::Gas::Compressorstation(
+          //             edge["id"], (*start).get(), (*end).get())));
+        } else if (edge["type"] == "controlValve") {
+        //   edges.push_back(
+        //       std::unique_ptr<Model::Networkproblem::Gas::Controlvalve>(
+        //           new Model::Networkproblem::Gas::Controlvalve(
+        //               edge["id"], (*start).get(), (*end).get())));
+        } else {
+          gthrow({" unknown gas edge type: ", edge["type"], ", aborting."});
+        }
+
+      }
+
+
 
 
     std::unique_ptr<Network::Net> net(

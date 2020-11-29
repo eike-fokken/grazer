@@ -3,7 +3,7 @@
 
 namespace Model::Networkproblem::Gas {
 
-  class Pipe: public Gasedge {
+  class Controlvalve: public Gasedge {
 
 
   };

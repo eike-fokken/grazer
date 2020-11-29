@@ -24,10 +24,7 @@ namespace Model::Networkproblem::Gas {
                 double new_time, Eigen::VectorXd const &,
                 Eigen::VectorXd const &new_state) const{
 
-    if(directed_attached_gas_edges.empty()){
-      std::cout << "Node " <<get_id() << " has no attached gas edges!" << std::endl;
-      return;
-    }
+    if(directed_attached_gas_edges.empty()){ return; }
 
     if(btype == flow){
     evaluate_flow_node_balance(rootfunction,new_state, boundaryvalue(new_time)[0]);
@@ -43,10 +40,7 @@ namespace Model::Networkproblem::Gas {
                                  double , double ,
                                  Eigen::VectorXd const &,
                                  Eigen::VectorXd const &new_state) const{
-    if(directed_attached_gas_edges.empty()){
-      std::cout << "Node " <<get_id() << " has no attached gas edges!" << std::endl;
-      return;
-    }
+    if(directed_attached_gas_edges.empty()){ return; }
 
     if(btype == flow){
       evaluate_flow_node_derivative(jacobianhandler,new_state);

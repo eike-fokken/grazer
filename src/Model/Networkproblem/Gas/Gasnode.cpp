@@ -9,10 +9,7 @@ namespace Model::Networkproblem::Gas {
                                            Eigen::VectorXd const &state,
                                            double prescribed_flow) const {
 
-    if(directed_attached_gas_edges.empty()){
-      std::cout << "Node " <<get_id() << " has no attached gas edges!" << std::endl;
-      return;
-    }
+    if(directed_attached_gas_edges.empty()){ return; }
     auto [dir0,edge0] =directed_attached_gas_edges.front();
     auto state0 = edge0->get_boundary_state(dir0,state);
     double old_pressure=state0[0];
@@ -40,10 +37,7 @@ namespace Model::Networkproblem::Gas {
 
   void Gasnode::evaluate_pressure_node_balance(Eigen::VectorXd & rootvalues, Eigen::VectorXd const & state, double prescribed_pressure) const {
 
-    if(directed_attached_gas_edges.empty()){
-      std::cout << "Node " <<get_id() << " has no attached gas edges!" << std::endl;
-      return;
-    }
+    if(directed_attached_gas_edges.empty()){ return; }
 
     for(auto & [direction,edge] : directed_attached_gas_edges){
       auto current_state = edge->get_boundary_state(direction,state);
@@ -60,10 +54,7 @@ namespace Model::Networkproblem::Gas {
   
   void Gasnode::evaluate_flow_node_derivative(Aux::Matrixhandler * jacobianhandler, Eigen::VectorXd const & ) const {
 
-    if(directed_attached_gas_edges.empty()){
-      std::cout << "Node " <<get_id() << " has no attached gas edges!" << std::endl;
-      return;
-    }
+    if(directed_attached_gas_edges.empty()){ return; }
     auto [dir0,edge0] =directed_attached_gas_edges.front();
     int old_p_index = edge0->get_boundary_state_index(dir0);
     int old_q_index = old_p_index+1;
@@ -91,10 +82,7 @@ namespace Model::Networkproblem::Gas {
 
   void Gasnode::evaluate_pressure_node_derivative(Aux::Matrixhandler * jacobianhandler, Eigen::VectorXd const & ) const {
 
-    if(directed_attached_gas_edges.empty()){
-      std::cout << "Node " <<get_id() << " has no attached gas edges!" << std::endl;
-      return;
-    }
+    if(directed_attached_gas_edges.empty()){ return; }
     for (auto & [direction, edge] : directed_attached_gas_edges) {
       int current_p_index = edge->get_boundary_state_index(direction);
       int equation_index = edge->give_away_boundary_index(direction);
@@ -120,6 +108,11 @@ namespace Model::Networkproblem::Gas {
         continue;}
       directed_attached_gas_edges.push_back({-1,endgasedge});
     }
+
+    // Notify the user of unconnected nodes:
+    if(directed_attached_gas_edges.empty()){
+      std::cout << "Node " <<get_id() << " has no attached gas edges!" << std::endl;
+      return; }
   }
 
   int Gasnode::get_number_of_states() const { return 0;}
