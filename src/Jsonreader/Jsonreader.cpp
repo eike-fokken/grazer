@@ -1,7 +1,7 @@
 #include "Networkproblem.hpp"
 #include <Edge.hpp>
 #include <Exception.hpp>
-#include <Gasboundarynode.hpp>
+#include <Flowboundarynode.hpp>
 #include <Innode.hpp>
 #include <Jsonreader.hpp>
 #include <Net.hpp>
@@ -83,6 +83,7 @@ namespace Jsonreader {
 
     json allgasnodes;
 
+    // Here pressure boundary conditions are missing:
     std::vector<std::string> gasnodetypes({"source", "sink", "innode"});
     for (auto &gasnodetype : gasnodetypes) {
       for (auto &gasnode : topologyjson["nodes"][gasnodetype]) {
@@ -104,8 +105,8 @@ namespace Jsonreader {
                            boundary_json["boundarycondition"].end(), finder);
 
           nodes.push_back(
-              std::unique_ptr<Model::Networkproblem::Gas::Gasboundarynode>(
-                  new Model::Networkproblem::Gas::Gasboundarynode(
+              std::unique_ptr<Model::Networkproblem::Gas::Flowboundarynode>(
+                  new Model::Networkproblem::Gas::Flowboundarynode(
                       gasnode["id"], *bdjson, gasnode)));
         }
 
@@ -119,8 +120,8 @@ namespace Jsonreader {
             double value = datapoint["values"][0].get<double>();
             datapoint["values"][0] = -value;
           }
-          nodes.push_back(std::unique_ptr<Model::Networkproblem::Gas::Gasboundarynode>
-                          (new Model::Networkproblem::Gas::Gasboundarynode(gasnode["id"], sinkboundaryjson, gasnode)));
+          nodes.push_back(std::unique_ptr<Model::Networkproblem::Gas::Flowboundarynode>
+                          (new Model::Networkproblem::Gas::Flowboundarynode(gasnode["id"], sinkboundaryjson, gasnode)));
 
         }
         if (gasnode["type"] == "innode") {
@@ -203,13 +204,9 @@ namespace Jsonreader {
       
       for (auto &edge : allgasedges) {
         std::string edgeid = edge["id"];
-        // get the pointer from the node vector and put it in the line!
-        auto finder = [edgeid](json &x) {
-          auto it = x.find("id");
-          return it != x.end() and it.value() == edgeid;
-        };
+        // get the pointer from the node vector and put it in the line
 
-        // check whether the attached nodes are in the network already:
+        // check whether the attached nodes are in the network:
         auto start = std::find_if(nodes.begin(), nodes.end(),
                                   [edge](std::unique_ptr<Network::Node> &x) {
                                     auto nodeid = x->get_id();
@@ -241,15 +238,17 @@ namespace Jsonreader {
               new Model::Networkproblem::Gas::Shortpipe(edge["id"], (*start).get(),
                                                    (*end).get())));
         } else if (edge["type"] == "compressorStation") {
-          // edges.push_back(
-          //     std::unique_ptr<Model::Networkproblem::Gas::Compressorstation>(
-          //         new Model::Networkproblem::Gas::Compressorstation(
-          //             edge["id"], (*start).get(), (*end).get())));
+          std::cout << __FILE__<<":" << __LINE__ << ": Careful, Compressorstation replaced by shortpipe!" <<std::endl;
+          edges.push_back(
+              std::unique_ptr<Model::Networkproblem::Gas::Shortpipe>(
+                  new Model::Networkproblem::Gas::Shortpipe(
+                      edge["id"], (*start).get(), (*end).get())));
         } else if (edge["type"] == "controlValve") {
-        //   edges.push_back(
-        //       std::unique_ptr<Model::Networkproblem::Gas::Controlvalve>(
-        //           new Model::Networkproblem::Gas::Controlvalve(
-        //               edge["id"], (*start).get(), (*end).get())));
+          std::cout << __FILE__<<":" << __LINE__ << ": Careful, Controlvalve replaced by shortpipe!" <<std::endl;
+          edges.push_back(
+              std::unique_ptr<Model::Networkproblem::Gas::Shortpipe>(
+                  new Model::Networkproblem::Gas::Shortpipe(
+                      edge["id"], (*start).get(), (*end).get())));
         } else {
           gthrow({" unknown gas edge type: ", edge["type"], ", aborting."});
         }

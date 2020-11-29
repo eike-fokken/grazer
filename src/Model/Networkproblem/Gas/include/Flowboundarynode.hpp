@@ -7,17 +7,13 @@
 
 namespace Model::Networkproblem::Gas {
 
-  /// This enum type distinguishes pressure boundaries and flow boundaries.
-  enum Boundarytype {pressure, flow, negflow};
-
-
-class Gasboundarynode final: public Gasnode {
+class Flowboundarynode final: public Gasnode {
 
 public:
-  Gasboundarynode(std::string _id, nlohmann::ordered_json boundary_json,
+  Flowboundarynode(std::string _id, nlohmann::ordered_json boundary_json,
          nlohmann::ordered_json topology_json);
 
-  virtual ~Gasboundarynode() {};
+  virtual ~Flowboundarynode() {};
 
   
     void evaluate(Eigen::VectorXd & rootfunction, double last_time,
@@ -32,8 +28,7 @@ public:
 
 private:
   
-  Boundaryvalue<Gasboundarynode, 1> boundaryvalue;
-  Boundarytype btype;
+  Boundaryvalue<Flowboundarynode, 1> boundaryvalue;
   };
 
 } // namespace Model::Networkproblem::Gas
