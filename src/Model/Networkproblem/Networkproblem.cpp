@@ -4,6 +4,7 @@
 #include <Net.hpp>
 #include <Networkproblem.hpp>
 #include <Node.hpp>
+#include <iostream>
 #include <memory>
 #include <string>
 #include <utility>
@@ -101,7 +102,11 @@ namespace Model::Networkproblem {
       };
       auto initjson =
           std::find_if(initial_json.begin(), initial_json.end(), finder);
-      eqcomponent->set_initial_values(new_state, *initjson);
+          if(initjson == initial_json.end()) {
+        std::cout << " object " << component_id << " has no initial condition." << std::endl;
+      } else {
+        eqcomponent->set_initial_values(new_state, *initjson);
+      }
     }
   }
 

@@ -80,27 +80,35 @@ namespace Model::Networkproblem::Gas {
 
   void Shortpipe::set_initial_values(Eigen::VectorXd &new_state,
                                      nlohmann::ordered_json initial_json) {
-
-
       if (get_start_state_index() == -1) {
         gthrow({"This function may only be called if set_indices  has been "
                 "called beforehand!"});
       }
 
-      if (initial_json["data"]["value"].size() != 2 || initial_json["data"].size()!=2) {
+      // This tests whether the json is in the right format:
+      try{
+      if ((!initial_json["data"].is_array()) or (!initial_json["data"][0]["value"].is_array()) or initial_json["data"][0]["value"].size() != 2 or initial_json["data"].size()!=2) {
         std::cout << "The initial json for this shortpipe is given by:"
                   << "\n";
         std::cout << initial_json << std::endl;
-        gthrow({"This is not a shortpipe initial condition!"});
+        gthrow({"This is not a shortpipe initial condition!", "\n Maybe there are array brackest [] missing? "});
+      }
+      } catch (...) {
+        std::cout << __FILE__ << ":"<< __LINE__ << " The exception was thrown here." << std::endl;
+        throw;
       }
       auto start_p_index = get_starting_state_index();
       auto start_q_index = start_p_index + 1;
       auto end_p_index = get_ending_state_index();
       auto end_q_index = end_p_index + 1;
-
+      try {
       new_state[start_p_index] = initial_json["data"][0]["value"][0];
       new_state[start_q_index] = initial_json["data"][0]["value"][1];
       new_state[end_p_index] = initial_json["data"][1]["value"][0];
       new_state[end_q_index] = initial_json["data"][1]["value"][1];
+      } catch(...){
+        std::cout << __FILE__ <<":" << __LINE__ << ": failed to read in initial values in shortpipe!" << std::endl;
+        throw;
+      }
   }
 }

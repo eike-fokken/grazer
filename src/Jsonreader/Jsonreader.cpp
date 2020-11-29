@@ -200,7 +200,7 @@ namespace Jsonreader {
         }
       }
       
-
+      
       for (auto &edge : allgasedges) {
         std::string edgeid = edge["id"];
         // get the pointer from the node vector and put it in the line!
@@ -277,7 +277,12 @@ namespace Jsonreader {
                 << std::endl;
       throw;
     }
-
-    problem->set_initial_values(new_state, initialjson);
+    try {
+      problem->set_initial_values(new_state, initialjson);
+    } catch (...) {
+      std::cout << __FILE__ << ":" << __LINE__
+                << ": failed to set initial values!" << std::endl;
+      throw;
+    }
   }
 } // namespace Jsonreader
