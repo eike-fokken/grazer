@@ -7,89 +7,105 @@ namespace Model::Networkproblem::Gas {
 
   void Gasnode::evaluate_flow_node_balance(Eigen::VectorXd &rootvalues,
                                            Eigen::VectorXd const &state,
-                                           double prescribed_flow) const {
+                                           double prescribed_qvol) const {
 
     if(directed_attached_gas_edges.empty()){ return; }
     auto [dir0,edge0] =directed_attached_gas_edges.front();
-    auto state0 = edge0->get_boundary_state(dir0,state);
-    double old_pressure=state0[0];
+    auto p_qvol0 = edge0->get_boundary_p_qvol(dir0,state);
+    auto p0 = p_qvol0[0];
+    auto q0 = p_qvol0[1];
 
+    double old_p=p0;
     int old_equation_index = edge0->give_away_boundary_index(dir0);
+
+    // We will write the flow balance into the last index:
     int last_direction = directed_attached_gas_edges.back().first;
     int last_equation_index = directed_attached_gas_edges.back().second->give_away_boundary_index(last_direction);
-    rootvalues[last_equation_index] = - prescribed_flow;
-    rootvalues[last_equation_index]+= dir0*state0[1];
+    rootvalues[last_equation_index] = - prescribed_qvol;
+    rootvalues[last_equation_index]+= dir0*q0;
 
     for(auto it=std::next(directed_attached_gas_edges.begin());it!=directed_attached_gas_edges.end();++it){
       int direction=it->first;
       Gasedge *edge = it->second;
-      auto current_state = edge->get_boundary_state(direction,state);
-      auto current_pressure=current_state[0];
-      auto current_flow=current_state[1];
+      auto current_p_qvol = edge->get_boundary_p_qvol(direction,state);
+      auto current_p=current_p_qvol[0];
+      auto current_qvol=current_p_qvol[1];
 
-      rootvalues[old_equation_index] = current_pressure-old_pressure;
+      rootvalues[old_equation_index] = current_p-old_p;
       old_equation_index=edge->give_away_boundary_index(direction);
-      old_pressure=current_pressure;
+      old_p=current_p;
 
-      rootvalues[last_equation_index]+=direction*current_flow;
+
+      rootvalues[last_equation_index]+=direction*current_qvol;
     }
   }
 
-  void Gasnode::evaluate_pressure_node_balance(Eigen::VectorXd & rootvalues, Eigen::VectorXd const & state, double prescribed_pressure) const {
+  /// This function sets pressure equality boundary conditions.
+  
+  void Gasnode::evaluate_pressure_node_balance(Eigen::VectorXd & rootvalues, Eigen::VectorXd const & state, double prescribed_p) const {
 
     if(directed_attached_gas_edges.empty()){ return; }
 
     for(auto & [direction,edge] : directed_attached_gas_edges){
-      auto current_state = edge->get_boundary_state(direction,state);
-      double current_pressure=current_state[0];
+      auto current_p_qvol = edge->get_boundary_p_qvol(direction,state);
+      double current_p=current_p_qvol[0];
       int equation_index = edge->give_away_boundary_index(direction);
-      rootvalues[equation_index] = current_pressure - prescribed_pressure;
+      rootvalues[equation_index] = current_p - prescribed_p;
     }
 
   }
 
 
 
-  /// This function sets pressure equality boundary conditions.
-  
-  void Gasnode::evaluate_flow_node_derivative(Aux::Matrixhandler * jacobianhandler, Eigen::VectorXd const & ) const {
+  void Gasnode::evaluate_flow_node_derivative(Aux::Matrixhandler * jacobianhandler, Eigen::VectorXd const & state) const {
 
     if(directed_attached_gas_edges.empty()){ return; }
+
     auto [dir0,edge0] =directed_attached_gas_edges.front();
-    int old_p_index = edge0->get_boundary_state_index(dir0);
-    int old_q_index = old_p_index+1;
     int old_equation_index = edge0->give_away_boundary_index(dir0);
     int last_direction = directed_attached_gas_edges.back().first;
     int last_equation_index = directed_attached_gas_edges.back().second->give_away_boundary_index(last_direction);
     //    rootvalues[last_equation_index]=dir0*state0[1];
-    jacobianhandler->set_coefficient(last_equation_index,old_q_index,dir0);
+
+    {
+      Eigen::RowVector2d dF_0_dpq_0(-1.0,0.0);
+      Eigen::RowVector2d dF_last_dpq_0(0.0, dir0 );
+      edge0->derivative_boundary_p_qvol(dir0,jacobianhandler, dF_0_dpq_0, old_equation_index, state);
+      edge0->derivative_boundary_p_qvol(dir0,jacobianhandler, dF_last_dpq_0, last_equation_index, state);
+    }
+
+
 
     for(auto it=std::next(directed_attached_gas_edges.begin());it!=directed_attached_gas_edges.end();++it){
       int direction=it->first;
       Gasedge *edge = it->second;
-      int current_p_index = edge->get_boundary_state_index(direction);
-      int current_q_index = current_p_index+1;
-          //      rootvalues[old_equation_index] = current_pressure-old_pressure;
-      jacobianhandler->set_coefficient(old_equation_index,current_p_index,1.0);
-      jacobianhandler->set_coefficient(old_equation_index,old_p_index,-1.0);
-      old_equation_index=edge->give_away_boundary_index(direction);
-      old_p_index= current_p_index;
-      
-      jacobianhandler->set_coefficient(old_equation_index,current_q_index,direction);
+
+      int current_equation_index = edge->give_away_boundary_index(direction);
+      Eigen::RowVector2d dF_old_dpq_now(1.0,0.0);
+      Eigen::RowVector2d dF_now_dpq_now(-1.0,0.0);
+      Eigen::RowVector2d dF_last_dpq_now(0.0, direction);
+
+      // Let the attached edge write out the derivative:
+      edge->derivative_boundary_p_qvol(direction,jacobianhandler, dF_old_dpq_now, old_equation_index, state);
+      edge->derivative_boundary_p_qvol(direction,jacobianhandler, dF_now_dpq_now, current_equation_index, state);
+      edge->derivative_boundary_p_qvol(direction,jacobianhandler, dF_last_dpq_now, last_equation_index, state);
+
+      old_equation_index=current_equation_index;
+
     }
-    
+
   }
 
-  void Gasnode::evaluate_pressure_node_derivative(Aux::Matrixhandler * jacobianhandler, Eigen::VectorXd const & ) const {
+  void Gasnode::evaluate_pressure_node_derivative(Aux::Matrixhandler * jacobianhandler, Eigen::VectorXd const & state ) const {
 
     if(directed_attached_gas_edges.empty()){ return; }
     for (auto & [direction, edge] : directed_attached_gas_edges) {
-      int current_p_index = edge->get_boundary_state_index(direction);
       int equation_index = edge->give_away_boundary_index(direction);
-      jacobianhandler->set_coefficient(equation_index, current_p_index, 1.0);
+      Eigen::RowVector2d dF_now_dpq_now(1.0,0.0);
+      edge->derivative_boundary_p_qvol(direction,jacobianhandler,dF_now_dpq_now,equation_index,state);
     }
-    
-    }
+
+  }
 
   void Gasnode::setup() {
     for (auto &startedge : get_starting_edges()) {

@@ -3,21 +3,21 @@
 
 namespace Model::Networkproblem::Gas {
 
-  int Gasedge::give_away_start_index() {
+  int Gasedge::give_away_start_index() const{
       if (get_start_state_index()<0 or get_after_state_index()<0) {
         gthrow({"This function: ", __FUNCTION__, " can only be called after set_indices(...) has been called."});
       }
       return get_start_state_index();
     }
 
-  int Gasedge::give_away_end_index(){
+  int Gasedge::give_away_end_index() const {
       if (get_start_state_index() < 0 or get_after_state_index() < 0) {
         gthrow({"This function: ", __FUNCTION__,
                 " can only be called after set_indices(...) has been called."});
       }
       return (get_after_state_index()-1);
     };
-  int Gasedge::give_away_boundary_index(int direction){
+  int Gasedge::give_away_boundary_index(int direction) const{
     if(direction==1){
       return give_away_start_index();
     } else if (direction==-1){

@@ -10,16 +10,16 @@ namespace Model::Networkproblem::Gas {
                 double , Eigen::VectorXd const &,
                 Eigen::VectorXd const &new_state) const {
     rootfunction.segment<2>(get_equation_start_index()) =
-      get_starting_state(new_state) - get_ending_state(new_state);
+      get_boundary_state(1,new_state) - get_boundary_state(-1,new_state);
   }
 
   void Shortpipe::evaluate_state_derivative(
       Aux::Matrixhandler *jacobianhandler, double , double ,
       Eigen::VectorXd const &, Eigen::VectorXd const &) const {
 
-    auto start_p_index=get_starting_state_index();
+    auto start_p_index=get_boundary_state_index(1);
     auto start_q_index = start_p_index+1;
-    auto end_p_index = get_ending_state_index();
+    auto end_p_index = get_boundary_state_index(-1);
     auto end_q_index = end_p_index + 1;
 
     auto start_equation_index = get_equation_start_index();
@@ -68,8 +68,8 @@ namespace Model::Networkproblem::Gas {
     std::map<double, double> pressure_map;
     std::map<double, double> flow_map;
 
-    auto start_state= get_starting_state(state);
-    auto end_state = get_ending_state(state);
+    auto start_state= get_boundary_state(1,state);
+    auto end_state = get_boundary_state(-1,state);
 
     pressure_map = {{0.0, start_state[0]},{1.0, end_state[0]}};
     flow_map = {{0.0, start_state[1]}, {1.0, end_state[1]}};
@@ -80,7 +80,7 @@ namespace Model::Networkproblem::Gas {
 
   void Shortpipe::set_initial_values(Eigen::VectorXd &new_state,
                                      nlohmann::ordered_json initial_json) {
-      if (get_start_state_index() == -1) {
+    if (get_start_state_index() == -1 or get_after_state_index() == -1) {
         gthrow({"This function may only be called if set_indices  has been "
                 "called beforehand!"});
       }
@@ -97,9 +97,9 @@ namespace Model::Networkproblem::Gas {
         std::cout << __FILE__ << ":"<< __LINE__ << " The exception was thrown here." << std::endl;
         throw;
       }
-      auto start_p_index = get_starting_state_index();
+      auto start_p_index = get_boundary_state_index(1);
       auto start_q_index = start_p_index + 1;
-      auto end_p_index = get_ending_state_index();
+      auto end_p_index = get_boundary_state_index(-1);
       auto end_q_index = end_p_index + 1;
       try {
       new_state[start_p_index] = initial_json["data"][0]["value"][0];
@@ -111,4 +111,16 @@ namespace Model::Networkproblem::Gas {
         throw;
       }
   }
+
+  Eigen::Vector2d Shortpipe::get_boundary_p_qvol(int direction, Eigen::VectorXd const &state) const {
+    return get_boundary_state(direction,state);
+  }
+
+  void Shortpipe::derivative_boundary_p_qvol(int direction, Aux::Matrixhandler * jacobianhandler, Eigen::RowVector2d function_derivative, int rootvalues_index, Eigen::VectorXd const &) const {
+    int p_index = get_boundary_state_index(direction);
+    int q_index = p_index+1;
+    jacobianhandler->set_coefficient(rootvalues_index,p_index, function_derivative[0]);
+    jacobianhandler->set_coefficient(rootvalues_index,q_index, function_derivative[1]);
+    }
+
 }
