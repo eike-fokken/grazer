@@ -1,3 +1,4 @@
+#include <Exception.hpp>
 #include <Mathfunctions.hpp>
 
 namespace Aux {
@@ -28,5 +29,11 @@ namespace Aux {
       return rel*(-2*rel*rel+3);
     }
   }
+
+  int dabs_dx(double val) {
+    if(std::abs(val) < 1e-13) {gthrow({"The derivative of the absolute value at 0 is undefined!"});}
+    return (0 < val) - (val < 0);
+  }
+
 
 }

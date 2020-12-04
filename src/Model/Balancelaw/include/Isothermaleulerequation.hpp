@@ -11,14 +11,13 @@ public:
                           double _roughness);
 
   Eigen::Vector2d flux(Eigen::Vector2d const &state) const;
-
   Eigen::Matrix2d dflux_dstate(Eigen::Vector2d const &state) const;
 
-  Eigen::Vector2d sourceterm(Eigen::Vector2d const & state);
-
-  Eigen::Matrix2d dsource_dstateterm(Eigen::Vector2d const & state);
+  Eigen::Vector2d source(Eigen::Vector2d const & state);
+  Eigen::Matrix2d dsource_dstate(Eigen::Vector2d const & state);
 
   Eigen::Vector2d p_qvol(Eigen::Vector2d const & state) const;
+  Eigen::Matrix2d dp_qvol_dstate(Eigen::Vector2d const &state) const;
 
   Eigen::Vector2d state(Eigen::Vector2d const & state) const;
 
@@ -27,11 +26,14 @@ public:
   double rho(double rho) const;
 
 private:
-  double lambda(double q) const;
-  double dlambda_dRe(double q) const;
+  double lambda_non_laminar(double Re) const;
+  double dlambda_non_laminar_dRe(double Re) const;
   double Reynolds(double q) const;
   double coeff_of_Reynolds() const;
   double dReynolds_dq(double q) const;
+
+  double Swamee_Jain(double Re) const;
+  double dSwamee_Jain_dRe(double Re) const;
 
   // These are physical constants except for the temperature T.
   // Later on it may be useful to change them to include other gases.
@@ -47,10 +49,6 @@ private:
 
   static constexpr double c_vac_squared = p_0 * T/(z_0*T_0*rho_0);
 
-
-
-  double Swamee_Jain(double Re) const;
-  double dSwamee_Jain_dRe(double Re) const;
 
   const double Area;
   const double diameter;

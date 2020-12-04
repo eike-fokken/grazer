@@ -53,26 +53,25 @@ namespace Model::Balancelaw {
   }
 
   Eigen::Vector2d
-  Isothermaleulerequation::sourceterm(Eigen::Vector2d const &state) {
+  Isothermaleulerequation::source(Eigen::Vector2d const &state) {
 
     double rho = state[0];
     double q = state[1];
-    double Re = Reynolds( q);
+    double Re = Reynolds(q);
 
     Eigen::Vector2d source;
     source[0] = 0.0;
 
     if (Re < 2000) { // laminar, that is linear friction:
-      source[1] =
-          -rho_0 / (2 * Area* diameter) * 64 / coeff_of_Reynolds() * q / rho;
+      source[1] = -rho_0 / (2 * Area* diameter) * 64 / coeff_of_Reynolds() * q / rho;
     } else { // transitional and turbulent friction:
-      source[1] = -rho_0 / (2 * Area * diameter) * lambda(Re) * Aux::smooth_abs(q) * q / rho;
+      source[1] = -rho_0 / (2 * Area * diameter) * lambda_non_laminar(Re) * abs(q) * q / rho;
     }
     return source;
   }
 
   Eigen::Matrix2d
-  Isothermaleulerequation::dsource_dstateterm(Eigen::Vector2d const &state) {
+  Isothermaleulerequation::dsource_dstate(Eigen::Vector2d const &state) {
     double rho = state[0];
     double q = state[1];
 
@@ -80,19 +79,19 @@ namespace Model::Balancelaw {
     Eigen::Matrix2d dsource;
     dsource(0, 0) = 0;
     dsource(0, 1) = 0;
-    if (Re < 2000) { // laminar, that is linear friction:
+    if (Re < 2000) { // laminar, that is, linear friction:
       dsource(1, 0) = rho_0 / (2 * Area * diameter) * 64/coeff_of_Reynolds() * q / (rho * rho);
       dsource(1, 1) =
-          -rho_0 / Area * 64 / coeff_of_Reynolds() / (2 * diameter) / rho;
+          -rho_0 / (2 * Area * diameter) * 64 / coeff_of_Reynolds() / rho;
     } else { // transitional and turbulent friction:
-      dsource(1, 0) = rho_0 / (2 * Area * diameter) * lambda(Re) *
-                      Aux::smooth_abs(q) * q / (rho * rho);
+      dsource(1, 0) = rho_0 / (2 * Area * diameter) * lambda_non_laminar(Re) *
+                      abs(q) * q / (rho * rho);
 
       dsource(1,1) = -rho_0 / (2 * Area * diameter) / rho *
                    (
-                    dlambda_dRe(Re) *dReynolds_dq(q) * Aux::smooth_abs(q) * q +
-                    lambda(Re) * Aux::dsmooth_abs_dx(q) * q +
-                    lambda(Re) * Aux::smooth_abs(q)
+                    dlambda_non_laminar_dRe(Re) *dReynolds_dq(q) * abs(q) * q +
+                    lambda_non_laminar(Re) * Aux::dabs_dx(q) * q +
+                    lambda_non_laminar(Re) * abs(q)
                     );
     }
     return dsource;
@@ -109,6 +108,18 @@ namespace Model::Balancelaw {
     p_qvol[1] = q;
 
     return p_qvol;
+  }
+
+  Eigen::Matrix2d Isothermaleulerequation::dp_qvol_dstate(Eigen::Vector2d const &state) const{
+    double rho = state[0];
+    double q = state[1];
+
+    Eigen::Matrix2d dp_qvol;
+    dp_qvol(0,0) = dp_drho( rho);
+    dp_qvol(0, 1) = 0.0;
+    dp_qvol(1, 0) = 0.0;
+    dp_qvol(1, 1) = 1.0;
+    return dp_qvol;
   }
 
   Eigen::Vector2d
@@ -139,12 +150,15 @@ namespace Model::Balancelaw {
     rho = p / (c_vac_squared * (1 + alpha * p));
     return rho;
   }
-  double Isothermaleulerequation::lambda(double Re) const{
+  double Isothermaleulerequation::lambda_non_laminar(double Re) const{
 
-    if(Re< 1e-8) {return 0;};
-    if (Re < 2000) {
-      return 64.0 / Re;
-    } else if(Re >4000){
+    if(Re< 2000) {
+      gthrow(
+          {"This function is only valid for Reynolds numbers over and at 2000!",
+           " For other values, manually insert "
+           "\"64/Reynolds(q)\" instead"});
+    }
+    if(Re >4000){
       return Swamee_Jain(Re);
     } else {
       Eigen::Vector4d monomials(Re*Re*Re,Re*Re,Re,1);
@@ -152,14 +166,12 @@ namespace Model::Balancelaw {
     }
   }
 
-  double Isothermaleulerequation::dlambda_dRe(double Re) const {
+  double Isothermaleulerequation::dlambda_non_laminar_dRe(double Re) const {
 
-    if (Re < 1e-8) {
-      gthrow({"The source term must ensure that this case of Re<1e-8 doesn't happen!"});
-    }
-    if (Re < 2000) {
-      return -64.0 / (Re*Re);
-    } else if (Re > 4000) {
+    if (Re < 2000) {gthrow({"This function is only valid for Reynolds numbers over and at 2000!",
+        " For other values, manually insert \"-64/(Reynolds(q)*Reynolds(q))\" instead"});}
+
+    if (Re > 4000) {
       return dSwamee_Jain_dRe(Re);
     } else {
       Eigen::Vector4d monomials(3*Re *  Re, 2 * Re, 1, 0);
@@ -169,7 +181,7 @@ namespace Model::Balancelaw {
 
   double Isothermaleulerequation::Reynolds(double q) const {
     double Re;
-    Re = diameter / eta * rho_0 * Aux::smooth_abs(q);
+    Re = diameter / eta * rho_0 * abs(q);
     return Re;
   }
 
@@ -180,9 +192,15 @@ namespace Model::Balancelaw {
   }
 
   double Isothermaleulerequation::dReynolds_dq(double q) const {
-    double Re;
-    Re = diameter / eta * rho_0 * Aux::dsmooth_abs_dx(q);
-    return Re;
+
+    if (Reynolds(q) < 2000) {
+      gthrow(
+             {"This function", __FUNCTION__ ,", should only be called for Reynolds "
+                                         "numbers over and at 2000!"});
+    }
+    double dRe_dq;
+    dRe_dq = diameter / eta * rho_0 * Aux::dabs_dx(q);
+    return dRe_dq;
   }
 
   double Isothermaleulerequation::Swamee_Jain(double Re) const {
