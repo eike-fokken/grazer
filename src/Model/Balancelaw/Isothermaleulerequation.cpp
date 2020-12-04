@@ -10,7 +10,7 @@ namespace Model::Balancelaw {
                                                    double _diameter,
                                                    double _eta,
                                                    double _roughness)
-    : Area(_Area), diameter(_diameter), eta(_eta),roughness(_roughness) {
+      : Area(_Area), diameter(_diameter), eta(_eta), roughness(_roughness) {
     double a = 2000;
     double b = 4000;
 
@@ -19,7 +19,7 @@ namespace Model::Balancelaw {
         3 * a * a, 2 * a, 1, 0,  //
         b * b * b, b * b, b, 1,  //
         3 * b * b, 2 * b, 1, 0;  //
-    Eigen::Vector4d spline_constraints(2000, 64. / 2000.0, 4000, Swamee_Jain(4000));
+    Eigen::Vector4d spline_constraints(64. / a,-64./(a*a), Swamee_Jain(b), dSwamee_Jain_dRe(b));
     coefficients = aux.lu().solve(spline_constraints);
   }
 
@@ -37,7 +37,7 @@ namespace Model::Balancelaw {
   }
 
   Eigen::Matrix2d
-  Isothermaleulerequation::derivative_flux(Eigen::Vector2d const &state) const {
+  Isothermaleulerequation::dflux_dstate(Eigen::Vector2d const &state) const {
 
     double rho = state[0];
     double q = state[1];
@@ -47,7 +47,7 @@ namespace Model::Balancelaw {
     dflux(0, 0) = 0.0;
     dflux(0, 1) = rho_0 / Area;
     dflux(1, 0) =
-        Area / rho_0 * derivative_p(rho) - rho_0 / Area * q * q / (rho * rho);
+        Area / rho_0 * dp_drho(rho) - rho_0 / Area * q * q / (rho * rho);
     dflux(1, 1) = 2 * rho_0 / Area * q / rho;
     return dflux;
   }
@@ -57,39 +57,42 @@ namespace Model::Balancelaw {
 
     double rho = state[0];
     double q = state[1];
+    double Re = Reynolds( q);
 
     Eigen::Vector2d source;
     source[0] = 0.0;
-    if(Reynolds(q)<2000){
+
+    if (Re < 2000) { // laminar, that is linear friction:
       source[1] =
           -rho_0 / (2 * Area* diameter) * 64 / coeff_of_Reynolds() * q / rho;
-    } else {
-      source[1] = -rho_0 / (2 * Area * diameter) * lambda(q) * Aux::smooth_abs(q) * q / rho;
+    } else { // transitional and turbulent friction:
+      source[1] = -rho_0 / (2 * Area * diameter) * lambda(Re) * Aux::smooth_abs(q) * q / rho;
     }
     return source;
   }
 
   Eigen::Matrix2d
-  Isothermaleulerequation::derivative_sourceterm(Eigen::Vector2d const &state) {
+  Isothermaleulerequation::dsource_dstateterm(Eigen::Vector2d const &state) {
     double rho = state[0];
     double q = state[1];
 
+    double Re = Reynolds(q);
     Eigen::Matrix2d dsource;
     dsource(0, 0) = 0;
     dsource(0, 1) = 0;
-    if(Reynolds(q)<2000){
+    if (Re < 2000) { // laminar, that is linear friction:
       dsource(1, 0) = rho_0 / (2 * Area * diameter) * 64/coeff_of_Reynolds() * q / (rho * rho);
       dsource(1, 1) =
           -rho_0 / Area * 64 / coeff_of_Reynolds() / (2 * diameter) / rho;
-    } else {
-      dsource(1, 0) = rho_0 / (2 * Area * diameter) * lambda(q) *
+    } else { // transitional and turbulent friction:
+      dsource(1, 0) = rho_0 / (2 * Area * diameter) * lambda(Re) *
                       Aux::smooth_abs(q) * q / (rho * rho);
 
       dsource(1,1) = -rho_0 / (2 * Area * diameter) / rho *
                    (
-                    derivative_lambda(q) * Aux::smooth_abs(q) * q +
-                    lambda(q) * Aux::derivative_smooth_abs(q) * q +
-                    lambda(q) * Aux::smooth_abs(q)
+                    dlambda_dRe(Re) *dReynolds_dq(q) * Aux::smooth_abs(q) * q +
+                    lambda(Re) * Aux::dsmooth_abs_dx(q) * q +
+                    lambda(Re) * Aux::smooth_abs(q)
                     );
     }
     return dsource;
@@ -124,7 +127,7 @@ namespace Model::Balancelaw {
     p = c_vac_squared * rho / (1 - alpha * c_vac_squared * rho);
     return p;
   }
-  double Isothermaleulerequation::derivative_p(double rho) const {
+  double Isothermaleulerequation::dp_drho(double rho) const {
     double dp;
     double D = (1 - alpha * c_vac_squared * rho);
     dp = c_vac_squared / D * D;
@@ -149,7 +152,7 @@ namespace Model::Balancelaw {
     }
   }
 
-  double Isothermaleulerequation::derivative_lambda(double Re) const {
+  double Isothermaleulerequation::dlambda_dRe(double Re) const {
 
     if (Re < 1e-8) {
       gthrow({"The source term must ensure that this case of Re<1e-8 doesn't happen!"});
@@ -157,7 +160,7 @@ namespace Model::Balancelaw {
     if (Re < 2000) {
       return -64.0 / (Re*Re);
     } else if (Re > 4000) {
-      return derivative_Swamee_Jain(Re);
+      return dSwamee_Jain_dRe(Re);
     } else {
       Eigen::Vector4d monomials(3*Re *  Re, 2 * Re, 1, 0);
       return coefficients.dot(monomials);
@@ -176,9 +179,9 @@ namespace Model::Balancelaw {
     return coeff;
   }
 
-  double Isothermaleulerequation::derivative_Reynolds(double q) const {
+  double Isothermaleulerequation::dReynolds_dq(double q) const {
     double Re;
-    Re = diameter / eta * rho_0 * Aux::derivative_smooth_abs(q);
+    Re = diameter / eta * rho_0 * Aux::dsmooth_abs_dx(q);
     return Re;
   }
 
@@ -192,7 +195,7 @@ namespace Model::Balancelaw {
     return lambda;
   }
 
-  double Isothermaleulerequation::derivative_Swamee_Jain(double Re) const {
+  double Isothermaleulerequation::dSwamee_Jain_dRe(double Re) const {
     if (Re < 4000) {
       gthrow({"This function must not be called for Reynolds numbers smaller "
               "than 4000!"});

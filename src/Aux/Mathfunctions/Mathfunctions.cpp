@@ -17,7 +17,7 @@ namespace Aux {
 
   }
 
-  double derivative_smooth_abs(double x){
+  double dsmooth_abs_dx(double x){
 
     if (x <= -epsilon) {
       return -1.0;

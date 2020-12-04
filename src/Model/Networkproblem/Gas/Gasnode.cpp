@@ -70,8 +70,8 @@ namespace Model::Networkproblem::Gas {
     {
       Eigen::RowVector2d dF_0_dpq_0(-1.0,0.0);
       Eigen::RowVector2d dF_last_dpq_0(0.0, dir0 );
-      edge0->derivative_boundary_p_qvol(dir0,jacobianhandler, dF_0_dpq_0, old_equation_index, state);
-      edge0->derivative_boundary_p_qvol(dir0,jacobianhandler, dF_last_dpq_0, last_equation_index, state);
+      edge0->dboundary_p_qvol_dstate(dir0,jacobianhandler, dF_0_dpq_0, old_equation_index, state);
+      edge0->dboundary_p_qvol_dstate(dir0,jacobianhandler, dF_last_dpq_0, last_equation_index, state);
     }
 
 
@@ -86,9 +86,9 @@ namespace Model::Networkproblem::Gas {
       Eigen::RowVector2d dF_last_dpq_now(0.0, direction);
 
       // Let the attached edge write out the derivative:
-      edge->derivative_boundary_p_qvol(direction,jacobianhandler, dF_old_dpq_now, old_equation_index, state);
-      edge->derivative_boundary_p_qvol(direction,jacobianhandler, dF_now_dpq_now, current_equation_index, state);
-      edge->derivative_boundary_p_qvol(direction,jacobianhandler, dF_last_dpq_now, last_equation_index, state);
+      edge->dboundary_p_qvol_dstate(direction,jacobianhandler, dF_old_dpq_now, old_equation_index, state);
+      edge->dboundary_p_qvol_dstate(direction,jacobianhandler, dF_now_dpq_now, current_equation_index, state);
+      edge->dboundary_p_qvol_dstate(direction,jacobianhandler, dF_last_dpq_now, last_equation_index, state);
 
       old_equation_index=current_equation_index;
 
@@ -102,7 +102,7 @@ namespace Model::Networkproblem::Gas {
     for (auto & [direction, edge] : directed_attached_gas_edges) {
       int equation_index = edge->give_away_boundary_index(direction);
       Eigen::RowVector2d dF_now_dpq_now(1.0,0.0);
-      edge->derivative_boundary_p_qvol(direction,jacobianhandler,dF_now_dpq_now,equation_index,state);
+      edge->dboundary_p_qvol_dstate(direction,jacobianhandler,dF_now_dpq_now,equation_index,state);
     }
 
   }

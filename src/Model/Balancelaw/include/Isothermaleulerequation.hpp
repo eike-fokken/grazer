@@ -12,26 +12,26 @@ public:
 
   Eigen::Vector2d flux(Eigen::Vector2d const &state) const;
 
-  Eigen::Matrix2d derivative_flux(Eigen::Vector2d const &state) const;
+  Eigen::Matrix2d dflux_dstate(Eigen::Vector2d const &state) const;
 
   Eigen::Vector2d sourceterm(Eigen::Vector2d const & state);
 
-  Eigen::Matrix2d derivative_sourceterm(Eigen::Vector2d const & state);
+  Eigen::Matrix2d dsource_dstateterm(Eigen::Vector2d const & state);
 
   Eigen::Vector2d p_qvol(Eigen::Vector2d const & state) const;
 
   Eigen::Vector2d state(Eigen::Vector2d const & state) const;
 
   double p(double p) const;
-  double derivative_p(double rho) const;
+  double dp_drho(double rho) const;
   double rho(double rho) const;
 
 private:
   double lambda(double q) const;
-  double derivative_lambda(double q) const;
+  double dlambda_dRe(double q) const;
   double Reynolds(double q) const;
   double coeff_of_Reynolds() const;
-  double derivative_Reynolds(double q) const;
+  double dReynolds_dq(double q) const;
 
   // These are physical constants except for the temperature T.
   // Later on it may be useful to change them to include other gases.
@@ -50,7 +50,7 @@ private:
 
 
   double Swamee_Jain(double Re) const;
-  double derivative_Swamee_Jain(double Re) const;
+  double dSwamee_Jain_dRe(double Re) const;
 
   const double Area;
   const double diameter;

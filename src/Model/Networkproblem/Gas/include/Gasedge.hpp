@@ -34,7 +34,7 @@ namespace Model::Networkproblem::Gas {
     /// jacobianhandler->set_coefficient(rootvalues_index, rho_index, dF/dState[0]);
     /// jacobianhandler->set_coefficient(rootvalues_index, q_index, dF/dState[1]);
     /// \endcode
-    virtual void derivative_boundary_p_qvol(int direction, Aux::Matrixhandler * jacobianhandler, Eigen::RowVector2d function_derivative, int rootvalues_index, Eigen::VectorXd const &state) const = 0;
+    virtual void dboundary_p_qvol_dstate(int direction, Aux::Matrixhandler * jacobianhandler, Eigen::RowVector2d function_derivative, int rootvalues_index, Eigen::VectorXd const &state) const = 0;
 
   private:
 

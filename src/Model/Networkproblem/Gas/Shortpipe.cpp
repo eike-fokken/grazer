@@ -116,7 +116,7 @@ namespace Model::Networkproblem::Gas {
     return get_boundary_state(direction,state);
   }
 
-  void Shortpipe::derivative_boundary_p_qvol(int direction, Aux::Matrixhandler * jacobianhandler, Eigen::RowVector2d function_derivative, int rootvalues_index, Eigen::VectorXd const &) const {
+  void Shortpipe::dboundary_p_qvol_dstate(int direction, Aux::Matrixhandler * jacobianhandler, Eigen::RowVector2d function_derivative, int rootvalues_index, Eigen::VectorXd const &) const {
     int p_index = get_boundary_state_index(direction);
     int q_index = p_index+1;
     jacobianhandler->set_coefficient(rootvalues_index,p_index, function_derivative[0]);
