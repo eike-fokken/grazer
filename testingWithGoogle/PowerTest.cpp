@@ -57,23 +57,23 @@ TEST(testPower, test_P_and_Q_1) {
   auto a = n1.set_indices(0);
   n2.set_indices(a);
 
-  Eigen::VectorXd rootfunction(4);
+  Eigen::VectorXd rootvalues(4);
   double last_time = 0.0;
   double new_time = 0.0;
   Eigen::VectorXd last_state(4);
   Eigen::VectorXd new_state(4);
   new_state << V1, phi1, V2, phi2;
 
-  n1.evaluate(rootfunction, last_time, new_time, last_state, new_state);
-  n2.evaluate(rootfunction, last_time, new_time, last_state, new_state);
+  n1.evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  n2.evaluate(rootvalues, last_time, new_time, last_state, new_state);
 
-  EXPECT_DOUBLE_EQ(rootfunction[0], new_state[0] - V1_bd);
-  EXPECT_DOUBLE_EQ(rootfunction[1], new_state[1] - phi1_bd);
-  EXPECT_DOUBLE_EQ(rootfunction[2],
+  EXPECT_DOUBLE_EQ(rootvalues[0], new_state[0] - V1_bd);
+  EXPECT_DOUBLE_EQ(rootvalues[1], new_state[1] - phi1_bd);
+  EXPECT_DOUBLE_EQ(rootvalues[2],
                    -P2_bd + G2 * V2 * V2 +
                        V2 * V1 *
                            (Gt * cos(phi2 - phi1) + Bt * sin(phi2 - phi1)));
-  EXPECT_DOUBLE_EQ(rootfunction[3],
+  EXPECT_DOUBLE_EQ(rootvalues[3],
                    -Q2_bd - B2 * V2 * V2 +
                        V2 * V1 *
                            (Gt * sin(phi2 - phi1) - Bt * cos(phi2 - phi1)));
@@ -169,23 +169,23 @@ TEST(testPower, test_P_and_Q_2) {
   auto a = n1.set_indices(0);
   n2.set_indices(a);
 
-  Eigen::VectorXd rootfunction(4);
+  Eigen::VectorXd rootvalues(4);
   double last_time = 0.0;
   double new_time = 0.0;
   Eigen::VectorXd last_state(4);
   Eigen::VectorXd new_state(4);
   new_state << V1, phi1, V2, phi2;
 
-  n1.evaluate(rootfunction, last_time, new_time, last_state, new_state);
-  n2.evaluate(rootfunction, last_time, new_time, last_state, new_state);
+  n1.evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  n2.evaluate(rootvalues, last_time, new_time, last_state, new_state);
 
-  EXPECT_DOUBLE_EQ(rootfunction[0], new_state[0] - V1_bd);
-  EXPECT_DOUBLE_EQ(rootfunction[1], new_state[1] - phi1_bd);
-  EXPECT_DOUBLE_EQ(rootfunction[2],
+  EXPECT_DOUBLE_EQ(rootvalues[0], new_state[0] - V1_bd);
+  EXPECT_DOUBLE_EQ(rootvalues[1], new_state[1] - phi1_bd);
+  EXPECT_DOUBLE_EQ(rootvalues[2],
                    -P2_bd + G2 * V2 * V2 +
                        V2 * V1 *
                            (Gt * cos(phi2 - phi1) + Bt * sin(phi2 - phi1)));
-  EXPECT_DOUBLE_EQ(rootfunction[3],
+  EXPECT_DOUBLE_EQ(rootvalues[3],
                    -Q2_bd - B2 * V2 * V2 +
                        V2 * V1 *
                            (Gt * sin(phi2 - phi1) - Bt * cos(phi2 - phi1)));
@@ -265,23 +265,23 @@ TEST(testPower, test_PV) {
   auto a = n1.set_indices(0);
   n2.set_indices(a);
 
-  Eigen::VectorXd rootfunction(4);
+  Eigen::VectorXd rootvalues(4);
   double last_time = 0.0;
   double new_time = 0.0;
   Eigen::VectorXd last_state(4);
   Eigen::VectorXd new_state(4);
   new_state << V1, phi1, V2, phi2;
 
-  n1.evaluate(rootfunction, last_time, new_time, last_state, new_state);
-  n2.evaluate(rootfunction, last_time, new_time, last_state, new_state);
+  n1.evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  n2.evaluate(rootvalues, last_time, new_time, last_state, new_state);
 
-  EXPECT_DOUBLE_EQ(rootfunction[0], new_state[0] - V1_bd);
-  EXPECT_DOUBLE_EQ(rootfunction[1], new_state[1] - phi1_bd);
-  EXPECT_DOUBLE_EQ(rootfunction[2],
+  EXPECT_DOUBLE_EQ(rootvalues[0], new_state[0] - V1_bd);
+  EXPECT_DOUBLE_EQ(rootvalues[1], new_state[1] - phi1_bd);
+  EXPECT_DOUBLE_EQ(rootvalues[2],
                    -P2_bd + G2 * V2 * V2 +
                        V2 * V1 *
                            (Gt * cos(phi2 - phi1) + Bt * sin(phi2 - phi1)));
-  EXPECT_DOUBLE_EQ(rootfunction[3], new_state[2] - V2_bd);
+  EXPECT_DOUBLE_EQ(rootvalues[3], new_state[2] - V2_bd);
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
   Aux::Triplethandler handler(&J);

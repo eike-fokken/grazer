@@ -6,10 +6,10 @@
 
 namespace Model::Networkproblem::Gas {
 
-  void Shortpipe::evaluate(Eigen::VectorXd &rootfunction, double ,
+  void Shortpipe::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double ,
                 double , Eigen::VectorXd const &,
                 Eigen::VectorXd const &new_state) const {
-    rootfunction.segment<2>(get_equation_start_index()) =
+    rootvalues.segment<2>(get_equation_start_index()) =
       get_boundary_state(1,new_state) - get_boundary_state(-1,new_state);
   }
 

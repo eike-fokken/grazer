@@ -4,7 +4,7 @@
 
 namespace Model::Networkproblem::Power {
 
-  void Vphinode::evaluate(Eigen::VectorXd &rootfunction, double // last_time
+  void Vphinode::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double // last_time
                           ,
                           double new_time,
                           Eigen::VectorXd const & // last_state
@@ -12,9 +12,9 @@ namespace Model::Networkproblem::Power {
                           Eigen::VectorXd const &new_state) const {
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
-    rootfunction[V_index] = new_state[V_index] - boundaryvalue(new_time)[0];
+    rootvalues[V_index] = new_state[V_index] - boundaryvalue(new_time)[0];
 
-    rootfunction[phi_index] = new_state[phi_index] - boundaryvalue(new_time)[1];
+    rootvalues[phi_index] = new_state[phi_index] - boundaryvalue(new_time)[1];
   }
 
   void Vphinode::evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,

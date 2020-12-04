@@ -7,13 +7,13 @@
 
 namespace Model::Networkproblem::Power {
 
-  void PQnode::evaluate(Eigen::VectorXd &rootfunction, double, double new_time,
+  void PQnode::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
                         Eigen::VectorXd const &,
                         Eigen::VectorXd const &new_state) const{
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
-    rootfunction[V_index] = P(new_state) - boundaryvalue(new_time)[0];
-    rootfunction[phi_index] = Q(new_state) - boundaryvalue(new_time)[1];
+    rootvalues[V_index] = P(new_state) - boundaryvalue(new_time)[0];
+    rootvalues[phi_index] = Q(new_state) - boundaryvalue(new_time)[1];
   }
 
   void PQnode::evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,

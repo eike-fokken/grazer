@@ -1,8 +1,12 @@
 #pragma once
-#include "gmock/gmock.h"
 #include <Eigen/Sparse>
-#include <Matrixhandler.hpp>
+#include <nlohmann/json.hpp>
 #include <Subproblem.hpp>
+
+#include "gmock/gmock.h"
+
+#include <Matrixhandler.hpp>
+
 
 namespace GrazerTest {
 
@@ -10,9 +14,10 @@ namespace GrazerTest {
 
   public:
     MOCK_METHOD(void, evaluate,
-                ((Eigen::VectorXd &), (double), (double),
-                 (Eigen::VectorXd const &), (Eigen::VectorXd const &)),
-                (const,override));
+                ((Eigen::Ref<Eigen::VectorXd>),
+                 (double), (double), (Eigen::VectorXd const &),
+                 (Eigen::VectorXd const &)),
+                (const, override));
     MOCK_METHOD(void, evaluate_state_derivative,
                 ((Aux::Matrixhandler *), (double), (double),
                  (Eigen::VectorXd const &last_state),

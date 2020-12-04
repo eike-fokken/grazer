@@ -12,7 +12,7 @@
 
 namespace GrazerTest {
 
-using Rootfunction = Eigen::VectorXd(Eigen::VectorXd);
+using rootvalues = Eigen::VectorXd(Eigen::VectorXd);
 using Derivative = Eigen::SparseMatrix<double>(Eigen::VectorXd);
 
 class TestProblem {
@@ -20,12 +20,12 @@ class TestProblem {
 public:
   /// The constructor needs to declare Delta_t
   ///
-  TestProblem(Rootfunction _f, Derivative _df) : f(_f), df(_df){};
+  TestProblem(rootvalues _f, Derivative _df) : f(_f), df(_df){};
 
-  void evaluate(Eigen::VectorXd &rootfunction, double, double,
+  void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double, double,
                 Eigen::VectorXd const &, Eigen::VectorXd const &new_state) const{
 
-    rootfunction = f(new_state);
+    rootvalues = f(new_state);
   };
 
   void evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler, double,
@@ -40,7 +40,7 @@ public:
       }
   };
 
-  Rootfunction *f;
+  rootvalues *f;
   Derivative *df;
 };
 }

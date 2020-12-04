@@ -10,7 +10,7 @@ namespace Model::Networkproblem::Power {
 
     /// In this node we set V to its boundary value and evaluate the equation
     /// for P.
-    virtual void evaluate(Eigen::VectorXd &rootfunction, double last_time,
+    virtual void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
                           double new_time, Eigen::VectorXd const &last_state,
                           Eigen::VectorXd const &new_state) const override;
 

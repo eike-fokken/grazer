@@ -5,7 +5,7 @@
 
 namespace Model::Networkproblem::Gas {
 
-  void Gasnode::evaluate_flow_node_balance(Eigen::VectorXd &rootvalues,
+  void Gasnode::evaluate_flow_node_balance(Eigen::Ref<Eigen::VectorXd> rootvalues,
                                            Eigen::VectorXd const &state,
                                            double prescribed_qvol) const {
 
@@ -42,7 +42,7 @@ namespace Model::Networkproblem::Gas {
 
   /// This function sets pressure equality boundary conditions.
   
-  void Gasnode::evaluate_pressure_node_balance(Eigen::VectorXd & rootvalues, Eigen::VectorXd const & state, double prescribed_p) const {
+  void Gasnode::evaluate_pressure_node_balance(Eigen::Ref<Eigen::VectorXd> rootvalues, Eigen::VectorXd const & state, double prescribed_p) const {
 
     if(directed_attached_gas_edges.empty()){ return; }
 

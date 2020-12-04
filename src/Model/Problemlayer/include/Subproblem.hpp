@@ -18,7 +18,7 @@ namespace Model {
     virtual ~Subproblem(){};
 
     // purely virtual functions:
-    virtual void evaluate(Eigen::VectorXd &rootfunction, double last_time,
+    virtual void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
                           double new_time, Eigen::VectorXd const &last_state,
                           Eigen::VectorXd const &new_state) const = 0;
     virtual void evaluate_state_derivative(

@@ -31,7 +31,7 @@ namespace Model::Networkproblem {
     }
   }
 
-  void Networkproblem::evaluate(Eigen::VectorXd &rootfunction, double last_time,
+  void Networkproblem::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
                                 double new_time,
                                 Eigen::VectorXd const &last_state,
                                 Eigen::VectorXd const &new_state) const{
@@ -40,13 +40,13 @@ namespace Model::Networkproblem {
     // std::for_each(std::execution::par_unseq, equationcomponents.begin(),
     //               equationcomponents.end(),[&](auto&& eqcomponent)
     // {
-    // eqcomponent->evaluate(rootfunction, last_time, new_time, last_state,
+    // eqcomponent->evaluate(rootvalues, last_time, new_time, last_state,
     //                       new_state);
     // } 
     // );
     for (Model::Networkproblem::Equationcomponent *eqcomponent :
          equationcomponents) {
-      eqcomponent->evaluate(rootfunction, last_time, new_time, last_state,
+      eqcomponent->evaluate(rootvalues, last_time, new_time, last_state,
                             new_state);
     }
   }

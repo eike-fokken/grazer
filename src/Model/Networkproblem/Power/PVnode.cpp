@@ -5,14 +5,14 @@
 
 namespace Model::Networkproblem::Power {
 
-  void PVnode::evaluate(Eigen::VectorXd &rootfunction, double, double new_time,
+  void PVnode::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
                         Eigen::VectorXd const &,
                         Eigen::VectorXd const &new_state) const{
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
-    rootfunction[V_index] = P(new_state) - boundaryvalue(new_time)[0];
+    rootvalues[V_index] = P(new_state) - boundaryvalue(new_time)[0];
 
-    rootfunction[phi_index] = new_state[V_index] - boundaryvalue(new_time)[1];
+    rootvalues[phi_index] = new_state[V_index] - boundaryvalue(new_time)[1];
   }
 
   void PVnode::evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,

@@ -9,7 +9,7 @@ namespace Model::Networkproblem::Power {
     using Powernode::Powernode;
 
     /// In this node we just set V and phi to their respective boundary values.
-    void evaluate(Eigen::VectorXd &rootfunction, double last_time,
+    void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
                   double new_time, Eigen::VectorXd const &last_state,
                   Eigen::VectorXd const &new_state) const override;
 

@@ -23,7 +23,7 @@ namespace Model::Networkproblem {
 
     Networkproblem(std::unique_ptr<Network::Net> _network);
 
-    void evaluate(Eigen::VectorXd &rootfunction, double last_time,
+    void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
                   double new_time, Eigen::VectorXd const &last_state,
                   Eigen::VectorXd const &new_state) const final;
     void evaluate_state_derivative(Aux::Matrixhandler *jacobian,

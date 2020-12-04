@@ -11,12 +11,12 @@ namespace Model::Networkproblem::Gas {
     boundaryvalue.set_boundary_condition(boundary_json);
   }
 
-  void Pressureboundarynode::evaluate(Eigen::VectorXd &rootfunction, double ,
+  void Pressureboundarynode::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double ,
                 double new_time, Eigen::VectorXd const &,
                 Eigen::VectorXd const &new_state) const{
 
     if(directed_attached_gas_edges.empty()){ return; }
-         evaluate_pressure_node_balance(rootfunction,new_state, boundaryvalue(new_time)[0]);
+         evaluate_pressure_node_balance(rootvalues,new_state, boundaryvalue(new_time)[0]);
   }
 
   void Pressureboundarynode::evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,

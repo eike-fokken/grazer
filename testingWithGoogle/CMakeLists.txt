@@ -1,33 +1,32 @@
 add_executable(net_test NetTest.cpp)
 
-target_link_libraries(net_test PRIVATE network networkproblem problemlayer exception newton matrixhandler nlohmann_json)
-
+target_link_libraries(net_test PUBLIC network networkproblem problemlayer exception newton matrixhandler nlohmann_json)
 target_link_libraries(net_test PUBLIC gtest gtest_main gmock)
-target_include_directories(net_test PRIVATE include)
 
 
 add_executable(power_test PowerTest.cpp)
 
-target_link_libraries(power_test PRIVATE problemlayer power networkproblem network exception newton matrixhandler nlohmann_json power)
+target_link_libraries(power_test PUBLIC problemlayer power networkproblem network exception newton matrixhandler nlohmann_json power)
 target_link_libraries(power_test PUBLIC gtest gtest_main gmock)
 
 
 
 add_executable(newton_test NewtonsolverTest.cpp)
 
-target_link_libraries(newton_test PRIVATE network exception newton matrixhandler problemlayer nlohmann_json)
+target_link_libraries(newton_test PUBLIC network exception newton matrixhandler problemlayer nlohmann_json)
 target_link_libraries(newton_test PUBLIC gtest gtest_main gmock)
-target_include_directories(newton_test PRIVATE include)
+target_include_directories(newton_test PUBLIC include)
 
 
 add_executable(isothermaleulerequation_test IsothermaleulerequationTest.cpp)
 
-target_link_libraries(isothermaleulerequation_test PRIVATE balancelaw)
+target_link_libraries(isothermaleulerequation_test PUBLIC balancelaw)
 target_link_libraries(isothermaleulerequation_test PUBLIC gtest gtest_main gmock)
 
 
 
 add_library(testheader INTERFACE)
+target_link_libraries(testheader INTERFACE nlohmann_json matrixhandler problemlayer gtest gtest_main gmock)
 target_include_directories(testheader INTERFACE include)
 
 add_test(

@@ -28,10 +28,10 @@ namespace Model::Networkproblem::Gas {
       final{};
 
   protected:
-    void evaluate_flow_node_balance(Eigen::VectorXd &rootvalues,
+    void evaluate_flow_node_balance(Eigen::Ref<Eigen::VectorXd> rootvalues,
                                     Eigen::VectorXd const &state,
                                     double prescribed_flow) const;
-    void evaluate_pressure_node_balance(Eigen::VectorXd &rootvalues,
+    void evaluate_pressure_node_balance(Eigen::Ref<Eigen::VectorXd> rootvalues,
                                         Eigen::VectorXd const &state,
                                         double prescribed_pressure) const;
 
