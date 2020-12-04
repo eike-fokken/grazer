@@ -1,6 +1,6 @@
 add_executable(net_test NetTest.cpp)
 
-target_link_libraries(net_test PRIVATE model network exception newton matrixhandler nlohmann_json)
+target_link_libraries(net_test PRIVATE network networkproblem problemlayer exception newton matrixhandler nlohmann_json)
 
 target_link_libraries(net_test PUBLIC gtest gtest_main gmock)
 target_include_directories(net_test PRIVATE include)
@@ -8,7 +8,7 @@ target_include_directories(net_test PRIVATE include)
 
 add_executable(power_test PowerTest.cpp)
 
-target_link_libraries(power_test PRIVATE model network exception newton matrixhandler nlohmann_json power)
+target_link_libraries(power_test PRIVATE problemlayer power networkproblem network exception newton matrixhandler nlohmann_json power)
 target_link_libraries(power_test PUBLIC gtest gtest_main gmock)
 
 
