@@ -1,7 +1,7 @@
 #include <Exception.hpp>
 #include <Isothermaleulerequation.hpp>
 #include <Mathfunctions.hpp>
-#include <math.h>
+#include <cmath>
 #include <string>
 
 namespace Model::Balancelaw {
@@ -65,7 +65,7 @@ namespace Model::Balancelaw {
     if (Re < 2000) { // laminar, that is linear friction:
       source[1] = -rho_0 / (2 * Area* diameter) * 64 / coeff_of_Reynolds() * q / rho;
     } else { // transitional and turbulent friction:
-      source[1] = -rho_0 / (2 * Area * diameter) * lambda_non_laminar(Re) * abs(q) * q / rho;
+      source[1] = -rho_0 / (2 * Area * diameter) * lambda_non_laminar(Re) * std::abs(q) * q / rho;
     }
     return source;
   }
@@ -85,13 +85,13 @@ namespace Model::Balancelaw {
           -rho_0 / (2 * Area * diameter) * 64 / coeff_of_Reynolds() / rho;
     } else { // transitional and turbulent friction:
       dsource(1, 0) = rho_0 / (2 * Area * diameter) * lambda_non_laminar(Re) *
-                      abs(q) * q / (rho * rho);
+        std::abs(q) * q / (rho * rho);
 
       dsource(1,1) = -rho_0 / (2 * Area * diameter) / rho *
                    (
-                    dlambda_non_laminar_dRe(Re) *dReynolds_dq(q) * abs(q) * q +
+                    dlambda_non_laminar_dRe(Re) *dReynolds_dq(q) * std::abs(q) * q +
                     lambda_non_laminar(Re) * Aux::dabs_dx(q) * q +
-                    lambda_non_laminar(Re) * abs(q)
+                    lambda_non_laminar(Re) * std::abs(q)
                     );
     }
     return dsource;
@@ -112,7 +112,6 @@ namespace Model::Balancelaw {
 
   Eigen::Matrix2d Isothermaleulerequation::dp_qvol_dstate(Eigen::Vector2d const &state) const{
     double rho = state[0];
-    double q = state[1];
 
     Eigen::Matrix2d dp_qvol;
     dp_qvol(0,0) = dp_drho( rho);
@@ -181,7 +180,7 @@ namespace Model::Balancelaw {
 
   double Isothermaleulerequation::Reynolds(double q) const {
     double Re;
-    Re = diameter / eta * rho_0 * abs(q);
+    Re = diameter / eta * rho_0 * std::abs(q);
     return Re;
   }
 

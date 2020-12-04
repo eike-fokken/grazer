@@ -10,15 +10,21 @@ add_executable(power_test PowerTest.cpp)
 
 target_link_libraries(power_test PRIVATE model network exception newton matrixhandler nlohmann_json power)
 target_link_libraries(power_test PUBLIC gtest gtest_main gmock)
-target_include_directories(power_test PRIVATE include)
 
 
 
 add_executable(newton_test NewtonsolverTest.cpp)
 
-target_link_libraries(newton_test PUBLIC network exception newton matrixhandler problemlayer nlohmann_json)
+target_link_libraries(newton_test PRIVATE network exception newton matrixhandler problemlayer nlohmann_json)
 target_link_libraries(newton_test PUBLIC gtest gtest_main gmock)
 target_include_directories(newton_test PRIVATE include)
+
+
+add_executable(isothermaleulerequation_test IsothermaleulerequationTest.cpp)
+
+target_link_libraries(isothermaleulerequation_test PRIVATE balancelaw)
+target_link_libraries(isothermaleulerequation_test PUBLIC gtest gtest_main gmock)
+
 
 
 add_library(testheader INTERFACE)
@@ -35,4 +41,9 @@ add_test(
 add_test(
   NAME newton_test
   COMMAND newton_test
+  )
+
+add_test(
+  NAME isothermaleulerequation_test
+  COMMAND isothermaleulerequation_test
   )

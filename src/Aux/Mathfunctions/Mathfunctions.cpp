@@ -1,5 +1,6 @@
 #include <Exception.hpp>
 #include <Mathfunctions.hpp>
+#include <cmath>
 
 namespace Aux {
 
