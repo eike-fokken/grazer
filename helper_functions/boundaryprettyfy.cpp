@@ -287,20 +287,12 @@ int main(int argc, char *argv[]) {
   json PV;
   json PQ;
   json Vphi;
-  for (auto &powernode : nodes["Powernode"]) {
+  for (auto &powernode : nodes["powerGridNode"]) {
     auto res =
         std::find_if(bdcond.begin(), bdcond.end(), [powernode](const json &x) {
           auto it = x.find("id");
           return it != x.end() and it.value() == powernode["id"];
         });
-    std::string Gstring = powernode["G"];
-    std::string Bstring = powernode["B"];
-    double G = std::stod(Gstring);
-    double B = std::stod(Bstring);
-    powernode.erase("G");
-    powernode.erase("B");
-    powernode["G"] = G;
-    powernode["B"] = B;
     if ((*res)["type"] == "PV") {
       PV.push_back(powernode);
     }
@@ -316,25 +308,11 @@ int main(int argc, char *argv[]) {
   nodes["PV"] = PV;
   nodes["PQ"] = PQ;
 
-  nodes.erase("Powernode");
+  nodes.erase("powerGridNode");
 
   ////// Topology: remove strings, make doubles.
   topologydata["nodes"] = nodes;
 
-  json tlines = topologydata["connections"]["transmissionLine"];
-
-  for (auto &tline : tlines) {
-    std::string Gstring = tline["G"];
-    std::string Bstring = tline["B"];
-    double G = std::stod(Gstring);
-    double B = std::stod(Bstring);
-    tline.erase("G");
-    tline.erase("B");
-    tline["G"] = G;
-    tline["B"] = B;
-  }
-
-  topologydata["connections"]["transmissionLine"] = tlines;
 
   json initialconditions = initialdata["objectCondition"];
 

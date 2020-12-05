@@ -144,18 +144,16 @@ namespace Jsonreader {
         if (node["type"] == "Vphi") {
           nodes.push_back(
               std::unique_ptr<Model::Networkproblem::Power::Vphinode>(
-                  new Model::Networkproblem::Power::Vphinode(
-                      node["id"], *bdjson, node["G"], node["B"])));
+                  new Model::Networkproblem::Power::Vphinode(      node["id"], *bdjson, std::stod(node["G"].get<std::string>()), std::stod(node["B"].get<std::string>()))));
+                                                       
         }
         if (node["type"] == "PV") {
           nodes.push_back(std::unique_ptr<Model::Networkproblem::Power::PVnode>(
-              new Model::Networkproblem::Power::PVnode(node["id"], *bdjson,
-                                                       node["G"], node["B"])));
+              new Model::Networkproblem::Power::PVnode(      node["id"], *bdjson, std::stod(node["G"].get<std::string>()), std::stod(node["B"].get<std::string>()))));
         }
         if (node["type"] == "PQ") {
           nodes.push_back(std::unique_ptr<Model::Networkproblem::Power::PQnode>(
-              new Model::Networkproblem::Power::PQnode(node["id"], *bdjson,
-                                                       node["G"], node["B"])));
+              new Model::Networkproblem::Power::PQnode(      node["id"], *bdjson, std::stod(node["G"].get<std::string>()), std::stod(node["B"].get<std::string>()))));
         }
       }
 
@@ -187,13 +185,13 @@ namespace Jsonreader {
         edges.push_back(
             std::unique_ptr<Model::Networkproblem::Power::Transmissionline>(
                 new Model::Networkproblem::Power::Transmissionline(
-                    tline["id"], (*start).get(), (*end).get(), tline["G"],
-                    tline["B"])));
+                                                                   tline["id"], (*start).get(), (*end).get(), std::stod(tline["G"].get<std::string>()),
+                    std::stod(tline["B"].get<std::string>()))));
       }
 
       json allgasedges;
 
-      std::vector<std::string> gasedgetype( {"shortPipe", "controlValve", "compressorStation", "pipe"});
+      std::vector<std::string> gasedgetype( {"shortPipe", "controlValve", "turboCompressor", "pipe"});
       for(auto & edgetype : gasedgetype) {
         for (auto & gasedge: topologyjson["connections"][edgetype]) {
           gasedge["type"] = edgetype;
@@ -230,15 +228,13 @@ namespace Jsonreader {
                ",\n is not defined in the nodes part of the topology file!"});
         }
         if(edge["type"] == "pipe"){
-          // edges.push_back(std::unique_ptr<Model::Networkproblem::Gas::Pipe>(
-          //     new Model::Networkproblem::Gas::Pipe(edge["id"], (*start).get(),
-          //                                          (*end).get())));
+          edges.push_back(std::unique_ptr<Model::Networkproblem::Gas::Pipe> ( new Model::Networkproblem::Gas::Pipe(edge["id"], (*start).get(), (*end).get(),edge,10000)));
         } else if (edge["type"] == "shortPipe") {
           edges.push_back(std::unique_ptr<Model::Networkproblem::Gas::Shortpipe>(
               new Model::Networkproblem::Gas::Shortpipe(edge["id"], (*start).get(),
                                                    (*end).get())));
-        } else if (edge["type"] == "compressorStation") {
-          std::cout << __FILE__<<":" << __LINE__ << ": Careful, Compressorstation replaced by shortpipe!" <<std::endl;
+        } else if (edge["type"] == "turboCompressor") {
+          std::cout << __FILE__<<":" << __LINE__ << ": Careful, Turbocompressor replaced by shortpipe!" <<std::endl;
           edges.push_back(
               std::unique_ptr<Model::Networkproblem::Gas::Shortpipe>(
                   new Model::Networkproblem::Gas::Shortpipe(
