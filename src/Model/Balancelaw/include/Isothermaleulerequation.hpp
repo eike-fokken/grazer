@@ -25,7 +25,18 @@ public:
   Eigen::Vector2d p_qvol(Eigen::Vector2d const & state) const;
   Eigen::Matrix2d dp_qvol_dstate(Eigen::Vector2d const &state) const;
 
-  Eigen::Vector2d state(Eigen::Vector2d const & state) const;
+  Eigen::Vector2d state(Eigen::Vector2d const & p_qvol) const;
+
+  double p_pascal_from_p_bar(double p) const;
+
+  Eigen::Vector2d p_qvol_from_p_qvol_bar(Eigen::Vector2d const &p_qvol_bar) const;
+
+  double p_bar_from_p_pascal(double p) const ;
+
+
+  Eigen::Vector2d p_qvol_bar_from_p_qvol(Eigen::Vector2d const &p_qvol) const;
+
+
 
   double p(double p) const;
   double dp_drho(double rho) const;
