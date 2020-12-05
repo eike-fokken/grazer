@@ -27,6 +27,21 @@ namespace Model::Networkproblem::Gas {
   }
 
   void Pipe::save_values(double time, Eigen::VectorXd const &state) {
+    std::map<double, double> pressure_map;
+    std::map<double, double> flow_map;
+
+    for (int i = 0; i!=number_of_points;++i){
+      Eigen::Vector2d current_state= state.segment<2>(get_start_state_index()+2*i);
+      double current_rho = current_state[0];
+      double current_p_bar = bl.p_bar_from_p_pascal(bl.p(current_rho));
+      double current_q = current_state[1];
+      double x = i*Delta_x;
+      pressure_map.insert(pressure_map.end(),{x,current_p_bar});
+      flow_map.insert(flow_map.end(),{x,current_q});
+    }
+    
+    std::vector<std::map<double, double>> value_vector({pressure_map, flow_map});
+    Equationcomponent::push_to_values(time, value_vector);
 
   }
 
