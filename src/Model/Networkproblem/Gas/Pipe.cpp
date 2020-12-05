@@ -5,6 +5,7 @@
 #include <Pipe.hpp>
 #include <cmath>
 #include <Mathfunctions.hpp>
+#include <Initialvalue.hpp>
 
 namespace Model::Networkproblem::Gas {
 
@@ -16,13 +17,26 @@ namespace Model::Networkproblem::Gas {
         diameter(topology_json["diameter"]["value"].get<double>() * 1e-3),
         roughness(topology_json["roughness"]["value"].get<double>()),
         number_of_points(static_cast<int> (std::ceil(length/_Delta_x))+1),
-        Delta_x(length/number_of_points),
+        Delta_x(length/(number_of_points-1)),
         bl(Balancelaw::Isothermaleulerequation(Aux::circle_area(0.5 * diameter),
                                                diameter, roughness)) {}
 
 
   int Pipe::get_number_of_states() const {
     return 2*number_of_points;
+  }
+
+  void Pipe::save_values(double time, Eigen::VectorXd const &state) {
+
+  }
+
+  void Pipe::set_initial_values(Eigen::VectorXd &new_state,
+                                nlohmann::ordered_json initial_json) {
+    Initialvalue<Pipe,2> initialvalues;
+    initialvalues.set_initial_condition(initial_json);
+    for (int i = 0; i!=number_of_points;++i){
+      new_state.segment<2>(get_start_state_index()+2*i) = bl.state(bl.p_qvol_from_p_qvol_bar(initialvalues(i*Delta_x)));
+    }
   }
 
 
