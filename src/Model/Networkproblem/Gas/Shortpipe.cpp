@@ -40,25 +40,28 @@ namespace Model::Networkproblem::Gas {
     std::ofstream outputpressure(shortpipe_output_pressure);
     std::ofstream outputflow(shortpipe_output_flow);
 
+    
     outputpressure << "t-x,\t 0.0,\t 1.0\n";
+    outputflow << "t-x,\t 0.0,\t 1.0\n";
     auto times = get_times();
     auto values = get_values();
 
     //write out pressures:
     for (unsigned i = 0; i != times.size(); ++i) {
-      outputpressure << times[i];
-      auto var = values[i][0];
+      {
+        auto var = values[i][0];
+        outputpressure << times[i];
         outputpressure << ",\t " << var.at(0.0);
         outputpressure << ",\t " << var.at(1.0);
         outputpressure << std::endl;
-    }
-    //write out flows:
-    for (unsigned i = 0; i != times.size(); ++i) {
-      outputflow << times[i];
-      auto var = values[i][1];
-      outputflow << ",\t " << var.at(0.0);
-      outputflow << ",\t " << var.at(1.0);
-      outputflow << std::endl;
+      }
+      {
+        outputflow << times[i];
+        auto var = values[i][1];
+        outputflow << ",\t " << var.at(0.0);
+        outputflow << ",\t " << var.at(1.0);
+        outputflow << std::endl;
+      }
     }
   }
 

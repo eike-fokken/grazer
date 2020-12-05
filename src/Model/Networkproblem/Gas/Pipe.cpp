@@ -6,6 +6,7 @@
 #include <cmath>
 #include <Mathfunctions.hpp>
 #include <Initialvalue.hpp>
+#include <fstream>
 
 namespace Model::Networkproblem::Gas {
 
@@ -25,6 +26,44 @@ namespace Model::Networkproblem::Gas {
   int Pipe::get_number_of_states() const {
     return 2*number_of_points;
   }
+
+
+  void
+  Pipe::print_to_files(std::filesystem::path const &output_directory) {
+    std::filesystem::path pipe_output_pressure(output_directory / (get_id().insert(0, "Gas_Pipe_p_")));
+    std::filesystem::path pipe_output_flow( output_directory / (get_id().insert(0, "Gas_Pipe_q_")));
+
+    std::ofstream outputpressure(pipe_output_pressure);
+    std::ofstream outputflow(pipe_output_flow);
+
+    auto times = get_times();
+    auto values = get_values();
+
+
+    outputpressure << "t-x";
+    for (int i = 0;i!=number_of_points;++i){
+      outputpressure <<",\t" << std::to_string(i*Delta_x);
+      outputflow <<",\t" << std::to_string(i*Delta_x);
+    }
+    outputpressure << "\n";
+    outputflow << "\n";
+
+    for (unsigned i = 0; i != times.size(); ++i) {
+      outputpressure << times[i];
+      for(auto & [x,pressure] : values[i][0]){
+        outputpressure << ",\t " << pressure;
+      }
+      outputpressure << "\n";
+
+      outputflow << times[i];
+      for(auto & [x,flow] : values[i][1]){
+        outputflow << ",\t " << flow;
+      }
+      outputflow << "\n";
+    }
+  }
+
+
 
   void Pipe::save_values(double time, Eigen::VectorXd const &state) {
     std::map<double, double> pressure_map;
