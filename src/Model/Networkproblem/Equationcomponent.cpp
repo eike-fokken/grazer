@@ -32,16 +32,16 @@ namespace Model::Networkproblem {
 
   void Equationcomponent::push_to_values(
       double t, std::vector<std::map<double, double>> value_vector) {
-    times.push_back(t);
-    values.push_back(value_vector);
+    eqtimes.push_back(t);
+    eqvalues.push_back(value_vector);
   }
 
   std::vector<double> const &Equationcomponent::get_times() const {
-    return times;
+    return eqtimes;
   }
   std::vector<std::vector<std::map<double, double>>> const &
   Equationcomponent::get_values() const {
-    return values;
+    return eqvalues;
   }
 
 } // namespace Model::Networkproblem

@@ -34,7 +34,7 @@ void Newtonsolver_temp<Problemtype>::evaluate_state_derivative_coeffref(Problemt
   Aux::Coeffrefhandler *const handler_ptr = &handler;
   problem.evaluate_state_derivative(handler_ptr, last_time, new_time,
                                     last_state, new_state);
-};
+}
 
 template <typename Problemtype>
 Solutionstruct Newtonsolver_temp<Problemtype>::solve(Eigen::VectorXd &new_state, Problemtype &problem,
@@ -109,7 +109,7 @@ Solutionstruct Newtonsolver_temp<Problemtype>::solve(Eigen::VectorXd &new_state,
   }
 
   return solstruct;
-};
+}
 
 template class Newtonsolver_temp<Model::Problem>;
   template class Newtonsolver_temp <GrazerTest::TestProblem > ;

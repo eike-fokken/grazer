@@ -112,7 +112,7 @@ TEST(testPower, test_P_and_Q_1) {
                                                        Bt * cos(phi2 - phi1)));
   EXPECT_DOUBLE_EQ(J.coeff(3, 3),
                    V2 * V1 * (Gt * cos(phi2 - phi1) + Bt * sin(phi2 - phi1)));
-};
+}
 
 TEST(testPower, test_P_and_Q_2) {
 
@@ -225,7 +225,7 @@ TEST(testPower, test_P_and_Q_2) {
                                                        Bt * cos(phi2 - phi1)));
   EXPECT_DOUBLE_EQ(J.coeff(3, 3),
                    V2 * V1 * (Gt * cos(phi2 - phi1) + Bt * sin(phi2 - phi1)));
-};
+}
 
 TEST(testPower, test_PV) {
 
@@ -309,4 +309,4 @@ TEST(testPower, test_PV) {
                    V2 * V1 * (-Gt * sin(phi2 - phi1) + Bt * cos(phi2 - phi1)));
 
   EXPECT_DOUBLE_EQ(J.coeff(3, 2), 1.0);
-};
+}

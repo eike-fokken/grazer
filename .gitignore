@@ -38,6 +38,7 @@ debug/**
 release/**
 mingw/**
 gcc-rel/**
+gcc-debug/**
 relwithdebinfo/**
 .ccls-cache
 .DS_Store

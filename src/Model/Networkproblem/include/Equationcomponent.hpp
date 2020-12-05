@@ -76,8 +76,8 @@ namespace Model::Networkproblem {
 
   private:
     /// This must be refactored into a container of times and values.
-    std::vector<double> times;
-    std::vector<std::vector<std::map<double, double>>> values;
+    std::vector<double> eqtimes;
+    std::vector<std::vector<std::map<double, double>>> eqvalues;
     int start_state_index{-1};
     int after_state_index{-1};
   };

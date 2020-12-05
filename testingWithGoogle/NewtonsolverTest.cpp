@@ -4,13 +4,18 @@
 #include <gtest/gtest.h>
 #include <iostream>
 
+Eigen::VectorXd f(Eigen::VectorXd x);
+Eigen::VectorXd f2(Eigen::VectorXd x);
+Eigen::SparseMatrix<double> df(Eigen::VectorXd );
+Eigen::SparseMatrix<double> df2(Eigen::VectorXd );
+
 Eigen::VectorXd f(Eigen::VectorXd x) {
   Eigen::Matrix2d A;
   A << 2, 1, 0, 3;
   Eigen::Vector2d b;
   b << 1, 0;
   return A * x + b;
-};
+}
 
 Eigen::VectorXd f2(Eigen::VectorXd x) {
   Eigen::Matrix2d A;
@@ -21,7 +26,7 @@ Eigen::VectorXd f2(Eigen::VectorXd x) {
   b << 9, 0;
 
   return (A * y + b);
-};
+}
 
 Eigen::SparseMatrix<double> df(Eigen::VectorXd ) {
 
@@ -29,7 +34,7 @@ Eigen::SparseMatrix<double> df(Eigen::VectorXd ) {
   A << 2, 1, 0, 3;
   return A.sparseView();
 
-};
+}
 
 Eigen::SparseMatrix<double> df2(Eigen::VectorXd x) {
 
@@ -37,7 +42,7 @@ Eigen::SparseMatrix<double> df2(Eigen::VectorXd x) {
   A << 2*x[0], 2*x[1], 0.0 , 2*x[1];
   return A.sparseView();
 
-};
+}
 
 TEST(Newtonsolver, LinearSolveWithRoot_InitialValue1) {
   double tol = 1e-12;
