@@ -1,3 +1,4 @@
+#pragma once
 #include <Eigen/Dense>
 
 
@@ -7,14 +8,19 @@ namespace Model::Balancelaw {
 class Isothermaleulerequation {
 
 public:
-  Isothermaleulerequation(double _Area, double _diameter, double _eta,
+
+  // is this needed? Maybe not because we use c++17...
+  //  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+
+  Isothermaleulerequation(double _Area, double _diameter,
                           double _roughness);
 
   Eigen::Vector2d flux(Eigen::Vector2d const &state) const;
   Eigen::Matrix2d dflux_dstate(Eigen::Vector2d const &state) const;
 
-  Eigen::Vector2d source(Eigen::Vector2d const & state);
-  Eigen::Matrix2d dsource_dstate(Eigen::Vector2d const & state);
+  Eigen::Vector2d source(Eigen::Vector2d const & state) const;
+  Eigen::Matrix2d dsource_dstate(Eigen::Vector2d const & state) const;
 
   Eigen::Vector2d p_qvol(Eigen::Vector2d const & state) const;
   Eigen::Matrix2d dp_qvol_dstate(Eigen::Vector2d const &state) const;
@@ -37,23 +43,24 @@ private:
 
   // These are physical constants except for the temperature T.
   // Later on it may be useful to change them to include other gases.
-  static constexpr double bar = 1e5;
-  static constexpr double rho_0 = 0.785;
-  static constexpr double T_0 = 273.15;
-  static constexpr double T_crit = 192.0;
-  static constexpr double z_0 = 1.005;
-  static constexpr double p_0 = 1.01325 * bar;
-  static constexpr double p_crit = 46.4 * bar;
-  static constexpr double T = 283.15;
-  static constexpr double alpha = (0.257 / p_crit - 0.533 * T_crit / (p_crit * T));
+  static constexpr double bar { 1e5};
+  static constexpr double rho_0 { 0.785};
+  static constexpr double T_0 { 273.15};
+  static constexpr double T_crit { 192.0};
+  static constexpr double z_0 { 1.005};
+  static constexpr double p_0 { 1.01325 * bar};
+  static constexpr double p_crit { 46.4 * bar};
+  static constexpr double T { 283.15};
+  static constexpr double alpha { (0.257 / p_crit - 0.533 * T_crit / (p_crit * T))};
 
-  static constexpr double c_vac_squared = p_0 * T/(z_0*T_0*rho_0);
+  static constexpr double eta { 1e-5};
+
+  static constexpr double c_vac_squared { p_0 * T/(z_0*T_0*rho_0)};
 
 
-  const double Area;
-  const double diameter;
-  const double eta;
-  const double roughness;
+  double const Area;
+  double const diameter;
+  double const roughness;
 
   Eigen::Vector4d coefficients;
 

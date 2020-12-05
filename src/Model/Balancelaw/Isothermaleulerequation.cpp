@@ -8,9 +8,8 @@ namespace Model::Balancelaw {
 
   Isothermaleulerequation::Isothermaleulerequation(double _Area,
                                                    double _diameter,
-                                                   double _eta,
                                                    double _roughness)
-      : Area(_Area), diameter(_diameter), eta(_eta), roughness(_roughness) {
+      : Area(_Area), diameter(_diameter), roughness(_roughness) {
     double a = 2000;
     double b = 4000;
 
@@ -53,7 +52,7 @@ namespace Model::Balancelaw {
   }
 
   Eigen::Vector2d
-  Isothermaleulerequation::source(Eigen::Vector2d const &state) {
+  Isothermaleulerequation::source(Eigen::Vector2d const &state) const{
 
     double rho = state[0];
     double q = state[1];
@@ -71,7 +70,7 @@ namespace Model::Balancelaw {
   }
 
   Eigen::Matrix2d
-  Isothermaleulerequation::dsource_dstate(Eigen::Vector2d const &state) {
+  Isothermaleulerequation::dsource_dstate(Eigen::Vector2d const &state) const {
     double rho = state[0];
     double q = state[1];
 
