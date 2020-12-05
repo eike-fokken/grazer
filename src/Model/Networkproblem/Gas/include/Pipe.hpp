@@ -8,7 +8,7 @@ namespace Model::Networkproblem::Gas {
   class Pipe final: public Gasedge {
   public:
 
-    Pipe(std::string _id, Network::Node *start_node, Network::Node *end_node, nlohmann::ordered_json topology_json);
+    Pipe(std::string _id, Network::Node *start_node, Network::Node *end_node, nlohmann::ordered_json topology_json, double Delta_x);
 
 
 
@@ -19,8 +19,9 @@ namespace Model::Networkproblem::Gas {
                                    Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
                                    Eigen::VectorXd const &, Eigen::VectorXd const &new_state) const override;
 
+    void setup() override;
 
-
+    
     int get_number_of_states() const override;
 
     void
@@ -41,13 +42,14 @@ namespace Model::Networkproblem::Gas {
 
 
   private:
-
     double const length;
     double const diameter;
     double const roughness;
+    double const Delta_x;
 
     Balancelaw::Isothermaleulerequation bl;
     Model::Scheme::Implicitboxscheme scheme;
+
 
 
   };
