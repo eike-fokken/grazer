@@ -4,6 +4,7 @@
 #include <map>
 #include <vector>
 #include <nlohmann/json.hpp>
+#include <Mathfunctions.hpp>
 
 namespace Model::Networkproblem {
   template <typename T, int N> class Initialvalue {
@@ -67,6 +68,9 @@ namespace Model::Networkproblem {
     //   return value;
     // }
 
+
+    /// This just makes a map of initial conditions.
+    /// The last value is shifted an epsilon to the right in order to circumvent double-equality problems.
     void set_initial_condition(nlohmann::ordered_json initial_json) {
     
       for (auto &datapoint : initial_json["data"]) {
@@ -74,6 +78,7 @@ namespace Model::Networkproblem {
           gthrow(
                  {"Wrong number of initial values in object ", initial_json["id"]});
         }
+        
         Eigen::Matrix<double, N, 1> value;
         try {
           for (unsigned int i =0 ; i<N ; ++i) {
@@ -82,9 +87,13 @@ namespace Model::Networkproblem {
           }
         } catch (...) {
           gthrow({"Initial data in object with id ", initial_json["id"],
-                  " couldn't be assignd in vector, not a double?"})
-            }
+                  " couldn't be assignd in vector, not a double?"});
+        }
+        if(datapoint == initial_json["data"].back()){
+          initial_values.insert({datapoint["x"].get<double>()+Aux::EPSILON, value});
+        }
         initial_values.insert({datapoint["x"], value});
+        
       }
     }
 

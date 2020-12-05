@@ -19,8 +19,6 @@ namespace Model::Networkproblem::Gas {
                                    Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
                                    Eigen::VectorXd const &, Eigen::VectorXd const &new_state) const override;
 
-    void setup() override;
-
     
     int get_number_of_states() const override;
 

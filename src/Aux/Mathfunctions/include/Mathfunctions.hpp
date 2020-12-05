@@ -1,7 +1,9 @@
+#pragma once
 namespace Aux {
 
 
-  double Pi = 3.141592653589793;
+  extern double const Pi;
+  extern double const EPSILON;
 
   double circle_area(double radius);
 

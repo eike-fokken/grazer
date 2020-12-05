@@ -1,27 +1,82 @@
 #include <Implicitboxscheme.hpp>
 #include <Isothermaleulerequation.hpp>
 #include <Matrixhandler.hpp>
-#include <Eigen/Dense>
+#include <Eigen/Sparse>
 #include <Pipe.hpp>
 #include <cmath>
 #include <Mathfunctions.hpp>
 #include <Initialvalue.hpp>
 #include <fstream>
-
+#include <iostream>
+#include <string>
 namespace Model::Networkproblem::Gas {
 
   Pipe::Pipe(std::string _id, Network::Node *start_node,
              Network::Node *end_node, nlohmann::ordered_json topology_json,
              double _Delta_x)
       : Gasedge(_id, start_node, end_node),
-        length(topology_json["length"]["value"].get<double>() * 1e3),
-        diameter(topology_json["diameter"]["value"].get<double>() * 1e-3),
-        roughness(topology_json["roughness"]["value"].get<double>()),
+        length(std::stod(topology_json["length"]["value"].get<std::string>()) * 1e3),
+        diameter(std::stod(topology_json["diameter"]["value"].get<std::string>()) * 1e-3),
+        roughness(std::stod(topology_json["roughness"]["value"].get<std::string>())),
         number_of_points(static_cast<int> (std::ceil(length/_Delta_x))+1),
         Delta_x(length/(number_of_points-1)),
         bl(Balancelaw::Isothermaleulerequation(Aux::circle_area(0.5 * diameter),
-                                               diameter, roughness)) {}
+                                               diameter, roughness)) {
 
+  }
+
+
+  void Pipe::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
+                double new_time, Eigen::VectorXd const &last_state,
+                Eigen::VectorXd const &new_state) const {
+    for (int i = get_equation_start_index(); i!=get_equation_after_index();i+=2){
+
+      // maybe use Eigen::Ref here to avoid copies.
+      Eigen::Vector2d last_u_jm1 = last_state.segment<2>(i - 1);
+      Eigen::Vector2d last_u_j = last_state.segment<2>(i + 1);
+      Eigen::Vector2d new_u_jm1 = new_state.segment<2>(i - 1);
+      Eigen::Vector2d new_u_j = new_state.segment<2>(i + 1);
+
+      scheme.evaluate_point(rootvalues.segment<2>(i), last_time, new_time,
+           Delta_x, last_u_jm1,
+           last_u_j, new_u_jm1,
+           new_u_j, bl);
+    }
+  }
+
+  void Pipe::evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,
+                                       double last_time, double new_time,
+                                       Eigen::VectorXd const &last_state,
+                                       Eigen::VectorXd const &new_state) const {
+    for (int i = get_equation_start_index(); i != get_equation_after_index();
+         i += 2) {
+      // maybe use Eigen::Ref here to avoid copies.
+      Eigen::Vector2d last_u_jm1 = last_state.segment<2>(i - 1);
+      Eigen::Vector2d last_u_j = last_state.segment<2>(i + 1);
+
+      Eigen::Vector2d new_u_jm1 = new_state.segment<2>(i - 1);
+
+      Eigen::Vector2d new_u_j = new_state.segment<2>(i + 1);
+
+      Eigen::Matrix2d current_derivative_left =
+          scheme.devaluate_point_dleft(last_time, new_time, Delta_x, last_u_jm1,
+                                       last_u_j, new_u_jm1, new_u_j, bl);
+
+      jacobianhandler->set_coefficient(i,i-1 ,current_derivative_left(0,0));
+      jacobianhandler->set_coefficient(i, i , current_derivative_left(0, 1));
+      jacobianhandler->set_coefficient(i+1, i - 1, current_derivative_left(1, 0));
+      jacobianhandler->set_coefficient(i+1, i, current_derivative_left(1, 1));
+
+      Eigen::Matrix2d current_derivative_right = scheme.devaluate_point_dright(
+          last_time, new_time, Delta_x, last_u_jm1, last_u_j, new_u_jm1,
+          new_u_j, bl);
+
+      jacobianhandler->set_coefficient(i, i + 1, current_derivative_right(0, 0));
+      jacobianhandler->set_coefficient(i, i+2, current_derivative_right(0, 1));
+      jacobianhandler->set_coefficient(i + 1, i + 1, current_derivative_right(1, 0));
+      jacobianhandler->set_coefficient(i + 1, i+ 2, current_derivative_right(1, 1));
+    }
+  }
 
   int Pipe::get_number_of_states() const {
     return 2*number_of_points;
@@ -80,7 +135,7 @@ namespace Model::Networkproblem::Gas {
     }
     
     std::vector<std::map<double, double>> value_vector({pressure_map, flow_map});
-    Equationcomponent::push_to_values(time, value_vector);
+    Equationcomponent::push_to_values(time,  value_vector);
 
   }
 
@@ -89,7 +144,15 @@ namespace Model::Networkproblem::Gas {
     Initialvalue<Pipe,2> initialvalues;
     initialvalues.set_initial_condition(initial_json);
     for (int i = 0; i!=number_of_points;++i){
+      try{
       new_state.segment<2>(get_start_state_index()+2*i) = bl.state(bl.p_qvol_from_p_qvol_bar(initialvalues(i*Delta_x)));
+      } catch(...){
+        std::cout<< "could not set initial value of pipe " << get_id() << ".\n"
+                 << "Requested point was " << i*Delta_x << ". \n" <<
+          "Length of line is " << length <<std::endl;
+        std::cout << "requested - length: " << (i*Delta_x - length) << std::endl;
+        throw;
+      }
     }
   }
 

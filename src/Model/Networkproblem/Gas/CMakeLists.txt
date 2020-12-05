@@ -3,8 +3,8 @@ add_library(gas STATIC Gasnode.cpp Gasedge.cpp Innode.cpp  Pipe.cpp  Shortpipe.c
   Pressureboundarynode.cpp)
   
 
-target_link_libraries(gas PRIVATE networkproblem network matrixhandler exception nlohmann_json mathfunctions)
+target_link_libraries(gas PRIVATE networkproblem network matrixhandler exception nlohmann_json)
 
-target_link_libraries(gas PUBLIC balancelaw scheme)
+target_link_libraries(gas PUBLIC balancelaw scheme mathfunctions)
 
 target_include_directories(gas PUBLIC include)

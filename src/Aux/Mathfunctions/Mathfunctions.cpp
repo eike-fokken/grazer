@@ -6,6 +6,8 @@ namespace Aux {
 
   double epsilon=1e-4;
 
+  double const Pi =  3.141592653589793;
+  double const EPSILON  = 1e-10;
 
   double circle_area(double radius) {
     return Pi *radius*radius;
