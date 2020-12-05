@@ -1,8 +1,9 @@
-#include "Implicitboxscheme.hpp"
-#include "Isothermaleulerequation.hpp"
-#include "Matrixhandler.hpp"
+#include <Implicitboxscheme.hpp>
+#include <Isothermaleulerequation.hpp>
+#include <Matrixhandler.hpp>
 #include <Eigen/Dense>
 #include <Pipe.hpp>
+#include <cmath>
 #include <Mathfunctions.hpp>
 
 namespace Model::Networkproblem::Gas {
@@ -14,9 +15,19 @@ namespace Model::Networkproblem::Gas {
         length(topology_json["length"]["value"].get<double>() * 1e3),
         diameter(topology_json["diameter"]["value"].get<double>() * 1e-3),
         roughness(topology_json["roughness"]["value"].get<double>()),
-        Delta_x(_Delta_x),
+        number_of_points(static_cast<int> (std::ceil(length/_Delta_x))+1),
+        Delta_x(length/number_of_points),
         bl(Balancelaw::Isothermaleulerequation(Aux::circle_area(0.5 * diameter),
                                                diameter, roughness)) {}
+
+
+  int Pipe::get_number_of_states() const {
+    return 2*number_of_points;
+  }
+
+
+
+
 
   Eigen::Vector2d
   Pipe::get_boundary_p_qvol(int direction, Eigen::VectorXd const &state) const {

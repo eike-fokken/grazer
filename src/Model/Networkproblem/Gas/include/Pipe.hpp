@@ -45,6 +45,7 @@ namespace Model::Networkproblem::Gas {
     double const length;
     double const diameter;
     double const roughness;
+    int const number_of_points;
     double const Delta_x;
 
     Balancelaw::Isothermaleulerequation bl;
