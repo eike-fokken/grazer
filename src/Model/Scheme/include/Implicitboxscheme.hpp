@@ -7,8 +7,7 @@ namespace Model::Scheme {
   
   class Implicitboxscheme {
   public:
-    Implicitboxscheme();
-
+    
     /// Computes the implicit box scheme at one point.
     void evaluate_point(Eigen::Ref<Eigen::Vector2d> result, double last_time,
                         double new_time, double Delta_x,
