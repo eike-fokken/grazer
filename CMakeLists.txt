@@ -25,7 +25,7 @@ endif()
 set(MY_DEBUG_WARNINGS -Og -Werror -Wconversion -pedantic-errors -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wmissing-declarations -Wmissing-include-dirs  -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo  -Wstrict-overflow=5 -Wswitch-default -Wundef -Wunused -Wno-error=unused-parameter -Wno-error=unused-private-field -Wno-error=unused-variable)
 # Add warnings:
 add_compile_options("$<$<CONFIG:DEBUG>:${MY_DEBUG_WARNINGS}>"
-  "$<$<CXX_COMPILER_ID:Clang,AppleClang>:-fcolor-diagnostics>"
+  "$<$<CXX_COMPILER_ID:Clang,AppleClang>:-fcolor-diagnostics;-Wdelete-non-virtual-dtor>"
   "$<$<CXX_COMPILER_ID:GNU>:-fdiagnostics-color>"
   )
 
