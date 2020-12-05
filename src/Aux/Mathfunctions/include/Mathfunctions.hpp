@@ -3,6 +3,8 @@ namespace Aux {
 
   double Pi = 3.141592653589793;
 
+  double circle_area(double radius);
+
   /// A C^1 absolute value function.
   double smooth_abs(double x);
 

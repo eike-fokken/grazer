@@ -6,6 +6,12 @@ namespace Aux {
 
   double epsilon=1e-4;
 
+
+  double circle_area(double radius) {
+    return Pi *radius*radius;
+  }
+
+
   double smooth_abs(double x) {
 
     if(x<=-epsilon){

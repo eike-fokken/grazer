@@ -11,7 +11,7 @@ namespace Model::Networkproblem::Gas {
         length(topology_json["length"]["value"].get<double>() * 1e3),
         diameter(topology_json["diameter"]["value"].get<double>() * 1e-3),
         roughness(topology_json["roughness"]["value"].get<double>()),
-        bl(Balancelaw::Isothermaleulerequation(0.25* Aux::Pi * diameter * diameter , diameter, roughness)),
-        scheme(Model::Scheme::Implicitboxscheme(bl)) { }
+        bl(Balancelaw::Isothermaleulerequation(Aux::circle_area(0.5*diameter), diameter, roughness))
+         { }
 
 }
