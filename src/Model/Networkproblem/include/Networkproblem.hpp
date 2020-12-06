@@ -24,20 +24,20 @@ namespace Model::Networkproblem {
     Networkproblem(std::unique_ptr<Network::Net> _network);
 
     void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-                  double new_time, Eigen::VectorXd const &last_state,
-                  Eigen::VectorXd const &new_state) const final;
+                  double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
+                  Eigen::Ref<Eigen::VectorXd const> const &new_state) const final;
     void evaluate_state_derivative(Aux::Matrixhandler *jacobian,
                                    double last_time, double new_time,
-                                   Eigen::VectorXd const &last_state,
-                                   Eigen::VectorXd const &new_state) const override;
+                                   Eigen::Ref<Eigen::VectorXd const> const &last_state,
+                                   Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
 
-    void save_values(double time, Eigen::VectorXd &new_state) final;
+    void save_values(double time, Eigen::Ref<Eigen::VectorXd>new_state) final;
 
     void print_to_files(std::filesystem::path const &output_directory) final;
 
     void display() const override;
 
-    virtual void set_initial_values(Eigen::VectorXd &new_state,
+    virtual void set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
                                     nlohmann::ordered_json initial_json) final;
 
   private:

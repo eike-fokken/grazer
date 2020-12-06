@@ -33,8 +33,8 @@ namespace Model::Networkproblem {
 
   void Networkproblem::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
                                 double new_time,
-                                Eigen::VectorXd const &last_state,
-                                Eigen::VectorXd const &new_state) const{
+                                Eigen::Ref<Eigen::VectorXd const> const &last_state,
+                                Eigen::Ref<Eigen::VectorXd const> const &new_state) const{
 
     // // This should evaluate in parallel, test on bigger problems later on:
     // std::for_each(std::execution::par_unseq, equationcomponents.begin(),
@@ -53,7 +53,7 @@ namespace Model::Networkproblem {
 
   void Networkproblem::evaluate_state_derivative(
       Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
-      Eigen::VectorXd const &last_state, Eigen::VectorXd const &new_state) const {
+      Eigen::Ref<Eigen::VectorXd const> const &last_state, Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
 
     // // This should evaluate in parallel, test on bigger problems later on:
     // std::for_each(std::execution::par_unseq, equationcomponents.begin(),
@@ -70,7 +70,7 @@ namespace Model::Networkproblem {
     }
   }
 
-  void Networkproblem::save_values(double time, Eigen::VectorXd &new_state) {
+  void Networkproblem::save_values(double time, Eigen::Ref<Eigen::VectorXd>new_state) {
     for (Model::Networkproblem::Equationcomponent *eqcomponent :
          equationcomponents) {
       eqcomponent->save_values(time, new_state);
@@ -87,7 +87,7 @@ namespace Model::Networkproblem {
 
   void Networkproblem::display() const { network->display(); }
 
-  void Networkproblem::set_initial_values(Eigen::VectorXd &new_state,
+  void Networkproblem::set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
                                           nlohmann::ordered_json initial_json) {
     for (Equationcomponent *eqcomponent : equationcomponents) {
       auto idcomponent = dynamic_cast<Network::Idobject *>(eqcomponent);

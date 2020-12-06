@@ -15,19 +15,19 @@ namespace GrazerTest {
   public:
     MOCK_METHOD(void, evaluate,
                 ((Eigen::Ref<Eigen::VectorXd>),
-                 (double), (double), (Eigen::VectorXd const &),
-                 (Eigen::VectorXd const &)),
+                 (double), (double), (Eigen::Ref<Eigen::VectorXd const> const &),
+                 (Eigen::Ref<Eigen::VectorXd const> const &)),
                 (const, override));
     MOCK_METHOD(void, evaluate_state_derivative,
                 ((Aux::Matrixhandler *), (double), (double),
-                 (Eigen::VectorXd const &last_state),
-                 (Eigen::VectorXd const &new_state)),
+                 (Eigen::Ref<Eigen::VectorXd const> const &last_state),
+                 (Eigen::Ref<Eigen::VectorXd const> const &new_state)),
                 (const,override));
     MOCK_METHOD(int, reserve_indices, (int const next_free_index), (override));
     MOCK_METHOD(void, display, (), (override, const));
     MOCK_METHOD((void), set_initial_values,
-                (Eigen::VectorXd &, nlohmann::ordered_json), (override));
-    MOCK_METHOD((void), save_values, (double, Eigen::VectorXd &), (override));
+                (Eigen::Ref<Eigen::VectorXd>, nlohmann::ordered_json), (override));
+    MOCK_METHOD((void), save_values, (double, Eigen::Ref<Eigen::VectorXd>), (override));
     MOCK_METHOD((void), print_to_files, (std::filesystem::path const &),
                 (override));
   };

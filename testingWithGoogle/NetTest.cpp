@@ -1,7 +1,7 @@
 #include "Net.hpp"
 #include "Boundaryvalue.hpp"
 #include "Edge.hpp"
-#include "MockSubproblem.hpp"
+// #include "MockSubproblem.hpp"
 #include "Node.hpp"
 #include "Problem.hpp"
 #include <Eigen/Dense>
@@ -9,6 +9,41 @@
 #include <memory>
 #include <string>
 #include <vector>
+
+
+
+#include "gmock/gmock.h"
+
+#include <Matrixhandler.hpp>
+
+
+namespace GrazerTest {
+
+  class MockSubproblem : public Model::Subproblem {
+
+  public:
+    MOCK_METHOD(void, evaluate,
+                ((Eigen::Ref<Eigen::VectorXd>),
+                 (double), (double), (Eigen::Ref<Eigen::VectorXd const> const &),
+                 (Eigen::Ref<Eigen::VectorXd const> const &)),
+                (const, override));
+    MOCK_METHOD(void, evaluate_state_derivative,
+                ((Aux::Matrixhandler *), (double), (double),
+                 (Eigen::Ref<Eigen::VectorXd const> const &last_state),
+                 (Eigen::Ref<Eigen::VectorXd const> const &new_state)),
+                (const,override));
+    MOCK_METHOD(int, reserve_indices, (int const next_free_index), (override));
+    MOCK_METHOD(void, display, (), (override, const));
+    MOCK_METHOD((void), set_initial_values,
+                (Eigen::Ref<Eigen::VectorXd>, nlohmann::ordered_json), (override));
+    MOCK_METHOD((void), save_values, (double, Eigen::Ref<Eigen::VectorXd>), (override));
+    MOCK_METHOD((void), print_to_files, (std::filesystem::path const &),
+                (override));
+  };
+} // namespace Model
+
+
+
 
 struct NetTest : public ::testing ::Test {
   virtual void SetUp() override {}
@@ -241,20 +276,20 @@ TEST(modelSubproblem, Model_evaluate) {
   v1(1) = 4;
 
   // This is necessary for the expect_call to work properly...
-  Eigen::Ref<Eigen::VectorXd> rootref(rootvalues);
+  // Eigen::Ref<Eigen::VectorXd> rootref(rootvalues);
 
   //  // expect the call to evaluate on the subproblems.
   //  // The cast magic is necessary to have the right type at hand...
   EXPECT_CALL(
       *dynamic_cast<GrazerTest::MockSubproblem *>(problem.get_subproblems()[0]),
-      evaluate(rootref, last_time, new_time, v1, v2))
+      evaluate(Eigen::Ref<Eigen::VectorXd>(rootvalues), last_time, new_time, Eigen::Ref<Eigen::VectorXd const>(v1), Eigen::Ref<Eigen::VectorXd const> (v2)))
       .Times(1);
   EXPECT_CALL(
       *dynamic_cast<GrazerTest::MockSubproblem *>(problem.get_subproblems()[1]),
-      evaluate(rootref, last_time, new_time, v1, v2))
+      evaluate(Eigen::Ref<Eigen::VectorXd>(rootvalues), last_time, new_time, Eigen::Ref<Eigen::VectorXd const>(v1), Eigen::Ref<Eigen::VectorXd const> (v2)))
       .Times(1);
 
-  problem.evaluate(rootref, last_time, new_time, v1, v2);
+  problem.evaluate(rootvalues, last_time, new_time, v1, v2);
 }
 
 TEST(Boundaryvalue, Operator) {

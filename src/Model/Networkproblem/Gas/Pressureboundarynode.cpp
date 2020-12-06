@@ -12,8 +12,8 @@ namespace Model::Networkproblem::Gas {
   }
 
   void Pressureboundarynode::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double ,
-                double new_time, Eigen::VectorXd const &,
-                Eigen::VectorXd const &new_state) const{
+                double new_time, Eigen::Ref<Eigen::VectorXd const> const &,
+                Eigen::Ref<Eigen::VectorXd const> const &new_state) const{
 
     if(directed_attached_gas_edges.empty()){ return; }
          evaluate_pressure_node_balance(rootvalues,new_state, boundaryvalue(new_time)[0]);
@@ -21,8 +21,8 @@ namespace Model::Networkproblem::Gas {
 
   void Pressureboundarynode::evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,
                                  double , double ,
-                                 Eigen::VectorXd const &,
-                                 Eigen::VectorXd const &new_state) const{
+                                 Eigen::Ref<Eigen::VectorXd const> const &,
+                                 Eigen::Ref<Eigen::VectorXd const> const &new_state) const{
     if(directed_attached_gas_edges.empty()){ return; }
       evaluate_pressure_node_derivative(jacobianhandler,new_state);
   }

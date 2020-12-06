@@ -259,7 +259,7 @@ namespace Jsonreader {
     return net;
     }
 
-  void set_initial_values(Eigen::VectorXd &new_state,
+  void set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
                           std::filesystem::path const &initial,
                           std::shared_ptr<Model::Problem> &problem) {
     json initialjson;

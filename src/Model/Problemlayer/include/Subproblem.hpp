@@ -19,13 +19,13 @@ namespace Model {
 
     // purely virtual functions:
     virtual void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-                          double new_time, Eigen::VectorXd const &last_state,
-                          Eigen::VectorXd const &new_state) const = 0;
+                          double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
+                          Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
     virtual void evaluate_state_derivative(
         Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
-        Eigen::VectorXd const &, Eigen::VectorXd const &new_state) const = 0;
+        Eigen::Ref<Eigen::VectorXd const> const &, Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
 
-    virtual void save_values(double time, Eigen::VectorXd &new_state) = 0;
+    virtual void save_values(double time, Eigen::Ref<Eigen::VectorXd>new_state) = 0;
 
     virtual void
     print_to_files(std::filesystem::path const &output_directory) = 0;
@@ -39,7 +39,7 @@ namespace Model {
     // state vector.
     int set_indices(int const next_free_index);
 
-    virtual void set_initial_values(Eigen::VectorXd &new_state,
+    virtual void set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
                                     nlohmann::ordered_json initial_json) = 0;
 
     int get_number_of_states() const;

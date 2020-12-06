@@ -45,7 +45,7 @@ namespace Jsonreader {
                     std::vector<std::unique_ptr<Network::Node>> &nodes,
                     std::vector<std::unique_ptr<Network::Edge>> &edges);
 
-  void set_initial_values(Eigen::VectorXd &initial_state,
+  void set_initial_values(Eigen::Ref<Eigen::VectorXd>initial_state,
                           std::filesystem::path const &initial,
                           std::shared_ptr<Model::Problem> &problem);
 

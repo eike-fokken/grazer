@@ -6,7 +6,7 @@
 namespace Model::Networkproblem::Gas {
 
   void Gasnode::evaluate_flow_node_balance(Eigen::Ref<Eigen::VectorXd> rootvalues,
-                                           Eigen::VectorXd const &state,
+                                           Eigen::Ref<Eigen::VectorXd const> const &state,
                                            double prescribed_qvol) const {
 
     if(directed_attached_gas_edges.empty()){ return; }
@@ -42,7 +42,7 @@ namespace Model::Networkproblem::Gas {
 
   /// This function sets pressure equality boundary conditions.
   
-  void Gasnode::evaluate_pressure_node_balance(Eigen::Ref<Eigen::VectorXd> rootvalues, Eigen::VectorXd const & state, double prescribed_p) const {
+  void Gasnode::evaluate_pressure_node_balance(Eigen::Ref<Eigen::VectorXd> rootvalues, Eigen::Ref<Eigen::VectorXd const> const & state, double prescribed_p) const {
 
     if(directed_attached_gas_edges.empty()){ return; }
 
@@ -57,7 +57,7 @@ namespace Model::Networkproblem::Gas {
 
 
 
-  void Gasnode::evaluate_flow_node_derivative(Aux::Matrixhandler * jacobianhandler, Eigen::VectorXd const & state) const {
+  void Gasnode::evaluate_flow_node_derivative(Aux::Matrixhandler * jacobianhandler, Eigen::Ref<Eigen::VectorXd const> const & state) const {
 
     if(directed_attached_gas_edges.empty()){ return; }
 
@@ -96,7 +96,7 @@ namespace Model::Networkproblem::Gas {
 
   }
 
-  void Gasnode::evaluate_pressure_node_derivative(Aux::Matrixhandler * jacobianhandler, Eigen::VectorXd const & state ) const {
+  void Gasnode::evaluate_pressure_node_derivative(Aux::Matrixhandler * jacobianhandler, Eigen::Ref<Eigen::VectorXd const> const & state ) const {
 
     if(directed_attached_gas_edges.empty()){ return; }
     for (auto & [direction, edge] : directed_attached_gas_edges) {

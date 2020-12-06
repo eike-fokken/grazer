@@ -24,17 +24,17 @@ namespace Model::Networkproblem::Power {
 
     void print_to_files(std::filesystem::path const &output_directory) final;
 
-    void set_initial_values(Eigen::VectorXd &new_state,
+    void set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
                             nlohmann::ordered_json initial_json) final;
 
   protected:
-    void save_values(double time, Eigen::VectorXd const &state) final;
-    double P(Eigen::VectorXd const &new_state) const;
-    double Q(Eigen::VectorXd const &new_state) const;
+    void save_values(double time, Eigen::Ref<Eigen::VectorXd const> const &state) final;
+    double P(Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
+    double Q(Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
     void evaluate_P_derivative(Aux::Matrixhandler *jacobianhandler,
-                               Eigen::VectorXd const &new_state) const;
+                               Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
     void evaluate_Q_derivative(Aux::Matrixhandler *jacobianhandler,
-                               Eigen::VectorXd const &new_state) const;
+                               Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
 
     Boundaryvalue<Powernode, 2> boundaryvalue;
     /// Real part of the admittance of this node

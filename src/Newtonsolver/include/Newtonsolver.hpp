@@ -39,8 +39,8 @@ namespace Solver {
 
     void evaluate_state_derivative_triplets(Problemtype &problem,
                                             double last_time, double new_time,
-                                            Eigen::VectorXd const &last_state,
-                                            Eigen::VectorXd &new_state);//  {
+                                            Eigen::Ref<Eigen::VectorXd const> const &last_state,
+                                            Eigen::Ref<Eigen::VectorXd>new_state);//  {
 
     //   {
     //     jacobian.resize(new_state.size(), new_state.size());
@@ -56,8 +56,8 @@ namespace Solver {
 
     void evaluate_state_derivative_coeffref(Problemtype &problem,
                                             double last_time, double new_time,
-                                            Eigen::VectorXd const &last_state,
-                                            Eigen::VectorXd const &new_state);//  {
+                                            Eigen::Ref<Eigen::VectorXd const> const &last_state,
+                                            Eigen::Ref<Eigen::VectorXd const> const &new_state);//  {
     //   Aux::Coeffrefhandler handler(&jacobian);
     //   Aux::Coeffrefhandler *const handler_ptr = &handler;
     //   problem.evaluate_state_derivative(handler_ptr, last_time, new_time,
@@ -72,9 +72,9 @@ namespace Solver {
     /// "Deuflhard and Hohmann: Numerical Analysis in Modern Scientific
     /// Computing". Afterwards there should hold f(new_state) == 0 (up to
     /// tolerance).
-    Solutionstruct solve(Eigen::VectorXd &new_state, Problemtype &problem,
+    Solutionstruct solve(Eigen::Ref<Eigen::VectorXd>new_state, Problemtype &problem,
                          bool newjac, double last_time, double new_time,
-                         Eigen::VectorXd const &last_state); //  {
+                         Eigen::Ref<Eigen::VectorXd const> const &last_state); //  {
     //   Solutionstruct solstruct;
 
     //   Eigen::VectorXd rootvalues(new_state.size());

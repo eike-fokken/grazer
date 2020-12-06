@@ -23,8 +23,8 @@ namespace Model {
   }
 
   void Problem::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-                         double new_time, Eigen::VectorXd const &last_state,
-                         Eigen::VectorXd const &new_state) const {
+                         double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
+                         Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     for (auto &subproblem : subproblems) {
       subproblem->evaluate(rootvalues, last_time, new_time, last_state,
                            new_state);
@@ -33,15 +33,15 @@ namespace Model {
 
   void Problem::evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,
                                           double last_time, double new_time,
-                                          Eigen::VectorXd const &last_state,
-                                          Eigen::VectorXd const &new_state) const {
+                                          Eigen::Ref<Eigen::VectorXd const> const &last_state,
+                                          Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     for (auto &subproblem : subproblems) {
       subproblem->evaluate_state_derivative(jacobianhandler, last_time,
                                             new_time, last_state, new_state);
     }
   }
 
-  void Problem::save_values(double time, Eigen::VectorXd &new_state) {
+  void Problem::save_values(double time, Eigen::Ref<Eigen::VectorXd>new_state) {
     for (auto &subproblem : subproblems) {
       subproblem->save_values(time, new_state);
     }
@@ -67,7 +67,7 @@ namespace Model {
     }
   }
 
-  void Problem::set_initial_values(Eigen::VectorXd &new_state,
+  void Problem::set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
                                    nlohmann::ordered_json initialjson) {
     for (auto &subproblem : subproblems) {
       subproblem->set_initial_values(new_state, initialjson);

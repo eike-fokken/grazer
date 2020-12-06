@@ -7,15 +7,15 @@
 namespace Model::Networkproblem::Gas {
 
   void Shortpipe::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double ,
-                double , Eigen::VectorXd const &,
-                Eigen::VectorXd const &new_state) const {
+                double , Eigen::Ref<Eigen::VectorXd const> const &,
+                Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     rootvalues.segment<2>(get_equation_start_index()) =
       get_boundary_state(1,new_state) - get_boundary_state(-1,new_state);
   }
 
   void Shortpipe::evaluate_state_derivative(
       Aux::Matrixhandler *jacobianhandler, double , double ,
-      Eigen::VectorXd const &, Eigen::VectorXd const &) const {
+      Eigen::Ref<Eigen::VectorXd const> const &, Eigen::Ref<Eigen::VectorXd const> const &) const {
 
     auto start_p_index=get_boundary_state_index(1);
     auto start_q_index = start_p_index+1;
@@ -67,7 +67,7 @@ namespace Model::Networkproblem::Gas {
 
   int Shortpipe::get_number_of_states() const { return 4; }
 
-  void Shortpipe::save_values(double time, Eigen::VectorXd const &state) {
+  void Shortpipe::save_values(double time, Eigen::Ref<Eigen::VectorXd const> const &state) {
     std::map<double, double> pressure_map;
     std::map<double, double> flow_map;
 
@@ -81,7 +81,7 @@ namespace Model::Networkproblem::Gas {
     Equationcomponent::push_to_values(time, value_vector);
   }
 
-  void Shortpipe::set_initial_values(Eigen::VectorXd &new_state,
+  void Shortpipe::set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
                                      nlohmann::ordered_json initial_json) {
     if (get_start_state_index() == -1 or get_after_state_index() == -1) {
         gthrow({"This function may only be called if set_indices  has been "
@@ -115,11 +115,11 @@ namespace Model::Networkproblem::Gas {
       }
   }
 
-  Eigen::Vector2d Shortpipe::get_boundary_p_qvol(int direction, Eigen::VectorXd const &state) const {
+  Eigen::Vector2d Shortpipe::get_boundary_p_qvol(int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const {
     return get_boundary_state(direction,state);
   }
 
-  void Shortpipe::dboundary_p_qvol_dstate(int direction, Aux::Matrixhandler * jacobianhandler, Eigen::RowVector2d function_derivative, int rootvalues_index, Eigen::VectorXd const &) const {
+  void Shortpipe::dboundary_p_qvol_dstate(int direction, Aux::Matrixhandler * jacobianhandler, Eigen::RowVector2d function_derivative, int rootvalues_index, Eigen::Ref<Eigen::VectorXd const> const &) const {
     int p_index = get_boundary_state_index(direction);
     int q_index = p_index+1;
     jacobianhandler->set_coefficient(rootvalues_index,p_index, function_derivative[0]);
