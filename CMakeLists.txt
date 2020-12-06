@@ -13,6 +13,8 @@ add_subdirectory(googletest)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+
+#set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 # for Release types add link-time optimization
 
 check_ipo_supported(RESULT is_ipo_supported OUTPUT lto_error)
@@ -22,12 +24,22 @@ if(is_ipo_supported)
 endif()
 
 
-set(MY_DEBUG_WARNINGS -Og -Werror -Wconversion -pedantic-errors -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wmissing-declarations -Wmissing-include-dirs  -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo  -Wstrict-overflow=5 -Wswitch-default -Wundef -Wunused -Wno-error=unused-parameter  -Wno-error=unused-variable)
+set(MY_DEBUG_OPTIONS -Og -Werror -Wconversion -pedantic-errors -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wmissing-declarations -Wmissing-include-dirs  -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo  -Wstrict-overflow=5 -Wswitch-default -Wundef -Wunused -Wno-error=unused-parameter  -Wno-error=unused-variable -Wdelete-non-virtual-dtor)
 # Add warnings:
-add_compile_options("$<$<CONFIG:DEBUG>:${MY_DEBUG_WARNINGS}>"
-  "$<$<CXX_COMPILER_ID:Clang,AppleClang>:-fcolor-diagnostics;-Wdelete-non-virtual-dtor;-Wno-error=unused-private-field>"
+add_compile_options("$<$<CONFIG:DEBUG>:${MY_DEBUG_OPTIONS}>"
+  "$<$<CXX_COMPILER_ID:Clang,AppleClang>:-fcolor-diagnostics;-Wno-error=unused-private-field>"
   "$<$<CXX_COMPILER_ID:GNU>:-fdiagnostics-color;-Wno-error=strict-overflow>"
   )
+
+# # for sanitizing in debug mode:
+# set(MY_SANITIZE_OPTIONS -fsanitize=address -fno-omit-frame-pointer -fsanitize=undefined)
+# add_compile_options("$<$<CONFIG:DEBUG>:${MY_SANITIZE_OPTIONS}>")
+# add_link_options("$<$<CONFIG:DEBUG>:${MY_SANITIZE_OPTIONS}>")
+
+
+
+
+
 
 ## Hacky eigen include:
 # find_package (Eigen3 3.3 REQUIRED NO_MODULE)
