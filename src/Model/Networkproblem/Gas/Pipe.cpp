@@ -1,14 +1,16 @@
+#include <Eigen/Dense>
 #include <Implicitboxscheme.hpp>
+#include <Initialvalue.hpp>
 #include <Isothermaleulerequation.hpp>
+#include <Mathfunctions.hpp>
 #include <Matrixhandler.hpp>
-#include <Eigen/Sparse>
 #include <Pipe.hpp>
 #include <cmath>
-#include <Mathfunctions.hpp>
-#include <Initialvalue.hpp>
 #include <fstream>
 #include <iostream>
 #include <string>
+
+
 namespace Model::Networkproblem::Gas {
 
   Pipe::Pipe(std::string _id, Network::Node *start_node,
@@ -31,11 +33,10 @@ namespace Model::Networkproblem::Gas {
                 Eigen::VectorXd const &new_state) const {
     for (int i = get_equation_start_index(); i!=get_equation_after_index();i+=2){
 
-      // maybe use Eigen::Ref here to avoid copies.
-      Eigen::Vector2d last_u_jm1 = last_state.segment<2>(i - 1);
-      Eigen::Vector2d last_u_j = last_state.segment<2>(i + 1);
-      Eigen::Vector2d new_u_jm1 = new_state.segment<2>(i - 1);
-      Eigen::Vector2d new_u_j = new_state.segment<2>(i + 1);
+      Eigen::Ref<Eigen::Vector2d const> const  last_u_jm1 = last_state.segment<2>(i - 1);
+      Eigen::Ref<Eigen::Vector2d const> const  last_u_j = last_state.segment<2>(i + 1);
+      Eigen::Ref<Eigen::Vector2d const> const  new_u_jm1 = new_state.segment<2>(i - 1);
+      Eigen::Ref<Eigen::Vector2d const> const  new_u_j = new_state.segment<2>(i + 1);
 
       scheme.evaluate_point(rootvalues.segment<2>(i), last_time, new_time,
            Delta_x, last_u_jm1,
@@ -51,12 +52,10 @@ namespace Model::Networkproblem::Gas {
     for (int i = get_equation_start_index(); i != get_equation_after_index();
          i += 2) {
       // maybe use Eigen::Ref here to avoid copies.
-      Eigen::Vector2d last_u_jm1 = last_state.segment<2>(i - 1);
-      Eigen::Vector2d last_u_j = last_state.segment<2>(i + 1);
-
-      Eigen::Vector2d new_u_jm1 = new_state.segment<2>(i - 1);
-
-      Eigen::Vector2d new_u_j = new_state.segment<2>(i + 1);
+      Eigen::Ref<Eigen::Vector2d const> const last_u_jm1 = last_state.segment<2>(i - 1);
+      Eigen::Ref<Eigen::Vector2d const> const last_u_j = last_state.segment<2>(i + 1);
+      Eigen::Ref<Eigen::Vector2d const> const new_u_jm1 = new_state.segment<2>(i - 1);
+      Eigen::Ref<Eigen::Vector2d const> const new_u_j = new_state.segment<2>(i + 1);
 
       Eigen::Matrix2d current_derivative_left =
           scheme.devaluate_point_dleft(last_time, new_time, Delta_x, last_u_jm1,
