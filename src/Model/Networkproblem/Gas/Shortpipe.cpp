@@ -46,9 +46,9 @@ namespace Model::Networkproblem::Gas {
     auto times = get_times();
     auto values = get_values();
 
-    //write out pressures:
     for (unsigned i = 0; i != times.size(); ++i) {
       {
+        //write out pressures:
         auto var = values[i][0];
         outputpressure << times[i];
         outputpressure << ",\t " << var.at(0.0);
@@ -56,6 +56,7 @@ namespace Model::Networkproblem::Gas {
         outputpressure << std::endl;
       }
       {
+        //write out flows:
         outputflow << times[i];
         auto var = values[i][1];
         outputflow << ",\t " << var.at(0.0);

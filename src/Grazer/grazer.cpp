@@ -72,11 +72,11 @@ int main(int argc, char **argv) {
   auto p = Jsonreader::setup_problem(topology, boundary, output_dir);
 
   int number = p->set_indices();
-
+  std::cout << "Number of variables: " <<number << std::endl;
   try {
     Aux::Printguard guard(p);
 
-    Solver::Newtonsolver solver(1e-8, 200);
+    Solver::Newtonsolver solver(1e-8, 15);
     double T = 3600 * 24;
 
     double N = 48.0;
@@ -90,6 +90,7 @@ int main(int argc, char **argv) {
 
     Jsonreader::set_initial_values(state1, initial, p);
     Eigen::VectorXd state2 = state1;
+    p->save_values(0.0,state1);
     solver.evaluate_state_derivative_triplets(*p,
                                                last_time,  new_time,
                                               state2,

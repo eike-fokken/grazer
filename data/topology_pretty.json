@@ -5126,80 +5126,71 @@
                 "from": "node_ld10",
                 "id": "g2p_ld10_N7071",
                 "to": "N7071",
-                "power2gas_efficiency":"2.2953",
-                "gas2power_efficiency": "7.96178343",
+                "power2gas_q_coeff": "0.4356729",
+                "gas2power_q_coeff": "0.1256"
             },
             {
                 "from": "node_ld6",
                 "id": "g2p_ld6_N7057",
                 "to": "N7057",
-                "power2gas_efficiency":"2.2953",
-                "gas2power_efficiency": "7.96178343",
-                "controlType": "gas"
+                "power2gas_q_coeff": "0.4356729",
+                "gas2power_q_coeff": "0.1256"
             },
             {
                 "from": "node_ld31",
                 "id": "g2p_ld31_N213",
                 "to": "N213",
-                "power2gas_efficiency":"2.2953",
-                "gas2power_efficiency": "7.96178343",
-                "controlType": "gas"
+                "power2gas_q_coeff": "0.4356729",
+                "gas2power_q_coeff": "0.1256"
             },
             {
                 "from": "node_ld24",
                 "id": "g2p_ld24_N221",
                 "to": "N221",
-                "power2gas_efficiency":"2.2953",
-                "gas2power_efficiency": "7.96178343",
-                "controlType": "gas"
+                "power2gas_q_coeff": "0.4356729",
+                "gas2power_q_coeff": "0.1256"
             },
             {
                 "from": "node_ld2",
                 "id": "g2p_ld2_N7017",
                 "to": "N7017",
-                "power2gas_efficiency":"2.2953",
-                "gas2power_efficiency": "7.96178343",
-                "controlType": "gas"
+                "power2gas_q_coeff": "0.4356729",
+                "gas2power_q_coeff": "0.1256"
             },
             {
                 "from": "node_ld13",
                 "id": "g2p_ld13_N230",
                 "to": "N230",
-                "power2gas_efficiency":"2.2953",
-                "gas2power_efficiency": "7.96178343",
-                "controlType": "gas"
+                "power2gas_q_coeff": "0.4356729",
+                "gas2power_q_coeff": "0.1256"
             },
             {
                 "from": "node_ld29",
                 "id": "g2p_ld29_N7061",
                 "to": "N7061",
-                "power2gas_efficiency":"2.2953",
-                "gas2power_efficiency": "7.96178343",
-                "controlType": "gas"
+                "power2gas_q_coeff": "0.4356729",
+                "gas2power_q_coeff": "0.1256"
             },
             {
                 "from": "node_ld12",
                 "id": "g2p_ld12_N7024",
                 "to": "N7024",
-                "power2gas_efficiency":"2.2953",
-                "gas2power_efficiency": "7.96178343",
-                "controlType": "gas"
+                "power2gas_q_coeff": "0.4356729",
+                "gas2power_q_coeff": "0.1256"
             },
             {
                 "from": "node_ld36",
                 "id": "g2p_ld36_N7001",
                 "to": "N7001",
-                "power2gas_efficiency":"2.2953",
-                "gas2power_efficiency": "7.96178343",
-                "controlType": "gas"
+                "power2gas_q_coeff": "0.4356729",
+                "gas2power_q_coeff": "0.1256"
             },
             {
                 "from": "node_ld42",
                 "id": "g2p_ld42_N7039",
                 "to": "N7039",
-                "power2gas_efficiency":"2.2953",
-                "gas2power_efficiency": "7.96178343",
-                "controlType": "gas"
+                "power2gas_q_coeff": "0.4356729",
+                "gas2power_q_coeff": "0.1256"
             }
         ],
         "transmissionLine": [

@@ -143,7 +143,6 @@ namespace Solver {
     /// Holds an instance of the actual solver, to save computation time it
     /// is kept from previous time steps because usually the sparsity
     /// pattern will not change.
-    /// TODO: At the moment this is not true, we always build a new jacobian.
     Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>>
     lusolver;
 

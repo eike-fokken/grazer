@@ -24,7 +24,7 @@ namespace Model::Networkproblem::Power {
                                          Eigen::Ref<Eigen::VectorXd const> const &new_state) const{
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
-    evaluate_P_derivative(jacobianhandler, new_state);
+    evaluate_P_derivative(V_index,jacobianhandler, new_state);
     jacobianhandler->set_coefficient(phi_index, V_index, 1.0);
   }
 

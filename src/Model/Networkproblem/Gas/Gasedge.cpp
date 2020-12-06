@@ -37,7 +37,10 @@ namespace Model::Networkproblem::Gas {
     }
 
   int Gasedge::get_starting_state_index() const { return get_start_state_index(); }
+
   int Gasedge::get_ending_state_index() const {
+
+    // This is a hack and should be refactored
     if(get_number_of_states() ==2) { gthrow({"Edge: ", get_id(), " has only two variables, therefore this function should not have been called!"});}
 
     return get_after_state_index() - 2;

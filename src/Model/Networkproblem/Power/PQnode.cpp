@@ -23,8 +23,10 @@ namespace Model::Networkproblem::Power {
                                          ,
                                          Eigen::Ref<Eigen::VectorXd const> const &,
                                          Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
-    evaluate_P_derivative(jacobianhandler, new_state);
-    evaluate_Q_derivative(jacobianhandler, new_state);
+    int first_equation_index = get_start_state_index();
+    int second_equation_index = first_equation_index+1;
+    evaluate_P_derivative(first_equation_index,jacobianhandler, new_state);
+    evaluate_Q_derivative(second_equation_index, jacobianhandler, new_state);
   }
 
   void PQnode::display() const {
