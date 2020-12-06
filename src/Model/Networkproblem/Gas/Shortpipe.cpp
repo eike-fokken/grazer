@@ -81,7 +81,7 @@ namespace Model::Networkproblem::Gas {
     Equationcomponent::push_to_values(time, value_vector);
   }
 
-  void Shortpipe::set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
+  void Shortpipe::set_initial_values(Eigen::Ref<Eigen::VectorXd> new_state,
                                      nlohmann::ordered_json initial_json) {
     if (get_start_state_index() == -1 or get_after_state_index() == -1) {
         gthrow({"This function may only be called if set_indices  has been "

@@ -38,8 +38,11 @@ namespace Model::Networkproblem::Gas {
 
   int Gasedge::get_starting_state_index() const { return get_start_state_index(); }
   int Gasedge::get_ending_state_index() const {
-      return get_after_state_index() - 2;
+    if(get_number_of_states() ==2) { gthrow({"Edge: ", get_id(), " has only two variables, therefore this function should not have been called!"});}
+
+    return get_after_state_index() - 2;
     }
+
   int Gasedge::get_boundary_state_index(int direction) const{
     if(direction==1){
       return get_starting_state_index();

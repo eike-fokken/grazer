@@ -36,8 +36,8 @@ namespace Model::Networkproblem::Gas {
 
 
   private:
-    
-
+    double const efficiency_gas2power;
+    double const efficiency_power2gas;
 
   };
 
