@@ -2,26 +2,7 @@
 #include <cfloat>
 #include <gtest/gtest.h>
 
-Eigen::Vector2d p_qvol(3, 4);
 
-// double rho = 0.5;
-// double Re1 = 1000; //test for throwing exceptions
-// double Re2 = 5000;
-// double q = 0.4;
-
-static constexpr double bar{1e5};
-static constexpr double rho_0{0.785};
-static constexpr double T_0{273.15};
-static constexpr double T_crit{192.0};
-static constexpr double z_0{1.005};
-static constexpr double p_0{1.01325 * bar};
-static constexpr double p_crit{46.4 * bar};
-static constexpr double T{283.15};
-static constexpr double alpha{(0.257 / p_crit - 0.533 * T_crit / (p_crit * T))};
-
-static constexpr double eta{1e-5};
-
-static constexpr double c_vac_squared{p_0 * T / (z_0 * T_0 * rho_0)};
 
 TEST(testIsothermaleulerequation, flux) {
 
@@ -38,8 +19,8 @@ TEST(testIsothermaleulerequation, flux) {
 
     Eigen::Vector2d flux_vector = Iso.flux(state1);
 
-    double f0 = rho_0 / Area * q;
-    double f1 = Area / rho_0 * Iso.p(rho) + rho_0 / Area * q * q / rho;
+    double f0 = Iso.rho_0 / Area * q;
+    double f1 = Area / Iso.rho_0 * Iso.p(rho) + Iso.rho_0 / Area * q * q / rho;
     EXPECT_DOUBLE_EQ(f0, flux_vector[0]);
     EXPECT_DOUBLE_EQ(f1, flux_vector[1]);
 
@@ -96,16 +77,20 @@ TEST(testIsothermaleulerequation, source) {
   for (int i = 1; i != 21; ++i) {
 
     double rho = i;
-    double q = 10 * i;
+    double q = 10 * (i-10)+9e-7;
 
     Eigen::Vector2d state1(rho, q);
 
     Eigen::Vector2d source_vector = Iso.source(state1);
 
 
-    
+    if (std::abs(q) > 1e-6) {
+      EXPECT_TRUE(source_vector[1] * q < 0);
+    } else {
+      // This test is probably very dependent on Area so be careful with it...
+      EXPECT_TRUE(std::abs(source_vector[1] * q) < 1e-9);
+    }
   }
-
   }
 
 // TEST(testIsothermaleulerequation, dsource_dstate) {
@@ -209,7 +194,7 @@ TEST(testIsothermaleulerequation, dp_drho) {
   Model::Balancelaw::Isothermaleulerequation Iso(Area, diameter, roughness);
 
 
-  EXPECT_DOUBLE_EQ(c_vac_squared, Iso.dp_drho(0.0));
+  EXPECT_DOUBLE_EQ(Iso.c_vac_squared, Iso.dp_drho(0.0));
   for (int i = 1; i != 21; ++i) {
 
     double rho = i;
@@ -223,36 +208,142 @@ TEST(testIsothermaleulerequation, dp_drho) {
   }
   }
 
-// //For testing private members
-// /*TEST(testIsothermaleulerequation, lambda_non_laminar) {
 
-// Model::Balancelaw::Isothermaleulerequation Iso(Area, diameter, _eta,
-// roughness); double dot_product = Iso.lambda_non_laminar(Re1); double
-// dot_product = Iso.lambda_non_laminar(Re2);
-// }
+TEST(testIsothermaleulerequation, lambda_non_laminar) {
 
-// TEST(testIsothermaleulerequation, dlambda_non_laminar_dRe) {
+  double Area = 2.0;
+  double diameter = 3.5;
+  double roughness = 1.0;
+  Model::Balancelaw::Isothermaleulerequation Iso(Area, diameter, roughness);
 
-// Model::Balancelaw::Isothermaleulerequation(Area, diameter, _eta, roughness);
+  {
+  double Re=2000-1e-9;
+  double lambda = Iso.lambda_non_laminar(2000);
+  double expected_lambda = 64/Re;
+  EXPECT_NEAR(lambda, expected_lambda, 1e-9);
+ }
+ {
+   double Re = 4000-1e-9;
+   double lambda = Iso.lambda_non_laminar(Re);
+   double expected_lambda = Iso.Swamee_Jain(4000);
+   EXPECT_NEAR(lambda, expected_lambda,1e-9);
+ }
+}
+TEST(testIsothermaleulerequation, dlambda_non_laminar_dRe) {
 
-// }
+  double Area = 2.0;
+  double diameter = 3.5;
+  double roughness = 1.0;
+  Model::Balancelaw::Isothermaleulerequation Iso(Area, diameter, roughness);
+
+  {
+    double Re0 = 2000+1e-9;
+    double dlambda = Iso.dlambda_non_laminar_dRe(Re0);
+    double expected_dlambda = -64./(2000*2000);
+    EXPECT_NEAR(dlambda, expected_dlambda, 1e-9);
+  }
+  {
+    double Re1 = 4000 - 1e-9;
+    double dlambda = Iso.dlambda_non_laminar_dRe(Re1);
+    double expected_dlambda = Iso.dSwamee_Jain_dRe(4000);
+    EXPECT_NEAR(dlambda, expected_dlambda, 1e-9);
+  }
+  for(int i=1;i!=20;++i){
+
+    double Re = 2000+ i * 100;
+    double epsilon = pow(DBL_EPSILON, 1.0 / 3.0);
+    double h = epsilon;
+    double finite_difference_threshold = sqrt(epsilon);
+    double exact_dlambda = Iso.dlambda_non_laminar_dRe(Re);
+    double difference_dlambda =
+        0.5 * (Iso.lambda_non_laminar(Re + h) - Iso.lambda_non_laminar(Re - h)) / h;
+    EXPECT_NEAR(exact_dlambda, difference_dlambda,
+                finite_difference_threshold);
+  }
+
+
+}
 
 // TEST(testIsothermaleulerequation, Reynolds) {
 
 // }
 
-// TEST(testIsothermaleulerequation, coeff_of_Reynolds) {
+TEST(testIsothermaleulerequation, coeff_of_Reynolds) {
 
-// }
 
-// TEST(testIsothermaleulerequation, dReynolds_dq) {
+}
 
-// }
+TEST(testIsothermaleulerequation, dReynolds_dq) {
 
-// TEST(testIsothermaleulerequation, Swamee_Jain) {
+  double Area = 2.0;
+  double diameter = 3.5;
+  double roughness = 1.0;
 
-// }
+  double q0 = 5e-3;
+  Model::Balancelaw::Isothermaleulerequation Iso(Area, diameter, roughness);
 
-// TEST(testIsothermaleulerequation, dSwamee_Jain_dRe) {
+  EXPECT_ANY_THROW(Iso.dReynolds_dq(q0));
 
-// }*/
+  for (int i = 1; i != 21; ++i) {
+    double q = 10 * (i-10);
+    double epsilon = pow(DBL_EPSILON, 1.0 / 3.0);
+    double h = epsilon;
+    double finite_difference_threshold = sqrt(epsilon);
+  
+    if (Iso.Reynolds(q) > 2000) {
+      double exact_dReynolds = Iso.dReynolds_dq(q);
+      double difference_dReynolds =
+          0.5 * (Iso.Reynolds(q + h) - Iso.Reynolds(q - h)) / h;
+      EXPECT_NEAR(exact_dReynolds, difference_dReynolds,
+                  finite_difference_threshold);
+    }
+  }
+}
+TEST(testIsothermaleulerequation, Swamee_Jain) {
+
+  double Area = 2.0;
+  double diameter = 3.5;
+  double roughness = 1.0;
+
+  Model::Balancelaw::Isothermaleulerequation Iso(Area, diameter, roughness);
+
+  double Re0 = 3999;
+
+  EXPECT_ANY_THROW(Iso.Swamee_Jain(Re0));
+
+  for (int i = 4; i != 10; ++i) {
+    double Re = i*1000;
+
+    double lambda = Iso.Swamee_Jain( Re);
+
+    double lambda_exact = Iso.exact_turbulent_lambda( Re);
+      double test = (abs(lambda - lambda_exact))/lambda_exact;
+      EXPECT_NEAR(test, 0.0,3e-2);
+  }
+
+
+}
+
+TEST(testIsothermaleulerequation, dSwamee_Jain_dRe) {
+
+  double Area = 2.0;
+  double diameter = 3.5;
+  double roughness = 1.0;
+
+  Model::Balancelaw::Isothermaleulerequation Iso(Area, diameter, roughness);
+
+  double Re0 = 3999;
+
+  EXPECT_ANY_THROW(Iso.Swamee_Jain(Re0));
+
+  for (int i = 5; i != 10; ++i) {
+    double Re = i * 1000;
+    double epsilon = pow(DBL_EPSILON, 1.0 / 3.0);
+    double h = epsilon;
+    double finite_difference_threshold = sqrt(epsilon);
+    double exact_dSwamee_Jain_dRe = Iso.dSwamee_Jain_dRe(Re);
+    double difference_dSwamee_Jain_dRe = 0.5 * (Iso.Swamee_Jain(Re + h) - Iso.Swamee_Jain(Re - h)) / h;
+    EXPECT_NEAR(exact_dSwamee_Jain_dRe, difference_dSwamee_Jain_dRe, finite_difference_threshold);
+  }
+}
+

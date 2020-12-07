@@ -42,7 +42,7 @@ public:
   double dp_drho(double rho) const;
   double rho(double rho) const;
 
-private:
+
   double lambda_non_laminar(double Re) const;
   double dlambda_non_laminar_dRe(double Re) const;
   double Reynolds(double q) const;
@@ -51,6 +51,9 @@ private:
 
   double Swamee_Jain(double Re) const;
   double dSwamee_Jain_dRe(double Re) const;
+
+  double exact_turbulent_lambda(double Re) const;
+
 
   // These are physical constants except for the temperature T.
   // Later on it may be useful to change them to include other gases.
@@ -68,6 +71,7 @@ private:
 
   static constexpr double c_vac_squared { p_0 * T/(z_0*T_0*rho_0)};
 
+private:
 
   double const Area;
   double const diameter;

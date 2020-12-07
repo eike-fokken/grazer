@@ -180,7 +180,7 @@ namespace Model::Balancelaw {
   }
   double Isothermaleulerequation::lambda_non_laminar(double Re) const{
 
-    if(Re< 2000) {
+    if(Re< 2000-Aux::EPSILON) {
       gthrow(
           {"This function is only valid for Reynolds numbers over and at 2000!",
            " For other values, manually insert "
@@ -196,7 +196,7 @@ namespace Model::Balancelaw {
 
   double Isothermaleulerequation::dlambda_non_laminar_dRe(double Re) const {
 
-    if (Re < 2000) {gthrow({"This function is only valid for Reynolds numbers over and at 2000!",
+    if (Re < 2000-Aux::EPSILON) {gthrow({"This function is only valid for Reynolds numbers over and at 2000!",
         " For other values, manually insert \"-64/(Reynolds(q)*Reynolds(q))\" instead"});}
 
     if (Re > 4000) {
@@ -221,7 +221,7 @@ namespace Model::Balancelaw {
 
   double Isothermaleulerequation::dReynolds_dq(double q) const {
 
-    if (Reynolds(q) < 2000) {
+    if (Reynolds(q) < 2000-Aux::EPSILON) {
       gthrow(
              {"This function", __FUNCTION__ ,", should only be called for Reynolds "
                                          "numbers over and at 2000!"});
@@ -232,26 +232,47 @@ namespace Model::Balancelaw {
   }
 
   double Isothermaleulerequation::Swamee_Jain(double Re) const {
-    if(Re<4000) {
+    if(Re<4000-Aux::EPSILON) {
       gthrow({"This function must not be called for Reynolds numbers smaller than 4000!"});
     }
 
-    double aux = log(roughness / (3.7 * diameter) + 5.74 / (pow(Re, 0.9)));
+    double aux = log10(roughness / (3.7 * diameter) + 5.74 / (pow(Re, 0.9)));
     double lambda = 0.25 / (aux*aux);
     return lambda;
   }
 
   double Isothermaleulerequation::dSwamee_Jain_dRe(double Re) const {
-    if (Re < 4000) {
+    if (Re < 4000-Aux::EPSILON) {
       gthrow({"This function must not be called for Reynolds numbers smaller "
               "than 4000!"});
     }
     double x = exp(log(Re) * 0.9);
     double a = roughness / (3.7 * diameter) + 5.74 / x;
-    double aux = log(a);
-    double daux_dRe = 1/a *(-5.74/(x*x))*0.9*x/Re;
+    double aux = log10(a);
+    double daux_dRe = 1/log(10)*a *(-5.74/(x*x))*0.9*x/Re;
     double dlambda_dRe = -0.5 / (aux * aux * aux)*daux_dRe;
-    return dlambda_dRe;    
+    return dlambda_dRe;
   }
+
+  double Isothermaleulerequation::exact_turbulent_lambda(double Re) const {
+    if (Re < 4000-Aux::EPSILON) {
+      gthrow({"This function must not be called for Reynolds numbers smaller "
+              "than 4000!"});
+    }
+    int counter;
+    double lambda = Swamee_Jain(Re);
+    double mu = 1/sqrt(lambda);
+    for (counter = 0; counter !=10; ++counter) {
+      double inner = 2.51 / Re * mu + roughness / (3.71*diameter);
+      double dinner_dmu = 2.51/Re;
+      double f= mu +2*log10( inner);
+      double df = 1+2/log(10)*dinner_dmu/inner;
+      mu = mu - f/df;
+      if(f < 1e-12) {break;}
+    }
+
+    return 1/(mu*mu);
+  }
+
 
   } // namespace Model::Balancelaw
