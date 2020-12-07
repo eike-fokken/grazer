@@ -67,19 +67,21 @@ namespace Model::Networkproblem::Gas {
     if(directed_attached_gas_edges.empty()){ return; }
 
     auto [dir0,edge0] =directed_attached_gas_edges.front();
-    int old_equation_index = edge0->give_away_boundary_index(dir0);
-    int last_direction = directed_attached_gas_edges.back().first;
-    int last_equation_index = directed_attached_gas_edges.back().second->give_away_boundary_index(last_direction);
+    auto [dirlast,edgelast] = directed_attached_gas_edges.back();
+    int last_equation_index = edgelast->give_away_boundary_index(dirlast);
     //    rootvalues[last_equation_index]=dir0*state0[1];
 
-    {
-      Eigen::RowVector2d dF_0_dpq_0(-1.0,0.0);
+
+      
       Eigen::RowVector2d dF_last_dpq_0(0.0, dir0 );
-      edge0->dboundary_p_qvol_dstate(dir0,jacobianhandler, dF_0_dpq_0, old_equation_index, state);
       edge0->dboundary_p_qvol_dstate(dir0,jacobianhandler, dF_last_dpq_0, last_equation_index, state);
-    }
+      // if there is only one attached edge, we are done:
+      if(edge0==edgelast){return;}
 
-
+      // In all other cases we now have to make pressure derivatives and the other flow derivatives:
+      Eigen::RowVector2d dF_0_dpq_0(-1.0,0.0);
+      int old_equation_index = edge0->give_away_boundary_index(dir0);
+      edge0->dboundary_p_qvol_dstate(dir0,jacobianhandler, dF_0_dpq_0, old_equation_index, state);
 
     for(auto it=std::next(directed_attached_gas_edges.begin());it!=directed_attached_gas_edges.end();++it){
       int direction=it->first;
