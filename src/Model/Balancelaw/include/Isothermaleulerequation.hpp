@@ -38,7 +38,7 @@ public:
 
 
 
-  double p(double p) const;
+  double p(double rho) const;
   double dp_drho(double rho) const;
   double rho(double rho) const;
 

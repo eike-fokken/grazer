@@ -31,7 +31,7 @@ namespace Model::Balancelaw {
     Eigen::Vector2d flux;
 
     flux[0] = rho_0 / Area * q;
-    flux[1] = Area / rho_0 * p(rho) + rho_0 / Area * q * q / rho;
+    flux[1] = Area / rho_0 * p(rho) +(rho_0 / Area) * q * q / rho;
     return flux;
   }
 
@@ -45,8 +45,7 @@ namespace Model::Balancelaw {
 
     dflux(0, 0) = 0.0;
     dflux(0, 1) = rho_0 / Area;
-    dflux(1, 0) =
-        Area / rho_0 * dp_drho(rho) - rho_0 / Area * q * q / (rho * rho);
+    dflux(1, 0) = Area / rho_0 * dp_drho(rho) - rho_0 / Area * q * q / (rho * rho);
     dflux(1, 1) = 2 * rho_0 / Area * q / rho;
     return dflux;
   }
@@ -170,7 +169,7 @@ namespace Model::Balancelaw {
   double Isothermaleulerequation::dp_drho(double rho) const {
     double dp;
     double D = (1 - alpha * c_vac_squared * rho);
-    dp = c_vac_squared / D * D;
+    dp = c_vac_squared / (D * D);
     return dp;
   }
 
