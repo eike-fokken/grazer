@@ -10,9 +10,9 @@ TEST(testIsothermaleulerequation, flux) {
   double diameter = 3.5;
   double roughness = 1.0;
   Model::Balancelaw::Isothermaleulerequation Iso(Area, diameter, roughness);
-  for (int i = 1; i != 21; ++i) {
+  for (int i = -20; i != 21; ++i) {
 
-    double rho =  i;
+    double rho = std::abs(i + 1e-2);
     double q = 10 * i;
 
     Eigen::Vector2d state1(rho, q);
@@ -34,9 +34,9 @@ TEST(testIsothermaleulerequation, dflux_state) {
   double roughness = 1.0;
   Model::Balancelaw::Isothermaleulerequation Iso(Area, diameter, roughness);
 
-  for (int i = 1; i != 21; ++i) {
+  for (int i = -20; i != 21; ++i) {
 
-    double rho = i;
+    double rho = std::abs(i + 1e-2);
     double q = 10 * i;
 
     Eigen::Vector2d x(rho, q);
@@ -74,65 +74,38 @@ TEST(testIsothermaleulerequation, source) {
   double diameter = 3.5;
   double roughness = 1.0;
   Model::Balancelaw::Isothermaleulerequation Iso(Area, diameter, roughness);
-  for (int i = 1; i != 21; ++i) {
+  for (int i = -20; i != 21; ++i) {
 
-    double rho = i;
-    double q = 10 * (i-10)+9e-7;
+    double rho = std::abs(i + 1e-2);
+    double q = 10 * i;
 
-    Eigen::Vector2d state1(rho, q);
+      Eigen::Vector2d state1(rho, q);
 
-    Eigen::Vector2d source_vector = Iso.source(state1);
+      Eigen::Vector2d source_vector = Iso.source(state1);
 
-
-    if (std::abs(q) > 1e-6) {
-      EXPECT_TRUE(source_vector[1] * q < 0);
-    } else {
-      // This test is probably very dependent on Area so be careful with it...
-      EXPECT_TRUE(std::abs(source_vector[1] * q) < 1e-9);
+      if (std::abs(q) > 1e-6) {
+        EXPECT_TRUE(source_vector[1] * q < 0);
+      } else {
+        // This test is probably very dependent on Area so be careful with it...
+        
+        EXPECT_LE(std::abs(source_vector[1] * q) , 1e-6);
+      }
     }
+
+    // not sure, what else to test here.
   }
-  }
 
-// TEST(testIsothermaleulerequation, dsource_dstate) {
+TEST(testIsothermaleulerequation, dsource_dstate) {
 
-// Model::Balancelaw::Isothermaleulerequation Iso(Area, diameter,roughness);
-// Eigen::Matrix2d dsource_matrix = Iso.dsource_dstate(state1);
-
-// }
-
-TEST(testIsothermaleulerequation, p_qvol_and_state) {
-
-double Area = 2.0;
-double diameter = 3.5;
-double roughness = 1.0;
-
- Model::Balancelaw::Isothermaleulerequation Iso(Area, diameter, roughness);
-for (int i = 1; i != 21; ++i) {
-
-  double rho = i;
-  double q = 10 * i;
-
-  Eigen::Vector2d state1(rho, q);
-  Eigen::Vector2d p_qvol_vector = Iso.p_qvol(state1);
-
-  Eigen::Vector2d state2 = Iso.state(p_qvol_vector);
-
-  EXPECT_DOUBLE_EQ(state1[0], state2[0]);
-  EXPECT_DOUBLE_EQ(state1[1], state2[1]);
- }
-}
-
-TEST(testIsothermaleulerequation, dp_qvol_dstate) {
 
   double Area = 2.0;
   double diameter = 3.5;
   double roughness = 1.0;
-
   Model::Balancelaw::Isothermaleulerequation Iso(Area, diameter, roughness);
 
-  for (int i = 1; i != 21; ++i) {
+  for (int i = -20 ; i != 21; ++i) {
 
-    double rho = i;
+    double rho = std::abs(i + 1e-2);
     double q = 10 * i;
 
     Eigen::Vector2d x(rho, q);
@@ -142,28 +115,97 @@ TEST(testIsothermaleulerequation, dp_qvol_dstate) {
 
     Eigen::Vector2d h0(epsilon, 0);
     
-    Eigen::Matrix2d exact_dp_qvol_dstate_matrix = Iso.dp_qvol_dstate(x);
 
-    Eigen::Vector2d difference_dp_qvol0 = 0.5*(Iso.p_qvol(x + h0) - Iso.p_qvol(x-h0));
-    Eigen::Vector2d exact_dflux0 = exact_dp_qvol_dstate_matrix * h0;
+    Eigen::Matrix2d exact_dsource_matrix = Iso.dsource_dstate(x);
 
-    EXPECT_NEAR(exact_dflux0[0], difference_dp_qvol0[0],
+    Eigen::Vector2d difference_dsource0 = 0.5*(Iso.source(x + h0) - Iso.source(x-h0));
+    Eigen::Vector2d exact_dsource0 = exact_dsource_matrix * h0;
+
+    EXPECT_NEAR(exact_dsource0[0], difference_dsource0[0],
                 finite_difference_threshold);
-    EXPECT_NEAR(exact_dflux0[1], difference_dp_qvol0[1],
+    EXPECT_NEAR(exact_dsource0[1], difference_dsource0[1],
                 finite_difference_threshold);
 
     Eigen::Vector2d h1(0, epsilon);
 
-    Eigen::Vector2d difference_dp_qvol1 = 0.5 * (Iso.p_qvol(x + h1) - Iso.p_qvol(x-h1));
-    Eigen::Vector2d exact_dflux1 = exact_dp_qvol_dstate_matrix * h1;
+    Eigen::Vector2d difference_dsource1 = 0.5 * (Iso.source(x + h1) - Iso.source(x-h1));
+    Eigen::Vector2d exact_dsource1 = exact_dsource_matrix * h1;
 
-    EXPECT_NEAR(exact_dflux1[0], difference_dp_qvol1[0],
+    EXPECT_NEAR(exact_dsource1[0], difference_dsource1[0],
                 finite_difference_threshold);
-    EXPECT_NEAR(exact_dflux1[1], difference_dp_qvol1[1],
+    EXPECT_NEAR(exact_dsource1[1], difference_dsource1[1],
                 finite_difference_threshold);
   }
+
+
+
 }
 
+TEST(testIsothermaleulerequation, p_qvol_and_state) {
+
+double Area = 2.0;
+double diameter = 3.5;
+double roughness = 1.0;
+
+ Model::Balancelaw::Isothermaleulerequation Iso(Area, diameter, roughness);
+ for (int i = -20; i != 21; ++i) {
+
+   double rho = std::abs(i + 1e-2);
+   double q = 10 * i;
+
+     Eigen::Vector2d state1(rho, q);
+     Eigen::Vector2d p_qvol_vector = Iso.p_qvol(state1);
+
+     Eigen::Vector2d state2 = Iso.state(p_qvol_vector);
+
+     EXPECT_DOUBLE_EQ(state1[0], state2[0]);
+     EXPECT_DOUBLE_EQ(state1[1], state2[1]);
+   }
+ }
+
+TEST(testIsothermaleulerequation, dp_qvol_dstate) {
+
+  double Area = 2.0;
+  double diameter = 3.5;
+  double roughness = 1.0;
+
+  Model::Balancelaw::Isothermaleulerequation Iso(Area, diameter, roughness);
+
+  for (int i = -20; i != 21; ++i) {
+
+    double rho = std::abs(i + 1e-2);
+    double q = 10 * i;
+
+      Eigen::Vector2d x(rho, q);
+      double epsilon = pow(DBL_EPSILON, 1.0 / 3.0);
+
+      double finite_difference_threshold = sqrt(epsilon);
+
+      Eigen::Vector2d h0(epsilon, 0);
+
+      Eigen::Matrix2d exact_dp_qvol_dstate_matrix = Iso.dp_qvol_dstate(x);
+
+      Eigen::Vector2d difference_dp_qvol0 =
+          0.5 * (Iso.p_qvol(x + h0) - Iso.p_qvol(x - h0));
+      Eigen::Vector2d exact_dflux0 = exact_dp_qvol_dstate_matrix * h0;
+
+      EXPECT_NEAR(exact_dflux0[0], difference_dp_qvol0[0],
+                  finite_difference_threshold);
+      EXPECT_NEAR(exact_dflux0[1], difference_dp_qvol0[1],
+                  finite_difference_threshold);
+
+      Eigen::Vector2d h1(0, epsilon);
+
+      Eigen::Vector2d difference_dp_qvol1 =
+          0.5 * (Iso.p_qvol(x + h1) - Iso.p_qvol(x - h1));
+      Eigen::Vector2d exact_dflux1 = exact_dp_qvol_dstate_matrix * h1;
+
+      EXPECT_NEAR(exact_dflux1[0], difference_dp_qvol1[0],
+                  finite_difference_threshold);
+      EXPECT_NEAR(exact_dflux1[1], difference_dp_qvol1[1],
+                  finite_difference_threshold);
+    }
+  }
 
 TEST(testIsothermaleulerequation, p_and_rho) {
 
@@ -248,7 +290,7 @@ TEST(testIsothermaleulerequation, dlambda_non_laminar_dRe) {
     double expected_dlambda = Iso.dSwamee_Jain_dRe(4000);
     EXPECT_NEAR(dlambda, expected_dlambda, 1e-9);
   }
-  for(int i=1;i!=20;++i){
+  for(int i=1;i!= 21;++i){
 
     double Re = 2000+ i * 100;
     double epsilon = pow(DBL_EPSILON, 1.0 / 3.0);
@@ -311,7 +353,7 @@ TEST(testIsothermaleulerequation, Swamee_Jain) {
 
   EXPECT_ANY_THROW(Iso.Swamee_Jain(Re0));
 
-  for (int i = 4; i != 10; ++i) {
+  for (int i = 4; i != 21; ++i) {
     double Re = i*1000;
 
     double lambda = Iso.Swamee_Jain( Re);
@@ -336,7 +378,7 @@ TEST(testIsothermaleulerequation, dSwamee_Jain_dRe) {
 
   EXPECT_ANY_THROW(Iso.Swamee_Jain(Re0));
 
-  for (int i = 5; i != 10; ++i) {
+  for (int i = 5; i != 21; ++i) {
     double Re = i * 1000;
     double epsilon = pow(DBL_EPSILON, 1.0 / 3.0);
     double h = epsilon;
