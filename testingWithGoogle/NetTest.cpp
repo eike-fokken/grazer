@@ -1,7 +1,7 @@
 #include "Net.hpp"
 #include "Boundaryvalue.hpp"
 #include "Edge.hpp"
-// #include "MockSubproblem.hpp"
+#include "MockSubproblem.hpp"
 #include "Node.hpp"
 #include "Problem.hpp"
 #include <Eigen/Dense>
@@ -17,38 +17,34 @@
 #include <Matrixhandler.hpp>
 
 
-namespace GrazerTest {
+// namespace GrazerTest {
 
-  class MockSubproblem : public Model::Subproblem {
+//   class MockSubproblem : public Model::Subproblem {
 
-  public:
-    MOCK_METHOD(void, evaluate,
-                ((Eigen::Ref<Eigen::VectorXd>),
-                 (double), (double), (Eigen::Ref<Eigen::VectorXd const> const &),
-                 (Eigen::Ref<Eigen::VectorXd const> const &)),
-                (const, override));
-    MOCK_METHOD(void, evaluate_state_derivative,
-                ((Aux::Matrixhandler *), (double), (double),
-                 (Eigen::Ref<Eigen::VectorXd const> const &last_state),
-                 (Eigen::Ref<Eigen::VectorXd const> const &new_state)),
-                (const,override));
-    MOCK_METHOD(int, reserve_indices, (int const next_free_index), (override));
-    MOCK_METHOD(void, display, (), (override, const));
-    MOCK_METHOD((void), set_initial_values,
-                (Eigen::Ref<Eigen::VectorXd>, nlohmann::ordered_json), (override));
-    MOCK_METHOD((void), save_values, (double, Eigen::Ref<Eigen::VectorXd>), (override));
-    MOCK_METHOD((void), print_to_files, (std::filesystem::path const &),
-                (override));
-  };
-} // namespace Model
-
-
+//   public:
+//     MOCK_METHOD(void, evaluate,
+//                 ((Eigen::Ref<Eigen::VectorXd>),
+//                  (double), (double), (Eigen::Ref<Eigen::VectorXd const> const &),
+//                  (Eigen::Ref<Eigen::VectorXd const> const &)),
+//                 (const, override));
+//     MOCK_METHOD(void, evaluate_state_derivative,
+//                 ((Aux::Matrixhandler *), (double), (double),
+//                  (Eigen::Ref<Eigen::VectorXd const> const &last_state),
+//                  (Eigen::Ref<Eigen::VectorXd const> const &new_state)),
+//                 (const,override));
+//     MOCK_METHOD(int, reserve_indices, (int const next_free_index), (override));
+//     MOCK_METHOD(void, display, (), (override, const));
+//     MOCK_METHOD((void), set_initial_values,
+//                 (Eigen::Ref<Eigen::VectorXd>, nlohmann::ordered_json), (override));
+//     MOCK_METHOD((void), save_values, (double, Eigen::Ref<Eigen::VectorXd>), (override));
+//     MOCK_METHOD((void), print_to_files, (std::filesystem::path const &),
+//                 (override));
+//   };
+// } // namespace Model
 
 
-struct NetTest : public ::testing ::Test {
-  virtual void SetUp() override {}
-  virtual void TearDown() override {}
-};
+
+
 
 TEST(testNet, test_NewNode_MakeEdgeBetween_ExistsEdgeBetween) {
 

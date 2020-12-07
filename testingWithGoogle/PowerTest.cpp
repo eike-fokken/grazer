@@ -14,10 +14,6 @@
 
 using json = nlohmann::ordered_json;
 
-struct PowerTest : public ::testing ::Test {
-  virtual void SetUp() override {}
-  virtual void TearDown() override {}
-};
 
 TEST(testPower, test_P_and_Q_1) {
 

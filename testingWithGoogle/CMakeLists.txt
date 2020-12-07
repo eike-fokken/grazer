@@ -29,6 +29,10 @@ add_executable(implicitboxscheme_test ImplicitboxschemeTest.cpp)
 target_link_libraries(implicitboxscheme_test PUBLIC balancelaw scheme)
 target_link_libraries(implicitboxscheme_test PUBLIC gtest gtest_main gmock)
 
+add_executable(gas_test GasTest.cpp)
+
+target_link_libraries(gas_test PUBLIC problemlayer power networkproblem network exception newton matrixhandler nlohmann_json power gas)
+target_link_libraries(gas_test PUBLIC gtest gtest_main gmock)
 
 
 add_library(testheader INTERFACE)
