@@ -52,3 +52,7 @@ add_test(
   NAME isothermaleulerequation_test
   COMMAND isothermaleulerequation_test
   )
+add_test(
+  NAME implicitboxscheme_test
+  COMMAND implicitboxscheme_test
+  )

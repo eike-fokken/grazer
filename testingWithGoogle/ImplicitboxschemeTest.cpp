@@ -4,14 +4,16 @@
 
 
 
-TEST(testImplicitboxschem, evaluate_point) {
+TEST(testImplicitboxscheme, evaluate_point) {
 
 
-  Model::Scheme::Implicitboxscheme scheme();
-  double Area = 2.0;
-  double diameter = 3.5;
-  double roughness = 1.0;
-  Model::Balancelaw::Isothermaleulerequation Iso(Area, diameter, roughness);
+  std::cout << __FILE__ << ":" <<__LINE__ << ": IMPLEMENT THIS TEST!" << std::endl;
+  throw;
+  // Model::Scheme::Implicitboxscheme scheme;
+  // double Area = 2.0;
+  // double diameter = 3.5;
+  // double roughness = 1.0;
+  // Model::Balancelaw::Isothermaleulerequation Iso(Area, diameter, roughness);
 
 
 }
