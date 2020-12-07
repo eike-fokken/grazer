@@ -13,7 +13,7 @@
 using json = nlohmann::ordered_json;
 
 
-TEST(testFlowboundarynode_Shortpipe, evaluate) {
+TEST(testFlowboundarynode_Shortpipe, evaluate_and_evaluate_state_derivative) {
 
   double flow0start = 88.0;
   double flow0end = 10.0;
@@ -85,60 +85,34 @@ TEST(testFlowboundarynode_Shortpipe, evaluate) {
   EXPECT_DOUBLE_EQ(rootvalues[1], pressure_start-pressure_end );
   EXPECT_DOUBLE_EQ(rootvalues[2], flow_start-flow_end );
 
-  // double last_time = 0.0;
-  // double new_time = 0.0;
-  // Eigen::VectorXd last_state(4);
-  // Eigen::VectorXd new_state(4);
-  // new_state << V1, phi1, V2, phi2;
+  Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
+  Aux::Triplethandler handler(&J);
 
-  // n1.evaluate(rootvalues, last_time, new_time, last_state, new_state);
-  // n2.evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  g0.evaluate_state_derivative(&handler, last_time, new_time, last_state,
+                               new_state);
+  g1.evaluate_state_derivative(&handler, last_time, new_time, last_state,
+                               new_state);
+  sp0.evaluate_state_derivative(&handler, last_time, new_time, last_state,new_state);
+  handler.set_matrix();
 
-  // EXPECT_DOUBLE_EQ(rootvalues[0], new_state[0] - V1_bd);
-  // EXPECT_DOUBLE_EQ(rootvalues[1], new_state[1] - phi1_bd);
-  // EXPECT_DOUBLE_EQ(rootvalues[2],
-  //                  -P2_bd + G2 * V2 * V2 +
-  //                      V2 * V1 *
-  //                          (Gt * cos(phi2 - phi1) + Bt * sin(phi2 - phi1)));
-  // EXPECT_DOUBLE_EQ(rootvalues[3],
-  //                  -Q2_bd - B2 * V2 * V2 +
-  //                      V2 * V1 *
-  //                          (Gt * sin(phi2 - phi1) - Bt * cos(phi2 - phi1)));
+  // std::cout << J;
 
-  // Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-  // Aux::Triplethandler handler(&J);
+  EXPECT_EQ(J.nonZeros(),6);
 
-  // n1.evaluate_state_derivative(&handler, last_time, new_time, last_state,
-  //                              new_state);
-  // n2.evaluate_state_derivative(&handler, last_time, new_time, last_state,
-  //                              new_state);
-  // handler.set_matrix();
+  Eigen::MatrixXd expected_J(new_state.size(), new_state.size());
 
-  // EXPECT_EQ(J.nonZeros(), 10);
-  // EXPECT_DOUBLE_EQ(J.coeff(0, 0), 1.0);
-  // EXPECT_DOUBLE_EQ(J.coeff(1, 1), 1.0);
+  expected_J <<  //
+    0, 1,  0,  0, //
+    1, 0, -1,  0, //
+    0, 1,  0, -1, //
+    0, 0,  0, -1 ;//
 
-  // EXPECT_DOUBLE_EQ(J.coeff(2, 0),
-  //                  V2 * (Gt * cos(phi2 - phi1) + Bt * sin(phi2 - phi1)));
-  // EXPECT_DOUBLE_EQ(J.coeff(2, 1),
-  //                  V1 * V2 * (Gt * sin(phi2 - phi1) - Bt * cos(phi2 - phi1)));
+  Eigen::SparseMatrix<double> sparse_expected = expected_J.sparseView();
 
-  // EXPECT_DOUBLE_EQ(J.coeff(2, 2), 2 * G2 * V2 + V1 * (Gt * cos(phi2 - phi1) +
-  //                                                     Bt * sin(phi2 - phi1)));
+  Eigen::SparseMatrix<double> difference = J-sparse_expected;
 
-  // EXPECT_DOUBLE_EQ(J.coeff(2, 3),
-  //                  V2 * V1 * (-Gt * sin(phi2 - phi1) + Bt * cos(phi2 - phi1)));
-
-  // EXPECT_DOUBLE_EQ(J.coeff(3, 0),
-  //                  V2 * (Gt * sin(phi2 - phi1) - Bt * cos(phi2 - phi1)));
-
-  // EXPECT_DOUBLE_EQ(J.coeff(3, 1),
-  //                  V2 * V1 * (-Gt * cos(phi2 - phi1) - Bt * sin(phi2 - phi1)));
-
-  // EXPECT_DOUBLE_EQ(J.coeff(3, 2), -2 * B2 * V2 + V1 * (Gt * sin(phi2 - phi1) -
-  //                                                      Bt * cos(phi2 - phi1)));
-  // EXPECT_DOUBLE_EQ(J.coeff(3, 3),
-  //                  V2 * V1 * (Gt * cos(phi2 - phi1) + Bt * sin(phi2 - phi1)));
+  auto max = difference.coeffs().maxCoeff();
+  EXPECT_DOUBLE_EQ(max, 0.0);
 }
 
 // TEST(testPower, test_P_and_Q_2) {
