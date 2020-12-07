@@ -96,7 +96,7 @@ int main(int argc, char **argv) {
                                               state2,
                                               state1);
     std::cout << "data read" << std::endl;
-    for (int i = 0; i != N + 1; ++i) {
+    for (int i = 1; i != N + 1; ++i) {
       new_time = i * delta_t;
       auto solstruct = solver.solve(state1, *p, false, last_time, new_time, state2);
       p->save_values(new_time, state1);

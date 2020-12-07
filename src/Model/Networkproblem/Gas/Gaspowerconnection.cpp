@@ -26,7 +26,7 @@ namespace Model::Networkproblem::Gas {
                                                      Eigen::Ref<Eigen::VectorXd const> const &, Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     int q_index = get_start_state_index() + 1;
     double q = new_state[q_index];
-    jacobianhandler->set_coefficient(q_index, q_index, dgenerated_power_dq(q));
+    jacobianhandler->set_coefficient(q_index, q_index, -dgenerated_power_dq(q));
     powerendnode->evaluate_P_derivative(q_index, jacobianhandler, new_state);
   }
 

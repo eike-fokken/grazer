@@ -125,7 +125,7 @@ namespace Model::Networkproblem::Power {
 
     for (auto &end_edge : get_ending_edges()) {
       auto line = dynamic_cast<Transmissionline const *>(end_edge);
-      if (!line) {std::cout << "no transmissionline!" <<std::endl;
+      if (!line) {// std::cout << "no transmissionline!" <<std::endl;
         continue;
       }
       double G_ik = line->get_G();
@@ -154,7 +154,7 @@ namespace Model::Networkproblem::Power {
     Q -= B_i * V_i * V_i;
     for (auto &start_edge : get_starting_edges()) {
       auto line = dynamic_cast<Transmissionline const *>(start_edge);
-      if (!line) {std::cout << "no transmissionline!" <<std::endl;
+      if (!line) {// std::cout << "no transmissionline!" <<std::endl;
         continue;
       }
       double G_ik = line->get_G();
@@ -170,7 +170,7 @@ namespace Model::Networkproblem::Power {
 
     for (auto &end_edge : get_ending_edges()) {
       auto line = dynamic_cast<Transmissionline const *>(end_edge);
-      if (!line) {std::cout << "no transmissionline!" <<std::endl;
+      if (!line) {// std::cout << "no transmissionline!" <<std::endl;
         continue;
       }
         double G_ik = line->get_G();
@@ -225,7 +225,7 @@ namespace Model::Networkproblem::Power {
 
     for (auto &end_edge : get_ending_edges()) {
       auto line = dynamic_cast<Transmissionline const *>(end_edge);
-      if (!line) {std::cout << "no transmissionline!" <<std::endl;
+      if (!line) {// std::cout << "no transmissionline!" <<std::endl;
         continue;
       }
       double G_ik = line->get_G();
@@ -265,7 +265,7 @@ namespace Model::Networkproblem::Power {
 
     for (auto &start_edge : get_starting_edges()) {
       auto line = dynamic_cast<Transmissionline const *>(start_edge);
-      if (!line) {std::cout << "no transmissionline!" <<std::endl;
+      if (!line) {// std::cout << "no transmissionline!" <<std::endl;
         continue;
       }
       double G_ik = line->get_G();
@@ -292,7 +292,7 @@ namespace Model::Networkproblem::Power {
 
     for (auto &end_edge : get_ending_edges()) {
       auto line = dynamic_cast<Transmissionline const *>(end_edge);
-      if (!line) {std::cout << "no transmissionline!" <<std::endl;
+      if (!line) {// std::cout << "no transmissionline!" <<std::endl;
         continue;
       }
       double G_ik = line->get_G();
