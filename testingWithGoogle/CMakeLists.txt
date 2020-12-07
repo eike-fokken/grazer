@@ -24,6 +24,12 @@ target_link_libraries(isothermaleulerequation_test PUBLIC balancelaw)
 target_link_libraries(isothermaleulerequation_test PUBLIC gtest gtest_main gmock)
 
 
+add_executable(implicitboxscheme_test ImplicitboxschemeTest.cpp)
+
+target_link_libraries(implicitboxscheme_test PUBLIC balancelaw scheme)
+target_link_libraries(implicitboxscheme_test PUBLIC gtest gtest_main gmock)
+
+
 
 add_library(testheader INTERFACE)
 target_link_libraries(testheader INTERFACE nlohmann_json matrixhandler problemlayer gtest gtest_main gmock)
