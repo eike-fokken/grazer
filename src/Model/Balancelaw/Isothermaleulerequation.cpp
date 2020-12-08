@@ -149,6 +149,12 @@ namespace Model::Balancelaw {
     return p/bar;
   }
 
+  double
+  Isothermaleulerequation::dp_bar_from_p_pascal_dp_pascal(double) const {
+    return 1.0/bar;
+  }
+
+
   Eigen::Vector2d Isothermaleulerequation::p_qvol_bar_from_p_qvol(Eigen::Vector2d const &p_qvol) const {
     double p = p_qvol[0];
     double q = p_qvol[1];
@@ -158,8 +164,15 @@ namespace Model::Balancelaw {
     return p_qvol_bar;
   }
 
-
-  
+  Eigen::Matrix2d Isothermaleulerequation::dp_qvol_bar_from_p_qvold_p_qvol(Eigen::Vector2d const &p_qvol) const {
+    double p_pascal = p_qvol[0];
+    Eigen::Matrix2d dp_qvol;
+    dp_qvol(0,0) = dp_bar_from_p_pascal_dp_pascal(p_pascal);
+    dp_qvol(0, 1) = 0.0;
+    dp_qvol(1, 0) = 0.0;
+    dp_qvol(1, 1) = 1.0;
+    return dp_qvol;
+  }
 
   double Isothermaleulerequation::p(double rho) const {
     double p;
