@@ -26,23 +26,22 @@ public:
   Eigen::Matrix2d dp_qvol_dstate(Eigen::Vector2d const &state) const;
 
   Eigen::Vector2d state(Eigen::Vector2d const & p_qvol) const;
-
   double p_pascal_from_p_bar(double p) const;
-
   Eigen::Vector2d p_qvol_from_p_qvol_bar(Eigen::Vector2d const &p_qvol_bar) const;
 
   double p_bar_from_p_pascal(double p) const ;
-
+  double dp_bar_from_p_pascal_dp_pascal(double p) const;
 
   Eigen::Vector2d p_qvol_bar_from_p_qvol(Eigen::Vector2d const &p_qvol) const;
+  Eigen::Matrix2d dp_qvol_bar_from_p_qvold_p_qvol(Eigen::Vector2d const &p_qvol) const ;
 
 
 
-  double p(double p) const;
+  double p(double rho) const;
   double dp_drho(double rho) const;
   double rho(double rho) const;
 
-private:
+
   double lambda_non_laminar(double Re) const;
   double dlambda_non_laminar_dRe(double Re) const;
   double Reynolds(double q) const;
@@ -51,6 +50,9 @@ private:
 
   double Swamee_Jain(double Re) const;
   double dSwamee_Jain_dRe(double Re) const;
+
+  double exact_turbulent_lambda(double Re) const;
+
 
   // These are physical constants except for the temperature T.
   // Later on it may be useful to change them to include other gases.
@@ -68,6 +70,7 @@ private:
 
   static constexpr double c_vac_squared { p_0 * T/(z_0*T_0*rho_0)};
 
+private:
 
   double const Area;
   double const diameter;

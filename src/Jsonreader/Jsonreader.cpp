@@ -1,3 +1,4 @@
+#include "Gaspowerconnection.hpp"
 #include "Networkproblem.hpp"
 #include <Edge.hpp>
 #include <Exception.hpp>
@@ -191,7 +192,7 @@ namespace Jsonreader {
 
       json allgasedges;
 
-      std::vector<std::string> gasedgetype( {"shortPipe", "controlValve", "turboCompressor", "pipe"});
+      std::vector<std::string> gasedgetype( {"shortPipe", "controlValve", "turboCompressor", "pipe", "gas2power"});
       for(auto & edgetype : gasedgetype) {
         for (auto & gasedge: topologyjson["connections"][edgetype]) {
           gasedge["type"] = edgetype;
@@ -245,6 +246,17 @@ namespace Jsonreader {
               std::unique_ptr<Model::Networkproblem::Gas::Shortpipe>(
                   new Model::Networkproblem::Gas::Shortpipe(
                       edge["id"], (*start).get(), (*end).get())));
+        } else if (edge["type"] == "gas2power") {
+          try{
+          edges.push_back(std::unique_ptr<Model::Networkproblem::Gas::Gaspowerconnection>(
+                                                                                 new Model::Networkproblem::Gas::Gaspowerconnection(edge["id"], (*start).get(),
+                                                                                                                                    (*end).get(),edge)));
+          } catch(...){
+            std::cout << __FILE__ << ":" << __LINE__
+                      << ": Failure to set up Gaspowerconnection with topology_json: " << edge 
+                      << std::endl;
+            throw;
+          }
         } else {
           gthrow({" unknown gas edge type: ", edge["type"], ", aborting."});
         }
@@ -259,7 +271,7 @@ namespace Jsonreader {
     return net;
     }
 
-  void set_initial_values(Eigen::VectorXd &new_state,
+  void set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
                           std::filesystem::path const &initial,
                           std::shared_ptr<Model::Problem> &problem) {
     json initialjson;

@@ -7,9 +7,9 @@ namespace Model::Networkproblem::Power {
   void Vphinode::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double // last_time
                           ,
                           double new_time,
-                          Eigen::VectorXd const & // last_state
+                          Eigen::Ref<Eigen::VectorXd const> const & // last_state
                           ,
-                          Eigen::VectorXd const &new_state) const {
+                          Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
     rootvalues[V_index] = new_state[V_index] - boundaryvalue(new_time)[0];
@@ -22,8 +22,8 @@ namespace Model::Networkproblem::Power {
                                            ,
                                            double // new_time
                                            ,
-                                           Eigen::VectorXd const &,
-                                           Eigen::VectorXd const & // new_state
+                                           Eigen::Ref<Eigen::VectorXd const> const &,
+                                           Eigen::Ref<Eigen::VectorXd const> const & // new_state
   ) const {
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;

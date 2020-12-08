@@ -32,20 +32,20 @@ namespace Model {
     int set_indices();
 
     void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-                  double new_time, Eigen::VectorXd const &last_state,
-                  Eigen::VectorXd const &new_state) const;
+                  double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
+                  Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
 
     void evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,
                                    double last_time, double new_time,
-                                   Eigen::VectorXd const &last_state,
-                                   Eigen::VectorXd const &new_state) const;
+                                   Eigen::Ref<Eigen::VectorXd const> const &last_state,
+                                   Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
 
-    void save_values(double time, Eigen::VectorXd &new_state);
+    void save_values(double time, Eigen::Ref<Eigen::VectorXd>new_state);
     /// As we have unique pointers, we can only give back a pointer to our
     /// subproblems.
     std::vector<Subproblem *> get_subproblems() const;
 
-    void set_initial_values(Eigen::VectorXd &new_state,
+    void set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
                             nlohmann::ordered_json initialjson);
 
     void print_to_files();

@@ -29,8 +29,8 @@ namespace Model::Networkproblem::Gas {
 
 
   void Pipe::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-                double new_time, Eigen::VectorXd const &last_state,
-                Eigen::VectorXd const &new_state) const {
+                double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
+                Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     for (int i = get_equation_start_index(); i!=get_equation_after_index();i+=2){
 
       Eigen::Ref<Eigen::Vector2d const> const  last_u_jm1 = last_state.segment<2>(i - 1);
@@ -47,8 +47,8 @@ namespace Model::Networkproblem::Gas {
 
   void Pipe::evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,
                                        double last_time, double new_time,
-                                       Eigen::VectorXd const &last_state,
-                                       Eigen::VectorXd const &new_state) const {
+                                       Eigen::Ref<Eigen::VectorXd const> const &last_state,
+                                       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     for (int i = get_equation_start_index(); i != get_equation_after_index();
          i += 2) {
       // maybe use Eigen::Ref here to avoid copies.
@@ -119,7 +119,7 @@ namespace Model::Networkproblem::Gas {
 
 
 
-  void Pipe::save_values(double time, Eigen::VectorXd const &state) {
+  void Pipe::save_values(double time, Eigen::Ref<Eigen::VectorXd const> const &state) {
     std::map<double, double> pressure_map;
     std::map<double, double> flow_map;
 
@@ -138,7 +138,7 @@ namespace Model::Networkproblem::Gas {
 
   }
 
-  void Pipe::set_initial_values(Eigen::VectorXd &new_state,
+  void Pipe::set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
                                 nlohmann::ordered_json initial_json) {
     Initialvalue<Pipe,2> initialvalues;
     initialvalues.set_initial_condition(initial_json);
@@ -160,20 +160,26 @@ namespace Model::Networkproblem::Gas {
 
 
   Eigen::Vector2d
-  Pipe::get_boundary_p_qvol(int direction, Eigen::VectorXd const &state) const {
-    Eigen::Vector2d b_state = get_boundary_state( direction, state);
-
-    return bl.p_qvol(b_state);
+  Pipe::get_boundary_p_qvol_bar(int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const {
+    Eigen::Vector2d b_state = get_boundary_state(direction, state);
+    Eigen::Vector2d p_qvol = bl.p_qvol(b_state);
+    return bl.p_qvol_bar_from_p_qvol(p_qvol);
   }
 
   void Pipe::dboundary_p_qvol_dstate(int direction,
                                Aux::Matrixhandler *jacobianhandler,
                                Eigen::RowVector2d function_derivative,
                                int rootvalues_index,
-                                     Eigen::VectorXd const &state) const {
+                                     Eigen::Ref<Eigen::VectorXd const> const &state) const {
     Eigen::RowVector2d derivative;
-    derivative = function_derivative *
-                 bl.dp_qvol_dstate(get_boundary_state(direction, state));
+
+    Eigen::Vector2d p_qvol = bl.p_qvol(state);
+    Eigen::Matrix2d dp_qvol_dstate = bl.dp_qvol_dstate(get_boundary_state(direction,state));
+    Eigen::Matrix2d dpqvolbar_dpqvol = bl.dp_qvol_bar_from_p_qvold_p_qvol(p_qvol);
+
+    Eigen::Matrix2d dpqvol_bar_dstate = dpqvolbar_dpqvol*dp_qvol_dstate;
+    derivative = function_derivative * dpqvol_bar_dstate;
+
     int rho_index = get_boundary_state_index(direction);
     int q_index = rho_index + 1;
     jacobianhandler->set_coefficient(rootvalues_index, rho_index,

@@ -6,14 +6,14 @@
 namespace Model::Networkproblem::Gas {
 
   Flowboundarynode::Flowboundarynode(std::string _id, nlohmann::ordered_json boundary_json,
-                 nlohmann::ordered_json topology_json)
+                 nlohmann::ordered_json )
     : Gasnode(_id) {
     boundaryvalue.set_boundary_condition(boundary_json);
   }
 
   void Flowboundarynode::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double ,
-                double new_time, Eigen::VectorXd const &,
-                Eigen::VectorXd const &new_state) const{
+                double new_time, Eigen::Ref<Eigen::VectorXd const> const &,
+                Eigen::Ref<Eigen::VectorXd const> const &new_state) const{
 
     if(directed_attached_gas_edges.empty()){ return; }
 
@@ -22,8 +22,8 @@ namespace Model::Networkproblem::Gas {
 
   void Flowboundarynode::evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,
                                  double , double ,
-                                 Eigen::VectorXd const &,
-                                 Eigen::VectorXd const &new_state) const{
+                                 Eigen::Ref<Eigen::VectorXd const> const &,
+                                 Eigen::Ref<Eigen::VectorXd const> const &new_state) const{
     if(directed_attached_gas_edges.empty()){ return; }
     evaluate_flow_node_derivative(jacobianhandler,new_state);
   }
