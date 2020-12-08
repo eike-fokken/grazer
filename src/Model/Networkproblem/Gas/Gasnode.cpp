@@ -26,7 +26,9 @@ namespace Model::Networkproblem::Gas {
     int last_direction = directed_attached_gas_edges.back().first;
     int last_equation_index = directed_attached_gas_edges.back().second->give_away_boundary_index(last_direction);
     //std::cout << "-prescribed qvol: " << -prescribed_qvol <<std::endl;
-    rootvalues[last_equation_index] = - prescribed_qvol;
+
+    // prescribed boundary condition is like an attached pipe ending at this node...
+    rootvalues[last_equation_index] = -1.0* prescribed_qvol; 
     rootvalues[last_equation_index] += dir0*q0;
     // std::cout << "rootvalues at " << last_equation_index <<":"<< rootvalues[last_equation_index] <<std::endl;
     // std::cout << "number of gas edges: " << directed_attached_gas_edges.size() <<std::endl;
@@ -79,16 +81,23 @@ namespace Model::Networkproblem::Gas {
       if(edge0==edgelast){return;}
 
       // In all other cases we now have to make pressure derivatives and the other flow derivatives:
+
+
+      // first edge is special (sets only one p-derivative)
       Eigen::RowVector2d dF_0_dpq_0(-1.0,0.0);
       int old_equation_index = edge0->give_away_boundary_index(dir0);
+      
       edge0->dboundary_p_qvol_dstate(dir0,jacobianhandler, dF_0_dpq_0, old_equation_index, state);
 
-    for(auto it=std::next(directed_attached_gas_edges.begin());it!=directed_attached_gas_edges.end();++it){
+      //first and last attached edge are special:
+      auto second_iterator = std::next(directed_attached_gas_edges.begin());
+      auto last_iterator = std::prev(directed_attached_gas_edges.end());
+    for(auto it=second_iterator;it!=last_iterator;++it){
       int direction=it->first;
       Gasedge *edge = it->second;
 
       int current_equation_index = edge->give_away_boundary_index(direction);
-      Eigen::RowVector2d dF_old_dpq_now(1.0,0.0);
+      Eigen::RowVector2d dF_old_dpq_now(1.0,0.0);  
       Eigen::RowVector2d dF_now_dpq_now(-1.0,0.0);
       Eigen::RowVector2d dF_last_dpq_now(0.0, direction);
 
@@ -96,11 +105,13 @@ namespace Model::Networkproblem::Gas {
       edge->dboundary_p_qvol_dstate(direction,jacobianhandler, dF_old_dpq_now, old_equation_index, state);
       edge->dboundary_p_qvol_dstate(direction,jacobianhandler, dF_now_dpq_now, current_equation_index, state);
       edge->dboundary_p_qvol_dstate(direction,jacobianhandler, dF_last_dpq_now, last_equation_index, state);
-
       old_equation_index=current_equation_index;
-
     }
-
+    //last edge:
+    Eigen::RowVector2d dF_old_dpq_last(1.0,0.0);
+    edgelast->dboundary_p_qvol_dstate(dirlast,jacobianhandler, dF_old_dpq_last, old_equation_index, state);
+    Eigen::RowVector2d dF_last_dpq_last(0.0, dirlast);
+    edgelast->dboundary_p_qvol_dstate(dirlast,jacobianhandler, dF_last_dpq_last, last_equation_index, state);
   }
 
   void Gasnode::evaluate_pressure_node_derivative(Aux::Matrixhandler * jacobianhandler, Eigen::Ref<Eigen::VectorXd const> const & state ) const {
