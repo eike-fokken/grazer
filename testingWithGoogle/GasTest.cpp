@@ -123,9 +123,6 @@ TEST(testFlowboundarynode_Shortpipe, Flowboundarynode_multiple_shortpipes) {
   double flow0start = 88.0;
   double flow0end = 10.0;
 
-  // double flow1start = -23.0;
-  // double flow1end = -440.0;
-
   double flow2start = -23.0;
   double flow2end = -440.0;
 
@@ -139,12 +136,6 @@ TEST(testFlowboundarynode_Shortpipe, Flowboundarynode_multiple_shortpipes) {
                                           {"values", json::array({flow0start})}},{{"time", 100.},{"values", json::array({flow0end})}}})}};
 
   //std::cout << bd_json0 <<std::endl;
-  // json bd_json1 = {
-  //                  {"id", "innode1"},
-  //                  {"type", "flow"},
-  //                  {"data", json::array({{{"time", 0.},
-  //                                         {"values", json::array({flow1start})}},{{"time", 100.},{"values", json::array({flow1end})}}})}};
-  //std::cout << bd_json1<<std::endl;
 
   json bd_json2 = {
                    {"id", "gasnode2"},
@@ -152,6 +143,8 @@ TEST(testFlowboundarynode_Shortpipe, Flowboundarynode_multiple_shortpipes) {
                    {"data", json::array({{{"time", 0.},
                                           {"values", json::array({flow2start})}},{{"time", 100.},{"values", json::array({flow2end})}}})}};
   //std::cout << bd_json1<<std::endl;
+
+
 
   double sp0_pressure_start = 810;
   double sp0_flow_start = -4;
@@ -196,7 +189,6 @@ TEST(testFlowboundarynode_Shortpipe, Flowboundarynode_multiple_shortpipes) {
   auto c = g2.set_indices(b);
   auto d = sp0.set_indices(c);
   auto e = sp1.set_indices(d);
-
   double last_time = 0.0;
   double new_time = 0.0;
   Eigen::VectorXd rootvalues(e);
@@ -205,36 +197,35 @@ TEST(testFlowboundarynode_Shortpipe, Flowboundarynode_multiple_shortpipes) {
   Eigen::VectorXd new_state(e);
 
   sp0.set_initial_values(new_state, sp0_initial);
-  std::cout << "Initial conditions sp0:" << std::endl;
-  std::cout << new_state <<std::endl;
+  // std::cout << "Initial conditions sp0:" << std::endl;
+  // std::cout << new_state <<std::endl;
 
   sp1.set_initial_values(new_state, sp1_initial);
-  std::cout << "Initial conditions sp1:" << std::endl;
-  std::cout << new_state <<std::endl;
-
+  // std::cout << "Initial conditions sp1:" << std::endl;
+  // std::cout << new_state <<std::endl;
 
   g0.evaluate(rootvalues, last_time, new_time, last_state, new_state);
-  std::cout << "Evaluation  g0:" << std::endl;
-  std::cout << rootvalues << std::endl;
+  // std::cout << "Evaluation  g0:" << std::endl;
+  // std::cout << rootvalues << std::endl;
 
 
   g1.evaluate(rootvalues, last_time, new_time, last_state, new_state);
-  std::cout << "Evaluation  g1:" << std::endl;
-  std::cout << rootvalues << std::endl;
+  // std::cout << "Evaluation  g1:" << std::endl;
+  // std::cout << rootvalues << std::endl;
 
   g2.evaluate(rootvalues, last_time, new_time, last_state, new_state);
-  std::cout << "Evaluation  g2:" << std::endl;
-  std::cout << rootvalues << std::endl;
-
+  // std::cout << "Evaluation  g2:" << std::endl;
+  // std::cout << rootvalues << std::endl;
 
 
   sp0.evaluate(rootvalues, last_time, new_time, last_state, new_state);
-  std::cout << "Evaluation shortpipe0:" << std::endl;
-  std::cout << rootvalues << std::endl;
+  // std::cout << "Evaluation shortpipe0:" << std::endl;
+  // std::cout << rootvalues << std::endl;
 
   sp1.evaluate(rootvalues, last_time, new_time, last_state, new_state);
-  std::cout << "Evaluation shortpipe1:" << std::endl;
-  std::cout << rootvalues << std::endl;
+  // std::cout << "Evaluation shortpipe1:" << std::endl;
+  // std::cout << rootvalues << std::endl;
+
 
   // inner node (multiple pipes connected)
   EXPECT_DOUBLE_EQ(rootvalues[4], sp0_pressure_end-sp1_pressure_start );
@@ -257,221 +248,192 @@ TEST(testFlowboundarynode_Shortpipe, Flowboundarynode_multiple_shortpipes) {
 
   handler.set_matrix();
 
-  std::cout << J;
+  // std::cout << J;
 
   EXPECT_EQ(J.nonZeros(),14);
-
-  //now one more attached short edge and maybe pressure boundary nodes.
-
-  // Eigen::MatrixXd expected_J(new_state.size(), new_state.size());
-
-  // expected_J <<  //
-  //   0, 1,  0,  0, //
-  //   1, 0, -1,  0, //
-  //   0, 1,  0, -1, //
-  //   0, 0,  0, -1 ;//
-
-  // Eigen::SparseMatrix<double> sparse_expected = expected_J.sparseView();
-
-  // Eigen::SparseMatrix<double> difference = J-sparse_expected;
-
-  // auto max = difference.coeffs().maxCoeff();
-  // EXPECT_DOUBLE_EQ(max, 0.0);
 }
 
-// TEST(testPower, test_P_and_Q_2) {
 
-//   double V1_bd = 8.0;
-//   double phi1_bd = 6.0;
-//   double G1 = 3.0;
-//   double B1 = -5.0;
+TEST(testFlowboundarynode_Shortpipe, Flowboundarynode_three_shortpipes) {
 
-//   double P2_bd = 3.0;
-//   double Q2_bd = 7.0;
-//   double G2 = 2.0;
-//   double B2 = 2.0;
+  double flow0start = 88.0;
+  double flow0end = 10.0;
 
-//   double Gt = 2.0;
-//   double Bt = 4.0;
+  double flow3start = -723.0;
+  double flow3end = -640.0;
 
-//   double V1 = 1.0;
-//   double phi1 = 2.0;
-//   double V2 = 3.0;
-//   double phi2 = 4.0;
-//   // double V1_bd = 8.0;
-//   // double phi1_bd = 1.0;
-//   // double G1 = 1.0;
-//   // double B1 = 1.0;
+  double flow2start = -23.0;
+  double flow2end = -440.0;
 
-//   // double P2_bd = 3.0;
-//   // double Q2_bd = 7.0;
-//   // double G2 = 2.0;
-//   // double B2 = 2.0;
 
-//   // double Gt = 2.0;
-//   // double Bt = 4.0;
+  json flow_topology={};
 
-//   // double V1 = 1.0;
-//   // double phi1 = 1.0;
-//   // double V2 = 1.0;
-//   // double phi2 = 1.0;
+  json bd_json0 = {
+                   {"id", "gasnode0"},
+                   {"type", "flow"},
+                   {"data", json::array({{{"time", 0.},
+                                          {"values", json::array({flow0start})}},{{"time", 100.},{"values", json::array({flow0end})}}})}};
 
-//   json bd_json1 = {
-//       {"id", "N1"},
-//       {"type", "Vphi"},
-//       {"data", json::array({{{"time", 0.},
-//                              {"values", json::array({V1_bd, phi1_bd})}}})}};
-//   json bd_json2 = {
-//       {"id", "N2"},
-//       {"type", "PQ"},
-//       {"data",
-//        json::array({{{"time", 0.}, {"values", json::array({P2_bd, Q2_bd})}}})}};
+  //std::cout << bd_json0 <<std::endl;
 
-//   Model::Networkproblem::Power::Vphinode n1("N1", bd_json1, G1, B1);
-//   Model::Networkproblem::Power::PQnode n2("N2", bd_json2, G2, B2);
-//   Model::Networkproblem::Power::Transmissionline t("T1", &n2, &n1, Gt, Bt);
+  json bd_json2 = {
+                   {"id", "gasnode2"},
+                   {"type", "flow"},
+                   {"data", json::array({{{"time", 0.},
+                                          {"values", json::array({flow2start})}},{{"time", 100.},{"values", json::array({flow2end})}}})}};
+  //std::cout << bd_json1<<std::endl;
 
-//   auto a = n1.set_indices(0);
-//   n2.set_indices(a);
+  json bd_json3 = {
+                   {"id", "gasnode3"},
+                   {"type", "flow"},
+                   {"data", json::array({{{"time", 0.},
+                                          {"values", json::array({flow3start})}},{{"time", 100.},{"values", json::array({flow3end})}}})}};
+  //std::cout << bd_json1<<std::endl;
 
-//   Eigen::VectorXd rootvalues(4);
-//   double last_time = 0.0;
-//   double new_time = 0.0;
-//   Eigen::VectorXd last_state(4);
-//   Eigen::VectorXd new_state(4);
-//   new_state << V1, phi1, V2, phi2;
+ 
 
-//   n1.evaluate(rootvalues, last_time, new_time, last_state, new_state);
-//   n2.evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  double sp0_pressure_start = 810;
+  double sp0_flow_start = -4;
+  double sp0_pressure_end = 125;
+  double sp0_flow_end = 1000;
+  json sp0_initial = {
+      {"id", "node_4_ld1"},
+      {"data",
+       json::array(
+           {{{"x", 0.0},
+             {"value", json::array({sp0_pressure_start, sp0_flow_start})}},
+            {{"x", 1.0},
+             {"value", json::array({sp0_pressure_end, sp0_flow_end})}}})}};
+  //std::cout << sp0_initial<<std::endl;
 
-//   EXPECT_DOUBLE_EQ(rootvalues[0], new_state[0] - V1_bd);
-//   EXPECT_DOUBLE_EQ(rootvalues[1], new_state[1] - phi1_bd);
-//   EXPECT_DOUBLE_EQ(rootvalues[2],
-//                    -P2_bd + G2 * V2 * V2 +
-//                        V2 * V1 *
-//                            (Gt * cos(phi2 - phi1) + Bt * sin(phi2 - phi1)));
-//   EXPECT_DOUBLE_EQ(rootvalues[3],
-//                    -Q2_bd - B2 * V2 * V2 +
-//                        V2 * V1 *
-//                            (Gt * sin(phi2 - phi1) - Bt * cos(phi2 - phi1)));
 
-//   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-//   Aux::Triplethandler handler(&J);
+  double sp1_pressure_start = 811;
+  double sp1_flow_start = -8;
+  double sp1_pressure_end = 131;
+  double sp1_flow_end = 1111;
 
-//   n1.evaluate_state_derivative(&handler, last_time, new_time, last_state,
-//                                new_state);
-//   n2.evaluate_state_derivative(&handler, last_time, new_time, last_state,
-//                                new_state);
-//   handler.set_matrix();
+  json sp1_initial = {
+      {"id", "node_4_ld1"},
+      {"data",
+       json::array(
+           {{{"x", 0.0},
+             {"value", json::array({sp1_pressure_start, sp1_flow_start})}},
+            {{"x", 1.0},
+             {"value", json::array({sp1_pressure_end, sp1_flow_end})}}})}};
+  //std::cout << sp1_initial<<std::endl;
 
-//   EXPECT_EQ(J.nonZeros(), 10);
+  double sp2_pressure_start = 822;
+  double sp2_flow_start = -20;
+  double sp2_pressure_end = 232;
+  double sp2_flow_end = 2222;
 
-//   EXPECT_DOUBLE_EQ(J.coeff(0, 0), 1.0);
-//   EXPECT_DOUBLE_EQ(J.coeff(1, 1), 1.0);
+  json sp2_initial = {
+                      {"id", "node_4_ld2"},
+                      {"data",
+                       json::array(
+                                   {{{"x", 0.0},
+                                     {"value", json::array({sp2_pressure_start, sp2_flow_start})}},
+                                    {{"x", 1.0},
+                                     {"value", json::array({sp2_pressure_end, sp2_flow_end})}}})}};
+  //std::cout << sp2_initial<<std::endl;
 
-//   EXPECT_DOUBLE_EQ(J.coeff(2, 0),
-//                    V2 * (Gt * cos(phi2 - phi1) + Bt * sin(phi2 - phi1)));
-//   EXPECT_DOUBLE_EQ(J.coeff(2, 1),
-//                    V1 * V2 * (Gt * sin(phi2 - phi1) - Bt * cos(phi2 - phi1)));
 
-//   EXPECT_DOUBLE_EQ(J.coeff(2, 2), 2 * G2 * V2 + V1 * (Gt * cos(phi2 - phi1) +
-//                                                       Bt * sin(phi2 - phi1)));
+  Model::Networkproblem::Gas::Flowboundarynode g0("gasnode0", bd_json0, flow_topology);
+  Model::Networkproblem::Gas::Innode g1("innode1");
+  Model::Networkproblem::Gas::Flowboundarynode g2("gasnode2", bd_json2, flow_topology);
+  Model::Networkproblem::Gas::Pressureboundarynode g3("gasnode3", bd_json3, flow_topology);
+  Model::Networkproblem::Gas::Shortpipe sp0("SP0", &g0, &g1);
+  Model::Networkproblem::Gas::Shortpipe sp1("SP1", &g1, &g2);
+  Model::Networkproblem::Gas::Shortpipe sp2("SP1", &g1, &g3);
 
-//   EXPECT_DOUBLE_EQ(J.coeff(2, 3),
-//                    V2 * V1 * (-Gt * sin(phi2 - phi1) + Bt * cos(phi2 - phi1)));
+  auto a = g0.set_indices(0);
+  auto b = g1.set_indices(a);
+  auto c = g2.set_indices(b);
+  auto c2 = g3.set_indices(c);
+  auto d = sp0.set_indices(c2);
+  auto f = sp1.set_indices(d);
+  auto e = sp2.set_indices(f);
+  double last_time = 0.0;
+  double new_time = 0.0;
+  Eigen::VectorXd rootvalues(e);
+  rootvalues.setZero();
+  Eigen::VectorXd last_state(e);
+  Eigen::VectorXd new_state(e);
 
-//   EXPECT_DOUBLE_EQ(J.coeff(3, 0),
-//                    V2 * (Gt * sin(phi2 - phi1) - Bt * cos(phi2 - phi1)));
+  sp0.set_initial_values(new_state, sp0_initial);
+  // std::cout << "Initial conditions sp0:" << std::endl;
+  // std::cout << new_state <<std::endl;
 
-//   EXPECT_DOUBLE_EQ(J.coeff(3, 1),
-//                    V2 * V1 * (-Gt * cos(phi2 - phi1) - Bt * sin(phi2 - phi1)));
+  sp1.set_initial_values(new_state, sp1_initial);
+  // std::cout << "Initial conditions sp1:" << std::endl;
+  // std::cout << new_state <<std::endl;
 
-//   EXPECT_DOUBLE_EQ(J.coeff(3, 2), -2 * B2 * V2 + V1 * (Gt * sin(phi2 - phi1) -
-//                                                        Bt * cos(phi2 - phi1)));
-//   EXPECT_DOUBLE_EQ(J.coeff(3, 3),
-//                    V2 * V1 * (Gt * cos(phi2 - phi1) + Bt * sin(phi2 - phi1)));
-// }
+  sp2.set_initial_values(new_state, sp2_initial);
+  // std::cout << "Initial conditions sp2:" << std::endl;
+  // std::cout << new_state <<std::endl;
 
-// TEST(testPower, test_PV) {
 
-//   double V1_bd = 8.0;
-//   double phi1_bd = 6.0;
-//   double G1 = 3.0;
-//   double B1 = -5.0;
+  g0.evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // std::cout << "Evaluation  g0:" << std::endl;
+  // std::cout << rootvalues << std::endl;
 
-//   double P2_bd = 3.0;
-//   double V2_bd = 7.0;
-//   double G2 = 2.0;
-//   double B2 = 2.0;
 
-//   double Gt = 2.0;
-//   double Bt = 4.0;
+  g1.evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // std::cout << "Evaluation  g1:" << std::endl;
+  // std::cout << rootvalues << std::endl;
 
-//   double V1 = 1.0;
-//   double phi1 = 2.0;
-//   double V2 = 3.0;
-//   double phi2 = 4.0;
+  g2.evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // std::cout << "Evaluation  g2:" << std::endl;
+  // std::cout << rootvalues << std::endl;
 
-//   json bd_json1 = {
-//       {"id", "N1"},
-//       {"type", "Vphi"},
-//       {"data", json::array({{{"time", 0.},
-//                              {"values", json::array({V1_bd, phi1_bd})}}})}};
-//   json bd_json2 = {
-//       {"id", "N2"},
-//       {"type", "PV"},
-//       {"data",
-//        json::array({{{"time", 0.}, {"values", json::array({P2_bd, V2_bd})}}})}};
+  g3.evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // std::cout << "Evaluation  g3:" << std::endl;
+  // std::cout << rootvalues << std::endl;
 
-//   Model::Networkproblem::Power::Vphinode n1("N1", bd_json1, G1, B1);
-//   Model::Networkproblem::Power::PVnode n2("N2", bd_json2, G2, B2);
-//   Model::Networkproblem::Power::Transmissionline t("T1", &n2, &n1, Gt, Bt);
 
-//   auto a = n1.set_indices(0);
-//   n2.set_indices(a);
 
-//   Eigen::VectorXd rootvalues(4);
-//   double last_time = 0.0;
-//   double new_time = 0.0;
-//   Eigen::VectorXd last_state(4);
-//   Eigen::VectorXd new_state(4);
-//   new_state << V1, phi1, V2, phi2;
+  sp0.evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // std::cout << "Evaluation shortpipe0:" << std::endl;
+  // std::cout << rootvalues << std::endl;
 
-//   n1.evaluate(rootvalues, last_time, new_time, last_state, new_state);
-//   n2.evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  sp1.evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // std::cout << "Evaluation shortpipe1:" << std::endl;
+  // std::cout << rootvalues << std::endl;
 
-//   EXPECT_DOUBLE_EQ(rootvalues[0], new_state[0] - V1_bd);
-//   EXPECT_DOUBLE_EQ(rootvalues[1], new_state[1] - phi1_bd);
-//   EXPECT_DOUBLE_EQ(rootvalues[2],
-//                    -P2_bd + G2 * V2 * V2 +
-//                        V2 * V1 *
-//                            (Gt * cos(phi2 - phi1) + Bt * sin(phi2 - phi1)));
-//   EXPECT_DOUBLE_EQ(rootvalues[3], new_state[2] - V2_bd);
+  sp2.evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // std::cout << "Evaluation shortpipe2:" << std::endl;
+  // std::cout << rootvalues << std::endl;
 
-//   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-//   Aux::Triplethandler handler(&J);
+  // inner node (multiple pipes connected)
+  
 
-//   n1.evaluate_state_derivative(&handler, last_time, new_time, last_state,
-//                                new_state);
-//   n2.evaluate_state_derivative(&handler, last_time, new_time, last_state,
-//                                new_state);
-//   handler.set_matrix();
+  Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
+  J.setZero();
+  Aux::Triplethandler handler(&J);
 
-//   EXPECT_EQ(J.nonZeros(), 7);
+  g0.evaluate_state_derivative(&handler, last_time, new_time, last_state,
+                               new_state);
+  g1.evaluate_state_derivative(&handler, last_time, new_time, last_state,
+                               new_state);
+  g2.evaluate_state_derivative(&handler, last_time, new_time, last_state,
+                               new_state);
+  g3.evaluate_state_derivative(&handler, last_time, new_time, last_state,
+                               new_state);
+  sp0.evaluate_state_derivative(&handler, last_time, new_time, last_state,new_state);
+  sp1.evaluate_state_derivative(&handler, last_time, new_time, last_state,new_state);
+  sp2.evaluate_state_derivative(&handler, last_time, new_time, last_state,new_state);
 
-//   EXPECT_DOUBLE_EQ(J.coeff(0, 0), 1.0);
-//   EXPECT_DOUBLE_EQ(J.coeff(1, 1), 1.0);
+  handler.set_matrix();
 
-//   EXPECT_DOUBLE_EQ(J.coeff(2, 0),
-//                    V2 * (Gt * cos(phi2 - phi1) + Bt * sin(phi2 - phi1)));
-//   EXPECT_DOUBLE_EQ(J.coeff(2, 1),
-//                    V1 * V2 * (Gt * sin(phi2 - phi1) - Bt * cos(phi2 - phi1)));
+  // std::cout << J << std::endl;
 
-//   EXPECT_DOUBLE_EQ(J.coeff(2, 2), 2 * G2 * V2 + V1 * (Gt * cos(phi2 - phi1) +
-//                                                       Bt * sin(phi2 - phi1)));
+  // shortpipes: 3 * 4
+  // outer nodes: 3
+  // inner node flow: 3
+  // inner node pressure: 4
+  EXPECT_EQ(J.nonZeros(),3*4+3+3+4);
 
-//   EXPECT_DOUBLE_EQ(J.coeff(2, 3),
-//                    V2 * V1 * (-Gt * sin(phi2 - phi1) + Bt * cos(phi2 - phi1)));
-
-//   EXPECT_DOUBLE_EQ(J.coeff(3, 2), 1.0);
-// }
+  Eigen::MatrixXd jd = J;
+  // std::cout << jd.inverse().sparseView()<< std::endl;
+  std::cout <<  "\033[1;31mMaybe also test evaluate in this multi-edge setting.\033[0m\n" <<std::endl;
+}
