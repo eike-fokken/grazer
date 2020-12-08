@@ -116,7 +116,7 @@ namespace Model::Networkproblem::Gas {
       }
   }
 
-  Eigen::Vector2d Shortpipe::get_boundary_p_qvol(int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const {
+  Eigen::Vector2d Shortpipe::get_boundary_p_qvol_bar(int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const {
     return get_boundary_state(direction,state);
   }
 

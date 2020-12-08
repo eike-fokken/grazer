@@ -125,7 +125,7 @@ namespace Model::Networkproblem::Gas {
     }
   }
 
-  Eigen::Vector2d Gaspowerconnection::get_boundary_p_qvol(
+  Eigen::Vector2d Gaspowerconnection::get_boundary_p_qvol_bar(
       int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const {
     return get_boundary_state(direction, state);
   }

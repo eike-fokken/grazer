@@ -31,7 +31,7 @@ namespace Model::Networkproblem::Gas {
                             nlohmann::ordered_json initial_json) override;
 
 
-    Eigen::Vector2d get_boundary_p_qvol(int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const override;
+    Eigen::Vector2d get_boundary_p_qvol_bar(int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const override;
 
 
     void dboundary_p_qvol_dstate(int direction, Aux::Matrixhandler * jacobianhandler, Eigen::RowVector2d function_derivative, int rootvalues_index, Eigen::Ref<Eigen::VectorXd const> const &state) const override;

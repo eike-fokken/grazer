@@ -12,7 +12,7 @@ namespace Model::Networkproblem::Gas {
 
     if(directed_attached_gas_edges.empty()){ return; }
     auto [dir0,edge0] = directed_attached_gas_edges.front();
-    auto p_qvol0 = edge0->get_boundary_p_qvol(dir0,state);
+    auto p_qvol0 = edge0->get_boundary_p_qvol_bar(dir0,state);
     auto p0 = p_qvol0[0];
     auto q0 = p_qvol0[1];
     // std::cout << "dir0: " << dir0 <<std::endl;
@@ -33,7 +33,7 @@ namespace Model::Networkproblem::Gas {
     for(auto it=std::next(directed_attached_gas_edges.begin());it!=directed_attached_gas_edges.end();++it){
       int direction=it->first;
       Gasedge *edge = it->second;
-      auto current_p_qvol = edge->get_boundary_p_qvol(direction,state);
+      auto current_p_qvol = edge->get_boundary_p_qvol_bar(direction,state);
       auto current_p=current_p_qvol[0];
       auto current_qvol=current_p_qvol[1];
       rootvalues[old_equation_index] = current_p-old_p;
@@ -52,7 +52,7 @@ namespace Model::Networkproblem::Gas {
     if(directed_attached_gas_edges.empty()){ return; }
 
     for(auto & [direction,edge] : directed_attached_gas_edges){
-      auto current_p_qvol = edge->get_boundary_p_qvol(direction,state);
+      auto current_p_qvol = edge->get_boundary_p_qvol_bar(direction,state);
       double current_p=current_p_qvol[0];
       int equation_index = edge->give_away_boundary_index(direction);
       rootvalues[equation_index] = current_p - prescribed_p;

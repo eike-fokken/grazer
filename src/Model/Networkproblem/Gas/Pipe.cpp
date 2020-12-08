@@ -160,10 +160,10 @@ namespace Model::Networkproblem::Gas {
 
 
   Eigen::Vector2d
-  Pipe::get_boundary_p_qvol(int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const {
-    Eigen::Vector2d b_state = get_boundary_state( direction, state);
-
-    return bl.p_qvol(b_state);
+  Pipe::get_boundary_p_qvol_bar(int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const {
+    Eigen::Vector2d b_state = get_boundary_state(direction, state);
+    Eigen::Vector2d p_qvol = bl.p_qvol(b_state);
+    return bl.p_qvol_bar_from_p_qvol(p_qvol);
   }
 
   void Pipe::dboundary_p_qvol_dstate(int direction,
@@ -172,8 +172,14 @@ namespace Model::Networkproblem::Gas {
                                int rootvalues_index,
                                      Eigen::Ref<Eigen::VectorXd const> const &state) const {
     Eigen::RowVector2d derivative;
-    derivative = function_derivative *
-                 bl.dp_qvol_dstate(get_boundary_state(direction, state));
+
+    Eigen::Vector2d p_qvol = bl.p_qvol(state);
+    Eigen::Matrix2d dp_qvol_dstate = bl.dp_qvol_dstate(get_boundary_state(direction,state));
+    Eigen::Matrix2d dpqvolbar_dpqvol = bl.dp_qvol_bar_from_p_qvold_p_qvol(p_qvol);
+
+    Eigen::Matrix2d dpqvol_bar_dstate = dpqvolbar_dpqvol*dp_qvol_dstate;
+    derivative = function_derivative * dpqvol_bar_dstate;
+
     int rho_index = get_boundary_state_index(direction);
     int q_index = rho_index + 1;
     jacobianhandler->set_coefficient(rootvalues_index, rho_index,

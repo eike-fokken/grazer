@@ -27,7 +27,7 @@ namespace Model::Networkproblem::Gas {
                             nlohmann::ordered_json initial_json) override;
 
     /// Shortpipes just use pressure and volumetric flow as their variables, so that this function simply returns the corresponding boundary state.
-    Eigen::Vector2d get_boundary_p_qvol(int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const override;
+    Eigen::Vector2d get_boundary_p_qvol_bar(int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const override;
 
     /// Because shortpipes use pressure and volumetric flow as their state variables, this function just hands `function_derivative` to jacobianhandler.
     void dboundary_p_qvol_dstate(int direction, Aux::Matrixhandler * jacobianhandler, Eigen::RowVector2d function_derivative, int rootvalues_index, Eigen::Ref<Eigen::VectorXd const> const &state) const override;

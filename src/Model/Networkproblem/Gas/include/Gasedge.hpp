@@ -24,7 +24,7 @@ namespace Model::Networkproblem::Gas {
 
     /// returns the boundary state expressed in pressure and volumetric flow.
     /// It is the responsibility of the edge to decide what that means.
-    virtual Eigen::Vector2d get_boundary_p_qvol(int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const = 0;
+    virtual Eigen::Vector2d get_boundary_p_qvol_bar(int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const = 0;
 
 
     /// @brief Set the derivatives with respect to the boundary states.

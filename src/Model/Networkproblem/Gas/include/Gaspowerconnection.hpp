@@ -35,7 +35,7 @@ namespace Model::Networkproblem::Power {
       void set_initial_values(Eigen::Ref<Eigen::VectorXd> new_state,
                               nlohmann::ordered_json initial_json) override;
 
-      Eigen::Vector2d get_boundary_p_qvol(
+      Eigen::Vector2d get_boundary_p_qvol_bar(
           int direction,
           Eigen::Ref<Eigen::VectorXd const> const &state) const override;
 
