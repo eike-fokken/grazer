@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.12...3.18)
 
-project(Grazer)
+project(Grazer CXX)
 include(CheckIPOSupported)
 
 set(CMAKE_CXX_STANDARD 17)

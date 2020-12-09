@@ -1,3 +1,4 @@
 add_subdirectory(Matrixhandler)
 add_subdirectory(Printguard)
 add_subdirectory(Mathfunctions)
+add_subdirectory(Coloroutput)
