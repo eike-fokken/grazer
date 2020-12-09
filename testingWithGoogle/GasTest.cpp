@@ -99,7 +99,7 @@ TEST(testFlowboundarynode_Shortpipe, evaluate_and_evaluate_state_derivative) {
 
   // std::cout << J;
 
-  EXPECT_EQ(J.nonZeros(),6);
+  EXPECT_EQ(J.nonZeros(),8);
 
   Eigen::MatrixXd expected_J(new_state.size(), new_state.size());
 
@@ -250,7 +250,7 @@ TEST(testFlowboundarynode_Shortpipe, Flowboundarynode_multiple_shortpipes) {
 
   // std::cout << J;
 
-  EXPECT_EQ(J.nonZeros(),14);
+  EXPECT_EQ(J.nonZeros(),20);
 }
 
 
@@ -428,10 +428,10 @@ TEST(testFlowboundarynode_Shortpipe, Flowboundarynode_three_shortpipes) {
   // std::cout << J << std::endl;
 
   // shortpipes: 3 * 4
-  // outer nodes: 3
-  // inner node flow: 3
-  // inner node pressure: 4
-  EXPECT_EQ(J.nonZeros(),3*4+3+3+4);
+  // outer nodes: 6
+  // inner node flow: 6
+  // inner node pressure: 8
+  EXPECT_EQ(J.nonZeros(),3*4+6+6+8);
 
   Eigen::MatrixXd jd = J;
   // std::cout << jd.inverse().sparseView()<< std::endl;

@@ -124,13 +124,10 @@ namespace Model::Networkproblem::Gas {
     int p_index = get_boundary_state_index(direction);
     int q_index = p_index+1;
 
-    //This tests for exact zero to save some entries into the matrix:
-    if(!(function_derivative[0] ==0.0)){
+  
       jacobianhandler->set_coefficient(rootvalues_index,p_index, function_derivative[0]);
-    }
-    if(!(function_derivative[1] ==0.0)){
-    jacobianhandler->set_coefficient(rootvalues_index,q_index, function_derivative[1]);
-    }
+      jacobianhandler->set_coefficient(rootvalues_index,q_index, function_derivative[1]);
+  
   }
 
 }
