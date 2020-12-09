@@ -19,7 +19,10 @@ namespace Model::Networkproblem::Gas {
                                    Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
                                    Eigen::Ref<Eigen::VectorXd const> const &, Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
 
-    
+
+
+    void display() const override;
+
     int get_number_of_states() const override;
 
     void
@@ -39,15 +42,15 @@ namespace Model::Networkproblem::Gas {
 
 
 
-  private:
+
     double const length;
     double const diameter;
     double const roughness;
     int const number_of_points;
     double const Delta_x;
 
-    Balancelaw::Isothermaleulerequation bl;
-    Model::Scheme::Implicitboxscheme scheme;
+    Balancelaw::Isothermaleulerequation const bl;
+    Model::Scheme::Implicitboxscheme const scheme;
 
 
 

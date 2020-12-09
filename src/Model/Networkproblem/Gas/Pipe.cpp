@@ -1,3 +1,4 @@
+#include <Coloroutput.hpp>
 #include <Eigen/Dense>
 #include <Implicitboxscheme.hpp>
 #include <Initialvalue.hpp>
@@ -75,6 +76,15 @@ namespace Model::Networkproblem::Gas {
       jacobianhandler->set_coefficient(i + 1, i + 1, current_derivative_right(1, 0));
       jacobianhandler->set_coefficient(i + 1, i+ 2, current_derivative_right(1, 1));
     }
+  }
+
+  void Pipe::display() const {
+    Edge::print_id();
+    std::cout << "number of points: " << number_of_points << std::endl;
+    std::cout << "Delta_x: "<< Delta_x << std::endl;
+    std::cout << "length: "<< length << std::endl;
+    std::cout << "roughness: "<< roughness << std::endl;
+    std::cout << "diameter: "<< diameter << std::endl;
   }
 
   int Pipe::get_number_of_states() const {
@@ -171,14 +181,19 @@ namespace Model::Networkproblem::Gas {
                                Eigen::RowVector2d function_derivative,
                                int rootvalues_index,
                                      Eigen::Ref<Eigen::VectorXd const> const &state) const {
-    Eigen::RowVector2d derivative;
+    Eigen::Vector2d boundary_state = get_boundary_state(direction,state);
 
-    Eigen::Vector2d p_qvol = bl.p_qvol(state);
-    Eigen::Matrix2d dp_qvol_dstate = bl.dp_qvol_dstate(get_boundary_state(direction,state));
-    Eigen::Matrix2d dpqvolbar_dpqvol = bl.dp_qvol_bar_from_p_qvold_p_qvol(p_qvol);
+        Eigen::Vector2d p_qvol = bl.p_qvol(boundary_state);
+
+    Eigen::Matrix2d dp_qvol_dstate = bl.dp_qvol_dstate(boundary_state);
+    Eigen::Matrix2d dpqvolbar_dpqvol =
+        bl.dp_qvol_bar_from_p_qvold_p_qvol(p_qvol);
 
     Eigen::Matrix2d dpqvol_bar_dstate = dpqvolbar_dpqvol*dp_qvol_dstate;
+
+    Eigen::RowVector2d derivative;
     derivative = function_derivative * dpqvol_bar_dstate;
+
 
     int rho_index = get_boundary_state_index(direction);
     int q_index = rho_index + 1;
