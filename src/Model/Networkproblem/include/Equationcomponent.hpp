@@ -43,8 +43,9 @@ namespace Model::Networkproblem {
     // /// @returns Number of states to be printed out.
     // virtual int get_number_of_printout_states() const;
 
-    /// This function sets the index.
-    /// @returns the new lowest free index.
+    /// This function sets the index AND calls \code{cpp}setup()\endcode
+    /// 
+    /// @returns int i The new lowest free index.
     int set_indices(int const next_free_index);
 
     int get_start_state_index() const;
