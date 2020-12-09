@@ -49,8 +49,8 @@ TEST(testIsothermaleulerequation, dflux_state) {
 
     Eigen::Matrix2d exact_dflux_matrix = Iso.dflux_dstate(x);
 
-    Eigen::Vector2d difference_dflux0 = 0.5*(Iso.flux(x + h0) - Iso.flux(x-h0));
-    Eigen::Vector2d exact_dflux0 = exact_dflux_matrix * h0;
+    Eigen::Vector2d difference_dflux0 = 0.5*(Iso.flux(x + h0) - Iso.flux(x-h0))/epsilon;
+    Eigen::Vector2d exact_dflux0 = exact_dflux_matrix * h0/epsilon;
 
     EXPECT_NEAR(exact_dflux0[0], difference_dflux0[0],
                 finite_difference_threshold);
@@ -59,8 +59,9 @@ TEST(testIsothermaleulerequation, dflux_state) {
 
     Eigen::Vector2d h1(0, epsilon);
 
-    Eigen::Vector2d difference_dflux1 = 0.5 * (Iso.flux(x + h1) - Iso.flux(x-h1));
-    Eigen::Vector2d exact_dflux1 = exact_dflux_matrix * h1;
+    Eigen::Vector2d difference_dflux1 =
+        0.5 * (Iso.flux(x + h1) - Iso.flux(x - h1)) / epsilon;
+    Eigen::Vector2d exact_dflux1 = exact_dflux_matrix * h1 / epsilon;
 
     EXPECT_NEAR(exact_dflux1[0], difference_dflux1[0],
                 finite_difference_threshold);
@@ -118,8 +119,9 @@ TEST(testIsothermaleulerequation, dsource_dstate) {
 
     Eigen::Matrix2d exact_dsource_matrix = Iso.dsource_dstate(x);
 
-    Eigen::Vector2d difference_dsource0 = 0.5*(Iso.source(x + h0) - Iso.source(x-h0));
-    Eigen::Vector2d exact_dsource0 = exact_dsource_matrix * h0;
+    Eigen::Vector2d difference_dsource0 =
+        0.5 * (Iso.source(x + h0) - Iso.source(x - h0)) / epsilon;
+    Eigen::Vector2d exact_dsource0 = exact_dsource_matrix * h0 / epsilon;
 
     EXPECT_NEAR(exact_dsource0[0], difference_dsource0[0],
                 finite_difference_threshold);
@@ -128,8 +130,9 @@ TEST(testIsothermaleulerequation, dsource_dstate) {
 
     Eigen::Vector2d h1(0, epsilon);
 
-    Eigen::Vector2d difference_dsource1 = 0.5 * (Iso.source(x + h1) - Iso.source(x-h1));
-    Eigen::Vector2d exact_dsource1 = exact_dsource_matrix * h1;
+    Eigen::Vector2d difference_dsource1 =
+        0.5 * (Iso.source(x + h1) - Iso.source(x - h1)) / epsilon;
+    Eigen::Vector2d exact_dsource1 = exact_dsource_matrix * h1 / epsilon;
 
     EXPECT_NEAR(exact_dsource1[0], difference_dsource1[0],
                 finite_difference_threshold);
@@ -186,8 +189,8 @@ TEST(testIsothermaleulerequation, dp_qvol_dstate) {
       Eigen::Matrix2d exact_dp_qvol_dstate_matrix = Iso.dp_qvol_dstate(x);
 
       Eigen::Vector2d difference_dp_qvol0 =
-          0.5 * (Iso.p_qvol(x + h0) - Iso.p_qvol(x - h0));
-      Eigen::Vector2d exact_dflux0 = exact_dp_qvol_dstate_matrix * h0;
+          0.5 * (Iso.p_qvol(x + h0) - Iso.p_qvol(x - h0)) / epsilon;
+      Eigen::Vector2d exact_dflux0 = exact_dp_qvol_dstate_matrix * h0 / epsilon;
 
       EXPECT_NEAR(exact_dflux0[0], difference_dp_qvol0[0],
                   finite_difference_threshold);
@@ -197,8 +200,8 @@ TEST(testIsothermaleulerequation, dp_qvol_dstate) {
       Eigen::Vector2d h1(0, epsilon);
 
       Eigen::Vector2d difference_dp_qvol1 =
-          0.5 * (Iso.p_qvol(x + h1) - Iso.p_qvol(x - h1));
-      Eigen::Vector2d exact_dflux1 = exact_dp_qvol_dstate_matrix * h1;
+          0.5 * (Iso.p_qvol(x + h1) - Iso.p_qvol(x - h1)) / epsilon;
+      Eigen::Vector2d exact_dflux1 = exact_dp_qvol_dstate_matrix * h1 / epsilon;
 
       EXPECT_NEAR(exact_dflux1[0], difference_dp_qvol1[0],
                   finite_difference_threshold);
@@ -311,7 +314,6 @@ TEST(testIsothermaleulerequation, dlambda_non_laminar_dRe) {
 // }
 
 TEST(testIsothermaleulerequation, coeff_of_Reynolds) {
-
 
 }
 
