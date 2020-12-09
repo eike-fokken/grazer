@@ -9,8 +9,8 @@ namespace Model::Scheme {
         double Delta_x, Eigen::Ref<Eigen::Vector2d const> const &last_left,
         Eigen::Ref<Eigen::Vector2d const> const &last_right, Eigen::Ref<Eigen::Vector2d const> const &new_left,
         Eigen::Ref<Eigen::Vector2d const> const &new_right,Model::Balancelaw::Isothermaleulerequation const & bl) const {
-      double Delta_t = new_time - last_time;
 
+      double Delta_t = new_time - last_time;
       result =
         0.5*(new_left + new_right)
         - 0.5*(last_left + last_right)

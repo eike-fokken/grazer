@@ -1,5 +1,7 @@
+#include <Vphinode.hpp>
 #include <Coloroutput.hpp>
 #include <Pipe.hpp>
+#include <Gaspowerconnection.hpp>
 #include <Flowboundarynode.hpp>
 #include <Pressureboundarynode.hpp>
 #include <Innode.hpp>
@@ -829,3 +831,47 @@ TEST(testPipe, evaluate_state_derivative) {
       EXPECT_NEAR(0, max, finite_difference_threshold);
 
     }
+TEST(testGaspowerconnection, evaluate_state_derivative) {
+
+  double flow0start = 88.0;
+  double flow0end = 10.0;
+
+  double pressure_init = 50;
+  double flow_init = 60;
+
+  json flow_topology={};
+
+  json bd_gas0 = {
+                   {"id", "gasnode0"},
+                   {"type", "flow"},
+                   {"data", json::array({{{"time", 0.},
+                                          {"values", json::array({flow0start})}},{{"time", 100.},{"values", json::array({flow0end})}}})}};
+
+  json gp0_initial = {
+                      {"id", "node_4_ld1"},
+                      {"data", json::array({{{"x", 0.0},
+                                             {"value", json::array({pressure_init,flow_init})}}})}};
+  
+  json gp_topology = { {"from", "gasnode0"},
+                       {"id", "gp0"},
+                       {"to","N1"},
+                       {"power2gas_q_coeff", "0.4356729"},
+                       {"gas2power_q_coeff", "0.1256"}    };
+
+  double V1_bd = 8.0;
+  double phi1_bd = 6.0;
+  double G1 = 3.0;
+  double B1 = -5.0;
+
+
+  json bd_power1 = {
+                   {"id", "N1"},
+                   {"type", "Vphi"},
+                   {"data", json::array({{{"time", 0.},
+                                          {"values", json::array({V1_bd, phi1_bd})}}})}};
+
+
+  Model::Networkproblem::Gas::Flowboundarynode  g0("gasnode0", bd_gas0, flow_topology);
+  Model::Networkproblem::Power::Vphinode  N1("N1", bd_power1, G1,B1);
+  Model::Networkproblem::Gas::Gaspowerconnection  gp0("gp0", &g0,&N1, gp_topology);
+}
