@@ -1,7 +1,8 @@
-#include <Matrixhandler.hpp>
+#include <Coloroutput.hpp>
 #include <Exception.hpp>
 #include <Gasedge.hpp>
 #include <Gasnode.hpp>
+#include <Matrixhandler.hpp>
 #include <iostream>
 
 namespace Model::Networkproblem::Gas {
@@ -127,7 +128,7 @@ namespace Model::Networkproblem::Gas {
 
   void Gasnode::setup() {
 
-    if(directed_attached_gas_edges.size()!=0){std::cout << "You are calling setup a second time!"<<std::endl;}
+    if(directed_attached_gas_edges.size()!=0){std::cout << YELLOW << "You are calling setup a second time!" << RESET <<std::endl;}
     directed_attached_gas_edges.clear();
     //std::cout << "number of start edges: " << get_starting_edges().size() <<std::endl;
     //std::cout << "number of end edges: " << get_ending_edges().size() <<std::endl;
