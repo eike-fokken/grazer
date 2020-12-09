@@ -126,7 +126,9 @@ namespace Model::Networkproblem::Gas {
   }
 
   void Gasnode::setup() {
-    if(directed_attached_gas_edges.size()!=0){gthrow({"can't call setup twice!"})}
+
+    if(directed_attached_gas_edges.size()!=0){std::cout << "You are calling setup a second time!"<<std::endl;}
+    directed_attached_gas_edges.clear();
     //std::cout << "number of start edges: " << get_starting_edges().size() <<std::endl;
     //std::cout << "number of end edges: " << get_ending_edges().size() <<std::endl;
     for (auto &startedge : get_starting_edges()) {
