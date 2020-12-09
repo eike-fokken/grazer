@@ -34,15 +34,15 @@ namespace Model::Networkproblem::Gas {
                 Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     for (int i = get_equation_start_index(); i!=get_equation_after_index();i+=2){
 
-      Eigen::Ref<Eigen::Vector2d const> const  last_u_jm1 = last_state.segment<2>(i - 1);
-      Eigen::Ref<Eigen::Vector2d const> const  last_u_j = last_state.segment<2>(i + 1);
-      Eigen::Ref<Eigen::Vector2d const> const  new_u_jm1 = new_state.segment<2>(i - 1);
-      Eigen::Ref<Eigen::Vector2d const> const  new_u_j = new_state.segment<2>(i + 1);
-
+      Eigen::Ref<Eigen::Vector2d const> const  last_left = last_state.segment<2>(i - 1);
+      Eigen::Ref<Eigen::Vector2d const> const  last_right = last_state.segment<2>(i + 1);
+      Eigen::Ref<Eigen::Vector2d const> const  new_left = new_state.segment<2>(i - 1);
+      Eigen::Ref<Eigen::Vector2d const> const  new_right = new_state.segment<2>(i + 1);
+      
       scheme.evaluate_point(rootvalues.segment<2>(i), last_time, new_time,
-           Delta_x, last_u_jm1,
-           last_u_j, new_u_jm1,
-           new_u_j, bl);
+           Delta_x, last_left,
+           last_right, new_left,
+           new_right, bl);
     }
   }
 
@@ -53,23 +53,31 @@ namespace Model::Networkproblem::Gas {
     for (int i = get_equation_start_index(); i != get_equation_after_index();
          i += 2) {
       // maybe use Eigen::Ref here to avoid copies.
-      Eigen::Ref<Eigen::Vector2d const> const last_u_jm1 = last_state.segment<2>(i - 1);
-      Eigen::Ref<Eigen::Vector2d const> const last_u_j = last_state.segment<2>(i + 1);
-      Eigen::Ref<Eigen::Vector2d const> const new_u_jm1 = new_state.segment<2>(i - 1);
-      Eigen::Ref<Eigen::Vector2d const> const new_u_j = new_state.segment<2>(i + 1);
+      Eigen::Ref<Eigen::Vector2d const> const last_left = last_state.segment<2>(i - 1);
+      Eigen::Ref<Eigen::Vector2d const> const last_right = last_state.segment<2>(i + 1);
+      Eigen::Ref<Eigen::Vector2d const> const new_left = new_state.segment<2>(i - 1);
+      Eigen::Ref<Eigen::Vector2d const> const new_right = new_state.segment<2>(i + 1);
 
       Eigen::Matrix2d current_derivative_left =
-          scheme.devaluate_point_dleft(last_time, new_time, Delta_x, last_u_jm1,
-                                       last_u_j, new_u_jm1, new_u_j, bl);
+        scheme.devaluate_point_dleft(last_time, new_time, Delta_x,
+                                     last_left,
+                                     last_right,
+                                     new_left,
+                                     new_right,
+                                     bl);
 
       jacobianhandler->set_coefficient(i,i-1 ,current_derivative_left(0,0));
       jacobianhandler->set_coefficient(i, i , current_derivative_left(0, 1));
       jacobianhandler->set_coefficient(i+1, i - 1, current_derivative_left(1, 0));
       jacobianhandler->set_coefficient(i+1, i, current_derivative_left(1, 1));
 
-      Eigen::Matrix2d current_derivative_right = scheme.devaluate_point_dright(
-          last_time, new_time, Delta_x, last_u_jm1, last_u_j, new_u_jm1,
-          new_u_j, bl);
+      Eigen::Matrix2d current_derivative_right =
+        scheme.devaluate_point_dright(last_time, new_time, Delta_x,
+                                      last_left,
+                                      last_right,
+                                      new_left,
+                                      new_right,
+                                      bl);
 
       jacobianhandler->set_coefficient(i, i + 1, current_derivative_right(0, 0));
       jacobianhandler->set_coefficient(i, i+2, current_derivative_right(0, 1));
