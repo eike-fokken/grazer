@@ -788,21 +788,44 @@ TEST(testPipe, evaluate_state_derivative) {
 
   Eigen::SparseMatrix<double> J_relevant(2,4);
   J_relevant= J.block(1,0,2,4);
-  
 
-  Eigen::VectorXd analytical0 =J_relevant* h0/epsilon; 
-  Eigen::VectorXd analytical1 =J_relevant* h1/epsilon; 
-  Eigen::VectorXd analytical2 =J_relevant* h2/epsilon; 
-  Eigen::VectorXd analytical3 =J_relevant* h3/epsilon;
+  Eigen::Matrix<double,2,4> expected_J;
+      Eigen::Matrix2d id;
+      id.setIdentity();
 
-  double max0 = (diff0-analytical0).lpNorm<Eigen::Infinity>();
-  double max1 = (diff1-analytical1).lpNorm<Eigen::Infinity>();
-  double max2 = (diff2-analytical2).lpNorm<Eigen::Infinity>();
-  double max3 = (diff3-analytical3).lpNorm<Eigen::Infinity>();
+      double Delta_t = new_time-last_time;
+      double actual_Delta_x = p0.Delta_x;
 
-    std::vector<double> maxima = {max0,max1,max2,max3};
-  double max = *(std::max_element(maxima.begin(),maxima.end()));
+      auto & bl = p0.bl;
 
-  EXPECT_NEAR(0,max,finite_difference_threshold);
+      Eigen::Vector2d last_left = last_state.segment<2>(0);
+      Eigen::Vector2d last_right = last_state.segment<2>(2);
+
+      Eigen::Vector2d new_left = new_state.segment<2>(0);
+      Eigen::Vector2d new_right = new_state.segment<2>(2);
+
+      expected_J.block<2,2>(0,0) = 0.5*id- Delta_t/actual_Delta_x*bl.dflux_dstate(new_left) -0.5*Delta_t*bl.dsource_dstate(new_left);
+      expected_J.block<2, 2>(0, 2) =
+          0.5 * id + Delta_t / actual_Delta_x * bl.dflux_dstate(new_right) -
+          0.5 * Delta_t * bl.dsource_dstate(new_right);
+
+      Eigen::Matrix<double,2,4> Jdense = J_relevant;
+
+      // EXPECT_DOUBLE_EQ((Jdense-expected_J).lpNorm<Eigen::Infinity>(),0);
+
+      Eigen::VectorXd analytical0 = J_relevant * h0 / epsilon;
+      Eigen::VectorXd analytical1 = J_relevant * h1 / epsilon;
+      Eigen::VectorXd analytical2 = J_relevant * h2 / epsilon;
+      Eigen::VectorXd analytical3 = J_relevant * h3 / epsilon;
+
+      double max0 = (diff0 - analytical0).lpNorm<Eigen::Infinity>();
+      double max1 = (diff1 - analytical1).lpNorm<Eigen::Infinity>();
+      double max2 = (diff2 - analytical2).lpNorm<Eigen::Infinity>();
+      double max3 = (diff3 - analytical3).lpNorm<Eigen::Infinity>();
+
+      std::vector<double> maxima = {max0, max1, max2, max3};
+      double max = *(std::max_element(maxima.begin(), maxima.end()));
+
+      EXPECT_NEAR(0, max, finite_difference_threshold);
 
     }
