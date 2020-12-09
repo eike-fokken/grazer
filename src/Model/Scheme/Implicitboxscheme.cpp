@@ -6,21 +6,21 @@ namespace Model::Scheme {
     /// Computes the implicit box scheme at one point.
     void Implicitboxscheme::evaluate_point(
         Eigen::Ref<Eigen::Vector2d> result, double last_time, double new_time,
-        double Delta_x, Eigen::Ref<Eigen::Vector2d const> const &last_u_jm1,
-        Eigen::Ref<Eigen::Vector2d const> const &last_u_j, Eigen::Ref<Eigen::Vector2d const> const &new_u_jm1,
-        Eigen::Ref<Eigen::Vector2d const> const &new_u_j,Model::Balancelaw::Isothermaleulerequation const & bl) const {
+        double Delta_x, Eigen::Ref<Eigen::Vector2d const> const &last_left,
+        Eigen::Ref<Eigen::Vector2d const> const &last_right, Eigen::Ref<Eigen::Vector2d const> const &new_left,
+        Eigen::Ref<Eigen::Vector2d const> const &new_right,Model::Balancelaw::Isothermaleulerequation const & bl) const {
       double Delta_t = new_time - last_time;
 
       result =
-        0.5*(new_u_jm1 + new_u_jm1)
-        - 0.5*(last_u_jm1 + last_u_j)
-        + Delta_t/Delta_x * ( bl.flux(new_u_j) - bl.flux(new_u_jm1))
-        - 0.5 * Delta_t * (bl.source(new_u_j)+bl.source(new_u_jm1));
+        0.5*(new_left + new_right)
+        - 0.5*(last_left + last_right)
+        + Delta_t/Delta_x * ( bl.flux(new_right) - bl.flux(new_left))
+        - 0.5 * Delta_t * (bl.source(new_right)+bl.source(new_left));
     }
 
-    /// The derivative with respect to \code{.cpp}last_u_jm1\endcode
+    /// The derivative with respect to \code{.cpp}last_left\endcode
     Eigen::Matrix2d Implicitboxscheme::devaluate_point_dleft(double last_time, double new_time, double Delta_x, Eigen::Ref<Eigen::Vector2d const> const &,
-        Eigen::Ref<Eigen::Vector2d const> const &, Eigen::Ref<Eigen::Vector2d const> const &new_u_jm1,
+        Eigen::Ref<Eigen::Vector2d const> const &, Eigen::Ref<Eigen::Vector2d const> const &new_left,
                                                              Eigen::Ref<Eigen::Vector2d const> const &,Model::Balancelaw::Isothermaleulerequation const & bl) const {
       double Delta_t = new_time-last_time;
       Eigen::Matrix2d jac;
@@ -28,18 +28,18 @@ namespace Model::Scheme {
       id.setIdentity();
       jac =
         0.5*id
-        -Delta_t/Delta_x*bl.dflux_dstate(new_u_jm1)
-        - 0.5*Delta_t*bl.dsource_dstate(new_u_jm1);
+        -Delta_t/Delta_x*bl.dflux_dstate(new_left)
+        - 0.5*Delta_t*bl.dsource_dstate(new_left);
       return jac;
     }
 
-  /// The derivative with respect to \code{.cpp}last_u_j\endcode
+  /// The derivative with respect to \code{.cpp}last_right\endcode
     Eigen::Matrix2d Implicitboxscheme::devaluate_point_dright(
         double last_time, double new_time, double Delta_x,
         Eigen::Ref<Eigen::Vector2d const> const &,
         Eigen::Ref<Eigen::Vector2d const> const &,
         Eigen::Ref<Eigen::Vector2d const> const &,
-        Eigen::Ref<Eigen::Vector2d const> const &new_u_j,
+        Eigen::Ref<Eigen::Vector2d const> const &new_right,
         Model::Balancelaw::Isothermaleulerequation const &bl) const {
       double Delta_t = new_time - last_time;
       Eigen::Matrix2d jac;
@@ -47,8 +47,8 @@ namespace Model::Scheme {
       id.setIdentity();
       jac =
         0.5 * id
-        + Delta_t / Delta_x * bl.dflux_dstate(new_u_j)
-        - 0.5 * Delta_t * bl.dsource_dstate(new_u_j);
+        + Delta_t / Delta_x * bl.dflux_dstate(new_right)
+        - 0.5 * Delta_t * bl.dsource_dstate(new_right);
       return jac;
     }
 

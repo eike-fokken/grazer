@@ -29,3 +29,10 @@ Note: python xq
 
 
 think about providing a -march=native target
+
+
+EASY Todos:
+
+TODO:
+
+go over the tests and use the googletest framework to deduplicate code!
