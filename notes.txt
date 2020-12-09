@@ -33,6 +33,6 @@ think about providing a -march=native target
 
 EASY Todos:
 
-TODO:
+TODO: go over the tests and use the googletest framework to deduplicate code!
 
-go over the tests and use the googletest framework to deduplicate code!
+TODO: write getters for the data members in Isothermaleulerequations and then make them private.
