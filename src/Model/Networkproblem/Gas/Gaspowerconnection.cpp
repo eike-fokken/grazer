@@ -20,13 +20,13 @@ namespace Model::Networkproblem::Gas {
                                     double , Eigen::Ref<Eigen::VectorXd const> const &,
                                     Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     int q_index = get_start_state_index() + 1;
-    rootvalues[q_index] = powerendnode->P(new_state) - generated_power(new_state[q_index]);
+    rootvalues[q_index] = powerendnode->P(new_state) + generated_power(new_state[q_index]);
   }
   void Gaspowerconnection::evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler, double , double ,
                                                      Eigen::Ref<Eigen::VectorXd const> const &, Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     int q_index = get_start_state_index() + 1;
     double q = new_state[q_index];
-    jacobianhandler->set_coefficient(q_index, q_index, -dgenerated_power_dq(q));
+    jacobianhandler->set_coefficient(q_index, q_index, dgenerated_power_dq(q));
     powerendnode->evaluate_P_derivative(q_index, jacobianhandler, new_state);
   }
 
@@ -158,9 +158,9 @@ namespace Model::Networkproblem::Gas {
   }
 
   double Gaspowerconnection::generated_power(double q) const {
-    if (q > kappa) {
+    if (q < -kappa) {
       return  gas2power_q_coefficient * q;
-    } else if (q < -kappa) {
+    } else if (q > kappa) {
       return power2gas_q_coefficient * q;
     } else {
       return smoothing_polynomial(q);
