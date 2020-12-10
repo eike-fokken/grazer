@@ -827,8 +827,9 @@ TEST(testPipe, evaluate_state_derivative) {
       double max = *(std::max_element(maxima.begin(), maxima.end()));
 
       EXPECT_NEAR(0, max, finite_difference_threshold);
+}
 
-    }
+
 TEST(testGaspowerconnection, evaluate) {
 
   double G1 = 1.0;
@@ -929,9 +930,202 @@ TEST(testGaspowerconnection, evaluate) {
     gp0.evaluate(rootvalues, last_time, new_time, last_state, new_state);  
 
     EXPECT_DOUBLE_EQ(rootvalues[2], 0.0);
-    if(new_state[3]<0)   EXPECT_DOUBLE_EQ(rootvalues[3] , (gas2power_q_coefficient*new_state[3] + G1*new_state[0]*new_state[0]));
-    if(new_state[3]>0)   EXPECT_DOUBLE_EQ(rootvalues[3] , (power2gas_q_coefficient*new_state[3] + G1*new_state[0]*new_state[0]));
+    if(new_state[3]>0)   EXPECT_DOUBLE_EQ(rootvalues[3] , (-gas2power_q_coefficient*new_state[3] + N1.P(new_state)));
+    if(new_state[3]<0)   EXPECT_DOUBLE_EQ(rootvalues[3] , (-power2gas_q_coefficient*new_state[3] + N1.P(new_state)));
+
+
+    
+
 
   }
 
+}
+
+
+TEST(testGaspowerconnection, evaluate_state_derivative) {
+
+  double G1 = 1.0;
+  double B1 = -5.0;
+
+  double power2gas_q_coefficient = 0.4356729;
+  double gas2power_q_coefficient = 0.1256;
+  json gp_topology = {
+      {"from", "gasnode0"},
+      {"id", "gp0"},
+      {"to", "N1"},
+      {"power2gas_q_coeff", Aux::to_string_precise(power2gas_q_coefficient)},
+      {"gas2power_q_coeff", Aux::to_string_precise(gas2power_q_coefficient)}};
+
+  double flow0start = 88.0;
+  double flow0end = 10.0;
+
+  double pressure_init = 50;
+  double flow_init = -1.0/gas2power_q_coefficient;
+
+  json flow_topology={};
+
+  json bd_gas0 = {
+                   {"id", "gasnode0"},
+                   {"type", "flow"},
+                   {"data", json::array({{{"time", 0.},
+                                          {"values", json::array({flow0start})}},{{"time", 100.},{"values", json::array({flow0end})}}})}};
+
+  json gp0_initial =
+    {
+     {"id", "node_4_ld1"},
+     {"data", {
+               {"x", 0.0},
+               {"value", json::array(
+                                     {pressure_init,flow_init}
+                                     )
+               }
+       }
+     }
+    };
+
+
+  double V1_bd = 8.0;
+  double phi1_bd = 6.0;
+
+  double V1 = 18.0;
+  double phi1 = 10;
+
+  json power_initial = {
+                        {"id", "N1"},
+                        {"data", {
+                                  {"x", 0.000000},
+                                  {"value", json::array( {-0.810000,
+                                                          -0.441000,
+                                                          V1,
+                                                          phi1
+                                      })}
+                          }}
+  };
+
+  json bd_power1 = {
+                   {"id", "N1"},
+                   {"type", "Vphi"},
+                   {"data", json::array({{{"time", 0.},
+                                          {"values", json::array({V1_bd, phi1_bd})}}})}};
+
+
+  Model::Networkproblem::Gas::Flowboundarynode  g0("gasnode0", bd_gas0, flow_topology);
+  Model::Networkproblem::Power::Vphinode  N1("N1", bd_power1, G1,B1);
+  Model::Networkproblem::Gas::Gaspowerconnection  gp0("gp0", &g0,&N1, gp_topology);
+
+  int a = g0.set_indices(0);
+  int b = N1.set_indices(a);
+  int c = gp0.set_indices(b);
+
+  Eigen::VectorXd rootvalues(c);
+  Eigen::VectorXd rootvaluesh(c);
+  Eigen::VectorXd last_state(c);
+  Eigen::VectorXd new_state(c);
+
+  N1.set_initial_values(new_state,power_initial);
+  gp0.set_initial_values(new_state,gp0_initial);
+
+  EXPECT_DOUBLE_EQ(new_state[0],V1);
+  EXPECT_DOUBLE_EQ(new_state[1],phi1);
+  EXPECT_DOUBLE_EQ(new_state[2],pressure_init);
+  EXPECT_DOUBLE_EQ(new_state[3],flow_init);
+
+
+  double last_time = 0.0;
+  double new_time = 0.0;
+
+  double epsilon = pow(DBL_EPSILON,1.0/3.0);
+  Eigen::Vector4d h;
+  h << 0,0,0,epsilon;
+  double finite_difference_threshold = sqrt(epsilon);
+  for(int i = -10;i!=20;++i){
+
+    new_state << i,3*i,i*i,0.5*i;
+    // std::cout << new_state << std::endl;
+    rootvalues.setZero();
+
+    gp0.evaluate(rootvalues, last_time, new_time, last_state, new_state-h);
+    N1.evaluate(rootvalues, last_time, new_time, last_state, new_state-h);
+    g0.evaluate(rootvalues, last_time, new_time, last_state, new_state-h);
+
+    gp0.evaluate(rootvaluesh, last_time, new_time, last_state, new_state+h);
+    N1.evaluate(rootvaluesh, last_time, new_time, last_state, new_state+h);
+    g0.evaluate(rootvaluesh, last_time, new_time, last_state, new_state+h);
+
+    Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
+    Aux::Triplethandler handler(&J);
+
+    gp0.evaluate_state_derivative(&handler, last_time, new_time, last_state,
+                                  new_state);
+    N1.evaluate_state_derivative(&handler, last_time, new_time, last_state,
+                                  new_state);
+    g0.evaluate_state_derivative(&handler, last_time, new_time, last_state,
+                                  new_state);
+
+    handler.set_matrix();
+
+    Eigen::Vector4d der = 0.5*(rootvaluesh-rootvalues)/epsilon;
+    Eigen::Vector4d analytical_der = J*h/epsilon;
+
+    double max = (der-analytical_der).lpNorm<Eigen::Infinity>();
+    EXPECT_NEAR(max,0,finite_difference_threshold);
+
+
+  }
+
+}
+
+
+
+TEST(testGaspowerconnection, generated_power) {
+
+  double G1 = 1.0;
+  double B1 = -5.0;
+  double V1_bd = 8.0;
+  double phi1_bd = 6.0;
+
+  double power2gas_q_coefficient = 0.4356729;
+  double gas2power_q_coefficient = 0.1256;
+  json gp_topology = {
+      {"from", "gasnode0"},
+      {"id", "gp0"},
+      {"to", "N1"},
+      {"power2gas_q_coeff", Aux::to_string_precise(power2gas_q_coefficient)},
+      {"gas2power_q_coeff", Aux::to_string_precise(gas2power_q_coefficient)}};
+
+  double flow0start = 88.0;
+  double flow0end = 10.0;
+
+  json flow_topology={};
+
+  json bd_gas0 = {
+                   {"id", "gasnode0"},
+                   {"type", "flow"},
+                   {"data", json::array({{{"time", 0.},
+                                          {"values", json::array({flow0start})}},{{"time", 100.},{"values", json::array({flow0end})}}})}};
+
+
+
+  json bd_power1 = {
+                   {"id", "N1"},
+                   {"type", "Vphi"},
+                   {"data", json::array({{{"time", 0.},
+                                          {"values", json::array({V1_bd, phi1_bd})}}})}};
+
+
+  Model::Networkproblem::Gas::Flowboundarynode  g0("gasnode0", bd_gas0, flow_topology);
+  Model::Networkproblem::Power::Vphinode  N1("N1", bd_power1, G1,B1);
+  Model::Networkproblem::Gas::Gaspowerconnection  gp0("gp0", &g0,&N1, gp_topology);
+
+
+  EXPECT_DOUBLE_EQ(gp0.smoothing_polynomial(gp0.kappa),  gas2power_q_coefficient*gp0.kappa );
+ EXPECT_DOUBLE_EQ(gp0.smoothing_polynomial(-gp0.kappa),  power2gas_q_coefficient*(-gp0.kappa) );
+ EXPECT_DOUBLE_EQ(gp0.dsmoothing_polynomial_dq(gp0.kappa), gas2power_q_coefficient  );
+ EXPECT_DOUBLE_EQ(gp0.dsmoothing_polynomial_dq(-gp0.kappa),  power2gas_q_coefficient );
+
+  // for (int i=-10;i!=11;++i){
+  //   std::cout << gp0.generated_power(i) <<std::endl;
+
+  //   std::cout << gp0.dgenerated_power_dq(i) <<std::endl;
+  // }
 }

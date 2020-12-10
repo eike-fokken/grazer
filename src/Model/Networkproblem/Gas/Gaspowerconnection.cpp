@@ -1,3 +1,5 @@
+#include <Misc.hpp>
+#include <Mathfunctions.hpp>
 #include "Matrixhandler.hpp"
 #include "Node.hpp"
 #include <Gaspowerconnection.hpp>
@@ -16,17 +18,23 @@ namespace Model::Networkproblem::Gas {
         gas2power_q_coefficient(std::stod(topology_json["gas2power_q_coeff"].get<std::string>())),
         power2gas_q_coefficient(std::stod(topology_json["power2gas_q_coeff"].get<std::string>())) {}
 
+
+
   void Gaspowerconnection::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double ,
                                     double , Eigen::Ref<Eigen::VectorXd const> const &,
                                     Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     int q_index = get_start_state_index() + 1;
-    rootvalues[q_index] = powerendnode->P(new_state) + generated_power(new_state[q_index]);
+    rootvalues[q_index] = powerendnode->P(new_state) - generated_power(new_state[q_index]);
   }
+
+
+
+
   void Gaspowerconnection::evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler, double , double ,
                                                      Eigen::Ref<Eigen::VectorXd const> const &, Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     int q_index = get_start_state_index() + 1;
     double q = new_state[q_index];
-    jacobianhandler->set_coefficient(q_index, q_index, dgenerated_power_dq(q));
+    jacobianhandler->set_coefficient(q_index, q_index, - dgenerated_power_dq(q));
     powerendnode->evaluate_P_derivative(q_index, jacobianhandler, new_state);
   }
 
@@ -46,8 +54,8 @@ namespace Model::Networkproblem::Gas {
 
   void
   Gaspowerconnection::print_to_files(std::filesystem::path const &output_directory) {
-    std::string pressure_file_name = (get_id().insert(0, "Gas_Shortpipe_"))+"_p";
-    std::string flow_file_name =(get_id().insert(0, "Gas_Shortpipe_"))+"_q";
+    std::string pressure_file_name = (get_id().insert(0, "Gas_Gaspowerconnection_"))+"_p";
+    std::string flow_file_name =(get_id().insert(0, "Gas_Gaspowerconnection_"))+"_q";
     std::filesystem::path shortpipe_output_pressure(output_directory /
                                                     pressure_file_name);
     std::filesystem::path shortpipe_output_flow(
@@ -150,20 +158,27 @@ namespace Model::Networkproblem::Gas {
 
 
   double Gaspowerconnection::smoothing_polynomial(double q) const {
+    if (q > kappa + Aux::EPSILON or q < -kappa - Aux::EPSILON) {
+      gthrow({" You can't call this function for values of q bigger than ",
+              Aux::to_string_precise(kappa, 12), "\n"});
+    }
     double rel = q / kappa;
     return q * (0.5 * (gas2power_q_coefficient + power2gas_q_coefficient) - 0.75 * (power2gas_q_coefficient - gas2power_q_coefficient) * rel +
                 0.25 * (power2gas_q_coefficient - gas2power_q_coefficient) * rel * rel * rel);
   }
   double Gaspowerconnection::dsmoothing_polynomial_dq(double q) const {
+    if(q>kappa+Aux::EPSILON or q < -kappa-Aux::EPSILON) {
+      gthrow({" You can't call this function for values of q bigger than ", Aux::to_string_precise(kappa, 12), "\n"});
+    }
     double rel = q / kappa;
     return 0.5 * (gas2power_q_coefficient + power2gas_q_coefficient) - 1.5 * (power2gas_q_coefficient - gas2power_q_coefficient) * rel +
            (power2gas_q_coefficient - gas2power_q_coefficient) * rel * rel * rel;
   }
 
   double Gaspowerconnection::generated_power(double q) const {
-    if (q < -kappa) {
+    if (q > kappa) {
       return  gas2power_q_coefficient * q;
-    } else if (q > kappa) {
+    } else if (q <- kappa) {
       return power2gas_q_coefficient * q;
     } else {
       return smoothing_polynomial(q);

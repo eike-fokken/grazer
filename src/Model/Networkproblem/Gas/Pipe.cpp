@@ -103,8 +103,8 @@ namespace Model::Networkproblem::Gas {
   void
   Pipe::print_to_files(std::filesystem::path const &output_directory) {
 
-    std::string pressure_file_name = (get_id().insert(0, "Gas_Shortpipe_"))+"_p";
-    std::string flow_file_name =(get_id().insert(0, "Gas_Shortpipe_"))+"_q";
+    std::string pressure_file_name = (get_id().insert(0, "Gas_Pipe_"))+"_p";
+    std::string flow_file_name =(get_id().insert(0, "Gas_Pipe_"))+"_q";
     std::filesystem::path shortpipe_output_pressure(output_directory /
                                                     pressure_file_name);
     std::filesystem::path shortpipe_output_flow(
