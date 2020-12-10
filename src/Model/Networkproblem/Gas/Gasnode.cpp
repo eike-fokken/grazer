@@ -16,9 +16,7 @@ namespace Model::Networkproblem::Gas {
     auto p_qvol0 = edge0->get_boundary_p_qvol_bar(dir0,state);
     auto p0 = p_qvol0[0];
     auto q0 = p_qvol0[1];
-    // std::cout << "dir0: " << dir0 <<std::endl;
-    // std::cout << "q0: " << q0<<std::endl;
-
+    
 
     double old_p=p0;
     int old_equation_index = edge0->give_away_boundary_index(dir0);
@@ -26,12 +24,13 @@ namespace Model::Networkproblem::Gas {
     // We will write the flow balance into the last index:
     int last_direction = directed_attached_gas_edges.back().first;
     int last_equation_index = directed_attached_gas_edges.back().second->give_away_boundary_index(last_direction);
-    //std::cout << "-prescribed qvol: " << -prescribed_qvol <<std::endl;
+    
 
     // prescribed boundary condition is like an attached pipe ending at this node...
     rootvalues[last_equation_index] = -1.0* prescribed_qvol; 
     rootvalues[last_equation_index] += dir0*q0;
-    // std::cout << "rootvalues at " << last_equation_index <<":"<< rootvalues[last_equation_index] <<std::endl;
+
+
     // std::cout << "number of gas edges: " << directed_attached_gas_edges.size() <<std::endl;
     for(auto it=std::next(directed_attached_gas_edges.begin());it!=directed_attached_gas_edges.end();++it){
       int direction=it->first;

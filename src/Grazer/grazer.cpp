@@ -45,8 +45,6 @@ int main(int argc, char **argv) {
     Delta_t= std::stod(argv[4]);
     Delta_x= std::stod(argv[5]);
     T = std::stod(argv[6]);
-    std::cout << Delta_t<<std::endl;
-    std::cout << Delta_x << std::endl;
   }
 
 

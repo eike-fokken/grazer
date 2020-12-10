@@ -14,7 +14,7 @@ namespace Model::Scheme {
       result =
         0.5*(new_left + new_right)
         - 0.5*(last_left + last_right)
-        + Delta_t/Delta_x * ( bl.flux(new_right) - bl.flux(new_left))
+        - Delta_t/Delta_x * ( bl.flux(new_left) - bl.flux(new_right))
         - 0.5 * Delta_t * (bl.source(new_right)+bl.source(new_left));
     }
 

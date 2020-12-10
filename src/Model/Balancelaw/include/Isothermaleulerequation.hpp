@@ -9,9 +9,6 @@ class Isothermaleulerequation {
 
 public:
 
-  // is this needed? Maybe not because we use c++17...
-  //  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
 
   Isothermaleulerequation(double _Area, double _diameter,
                           double _roughness);
@@ -54,15 +51,19 @@ public:
   double exact_turbulent_lambda(double Re) const;
 
 
+
+
+
+  
   // These are physical constants except for the temperature T.
   // Later on it may be useful to change them to include other gases.
   static constexpr double bar { 1e5};
   static constexpr double rho_0 { 0.785};
   static constexpr double T_0 { 273.15};
-  static constexpr double T_crit { 192.0};
+  static constexpr double T_crit { 192.033};
   static constexpr double z_0 { 1.005};
   static constexpr double p_0 { 1.01325 * bar};
-  static constexpr double p_crit { 46.4 * bar};
+  static constexpr double p_crit { 46.4512 * bar};
   static constexpr double T { 283.15};
   static constexpr double alpha { (0.257 / p_crit - 0.533 * T_crit / (p_crit * T))};
 
