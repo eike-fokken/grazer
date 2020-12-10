@@ -1118,10 +1118,18 @@ TEST(testGaspowerconnection, generated_power) {
   Model::Networkproblem::Gas::Gaspowerconnection  gp0("gp0", &g0,&N1, gp_topology);
 
 
+  std::cout << gp0.generated_power(gp0.kappa-1e-6) << std::endl;
+  std::cout << gp0.generated_power(gp0.kappa+1e-6) << std::endl;
+  std::cout << gp0.dgenerated_power_dq(gp0.kappa-1e-6) << std::endl;
+  std::cout << gp0.dgenerated_power_dq(gp0.kappa+1e-6) << std::endl;
+  std::cout << gp0.generated_power(-(gp0.kappa-1e-6)) << std::endl;
+  std::cout << gp0.generated_power(-(gp0.kappa+1e-6)) << std::endl;
+  std::cout << gp0.dgenerated_power_dq(gp0.kappa-1e-6) << std::endl;
+  std::cout << gp0.dgenerated_power_dq(gp0.kappa+1e-6) << std::endl;
   EXPECT_DOUBLE_EQ(gp0.smoothing_polynomial(gp0.kappa),  gas2power_q_coefficient*gp0.kappa );
- EXPECT_DOUBLE_EQ(gp0.smoothing_polynomial(-gp0.kappa),  power2gas_q_coefficient*(-gp0.kappa) );
- EXPECT_DOUBLE_EQ(gp0.dsmoothing_polynomial_dq(gp0.kappa), gas2power_q_coefficient  );
- EXPECT_DOUBLE_EQ(gp0.dsmoothing_polynomial_dq(-gp0.kappa),  power2gas_q_coefficient );
+  EXPECT_DOUBLE_EQ(gp0.smoothing_polynomial(-gp0.kappa),  power2gas_q_coefficient*(-gp0.kappa) );
+  EXPECT_DOUBLE_EQ(gp0.dsmoothing_polynomial_dq(gp0.kappa), gas2power_q_coefficient  );
+  EXPECT_DOUBLE_EQ(gp0.dsmoothing_polynomial_dq(-gp0.kappa),  power2gas_q_coefficient );
 
   // for (int i=-10;i!=11;++i){
   //   std::cout << gp0.generated_power(i) <<std::endl;

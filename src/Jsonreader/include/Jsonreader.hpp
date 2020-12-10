@@ -28,7 +28,7 @@ namespace Jsonreader {
   std::shared_ptr<Model::Problem>
   setup_problem(std::filesystem::path const &topology,
                 std::filesystem::path const &boundary,
-                std::filesystem::path const &output_directory);
+                std::filesystem::path const &output_directory,double Delta_x);
 
   /// This function reads boundary data for power nodes into a map for
   /// integration into the actual construction of Powernode s.
@@ -43,7 +43,7 @@ namespace Jsonreader {
   std::unique_ptr<Network::Net>
   construct_network(json &topologyjson, json &boundary_json,
                     std::vector<std::unique_ptr<Network::Node>> &nodes,
-                    std::vector<std::unique_ptr<Network::Edge>> &edges);
+                    std::vector<std::unique_ptr<Network::Edge>> &edges, double Delta_x);
 
   void set_initial_values(Eigen::Ref<Eigen::VectorXd>initial_state,
                           std::filesystem::path const &initial,

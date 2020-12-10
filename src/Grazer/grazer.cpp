@@ -12,14 +12,14 @@
 
 int main(int argc, char **argv) {
 
-  if (argc != 4 and argc != 1) {
+  if (argc != 4 and argc != 1 and argc !=7) {
     gthrow({" Wrong number of arguments."})
   }
 
   std::filesystem::path topology;
   std::filesystem::path initial;
   std::filesystem::path boundary;
-  if (argc == 4) {
+  if (argc >= 4) {
     topology = argv[1];
     initial = argv[2];
     boundary = argv[3];
@@ -36,6 +36,19 @@ int main(int argc, char **argv) {
     initial = "initial_pretty.json";
     boundary = "boundary_pretty.json";
   }
+
+  
+  double Delta_t = 1800;
+  double Delta_x = 10000;
+  double T = 86400;
+  if(argc==7){
+    Delta_t= std::stod(argv[4]);
+    Delta_x= std::stod(argv[5]);
+    T = std::stod(argv[6]);
+    std::cout << Delta_t<<std::endl;
+    std::cout << Delta_x << std::endl;
+  }
+
 
   //   std::filesystem::path topology(argv[1]);
   // std::filesystem::path initial(argv[2]);
@@ -69,7 +82,7 @@ int main(int argc, char **argv) {
   }
   std::filesystem::create_directory(output_dir);
 
-  auto p = Jsonreader::setup_problem(topology, boundary, output_dir);
+  auto p = Jsonreader::setup_problem(topology, boundary, output_dir,Delta_x);
 
   int number = p->set_indices();
   std::cout << "Number of variables: " <<number << std::endl;
@@ -77,10 +90,10 @@ int main(int argc, char **argv) {
     Aux::Printguard guard(p);
 
     Solver::Newtonsolver solver(1e-8, 50);
-    double T = 3600 * 24;
 
-    double N = 48.0;
-    double delta_t = T / N;
+    int N = static_cast<int>(std::ceil(T / Delta_t));
+    double delta_t = (T / N);
+
     Eigen::VectorXd state1(number);
 
     
@@ -88,7 +101,7 @@ int main(int argc, char **argv) {
     double new_time=delta_t;
     Jsonreader::set_initial_values(state1, initial, p);
     Eigen::VectorXd state2 = state1;
-    // p->save_values(0.0,state1);
+    p->save_values(0.0,state1);
     solver.evaluate_state_derivative_triplets(*p,
                                                last_time,  new_time,
                                               state2,

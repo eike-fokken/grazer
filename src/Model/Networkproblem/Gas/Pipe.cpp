@@ -120,6 +120,7 @@ namespace Model::Networkproblem::Gas {
     outputflow.precision(9);
 
     outputpressure << "t-x";
+    outputflow << "t-x";
     for (int i = 0;i!=number_of_points;++i){
       outputpressure <<",   " << std::to_string(i*Delta_x);
       outputflow <<",   " << std::to_string(i*Delta_x);

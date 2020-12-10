@@ -24,6 +24,7 @@ TODO:  Review, whether parallel execution in Networkproblem is worth it and whet
 
 TODO: make a convenient way to activate sanitizers in cmake. Check out scan-build!
 
+TODO: create a setup.json that contains delta_x and delta_t
 
 Note: python xq
 
