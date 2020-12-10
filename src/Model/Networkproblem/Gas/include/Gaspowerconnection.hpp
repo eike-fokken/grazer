@@ -44,19 +44,19 @@ namespace Model::Networkproblem::Power {
           Eigen::RowVector2d function_derivative, int rootvalues_index,
           Eigen::Ref<Eigen::VectorXd const> const &state) const override;
 
-      double smoothing_polynomial(double q) const;
-      double dsmoothing_polynomial_dq(double q) const;
+      double smoothing_polynomial(double P) const;
+      double dsmoothing_polynomial_dP(double P) const;
 
-      double generated_power(double q) const;
-      double dgenerated_power_dq(double q) const;
+      double burned_gas(double P) const;
+      double dburned_gas_dP(double P) const;
 
       static constexpr double kappa{1e-1};
     private:
 
       Model::Networkproblem::Power::Powernode * powerendnode{nullptr};
 
-      double const gas2power_q_coefficient;
-      double const power2gas_q_coefficient;
+      double const gas2power_P_coefficient;
+      double const power2gas_P_coefficient;
 
 
       };

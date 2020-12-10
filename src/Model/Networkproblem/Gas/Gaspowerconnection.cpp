@@ -15,8 +15,8 @@ namespace Model::Networkproblem::Gas {
                                          Network::Node *end_node,
                                          nlohmann::ordered_json topology_json)
       : Gasedge(_id, start_node, end_node),
-        gas2power_q_coefficient(std::stod(topology_json["gas2power_q_coeff"].get<std::string>())),
-        power2gas_q_coefficient(std::stod(topology_json["power2gas_q_coeff"].get<std::string>())) {}
+        gas2power_P_coefficient(std::stod(topology_json["gas2power_P_coeff"].get<std::string>())),
+        power2gas_P_coefficient(std::stod(topology_json["power2gas_P_coeff"].get<std::string>())) {}
 
 
 
@@ -24,7 +24,9 @@ namespace Model::Networkproblem::Gas {
                                     double , Eigen::Ref<Eigen::VectorXd const> const &,
                                     Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     int q_index = get_start_state_index() + 1;
-    rootvalues[q_index] = powerendnode->P(new_state) - generated_power(new_state[q_index]);
+    int P_index = powerendnode->get_start_state_index();
+    double P = new_state[P_index];
+    rootvalues[q_index] = burned_gas(P)- new_state[q_index];
   }
 
 
@@ -33,9 +35,10 @@ namespace Model::Networkproblem::Gas {
   void Gaspowerconnection::evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler, double , double ,
                                                      Eigen::Ref<Eigen::VectorXd const> const &, Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     int q_index = get_start_state_index() + 1;
-    double q = new_state[q_index];
-    jacobianhandler->set_coefficient(q_index, q_index, - dgenerated_power_dq(q));
-    powerendnode->evaluate_P_derivative(q_index, jacobianhandler, new_state);
+    int P_index = powerendnode->get_start_state_index();
+    double P = new_state[P_index];
+    jacobianhandler->set_coefficient(q_index, q_index, - 1.0);
+    jacobianhandler->set_coefficient(q_index, P_index, dburned_gas_dP(P));
   }
 
   void Gaspowerconnection::setup(){
@@ -157,41 +160,41 @@ namespace Model::Networkproblem::Gas {
   
 
 
-  double Gaspowerconnection::smoothing_polynomial(double q) const {
-    if (q > kappa + Aux::EPSILON or q < -kappa - Aux::EPSILON) {
-      gthrow({" You can't call this function for values of q bigger than ",
+  double Gaspowerconnection::smoothing_polynomial(double P) const {
+    if (P > kappa + Aux::EPSILON or P < -kappa - Aux::EPSILON) {
+      gthrow({" You can't call this function for values of P bigger than ",
               Aux::to_string_precise(kappa, 12), "\n"});
     }
-    double rel = q / kappa;
-    return q * (0.5 * (gas2power_q_coefficient + power2gas_q_coefficient) - 0.75 * (power2gas_q_coefficient - gas2power_q_coefficient) * rel +
-                0.25 * (power2gas_q_coefficient - gas2power_q_coefficient) * rel * rel * rel);
+    double rel = P / kappa;
+    return P * (0.5 * (gas2power_P_coefficient + power2gas_P_coefficient) - 0.75 * (power2gas_P_coefficient - gas2power_P_coefficient) * rel +
+                0.25 * (power2gas_P_coefficient - gas2power_P_coefficient) * rel * rel * rel);
   }
-  double Gaspowerconnection::dsmoothing_polynomial_dq(double q) const {
-    if(q>kappa+Aux::EPSILON or q < -kappa-Aux::EPSILON) {
-      gthrow({" You can't call this function for values of q bigger than ", Aux::to_string_precise(kappa, 12), "\n"});
+  double Gaspowerconnection::dsmoothing_polynomial_dP(double P) const {
+    if(P>kappa+Aux::EPSILON or P < -kappa-Aux::EPSILON) {
+      gthrow({" You can't call this function for values of P bigger than ", Aux::to_string_precise(kappa, 12), "\n"});
     }
-    double rel = q / kappa;
-    return 0.5 * (gas2power_q_coefficient + power2gas_q_coefficient) - 1.5 * (power2gas_q_coefficient - gas2power_q_coefficient) * rel +
-           (power2gas_q_coefficient - gas2power_q_coefficient) * rel * rel * rel;
+    double rel = P / kappa;
+    return 0.5 * (gas2power_P_coefficient + power2gas_P_coefficient) - 1.5 * (power2gas_P_coefficient - gas2power_P_coefficient) * rel +
+           (power2gas_P_coefficient - gas2power_P_coefficient) * rel * rel * rel;
   }
 
-  double Gaspowerconnection::generated_power(double q) const {
-    if (q > kappa) {
-      return  gas2power_q_coefficient * q;
-    } else if (q <- kappa) {
-      return power2gas_q_coefficient * q;
+  double Gaspowerconnection::burned_gas(double P) const {
+    if (P > kappa) {
+      return  gas2power_P_coefficient * P;
+    } else if (P <- kappa) {
+      return power2gas_P_coefficient * P;
     } else {
-      return smoothing_polynomial(q);
+      return smoothing_polynomial(P);
     }
 
   }
-  double Gaspowerconnection::dgenerated_power_dq(double q) const{
-    if (q > kappa) {
-      return gas2power_q_coefficient;
-    } else if (q < -kappa) {
-      return power2gas_q_coefficient;
+  double Gaspowerconnection::dburned_gas_dP(double P) const{
+    if (P > kappa) {
+      return gas2power_P_coefficient;
+    } else if (P < -kappa) {
+      return power2gas_P_coefficient;
     } else {
-      return dsmoothing_polynomial_dq(q);
+      return dsmoothing_polynomial_dP(P);
     }
   }
 

@@ -34,13 +34,17 @@ namespace Model::Networkproblem::Power {
       std::cout << initial_json << std::endl;
       gthrow({"This is not a power initial condition!"});
     }
-    int V_index = get_start_state_index();
-    int phi_index = V_index + 1;
+    int P_index = get_start_state_index();
+    int Q_index = P_index +1;
+    int V_index = P_index +2;
+    int phi_index = P_index + 3;
+    new_state[P_index] = initial_json["data"]["value"][0];
+    new_state[Q_index] = initial_json["data"]["value"][1];
     new_state[V_index] = initial_json["data"]["value"][2];
     new_state[phi_index] = initial_json["data"]["value"][3];
   }
 
-  int Powernode::get_number_of_states() const { return 2; }
+  int Powernode::get_number_of_states() const { return 4; }
 
   // int Powernode::get_number_of_printout_states() const { return 4;}
 
@@ -77,32 +81,24 @@ namespace Model::Networkproblem::Power {
     std::map<double, double> Qmap;
     std::map<double, double> Vmap;
     std::map<double, double> phimap;
+
+    int P_index = get_start_state_index();
+    int Q_index = P_index +1;
+    int V_index = P_index +2;
+    int phi_index = P_index + 3;
+
     std::vector<std::map<double, double>> value_vector;
-      double P_val;
-      double Q_val;
-      if (dynamic_cast<PQnode *>(this)) {
-        P_val = boundaryvalue(time)[0];
-        Q_val = boundaryvalue(time)[1];
-      } else if (dynamic_cast<PVnode *>(this)) {
-        P_val = boundaryvalue(time)[0];
-        Q_val = Q(state);
-      } else if (dynamic_cast<Vphinode *>(this)) {
-        P_val = P(state);
-        Q_val = Q(state);
-      } else {
-        gthrow({"Node with id: ", get_id(),
-                " is not of type PQ,PV or Vphi.  Aborting..."});
-      }
-      Pmap = {{0.0, P_val}};
-      Qmap = {{0.0, Q_val}};
-      Vmap = {{0.0, state[get_start_state_index()]}};
-      phimap = {{0.0, state[get_start_state_index() + 1]}};
-      value_vector = {Pmap, Qmap, Vmap, phimap};
-      Equationcomponent::push_to_values(time, value_vector);
+    Pmap = {{0.0, state[P_index]}};
+    Qmap = {{0.0, state[Q_index]}};
+    Vmap = {{0.0, state[V_index]}};
+    phimap = {{0.0, state[phi_index]}};
+
+    value_vector = {Pmap, Qmap, Vmap, phimap};
+    Equationcomponent::push_to_values(time, value_vector);
   }
 
   double Powernode::P(Eigen::Ref<Eigen::VectorXd const> const &new_state) const{
-    int V_index = get_start_state_index();
+    int V_index = get_start_state_index()+2;
     int phi_index = V_index + 1;
     double G_i = get_G();
 
@@ -117,7 +113,7 @@ namespace Model::Networkproblem::Power {
       double G_ik = line->get_G();
       double B_ik = line->get_B();
       auto othernode = dynamic_cast<Powernode *>(start_edge->get_ending_node());
-      int V_index_k = othernode->get_start_state_index();
+      int V_index_k = othernode->get_start_state_index()+2;
       int phi_index_k = V_index_k + 1;
       double V_k = new_state[V_index_k];
       double phi_k = new_state[phi_index_k];
@@ -134,7 +130,7 @@ namespace Model::Networkproblem::Power {
       double B_ik = line->get_B();
       Powernode *othernode =
           dynamic_cast<Powernode *>(end_edge->get_starting_node());
-      int V_index_k = othernode->get_start_state_index();
+      int V_index_k = othernode->get_start_state_index()+2;
       int phi_index_k = V_index_k + 1;
       double V_k = new_state[V_index_k];
       double phi_k = new_state[phi_index_k];
@@ -146,7 +142,7 @@ namespace Model::Networkproblem::Power {
 
   double Powernode::Q(Eigen::Ref<Eigen::VectorXd const> const &new_state) const{
 
-    int V_index = get_start_state_index();
+    int V_index = get_start_state_index()+2;
     int phi_index = V_index + 1;
     double B_i = get_B();
     double V_i = new_state[V_index];
@@ -162,7 +158,7 @@ namespace Model::Networkproblem::Power {
       double G_ik = line->get_G();
       double B_ik = line->get_B();
       auto othernode = dynamic_cast<Powernode *>(start_edge->get_ending_node());
-      int V_index_k = othernode->get_start_state_index();
+      int V_index_k = othernode->get_start_state_index()+2;
       int phi_index_k = V_index_k + 1;
       double V_k = new_state[V_index_k];
       double phi_k = new_state[phi_index_k];
@@ -179,7 +175,7 @@ namespace Model::Networkproblem::Power {
         double B_ik = line->get_B();
         Powernode *othernode =
             dynamic_cast<Powernode *>(end_edge->get_starting_node());
-        int V_index_k = othernode->get_start_state_index();
+        int V_index_k = othernode->get_start_state_index()+2;
         int phi_index_k = V_index_k + 1;
         double V_k = new_state[V_index_k];
         double phi_k = new_state[phi_index_k];
@@ -191,7 +187,7 @@ namespace Model::Networkproblem::Power {
 
   void Powernode::evaluate_P_derivative(int equationindex, Aux::Matrixhandler *jacobianhandler,
                                         Eigen::Ref<Eigen::VectorXd const> const &new_state) const{
-    int V_index = get_start_state_index();
+    int V_index = get_start_state_index()+2;
     int phi_index = V_index + 1;
     double G_i = get_G();
     double V_i = new_state[V_index];
@@ -206,7 +202,7 @@ namespace Model::Networkproblem::Power {
       double G_ik = line->get_G();
       double B_ik = line->get_B();
       auto othernode = dynamic_cast<Powernode *>(start_edge->get_ending_node());
-      int V_index_k = othernode->get_start_state_index();
+      int V_index_k = othernode->get_start_state_index()+2;
       int phi_index_k = V_index_k + 1;
       double V_k = new_state[V_index_k];
       double phi_k = new_state[phi_index_k];
@@ -234,7 +230,7 @@ namespace Model::Networkproblem::Power {
       double B_ik = line->get_B();
       Powernode *othernode =
           dynamic_cast<Powernode *>(end_edge->get_starting_node());
-      int V_index_k = othernode->get_start_state_index();
+      int V_index_k = othernode->get_start_state_index()+2;
       int phi_index_k = V_index_k + 1;
       double V_k = new_state[V_index_k];
       double phi_k = new_state[phi_index_k];
@@ -256,7 +252,7 @@ namespace Model::Networkproblem::Power {
 
   void Powernode::evaluate_Q_derivative(int equationindex, Aux::Matrixhandler *jacobianhandler,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
-    int V_index = get_start_state_index();
+    int V_index = get_start_state_index()+2;
     int phi_index = V_index + 1;
     double B_i = get_B();
     double V_i = new_state[V_index];
@@ -273,7 +269,7 @@ namespace Model::Networkproblem::Power {
       double G_ik = line->get_G();
       double B_ik = line->get_B();
       auto othernode = dynamic_cast<Powernode *>(start_edge->get_ending_node());
-      int V_index_k = othernode->get_start_state_index();
+      int V_index_k = othernode->get_start_state_index()+2;
       int phi_index_k = V_index_k + 1;
       double V_k = new_state[V_index_k];
       double phi_k = new_state[phi_index_k];
@@ -301,7 +297,7 @@ namespace Model::Networkproblem::Power {
       double B_ik = line->get_B();
       Powernode *othernode =
           dynamic_cast<Powernode *>(end_edge->get_starting_node());
-      int V_index_k = othernode->get_start_state_index();
+      int V_index_k = othernode->get_start_state_index()+2;
       int phi_index_k = V_index_k + 1;
       double V_k = new_state[V_index_k];
       double phi_k = new_state[phi_index_k];

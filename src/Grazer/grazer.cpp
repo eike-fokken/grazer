@@ -76,7 +76,7 @@ int main(int argc, char **argv) {
   try {
     Aux::Printguard guard(p);
 
-    Solver::Newtonsolver solver(1e-8, 50);
+    Solver::Newtonsolver solver(1e-8, 200);
     double T = 3600 * 24;
 
     double N = 48.0;
