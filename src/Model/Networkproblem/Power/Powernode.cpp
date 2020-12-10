@@ -53,16 +53,18 @@ namespace Model::Networkproblem::Power {
     std::filesystem::path node_output_directory(output_directory /
                                                 (get_id().insert(0, "Power_")));
 
+
     std::ofstream output(node_output_directory);
 
-    output << "time,\t P,\t Q,\t V,\t phi\n";
-    auto times = get_times();
+    output << "time,    P,    Q,    V,    phi\n";
     auto values = get_values();
+    output.precision(9);
+    auto times = get_times();
 
-    for (unsigned i = 0; i != times.size(); ++i) {
+    for (unsigned long i = 0; i != times.size(); ++i) {
       output << times[i];
       for (auto const &var : values[i]) {
-        output << ",\t " << var.at(0.0);
+        output << ",    " << var.at(0.0);
       }
       output << std::endl;
     }

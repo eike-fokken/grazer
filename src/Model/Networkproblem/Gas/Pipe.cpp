@@ -102,20 +102,27 @@ namespace Model::Networkproblem::Gas {
 
   void
   Pipe::print_to_files(std::filesystem::path const &output_directory) {
-    std::filesystem::path pipe_output_pressure(output_directory / (get_id().insert(0, "Gas_Pipe_p_")));
-    std::filesystem::path pipe_output_flow( output_directory / (get_id().insert(0, "Gas_Pipe_q_")));
 
-    std::ofstream outputpressure(pipe_output_pressure);
-    std::ofstream outputflow(pipe_output_flow);
+    std::string pressure_file_name = (get_id().insert(0, "Gas_Shortpipe_"))+"_p";
+    std::string flow_file_name =(get_id().insert(0, "Gas_Shortpipe_"))+"_q";
+    std::filesystem::path shortpipe_output_pressure(output_directory /
+                                                    pressure_file_name);
+    std::filesystem::path shortpipe_output_flow(
+                                                output_directory / flow_file_name);
+
+    std::ofstream outputpressure(shortpipe_output_pressure);
+    std::ofstream outputflow(shortpipe_output_flow);
 
     auto times = get_times();
     auto values = get_values();
 
+    outputpressure.precision(9);
+    outputflow.precision(9);
 
     outputpressure << "t-x";
     for (int i = 0;i!=number_of_points;++i){
-      outputpressure <<",\t" << std::to_string(i*Delta_x);
-      outputflow <<",\t" << std::to_string(i*Delta_x);
+      outputpressure <<",   " << std::to_string(i*Delta_x);
+      outputflow <<",   " << std::to_string(i*Delta_x);
     }
     outputpressure << "\n";
     outputflow << "\n";
@@ -123,13 +130,13 @@ namespace Model::Networkproblem::Gas {
     for (unsigned i = 0; i != times.size(); ++i) {
       outputpressure << times[i];
       for(auto & [x,pressure] : values[i][0]){
-        outputpressure << ",\t " << pressure;
+        outputpressure << ",    " << pressure;
       }
       outputpressure << "\n";
 
       outputflow << times[i];
       for(auto & [x,flow] : values[i][1]){
-        outputflow << ",\t " << flow;
+        outputflow << ",    " << flow;
       }
       outputflow << "\n";
     }

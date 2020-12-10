@@ -46,34 +46,37 @@ namespace Model::Networkproblem::Gas {
 
   void
   Gaspowerconnection::print_to_files(std::filesystem::path const &output_directory) {
-    std::filesystem::path gaspowerconnection_output_pressure(output_directory /
-                                                (get_id().insert(0, "Gas_Gaspowerconnection_p_")));
-    std::filesystem::path gaspowerconnection_output_flow(
-        output_directory / (get_id().insert(0, "Gas_Gaspowerconnection_q_")));
+    std::string pressure_file_name = (get_id().insert(0, "Gas_Shortpipe_"))+"_p";
+    std::string flow_file_name =(get_id().insert(0, "Gas_Shortpipe_"))+"_q";
+    std::filesystem::path shortpipe_output_pressure(output_directory /
+                                                    pressure_file_name);
+    std::filesystem::path shortpipe_output_flow(
+                                                output_directory / flow_file_name);
 
-    std::ofstream outputpressure(gaspowerconnection_output_pressure);
-    std::ofstream outputflow(gaspowerconnection_output_flow);
+    std::ofstream outputpressure(shortpipe_output_pressure);
+    std::ofstream outputflow(shortpipe_output_flow);
 
-    
-    outputpressure << "t-x,\t 0.0\n";
-    outputflow << "t-x,\t 0.0\n";
+    outputpressure << "t-x,    0.0\n";
+    outputflow << "t-x,    0.0\n";
     auto times = get_times();
     auto values = get_values();
 
+    outputpressure.precision(9);
+    outputflow.precision(9);
 
     for (unsigned i = 0; i != times.size(); ++i) {
       {
         // write out pressures:
         auto var = values[i][0];
         outputpressure << times[i];
-        outputpressure << ",\t " << var.at(0.0);
+        outputpressure << ",    " << var.at(0.0);
         outputpressure << std::endl;
       }
       {
         // write out flows:
         outputflow << times[i];
         auto var = values[i][1];
-        outputflow << ",\t " << var.at(0.0);
+        outputflow << ",    " << var.at(0.0);
         outputflow << std::endl;
       }
     }
