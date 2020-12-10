@@ -50,7 +50,7 @@ namespace Model::Networkproblem::Power {
       double generated_power(double q) const;
       double dgenerated_power_dq(double q) const;
 
-      static constexpr double kappa{1e-4};
+      static constexpr double kappa{1e-1};
     private:
 
       Model::Networkproblem::Power::Powernode * powerendnode{nullptr};
