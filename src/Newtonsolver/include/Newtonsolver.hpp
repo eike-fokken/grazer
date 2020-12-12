@@ -85,7 +85,7 @@ namespace Solver {
     /// technical constant of the solve algorithm.
     constexpr static double const decrease_value{1e-3};
     /// The minimal stepsize of a Newton step.
-    constexpr static double const minimal_stepsize{1e-10};
+    constexpr static double const minimal_stepsize{1e-12};
   };
 
   extern template class Newtonsolver_temp<Model::Problem>;
