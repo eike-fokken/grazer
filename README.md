@@ -47,11 +47,22 @@ Example files (that also contain gas data, which is not yet read) are in `data/`
 
 Invoking grazer can be done like this:
 
-```grazer topology.json initial.json boundary.json```
+```grazer topology.json initial.json boundary.json delta_t delta_x T```
+
+Here the topology file declares the graph structure and nature of the edges and nodes.
+See `data/topology_pretty.json` for an example.
+`boundary.json` declares boundary conditions and `initial.json` provides initial conditions for
+time `t = -delta_t`. For power-only problems one still has to provide initial values as they are also
+used for an initial guess in the Newton method.
+
+`delta_t` is the desired time step, `T` the last time point.
+If `T/delta_t` is not an integer, the next smaller time step is used.
+`delta_x` is the desired spatial step size. In a similar fashion to the time step the next smaller step size is used
+such that the length of each element is an integer multiple of the step size.
 
 Calling grazer without arguments is equivalent to calling:
 
-``` grazer topology_pretty.json initial_pretty.json boundary_pretty.json```
+``` grazer topology_pretty.json initial_pretty.json boundary_pretty.json 1800 10000 8640```
 
 
 
