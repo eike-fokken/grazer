@@ -18,16 +18,18 @@ namespace Model::Networkproblem::Gas {
              Network::Node *end_node, nlohmann::ordered_json topology_json,
              double _Delta_x)
       : Gasedge(_id, start_node, end_node),
-        length(std::stod(topology_json["length"]["value"].get<std::string>()) * 1e3),
-        diameter(std::stod(topology_json["diameter"]["value"].get<std::string>()) * 1e-3),
-        roughness(std::stod(topology_json["roughness"]["value"].get<std::string>())),
-        number_of_points(static_cast<int> (std::ceil(length/_Delta_x))+1),
-        Delta_x(length/(number_of_points-1)),
+        length(std::stod(topology_json["length"]["value"].get<std::string>()) *
+               1e3),
+        diameter(
+            std::stod(topology_json["diameter"]["value"].get<std::string>()) *
+            1e-3),
+        roughness(
+            std::stod(topology_json["roughness"]["value"].get<std::string>())),
+        number_of_points(static_cast<int>(std::ceil(length / _Delta_x)) + 1),
+        Delta_x(length / (number_of_points - 1)),
         bl(Balancelaw::Isothermaleulerequation(Aux::circle_area(0.5 * diameter),
-                                               diameter, roughness)) {
-
-  }
-
+                                               diameter, roughness)),
+        scheme() {}
 
   void Pipe::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
                 double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
