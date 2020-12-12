@@ -90,7 +90,8 @@ Solutionstruct Newtonsolver_temp<Problemtype>::solve(Eigen::Ref<Eigen::VectorXd>
     double current_norm = delta_x_bar.norm();
 
     double testnorm = step.norm();
-    while (current_norm > (1 - 0.5 * lambda) * testnorm) {
+    while (current_norm > (1 - 0.5 * lambda) * testnorm ) {
+      if(current_norm <minimal_stepsize){ gthrow({" Minimal stepsize reached!"});}
       lambda *= 0.5;
       candidate_vector = new_state + lambda * step;
       problem.evaluate(candidate_values, last_time, new_time, last_state,
