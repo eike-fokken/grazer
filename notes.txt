@@ -27,6 +27,9 @@ TODO: make a convenient way to activate sanitizers in cmake. Check out scan-buil
 
 TODO: create a setup.json that contains delta_x and delta_t
 
+
+TODO: make the writeout of data check for failures to open files. (failbit?)
+
 Note: python xq
 
 
