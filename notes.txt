@@ -5,6 +5,7 @@ TODO: Boundaryvalue maybe should hold a matrix instead of a map. (requires testi
 TODO: make subproblems inherit from nodes and define connecting problems as edges. --> Problem should hold a network of subproblems.
 
 
+
 TODO: Maybe replace new in unique_pointer with make_unique...
 
 TODO: replace all eigen indices by long (instead of int), requires performance testing.
@@ -17,7 +18,10 @@ TODO: Go back to strings in json files. DONE: topology file. Still todo: initial
 
 TODO: It seems to make no difference, whether we reanalyze the pattern everytime. Check this further.
 
-TODO: The current design of gas nodes is bad, think more about it
+TODO: The current design of gas nodes is bad, think more about it.
+      Let the pipes also handle the evaluation, not only the derivatives.
+
+TODO: Change the power to make it also behave like the pipes.
 
 
 TODO:  Review, whether parallel execution in Networkproblem is worth it and whether it produces bugs!
@@ -37,6 +41,7 @@ think about providing a -march=native target
 
 
 EASY Todos:
+
 
 TODO: go over the tests and use the googletest framework to deduplicate code!
 
