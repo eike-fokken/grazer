@@ -742,7 +742,14 @@ TEST(testPipe, evaluate_state_derivative) {
 
   double epsilon = pow(DBL_EPSILON,1.0/3.0);
 
-  std::cout <<RED<< __FILE__ <<":"<<__LINE__ <<": This is a hack! Maybe its ok, to use twice the squareroot but check this!" << RESET<<std::endl;
+
+  // I'm reasonably sure that is is ok
+
+  // std::cout <<RED<< __FILE__ <<":"<<__LINE__ <<": This is a hack! Maybe its ok, to use twice the squareroot but check this!" << RESET<<std::endl;
+
+  std::cout << RED << __FILE__ << ":" << __LINE__
+            << ": Be aware that here twice the squareroot of machine epsilon is used for finite difference comparison!"
+            << RESET << std::endl;
   double finite_difference_threshold = 2 * sqrt(epsilon);
 
   Eigen::VectorXd h0(c);
