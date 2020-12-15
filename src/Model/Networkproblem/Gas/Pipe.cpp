@@ -36,12 +36,14 @@ namespace Model::Networkproblem::Gas {
                 Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     for (int i = get_equation_start_index(); i!=get_equation_after_index();i+=2){
 
+      Eigen::Ref<Eigen::Vector2d> rootvalue_segment = rootvalues.segment<2>(i);
+      
       Eigen::Ref<Eigen::Vector2d const> const  last_left = last_state.segment<2>(i - 1);
       Eigen::Ref<Eigen::Vector2d const> const  last_right = last_state.segment<2>(i + 1);
       Eigen::Ref<Eigen::Vector2d const> const  new_left = new_state.segment<2>(i - 1);
       Eigen::Ref<Eigen::Vector2d const> const  new_right = new_state.segment<2>(i + 1);
       
-      scheme.evaluate_point(rootvalues.segment<2>(i), last_time, new_time,
+      scheme.evaluate_point(rootvalue_segment, last_time, new_time,
            Delta_x, last_left,
            last_right, new_left,
            new_right, bl);
