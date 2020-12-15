@@ -62,7 +62,7 @@ such that the length of each element is an integer multiple of the step size.
 
 Calling grazer without arguments is equivalent to calling:
 
-``` grazer topology_pretty.json initial_pretty.json boundary_pretty.json 1800 10000 8640```
+``` grazer topology_pretty.json initial_pretty.json boundary_pretty.json 1800 10000 86400```
 
 
 
