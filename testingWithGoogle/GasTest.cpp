@@ -742,7 +742,14 @@ TEST(testPipe, evaluate_state_derivative) {
 
   double epsilon = pow(DBL_EPSILON,1.0/3.0);
 
-  std::cout <<RED<< __FILE__ <<":"<<__LINE__ <<": This is a hack! Maybe its ok, to use twice the squareroot but check this!" << RESET<<std::endl;
+
+  // I'm reasonably sure that is is ok
+
+  // std::cout <<RED<< __FILE__ <<":"<<__LINE__ <<": This is a hack! Maybe its ok, to use twice the squareroot but check this!" << RESET<<std::endl;
+
+  std::cout << RED << __FILE__ << ":" << __LINE__
+            << ": Be aware that here twice the squareroot of machine epsilon is used for finite difference comparison!"
+            << RESET << std::endl;
   double finite_difference_threshold = 2 * sqrt(epsilon);
 
   Eigen::VectorXd h0(c);
@@ -923,18 +930,20 @@ TEST(testGaspowerconnection, evaluate) {
 
   for(int i = -10;i!=20;++i){
 
-    new_state << i,3*i,i*i,0.5*i;
+    double V = i;
+    double phi = 3*i;
+    double p = i*i;
+    double q = 0.5*i;
+    new_state << V,phi, p, q;
     // std::cout << new_state << std::endl;
     rootvalues.setZero();
 
     gp0.evaluate(rootvalues, last_time, new_time, last_state, new_state);  
 
     EXPECT_DOUBLE_EQ(rootvalues[2], 0.0);
-    if(new_state[3]>0)   {EXPECT_DOUBLE_EQ(rootvalues[3] , (-gas2power_q_coefficient*new_state[3] + N1.P(new_state)));}
-    if(new_state[3]<0)   {EXPECT_DOUBLE_EQ(rootvalues[3] , (-power2gas_q_coefficient*new_state[3] + N1.P(new_state)));}
 
+    EXPECT_DOUBLE_EQ(rootvalues[3] , (-gp0.generated_power(q) + N1.P(new_state)));
 
-    
 
 
   }
