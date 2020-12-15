@@ -923,18 +923,20 @@ TEST(testGaspowerconnection, evaluate) {
 
   for(int i = -10;i!=20;++i){
 
-    new_state << i,3*i,i*i,0.5*i;
+    double V = i;
+    double phi = 3*i;
+    double p = i*i;
+    double q = 0.5*i;
+    new_state << V,phi, p, q;
     // std::cout << new_state << std::endl;
     rootvalues.setZero();
 
     gp0.evaluate(rootvalues, last_time, new_time, last_state, new_state);  
 
     EXPECT_DOUBLE_EQ(rootvalues[2], 0.0);
-    if(new_state[3]>0)   {EXPECT_DOUBLE_EQ(rootvalues[3] , (-gas2power_q_coefficient*new_state[3] + N1.P(new_state)));}
-    if(new_state[3]<0)   {EXPECT_DOUBLE_EQ(rootvalues[3] , (-power2gas_q_coefficient*new_state[3] + N1.P(new_state)));}
 
+    EXPECT_DOUBLE_EQ(rootvalues[3] , (-gp0.generated_power(q) + N1.P(new_state)));
 
-    
 
 
   }
