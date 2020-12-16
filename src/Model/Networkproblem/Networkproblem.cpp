@@ -115,6 +115,10 @@ namespace Model::Networkproblem {
     for (Equationcomponent *eqcomponent : equationcomponents) {
       free_index = eqcomponent->set_indices(free_index);
     }
+    for (Equationcomponent *eqcomponent : equationcomponents) {
+      eqcomponent->setup();
+    }
+
     return free_index;
   }
 

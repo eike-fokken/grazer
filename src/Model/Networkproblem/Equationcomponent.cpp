@@ -14,7 +14,6 @@ namespace Model::Networkproblem {
     int number_of_states = get_number_of_states();
     after_state_index = next_free_index + number_of_states;
 
-    setup();
     return after_state_index;
   }
 
