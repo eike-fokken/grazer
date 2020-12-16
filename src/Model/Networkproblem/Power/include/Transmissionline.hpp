@@ -1,4 +1,5 @@
 #pragma once
+#include "Powernode.hpp"
 #include <Edge.hpp>
 #include <string>
 
@@ -8,14 +9,24 @@ namespace Model::Networkproblem::Power {
 
   public:
     Transmissionline(std::string _id, Network::Node *start, Network::Node *end,
-                     double _G, double _B)
-        : Edge(_id, start, end), G(_G), B(_B){};
+                     double _G, double _B);
+        
 
     double get_G() const;
     double get_B() const;
 
     void display() const override;
 
+    /// Returns a pointer to the starting powernode.
+    /// The constructor makes sure that this cast is valid.
+    Powernode * get_starting_powernode() const;
+
+    /// Returns a pointer to the ending powernode.
+    /// The constructor makes sure that this cast is valid.
+    Powernode * get_ending_powernode() const;
+
+
+    
   private:
     double G;
     double B;

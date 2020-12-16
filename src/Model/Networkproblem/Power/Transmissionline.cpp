@@ -1,7 +1,23 @@
+#include "Powernode.hpp"
 #include <Transmissionline.hpp>
 #include <iostream>
+#include <Exception.hpp>
+
 
 namespace Model::Networkproblem::Power {
+
+  Transmissionline::Transmissionline(std::string _id, Network::Node *start, Network::Node *end,
+                   double _G, double _B): Edge(_id, start, end), G(_G), B(_B){
+    Network::Node *startnode = get_starting_node();
+    auto start_powernode = dynamic_cast<Powernode *>(startnode);
+    if(!start_powernode) {gthrow({"Transmissionline ", get_id(),  " has starting node ", startnode->get_id(), ",which is not a powernode!"});}
+    Network::Node *endnode = get_ending_node();
+    auto end_powernode = dynamic_cast<Powernode *>(endnode);
+    if (!end_powernode) {
+      gthrow({"Transmissionline ", get_id(), " has ending node ",
+              endnode->get_id(), ",which is not a powernode!"});
+    }
+  }
 
   double Transmissionline::get_G() const { return G; }
 
@@ -10,6 +26,14 @@ namespace Model::Networkproblem::Power {
   void Transmissionline::display() const {
     Edge::print_id();
     std::cout << "type: TL, G: " << G << ", B: " << B << "\n";
+  }
+
+  Powernode * Transmissionline::get_starting_powernode() const {
+    return dynamic_cast<Powernode *>(get_starting_node());
+  }
+
+  Powernode * Transmissionline::get_ending_powernode() const {
+    return dynamic_cast<Powernode *>(get_ending_node());
   }
 
 } // namespace Model::Networkproblem::Power

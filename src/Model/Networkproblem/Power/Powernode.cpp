@@ -10,6 +10,7 @@
 #include <iostream>
 #include <map>
 #include <nlohmann/json.hpp>
+#include <tuple>
 
 namespace Model::Networkproblem::Power {
 
@@ -38,6 +39,38 @@ namespace Model::Networkproblem::Power {
     int phi_index = V_index + 1;
     new_state[V_index] = initial_json["data"]["value"][2];
     new_state[phi_index] = initial_json["data"]["value"][3];
+  }
+
+
+  void Powernode::setup() {
+
+    attached_component_data.clear();
+
+    for (auto & start_edge: get_starting_edges()) {
+      auto line = dynamic_cast<Transmissionline const *>(start_edge);
+      if(!line) {continue;}
+      auto endnode = line->get_ending_powernode();
+
+      double line_G = line->get_G();
+      double line_B = line->get_B();
+      int V_index = endnode->get_start_state_index();
+
+      attached_component_data.push_back({line_G,line_B,V_index});
+    }
+
+    for (auto &end_edge : get_ending_edges()) {
+      auto line = dynamic_cast<Transmissionline const *>(end_edge);
+      if (!line) {
+        continue;
+      }
+      auto startnode = line->get_starting_powernode();
+
+      double line_G = line->get_G();
+      double line_B = line->get_B();
+      int V_index = startnode->get_start_state_index();
+
+      attached_component_data.push_back({line_G, line_B, V_index});
+    }
   }
 
   int Powernode::get_number_of_states() const { return 2; }
@@ -109,32 +142,12 @@ namespace Model::Networkproblem::Power {
     double V_i = new_state[V_index];
     double phi_i = new_state[phi_index];
 
-    double P = 0.0; // -boundaryvalue(new_time)[0];
+    double P = 0.0; 
     P += G_i * V_i * V_i;
-    for (auto &start_edge : get_starting_edges()) {
-      auto line = dynamic_cast<Transmissionline const *>(start_edge);
-      if (!line) {continue;}
-      double G_ik = line->get_G();
-      double B_ik = line->get_B();
-      auto othernode = dynamic_cast<Powernode *>(start_edge->get_ending_node());
-      int V_index_k = othernode->get_start_state_index();
-      int phi_index_k = V_index_k + 1;
-      double V_k = new_state[V_index_k];
-      double phi_k = new_state[phi_index_k];
-      double phi_ik = phi_i - phi_k;
-      P += V_i * V_k * (G_ik * cos(phi_ik) + B_ik * sin(phi_ik));
-    }
-
-    for (auto &end_edge : get_ending_edges()) {
-      auto line = dynamic_cast<Transmissionline const *>(end_edge);
-      if (!line) {// std::cout << "no transmissionline!" <<std::endl;
-        continue;
-      }
-      double G_ik = line->get_G();
-      double B_ik = line->get_B();
-      Powernode *othernode =
-          dynamic_cast<Powernode *>(end_edge->get_starting_node());
-      int V_index_k = othernode->get_start_state_index();
+    for (auto & triple : attached_component_data) {
+      double G_ik = std::get<0>(triple);
+      double B_ik = std::get<1>(triple);
+      int V_index_k = std::get<2>(triple);
       int phi_index_k = V_index_k + 1;
       double V_k = new_state[V_index_k];
       double phi_k = new_state[phi_index_k];
@@ -154,38 +167,17 @@ namespace Model::Networkproblem::Power {
 
     double Q = 0.0; 
     Q -= B_i * V_i * V_i;
-    for (auto &start_edge : get_starting_edges()) {
-      auto line = dynamic_cast<Transmissionline const *>(start_edge);
-      if (!line) {// std::cout << "no transmissionline!" <<std::endl;
-        continue;
-      }
-      double G_ik = line->get_G();
-      double B_ik = line->get_B();
-      auto othernode = dynamic_cast<Powernode *>(start_edge->get_ending_node());
-      int V_index_k = othernode->get_start_state_index();
+    for (auto &triple : attached_component_data) {
+
+      double G_ik = std::get<0>(triple);
+      double B_ik = std::get<1>(triple);
+      int V_index_k = std::get<2>(triple);
       int phi_index_k = V_index_k + 1;
       double V_k = new_state[V_index_k];
       double phi_k = new_state[phi_index_k];
       double phi_ik = phi_i - phi_k;
       Q += V_i * V_k * (G_ik * sin(phi_ik) - B_ik * cos(phi_ik));
     }
-
-    for (auto &end_edge : get_ending_edges()) {
-      auto line = dynamic_cast<Transmissionline const *>(end_edge);
-      if (!line) {// std::cout << "no transmissionline!" <<std::endl;
-        continue;
-      }
-        double G_ik = line->get_G();
-        double B_ik = line->get_B();
-        Powernode *othernode =
-            dynamic_cast<Powernode *>(end_edge->get_starting_node());
-        int V_index_k = othernode->get_start_state_index();
-        int phi_index_k = V_index_k + 1;
-        double V_k = new_state[V_index_k];
-        double phi_k = new_state[phi_index_k];
-        double phi_ik = phi_i - phi_k;
-        Q += V_i * V_k * (G_ik * sin(phi_ik) - B_ik * cos(phi_ik));
-      }
     return Q;
   }
 
@@ -200,13 +192,10 @@ namespace Model::Networkproblem::Power {
     jacobianhandler->set_coefficient(equationindex, V_index, 2 * G_i * V_i);
     jacobianhandler->set_coefficient(equationindex, phi_index, 0.0);
 
-    for (auto &start_edge : get_starting_edges()) {
-      auto line = dynamic_cast<Transmissionline const *>(start_edge);
-      if(!line) {continue;}
-      double G_ik = line->get_G();
-      double B_ik = line->get_B();
-      auto othernode = dynamic_cast<Powernode *>(start_edge->get_ending_node());
-      int V_index_k = othernode->get_start_state_index();
+    for (auto &triple : attached_component_data) {
+      double G_ik = std::get<0>(triple);
+      double B_ik = std::get<1>(triple);
+      int V_index_k = std::get<2>(triple);
       int phi_index_k = V_index_k + 1;
       double V_k = new_state[V_index_k];
       double phi_k = new_state[phi_index_k];
@@ -225,33 +214,6 @@ namespace Model::Networkproblem::Power {
           V_i * V_k * (G_ik * sin(phi_ik) - B_ik * cos(phi_ik)));
     }
 
-    for (auto &end_edge : get_ending_edges()) {
-      auto line = dynamic_cast<Transmissionline const *>(end_edge);
-      if (!line) {// std::cout << "no transmissionline!" <<std::endl;
-        continue;
-      }
-      double G_ik = line->get_G();
-      double B_ik = line->get_B();
-      Powernode *othernode =
-          dynamic_cast<Powernode *>(end_edge->get_starting_node());
-      int V_index_k = othernode->get_start_state_index();
-      int phi_index_k = V_index_k + 1;
-      double V_k = new_state[V_index_k];
-      double phi_k = new_state[phi_index_k];
-      double phi_ik = phi_i - phi_k;
-      jacobianhandler->add_to_coefficient(
-          equationindex, V_index,
-          V_k * (G_ik * cos(phi_ik) + B_ik * sin(phi_ik)));
-      jacobianhandler->add_to_coefficient(
-          equationindex, phi_index,
-          V_i * V_k * (-G_ik * sin(phi_ik) + B_ik * cos(phi_ik)));
-      jacobianhandler->set_coefficient(
-          equationindex, V_index_k,
-          V_i * (G_ik * cos(phi_ik) + B_ik * sin(phi_ik)));
-      jacobianhandler->set_coefficient(
-          equationindex, phi_index_k,
-          V_i * V_k * (G_ik * sin(phi_ik) - B_ik * cos(phi_ik)));
-      }
   }
 
   void Powernode::evaluate_Q_derivative(int equationindex, Aux::Matrixhandler *jacobianhandler,
@@ -265,60 +227,29 @@ namespace Model::Networkproblem::Power {
     jacobianhandler->set_coefficient(equationindex, V_index,-2 * B_i * V_i);
     jacobianhandler->set_coefficient(equationindex, phi_index, 0.0);
 
-    for (auto &start_edge : get_starting_edges()) {
-      auto line = dynamic_cast<Transmissionline const *>(start_edge);
-      if (!line) {// std::cout << "no transmissionline!" <<std::endl;
-        continue;
+    for (auto &triple : attached_component_data) {
+        double G_ik = std::get<0>(triple);
+        double B_ik = std::get<1>(triple);
+        int V_index_k = std::get<2>(triple);
+        int phi_index_k = V_index_k + 1;
+        double V_k = new_state[V_index_k];
+        double phi_k = new_state[phi_index_k];
+        double phi_ik = phi_i - phi_k;
+
+        jacobianhandler->add_to_coefficient(
+            equationindex, V_index,
+            V_k * (G_ik * sin(phi_ik) - B_ik * cos(phi_ik)));
+        jacobianhandler->add_to_coefficient(
+            equationindex, phi_index,
+            V_i * V_k * (G_ik * cos(phi_ik) + B_ik * sin(phi_ik)));
+        jacobianhandler->set_coefficient(
+            equationindex, V_index_k,
+            V_i * (G_ik * sin(phi_ik) - B_ik * cos(phi_ik)));
+        jacobianhandler->set_coefficient(
+            equationindex, phi_index_k,
+            V_i * V_k * (-G_ik * cos(phi_ik) - B_ik * sin(phi_ik)));
       }
-      double G_ik = line->get_G();
-      double B_ik = line->get_B();
-      auto othernode = dynamic_cast<Powernode *>(start_edge->get_ending_node());
-      int V_index_k = othernode->get_start_state_index();
-      int phi_index_k = V_index_k + 1;
-      double V_k = new_state[V_index_k];
-      double phi_k = new_state[phi_index_k];
-      double phi_ik = phi_i - phi_k;
 
-      jacobianhandler->add_to_coefficient(
-          equationindex, V_index, V_k * (G_ik * sin(phi_ik) - B_ik * cos(phi_ik)));
-      jacobianhandler->add_to_coefficient(
-          equationindex, phi_index,
-          V_i * V_k * (G_ik * cos(phi_ik) + B_ik * sin(phi_ik)));
-      jacobianhandler->set_coefficient(
-          equationindex, V_index_k,
-          V_i * (G_ik * sin(phi_ik) - B_ik * cos(phi_ik)));
-      jacobianhandler->set_coefficient(
-          equationindex, phi_index_k,
-          V_i * V_k * (-G_ik * cos(phi_ik) - B_ik * sin(phi_ik)));
-    }
-
-    for (auto &end_edge : get_ending_edges()) {
-      auto line = dynamic_cast<Transmissionline const *>(end_edge);
-      if (!line) {// std::cout << "no transmissionline!" <<std::endl;
-        continue;
-      }
-      double G_ik = line->get_G();
-      double B_ik = line->get_B();
-      Powernode *othernode =
-          dynamic_cast<Powernode *>(end_edge->get_starting_node());
-      int V_index_k = othernode->get_start_state_index();
-      int phi_index_k = V_index_k + 1;
-      double V_k = new_state[V_index_k];
-      double phi_k = new_state[phi_index_k];
-      double phi_ik = phi_i - phi_k;
-
-      jacobianhandler->add_to_coefficient(
-          equationindex, V_index, V_k * (G_ik * sin(phi_ik) - B_ik * cos(phi_ik)));
-      jacobianhandler->add_to_coefficient(
-          equationindex, phi_index,
-          V_i * V_k * (G_ik * cos(phi_ik) + B_ik * sin(phi_ik)));
-      jacobianhandler->set_coefficient(
-          equationindex, V_index_k,
-          V_i * (G_ik * sin(phi_ik) - B_ik * cos(phi_ik)));
-      jacobianhandler->set_coefficient(
-          equationindex, phi_index_k,
-          V_i * V_k * (-G_ik * cos(phi_ik) - B_ik * sin(phi_ik)));
-    }
   }
 
 } // namespace Model::Networkproblem::Power

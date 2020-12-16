@@ -15,6 +15,8 @@ namespace Model::Networkproblem::Power {
 
     virtual ~Powernode(){};
 
+    void setup() override;
+
     int get_number_of_states() const final;
 
     // int get_number_of_printout_states() const final;
@@ -37,11 +39,15 @@ namespace Model::Networkproblem::Power {
   protected:
     void save_values(double time, Eigen::Ref<Eigen::VectorXd const> const &state) final;
 
+    
+
     Boundaryvalue<Powernode, 2> boundaryvalue;
     /// Real part of the admittance of this node
     double G;
     /// Imaginary part of the admittance of this node
     double B;
+
+    std::vector<std::tuple<double,double,int>> attached_component_data;
 
   };
 
