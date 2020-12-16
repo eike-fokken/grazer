@@ -45,6 +45,9 @@ EASY Todos:
 
 TODO: go over the tests and use the googletest framework to deduplicate code!
 
+TODO: Make better tests. The current tests didn't detect a raise condition, that setup cannot rely on indices of neighbouring
+components to be set already.
+
 TODO: write getters for the data members in Isothermaleulerequations and then make them private.
 
 TODO: refactor the print_to_files function in all gas edges into Gasedge
