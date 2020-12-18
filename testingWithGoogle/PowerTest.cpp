@@ -52,6 +52,8 @@ TEST(testPower, test_P_and_Q_1) {
 
   auto a = n1.set_indices(0);
   n2.set_indices(a);
+  n1.setup();
+  n2.setup();
 
   Eigen::VectorXd rootvalues(4);
   double last_time = 0.0;
@@ -164,6 +166,8 @@ TEST(testPower, test_P_and_Q_2) {
 
   auto a = n1.set_indices(0);
   n2.set_indices(a);
+  n1.setup();
+  n2.setup();
 
   Eigen::VectorXd rootvalues(4);
   double last_time = 0.0;
@@ -260,6 +264,8 @@ TEST(testPower, test_PV) {
 
   auto a = n1.set_indices(0);
   n2.set_indices(a);
+  n1.setup();
+  n2.setup();
 
   Eigen::VectorXd rootvalues(4);
   double last_time = 0.0;
