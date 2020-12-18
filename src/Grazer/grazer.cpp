@@ -104,6 +104,7 @@ int main(int argc, char **argv) {
                                                last_time,  new_time,
                                               state2,
                                               state1);
+    std::cout << "number of non-zeros in jacobian: " << solver.get_number_non_zeros_jacobian() << std::endl;
     std::cout << "data read" << std::endl;
 
     for (int i = 0; i != N + 1; ++i) {

@@ -25,6 +25,8 @@ void Newtonsolver_temp<Problemtype>::evaluate_state_derivative_triplets(Problemt
   lusolver.analyzePattern(jacobian);
 }
 
+  
+
 template <typename Problemtype>
 void Newtonsolver_temp<Problemtype>::evaluate_state_derivative_coeffref(Problemtype &problem, double last_time,
                                         double new_time,
@@ -37,9 +39,15 @@ void Newtonsolver_temp<Problemtype>::evaluate_state_derivative_coeffref(Problemt
 }
 
 template <typename Problemtype>
-Solutionstruct Newtonsolver_temp<Problemtype>::solve(Eigen::Ref<Eigen::VectorXd>new_state, Problemtype &problem,
-                                                     bool newjac, double last_time, double new_time,
-                     Eigen::Ref<Eigen::VectorXd const> const &last_state) {
+long int Newtonsolver_temp<Problemtype>::get_number_non_zeros_jacobian() {
+  return jacobian.nonZeros();
+}
+
+template <typename Problemtype>
+Solutionstruct Newtonsolver_temp<Problemtype>::solve(
+    Eigen::Ref<Eigen::VectorXd> new_state, Problemtype &problem, bool newjac,
+    double last_time, double new_time,
+    Eigen::Ref<Eigen::VectorXd const> const &last_state) {
   Solutionstruct solstruct;
 
   Eigen::VectorXd rootvalues(new_state.size());

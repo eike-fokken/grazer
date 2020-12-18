@@ -47,6 +47,9 @@ namespace Solver {
                                             Eigen::Ref<Eigen::VectorXd const> const &last_state,
                                             Eigen::Ref<Eigen::VectorXd const> const &new_state);
 
+
+    long int get_number_non_zeros_jacobian();
+
     /// \brief This method computes a solution to f(new_state) == 0.
     ///
     /// It uses
