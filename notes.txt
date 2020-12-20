@@ -12,17 +12,19 @@ TODO: replace all eigen indices by long (instead of int), requires performance t
 
 TODO: Validate the json!
 
-TODO: Think about how initial values should be handled for non-network problems!
+
 
 TODO: Go back to strings in json files. DONE: topology file. Still todo: initial and boundary values.
 
-TODO: It seems to make no difference, whether we reanalyze the pattern everytime. Check this further.
+TODO: Refactor Isothermaleulerequation into an Isentropiceulerequation template, that takes an Isentropicpressurelaw
+      and a Frictionexpression template.
 
 TODO: The current design of gas nodes is bad, think more about it.
       Let the pipes also handle the evaluation, not only the derivatives.
 
 TODO: Change the power to make it also behave like the pipes.
 
+TODO: 
 
 TODO:  Review, whether parallel execution in Networkproblem is worth it and whether it produces bugs!
 
@@ -51,3 +53,11 @@ components to be set already.
 TODO: write getters for the data members in Isothermaleulerequations and then make them private.
 
 TODO: refactor the print_to_files function in all gas edges into Gasedge
+
+
+DONE todos:
+
+
+DONE: It seems to make no difference, whether we reanalyze the pattern everytime. Check this further.
+      It is of little consequence, because it is one reanalyzation per time-step.
+      But it is hugely beneficial to not reanalyze on every factorization in the Newton-Iteration itself.
