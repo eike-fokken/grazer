@@ -47,6 +47,7 @@ namespace Model::Networkproblem::Power {
     /// Imaginary part of the admittance of this node
     double B;
 
+  private:
     std::vector<std::tuple<double,double,int>> attached_component_data;
 
   };
