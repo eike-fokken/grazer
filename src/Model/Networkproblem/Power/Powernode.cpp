@@ -49,13 +49,12 @@ namespace Model::Networkproblem::Power {
     for (auto & start_edge: get_starting_edges()) {
       auto line = dynamic_cast<Transmissionline const *>(start_edge);
       if(!line) {continue;}
-      auto endnode = line->get_ending_powernode();
+      Powernode *endnode = line->get_ending_powernode();
 
       double line_G = line->get_G();
       double line_B = line->get_B();
-      int V_index = endnode->get_start_state_index();
-
-      attached_component_data.push_back({line_G,line_B,V_index});
+      
+      attached_component_data.push_back({line_G,line_B,endnode});
     }
 
     for (auto &end_edge : get_ending_edges()) {
@@ -63,13 +62,13 @@ namespace Model::Networkproblem::Power {
       if (!line) {
         continue;
       }
-      auto startnode = line->get_starting_powernode();
+      Powernode *startnode = line->get_starting_powernode();
 
       double line_G = line->get_G();
       double line_B = line->get_B();
-      int V_index = startnode->get_start_state_index();
+      
 
-      attached_component_data.push_back({line_G, line_B, V_index});
+      attached_component_data.push_back({line_G, line_B, startnode});
     }
   }
 
@@ -147,7 +146,8 @@ namespace Model::Networkproblem::Power {
     for (auto & triple : attached_component_data) {
       double G_ik = std::get<0>(triple);
       double B_ik = std::get<1>(triple);
-      int V_index_k = std::get<2>(triple);
+      Powernode *othernode = std::get<2>(triple);
+      int V_index_k =othernode->get_start_state_index();
       int phi_index_k = V_index_k + 1;
       double V_k = new_state[V_index_k];
       double phi_k = new_state[phi_index_k];
@@ -171,7 +171,8 @@ namespace Model::Networkproblem::Power {
 
       double G_ik = std::get<0>(triple);
       double B_ik = std::get<1>(triple);
-      int V_index_k = std::get<2>(triple);
+      Powernode *othernode = std::get<2>(triple);
+      int V_index_k = othernode->get_start_state_index();
       int phi_index_k = V_index_k + 1;
       double V_k = new_state[V_index_k];
       double phi_k = new_state[phi_index_k];
@@ -195,7 +196,8 @@ namespace Model::Networkproblem::Power {
     for (auto &triple : attached_component_data) {
       double G_ik = std::get<0>(triple);
       double B_ik = std::get<1>(triple);
-      int V_index_k = std::get<2>(triple);
+      Powernode *othernode = std::get<2>(triple);
+      int V_index_k = othernode->get_start_state_index();
       int phi_index_k = V_index_k + 1;
       double V_k = new_state[V_index_k];
       double phi_k = new_state[phi_index_k];
@@ -230,7 +232,8 @@ namespace Model::Networkproblem::Power {
     for (auto &triple : attached_component_data) {
         double G_ik = std::get<0>(triple);
         double B_ik = std::get<1>(triple);
-        int V_index_k = std::get<2>(triple);
+        Powernode *othernode = std::get<2>(triple);
+        int V_index_k = othernode->get_start_state_index();
         int phi_index_k = V_index_k + 1;
         double V_k = new_state[V_index_k];
         double phi_k = new_state[phi_index_k];

@@ -19,8 +19,6 @@ namespace Model::Networkproblem::Power {
 
     int get_number_of_states() const final;
 
-    // int get_number_of_printout_states() const final;
-
     double get_G() const;
     double get_B() const;
 
@@ -48,7 +46,7 @@ namespace Model::Networkproblem::Power {
     double B;
 
   private:
-    std::vector<std::tuple<double,double,int>> attached_component_data;
+    std::vector<std::tuple<double,double,Powernode*>> attached_component_data;
 
   };
 
