@@ -14,7 +14,7 @@ TODO: replace all eigen indices by long (instead of int), requires performance t
 
 TODO: Validate the json!
 
-
+TODO: Make a function that dispatches to various constructors. Also make all constructors take the same arguments.
 
 TODO: Go back to strings in json files. DONE: topology file. Still todo: initial and boundary values.
 
