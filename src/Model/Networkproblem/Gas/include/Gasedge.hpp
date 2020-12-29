@@ -6,10 +6,9 @@
 namespace Model::Networkproblem::Gas {
 
   /// @brief This class is a base class for all Gas edges with a 2x2 balance law
-  class Gasedge : public Network::Edge, public Equationcomponent {
+  class Gasedge : public Equationcomponent {
 
   public:
-    using Edge::Edge;
 
     int give_away_boundary_index(int direction) const;
 

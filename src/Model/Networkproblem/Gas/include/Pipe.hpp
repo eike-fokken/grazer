@@ -1,11 +1,12 @@
 #pragma once
+#include "Edge.hpp"
 #include <Gasedge.hpp>
 #include <Isothermaleulerequation.hpp>
 #include <Implicitboxscheme.hpp>
 
 namespace Model::Networkproblem::Gas {
 
-  class Pipe final: public Gasedge {
+  class Pipe final: public Gasedge, public Network::Edge {
   public:
 
     Pipe(std::string _id, Network::Node *start_node, Network::Node *end_node, nlohmann::ordered_json topology_json, double Delta_x);

@@ -1,3 +1,4 @@
+#include "Idobject.hpp"
 #include <Gasedge.hpp>
 #include <Exception.hpp>
 
@@ -23,7 +24,9 @@ namespace Model::Networkproblem::Gas {
     } else if (direction==-1){
       return give_away_end_index();
     } else {
-      gthrow({"The supplied direction was ", std::to_string(direction), ", which is not +1 or -1! Edge id is: ", get_id()});
+      auto * this_idobject = dynamic_cast<Network::Idobject const *>(this);
+      if(!this_idobject){gthrow({"This gasedge is not and Idobject, which should never happen!"});}
+      gthrow({"The supplied direction was ", std::to_string(direction), ", which is not +1 or -1! Edge id is: ", this_idobject->get_id()});
     }
   }
 
@@ -41,7 +44,13 @@ namespace Model::Networkproblem::Gas {
   int Gasedge::get_ending_state_index() const {
 
     // This is a hack and should be refactored
-    if(get_number_of_states() ==2) { gthrow({"Edge: ", get_id(), " has only two variables, therefore this function should not have been called!"});}
+    if(get_number_of_states() ==2) {
+      auto *this_idobject = dynamic_cast<Network::Idobject const *>(this);
+      if (!this_idobject) {
+        gthrow({"This gasedge is not and Idobject, which should never happen!"})
+      }
+      gthrow({"Edge: ", this_idobject->get_id(), " has only two variables, therefore this function should not have been called!"});
+    }
 
     return get_after_state_index() - 2;
     }
@@ -52,7 +61,11 @@ namespace Model::Networkproblem::Gas {
     } else if (direction==-1){
       return get_ending_state_index();
     } else {
-      gthrow({"The supplied direction was ", std::to_string(direction), ", which is not +1 or -1! Edge id is: ", get_id()});
+      auto *this_idobject = dynamic_cast<Network::Idobject const *>(this);
+      if (!this_idobject) {
+        gthrow({"This gasedge is not and Idobject, which should never happen!"})
+      }
+      gthrow({"The supplied direction was ", std::to_string(direction), ", which is not +1 or -1! Edge id is: ", this_idobject->get_id()});
     }
   }
       Eigen::Vector2d
@@ -75,7 +88,12 @@ namespace Model::Networkproblem::Gas {
     } else if (direction==-1){
       return get_ending_state(state);
     } else {
-      gthrow({"The supplied direction was ", std::to_string(direction), ", which is not +1 or -1! Edge id is: ", get_id()});
+      auto *this_idobject = dynamic_cast<Network::Idobject const *>(this);
+      if (!this_idobject) {
+        gthrow({"This gasedge is not and Idobject, which should never happen!"})
+      }
+      gthrow({"The supplied direction was ", std::to_string(direction),
+              ", which is not +1 or -1! Edge id is: ", this_idobject->get_id()});
     }
   }
 } // namespace Model::Networkproblem::Gas

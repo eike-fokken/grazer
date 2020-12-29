@@ -1,4 +1,5 @@
 #pragma once
+#include "Edge.hpp"
 #include <Gasedge.hpp>
 
 namespace Model::Networkproblem::Power {
@@ -7,7 +8,7 @@ namespace Model::Networkproblem::Power {
 
   namespace Model::Networkproblem::Gas {
 
-    class Gaspowerconnection final : public Gasedge {
+    class Gaspowerconnection final : public Network::Edge, public Gasedge {
     public:
       Gaspowerconnection(std::string _id, Network::Node *start_node,
                          Network::Node *end_node,

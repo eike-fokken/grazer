@@ -17,7 +17,7 @@ namespace Model::Networkproblem::Gas {
   Pipe::Pipe(std::string _id, Network::Node *start_node,
              Network::Node *end_node, nlohmann::ordered_json topology_json,
              double _Delta_x)
-      : Gasedge(_id, start_node, end_node),
+      : Edge(_id, start_node, end_node),
         length(std::stod(topology_json["length"]["value"].get<std::string>()) *
                1e3),
         diameter(

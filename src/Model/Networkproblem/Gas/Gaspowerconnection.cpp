@@ -14,7 +14,7 @@ namespace Model::Networkproblem::Gas {
                                          Network::Node *start_node,
                                          Network::Node *end_node,
                                          nlohmann::ordered_json topology_json)
-      : Gasedge(_id, start_node, end_node),
+      : Edge(_id, start_node, end_node),
         gas2power_q_coefficient(std::stod(topology_json["gas2power_q_coeff"].get<std::string>())),
         power2gas_q_coefficient(std::stod(topology_json["power2gas_q_coeff"].get<std::string>())) {}
 

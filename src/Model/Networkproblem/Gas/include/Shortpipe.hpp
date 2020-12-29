@@ -1,11 +1,12 @@
+#include "Edge.hpp"
 #include <Gasedge.hpp>
 
 namespace Model::Networkproblem::Gas {
 
-  class Shortpipe final: public Gasedge {
+  class Shortpipe final: public Network::Edge, public Gasedge {
 
   public:
-    using Gasedge::Gasedge;
+    using Edge::Edge;
 
 
     void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
