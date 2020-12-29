@@ -31,6 +31,8 @@ add_compile_options("$<$<CONFIG:DEBUG>:${MY_DEBUG_OPTIONS}>"
   "$<$<CXX_COMPILER_ID:Clang,AppleClang>:-fcolor-diagnostics;-Wno-error=unused-private-field>"
   "$<$<CXX_COMPILER_ID:GNU>:-fdiagnostics-color;-Wno-error=strict-overflow>"
   )
+# add_compile_options("$<$<CONFIG:RELEASE>:-march=native>"
+#     )
 
 # # for sanitizing in debug mode:
 # set(MY_SANITIZE_OPTIONS -fsanitize=address -fno-omit-frame-pointer -fsanitize=undefined)
