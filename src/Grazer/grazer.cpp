@@ -1,3 +1,5 @@
+
+#include <Aux_executable.hpp>
 #include <Eigen/Sparse>
 #include <Exception.hpp>
 #include <Jsonreader.hpp>
@@ -12,52 +14,13 @@
 
 int main(int argc, char **argv) {
 
-  if (argc != 4 and argc != 1 and argc !=7) {
-    gthrow({" Wrong number of arguments."})
-  }
+  char** cmd_argument_pointer = argv;
+  std::vector<std::string> cmd_arguments(cmd_argument_pointer+1,
+                                         cmd_argument_pointer + argc);
 
-  std::filesystem::path topology;
-  std::filesystem::path initial;
-  std::filesystem::path boundary;
-  if (argc >= 4) {
-    topology = argv[1];
-    initial = argv[2];
-    boundary = argv[3];
-    if (!std::filesystem::is_regular_file(topology) or
-        !std::filesystem::is_regular_file(initial) or
-        !std::filesystem::is_regular_file(boundary)) {
-      std::cout
-          << "One of the given files is not a regular file, I will abort now."
-          << std::endl;
-      return 1;
-    }
-  } else {
-    topology = "topology_pretty.json";
-    initial = "initial_pretty.json";
-    boundary = "boundary_pretty.json";
-  }
+  auto [topology, initial, boundary, delta_t, delta_x,T] = Aux_executable::extract_input_data(cmd_arguments);
 
-  
-  double Delta_t = 1800;
-  double Delta_x = 10000;
-  double T = 86400;
-  if(argc==7){
-    Delta_t= std::stod(argv[4]);
-    Delta_x= std::stod(argv[5]);
-    T = std::stod(argv[6]);
-  }
-
-
-  //   std::filesystem::path topology(argv[1]);
-  // std::filesystem::path initial(argv[2]);
-  // std::filesystem::path boundary(argv[3]);
-
-  //////////////////////////////////////////////////
-  ////////////////// SANITIZE INPUT FIRST!!!!
-  //////////////////////////////////////////////////
-  // Important task: validate the json before using it.
-
-  std::filesystem::path output_dir("output");
+  std::filesystem::path output_dir =  Aux_executable::prepare_output_dir("output");
 
   if (std::filesystem::exists(output_dir)) {
     if (!std::filesystem::is_directory(output_dir)) {
@@ -80,7 +43,7 @@ int main(int argc, char **argv) {
   }
   std::filesystem::create_directory(output_dir);
 
-  auto p = Jsonreader::setup_problem(topology, boundary, output_dir,Delta_x);
+  auto p = Jsonreader::setup_problem(topology, boundary, output_dir,delta_x);
 
   int number = p->set_indices();
   std::cout << "Number of variables: " <<number << std::endl;
@@ -90,7 +53,7 @@ int main(int argc, char **argv) {
 
     Solver::Newtonsolver solver(1e-8, 50);
 
-    int N = static_cast<int>(std::ceil(T / Delta_t));
+    int N = static_cast<int>(std::ceil(T / delta_t));
     double delta_t = (T / N);
 
     Eigen::VectorXd state1(number);
