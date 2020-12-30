@@ -11,8 +11,7 @@ namespace Aux_executable {
 
     if (std::filesystem::exists(output_dir)) {
       if (!std::filesystem::is_directory(output_dir)) {
-        gthrow({"The output directory \"output\"\n"
-            "is present, but not a directory, I will abort now."});
+        gthrow({"The output directory, \"", output_dir_string ,"\" is present, but not a directory, I will abort now."});
       }
       auto ms_since_epoch =
           std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -35,7 +34,7 @@ namespace Aux_executable {
              std::filesystem::path, double, double,
              double>
   extract_input_data(std::vector<std::string> cmd_arguments){
-
+asdf
     std::filesystem::path topology("");
     std::filesystem::path initial("");
     std::filesystem::path boundary("");
