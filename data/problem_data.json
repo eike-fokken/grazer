@@ -1,0 +1,16 @@
+{
+    "filetype":"additional problem data",
+    "data":
+    [
+        {
+            "datatype":"general properties",
+            "start_time":"0",
+            "end_time":"86400",
+            "desired_delta_t":"1800"
+        },
+        {
+            "datatype":"gas properties",
+            "desired_delta_x": "10000"
+        }
+    ]
+}
