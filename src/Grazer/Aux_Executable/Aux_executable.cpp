@@ -5,6 +5,13 @@
 
 namespace Aux_executable {
 
+  std::vector<std::string> make_cmd_argument_vector(int argc, char **argv){
+    char **cmd_argument_pointer = argv;
+    std::vector<std::string> cmd_arguments(cmd_argument_pointer + 1,
+                                           cmd_argument_pointer + argc);
+    return cmd_arguments;
+  }
+
   std::filesystem::path prepare_output_dir(std::string output_dir_string){
 
     std::filesystem::path output_dir(output_dir_string);
@@ -34,7 +41,7 @@ namespace Aux_executable {
              std::filesystem::path, double, double,
              double>
   extract_input_data(std::vector<std::string> cmd_arguments){
-asdf
+    
     std::filesystem::path topology("");
     std::filesystem::path initial("");
     std::filesystem::path boundary("");

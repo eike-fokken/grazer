@@ -6,6 +6,12 @@
 
 namespace Aux_executable {
 
+  /// Makes a C++ vector of strings out of the C-style commandline arguments.
+  std::vector<std::string> make_cmd_argument_vector(int argc, char ** argv);
+
+  /// Checks, whether the given output directory path is present. If not, returns the path.
+  /// If yes, checks whether it is a directory. If yes, moves this directory and appends a unique string to it.
+  /// If it is present, but not a directory, it throws an exception.
   std::filesystem::path prepare_output_dir(std::string output_dir);
 
   std::tuple<std::filesystem::path, std::filesystem::path,
