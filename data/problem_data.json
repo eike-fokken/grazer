@@ -1,16 +1,20 @@
 {
-    "filetype":"additional problem data",
-    "data":
+    "filetype":"General_problem_data",
+    "general_data":
+    {
+        "datatype":"general",
+        "start_time":"0",
+        "end_time":"86400",
+        "desired_delta_t":"1800"
+    },
+    "problem_data":
     [
         {
-            "datatype":"general properties",
-            "start_time":"0",
-            "end_time":"86400",
-            "desired_delta_t":"1800"
-        },
-        {
-            "datatype":"gas properties",
-            "desired_delta_x": "10000"
+            "datatype":"networkproblem",
+            "desired_delta_x": "10000",
+            "topology_file_path":"topology_pretty.json",
+            "initial_file_path":"initial_pretty.json",
+            "boundary_file_path":"boundary_pretty.json"
         }
     ]
 }
