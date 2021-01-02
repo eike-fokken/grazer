@@ -1,6 +1,4 @@
-TODO: Declare all classes where it is appropriate final.
-
-TODO: Boundaryvalue maybe should hold a matrix instead of a map. (requires testing of performance)
+TODO: Think about Exception handling for data input.
 
 TODO: make subproblems inherit from nodes and define connecting problems as edges. --> Problem should hold a network of subproblems.
 
@@ -42,8 +40,11 @@ Note: python xq
 
 
 
+
+
 EASY Todos:
 
+TODO: Declare all classes where it is appropriate final.
 
 TODO: go over the tests and use the googletest framework to deduplicate code!
 
@@ -61,3 +62,9 @@ DONE todos:
 DONE: It seems to make no difference, whether we reanalyze the pattern everytime. Check this further.
       It is of little consequence, because it is one reanalyzation per time-step.
       But it is hugely beneficial to not reanalyze on every factorization in the Newton-Iteration itself.
+
+
+UNIMPORTANT TODO s:
+
+TODO: Consider to replace the maps in Intialvalue and Boundaryvalue by ordered vectors (only for performance, probably irrelevant)
+

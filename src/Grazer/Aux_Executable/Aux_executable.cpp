@@ -1,9 +1,28 @@
 #include <Aux_executable.hpp>
 #include <Exception.hpp>
+#include <filesystem>
 #include <iostream>
 #include <tuple>
+#include <optional>
+
 
 namespace Aux_executable {
+
+
+  bool
+  absolute_file_path_in_root(const std::filesystem::path &problem_root_path,
+               const std::filesystem::path &filepath) {
+    auto absolute_path = (problem_root_path / filepath).lexically_normal();
+
+    auto [root_end_iterator, ignored_value] =
+        std::mismatch(problem_root_path.begin(), problem_root_path.end(), absolute_path.begin());
+
+    if (root_end_iterator != problem_root_path.end()) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 
   std::vector<std::string> make_cmd_argument_vector(int argc, char **argv){
     char **cmd_argument_pointer = argv;
@@ -12,10 +31,18 @@ namespace Aux_executable {
     return cmd_arguments;
   }
 
-  std::filesystem::path prepare_output_dir(std::string output_dir_string){
+  std::filesystem::path prepare_output_dir(std::string output_dir_string) {
 
     std::filesystem::path output_dir(output_dir_string);
 
+    if(!absolute_file_path_in_root(std::filesystem::current_path(),output_dir)){
+      gthrow({"The output directory must be below the current working ",
+              "directory, but it is not.\n", "Current working directory: ",
+              std::filesystem::current_path().string(), "\n",
+              "Chosen output directory: ", output_dir.string()});
+    }
+
+    
     if (std::filesystem::exists(output_dir)) {
       if (!std::filesystem::is_directory(output_dir)) {
         gthrow({"The output directory, \"", output_dir_string ,"\" is present, but not a directory, I will abort now."});
@@ -37,56 +64,26 @@ namespace Aux_executable {
     return output_dir;
   }
 
-  std::tuple<std::filesystem::path, std::filesystem::path,
-             std::filesystem::path, double, double,
-             double>
+  std::filesystem::path
   extract_input_data(std::vector<std::string> cmd_arguments){
-    
-    std::filesystem::path topology("");
-    std::filesystem::path initial("");
-    std::filesystem::path boundary("");
 
-    double delta_t = 0.;
-    double delta_x = 0.;
-    double T = 0.;
-
-    return std::make_tuple(topology,initial,boundary,delta_t,delta_x,T);
-  }
-
-  std::tuple<std::filesystem::path, std::filesystem::path,
-             std::filesystem::path>
-  prepare_inputfiles(std::vector<std::string> input_filenames)
-  {    if (input_filenames.size()!=3) {
-      gthrow({"Function ",__FUNCTION__, " can only be called with exactly three input filenames."});
-        }
-
-        std::filesystem::path topology(input_filenames[0]);
-        std::filesystem::path initial(input_filenames[1]);
-        std::filesystem::path boundary(input_filenames[2]);
-
-        if (!std::filesystem::is_regular_file(topology) or
-            !std::filesystem::is_regular_file(initial) or
-            !std::filesystem::is_regular_file(boundary)) {
-          gthrow({"One of the given files is not a regular file, I will abort "
-                  "now."});
-      }
-    } else if (argc == 1) {
-      topology = "topology_pretty.json";
-      initial = "initial_pretty.json";
-      boundary = "boundary_pretty.json";
+    std::string default_problem_data_filename = "problem_data.json";
+    std::filesystem::path problem_data_file;
+    if(cmd_arguments.size()> 1) {
+      gthrow({"Grazer needs 0 or 1 argument: The problem data file.\n"
+              " If you provide no argument, the filename ",
+              default_problem_data_filename,
+              " in the directory, where Grazer was started, is assumed.\n"
+              "Aborting now."})
+    }
+    else if (cmd_arguments.size() == 0) {
+      problem_data_file = "problem_data_filename";
     } else {
-      gthrow(
-          {"Wrong number of arguments, I will abort now.\n Correct number of "
-           "arguments is 0, 3 or 6."});
+      problem_data_file = cmd_arguments[0];
+    }
+    if (!std::filesystem::is_regular_file(problem_data_file)){gthrow({"The given path ",problem_data_file.string(), " does not point to a regular file."});}
+    return problem_data_file;
     }
 
-    double Delta_t = 1800;
-    double Delta_x = 10000;
-    double T = 86400;
-    if (argc == 7) {
-      Delta_t = std::stod(argv[4]);
-      Delta_x = std::stod(argv[5]);
-      T = std::stod(argv[6]);
-    }
-  }
 }
+
