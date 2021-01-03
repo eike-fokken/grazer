@@ -1,8 +1,6 @@
 {
-    "filetype":"General_problem_data",
-    "general_data":
+    "time_evolution_data":
     {
-        "datatype":"general",
         "start_time":"0",
         "end_time":"86400",
         "desired_delta_t":"1800"
