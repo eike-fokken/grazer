@@ -8,7 +8,7 @@
     "problem_data":
     [
         {
-            "datatype":"networkproblem",
+            "subproblem_type":"Networkproblem",
             "desired_delta_x": "10000",
             "topology_file_path":"topology_pretty.json",
             "initial_file_path":"initial_pretty.json",
