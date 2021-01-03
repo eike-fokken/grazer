@@ -1,4 +1,6 @@
-TODO: Think about Exception handling for data input.
+TODO: Think about Exception handling for data input validation.
+
+TODO: Introduce a CFL check for schemes.
 
 TODO: make subproblems inherit from nodes and define connecting problems as edges. --> Problem should hold a network of subproblems.
 
