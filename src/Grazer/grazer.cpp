@@ -1,4 +1,4 @@
-#include <Aux_executable.hpp>
+#include <Input_output.hpp>
 #include <Eigen/Sparse>
 #include <Exception.hpp>
 #include <Jsonreader.hpp>
@@ -33,7 +33,9 @@ int main(int argc, char **argv) {
 
   int number = p->set_indices();
   std::cout << "Number of variables: " << number << std::endl;
+
   // p->display();
+
   try {
     Aux::Printguard guard(p);
 

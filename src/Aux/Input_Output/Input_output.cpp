@@ -1,10 +1,9 @@
-#include <Aux_executable.hpp>
 #include <Exception.hpp>
+#include <Input_output.hpp>
 #include <filesystem>
 #include <iostream>
-#include <tuple>
 #include <optional>
-
+#include <tuple>
 
 namespace Aux_executable {
 
@@ -15,7 +14,7 @@ namespace Aux_executable {
     auto absolute_path = (problem_root_path / filepath).lexically_normal();
 
     auto [root_end_iterator, ignored_value] =
-        std::mismatch(problem_root_path.begin(), problem_root_path.end(), absolute_path.begin());
+      std::mismatch(problem_root_path.begin(), problem_root_path.end(), absolute_path.begin());
 
     if (root_end_iterator != problem_root_path.end()) {
       return false;
