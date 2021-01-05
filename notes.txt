@@ -57,6 +57,7 @@ TODO: write getters for the data members in Isothermaleulerequations and then ma
 
 TODO: refactor the print_to_files function in all gas edges into Gasedge
 
+TODO: call "set_indices" from "set_initial_values" to make sure it is called beforehand.
 
 DONE todos:
 
