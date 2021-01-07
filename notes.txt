@@ -35,7 +35,7 @@ TODO: create a setup.json that contains delta_x and delta_t
 
 TODO: make the writeout of data check for failures to open files. (failbit?)
 
-
+TODO: Replace most (all?) appearances of raw pointers with references, e.g. with std::ref and std::cref.
 
 Note: python xq
 
