@@ -22,14 +22,17 @@ namespace Model::Networkproblem {
     ~Networkproblem() override{};
 
     Networkproblem(std::unique_ptr<Network::Net> _network);
+    Networkproblem(nlohmann::json & networkproblem_json);
 
-    void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-                  double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
-                  Eigen::Ref<Eigen::VectorXd const> const &new_state) const final;
-    void evaluate_state_derivative(Aux::Matrixhandler *jacobian,
-                                   double last_time, double new_time,
-                                   Eigen::Ref<Eigen::VectorXd const> const &last_state,
-                                   Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
+    void
+    evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
+             double new_time,
+             Eigen::Ref<Eigen::VectorXd const> const &last_state,
+             Eigen::Ref<Eigen::VectorXd const> const &new_state) const final;
+    void evaluate_state_derivative(
+        Aux::Matrixhandler *jacobian, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
 
     void save_values(double time, Eigen::Ref<Eigen::VectorXd>new_state) final;
 

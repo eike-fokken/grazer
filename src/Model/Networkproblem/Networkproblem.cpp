@@ -1,3 +1,4 @@
+#include "nlohmann/json.hpp"
 #include <Edge.hpp>
 #include <Equationcomponent.hpp>
 #include <Exception.hpp>
@@ -11,6 +12,7 @@
 #include <vector>
 // #include <execution>
 #include <Eigen/Sparse>
+#include <Aux.hpp>
 
 namespace Model::Networkproblem {
 
@@ -31,10 +33,29 @@ namespace Model::Networkproblem {
     }
   }
 
-  void Networkproblem::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-                                double new_time,
-                                Eigen::Ref<Eigen::VectorXd const> const &last_state,
-                                Eigen::Ref<Eigen::VectorXd const> const &new_state) const{
+  Networkproblem::Networkproblem(nlohmann::json &networkproblem_json) {
+
+    nlohmann::json &topology = networkproblem_json["topology_json"];
+    nlohmann::json &boundary = networkproblem_json["boundary_json"];
+
+    nlohmann::json allnodes;
+
+    std::vector<std::pair<std::string, bool>> power_type_boundary(
+        {{"Vphi", true}, {"PV", true}, {"PQ", true}});
+    Aux::append_to_node_json_vector(allnodes, power_type_boundary, topology, boundary);
+
+    // Here pressure boundary conditions are missing:
+    std::vector<std::pair<std::string, bool>> gas_type_boundary(
+        {{"source", true}, {"sink", true}, {"innode", false}});
+    Aux::append_to_node_json_vector(allnodes, gas_type_boundary, topology, boundary);
+
+  }
+
+
+      void Networkproblem::evaluate(
+          Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
+          double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
+          Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
 
     // // This should evaluate in parallel, test on bigger problems later on:
     // std::for_each(std::execution::par_unseq, equationcomponents.begin(),
