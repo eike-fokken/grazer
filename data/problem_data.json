@@ -6,13 +6,14 @@
         "desired_delta_t":"1800"
     },
     "problem_data":
-    [
+    {
+        "Network_problem":
         {
-            "subproblem_type":"Networkproblem",
             "desired_delta_x": "10000",
-            "topology_file_path":"topology_pretty.json",
-            "initial_file_path":"initial_pretty.json",
-            "boundary_file_path":"boundary_pretty.json"
+            "topology_json":"topology_pretty.json",
+            "initial_json":"initial_pretty.json",
+            "boundary_json":"boundary_pretty.json"
         }
-    ]
+    }
+
 }
