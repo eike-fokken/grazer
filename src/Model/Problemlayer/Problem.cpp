@@ -5,10 +5,19 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include <Subproblemchooser.hpp>
 
 namespace Model {
 
-  // class Model;
+  Problem::Problem(std::map<std::string, nlohmann::json> subproblem_jsons,
+                   std::filesystem::path const &_output_directory)
+      : output_directory(_output_directory) {
+    for(auto const & [subproblem_type,subproblem_json] : subproblem_jsons)
+      {
+        std::unique_ptr<Subproblem> subproblem_ptr = Subproblemchooser::build_subproblem(subproblem_type, subproblem_json);
+        add_subproblem(std::move(subproblem_ptr));
+      }
+  }
 
   void Problem::add_subproblem(std::unique_ptr<Subproblem> subproblem_ptr) {
     subproblems.push_back(std::move(subproblem_ptr));
