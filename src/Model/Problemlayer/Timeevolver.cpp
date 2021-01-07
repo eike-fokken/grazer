@@ -5,13 +5,14 @@
 #include <iostream>
 
 namespace Model {
-  
-  Timedata::Timedata(double _starttime, double _endtime, double desired_delta_t):
-                     starttime(_starttime), endtime(_endtime),
-                     Full_time_interval(endtime - starttime),
-                     Number_of_timesteps(init_Number_of_timesteps(desired_delta_t)),
-                     delta_t(init_delta_t())
-                     {}
+
+  Timedata::Timedata(json timedata_json)
+    : starttime(std::stod(timedata_json["start_time"].get<std::string>())),
+                endtime(std::stod(timedata_json["end_time"].get<std::string>())),
+        Full_time_interval(endtime - starttime),
+        Number_of_timesteps(init_Number_of_timesteps(
+            std::stod(timedata_json["desired_delta_t"].get<std::string>()))),
+        delta_t(init_delta_t()) {}
 
   int Timedata::init_Number_of_timesteps(double desired_delta_t) const {
     int const _Number_of_timesteps =
@@ -54,8 +55,6 @@ namespace Model {
       std::cout << solstruct.used_iterations << std::endl;
 
       last_time = new_time;
-
     }
   }
-
 }

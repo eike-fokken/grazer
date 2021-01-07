@@ -15,8 +15,7 @@ namespace Model {
   struct Timedata{
 
     Timedata() = delete;
-    Timedata(double _starttime, double _endtime, double desired_delta_t);
-
+    Timedata(json timedata_json);
 
     double const starttime;
     double const endtime;

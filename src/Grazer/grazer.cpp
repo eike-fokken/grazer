@@ -10,27 +10,25 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <nlohmann/json.hpp>
 
 int main(int argc, char **argv) {
 
   std::vector<std::string> cmd_arguments =
       Aux_executable::make_cmd_argument_vector(argc, argv);
 
-  auto problem_data_file = Aux_executable::extract_input_data(cmd_arguments);
+  std::filesystem::path problem_data_file =
+      Aux_executable::extract_input_data(cmd_arguments);
 
   std::filesystem::path output_dir =
       Aux_executable::prepare_output_dir("output");
 
-  // time evolution object here?
 
-  auto [time_evolver, problem] =
-      Jsonreader::setup_evolution_system(problem_data_file, output_dir);
+  // auto [timedata_json, problemdata_json] = Jsonreader::get_json(problem_data_file);
 
   std::shared_ptr<Model::Problem> p =
       Jsonreader::setup_problem(problem_data_file, output_dir, "", 1);
-
   
-
   int number = p->set_indices();
   std::cout << "Number of variables: " << number << std::endl;
 
