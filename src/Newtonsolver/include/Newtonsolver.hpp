@@ -4,7 +4,7 @@
 #include <Eigen/SparseQR>
 
 namespace GrazerTest {
-class TestProblem;
+  class TestProblem;
 }
 
 namespace Model {

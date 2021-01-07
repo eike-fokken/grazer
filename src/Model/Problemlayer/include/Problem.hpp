@@ -17,8 +17,6 @@ namespace Aux {
  */
 namespace Model {
 
-  class Subproblem;
-
   class Problem {
 
   public:

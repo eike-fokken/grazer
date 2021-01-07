@@ -67,7 +67,7 @@ namespace Model {
     }
   }
 
-  void Problem::set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
+  void Problem::set_initial_values(Eigen::Ref<Eigen::VectorXd> new_state,
                                    nlohmann::ordered_json initialjson) {
     for (auto &subproblem : subproblems) {
       subproblem->set_initial_values(new_state, initialjson);
