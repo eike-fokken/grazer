@@ -37,17 +37,26 @@ namespace Solver {
     Newtonsolver_temp(double _tolerance, int _maximal_iterations)
       : tolerance(_tolerance), maximal_iterations(_maximal_iterations){};
 
+    /// \brief Reanalyzes the sparsity pattern of the jacobian the objective function and computes it.
+    ///
+    /// The jacobian is saved into the data member named "jacobian".
+
     void evaluate_state_derivative_triplets(Problemtype &problem,
                                             double last_time, double new_time,
                                             Eigen::Ref<Eigen::VectorXd const> const &last_state,
                                             Eigen::Ref<Eigen::VectorXd>new_state);
+
+    /// \brief Computes the jacobian with the assumption that the sparsity pattern has not changed.
+    ///
+    /// The jacobian is saved into the data member named "jacobian".
+    /// Only call this version if you are sure that the sparsity pattern is unchanged.
 
     void evaluate_state_derivative_coeffref(Problemtype &problem,
                                             double last_time, double new_time,
                                             Eigen::Ref<Eigen::VectorXd const> const &last_state,
                                             Eigen::Ref<Eigen::VectorXd const> const &new_state);
 
-
+    
     long int get_number_non_zeros_jacobian();
 
     /// \brief This method computes a solution to f(new_state) == 0.
@@ -75,8 +84,6 @@ namespace Solver {
 
     /// This will be the jacobian matrix.  We hold it here so its sparsity
     /// pattern is preserved.
-    /// TODO: maybe unnecessary because we set from triplets in every step.
-    // But maybe will change that again.
     Eigen::SparseMatrix<double> jacobian;
 
     /// Tolerance under which equality is accepted.
