@@ -16,9 +16,10 @@
 
 namespace Model::Networkproblem {
 
-  /// The constructor takes an instance of Net and finds out which Edges and
-  /// Nodes actually hold equations to solve
-  Networkproblem::Networkproblem(std::unique_ptr<Network::Net> _network)
+
+      /// The constructor takes an instance of Net and finds out which Edges and
+      /// Nodes actually hold equations to solve
+      Networkproblem::Networkproblem(std::unique_ptr<Network::Net> _network)
       : network(std::move(_network)) {
     for (Network::Node *node : network->get_nodes()) {
       if (auto equationcomponent = dynamic_cast<Equationcomponent *>(node)) {
@@ -38,17 +39,9 @@ namespace Model::Networkproblem {
     nlohmann::json &topology = networkproblem_json["topology_json"];
     nlohmann::json &boundary = networkproblem_json["boundary_json"];
 
-    nlohmann::json allnodes;
-
-    std::vector<std::pair<std::string, bool>> power_type_boundary(
-        {{"Vphi", true}, {"PV", true}, {"PQ", true}});
-    Aux::append_to_node_json_vector(allnodes, power_type_boundary, topology, boundary);
-
-    // Here pressure boundary conditions are missing:
-    std::vector<std::pair<std::string, bool>> gas_type_boundary(
-        {{"source", true}, {"sink", true}, {"innode", false}});
-    Aux::append_to_node_json_vector(allnodes, gas_type_boundary, topology, boundary);
-
+    // build the node vector.
+    auto nodes = Aux::build_node_vector(Aux::Node_names_and_boundary_demands,
+                                        topology, boundary);
   }
 
 
@@ -73,7 +66,7 @@ namespace Model::Networkproblem {
   }
 
   void Networkproblem::evaluate_state_derivative(
-      Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
+      ::Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state, Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
 
     // // This should evaluate in parallel, test on bigger problems later on:

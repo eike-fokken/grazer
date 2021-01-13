@@ -14,12 +14,10 @@
 
 namespace Model::Networkproblem::Power {
 
-  Powernode::Powernode(std::string _id, nlohmann::ordered_json boundary_json,
-                       double _G, double _B)
-      : Node(_id), G(_G), B(_B) {
-    boundaryvalue.set_boundary_condition(boundary_json);
-  }
-
+  Powernode::Powernode(nlohmann::json const &topology)
+: Node(topology["id"].get<std::string>()), G(std::stod(topology["G"].get<std::string>())), B(std::stod(topology["B"].get<std::string>())) {
+    boundaryvalue.set_boundary_condition(topology["boundary_values"]);
+}
 
   void Powernode::set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
                                      nlohmann::ordered_json initial_json) {

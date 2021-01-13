@@ -14,6 +14,8 @@ TODO: replace all eigen indices by long (instead of int), requires performance t
 
 TODO: Validate the json!
 
+TODO: use an enum in Networkproblem/Aux.cpp for distinguishing the types.
+
 TODO: Make a function that dispatches to various constructors. Also make all constructors take the same arguments.
 
 TODO: Go back to strings in json files. DONE: topology file. Still todo: initial and boundary values.
@@ -36,10 +38,6 @@ TODO: create a setup.json that contains delta_x and delta_t
 TODO: make the writeout of data check for failures to open files. (failbit?)
 
 TODO: Replace most (all?) appearances of raw pointers with references, e.g. with std::ref and std::cref.
-
-Note: python xq
-
-
 
 
 
