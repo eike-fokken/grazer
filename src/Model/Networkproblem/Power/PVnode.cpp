@@ -5,6 +5,8 @@
 
 namespace Model::Networkproblem::Power {
 
+  std::string PVnode::get_type() { return "PVnode"; }
+
   void PVnode::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
                         Eigen::Ref<Eigen::VectorXd const> const &,
                         Eigen::Ref<Eigen::VectorXd const> const &new_state) const{

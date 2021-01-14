@@ -6,6 +6,8 @@ namespace Model::Networkproblem::Power {
   class Vphinode final : public Powernode {
 
   public:
+    static std::string get_type();
+
     using Powernode::Powernode;
 
     /// In this node we just set V and phi to their respective boundary values.

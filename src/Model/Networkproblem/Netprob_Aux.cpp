@@ -1,32 +1,38 @@
 #include <PQnode.hpp>
 #include <PVnode.hpp>
 #include <Vphinode.hpp>
-#include <Aux.hpp>
+#include <Netprob_Aux.hpp>
 #include <Exception.hpp>
 #include <iostream>
 #include <memory>
+#include <Choosercontainer.hpp>
 
-
-namespace Model::Networkproblem::Aux {
-
-  // Add power nodes:
-  std::vector<std::pair<std::string, bool>> power_type_boundary(
-      {{"Vphinode", true}, {"PVnode", true}, {"PQnode", true}});
-
-  // Add Gas nodes:
-  // Here pressure boundary conditions are missing:
-  std::vector<std::pair<std::string, bool>>
-      gas_type_boundary({{"Source", true}, {"Sink", true}, {"Innode", false}});
-
-  std::map<std::string const, Constructorfunction> node_constructor_map = {
-      {"Vphinode", build_specific_node<Power::Vphinode>},
-      {"PVnode", build_specific_node<Power::PVnode>},
-      {"PQnode", build_specific_node<Power::PQnode>},
-  };
+namespace Model::Networkproblem::Netprob_Aux {
 
   std::vector<std::unique_ptr<Network::Node>> build_node_vector(
-      std::vector<std::pair<std::string, bool>> node_types_boundary,
       nlohmann::json const &topology, nlohmann::ordered_json const &boundary) {
+
+    Nodechooserset nodechooserset;
+
+    // Here comes a check whether all nodetypes where used.
+    // It will throw if a node type is encountered that is not known.
+
+    for (auto nodetype_itr = topology["nodes"].begin();
+         nodetype_itr != topology["nodes"].end(); ++nodetype_itr) {
+      std::cout << nodetype_itr.key() << " | " << nodetype_itr.value() << "\n";
+      std::string nodetype = nodetype_itr.key();
+      auto find_missing_nodetypes = [&nodetype](auto &nodechooser) {
+        return nodetype == nodechooser->get_type();
+      };
+      auto chooser = std::find_if(nodechooserset.begin(), nodechooserset.end(),
+                                  find_missing_nodetypes);
+      if (chooser == nodechooserset.end()) {
+        gthrow({"The node type ", nodetype, " is unknown to grazer."});
+      }
+    }
+
+
+    // Now we actually construct the node vector:
 
     std::vector<std::unique_ptr<Network::Node>> nodes;
     // Reserve the number of elements in nodes so that the nodes themselves are
@@ -36,17 +42,15 @@ namespace Model::Networkproblem::Aux {
     // must be checked: This is just the number of node types!
     // nodes.reserve(topology["nodes"].size());
 
-    for (auto const &[nodetype, needs_boundary_values] : node_types_boundary) {
+    for (auto const & nodechooser: nodechooserset) {
+      std::string nodetype = nodechooser->get_type();
       if (topology["nodes"].find(nodetype) != topology["nodes"].end()) {
 
         // get the right constructor for the current nodetype.
-        auto current_constructor = node_constructor_map.at(nodetype);
-
-
         for (auto node : topology["nodes"][nodetype]) {
 
           // If this component needs boundary values we add them to the topology json:
-          if (needs_boundary_values) {
+          if (nodechooser->needs_boundary_values()) {
             auto nodeid = node["id"].get<std::string>();
             auto finder = [nodeid](nlohmann::json &x) {
               auto it = x.find("id");
@@ -63,7 +67,7 @@ namespace Model::Networkproblem::Aux {
             node["boundary_values"]= *bdjson;
           }
 
-          std::unique_ptr<Network::Node> current_node = current_constructor(node);
+          std::unique_ptr<Network::Node> current_node = nodechooser->build_specific_node(node);
           nodes.push_back(std::move(current_node));
         }
       } else {
@@ -71,7 +75,10 @@ namespace Model::Networkproblem::Aux {
                   << " not present in the topology file.";
       }
     }
+
+
+
     return nodes;
   }
 
-} // namespace Model::Networkproblem::Aux
+    } // namespace Model::Networkproblem::Aux

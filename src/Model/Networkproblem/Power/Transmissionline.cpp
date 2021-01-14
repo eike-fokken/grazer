@@ -6,8 +6,12 @@
 
 namespace Model::Networkproblem::Power {
 
-  Transmissionline::Transmissionline(std::string _id, Network::Node *start, Network::Node *end,
-                   double _G, double _B): Edge(_id, start, end), G(_G), B(_B){
+  std::string Transmissionline::get_type() { return "Transmissionline"; }
+
+
+  Transmissionline::Transmissionline(std::string _id, Network::Node *start,
+                                     Network::Node *end, double _G, double _B)
+      : Edge(_id, start, end), G(_G), B(_B) {
     Network::Node *startnode = get_starting_node();
     auto start_powernode = dynamic_cast<Powernode *>(startnode);
     if(!start_powernode) {gthrow({"Transmissionline ", get_id(),  " has starting node ", startnode->get_id(), ",which is not a powernode!"});}

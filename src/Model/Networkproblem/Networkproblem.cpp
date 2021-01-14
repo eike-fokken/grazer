@@ -12,7 +12,7 @@
 #include <vector>
 // #include <execution>
 #include <Eigen/Sparse>
-#include <Aux.hpp>
+#include <Netprob_Aux.hpp>
 
 namespace Model::Networkproblem {
 
@@ -40,8 +40,10 @@ namespace Model::Networkproblem {
     nlohmann::json &boundary = networkproblem_json["boundary_json"];
 
     // build the node vector.
-    auto nodes = Aux::build_node_vector(Aux::Node_names_and_boundary_demands,
-                                        topology, boundary);
+     auto nodes = Netprob_Aux::build_node_vector( topology, boundary);
+
+     // build the node vector.
+     auto edges = Netprob_Aux::build_edge_vector(topology, boundary);
   }
 
 

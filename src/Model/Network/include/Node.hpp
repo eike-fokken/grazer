@@ -15,6 +15,8 @@ namespace Network {
   class Node : public Idobject {
 
   public:
+    static std::string get_type();
+
     Node() = delete;
 
     using Idobject::Idobject;

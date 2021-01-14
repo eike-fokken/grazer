@@ -4,6 +4,8 @@
 
 namespace Model::Networkproblem::Power {
 
+  std::string Vphinode::get_type() { return "Vphinode"; }
+
   void Vphinode::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double // last_time
                           ,
                           double new_time,

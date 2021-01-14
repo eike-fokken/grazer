@@ -6,6 +6,8 @@ namespace Model::Networkproblem::Power {
   class PQnode final : public Powernode {
 
   public:
+    static std::string get_type();
+    
     using Powernode::Powernode;
 
     /// In this node we set V to its boundary value and evaluate the equation

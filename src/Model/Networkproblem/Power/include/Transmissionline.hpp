@@ -8,9 +8,10 @@ namespace Model::Networkproblem::Power {
   class Transmissionline final : public Network::Edge {
 
   public:
+    static std::string get_type();
+
     Transmissionline(std::string _id, Network::Node *start, Network::Node *end,
                      double _G, double _B);
-        
 
     double get_G() const;
     double get_B() const;

@@ -1515,7 +1515,7 @@
         ]
     },
     "connections": {
-        "transmissionLine": [
+        "Transmissionline": [
             {
                 "B": "20.3070424823",
                 "G": "0.0000000000",
