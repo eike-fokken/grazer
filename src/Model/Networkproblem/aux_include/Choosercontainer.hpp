@@ -4,10 +4,16 @@
 
 namespace Model::Networkproblem::Netprob_Aux {
 
-  class Nodechooserset: public std::set<std::unique_ptr<Nodetypechooser> >{
+  using Constructor_pointer = std::unique_ptr<Network::Node>(*)(nlohmann::json const &topology);
+
+  class Nodechooser final
+  {
   public:
-    Nodechooserset();
-  };
+    Nodechooser();
 
+    std::map<std::string, Nodetypedata> get_map();
 
+    private:
+    std::map<std::string,Nodetypedata> data;
+    };
 }

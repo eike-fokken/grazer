@@ -7,6 +7,7 @@ namespace Model::Networkproblem::Power {
 
   public:
     static std::string get_type();
+    static bool needs_boundary_values();
 
     using Powernode::Powernode;
 

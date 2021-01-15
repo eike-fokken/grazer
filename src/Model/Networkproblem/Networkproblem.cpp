@@ -16,10 +16,11 @@
 
 namespace Model::Networkproblem {
 
+  Networkproblem::~Networkproblem() {}
 
-      /// The constructor takes an instance of Net and finds out which Edges and
-      /// Nodes actually hold equations to solve
-      Networkproblem::Networkproblem(std::unique_ptr<Network::Net> _network)
+  /// The constructor takes an instance of Net and finds out which Edges and
+  /// Nodes actually hold equations to solve
+  Networkproblem::Networkproblem(std::unique_ptr<Network::Net> _network)
       : network(std::move(_network)) {
     for (Network::Node *node : network->get_nodes()) {
       if (auto equationcomponent = dynamic_cast<Equationcomponent *>(node)) {
@@ -40,10 +41,25 @@ namespace Model::Networkproblem {
     nlohmann::json &boundary = networkproblem_json["boundary_json"];
 
     // build the node vector.
-     auto nodes = Netprob_Aux::build_node_vector( topology, boundary);
+    auto nodes = Netprob_Aux::build_node_vector(topology["nodes"], boundary);
 
-     // build the node vector.
-     auto edges = Netprob_Aux::build_edge_vector(topology, boundary);
+    // build the edge vector.
+    auto edges =
+        Netprob_Aux::build_edge_vector(topology["connections"], boundary);
+
+    network = std::make_unique<Network::Net>(nodes, edges);
+
+    for (Network::Node *node : network->get_nodes()) {
+      if (auto equationcomponent = dynamic_cast<Equationcomponent *>(node)) {
+        equationcomponents.push_back(equationcomponent);
+      }
+    }
+
+    for (Network::Edge *edge : network->get_edges()) {
+      if (auto equationcomponent = dynamic_cast<Equationcomponent *>(edge)) {
+        equationcomponents.push_back(equationcomponent);
+      }
+    }
   }
 
 

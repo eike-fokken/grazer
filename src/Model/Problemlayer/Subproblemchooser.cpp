@@ -1,5 +1,6 @@
 #include "Exception.hpp"
 #include <Subproblemchooser.hpp>
+#include <memory>
 
 namespace Model {
 
@@ -16,6 +17,6 @@ namespace Model {
 
   std::unique_ptr<Model::Networkproblem::Networkproblem>
   Subproblemchooser::build_networkproblem(nlohmann::json subproblem_json){
-    return std::unique_ptr<Model::Networkproblem::Networkproblem>(new Networkproblem::Networkproblem(subproblem_json));
+    return std::make_unique<Model::Networkproblem::Networkproblem>(subproblem_json);
   }
 } // namespace Model

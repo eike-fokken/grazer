@@ -1,4 +1,5 @@
 #include <Choosercontainer.hpp>
+#include <memory>
 
 #include "PQnode.hpp"
 #include "PVnode.hpp"
@@ -7,10 +8,21 @@
 
 namespace Model::Networkproblem::Netprob_Aux {
 
-  Nodechooserset::Nodechooserset() {
-    insert(std::make_unique<Specific_node_type_chooser<Power::Vphinode>>());
-    insert(std::make_unique<Specific_node_type_chooser<Power::PVnode>>());
-    insert(std::make_unique<Specific_node_type_chooser<Power::PQnode>>());
+  Nodechooser::Nodechooser() {
+    std::vector <std::unique_ptr<Nodetypedatabuilder_base> >  buildervector;
+
+    buildervector.push_back(std::make_unique<Nodetypedatabuilder<Power::Vphinode>>());
+    buildervector.push_back(std::make_unique<Nodetypedatabuilder<Power::PVnode>>());
+    buildervector.push_back(std::make_unique<Nodetypedatabuilder<Power::PQnode>>());
+
+
+    for (auto & builder :buildervector) {
+      data.insert({builder->get_type(),builder->build_data()});
+    }
+  }
+
+  std::map<std::string, Nodetypedata> Nodechooser::get_map()  {
+    return data;
   }
 
 } // namespace Model::Networkproblem::Netprob_Aux

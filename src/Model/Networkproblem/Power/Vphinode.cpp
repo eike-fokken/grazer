@@ -5,6 +5,7 @@
 namespace Model::Networkproblem::Power {
 
   std::string Vphinode::get_type() { return "Vphinode"; }
+  bool Vphinode::needs_boundary_values() { return true; }
 
   void Vphinode::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double // last_time
                           ,
