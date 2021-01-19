@@ -1,7 +1,9 @@
 #pragma once
 #include "Powernode.hpp"
 #include <Edge.hpp>
+#include <memory>
 #include <string>
+
 
 namespace Model::Networkproblem::Power {
 
@@ -12,6 +14,8 @@ namespace Model::Networkproblem::Power {
 
     Transmissionline(std::string _id, Network::Node *start, Network::Node *end,
                      double _G, double _B);
+
+    Transmissionline(nlohmann::json const & topology, std::vector<std::unique_ptr<Network::Node>> nodes);
 
     double get_G() const;
     double get_B() const;

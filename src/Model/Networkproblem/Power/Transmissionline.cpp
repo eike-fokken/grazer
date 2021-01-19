@@ -2,6 +2,7 @@
 #include <Transmissionline.hpp>
 #include <iostream>
 #include <Exception.hpp>
+#include <tuple>
 
 
 namespace Model::Networkproblem::Power {
@@ -22,6 +23,11 @@ namespace Model::Networkproblem::Power {
               endnode->get_id(), ",which is not a powernode!"});
     }
   }
+
+  Transmissionline::Transmissionline(
+      nlohmann::json const &topology,
+      std::vector<std::unique_ptr<Network::Node>> nodes)
+      : Edge(topology, nodes), G(topology["G"]), B(topology["B"]) {}
 
   double Transmissionline::get_G() const { return G; }
 
