@@ -44,8 +44,7 @@ namespace Model::Networkproblem {
     auto nodes = Netprob_Aux::build_node_vector(topology["nodes"], boundary);
 
     // build the edge vector.
-    auto edges =
-        Netprob_Aux::build_edge_vector(topology["connections"], boundary);
+    auto edges = Netprob_Aux::build_edge_vector(topology["connections"], boundary);
 
     network = std::make_unique<Network::Net>(nodes, edges);
 
