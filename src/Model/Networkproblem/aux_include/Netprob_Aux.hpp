@@ -21,5 +21,6 @@ namespace Model::Networkproblem::Netprob_Aux {
 
   std::vector<std::unique_ptr<Network::Edge>>
   build_edge_vector(nlohmann::json const &topology,
-                    nlohmann::json const &boundary);
+                    nlohmann::json const &boundary,
+                    std::vector<std::unique_ptr<Network::Node>> & nodes);
 } // namespace Model::Networkproblem::Netprob_Aux

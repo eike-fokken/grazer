@@ -44,9 +44,9 @@ namespace Model::Networkproblem {
     auto nodes = Netprob_Aux::build_node_vector(topology["nodes"], boundary);
 
     // build the edge vector.
-    auto edges = Netprob_Aux::build_edge_vector(topology["connections"], boundary);
+    auto edges = Netprob_Aux::build_edge_vector(topology["connections"], boundary, nodes);
 
-    network = std::make_unique<Network::Net>(nodes, edges);
+    network = std::make_unique<Network::Net>(std::move(nodes), std::move(edges));
 
     for (Network::Node *node : network->get_nodes()) {
       if (auto equationcomponent = dynamic_cast<Equationcomponent *>(node)) {

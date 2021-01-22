@@ -80,74 +80,72 @@ namespace Model::Networkproblem::Netprob_Aux {
 
     std::vector<std::unique_ptr<Network::Edge>>
     build_edge_vector(nlohmann::json const &edge_topology,
-                      nlohmann::ordered_json const &boundary) {
+                      nlohmann::ordered_json const &boundary,
+                      std::vector<std::unique_ptr<Network::Node>> &nodes) {
 
-    Edgechooser edgechooser;
+      Edgechooser edgechooser;
 
-    auto edgetypedata_collection = edgechooser.get_map();
+      auto edgetypedata_collection = edgechooser.get_map();
 
-    // Here we check, whether all edgetypes defined in the topology file were built.
-    // It will throw an exception, if a edge type is encountered that is not known.
+      // Here we check, whether all edgetypes defined in the topology file were
+      // built. It will throw an exception, if a edge type is encountered that
+      // is not known.
 
-    for (auto edgetype_itr = edge_topology.begin();
-         edgetype_itr != edge_topology.end(); ++edgetype_itr) {
-      
-      std::string edgetype = edgetype_itr.key();
+      for (auto edgetype_itr = edge_topology.begin();
+           edgetype_itr != edge_topology.end(); ++edgetype_itr) {
 
-      auto type_itr = edgetypedata_collection.find(edgetype);
-      if (type_itr == edgetypedata_collection.end()) {
-        gthrow({"The edge type ", edgetype,
-                ", given in the topology file, is unknown to grazer."});
-      }
-    }
+        std::string edgetype = edgetype_itr.key();
 
-
-    // Now we actually construct the edge vector:
-    std::vector<std::unique_ptr<Network::Edge>> edges;
-    // Reserve the number of elements in edges so that the edges themselves are
-    // constructed one after another in memory.
-    // One should check whether this makes a difference in runtime.
-
-    // must be checked: This is just the number of edge types!
-    // edges.reserve(edge_topology.size());
-
-    for (auto const & [edgetype, edgedata]: edgetypedata_collection) {
-      if (edge_topology.find(edgetype) != edge_topology.end()) {
-
-        for (auto edge : edge_topology[edgetype]) {
-
-          // If this component needs boundary values we add them to the topology json:
-          if (edgedata.needs_boundary_values) {
-            auto edgeid = edge["id"].get<std::string>();
-            auto finder = [edgeid](nlohmann::json const &x) {
-              auto it = x.find("id");
-              return it != x.end() and it.value() == edgeid;
-            };
-            auto bdjson =
-                std::find_if(boundary["boundarycondition"].begin(),
-                             boundary["boundarycondition"].end(), finder);
-            if (bdjson == boundary["boundarycondition"].end()) {
-              gthrow({"Network component ", edgeid, " is of type ", edgetype,
-                      " and hence needs a boundary condition, but none is ",
-                      "provided!"});
-            }
-            edge["boundary_values"]= *bdjson;
-          }
-
-          auto current_edge = edgedata.Constructor(edge);
-          edges.push_back(std::move(current_edge));
+        auto type_itr = edgetypedata_collection.find(edgetype);
+        if (type_itr == edgetypedata_collection.end()) {
+          gthrow({"The edge type ", edgetype,
+                  ", given in the topology file, is unknown to grazer."});
         }
-      } else {
-        std::cout << "Edge type " << edgetype
-                  << " not present in the topology file.";
       }
-    }
 
+      // Now we actually construct the edge vector:
+      std::vector<std::unique_ptr<Network::Edge>> edges;
+      // Reserve the number of elements in edges so that the edges themselves
+      // are constructed one after another in memory. One should check whether
+      // this makes a difference in runtime.
 
+      // must be checked: This is just the number of edge types!
+      // edges.reserve(edge_topology.size());
 
-    return edges;
+      for (auto const &[edgetype, edgedata] : edgetypedata_collection) {
+        if (edge_topology.find(edgetype) != edge_topology.end()) {
 
+          for (auto edge : edge_topology[edgetype]) {
 
+            // If this component needs boundary values we add them to the
+            // topology json:
+            if (edgedata.needs_boundary_values) {
+              auto edgeid = edge["id"].get<std::string>();
+              auto finder = [edgeid](nlohmann::json const &x) {
+                auto it = x.find("id");
+                return it != x.end() and it.value() == edgeid;
+              };
+              auto bdjson =
+                  std::find_if(boundary["boundarycondition"].begin(),
+                               boundary["boundarycondition"].end(), finder);
+              if (bdjson == boundary["boundarycondition"].end()) {
+                gthrow({"Network component ", edgeid, " is of type ", edgetype,
+                        " and hence needs a boundary condition, but none is ",
+                        "provided!"});
+              }
+              edge["boundary_values"] = *bdjson;
+            }
+
+            auto current_edge = edgedata.Constructor(edge,nodes);
+            edges.push_back(std::move(current_edge));
+          }
+        } else {
+          std::cout << "Edge type " << edgetype
+                    << " not present in the topology file.";
+        }
+      }
+
+      return edges;
     }
 
     } // namespace Model::Networkproblem::Aux

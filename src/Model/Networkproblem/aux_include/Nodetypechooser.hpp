@@ -80,8 +80,9 @@ namespace Model::Networkproblem::Netprob_Aux {
     };
   };
 
-  using Edgefactory = std::unique_ptr<Network::Edge> (*)(nlohmann::json const &topology);
-
+  using Edgefactory = std::unique_ptr<Network::Edge> (*)(
+      nlohmann::json const &topology,
+      std::vector<std::unique_ptr<Network::Node>> &nodes);
 
   struct Edgedata {
   public:
@@ -101,11 +102,10 @@ namespace Model::Networkproblem::Netprob_Aux {
   /// Edge to enable polymorphism.
   template <typename Edgetype>
   std::unique_ptr<Network::Edge>
-  build_specific_edge(nlohmann::json const &topology) {
-        return std::make_unique<Edgetype>(topology);
+  build_specific_edge(nlohmann::json const &topology,
+                      std::vector<std::unique_ptr<Network::Node>> &nodes) {
+    return std::make_unique<Edgetype>(topology,nodes);
   };
-
-
 
   struct Edgedatabuilder_base {
     virtual ~Edgedatabuilder_base() {};
