@@ -5,5 +5,3 @@ add_subdirectory(Newtonsolver)
 add_subdirectory(Aux)
 add_subdirectory(Jsonreader)
 
-
-add_subdirectory(Test)
