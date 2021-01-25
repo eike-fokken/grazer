@@ -6,22 +6,27 @@
 
 namespace Model {
 
-  Timedata::Timedata(json timedata_json)
-    : starttime(std::stod(timedata_json["start_time"].get<std::string>())),
-                endtime(std::stod(timedata_json["end_time"].get<std::string>())),
-        Full_time_interval(endtime - starttime),
+  Timedata::Timedata(json time_evolution_data)
+    : starttime(std::stod(time_evolution_data["start_time"].get<std::string>())),
+                endtime(std::stod(time_evolution_data["end_time"].get<std::string>())),
         Number_of_timesteps(init_Number_of_timesteps(
-            std::stod(timedata_json["desired_delta_t"].get<std::string>()))),
+            std::stod(time_evolution_data["desired_delta_t"].get<std::string>()))),
         delta_t(init_delta_t()) {}
 
   int Timedata::init_Number_of_timesteps(double desired_delta_t) const {
     int const _Number_of_timesteps =
-        static_cast<int>(std::ceil(Full_time_interval / desired_delta_t));
+        static_cast<int>(std::ceil(get_timeinterval() / desired_delta_t));
     return _Number_of_timesteps;
   }
 
+  double Timedata::get_starttime() const {return starttime;}
+  double Timedata::get_endtime() const {return endtime;}
+  double Timedata::get_delta_t() const {return delta_t;}
+  double Timedata::get_timeinterval() const {return endtime - starttime;}
+  int Timedata::get_number_of_steps() const{ return Number_of_timesteps;}
+
   double Timedata::init_delta_t() const {
-    return Full_time_interval / Number_of_timesteps;
+    return get_timeinterval() / Number_of_timesteps;
   }
 
   Timeevolver::Timeevolver(double tolerance,
@@ -32,19 +37,19 @@ namespace Model {
 
   void Timeevolver::simulate(Timedata timedata, Model::Problem & problem,
                              int number_of_states, json problem_initial_json) {
-    double last_time = timedata.starttime;
+    double last_time = timedata.get_starttime();
     Eigen::VectorXd last_state(number_of_states);
 
     problem.set_initial_values(last_state,problem_initial_json);
     problem.save_values(last_time, last_state);
 
-    double new_time = last_time+ timedata.delta_t;
+    double new_time = last_time+ timedata.get_delta_t();
 
     Eigen::VectorXd new_state(last_state);
 
-    for (int i = 0; i != timedata.Number_of_timesteps; ++i) {
+    for (int i = 0; i != timedata.get_number_of_steps(); ++i) {
       last_state = new_state;
-      new_time = last_time + timedata.delta_t;
+      new_time = last_time + timedata.get_delta_t();
 
       auto solstruct = solver.solve(new_state, problem, true, last_time,
                                     new_time, last_state);
