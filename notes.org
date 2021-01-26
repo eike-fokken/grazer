@@ -5,6 +5,7 @@
 
 ** DONE src/Test ordner weg
 
+   
 ** TODO  Durchgehen und Dokumentation schreiben!
 
 ** TODO  Think about Exception handling for data input validation. Whatever you do: Catch all exceptions and display the error message instead of rethrowing in the end!
@@ -12,8 +13,10 @@
 ** TODO  Introduce an optional CFL check for schemes.
 
 ** TODO  make subproblems inherit from nodes and define connecting problems as edges. --> Problem should hold a network of subproblems.
-      Think about "connecting problems", e.g. for gas to power networks...
+      Think about "connecting problems", e.g. for gas to power networks..
+*** TODO In this process reuse the Nodechooser and Edgechooser classes for setting up subproblems.
 
+      
 ** TODO  Think about implementation of explicit methods without too much performance hit
 
 ** TODO  Factor out pde-specific parts from gas edge.
