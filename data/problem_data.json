@@ -5,7 +5,7 @@
         "end_time":"86400",
         "desired_delta_t":"1800"
     },
-    "problem_data":
+    "subproblem_data":
     {
         "Network_problem":
         {

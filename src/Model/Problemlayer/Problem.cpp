@@ -9,10 +9,10 @@
 
 namespace Model {
 
-  Problem::Problem(std::map<std::string, nlohmann::json> subproblem_jsons,
-                   std::filesystem::path const &_output_directory)
+  Problem::Problem(nlohmann::json subproblem_data,std::filesystem::path const &_output_directory)
       : output_directory(_output_directory) {
-    for(auto const & [subproblem_type,subproblem_json] : subproblem_jsons)
+    auto subproblem_map = subproblem_data.get<std::map<std::string, nlohmann::json>>();
+    for(auto const & [subproblem_type,subproblem_json] : subproblem_map)
       {
         std::unique_ptr<Subproblem> subproblem_ptr = Subproblemchooser::build_subproblem(subproblem_type, subproblem_json);
         add_subproblem(std::move(subproblem_ptr));

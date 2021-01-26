@@ -22,7 +22,8 @@ namespace Model {
   public:
     /// The constructor needs to declare Delta_t
     ///
-    Problem(std::map<std::string,nlohmann::json> subproblem_jsons ,std::filesystem::path const &_output_directory); 
+    Problem(nlohmann::json subproblem_data,
+            std::filesystem::path const &_output_directory);
 
     void add_subproblem(std::unique_ptr<Subproblem> subproblem_ptr);
 
