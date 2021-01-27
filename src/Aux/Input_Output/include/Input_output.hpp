@@ -26,6 +26,6 @@ namespace Aux_executable {
   std::filesystem::path prepare_output_dir(std::string output_dir);
 
   std::filesystem::path
-  extract_input_data(std::vector<std::string> cmd_arguments);
+  extract_input_data(std::vector<std::string> const &cmd_arguments);
 
 } // namespace Aux_executable

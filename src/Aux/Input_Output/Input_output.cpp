@@ -64,7 +64,7 @@ namespace Aux_executable {
   }
 
   std::filesystem::path
-  extract_input_data(std::vector<std::string> cmd_arguments){
+  extract_input_data(std::vector<std::string> const & cmd_arguments){
 
     std::string default_problem_data_filename = "problem_data.json";
     std::filesystem::path problem_data_file;
@@ -80,7 +80,7 @@ namespace Aux_executable {
     } else {
       problem_data_file = cmd_arguments[0];
     }
-    if (!std::filesystem::is_regular_file(problem_data_file)){gthrow({"The given path ",problem_data_file.string(), " does not point to a regular file."});}
+    if (!std::filesystem::is_regular_file(problem_data_file)){gthrow({"The given path ",problem_data_file.string(), " does not point to a regular file.  Maybe the name is misspelled."});}
     return problem_data_file;
     }
 
