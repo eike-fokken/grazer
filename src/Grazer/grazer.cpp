@@ -1,7 +1,8 @@
+#include <Aux_json.hpp>
 #include <Input_output.hpp>
 #include <Eigen/Sparse>
 #include <Exception.hpp>
-#include <Jsonreader.hpp>
+// #include <Jsonreader.hpp>
 #include <Newtonsolver.hpp>
 #include <Printguard.hpp>
 #include <Problem.hpp>
@@ -11,6 +12,7 @@
 #include <memory>
 #include <string>
 #include <nlohmann/json.hpp>
+
 
 int main(int argc, char **argv) {
 
@@ -26,9 +28,12 @@ int main(int argc, char **argv) {
 
   // auto [timedata_json, problemdata_json] = Jsonreader::get_json(problem_data_file);
 
-  std::shared_ptr<Model::Problem> p =
-      Jsonreader::setup_problem(problem_data_file, output_dir, "", 1);
-  
+  auto all_json = aux_json::get_json_from_string(problem_data_file.string());
+
+  auto time_evolution_json = all_json["time_evolution_data"];
+  auto subproblem_json = all_json["subproblem_data"];
+  auto p = std::make_shared<Model::Problem>(subproblem_json,output_dir);
+
   int number = p->set_indices();
   std::cout << "Number of variables: " << number << std::endl;
 
