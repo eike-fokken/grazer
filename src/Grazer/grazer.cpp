@@ -4,15 +4,16 @@
 #include <Exception.hpp>
 // #include <Jsonreader.hpp>
 #include <Newtonsolver.hpp>
-#include <Printguard.hpp>
+// #include <Printguard.hpp>
 #include <Problem.hpp>
 #include <chrono>
+#include <exception>
 #include <filesystem>
 #include <iostream>
 #include <memory>
 #include <string>
 #include <nlohmann/json.hpp>
-
+#include <Timeevolver.hpp>
 
 int main(int argc, char **argv) {
 
@@ -26,64 +27,35 @@ int main(int argc, char **argv) {
       Aux_executable::prepare_output_dir("output");
 
 
-  // auto [timedata_json, problemdata_json] = Jsonreader::get_json(problem_data_file);
-
+  // This must be wrapped in exception handling code!
+  
   auto all_json = aux_json::get_json_from_string(problem_data_file.string());
 
   auto time_evolution_json = all_json["time_evolution_data"];
   auto subproblem_json = all_json["subproblem_data"];
-  auto p = std::make_shared<Model::Problem>(subproblem_json,output_dir);
+  auto initial_value_json = all_json["initial_values"];
+  Model::Timedata timedata(time_evolution_json);
 
-  int number = p->set_indices();
-  std::cout << "Number of variables: " << number << std::endl;
+  double tolerance = 1e-8;
+  int maximal_number_of_newton_iterations =  50;
+  Model::Timeevolver timeevolver(tolerance,maximal_number_of_newton_iterations);
 
-  // p->display();
-
+  // This try block makes sure, the destructor of problem is called in order to print out all data, we have already.
   try {
-    Aux::Printguard guard(p);
-
-    Solver::Newtonsolver solver(1e-8, 50);
-
-    int N = static_cast<int>(std::ceil(T / delta_t));
-    double delta_t = (T / N);
-
-    Eigen::VectorXd state1(number);
-
-    double last_time(-delta_t);
-    double new_time = 0.0;
-    Jsonreader::set_initial_values(state1, initial, p);
-    Eigen::VectorXd state2 = state1;
-    // p->save_values(0.0,state1);
-    solver.evaluate_state_derivative_triplets(*p, last_time, new_time, state2,
-                                              state1);
-    std::cout << "number of non-zeros in jacobian: "
-              << solver.get_number_non_zeros_jacobian() << std::endl;
+    Model::Problem problem(subproblem_json, output_dir);
+    int number_of_states = problem.set_indices();
     std::cout << "data read" << std::endl;
 
-    for (int i = 0; i != N + 1; ++i) {
-      new_time = i * delta_t;
-      // maybe always recompute the structure. Its safer and only introduces
-      // one analyzePattern per time step!
-      auto solstruct =
-          solver.solve(state1, *p, true, last_time, new_time, state2);
-      p->save_values(new_time, state1);
-
-      std::cout << new_time << ": ";
-      std::cout << solstruct.residual << ", ";
-      std::cout << solstruct.used_iterations << std::endl;
-
-      // write new_state to last state:
-      state2 = state1;
-      // set next time step:
-      last_time = new_time;
-    }
-
-    p->print_to_files();
-  } catch (...) {
-    std::cout << "An uncaught exception was thrown!\n"
+    timeevolver.simulate(timedata, problem, number_of_states, initial_value_json);
+  } catch (std::exception &ex) {
+    std::cout << "An exception was thrown!\n"
               << "All available data has been printed to output files.\n"
               << "\nUse with caution!\n"
               << std::endl;
-    throw;
+    std::cout << "The error message was: \n\n" << ex.what() << std::endl;
+  } catch (...){
+    std::cout << "An unknown type of exception was thrown.\n\n"
+      "This is a bug and must be fixed!\n\n"
+      "Please contact the maintainer of Grazer!"<<std::endl;
   }
 }

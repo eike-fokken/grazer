@@ -1,3 +1,4 @@
+#include <Netprob_Aux.hpp>
 #include <PQnode.hpp>
 #include <PVnode.hpp>
 #include <Vphinode.hpp>
