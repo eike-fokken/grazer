@@ -10,7 +10,7 @@ namespace Aux {
   class Printguard {
   public:
     Printguard() = delete;
-    Printguard(std::shared_ptr<Model::Problem> &_p) : p(_p){};
+    Printguard(std::shared_ptr<Model::Problem> _p) : p(_p){};
 
     ~Printguard();
 

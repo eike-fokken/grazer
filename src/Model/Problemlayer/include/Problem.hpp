@@ -25,6 +25,10 @@ namespace Model {
     Problem(nlohmann::json subproblem_data,
             std::filesystem::path const &_output_directory);
 
+    ~Problem();
+
+
+
     void add_subproblem(std::unique_ptr<Subproblem> subproblem_ptr);
 
     int set_indices();

@@ -19,6 +19,10 @@ namespace Model {
       }
   }
 
+
+  Problem::~Problem() {print_to_files();}
+
+
   void Problem::add_subproblem(std::unique_ptr<Subproblem> subproblem_ptr) {
     subproblems.push_back(std::move(subproblem_ptr));
   }
