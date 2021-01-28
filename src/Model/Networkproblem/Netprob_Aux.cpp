@@ -10,8 +10,9 @@
 
 namespace Model::Networkproblem::Netprob_Aux {
 
-  std::vector<std::unique_ptr<Network::Node>> build_node_vector(
-      nlohmann::json const &node_topology, nlohmann::ordered_json const &boundary) {
+  std::vector<std::unique_ptr<Network::Node>>
+  build_node_vector(nlohmann::json const &node_topology,
+                    nlohmann::json const &boundary) {
 
     Nodechooser nodechooser;
 
@@ -81,8 +82,8 @@ namespace Model::Networkproblem::Netprob_Aux {
 
     std::vector<std::unique_ptr<Network::Edge>>
     build_edge_vector(nlohmann::json const &edge_topology,
-                      nlohmann::ordered_json const &boundary,
-                      std::vector<std::unique_ptr<Network::Node>> &nodes) {
+                      nlohmann::json const &boundary,
+                      std::vector<std::unique_ptr<Network::Node>> &nodes){
 
       Edgechooser edgechooser;
 
