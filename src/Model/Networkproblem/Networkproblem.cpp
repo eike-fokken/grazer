@@ -13,6 +13,7 @@
 // #include <execution>
 #include <Eigen/Sparse>
 #include <Netprob_Aux.hpp>
+#include <Aux_json.hpp>
 
 namespace Model::Networkproblem {
 
@@ -37,8 +38,15 @@ namespace Model::Networkproblem {
 
   Networkproblem::Networkproblem(nlohmann::json &networkproblem_json) {
 
-    nlohmann::json &topology = networkproblem_json["topology_json"];
-    nlohmann::json &boundary = networkproblem_json["boundary_json"];
+    std::string topology_key = "topology_json";
+    std::string boundary_key = "boundary_json";
+    aux_json::replace_entry_with_json_from_file(networkproblem_json,
+                                                topology_key);
+    aux_json::replace_entry_with_json_from_file(networkproblem_json,
+                                                boundary_key);
+
+    nlohmann::json &topology = networkproblem_json[topology_key];
+    nlohmann::json &boundary = networkproblem_json[boundary_key];
 
     // build the node vector.
     auto nodes = Netprob_Aux::build_node_vector(topology["nodes"], boundary);

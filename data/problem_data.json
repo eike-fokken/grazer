@@ -5,13 +5,18 @@
         "end_time":"86400",
         "desired_delta_t":"1800"
     },
+    "initial_values":{
+        "Network_problem":
+        {
+            "initial_json":"initial_pretty.json"
+        }
+    },
     "subproblem_data":
     {
         "Network_problem":
         {
             "desired_delta_x": "10000",
-            "topology_json":"topology_pretty.json",
-            "initial_json":"initial_pretty.json",
+            "topology_json":"topology_only_power.json",
             "boundary_json":"boundary_pretty.json"
         }
     }
