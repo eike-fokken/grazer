@@ -1,3 +1,4 @@
+#pragma once
 #include <Edge.hpp>
 #include <Node.hpp>
 #include <Nodetypechooser.hpp>

@@ -1,3 +1,4 @@
+#pragma once
 #include "Edge.hpp"
 #include "nlohmann/json.hpp"
 #include <iostream>
@@ -30,7 +31,7 @@ namespace Model::Networkproblem::Netprob_Aux {
   std::unique_ptr<Network::Node>
   build_specific_node(nlohmann::json const &topology) {
         return std::make_unique<Nodetype>(topology);
-  };
+  }
 
 
 
@@ -105,7 +106,7 @@ namespace Model::Networkproblem::Netprob_Aux {
   build_specific_edge(nlohmann::json const &topology,
                       std::vector<std::unique_ptr<Network::Node>> &nodes) {
     return std::make_unique<Edgetype>(topology,nodes);
-  };
+  }
 
   struct Edgedatabuilder_base {
     virtual ~Edgedatabuilder_base() {};
