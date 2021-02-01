@@ -40,6 +40,7 @@ namespace Model::Networkproblem {
 
     std::string topology_key = "topology_json";
     std::string boundary_key = "boundary_json";
+
     aux_json::replace_entry_with_json_from_file(networkproblem_json,
                                                 topology_key);
     aux_json::replace_entry_with_json_from_file(networkproblem_json,

@@ -11,14 +11,16 @@
             "initial_json":"initial_pretty.json"
         }
     },
-    "subproblem_data":
+    "problem_data":
     {
+        "subproblems":
+     {
         "Network_problem":
-        {
+         {
             "desired_delta_x": "10000",
             "topology_json":"topology_only_power.json",
             "boundary_json":"boundary_pretty.json"
         }
+     }
     }
-
 }

@@ -76,7 +76,7 @@ namespace Aux_executable {
               "Aborting now."})
     }
     else if (cmd_arguments.size() == 0) {
-      problem_data_file = "problem_data_filename";
+      problem_data_file = default_problem_data_filename;
     } else {
       problem_data_file = cmd_arguments[0];
     }

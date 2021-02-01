@@ -9,14 +9,17 @@
 
 namespace Model {
 
-  Problem::Problem(nlohmann::json subproblem_data,std::filesystem::path const &_output_directory)
+  Problem::Problem(nlohmann::json problem_data,std::filesystem::path const &_output_directory)
       : output_directory(_output_directory) {
-    auto subproblem_map = subproblem_data.get<std::map<std::string, nlohmann::json>>();
-    for(auto const & [subproblem_type,subproblem_json] : subproblem_map)
+    auto subproblem_map = problem_data["subproblems"].get<std::map<std::string, nlohmann::json>>();
+    for(auto & [subproblem_type,subproblem_json] : subproblem_map)
       {
-        std::unique_ptr<Subproblem> subproblem_ptr = Subproblemchooser::build_subproblem(subproblem_type, subproblem_json);
+        subproblem_json["GRAZER_file_directory"] = problem_data["GRAZER_file_directory"];
+        std::unique_ptr<Subproblem> subproblem_ptr =
+            Subproblemchooser::build_subproblem(subproblem_type,
+                                                subproblem_json);
         add_subproblem(std::move(subproblem_ptr));
-      }
+    }
   }
 
 

@@ -27,8 +27,9 @@ namespace Model::Networkproblem::Power {
 
   Transmissionline::Transmissionline(
       nlohmann::json const &topology,
-      std::vector<std::unique_ptr<Network::Node>> & nodes)
-      : Edge(topology, nodes), G(topology["G"]), B(topology["B"]) {}
+      std::vector<std::unique_ptr<Network::Node>> &nodes)
+      : Edge(topology, nodes), G(std::stod(topology["G"].get<std::string>())),
+        B(std::stod(topology["B"].get<std::string>())) {}
 
   double Transmissionline::get_G() const { return G; }
 

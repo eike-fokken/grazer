@@ -9,12 +9,33 @@ namespace aux_json {
 
   void replace_entry_with_json_from_file(nlohmann::json & super_json, std::string const & key) {
 
+    if (!super_json.is_object()) {
+      gthrow({"The json ", super_json.dump(),
+          " is not a json object! There is probably a mistake in a json ",
+          "file."});
+    }
+
     auto & sub_json = super_json[key];
     if(sub_json.is_object()){
       return;
     } else if(sub_json.is_string()){
       auto json_pathstring = sub_json.get<std::string>();
-      sub_json = get_json_from_string(json_pathstring);
+      auto json_path = std::filesystem::path(json_pathstring);
+      if(json_path.is_absolute()){
+        sub_json = get_json_from_string(json_path.string());
+        return;
+      } else { // json_path is relative
+        if (!super_json.contains("GRAZER_file_directory")) {
+          gthrow({"The json ", super_json.dump(),
+                  " doesn't contain the key 'GRAZER_file_directory.\n",
+                  "This is a bug. Please file a bug report.\n"});
+        }
+        auto directory_path = std::filesystem::path(super_json["GRAZER_file_directory"]);
+        auto json_full_path = directory_path / json_path;
+        sub_json = get_json_from_string(json_full_path.string());
+        return;
+      }
+      
     } else {
       gthrow({"The value at \"", key, "\" is neither a valid json object, nor a "
           "string pointing to a json file.\n It is given by ",sub_json.dump(4)});
