@@ -19,7 +19,6 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        apt-get update && apt-get upgrade
         apt-get install -y cmake ninja-build doxygen graphviz
 
     - name: Create Build Environment
