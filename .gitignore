@@ -44,5 +44,6 @@ relwithdebinfo/**
 .DS_Store
 compile_commands.json
 .vscode
+.devcontainer
 .clangd
 .cache
