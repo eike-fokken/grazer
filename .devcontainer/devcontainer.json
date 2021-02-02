@@ -17,7 +17,7 @@
 	"extensions": [],
 
 	"mounts": [
-  		"source=/c/Users/d92124/.ssh,target=/tmp/.mounted_ssh,type=bind,consistency=cached"
+  		"source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/tmp/.mounted_ssh,type=bind,consistency=cached"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
