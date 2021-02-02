@@ -15,7 +15,7 @@ public:
   Exception(std::string const &_rawmsg, char const *file, int line);
 
   ~Exception() noexcept {};
-  char const *what() const noexcept;
+  char const *what() const noexcept override;
 };
 // #define gthrow(a) exception_builder(a, __FILE__, __LINE__);
 

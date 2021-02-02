@@ -25,7 +25,7 @@ endif()
 
 # add_compile_options(-fopenmp)
 
-set(MY_DEBUG_OPTIONS -O0 -Werror -Wconversion -pedantic-errors -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wmissing-declarations -Wmissing-include-dirs  -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo  -Wstrict-overflow=5 -Wswitch-default -Wundef -Wunused -Wno-error=unused-parameter -Wno-error=unused-variable -Wno-error=unused-value -Wdelete-non-virtual-dtor)
+set(MY_DEBUG_OPTIONS -O0 -Werror -Wconversion -pedantic-errors -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wmissing-declarations -Wmissing-include-dirs  -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo  -Wstrict-overflow=5 -Wswitch-default -Wundef -Wunused -Wno-error=unused-parameter -Wno-error=unused-variable -Wno-error=unused-value -Wdelete-non-virtual-dtor -Wsuggest-override)
 # Add warnings:
 add_compile_options("$<$<CONFIG:DEBUG>:${MY_DEBUG_OPTIONS}>"
   "$<$<CXX_COMPILER_ID:Clang,AppleClang>:-fcolor-diagnostics;-Wno-error=unused-private-field;-fstandalone-debug>"

@@ -13,9 +13,9 @@ public:
   Pressureboundarynode(std::string _id, nlohmann::ordered_json boundary_json,
          nlohmann::ordered_json topology_json);
 
-  virtual ~Pressureboundarynode() {};
+    ~Pressureboundarynode() override {};
 
-  
+
     void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
                   double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
                   Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;

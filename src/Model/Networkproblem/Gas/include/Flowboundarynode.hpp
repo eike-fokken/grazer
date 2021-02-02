@@ -13,7 +13,7 @@ public:
   Flowboundarynode(std::string _id, nlohmann::ordered_json boundary_json,
          nlohmann::ordered_json topology_json);
 
-  virtual ~Flowboundarynode() {};
+  ~Flowboundarynode() override {};
 
   
     void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
