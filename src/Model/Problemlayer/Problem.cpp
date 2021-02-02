@@ -1,3 +1,4 @@
+#include "Exception.hpp"
 #include <Eigen/Dense>
 #include <Matrixhandler.hpp>
 #include <Problem.hpp>
@@ -6,6 +7,7 @@
 #include <memory>
 #include <vector>
 #include <Subproblemchooser.hpp>
+#include <Aux_json.hpp>
 
 namespace Model {
 
@@ -84,11 +86,24 @@ namespace Model {
   }
 
   void Problem::set_initial_values(Eigen::Ref<Eigen::VectorXd> new_state,
-                                   nlohmann::ordered_json initialjson) {
+                                   nlohmann::json initial_json) {
+
     for (auto &subproblem : subproblems) {
-      subproblem->set_initial_values(new_state, initialjson);
+      auto type = subproblem->get_type();
+
+      auto initial_json_iterator = initial_json["subproblems"].find(type);
+      if (initial_json_iterator == initial_json["subproblems"].end()){
+        gthrow({"Subproblem ", type, " has no initial values in the json files!"});
+      }
+
+      auto & subproblem_initial_json = *initial_json_iterator;
+      std::string initial_key =
+        "initial_json";
+      aux_json::replace_entry_with_json_from_file(subproblem_initial_json, initial_key);
+              subproblem->set_initial_values(new_state, subproblem_initial_json);
     }
   }
+
 
   std::filesystem::path const &Problem::get_output_directory() const {
     return output_directory;

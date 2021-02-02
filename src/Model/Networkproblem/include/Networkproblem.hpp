@@ -19,6 +19,9 @@ namespace Model::Networkproblem {
   class Networkproblem final : public Subproblem {
 
   public:
+
+    std::string get_type() const override;
+
     ~Networkproblem() override; // override{};
 
     Networkproblem(std::unique_ptr<Network::Net> _network);

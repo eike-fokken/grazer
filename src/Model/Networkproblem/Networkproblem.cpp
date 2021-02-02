@@ -17,6 +17,8 @@
 
 namespace Model::Networkproblem {
 
+  std::string Networkproblem::get_type() const {return "Network_problem";}
+
   Networkproblem::~Networkproblem() {}
 
   /// The constructor takes an instance of Net and finds out which Edges and

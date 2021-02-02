@@ -6,21 +6,24 @@
         "desired_delta_t":"1800"
     },
     "initial_values":{
-        "Network_problem":
+        "subproblems":
         {
-            "initial_json":"initial_pretty.json"
+            "Network_problem":
+            {
+                "initial_json":"initial_pretty.json"
+            }
         }
     },
     "problem_data":
     {
         "subproblems":
-     {
-        "Network_problem":
-         {
-            "desired_delta_x": "10000",
-            "topology_json":"topology_only_power.json",
-            "boundary_json":"boundary_pretty.json"
+        {
+            "Network_problem":
+            {
+                "desired_delta_x": "10000",
+                "topology_json":"topology_only_power.json",
+                "boundary_json":"boundary_pretty.json"
+            }
         }
-     }
     }
 }
