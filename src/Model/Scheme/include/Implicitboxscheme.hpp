@@ -30,7 +30,7 @@ namespace Model::Scheme {
                            Model::Balancelaw::Isothermaleulerequation const & bl) const;
 
 
-    /// The derivative with respect to \code{.cpp}last_right\endcode
+    /// \brief The derivative with respect to \code{.cpp}last_right\endcode
     Eigen::Matrix2d
     devaluate_point_dright(double last_time, double new_time, double Delta_x,
                            Eigen::Ref<Eigen::Vector2d const> const &last_left,
