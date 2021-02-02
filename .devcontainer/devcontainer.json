@@ -14,7 +14,9 @@
 	},
 
 	// Add the IDs of extensions you want installed when the container is created.
-	"extensions": [],
+	"extensions": [
+		"ms-vscode.cpptools"
+	],
 
 	"mounts": [
   		"source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/tmp/.mounted_ssh,type=bind,consistency=cached"
