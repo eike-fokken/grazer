@@ -31,14 +31,16 @@ int main(int argc, char **argv) {
   auto all_json = aux_json::get_json_from_string(problem_data_file.string());
 
   auto time_evolution_json = all_json["time_evolution_data"];
+
   auto problem_json = all_json["problem_data"];
 
   // give the path information of the file:
   auto directory_path = std::filesystem::absolute(problem_data_file.parent_path());
   problem_json["GRAZER_file_directory"] = directory_path.string();
-  
 
-      auto initial_value_json = all_json["initial_values"];
+
+  auto initial_value_json = all_json["initial_values"];
+  initial_value_json["GRAZER_file_directory"] = directory_path.string();
   Model::Timedata timedata(time_evolution_json);
 
   double tolerance = 1e-8;

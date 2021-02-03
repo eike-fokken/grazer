@@ -90,17 +90,17 @@ namespace Model {
 
     for (auto &subproblem : subproblems) {
       auto type = subproblem->get_type();
-
+      
       auto initial_json_iterator = initial_json["subproblems"].find(type);
       if (initial_json_iterator == initial_json["subproblems"].end()){
         gthrow({"Subproblem ", type, " has no initial values in the json files!"});
       }
 
       auto & subproblem_initial_json = *initial_json_iterator;
-      std::string initial_key =
-        "initial_json";
-      aux_json::replace_entry_with_json_from_file(subproblem_initial_json, initial_key);
-              subproblem->set_initial_values(new_state, subproblem_initial_json);
+      subproblem_initial_json["GRAZER_file_directory"] = initial_json["GRAZER_file_directory"];
+      aux_json::replace_entry_with_json_from_file(subproblem_initial_json,
+                                                  "initial_json");
+      subproblem->set_initial_values(new_state, subproblem_initial_json["initial_json"]);
     }
   }
 
