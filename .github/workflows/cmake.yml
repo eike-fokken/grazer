@@ -2,17 +2,18 @@ name: CMake
 
 on: [push]
 
-strategy:
-  matrix:
-    compiler: [g++-8, gcc-10, g++-10, clang++-9]
-
-env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
-  CXX: ${{ matrix.compiler }} 
 
 jobs:
   build:
+    strategy:
+      matrix:
+        compiler: [g++-8, gcc-10, g++-10, clang++-9]
+
+    env:
+      # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+      BUILD_TYPE: Release
+      CXX: ${{ matrix.compiler }} 
+
     # The CMake configure and build commands are platform agnostic and should work equally
     # well on Windows or Mac.  You can convert this to a matrix build if you need
     # cross-platform coverage.
