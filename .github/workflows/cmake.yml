@@ -8,15 +8,15 @@ jobs:
     strategy:
       matrix:
         compiler: [g++-9, g++-10, clang++-9]
-        os: [ ubuntu-18.04, macos-10.15, windows-2019 ]
+        os: [ ubuntu-18.04, macos-10.15 ] # add windows-2019 (as soon as aux folder is removed)
         include:
           - os: ubuntu-18.04
             dep-install: sudo apt-get install -y cmake ninja-build doxygen graphviz clang
           - os: macos-10.15
             dep-install: ""
             compiler: clang
-          - os: windows-2019
-            dep-install: ""
+          # - os: windows-2019
+          #   dep-install: ""
 
 
     env:
