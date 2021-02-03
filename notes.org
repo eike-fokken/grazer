@@ -51,6 +51,9 @@
 
 * EASY Todos:
 
+** TODO remove all instances of ordered_json. We don't need the ordering.
+
+  
 ** TODO Change namespaces to always have lower case names
  -  Also Think about reducing the number of nested namespaces, because C++ lookup means they don't really guard against name collisions.
   
