@@ -3,6 +3,9 @@ cmake_minimum_required (VERSION 3.12...3.18)
 project(Grazer CXX)
 include(CheckIPOSupported)
 
+# See cmake-modules README.md (add cmake-modules)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -40,7 +43,11 @@ add_compile_options("$<$<CONFIG:DEBUG>:${MY_DEBUG_OPTIONS}>"
 # add_link_options("$<$<CONFIG:DEBUG>:${MY_SANITIZE_OPTIONS}>")
 
 
-
+option(CODE_COVERAGE "add coverage compiler flags" OFF)
+if(CODE_COVERAGE)
+  include(CodeCoverage)
+  append_coverage_compiler_flags()
+endif()
 
 
 
