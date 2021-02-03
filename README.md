@@ -12,7 +12,7 @@ It will mature over the course of 2021.
 ## Installation
 
 Before you can use grazer, you must build it.
-Supported compilers are clang and gcc.
+Supported compilers are clang-9 and gcc-9 and higher.
 Note that also gcc-mingw can be used but you have to ship the dlls by hand.
 Later on there will be a guide for this.
 
