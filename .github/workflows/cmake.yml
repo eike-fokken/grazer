@@ -8,7 +8,16 @@ jobs:
     strategy:
       matrix:
         compiler: [g++-9, g++-10, clang++-9]
-        os: [ ubuntu-latest, macos-latest ]
+        os: [ ubuntu-18.04, macos-10.15, windows-2019 ]
+        include:
+          - os: ubuntu-18.04
+            dep-install: sudo apt-get install -y cmake ninja-build doxygen graphviz clang
+          - os: macos-10.15
+            dep-install: ""
+            compiler: clang
+          - os: windows-2019
+            dep-install: ""
+
 
     env:
       # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -27,8 +36,7 @@ jobs:
         submodules: recursive
 
     - name: Install Dependencies
-      run: |
-        sudo apt-get install -y cmake ninja-build doxygen graphviz clang
+      run: ${{ matrix.dep-install }}
 
     - name: Create Build Environment
       # Some projects don't allow in-source building, so create a separate build directory
