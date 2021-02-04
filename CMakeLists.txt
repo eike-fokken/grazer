@@ -48,10 +48,10 @@ if(CODE_COVERAGE)
   message(STATUS "Preparing Code Coverage")
   include(CodeCoverage)
   append_coverage_compiler_flags()
-  setup_target_for_coverage_gcovr_xml(
-    NAME ctest_coverage
-    EXECUTABLE ctest
-  )
+  # setup_target_for_coverage_gcovr_xml(
+  #   NAME ctest_coverage
+  #   EXECUTABLE ctest
+  # )
 endif()
 
 
