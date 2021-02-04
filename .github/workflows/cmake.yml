@@ -121,7 +121,13 @@ jobs:
         gcovr
         echo "ls"
         ls
+        echo "src"
+        ls src
+        echo "testingWithGoogle"
+        ls testingWithGoogle
+        gcov --version
+        gcc --version
     
     - name: Upload Code Coverage
       shell: bash
-      run: bash <(curl -s https://codecov.io/bash)
+      run: bash <(curl -s https://codecov.io/bash) -X gcov
