@@ -43,12 +43,9 @@ add_compile_options("$<$<CONFIG:DEBUG>:${MY_DEBUG_OPTIONS}>"
 # add_link_options("$<$<CONFIG:DEBUG>:${MY_SANITIZE_OPTIONS}>")
 
 
-cmake_dependent_option(
-  CODE_COVERAGE "add coverage compiler flags" OFF # default OFF
-  # only provide this option if, otherwise OFF:
-  "CMAKE_COMPILER_IS_GNUXX" OFF
-)
+option(CODE_COVERAGE "add coverage compiler flags" OFF)
 if(CODE_COVERAGE)
+  message(STATUS "Preparing Code Coverage")
   include(CodeCoverage)
   append_coverage_compiler_flags()
   setup_target_for_coverage_gcovr_xml(
