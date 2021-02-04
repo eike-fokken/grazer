@@ -82,6 +82,11 @@ jobs:
       with:
         submodules: recursive
 
+    - name: Set up Python 3.8 
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    
     - name: Install Dependencies
       run: |
         sudo apt-get install -y cmake ninja-build python3 python3-pip
@@ -113,9 +118,8 @@ jobs:
       # Execute tests defined by the CMake configuration.  
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: |
-        pip3 list
-        which gcovr
         python3 -m gcovr src
+        gcovr src || echo "fail"
     
     - name: Upload Code Coverage
       shell: bash
