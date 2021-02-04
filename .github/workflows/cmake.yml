@@ -118,9 +118,10 @@ jobs:
       # Execute tests defined by the CMake configuration.  
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: |
-        python3 -m gcovr src
-        gcovr src || echo "fail"
+        gcovr
+        echo "ls"
+        ls
     
     - name: Upload Code Coverage
       shell: bash
-      run: bash <(curl -s https://codecov.io/bash) -v
+      run: bash <(curl -s https://codecov.io/bash)
