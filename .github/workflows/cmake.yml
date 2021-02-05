@@ -12,7 +12,6 @@ jobs:
         - Linux-Clang
         - MacOS-Clang
         - Windows-VisualStudio
-        - Release
         build_type: [ Debug ]
         include:
         - name: Linux-GNU
