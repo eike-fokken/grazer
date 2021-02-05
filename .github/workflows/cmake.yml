@@ -16,12 +16,11 @@ jobs:
           - os: ubuntu-20.04
             dep-install: sudo apt-get install -y cmake ninja-build doxygen graphviz clang
           - os: windows-2019
-            dep-install: |
-              ls 'C:\Program Files'
-              echo "--> x86:"
-              ls 'C:\Program Files (x86)'
-              choco install ninja llvm
-            compiler: [ msvc ]
+            compiler: clang++
+            generateor: -G Ninja
+            dep-install: choco install ninja llvm
+          - os: windows-2019
+            compiler: msvc
         exclude:
           - os: windows-2019
             compiler: [g++-9, g++-10]
