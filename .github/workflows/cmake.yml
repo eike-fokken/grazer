@@ -21,8 +21,6 @@ jobs:
           - os: windows-2019
             dep-install: |
               ls 'C:\Program Files'
-              echo "--> LLVM"
-              ls 'C:\Program Files\LLVM'
               echo "--> x86:"
               ls 'C:\Program Files(x86)'
         exclude:
