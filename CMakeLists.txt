@@ -30,9 +30,12 @@ if(MSVC)
   add_compile_options("/permissive-")
 endif()
 # Add warnings:
-add_compile_options("$<$<CONFIG:DEBUG>:${MY_DEBUG_OPTIONS}>"
-  "$<$<CXX_COMPILER_ID:Clang,AppleClang>:-fcolor-diagnostics;-Wno-error=unused-private-field>"
-  "$<$<CXX_COMPILER_ID:GNU>:-fdiagnostics-color;-Wno-error=strict-overflow>"
+add_compile_options(
+  "$<$<CONFIG:DEBUG>:
+  $<$<CXX_COMPILER_ID:Clang,AppleClang>:${MY_DEBUG_OPTIONS};-color-diagnostics;-Wno-error=unused-private-field>
+  $<$<CXX_COMPILER_ID:GNU>:${MY_DEBUG_OPTIONS};-fdiagnostics-color;-Wno-error=strict-overflow>
+  $<$<CXX_COMPILER_ID:MSVC>:/permissive;/W4>
+  >"
   )
 # add_compile_options("$<$<CONFIG:RELEASE>:-march=native>"
 #     )
