@@ -1,10 +1,13 @@
 name: CMake
 
-on: [push]
-
+on:
+  pull_request:
+    branches: [master]
+    types: [synchronize, opened, reopened, ready_for_review]
 
 jobs:
   build:
+    # if: github.event.pull_request.draft == false
     strategy:
       matrix:
         name:
@@ -16,7 +19,7 @@ jobs:
         include:
         - name: Linux-GNU
           compiler: g++-9
-          os: ubuntu-16.04
+          os: ubuntu-18.04
           dep-install: sudo apt-get install -y cmake doxygen graphviz
         - name: Linux-Clang
           compiler: clang++-9
