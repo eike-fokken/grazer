@@ -21,20 +21,49 @@ check_ipo_supported(RESULT is_ipo_supported OUTPUT lto_error)
 if(is_ipo_supported)
   set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
   set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_DEBUG OFF)
+else()
+  message(STATUS "NO INTERPROCESS OPTIMIZATION!")
+  message(STATUS "${lto_error}")
 endif()
 
 # add_compile_options(-fopenmp)
 
-set(MY_DEBUG_OPTIONS -O0 -Werror -Wconversion -pedantic-errors -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wmissing-declarations -Wmissing-include-dirs  -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo  -Wstrict-overflow=5 -Wswitch-default -Wundef -Wunused -Wno-error=unused-parameter -Wno-error=unused-variable -Wno-error=unused-value -Wdelete-non-virtual-dtor)
 
-# Add warnings:
-add_compile_options(
-  "$<$<CONFIG:DEBUG>:
-  $<$<CXX_COMPILER_ID:Clang,AppleClang>:${MY_DEBUG_OPTIONS};-color-diagnostics;-Wno-error=unused-private-field>
-  $<$<CXX_COMPILER_ID:GNU>:${MY_DEBUG_OPTIONS};-fdiagnostics-color;-Wno-error=strict-overflow>
-  $<$<CXX_COMPILER_ID:MSVC>:/permissive;/W4>
-  >"
-  )
+
+set(my_debug_options -O0 -Werror -Wconversion -pedantic-errors -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wstrict-overflow=5 -Wswitch-default -Wundef -Wunused -Wno-error=unused-parameter -Wno-error=unused-variable -Wno-error=unused-value -Wdelete-non-virtual-dtor)
+set(debug_clang_options "-fcolor-diagnostics;-Wno-error=unused-private-field")
+
+set(debug_gcc_options "-fdiagnostics-color;-Wno-error=strict-overflow")
+
+set(debug_msvc_options "/permissive;/W4")
+
+
+
+set(release_clang_options "")
+set(release_gcc_options "")
+set(release_msvc_options "/permissive")
+
+
+
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+  add_compile_options("$<$<CONFIG:DEBUG>:${my_debug_options}>")
+  add_compile_options("$<$<CONFIG:DEBUG>:${debug_clang_options}>"
+    "$<$<NOT:$<CONFIG:Debug>>:${release_clang_options}>")
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  add_compile_options("$<$<CONFIG:DEBUG>:${my_debug_options}>")
+   add_compile_options("$<$<CONFIG:DEBUG>:${debug_gcc_options}>"
+     "$<$<NOT:$<CONFIG:Debug>>:${release_gcc_options}>")
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  add_compile_options("$<$<CONFIG:DEBUG>:${debug_msvc_options}>"
+    "$<$<NOT:$<CONFIG:Debug>>:${release_msvc_options}>")
+    else()
+  message(FATAL "Unknown compiler: ${CMAKE_CXX_COMPILER_ID}")
+endif()
+
+
+
+
+
 # add_compile_options("$<$<CONFIG:RELEASE>:-march=native>"
 #     )
 
