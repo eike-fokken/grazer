@@ -29,10 +29,10 @@ jobs:
           os: windows-2019
           compiler: msvs
         - name: Release
-          os: ubuntu-16.04
+          os: ubuntu-20.04
           compiler: g++-10
           dep-install: sudo apt-get install -y cmake doxygen graphviz
-          build-type: Release
+          build_type: Release
 
 
     env:
