@@ -23,6 +23,7 @@ jobs:
               ls 'C:\Program Files'
               echo "--> x86:"
               ls 'C:\Program Files(x86)'
+              scoop install ninja llvm
         exclude:
           - os: macos-10.15
             compiler: clang++-9
