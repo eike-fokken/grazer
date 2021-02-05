@@ -18,8 +18,13 @@ jobs:
           - os: macos-10.15
             compiler: clang++
 
-          # - os: windows-2019
-          #   dep-install: ""
+          - os: windows-2019
+            dep-install: |
+              ls 'C:\Program Files'
+              echo "--> LLVM"
+              ls 'C:\Program Files\LLVM'
+              echo "--> x86:"
+              ls 'C:\Program Files(x86)'
         exclude:
           - os: macos-10.15
             compiler: clang++-9
