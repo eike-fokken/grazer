@@ -35,13 +35,13 @@ set(debug_clang_options "-fcolor-diagnostics;-Wno-error=unused-private-field")
 
 set(debug_gcc_options "-fdiagnostics-color;-Wno-error=strict-overflow")
 
-set(debug_msvc_options "/permissive;/W4")
+set(debug_msvc_options "/permissive-;/W4")
 
 
 
 set(release_clang_options "")
 set(release_gcc_options "")
-set(release_msvc_options "/permissive")
+set(release_msvc_options "/permissive-")
 
 
 
