@@ -1,8 +1,10 @@
 #pragma once
 namespace Aux {
 
-
+  /// \brief The mathematical constant Pi
   extern double const Pi;
+
+  /// \brief This constant is chosen such that doubles whose differences are less than EPSILON, are considered equal.
   extern double const EPSILON;
 
   double circle_area(double radius);
