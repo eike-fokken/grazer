@@ -17,10 +17,6 @@ namespace Model::Networkproblem {
     Eigen::VectorXd operator()(double t) const {
       auto next = boundary_values.lower_bound(t);
 
-      if (next->first == t) {
-        return next->second;
-      }
-
       auto previous = std::prev(next);
       if (next == boundary_values.end()) {
         gthrow({"Requested boundary value is at a later time than the "
@@ -29,6 +25,10 @@ namespace Model::Networkproblem {
       if (next == boundary_values.begin()) {
         gthrow({"Requested boundary value is at an earlier time than the given "
                 "values."});
+      }
+
+      if (next->first == t) {
+        return next->second;
       }
 
       double t_minus = previous->first;
