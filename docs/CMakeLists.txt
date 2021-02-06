@@ -1,5 +1,5 @@
-if(${CMAKE_BUILD_TYPE} MATCHES "Release")
-elseif(${CMAKE_BUILD_TYPE} MATCHES "Relwithdebinfo" OR ${CMAKE_BUILD_TYPE} MATCHES "Debug")
+if("${CMAKE_BUILD_TYPE}" MATCHES "Release")
+elseif("${CMAKE_BUILD_TYPE}" MATCHES "Relwithdebinfo" OR "${CMAKE_BUILD_TYPE}" MATCHES "Debug")
   set(DOXYGEN_EXTRACT_PRIVATE YES)
 endif()
 

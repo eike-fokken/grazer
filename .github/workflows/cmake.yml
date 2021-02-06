@@ -1,35 +1,48 @@
 name: CMake
 
-on: [push]
-
+on:
+  pull_request:
+    branches: [master]
+    types: [synchronize, opened, reopened, ready_for_review]
 
 jobs:
   build:
+    # if: github.event.pull_request.draft == false
     strategy:
       matrix:
-        compiler: [g++-9, g++-10, clang++-9]
-        os: [ ubuntu-18.04, ubuntu-20.04, macos-10.15 ] # add windows-2019 (as soon as aux folder is removed)
+        name:
+        - Linux-GNU
+        - Linux-Clang
+        - MacOS-Clang
+        - Windows-VisualStudio
+        build_type: [ Debug ]
         include:
-          - os: ubuntu-18.04
-            dep-install: sudo apt-get install -y cmake ninja-build doxygen graphviz clang
-            generator: -G"Ninja"
-          - os: ubuntu-20.04
-            dep-install: sudo apt-get install -y cmake ninja-build doxygen graphviz clang
-          - os: macos-10.15
-            compiler: clang++
-
-          # - os: windows-2019
-          #   dep-install: ""
-        exclude:
-          - os: macos-10.15
-            compiler: clang++-9
+        - name: Linux-GNU
+          compiler: g++-9
+          os: ubuntu-18.04
+          dep-install: sudo apt-get install -y cmake doxygen graphviz
+        - name: Linux-Clang
+          compiler: clang++-9
+          os: ubuntu-16.04
+          dep-install: sudo apt-get install -y cmake doxygen graphviz clang
+        - name: MacOS-Clang
+          os: macos-10.15
+          compiler: clang++
+        - name: Windows-VisualStudio
+          os: windows-2019
+          compiler: msvs
+        - name: Release
+          os: ubuntu-20.04
+          compiler: g++-10
+          dep-install: sudo apt-get install -y cmake doxygen graphviz
+          build_type: Release
 
 
     env:
       # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-      BUILD_TYPE: Release
+      BUILD_TYPE: ${{ matrix.build_type }}
       CXX: ${{ matrix.compiler }}
-
+      CTEST_OUTPUT_ON_FAILURE: 1
     # The CMake configure and build commands are platform agnostic and should work equally
     # well on Windows or Mac.  You can convert this to a matrix build if you need
     # cross-platform coverage.
