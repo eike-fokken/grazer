@@ -1,5 +1,5 @@
 #pragma once
-#include "Mathfunctions.hpp"
+#include <Mathfunctions.hpp>
 #include <Eigen/Sparse>
 #include <Exception.hpp>
 #include <iostream>
