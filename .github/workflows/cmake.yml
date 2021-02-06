@@ -11,9 +11,9 @@ jobs:
     strategy:
       matrix:
         name:
-        - Linux-GNU
-        - Linux-Clang
-        - MacOS-Clang
+        # - Linux-GNU
+        # - Linux-Clang
+        # - MacOS-Clang
         - Windows-VisualStudio
         build_type: [ Debug ]
         include:
