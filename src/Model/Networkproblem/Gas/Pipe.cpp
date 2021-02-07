@@ -14,6 +14,9 @@
 
 namespace Model::Networkproblem::Gas {
 
+  std::string Pipe::get_type(){return "Pipe";}
+  bool Pipe::needs_boundary_values() {return false;}
+
   Pipe::Pipe(std::string _id, Network::Node *start_node,
              Network::Node *end_node, nlohmann::ordered_json topology_json,
              double _Delta_x)

@@ -9,6 +9,10 @@ namespace Model::Networkproblem::Gas {
   class Pipe final: public Gasedge, public Network::Edge {
   public:
 
+
+    static std::string get_type();
+    static bool needs_boundary_values();
+
     Pipe(std::string _id, Network::Node *start_node, Network::Node *end_node, nlohmann::ordered_json topology_json, double Delta_x);
 
 

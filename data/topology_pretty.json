@@ -7,7 +7,7 @@
         "documentation": "Adapted gaslib-134 combined with ieee-300 network."
     },
     "nodes": {
-        "source": [
+        "Source": [
             {
                 "id": "node_1",
                 "x": "10.000000",
@@ -105,7 +105,7 @@
                 }
             }
         ],
-        "innode": [
+        "Innode": [
             {
                 "id": "node_2",
                 "x": "20.000000",
@@ -2171,7 +2171,7 @@
                 }
             }
         ],
-        "sink": [
+        "Sink": [
             {
                 "id": "node_ld1",
                 "x": "40.000000",

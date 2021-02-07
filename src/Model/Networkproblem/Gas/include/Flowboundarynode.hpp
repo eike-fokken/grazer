@@ -10,8 +10,14 @@ namespace Model::Networkproblem::Gas {
 class Flowboundarynode final: public Gasnode {
 
 public:
+
+  static std::string get_type();
+  static bool needs_boundary_values();
+
   Flowboundarynode(std::string _id, nlohmann::ordered_json boundary_json,
          nlohmann::ordered_json topology_json);
+
+  Flowboundarynode(nlohmann::json const & data);
 
   ~Flowboundarynode() override {};
 
