@@ -15,7 +15,7 @@
 namespace Model::Networkproblem::Power {
 
   Powernode::Powernode(nlohmann::json const &topology)
-: Node(topology["id"].get<std::string>()), G(std::stod(topology["G"].get<std::string>())), B(std::stod(topology["B"].get<std::string>())) {
+    : Node(topology), G(std::stod(topology["G"].get<std::string>())), B(std::stod(topology["B"].get<std::string>())) {
     boundaryvalue.set_boundary_condition(topology["boundary_values"]);
 }
 
