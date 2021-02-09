@@ -49,7 +49,7 @@ jobs:
       BUILD_TYPE: ${{ matrix.build_type }}
       CXX: ${{ matrix.compiler }}
       CTEST_OUTPUT_ON_FAILURE: 1
-      BUILD_WITH_LIBCPP: ${{matrix.build_with_cpp}}
+      BUILD_WITH_LIBCPP: ${{ matrix.build_with_libcpp }}
     # The CMake configure and build commands are platform agnostic and should work equally
     # well on Windows or Mac.  You can convert this to a matrix build if you need
     # cross-platform coverage.
