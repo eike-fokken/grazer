@@ -13,7 +13,8 @@ jobs:
         name:
         - Linux-GNU
         - Linux-Clang
-        - MacOS-Clang
+        - Linux-Clang-libc++
+        # - MacOS-Clang
         - Windows-VisualStudio
         build_type: [ Debug ]
         include:
@@ -25,9 +26,14 @@ jobs:
           compiler: clang++-9
           os: ubuntu-16.04
           dep-install: sudo apt-get install -y cmake doxygen graphviz clang
-        - name: MacOS-Clang
-          os: macos-10.15
-          compiler: clang++
+        - name: Linux-Clang-libc++
+          compiler: clang++-9
+          os: ubuntu-18.04
+          dep-install: sudo apt-get install -y cmake doxygen graphviz clang libc++abi-9-dev  libc++-9-dev
+          build_with_libcpp: ON
+        # - name: MacOS-Clang
+        #   os: macos-10.15
+        #   compiler: clang++
         - name: Windows-VisualStudio
           os: windows-2019
           compiler: msvs
@@ -43,6 +49,7 @@ jobs:
       BUILD_TYPE: ${{ matrix.build_type }}
       CXX: ${{ matrix.compiler }}
       CTEST_OUTPUT_ON_FAILURE: 1
+      BUILD_WITH_LIBCPP: ${{ matrix.build_with_libcpp }}
     # The CMake configure and build commands are platform agnostic and should work equally
     # well on Windows or Mac.  You can convert this to a matrix build if you need
     # cross-platform coverage.
@@ -70,7 +77,7 @@ jobs:
       # Note the current convention is to use the -S and -B options here to specify source 
       # and build directories, but this is only available with CMake 3.13 and higher.  
       # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
-      run: cmake $GITHUB_WORKSPACE ${{ matrix.generator }} -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+      run: echo $BUILD_WITH_LIBCPP &&  cmake $GITHUB_WORKSPACE ${{ matrix.generator }} -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DBUILD_WITH_LIBCPP=$BUILD_WITH_LIBCPP
     - name: Build
       working-directory: ${{github.workspace}}/build
       shell: bash
