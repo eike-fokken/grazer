@@ -1,5 +1,7 @@
 * General todos:
 
+** TODO modernize the readme
+  
 ** TODO  Maybe introduce an additional function "register_edges_with_nodes" to make the edge constructor not change the nodes.
       This may be more clear.
 
