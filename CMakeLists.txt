@@ -14,6 +14,7 @@ option(BUILD_WITH_LIBCPP "Build with libc++ instead of libstdc++, if the compile
 if (BUILD_WITH_LIBCPP AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   add_compile_options("-stdlib=libc++")
   add_link_options("-stdlib=libc++")
+  message(STATUS "Will compile with libc++.")
 endif()
 enable_testing()
 add_subdirectory(googletest)
