@@ -32,14 +32,24 @@
 *.app
 
 
+
+#output directories:
+
 /output*
 build/**
 debug/**
 release/**
 mingw/**
-gcc-rel/**
-gcc-debug/**
-relwithdebinfo/**
+
+
+gcc_release/**
+gcc_debug/**
+gcc_relwithdebinfo/**
+clang_release/**
+clang_debug/**
+clang_relwithdebinfo/**
+
+# ide directories:
 .ccls-cache
 .DS_Store
 compile_commands.json
