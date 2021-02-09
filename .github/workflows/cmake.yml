@@ -31,7 +31,7 @@ jobs:
           os: ubuntu-latest
           dep-install: sudo apt-get install -y cmake doxygen graphviz clang libc++-dev libc++abi-dev
           build_with_libcpp: ON
-          special_symlink: ln -s /usr/include/libcxxabi/__cxxabi_config.h /usr/include/c++/v1/__cxxabi_config.h
+          # # special_symlink: ln -s /usr/include/libcxxabi/__cxxabi_config.h /usr/include/c++/v1/__cxxabi_config.h
         # - name: MacOS-Clang
         #   os: macos-10.15
         #   compiler: clang++
@@ -83,7 +83,7 @@ jobs:
       working-directory: ${{github.workspace}}/build
       shell: bash
       # Execute the build.  You can specify a specific target with "--target <NAME>"
-      run: ${{ matrix.special_symlink }} ;  cmake --build . --config $BUILD_TYPE
+      run: cmake --build . --config $BUILD_TYPE
 
     - name: Test
       working-directory: ${{github.workspace}}/build
