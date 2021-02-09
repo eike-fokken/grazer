@@ -6,6 +6,14 @@ include(CheckIPOSupported)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+
+# include the googletest project for tests:
+# here also the standard library has to be set, if compiling with llvms libc++.
+# Our own compile options are set later.
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+  add_compile_options("-stdlib=libc++")
+  add_link_options("-stdlib=libc++")
+endif()
 enable_testing()
 add_subdirectory(googletest)
 
@@ -59,7 +67,6 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     else()
   message(FATAL "Unknown compiler: ${CMAKE_CXX_COMPILER_ID}")
 endif()
-
 
 
 
