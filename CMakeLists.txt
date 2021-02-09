@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.12...3.18)
 
-project(Grazer CXX)
+project(Grazer C CXX)
 include(CheckIPOSupported)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -35,7 +35,7 @@ set(debug_clang_options "-fcolor-diagnostics;-Wno-error=unused-private-field")
 
 set(debug_gcc_options "-fdiagnostics-color;-Wno-error=strict-overflow")
 
-set(debug_msvc_options "/permissive-;/W4")
+set(debug_msvc_options "/permissive-;/W3")
 
 
 
