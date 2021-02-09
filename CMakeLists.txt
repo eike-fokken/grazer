@@ -6,11 +6,12 @@ include(CheckIPOSupported)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+option(BUILD_WITH_LIBCPP "Build with libc++ instead of libstdc++, if the compiler is clang." OFF)
 
 # include the googletest project for tests:
 # here also the standard library has to be set, if compiling with llvms libc++.
 # Our own compile options are set later.
-if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+if (BUILD_WITH_LIBCPP AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   add_compile_options("-stdlib=libc++")
   add_link_options("-stdlib=libc++")
 endif()
@@ -29,6 +30,7 @@ check_ipo_supported(RESULT is_ipo_supported OUTPUT lto_error)
 if(is_ipo_supported)
   set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
   set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_DEBUG OFF)
+  message(STATUS "Interprocedural optimization activated!")
 else()
   message(STATUS "NO INTERPROCESS OPTIMIZATION!")
   message(STATUS "${lto_error}")
