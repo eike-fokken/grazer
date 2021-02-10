@@ -38,10 +38,8 @@ void Newtonsolver_temp<Problemtype>::evaluate_state_derivative_coeffref(Problemt
                                     last_state, new_state);
 }
 
-template <typename Problemtype>
-long int Newtonsolver_temp<Problemtype>::get_number_non_zeros_jacobian() {
-  return jacobian.nonZeros();
-}
+// template <typename Problemtype>
+// auto Newtonsolver_temp<Problemtype>::get_number_non_zeros_jacobian() 
 
 template <typename Problemtype>
 Solutionstruct Newtonsolver_temp<Problemtype>::solve(
