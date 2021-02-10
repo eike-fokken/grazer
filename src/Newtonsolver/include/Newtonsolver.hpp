@@ -58,7 +58,7 @@ namespace Solver {
 
     /// \brief Returns the number of structurally non-zero indices of the
     /// jacobian.
-    auto get_number_non_zeros_jacobian() { return jacobian.nonZeros(); }
+    Eigen::Index get_number_non_zeros_jacobian();
 
     /// \brief This method computes a solution to f(new_state) == 0.
     ///
@@ -80,7 +80,6 @@ namespace Solver {
     // Later on we will include qr decomposition for badly conditioned jacobians.
     // Eigen::SparseQR<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>>
     // qrsolver;
-
 
     /// This will be the jacobian matrix.  We hold it here so its sparsity
     /// pattern is preserved.
