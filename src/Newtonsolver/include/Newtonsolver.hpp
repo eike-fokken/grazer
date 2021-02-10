@@ -56,8 +56,9 @@ namespace Solver {
                                             Eigen::Ref<Eigen::VectorXd const> const &last_state,
                                             Eigen::Ref<Eigen::VectorXd const> const &new_state);
 
-    
-    long int get_number_non_zeros_jacobian();
+    /// \brief Returns the number of structurally non-zero indices of the
+    /// jacobian.
+    auto get_number_non_zeros_jacobian() { return jacobian.nonZeros(); }
 
     /// \brief This method computes a solution to f(new_state) == 0.
     ///
@@ -66,7 +67,6 @@ namespace Solver {
     /// "Deuflhard and Hohmann: Numerical Analysis in Modern Scientific
     /// Computing". Afterwards there should hold f(new_state) == 0 (up to
     /// tolerance).
-
     Solutionstruct solve(Eigen::Ref<Eigen::VectorXd>new_state, Problemtype &problem,
                          bool newjac, double last_time, double new_time,
                          Eigen::Ref<Eigen::VectorXd const> const &last_state);

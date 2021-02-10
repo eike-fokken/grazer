@@ -6,6 +6,16 @@ include(CheckIPOSupported)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+option(BUILD_WITH_LIBCPP "Build with libc++ instead of libstdc++, if the compiler is clang." OFF)
+
+# include the googletest project for tests:
+# here also the standard library has to be set, if compiling with llvms libc++.
+# Our own compile options are set later.
+if (BUILD_WITH_LIBCPP AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+  add_compile_options("-stdlib=libc++")
+  add_link_options("-stdlib=libc++")
+  message(STATUS "Will compile with libc++.")
+endif()
 enable_testing()
 add_subdirectory(googletest)
 
@@ -21,8 +31,9 @@ check_ipo_supported(RESULT is_ipo_supported OUTPUT lto_error)
 if(is_ipo_supported)
   set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
   set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_DEBUG OFF)
+  message(STATUS "Interprocedural optimization supported!")
 else()
-  message(STATUS "NO INTERPROCESS OPTIMIZATION!")
+  message(STATUS "NO INTERPROCESS OPTIMIZATION AVAILABLE!")
   message(STATUS "${lto_error}")
 endif()
 
@@ -35,7 +46,10 @@ set(debug_clang_options "-fcolor-diagnostics;-Wno-error=unused-private-field")
 
 set(debug_gcc_options "-fdiagnostics-color;-Wno-error=strict-overflow")
 
-set(debug_msvc_options "/permissive-;/W4")
+# Warning 4127 warns of if statements that are compile time constants.
+# But templated if statements are often compile time constants and Eigen does not have
+# if constexpr in those places. Therefore we suppress this warning.
+set(debug_msvc_options "/permissive-;/W4;/WX;/wd4127")
 
 
 
@@ -59,7 +73,6 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     else()
   message(FATAL "Unknown compiler: ${CMAKE_CXX_COMPILER_ID}")
 endif()
-
 
 
 
