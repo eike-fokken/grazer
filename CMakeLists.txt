@@ -46,7 +46,10 @@ set(debug_clang_options "-fcolor-diagnostics;-Wno-error=unused-private-field")
 
 set(debug_gcc_options "-fdiagnostics-color;-Wno-error=strict-overflow")
 
-set(debug_msvc_options "/permissive-;/W4;/WX")
+# Warning 4127 warns of if statements that are compile time constants.
+# But templated if statements are often compile time constants and Eigen does not have
+# if constexpr in those places. Therefore we suppress this warning.
+set(debug_msvc_options "/permissive-;/W4;/WX;/wd4127")
 
 
 
