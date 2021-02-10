@@ -1,12 +1,13 @@
-#include <Netprob_Aux.hpp>
-#include <PQnode.hpp>
-#include <PVnode.hpp>
-#include <Vphinode.hpp>
-#include <Netprob_Aux.hpp>
-#include <Exception.hpp>
+#include "Netprob_Aux.hpp"
+#include "Choosercontainer.hpp"
+#include "Exception.hpp"
+#include "Netprob_Aux.hpp"
+#include "PQnode.hpp"
+#include "PVnode.hpp"
+#include "Vphinode.hpp"
+
 #include <iostream>
 #include <memory>
-#include <Choosercontainer.hpp>
 
 namespace Model::Networkproblem::Netprob_Aux {
 
@@ -23,7 +24,7 @@ namespace Model::Networkproblem::Netprob_Aux {
 
     for (auto nodetype_itr = node_topology.begin();
          nodetype_itr != node_topology.end(); ++nodetype_itr) {
-      
+
       std::string nodetype = nodetype_itr.key();
 
       auto type_itr = nodetypedata_collection.find(nodetype);
@@ -36,12 +37,6 @@ namespace Model::Networkproblem::Netprob_Aux {
     // Now we actually construct the node vector:
 
     std::vector<std::unique_ptr<Network::Node>> nodes;
-    // Reserve the number of elements in nodes so that the nodes themselves are
-    // constructed one after another in memory.
-    // One should check whether this makes a difference in runtime.
-
-    // must be checked: This is just the number of node types!
-    // nodes.reserve(node_topology.size());
 
     for (auto const & [nodetype, nodedata]: nodetypedata_collection) {
       if (node_topology.find(nodetype) != node_topology.end()) {
@@ -107,12 +102,6 @@ namespace Model::Networkproblem::Netprob_Aux {
 
       // Now we actually construct the edge vector:
       std::vector<std::unique_ptr<Network::Edge>> edges;
-      // Reserve the number of elements in edges so that the edges themselves
-      // are constructed one after another in memory. One should check whether
-      // this makes a difference in runtime.
-
-      // must be checked: This is just the number of edge types!
-      // edges.reserve(edge_topology.size());
 
       for (auto const &[edgetype, edgedata] : edgetypedata_collection) {
         if (edge_topology.find(edgetype) != edge_topology.end()) {
@@ -150,4 +139,10 @@ namespace Model::Networkproblem::Netprob_Aux {
       return edges;
     }
 
-    } // namespace Model::Networkproblem::Aux
+  // void insert_boundary_conditions_in_topology_json(nlohmann::json & topology, nlohmann::json const & boundary){
+
+
+  // }
+
+
+} // namespace Model::Networkproblem::Aux

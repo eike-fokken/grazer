@@ -1,7 +1,7 @@
 #pragma once
-#include <Edge.hpp>
-#include <Node.hpp>
-#include <Nodetypechooser.hpp>
+#include "Edge.hpp"
+#include "Node.hpp"
+#include "Nodetypechooser.hpp"
 #include <memory>
 #include <set>
 

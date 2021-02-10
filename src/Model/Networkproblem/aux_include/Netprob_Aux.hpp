@@ -1,5 +1,5 @@
 #pragma once
-#include "nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 #include <memory>
 #include <string>
 #include <vector>
@@ -24,4 +24,9 @@ namespace Model::Networkproblem::Netprob_Aux {
   build_edge_vector(nlohmann::json const &topology,
                     nlohmann::json const &boundary,
                     std::vector<std::unique_ptr<Network::Node>> & nodes);
+
+  void
+  insert_boundary_conditions_in_topology_json(nlohmann::json &topology,
+                                              nlohmann::json const &boundary);
+
 } // namespace Model::Networkproblem::Netprob_Aux
