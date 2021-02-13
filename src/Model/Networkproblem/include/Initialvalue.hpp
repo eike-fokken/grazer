@@ -9,12 +9,13 @@
 namespace Model::Networkproblem {
   template <typename T, int N> class Initialvalue {
 
-  public:
+   public:
     Initialvalue(){};
     Initialvalue(
         std::map<double, Eigen::Matrix<double, N, 1>> _initial_values)
-        : initial_values(_initial_values){};
+        : Initialvalues(_initial_values){};
 
+    /*
     Eigen::VectorXd operator()(double t) const {
       auto next = initial_values.lower_bound(t);
 
@@ -39,7 +40,8 @@ namespace Model::Networkproblem {
           previous->second +
           (t - t_minus) * (value_plus - value_minus) / (t_plus - t_minus);
       return value;
-    }
+    } */
+
     // Eigen::VectorXd operator()(double t) {
     //   auto next = initial_values.lower_bound(t);
     //   if (next->first == t) {
@@ -71,35 +73,34 @@ namespace Model::Networkproblem {
 
     /// This just makes a map of initial conditions.
     /// The last value is shifted an epsilon to the right in order to circumvent double-equality problems.
-    void set_initial_condition(nlohmann::ordered_json initial_json) {
-    
-      for (auto &datapoint : initial_json["data"]) {
-        if (datapoint["value"].size() != N) {
-          gthrow(
-                 {"Wrong number of initial values in object ", initial_json["id"]});
-        }
+    //void set_initial_condition(nlohmann::ordered_json initial_json) {
+    //
+    //  for (auto &datapoint : initial_json["data"]) {
+    //    if (datapoint["value"].size() != N) {
+    //      gthrow(
+    //             {"Wrong number of initial values in object ", initial_json["id"]});
+    //    }
         
-        Eigen::Matrix<double, N, 1> value;
-        try {
-          for (unsigned int i =0 ; i<N ; ++i) {
-            // auto ijson= static_cast<nlohmann::basic_json::size_type>(i);
-          value[i] = datapoint["value"][i];
-          }
-        } catch (...) {
-          gthrow({"Initial data in object with id ", initial_json["id"],
-                  " couldn't be assignd in vector, not a double?"});
-        }
-        if(datapoint == initial_json["data"].back()){
-          initial_values.insert({datapoint["x"].get<double>()+Aux::EPSILON, value});
-        }
-        initial_values.insert({datapoint["x"], value});
-        
-      }
-    }
+    //    Eigen::Matrix<double, N, 1> value;
+    //    try {
+    //      for (unsigned int i =0 ; i<N ; ++i) {
+    //        // auto ijson= static_cast<nlohmann::basic_json::size_type>(i);
+    //      value[i] = datapoint["value"][i];
+    //      }
+    //    } catch (...) {
+    //      gthrow({"Initial data in object with id ", initial_json["id"],
+    //              " couldn't be assignd in vector, not a double?"});
+    //    }
+    //    if(datapoint == initial_json["data"].back()){
+    //      initial_values.insert({datapoint["x"].get<double>()+Aux::EPSILON, value});
+    //    }
+    //    initial_values.insert({datapoint["x"], value});
+    //    
+    //  }
 
-
-  private:
-    std::map<double, Eigen::Matrix<double, N, 1>> initial_values;
+    //}
+    private:
+	Valuemap Initialvalues;
   };
 
 } // namespace Model::Networkproblem

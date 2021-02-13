@@ -47,3 +47,5 @@ compile_commands.json
 .devcontainer
 .clangd
 .cache
+.*.swo
+.*.swp
