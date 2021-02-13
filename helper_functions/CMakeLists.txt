@@ -1,3 +1,8 @@
 add_executable(boundaryprettyfy boundaryprettyfy.cpp)
 
 target_link_libraries(boundaryprettyfy PRIVATE nlohmann_json)
+
+
+add_executable(transform_boundary transform_boundary.cpp)
+
+target_link_libraries(transform_boundary PRIVATE nlohmann_json)
