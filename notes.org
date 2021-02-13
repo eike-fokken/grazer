@@ -89,3 +89,12 @@
 
 ** TODO  Consider to replace the maps in Intialvalue and Boundaryvalue by ordered vectors (only for performance, probably irrelevant)
 
+
+* Future
+
+** TODO Make grazer a shared library for use in other languages.
+   - Probably it should be a C library for easier portability
+   - Maybe it should take callback functions to enable users to write python (or even matlab but that may prove difficult)
+     functions that are used as PDEs or objective functions.
+     These may (look into that) even be relatively fast if they can be just-in-time compiled.
+   - This should also work with Julia
