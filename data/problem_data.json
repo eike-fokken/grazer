@@ -22,7 +22,7 @@
             {
                 "desired_delta_x": "10000",
                 "topology_json":"topology_only_power.json",
-                "boundary_json":"boundary_pretty.json"
+                "boundary_json":"boundary_pretty_new.json"
             }
         }
     }

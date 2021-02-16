@@ -22,7 +22,7 @@ namespace Model::Networkproblem::Netprob_Aux {
     buildervector.push_back(std::make_unique<Nodedatabuilder<Power::Vphinode>>());
     buildervector.push_back(std::make_unique<Nodedatabuilder<Power::PVnode>>());
     buildervector.push_back(std::make_unique<Nodedatabuilder<Power::PQnode>>());
-    buildervector.push_back(std::make_unique<Nodedatabuilder<Gas::Flowboundarynode>>());
+    // buildervector.push_back(std::make_unique<Nodedatabuilder<Gas::Flowboundarynode>>());
     // buildervector.push_back(std::make_unique<Nodedatabuilder<Gas::Pressureboundarynode>>());
     // buildervector.push_back(std::make_unique<Nodedatabuilder<Gas::Innode>>());
 
