@@ -27,6 +27,6 @@ namespace Model::Networkproblem::Netprob_Aux {
 
   void
   insert_boundary_conditions_in_topology_json(nlohmann::json &topology,
-                                              nlohmann::json const &boundary);
+                                              nlohmann::json &boundary);
 
 } // namespace Model::Networkproblem::Netprob_Aux

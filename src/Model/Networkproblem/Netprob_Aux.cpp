@@ -142,75 +142,80 @@ namespace Model::Networkproblem::Netprob_Aux {
 
   void insert_boundary_conditions_in_topology_json(nlohmann::json &topology,
                                                    nlohmann::json &boundary) {
-    // Up to now there are no edges that take boundary values, but
+    // Up to now there are no edges that take boundary values, but there may be
+    // some day.
     for (auto const &component : {"nodes", "connections"}) {
+
       // only fire if the boundary json contains entries of this component.
-      if (boundary.contains(component)) {
-        for (auto it = boundary[component].begin();
-             it != boundary[component].end(); ++it) {
+      if (!boundary.contains(component)) {
+        continue;
+      }
+      for (auto it = boundary[component].begin();
+           it != boundary[component].end(); ++it) {
 
-          auto id_compare_less = [](nlohmann::json const &a,
-                                    nlohmann::json const &b) -> bool {
-            return a["id"].get<std::string>() < b["id"].get<std::string>();
-          };
+        // define a < function as a lambda:
+        auto id_compare_less = [](nlohmann::json const &a,
+                                  nlohmann::json const &b) -> bool {
+          return a["id"].get<std::string>() < b["id"].get<std::string>();
+        };
 
-          auto &boundary_vector_json = boundary[component][it.key()];
-          auto &topology_vector_json = topology[component][it.key()];
+        auto &boundary_vector_json = boundary[component][it.key()];
+        auto &topology_vector_json = topology[component][it.key()];
 
-          // Sorts the data in both topology and boundary json for easier
-          // insertion afterwards.
-          std::sort(boundary_vector_json.begin(), boundary_vector_json.end(),
-                    id_compare_less);
-          std::sort(topology_vector_json.begin(), topology_vector_json.end(),
-                    id_compare_less);
+        // Sorts the data in both topology and boundary json for easier
+        // insertion afterwards.
+        std::sort(boundary_vector_json.begin(), boundary_vector_json.end(),
+                  id_compare_less);
+        std::sort(topology_vector_json.begin(), topology_vector_json.end(),
+                  id_compare_less);
 
-          auto bnd_it = boundary_vector_json.begin();
-          auto top_it = topology_vector_json.begin();
+        auto bnd_it = boundary_vector_json.begin();
+        auto top_it = topology_vector_json.begin();
 
-          auto id_equals = [](nlohmann::json const &a,
-                              nlohmann::json const &b) -> bool {
-            return a["id"].get<std::string>() == b["id"].get<std::string>();
-          };
+        // define an equals function as a lambda
+        auto id_equals = [](nlohmann::json const &a,
+                            nlohmann::json const &b) -> bool {
+          return a["id"].get<std::string>() == b["id"].get<std::string>();
+        };
 
-          // Check for duplicate ids:
-          auto bnd_first_pair =
-              std::adjacent_find(boundary_vector_json.begin(),
-                                 boundary_vector_json.end(), id_equals);
-          if (bnd_first_pair != boundary_vector_json.end()) {
-            gthrow({"The id ", (*bnd_first_pair)["id"].get<std::string>(),
-                    " appears twice in the boundary json."});
-          }
+        // Check for duplicate ids:
+        auto bnd_first_pair =
+            std::adjacent_find(boundary_vector_json.begin(),
+                               boundary_vector_json.end(), id_equals);
+        if (bnd_first_pair != boundary_vector_json.end()) {
+          gthrow({"The id ", (*bnd_first_pair)["id"].get<std::string>(),
+                  " appears twice in the boundary json."});
+        }
 
-          auto top_first_pair =
-              std::adjacent_find(topology_vector_json.begin(),
-                                 topology_vector_json.end(), id_equals);
-          if (top_first_pair != topology_vector_json.end()) {
-            gthrow({"The id ", (*top_first_pair)["id"].get<std::string>(),
-                    " appears twice in the topology json."});
-          }
+        auto top_first_pair =
+            std::adjacent_find(topology_vector_json.begin(),
+                               topology_vector_json.end(), id_equals);
+        if (top_first_pair != topology_vector_json.end()) {
+          gthrow({"The id ", (*top_first_pair)["id"].get<std::string>(),
+                  " appears twice in the topology json."});
+        }
 
-          // assign boundary values to the topology json.
-          while (bnd_it != boundary_vector_json.end() and
-                 top_it != topology_vector_json.end()) {
+        // assign boundary values to the topology json.
+        while (bnd_it != boundary_vector_json.end() and
+               top_it != topology_vector_json.end()) {
 
-            if (id_compare_less(*bnd_it, *top_it)) {
-              std::cout << "The component with id "
-                        << (*bnd_it)["id"].get<std::string>() << '\n'
-                        << " has a boundary condition but is not given in the "
-                           "topology json."
-                        << std::endl;
-              ++bnd_it;
-            } else if (id_compare_less(*top_it, *bnd_it)) {
-              gthrow({"The component with id ",
-                      (*top_it)["id"].get<std::string>(),
-                      "\n is given in the topology json but no boundary ",
-                      "condition is provided."});
+          if (id_compare_less(*bnd_it, *top_it)) {
+            std::cout << "The component with id "
+                      << (*bnd_it)["id"].get<std::string>() << '\n'
+                      << " has a boundary condition but is not given in the "
+                         "topology json."
+                      << std::endl;
+            ++bnd_it;
+          } else if (id_compare_less(*top_it, *bnd_it)) {
+            gthrow({"The component with id ",
+                    (*top_it)["id"].get<std::string>(),
+                    "\n is given in the topology json but no boundary ",
+                    "condition is provided."});
 
-            } else {
-              (*top_it)["boundary_values"] = (*bnd_it)["data"];
-              ++bnd_it;
-              ++top_it;
-            }
+          } else {
+            (*top_it)["boundary_values"] = (*bnd_it)["data"];
+            ++bnd_it;
+            ++top_it;
           }
         }
       }
