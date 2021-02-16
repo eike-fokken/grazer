@@ -28,29 +28,27 @@ namespace Model::Networkproblem {
       auto first_t = Values.begin()->first;
 
       // This catches problems with doubles
-      if (t >= last_t) {
-        if (t > last_t + Aux::EPSILON) {
-          std::cout << "Demanded " << "string variable for position/time" << t
-                    		   << "latest possible time/ greatest possible position"
-				   << last_t << std::endl;
-          gthrow({"Requested ... is at a later/greater ...  "});
-        } else {
-          return last_element->second;
+      try {
+	if (t >= last_t) {
+          if (t > last_t + Aux::EPSILON) {
+            throw std::out_of_range("Too high");
+          } else {
+            return last_element->second;
+          }
         }
-      }
-      if (t <= first_t) {
-        if (t < first_t-Aux::EPSILON) {
-          std::cout << "Demanded " << " string variable for position/time " << t 
-				   <<  "earliest possible time/ lowest possible position " 
-				   << first_t << std::endl;
-          gthrow({" Requested ... is at a earlier/lower ...  "});
-        } else {
-          return first_element->second;
+        if (t <= first_t) {
+          if (t < first_t-Aux::EPSILON) {
+	    throw std::out_of_range("Too low");
+          } else {
+            return first_element->second;
+          }
         }
+      } catch (std::out_of_range& e) {
+        std::cout << "The value " << t
+		  << "is out of range of the initial/boundary values. The valid range is between "
+		  << first_t << " and " << last_t << "." << std::endl;
       }       
-      
             
-
       auto next = Values.lower_bound(t);
       auto previous = std::prev(next);
 
@@ -76,7 +74,7 @@ namespace Model::Networkproblem {
       for (auto &datapoint : values_json["data"]) {
         if (datapoint["values"].size() != N) {
           gthrow(
-                 {"Wrong number of","initial/Boundary", " values in node ", boundary_json["id"]});
+                 {"Wrong number of initial/boundary values in node ", boundary_json["id"]});
         }
         Eigen::Matrix<double, N, 1> value;
         try {
@@ -85,7 +83,7 @@ namespace Model::Networkproblem {
           value[i] = datapoint["values"][i];
           }
         } catch (...) {
-          gthrow({"initial/Boundary ","data in node with id ",values_json["id"],
+          gthrow({"initial/boundary data in node with id ",values_json["id"],
                   " couldn't be assignd in vector, not a double?"})
             }
         Values.insert({datapoint["time"], value});
