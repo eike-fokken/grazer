@@ -13,8 +13,7 @@
 namespace Model::Networkproblem::Netprob_Aux {
 
   std::vector<std::unique_ptr<Network::Node>>
-  build_node_vector(nlohmann::json const &node_topology,
-                    nlohmann::json const &boundary) {
+  build_node_vector(nlohmann::json const &node_topology) {
 
     Nodechooser nodechooser;
 
@@ -44,26 +43,6 @@ namespace Model::Networkproblem::Netprob_Aux {
       if (node_topology.find(nodetype) != node_topology.end()) {
 
         for (auto node : node_topology[nodetype]) {
-
-          // If this component needs boundary values we add them to the topology
-          // json:
-          if (nodedata.needs_boundary_values) {
-            auto nodeid = node["id"].get<std::string>();
-            auto finder = [nodeid](nlohmann::json const &x) {
-              auto it = x.find("id");
-              return it != x.end() and it.value() == nodeid;
-            };
-            auto bdjson =
-                std::find_if(boundary["boundarycondition"].begin(),
-                             boundary["boundarycondition"].end(), finder);
-            if (bdjson == boundary["boundarycondition"].end()) {
-              gthrow({"Network component ", nodeid, " is of type ", nodetype,
-                      " and hence needs a boundary condition, but none is ",
-                      "provided!"});
-            }
-            node["boundary_values"] = *bdjson;
-          }
-
           auto current_node = nodedata.Constructor(node);
           nodes.push_back(std::move(current_node));
         }
@@ -78,7 +57,6 @@ namespace Model::Networkproblem::Netprob_Aux {
 
   std::vector<std::unique_ptr<Network::Edge>>
   build_edge_vector(nlohmann::json const &edge_topology,
-                    nlohmann::json const &boundary,
                     std::vector<std::unique_ptr<Network::Node>> &nodes) {
 
     Edgechooser edgechooser;
@@ -108,26 +86,6 @@ namespace Model::Networkproblem::Netprob_Aux {
       if (edge_topology.find(edgetype) != edge_topology.end()) {
 
         for (auto edge : edge_topology[edgetype]) {
-
-          // If this component needs boundary values we add them to the
-          // topology json:
-          if (edgedata.needs_boundary_values) {
-            auto edgeid = edge["id"].get<std::string>();
-            auto finder = [edgeid](nlohmann::json const &x) {
-              auto it = x.find("id");
-              return it != x.end() and it.value() == edgeid;
-            };
-            auto bdjson =
-                std::find_if(boundary["boundarycondition"].begin(),
-                             boundary["boundarycondition"].end(), finder);
-            if (bdjson == boundary["boundarycondition"].end()) {
-              gthrow({"Network component ", edgeid, " is of type ", edgetype,
-                      " and hence needs a boundary condition, but none is ",
-                      "provided!"});
-            }
-            edge["boundary_values"] = *bdjson;
-          }
-
           auto current_edge = edgedata.Constructor(edge, nodes);
           edges.push_back(std::move(current_edge));
         }
@@ -153,14 +111,18 @@ namespace Model::Networkproblem::Netprob_Aux {
       for (auto it = boundary[component].begin();
            it != boundary[component].end(); ++it) {
 
+        if(!topology[component].contains(it.key())){
+          std::cout << "Note: Topology json does not contain "<< component << " of type " << it.key() << ", but the boundary json does contain such " << component << "." << std::endl;
+          continue;
+        }
+        auto &boundary_vector_json = boundary[component][it.key()];
+        auto &topology_vector_json = topology[component][it.key()];
+
         // define a < function as a lambda:
         auto id_compare_less = [](nlohmann::json const &a,
                                   nlohmann::json const &b) -> bool {
           return a["id"].get<std::string>() < b["id"].get<std::string>();
         };
-
-        auto &boundary_vector_json = boundary[component][it.key()];
-        auto &topology_vector_json = topology[component][it.key()];
 
         // Sorts the data in both topology and boundary json for easier
         // insertion afterwards.

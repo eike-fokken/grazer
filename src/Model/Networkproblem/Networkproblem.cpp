@@ -52,10 +52,11 @@ namespace Model::Networkproblem {
     nlohmann::json &boundary = networkproblem_json[boundary_key];
 
     // build the node vector.
-    auto nodes = Netprob_Aux::build_node_vector(topology["nodes"], boundary);
+    Netprob_Aux::insert_boundary_conditions_in_topology_json(topology,boundary);
+    auto nodes = Netprob_Aux::build_node_vector(topology["nodes"]);
 
     // build the edge vector.
-    auto edges = Netprob_Aux::build_edge_vector(topology["connections"], boundary, nodes);
+    auto edges = Netprob_Aux::build_edge_vector(topology["connections"], nodes);
 
     network = std::make_unique<Network::Net>(std::move(nodes), std::move(edges));
 

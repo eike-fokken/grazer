@@ -71,7 +71,7 @@ namespace Model::Networkproblem {
 
      }
 
-      for (auto &datapoint : boundary_json["data"]) {
+      for (auto &datapoint : boundary_json) {
         if (datapoint["values"].size() != N) {
           gthrow(
                  {"Wrong number of boundary values in node ", boundary_json["id"]});
