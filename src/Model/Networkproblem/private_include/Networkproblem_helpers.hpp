@@ -10,7 +10,7 @@ namespace Network {
   class Edge;
 }
 
-namespace Model::Networkproblem::Netprob_Aux {
+namespace Model::Networkproblem {
 
   /// \brief construct Nodes of types given by the json input and put their pointers in a vector
   ///

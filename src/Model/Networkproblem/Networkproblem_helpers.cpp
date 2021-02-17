@@ -1,21 +1,17 @@
-#include "Netprob_Aux.hpp"
-#include "Choosercontainer.hpp"
+#include "Networkproblem_helpers.hpp"
+#include "Componentfactory.hpp"
 #include "Exception.hpp"
-#include "Netprob_Aux.hpp"
-#include "PQnode.hpp"
-#include "PVnode.hpp"
-#include "Vphinode.hpp"
 
 #include <algorithm>
 #include <iostream>
 #include <memory>
 
-namespace Model::Networkproblem::Netprob_Aux {
+namespace Model::Networkproblem {
 
   std::vector<std::unique_ptr<Network::Node>>
   build_node_vector(nlohmann::json const &node_topology) {
 
-    Nodechooser nodechooser;
+    Componentfactory::Nodechooser nodechooser;
 
     auto nodetypedata_collection = nodechooser.get_map();
 
@@ -59,7 +55,7 @@ namespace Model::Networkproblem::Netprob_Aux {
   build_edge_vector(nlohmann::json const &edge_topology,
                     std::vector<std::unique_ptr<Network::Node>> &nodes) {
 
-    Edgechooser edgechooser;
+    Componentfactory::Edgechooser edgechooser;
 
     auto edgetypedata_collection = edgechooser.get_map();
 
@@ -184,4 +180,4 @@ namespace Model::Networkproblem::Netprob_Aux {
     }
   }
 
-} // namespace Model::Networkproblem::Netprob_Aux
+} // namespace Model::Networkproblem

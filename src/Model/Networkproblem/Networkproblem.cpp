@@ -1,20 +1,19 @@
-#include "nlohmann/json.hpp"
-#include <Edge.hpp>
-#include <Equationcomponent.hpp>
-#include <Exception.hpp>
-#include <Net.hpp>
-#include <Networkproblem.hpp>
-#include <Node.hpp>
+#include "Networkproblem.hpp"
+#include "Aux_json.hpp"
+#include "Edge.hpp"
+#include "Equationcomponent.hpp"
+#include "Exception.hpp"
+#include "Net.hpp"
+#include "Networkproblem_helpers.hpp"
+#include "Node.hpp"
+#include <Eigen/Sparse>
 #include <iostream>
 #include <memory>
+#include <nlohmann/json.hpp>
 #include <string>
 #include <utility>
 #include <vector>
 // #include <execution>
-#include <Eigen/Sparse>
-#include <Netprob_Aux.hpp>
-#include <Aux_json.hpp>
-
 namespace Model::Networkproblem {
 
   std::string Networkproblem::get_type() const {return "Network_problem";}
@@ -52,11 +51,11 @@ namespace Model::Networkproblem {
     nlohmann::json &boundary = networkproblem_json[boundary_key];
 
     // build the node vector.
-    Netprob_Aux::insert_boundary_conditions_in_topology_json(topology,boundary);
-    auto nodes = Netprob_Aux::build_node_vector(topology["nodes"]);
+    insert_boundary_conditions_in_topology_json(topology,boundary);
+    auto nodes = build_node_vector(topology["nodes"]);
 
     // build the edge vector.
-    auto edges = Netprob_Aux::build_edge_vector(topology["connections"], nodes);
+    auto edges = build_edge_vector(topology["connections"], nodes);
 
     network = std::make_unique<Network::Net>(std::move(nodes), std::move(edges));
 

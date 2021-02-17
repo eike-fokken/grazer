@@ -1,20 +1,20 @@
+#include "Componentfactory.hpp"
+#include "Componentchooser.hpp"
+#include "Compressorstation.hpp"
+#include "Controlvalve.hpp"
+#include "Flowboundarynode.hpp"
 #include "Gaspowerconnection.hpp"
-#include <Choosercontainer.hpp>
+#include "Innode.hpp"
+#include "PQnode.hpp"
+#include "PVnode.hpp"
+#include "Pipe.hpp"
+#include "Pressureboundarynode.hpp"
+#include "Shortpipe.hpp"
+#include "Transmissionline.hpp"
+#include "Vphinode.hpp"
 #include <memory>
 
-#include <Pressureboundarynode.hpp>
-#include <Flowboundarynode.hpp>
-#include <Innode.hpp>
-#include <Controlvalve.hpp>
-#include <Compressorstation.hpp>
-#include <PQnode.hpp>
-#include <PVnode.hpp>
-#include <Pipe.hpp>
-#include <Shortpipe.hpp>
-#include <Transmissionline.hpp>
-#include <Vphinode.hpp>
-
-namespace Model::Networkproblem::Netprob_Aux {
+namespace Model::Networkproblem::Componentfactory {
 
   Nodechooser::Nodechooser() {
     std::vector<std::unique_ptr<Nodedatabuilder_base>> buildervector;
@@ -22,14 +22,6 @@ namespace Model::Networkproblem::Netprob_Aux {
     buildervector.push_back(std::make_unique<Nodedatabuilder<Power::Vphinode>>());
     buildervector.push_back(std::make_unique<Nodedatabuilder<Power::PVnode>>());
     buildervector.push_back(std::make_unique<Nodedatabuilder<Power::PQnode>>());
-    // buildervector.push_back(std::make_unique<Nodedatabuilder<Gas::Flowboundarynode>>());
-    // buildervector.push_back(std::make_unique<Nodedatabuilder<Gas::Pressureboundarynode>>());
-    // buildervector.push_back(std::make_unique<Nodedatabuilder<Gas::Innode>>());
-
-    // Hier noch drüber nachdenken!
-      
-    // buildervector.push_back(std::make_unique<Nodedatabuilder<Gas::Source>>());
-    // buildervector.push_back(std::make_unique<Nodedatabuilder<Gas::Sink>>());
 
     for (auto &builder : buildervector) {
       data.insert({builder->get_type(), builder->build_data()});

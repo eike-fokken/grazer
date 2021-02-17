@@ -1,13 +1,11 @@
 add_subdirectory(Power)
 add_subdirectory(Gas)
+add_subdirectory(Componentfactory)
 
-add_library(networkproblem STATIC Networkproblem.cpp Equationcomponent.cpp Netprob_Aux.cpp Choosercontainer.cpp)
+add_library(networkproblem STATIC Networkproblem.cpp Equationcomponent.cpp Networkproblem_helpers.cpp)
 
-# This is needed in order to construct the specific components in Aux.cpp in construct_node
-target_link_libraries(networkproblem PRIVATE power gas)
-
-target_link_libraries(networkproblem PRIVATE problemlayer network nlohmann_json aux_json)
+target_link_libraries(networkproblem PRIVATE problemlayer network nlohmann_json aux_json componentfactory)
 target_link_libraries(networkproblem PUBLIC exception mathfunctions)
 
 target_include_directories(networkproblem PUBLIC include)
-target_include_directories(networkproblem PRIVATE aux_include)
+target_include_directories(networkproblem PRIVATE private_include)
