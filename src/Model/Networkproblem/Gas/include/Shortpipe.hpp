@@ -1,6 +1,6 @@
 #pragma once
 #include "Edge.hpp"
-#include <Gasedge.hpp>
+#include "Gasedge.hpp"
 
 namespace Model::Networkproblem::Gas {
 

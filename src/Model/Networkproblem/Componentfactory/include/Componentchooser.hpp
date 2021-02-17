@@ -1,5 +1,6 @@
 #pragma once
 #include "Edge.hpp"
+#include "Node.hpp"
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <tuple>

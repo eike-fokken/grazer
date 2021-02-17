@@ -1,6 +1,5 @@
 #pragma once
-#include <Gasedge.hpp>
-#include <Shortpipe.hpp>
+#include "Shortpipe.hpp"
 
 
 namespace Model::Networkproblem::Gas {

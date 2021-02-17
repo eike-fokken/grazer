@@ -1,9 +1,7 @@
 #pragma once
+#include "Equationcomponent.hpp"
 #include "Gasedge.hpp"
-#include <Node.hpp>
-#include <Equationcomponent.hpp>
-
-
+#include "Node.hpp"
 
 namespace Model::Networkproblem::Gas {
 

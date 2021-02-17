@@ -3,6 +3,7 @@
 #include <Gasedge.hpp>
 #include <Gasnode.hpp>
 #include <Matrixhandler.hpp>
+#include "Edge.hpp"
 #include <iostream>
 
 namespace Model::Networkproblem::Gas {

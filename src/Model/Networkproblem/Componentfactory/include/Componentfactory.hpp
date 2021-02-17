@@ -1,7 +1,5 @@
 #pragma once
 #include "Componentchooser.hpp"
-#include "Edge.hpp"
-#include "Node.hpp"
 #include <memory>
 #include <set>
 
