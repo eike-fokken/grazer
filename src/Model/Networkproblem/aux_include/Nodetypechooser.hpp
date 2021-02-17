@@ -13,11 +13,8 @@ namespace Model::Networkproblem::Netprob_Aux {
 
   struct Nodedata {
   public:
-    Nodedata(bool needs_boundary, Nodefactory nodefactory)
-      : needs_boundary_values(needs_boundary),Constructor(nodefactory) {};
-
-    bool const needs_boundary_values;
-    // Factory Constructor() const { return data.second; };
+    Nodedata(Nodefactory nodefactory)
+      : Constructor(nodefactory) {};
 
     Nodefactory const Constructor;
   };
@@ -41,16 +38,13 @@ namespace Model::Networkproblem::Netprob_Aux {
     /// \brief builds a struct containing a bool stating whether Componenttype needs
     /// boundary conditions and a pointer to a factory function for Componenttype.
     Nodedata build_data() const {
-      return Nodedata(type_needs_boundary_values(), constructer_pointer());
+      return Nodedata(constructer_pointer());
     };
 
     /// \brief returns the string found in the json data files that identifies components of type Nodetype.
     virtual std::string get_type() = 0;
 
   private:
-    /// \brief Returns, whether Nodetype needs boundary values.
-    virtual bool type_needs_boundary_values() const = 0;
-
     /// Returns a function pointer to a factory of Nodetype.
     virtual Nodefactory constructer_pointer() const = 0;
   };
@@ -72,9 +66,6 @@ namespace Model::Networkproblem::Netprob_Aux {
     std::string get_type() override { return Nodetype::get_type(); };
 
   private:
-    bool type_needs_boundary_values() const override {
-      return Nodetype::needs_boundary_values();
-    };
 
       Nodefactory constructer_pointer() const override {
         return build_specific_node<Nodetype>;
@@ -87,11 +78,8 @@ namespace Model::Networkproblem::Netprob_Aux {
 
   struct Edgedata {
   public:
-    Edgedata(bool needs_boundary, Edgefactory edgefactory)
-      : needs_boundary_values(needs_boundary),Constructor(edgefactory) {};
-
-    bool const needs_boundary_values;
-    // Factory Constructor() const { return data.second; };
+    Edgedata(Edgefactory edgefactory)
+      :Constructor(edgefactory) {};
 
     Edgefactory const Constructor;
   };
@@ -114,16 +102,13 @@ namespace Model::Networkproblem::Netprob_Aux {
     /// \brief builds a struct containing a bool stating whether Componenttype needs
     /// boundary conditions and a pointer to a factory function for Componenttype.
     Edgedata build_data() const {
-      return Edgedata(type_needs_boundary_values(), constructer_pointer());
+      return Edgedata(constructer_pointer());
     };
 
     /// \brief returns the string found in the json data files that identifies components of type Edgetype.
     virtual std::string get_type() = 0;
 
   private:
-    /// \brief Returns, whether Edgetype needs boundary values.
-    virtual bool type_needs_boundary_values() const = 0;
-
     /// Returns a function pointer to a factory of Edgetype.
     virtual Edgefactory constructer_pointer() const = 0;
   };
@@ -145,29 +130,8 @@ namespace Model::Networkproblem::Netprob_Aux {
     std::string get_type() override { return Edgetype::get_type(); };
 
   private:
-    bool type_needs_boundary_values() const override {
-      return Edgetype::needs_boundary_values();
-    };
-
       Edgefactory constructer_pointer() const override {
         return build_specific_edge<Edgetype>;
     };
   };
-
-
-
-
-} // namespace Model::Networkproblem::Netprob_Aux
-
-// struct Nodetypechooser {
-
-//   bool operator<(Nodetypechooser const &rhs) {
-//     return (get_type() < rhs.get_type());
-//   };
-
-//   virtual ~Nodetypechooser(){};
-//   virtual std::string get_type() const = 0;
-//   virtual bool needs_boundary_values() const = 0;
-//   virtual std::unique_ptr<Network::Node>
-//   build_specific_node(nlohmann::json const &topology) const = 0;
-// };
+}
