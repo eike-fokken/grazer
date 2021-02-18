@@ -8,7 +8,6 @@ namespace Model::Networkproblem::Gas {
 
   public:
     static std::string get_type();
-    static bool needs_boundary_values();
 
 
     using Edge::Edge;

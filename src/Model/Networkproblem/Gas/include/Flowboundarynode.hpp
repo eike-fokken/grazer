@@ -1,3 +1,4 @@
+#pragma once
 #include <Boundaryvalue.hpp>
 #include <Equationcomponent.hpp>
 #include <Gasnode.hpp>
@@ -7,12 +8,10 @@
 
 namespace Model::Networkproblem::Gas {
 
-class Flowboundarynode final: public Gasnode {
+class Flowboundarynode: public Gasnode {
 
 public:
 
-  static std::string get_type();
-  static bool needs_boundary_values();
 
   Flowboundarynode(std::string _id, nlohmann::ordered_json boundary_json,
          nlohmann::ordered_json topology_json);
@@ -24,10 +23,10 @@ public:
   
     void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
                   double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
-                  Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
+                  Eigen::Ref<Eigen::VectorXd const> const &new_state) const override final;
     void evaluate_state_derivative(
         Aux::Matrixhandler * jacobianhandler, double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> const &, Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
+        Eigen::Ref<Eigen::VectorXd const> const &, Eigen::Ref<Eigen::VectorXd const> const &new_state) const override final;
 
     void display() const override;
 

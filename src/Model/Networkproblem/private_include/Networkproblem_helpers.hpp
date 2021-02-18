@@ -19,12 +19,25 @@ namespace Model::Networkproblem {
   std::vector<std::unique_ptr<Network::Node>>
   build_node_vector(nlohmann::json const &topology);
 
+  /// \brief construct Edges of types given by the json input and put their
+  /// pointers in a vector
+  ///
+  /// This helper function constructs Edges of specific (final) types.
+  /// @return a vector of unique pointers to Edge to the newly constructed
+  /// edges.
   std::vector<std::unique_ptr<Network::Edge>>
   build_edge_vector(nlohmann::json const &topology,
                     std::vector<std::unique_ptr<Network::Node>> & nodes);
 
+
+  /// \brief Enters the boundary condition into the topology json.
   void
   insert_boundary_conditions_in_topology_json(nlohmann::json &topology,
                                               nlohmann::json &boundary);
 
-} // namespace Model::Networkproblem::Netprob_Aux
+
+  /// \brief Reads values that are meant for many components and writes them
+  /// into each component json.
+  void supply_overall_values_to_components(nlohmann::json &network_json);
+
+} // namespace Model::Networkproblem

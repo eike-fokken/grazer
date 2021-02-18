@@ -5,7 +5,7 @@
 #include <string>
 namespace Network {
 
-  Edge::Edge(std::string _id, Node *start_node, Node *end_node)
+  Edge::Edge(std::string const & _id, Node *start_node, Node *end_node)
       : Idobject(_id), starting_node(start_node), ending_node(end_node) {
     if (starting_node == ending_node) {
       gthrow({"cant create an edge from a node to itself!"});

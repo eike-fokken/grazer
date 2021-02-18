@@ -1,14 +1,16 @@
-#include <Misc.hpp>
-#include <Mathfunctions.hpp>
+#include "Gaspowerconnection.hpp"
+#include "Exception.hpp"
+#include "Mathfunctions.hpp"
 #include "Matrixhandler.hpp"
+#include "Misc.hpp"
 #include "Node.hpp"
-#include <Gaspowerconnection.hpp>
-#include <Exception.hpp>
-#include <iostream>
+#include "Powernode.hpp"
 #include <fstream>
-#include <Powernode.hpp>
+#include <iostream>
 
 namespace Model::Networkproblem::Gas {
+
+  std::string Gaspowerconnection::get_type() { return "Gaspowerconnection"; }
 
   Gaspowerconnection::Gaspowerconnection(std::string _id,
                                          Network::Node *start_node,
@@ -18,17 +20,23 @@ namespace Model::Networkproblem::Gas {
         gas2power_q_coefficient(std::stod(topology_json["gas2power_q_coeff"].get<std::string>())),
         power2gas_q_coefficient(std::stod(topology_json["power2gas_q_coeff"].get<std::string>())) {}
 
+  Gaspowerconnection::Gaspowerconnection(
+      nlohmann::json const &topology,
+      std::vector<std::unique_ptr<Network::Node>> &nodes)
+      : Network::Edge(topology, nodes),
+        gas2power_q_coefficient(
+            std::stod(topology["gas2power_q_coeff"].get<std::string>())),
+        power2gas_q_coefficient(
+            std::stod(topology["power2gas_q_coeff"].get<std::string>())) {}
 
 
-  void Gaspowerconnection::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double ,
-                                    double , Eigen::Ref<Eigen::VectorXd const> const &,
-                                    Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
+  void Gaspowerconnection::evaluate(
+      Eigen::Ref<Eigen::VectorXd> rootvalues, double, double,
+      Eigen::Ref<Eigen::VectorXd const> const &,
+      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     int q_index = get_start_state_index() + 1;
     rootvalues[q_index] = powerendnode->P(new_state) - generated_power(new_state[q_index]);
   }
-
-
-
 
   void Gaspowerconnection::evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler, double , double ,
                                                      Eigen::Ref<Eigen::VectorXd const> const &, Eigen::Ref<Eigen::VectorXd const> const &new_state) const {

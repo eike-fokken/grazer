@@ -8,6 +8,7 @@ namespace Model::Networkproblem::Gas {
 class Innode final: public Gasnode {
 
 public:
+  static std::string get_type();
 
   // Maybe we should incorporate the min and max pressure later on...
   using Gasnode::Gasnode;

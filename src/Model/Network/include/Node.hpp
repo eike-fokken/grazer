@@ -1,5 +1,6 @@
 #pragma once
-#include <Idobject.hpp>
+#include "Idobject.hpp"
+#include <nlohmann/json.hpp>
 #include <vector>
 
 namespace Network {
@@ -19,7 +20,8 @@ namespace Network {
 
     Node() = delete;
 
-    using Idobject::Idobject;
+    Node(std::string const & _id);
+    Node(nlohmann::json const & data);
 
     virtual ~Node(){};
 

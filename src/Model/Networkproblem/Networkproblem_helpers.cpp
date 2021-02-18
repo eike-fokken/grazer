@@ -180,4 +180,22 @@ namespace Model::Networkproblem {
     }
   }
 
+  void supply_overall_values_to_components(nlohmann::json &network_json) {
+
+    // This list way well become longer!
+    auto pde_components = {"Pipe"};
+    if (network_json.contains("desired_delta_x")) {
+      for (auto const &type : pde_components) {
+        for (auto &pipe : network_json["topology_json"]["connections"][type]) {
+          if (!pipe.contains("desired_delta_x")) {
+            pipe["desired_delta_x"] = network_json["desired_delta_x"];
+          } else {
+            std::cout << "Object with id " << pipe["id"]
+                      << " has its own value of desired_delta_x." << std::endl;
+          }
+        }
+      }
+    }
+  }
+
 } // namespace Model::Networkproblem

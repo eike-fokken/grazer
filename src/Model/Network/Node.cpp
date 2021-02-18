@@ -1,12 +1,16 @@
+#include "Node.hpp"
 #include "Edge.hpp"
 #include "Exception.hpp"
-#include <Node.hpp>
 #include <iostream>
 #include <memory>
 #include <vector>
 
 namespace Network {
   std::string Node::get_type() { gthrow({"This static method must be implemented in the class inherited from node!"}); }
+
+  Node::Node(std::string const &_id):Idobject(_id) {}
+
+  Node::Node(nlohmann::json const & data) : Idobject(data["id"].get<std::string>()) {}
 
   bool Node::remove_edge(Edge *to_remove) {
     for (auto it = starting_edges.begin(); it != starting_edges.end(); ++it) {

@@ -7,7 +7,6 @@
 namespace Model::Networkproblem::Gas {
 
   std::string Shortpipe::get_type() { return "Shortpipe"; }
-  bool Shortpipe::needs_boundary_values() { return false; }
 
   void Shortpipe::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double ,
                 double , Eigen::Ref<Eigen::VectorXd const> const &,

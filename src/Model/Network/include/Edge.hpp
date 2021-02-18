@@ -22,7 +22,7 @@ namespace Network {
     // end node is prohibited:
     Edge() = delete;
     // Instead creating the edge with start and end node is a good idea:
-    Edge(std::string _id, Node *start_node, Node *end_node);
+    Edge(std::string const & _id, Node *start_node, Node *end_node);
 
     Edge(nlohmann::json const & edge_json, std::vector<std::unique_ptr<Node>> & nodes);
 

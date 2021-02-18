@@ -8,6 +8,8 @@
 #include "PQnode.hpp"
 #include "PVnode.hpp"
 #include "Pipe.hpp"
+#include "Source.hpp"
+#include "Sink.hpp"
 #include "Pressureboundarynode.hpp"
 #include "Shortpipe.hpp"
 #include "Transmissionline.hpp"
@@ -22,6 +24,9 @@ namespace Model::Networkproblem::Componentfactory {
     buildervector.push_back(std::make_unique<Nodedatabuilder<Power::Vphinode>>());
     buildervector.push_back(std::make_unique<Nodedatabuilder<Power::PVnode>>());
     buildervector.push_back(std::make_unique<Nodedatabuilder<Power::PQnode>>());
+    buildervector.push_back(std::make_unique<Nodedatabuilder<Gas::Source>>());
+    buildervector.push_back(std::make_unique<Nodedatabuilder<Gas::Sink>>());
+    buildervector.push_back(std::make_unique<Nodedatabuilder<Gas::Innode>>());
 
     for (auto &builder : buildervector) {
       data.insert({builder->get_type(), builder->build_data()});
@@ -36,11 +41,11 @@ namespace Model::Networkproblem::Componentfactory {
     std::vector<std::unique_ptr<Edgedatabuilder_base>> buildervector;
 
     buildervector.push_back(std::make_unique<Edgedatabuilder<Power::Transmissionline>>());
-    // buildervector.push_back(std::make_unique<Edgedatabuilder<Gas::Pipe>>());
-    // buildervector.push_back(std::make_unique<Edgedatabuilder<Gas::Shortpipe>>());
-    // buildervector.push_back(std::make_unique<Edgedatabuilder<Gas::Controlvalve>>());
-    // buildervector.push_back(std::make_unique<Edgedatabuilder<Gas::Compressorstation>>());
-    // buildervector.push_back(std::make_unique<Edgedatabuilder<Gas::Gaspowerconnection>>());
+    buildervector.push_back(std::make_unique<Edgedatabuilder<Gas::Pipe>>());
+    buildervector.push_back(std::make_unique<Edgedatabuilder<Gas::Shortpipe>>());
+    buildervector.push_back(std::make_unique<Edgedatabuilder<Gas::Controlvalve>>());
+    buildervector.push_back(std::make_unique<Edgedatabuilder<Gas::Compressorstation>>());
+    buildervector.push_back(std::make_unique<Edgedatabuilder<Gas::Gaspowerconnection>>());
 
     for (auto &builder : buildervector) {
       data.insert({builder->get_type(), builder->build_data()});

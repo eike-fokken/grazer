@@ -5121,7 +5121,7 @@
         ]
     },
     "connections": {
-        "gas2power": [
+        "Gaspowerconnection": [
             {
                 "from": "node_ld10",
                 "id": "g2p_ld10_N7071",
@@ -8058,7 +8058,7 @@
                 "to": "N9533"
             }
         ],
-        "shortPipe": [
+        "Shortpipe": [
             {
                 "id": "node_4_ld1",
                 "from": "node_4",
@@ -8825,7 +8825,7 @@
                 }
             }
         ],
-        "pipe": [
+        "Pipe": [
             {
                 "id": "p_br2",
                 "from": "node_2",
@@ -11751,7 +11751,7 @@
                 }
             }
         ],
-        "turboCompressor": [
+        "Compressorstation": [
             {
                 "id": "cs",
                 "from": "node_29",
@@ -11874,7 +11874,7 @@
                 }
             }
         ],
-        "controlValve": [
+        "Controlvalve": [
             {
                 "id": "controlValve_br65",
                 "from": "node_65",

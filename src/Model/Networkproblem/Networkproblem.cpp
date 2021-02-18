@@ -52,6 +52,7 @@ namespace Model::Networkproblem {
 
     // build the node vector.
     insert_boundary_conditions_in_topology_json(topology,boundary);
+    supply_overall_values_to_components(networkproblem_json);
     auto nodes = build_node_vector(topology["nodes"]);
 
     // build the edge vector.

@@ -11,11 +11,9 @@ namespace Model::Networkproblem::Gas {
 
 
     static std::string get_type();
-    static bool needs_boundary_values();
 
     Pipe(std::string _id, Network::Node *start_node, Network::Node *end_node, nlohmann::ordered_json topology_json, double Delta_x);
-
-
+    Pipe(nlohmann::json const &topology, std::vector<std::unique_ptr<Network::Node>> &nodes);
 
     void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
                   double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,

@@ -6,13 +6,18 @@ namespace Model::Networkproblem::Power {
   class Powernode;  
 } // namespace Model::Networkproblem::Power
 
-  namespace Model::Networkproblem::Gas {
+namespace Model::Networkproblem::Gas {
 
     class Gaspowerconnection final : public Network::Edge, public Gasedge {
     public:
+      static std::string get_type();
+
       Gaspowerconnection(std::string _id, Network::Node *start_node,
                          Network::Node *end_node,
                          nlohmann::ordered_json topology_json);
+
+      Gaspowerconnection(nlohmann::json const &topology,
+           std::vector<std::unique_ptr<Network::Node>> &nodes);
 
       void evaluate(
           Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,

@@ -5,9 +5,7 @@
 
 namespace Model::Networkproblem::Gas {
 
-  std::string Flowboundarynode::get_type() { return "Flowboundarynode"; }
-  bool Flowboundarynode::needs_boundary_values() { return true; }
-
+  
   Flowboundarynode::Flowboundarynode(std::string _id, nlohmann::ordered_json boundary_json,
                  nlohmann::ordered_json )
     : Gasnode(_id) {
