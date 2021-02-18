@@ -74,7 +74,7 @@ namespace Model::Networkproblem {
       for (auto &datapoint : values_json["data"]) {
         if (datapoint["values"].size() != N) {
           gthrow(
-                 {"Wrong number of initial/boundary values in node ", boundary_json["id"]});
+                 {"Wrong number of initial/boundary values in node ", values_json["id"]});
         }
         Eigen::Matrix<double, N, 1> value;
         try {

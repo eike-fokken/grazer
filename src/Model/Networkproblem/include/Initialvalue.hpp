@@ -1,4 +1,5 @@
 #pragma once
+#include "Valuemap.hpp"
 #include <Eigen/Sparse>
 #include <Exception.hpp>
 #include <map>
@@ -13,7 +14,7 @@ namespace Model::Networkproblem {
     Initialvalue(){};
     Initialvalue(
         std::map<double, Eigen::Matrix<double, N, 1>> _initial_values)
-        : Initialvalues(_initial_values){};
+        : initialvalues(_initial_values){};
 
     /*
     Eigen::VectorXd operator()(double t) const {
@@ -100,7 +101,7 @@ namespace Model::Networkproblem {
 
     //}
     private:
-	Valuemap Initialvalues;
+	Valuemap<N> initialvalues;
   };
 
 } // namespace Model::Networkproblem

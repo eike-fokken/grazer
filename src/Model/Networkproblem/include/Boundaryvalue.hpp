@@ -97,12 +97,4 @@ namespace Model::Networkproblem {
   private:
     Valuemap<N> boundaryvalues;
 
-	/*
-	std::string String1 = "time: ";
-	std::string String2 = ", latest possible time: ";
-	std::string String3 = "Requested boundary value is at a later time than the given values.";
-	std::string String4 = ", ealiest possible time: ";
-	std::string String5 = "Requested boundary value is at an ealier time than the given values.";
-	*/
-	
 } // namespace Model::Networkproblem
