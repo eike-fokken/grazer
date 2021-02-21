@@ -16,8 +16,5 @@ namespace Model::Networkproblem::Gas {
 
   }
 
-  void Innode::display() const {
-
-  }
-
+  
 }

@@ -31,10 +31,5 @@ namespace Model::Networkproblem::Power {
     jacobianhandler->set_coefficient(phi_index, phi_index, 1.0);
   }
 
-  void Vphinode::display() const {
-    Node::print_id();
-    Equationcomponent::print_indices();
-    std::cout << "type: Vphi, G: " << G << ", B: " << B << "\n";
-  }
 
 } // namespace Model::Networkproblem::Power

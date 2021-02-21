@@ -8,8 +8,5 @@ namespace Network {
 
   std::string Idobject::get_id() const { return (*idptr); }
 
-  void Idobject::display() const { std::cout << "id: " << (*idptr) << "\n"; }
-
-  void Idobject::print_id() const { std::cout << "id: " << (*idptr) << ", "; }
 
 } // namespace Network

@@ -15,7 +15,6 @@ namespace Model::Networkproblem::Power {
     double get_G() const;
     double get_B() const;
 
-    void display() const override;
 
     /// Returns a pointer to the starting powernode.
     /// The constructor makes sure that this cast is valid.
@@ -24,7 +23,6 @@ namespace Model::Networkproblem::Power {
     /// Returns a pointer to the ending powernode.
     /// The constructor makes sure that this cast is valid.
     Powernode * get_ending_powernode() const;
-
 
     
   private:

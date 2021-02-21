@@ -35,7 +35,6 @@ namespace Model::Networkproblem {
 
     void print_to_files(std::filesystem::path const &output_directory) final;
 
-    void display() const override;
 
     virtual void set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
                                     nlohmann::ordered_json initial_json) final;

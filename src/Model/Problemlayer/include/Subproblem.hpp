@@ -30,8 +30,6 @@ namespace Model {
     virtual void
     print_to_files(std::filesystem::path const &output_directory) = 0;
 
-    virtual void display() const = 0;
-
     // Reserves indices from the state vector
     // @param int next_free_index the first non-reserved index of the state
     // vector.

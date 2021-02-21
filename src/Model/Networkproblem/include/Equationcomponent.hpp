@@ -15,8 +15,10 @@ namespace Model::Networkproblem {
   /// get_number_of_states().
   class Equationcomponent {
 
+  protected:
+    ~Equationcomponent(){};
   public:
-    virtual ~Equationcomponent(){};
+    
 
     virtual void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
                           double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
@@ -30,7 +32,7 @@ namespace Model::Networkproblem {
     /// Returns number of state variables needed by this component.
     /// Usually this will be implemented by a function returning a literal
     /// int like 2.
-        virtual int get_number_of_states() const = 0;
+    virtual int get_number_of_states() const = 0;
 
     /// is called during set_indices to do something.
     /// Usually does nothing, but for example gas nodes

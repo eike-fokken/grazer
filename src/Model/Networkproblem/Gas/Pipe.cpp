@@ -90,14 +90,6 @@ namespace Model::Networkproblem::Gas {
     }
   }
 
-  void Pipe::display() const {
-    Edge::print_id();
-    std::cout << "number of points: " << number_of_points << std::endl;
-    std::cout << "Delta_x: "<< Delta_x << std::endl;
-    std::cout << "length: "<< length << std::endl;
-    std::cout << "roughness: "<< roughness << std::endl;
-    std::cout << "diameter: "<< diameter << std::endl;
-  }
 
   int Pipe::get_number_of_states() const {
     return 2*number_of_points;
