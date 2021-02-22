@@ -19,7 +19,8 @@ namespace Model::Networkproblem {
   protected:
     ~Equationcomponent(){};
   public:
-    
+
+    Equationcomponent();
 
     virtual void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
                           double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
@@ -80,9 +81,18 @@ namespace Model::Networkproblem {
 
   private:
     /// This must be refactored into a container of times and values.
-    std::vector<double> eqtimes;
-    std::vector<std::vector<std::map<double, double>>> eqvalues;
 
+    // This is a test whether it is better to hide these behind a pointer,
+    // because they are only used after each converged newton iteration
+    // but make the class very big...
+
+    // std::vector<double> eqtimes;
+    // std::vector<std::vector<std::map<double, double>>> eqvalues;
+
+    std::unique_ptr<
+        std::pair<std::vector<double>,
+                  std::vector<std::vector<std::map<double, double> > > > >
+    time_values;
     int start_state_index{-1};
     int after_state_index{-1};
   };

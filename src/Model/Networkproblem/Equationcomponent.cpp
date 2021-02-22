@@ -3,9 +3,16 @@
 #include <Exception.hpp>
 #include <iostream>
 #include <map>
+#include <memory>
 #include <nlohmann/json.hpp>
 
 namespace Model::Networkproblem {
+
+  Equationcomponent::Equationcomponent()
+      : time_values(
+            std::make_unique<std::pair<
+                std::vector<double>,
+                std::vector<std::vector<std::map<double, double>>>>>()) {}
 
   void Equationcomponent::setup() {}
 
@@ -31,15 +38,21 @@ namespace Model::Networkproblem {
 
   void Equationcomponent::push_to_values(
       double t, std::vector<std::map<double, double>> value_vector) {
+    auto &eqtimes = (*time_values).first;
+    auto &eqvalues = (*time_values).second;
+
     eqtimes.push_back(t);
     eqvalues.push_back(value_vector);
   }
 
   std::vector<double> const &Equationcomponent::get_times() const {
+    auto const &eqtimes = (*time_values).first;
+
     return eqtimes;
   }
   std::vector<std::vector<std::map<double, double>>> const &
   Equationcomponent::get_values() const {
+    auto const &eqvalues = (*time_values).second;
     return eqvalues;
   }
 
