@@ -51,8 +51,11 @@ namespace Model::Networkproblem::Gas {
     Balancelaw::Isothermaleulerequation const bl;
     Model::Scheme::Implicitboxscheme const scheme;
 
+    
+    // This may come in handy when templating on the used scheme!
 
-
+    // constexpr static Model::Scheme::Implicitboxscheme
+    // scheme{Model::Scheme::Implicitboxscheme()};
   };
 
 
