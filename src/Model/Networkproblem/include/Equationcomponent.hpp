@@ -1,6 +1,7 @@
 #pragma once
 #include <Eigen/Sparse>
 #include <filesystem>
+#include <memory>
 #include <nlohmann/json.hpp>
 
 namespace Aux {
@@ -81,6 +82,7 @@ namespace Model::Networkproblem {
     /// This must be refactored into a container of times and values.
     std::vector<double> eqtimes;
     std::vector<std::vector<std::map<double, double>>> eqvalues;
+
     int start_state_index{-1};
     int after_state_index{-1};
   };

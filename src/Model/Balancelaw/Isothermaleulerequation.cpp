@@ -2,6 +2,7 @@
 #include <Isothermaleulerequation.hpp>
 #include <Mathfunctions.hpp>
 #include <cmath>
+#include <memory>
 #include <string>
 
 namespace Model::Balancelaw {
@@ -9,7 +10,8 @@ namespace Model::Balancelaw {
   Isothermaleulerequation::Isothermaleulerequation(double _Area,
                                                    double _diameter,
                                                    double _roughness)
-      : Area(_Area), diameter(_diameter), roughness(_roughness) {
+      : Area(_Area), diameter(_diameter), roughness(_roughness),
+        coefficients_ptr(std::make_unique<Eigen::Vector4d>()) {
     double a = 2000;
     double b = 4000;
 
@@ -18,8 +20,9 @@ namespace Model::Balancelaw {
         3 * a * a, 2 * a, 1, 0,  //
         b * b * b, b * b, b, 1,  //
         3 * b * b, 2 * b, 1, 0;  //
-    Eigen::Vector4d spline_constraints(64. / a,-64./(a*a), Swamee_Jain(b), dSwamee_Jain_dRe(b));
-    coefficients = aux.lu().solve(spline_constraints);
+    Eigen::Vector4d spline_constraints(64. / a, -64. / (a * a), Swamee_Jain(b),
+                                       dSwamee_Jain_dRe(b));
+    (*coefficients_ptr) = aux.lu().solve(spline_constraints);
   }
 
   Eigen::Vector2d
@@ -205,7 +208,7 @@ namespace Model::Balancelaw {
       return Swamee_Jain(Re);
     } else {
       Eigen::Vector4d monomials(Re*Re*Re,Re*Re,Re,1);
-      return coefficients.dot(monomials);
+      return (*coefficients_ptr).dot(monomials);
     }
   }
 
@@ -218,7 +221,7 @@ namespace Model::Balancelaw {
       return dSwamee_Jain_dRe(Re);
     } else {
       Eigen::Vector4d monomials(3*Re *  Re, 2 * Re, 1, 0);
-      return coefficients.dot(monomials);
+      return (*coefficients_ptr).dot(monomials);
     }
   }
 

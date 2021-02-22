@@ -1,5 +1,6 @@
 #pragma once
 #include <Eigen/Dense>
+#include <memory>
 
 
 
@@ -77,13 +78,13 @@ private:
   double const diameter;
   double const roughness;
 
-  Eigen::Vector4d coefficients;
+  std::unique_ptr<Eigen::Vector4d> coefficients_ptr;
 
   // /// This is a tolerance for the newton iteration:
   // static constexpr double tolerance = 1e-6;
   // /// This is an ad-hoc mechanism to prevent too many Newton iterations in finding the correct friction factor lambda.
   // double last_mu{10.0};
-  
+
 
   };
 

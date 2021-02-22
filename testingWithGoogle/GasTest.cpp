@@ -826,7 +826,7 @@ g1.setup();
       double Delta_t = new_time-last_time;
       double actual_Delta_x = p0.Delta_x;
 
-      Model::Balancelaw::Isothermaleulerequation bl(p0.bl);
+      Model::Balancelaw::Isothermaleulerequation const & bl(p0.bl);
 
       Eigen::Vector2d new_left = new_state.segment<2>(0);
       Eigen::Vector2d new_right = new_state.segment<2>(2);
