@@ -20,7 +20,7 @@ namespace Network {
         starting_node(get_node_from_json(1,edge_json, nodes)),
         ending_node(get_node_from_json(-1,edge_json, nodes)) {
     if (starting_node == ending_node) {
-      gthrow({"cant create an edge from a node to itself!"});
+      gthrow({"cannot create an edge from a node to itself!"});
     }
     starting_node->attach_starting_edge(this);
     ending_node->attach_ending_edge(this);
