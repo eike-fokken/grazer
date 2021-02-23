@@ -1,7 +1,7 @@
-#include "nlohmann/json.hpp"
+#include "Newtonsolver.hpp"
 #include <Eigen/Sparse>
-#include <Newtonsolver.hpp>
 #include <memory>
+#include <nlohmann/json.hpp>
 #include <utility>
 
 // Forward declarations:
@@ -10,12 +10,11 @@ namespace Model {
 }
 
 namespace Model {
-  using json = nlohmann::ordered_json;
 
   struct Timedata{
 
     Timedata() = delete;
-    Timedata(json time_evolution_data);
+    Timedata(nlohmann::json const & time_evolution_data);
 
     double get_starttime() const ;
     double get_endtime() const ;
@@ -44,7 +43,7 @@ namespace Model {
     Timeevolver(double tolerance, int maximal_number_of_iterations);
 
     void simulate(Timedata timedata, Model::Problem & problem,
-                  int number_of_states, json problem_initial_json);
+                  int number_of_states, nlohmann::json & problem_initial_json);
 
   private :
         Solver::Newtonsolver solver;

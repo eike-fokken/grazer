@@ -86,7 +86,7 @@ namespace Model {
   }
 
   void Problem::set_initial_values(Eigen::Ref<Eigen::VectorXd> new_state,
-                                   nlohmann::json initial_json) {
+                                   nlohmann::json & initial_json) {
 
     for (auto &subproblem : subproblems) {
       auto type = subproblem->get_type();

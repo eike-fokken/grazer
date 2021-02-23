@@ -6,7 +6,7 @@
 
 namespace Model {
 
-  Timedata::Timedata(json time_evolution_data)
+  Timedata::Timedata(nlohmann::json const &time_evolution_data)
       : starttime(
             std::stod(time_evolution_data["start_time"].get<std::string>())),
         endtime(std::stod(time_evolution_data["end_time"].get<std::string>())),
@@ -41,7 +41,7 @@ namespace Model {
 
 
   void Timeevolver::simulate(Timedata timedata, Model::Problem & problem,
-                             int number_of_states, json problem_initial_json) {
+                             int number_of_states, nlohmann::json &problem_initial_json) {
     double last_time = timedata.get_starttime();
     Eigen::VectorXd last_state(number_of_states);
 

@@ -2,9 +2,7 @@
 #include <Eigen/Sparse>
 #include <Exception.hpp>
 #include <Input_output.hpp>
-// #include <Jsonreader.hpp>
 #include <Newtonsolver.hpp>
-// #include <Printguard.hpp>
 #include <Problem.hpp>
 #include <Timeevolver.hpp>
 #include <chrono>
