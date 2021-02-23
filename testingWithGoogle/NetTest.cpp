@@ -16,48 +16,66 @@
 
 #include <Matrixhandler.hpp>
 
-class Nettestclass : public ::testing::Test {
- protected:
-   Nettestclass()
-     : net(std::vector<std::unique_ptr<Network::Node>>(),
-           std::vector<std::unique_ptr<Network::Edge>>()) {
-     std::vector<std::unique_ptr<Network::Node>> nodes;
-     for (unsigned int i = 0; i != 5; ++i) {
-       std::string s("N");
-       s.append(std::to_string(i));
-       nlohmann::json j;
-       j["id"] = s;
-       nodes.push_back(std::make_unique<Network::Node>(j));
-     }
+class Nodetest : public ::testing::Test {
 
-     std::vector<std::unique_ptr<Network::Edge>> edges;
-     nlohmann::json j;
-     j["id"] = "edge";
-     j["from"] = "N0";
-     j["to"] = "N3";
-     auto E1 = std::make_unique<Network::Edge>(j, nodes);
-     edges.push_back(std::move(E1));
-     net = Network::Net(std::move(nodes), std::move(edges));
-   }
+  protected:
+
+  Nodetest():node((R"({"id":"N1"})"_json)){};
+
+  Network::Node node;
+
+};
+
+    class Nettest : public ::testing::Test {
+protected:
+  Nettest()
+      : net(std::vector<std::unique_ptr<Network::Node>>(),
+            std::vector<std::unique_ptr<Network::Edge>>()) {
+    std::vector<std::unique_ptr<Network::Node>> nodes;
+    for (unsigned int i = 0; i != 5; ++i) {
+      std::string s("N");
+      s.append(std::to_string(i));
+      nlohmann::json j;
+      j["id"] = s;
+      nodes.push_back(std::make_unique<Network::Node>(j));
+    }
+
+    std::vector<std::unique_ptr<Network::Edge>> edges;
+    for (unsigned int i = 1; i != 3; ++i) {
+      std::string s("E");
+      std::string ns("N");
+      s.append(std::to_string(i));
+      s.append(std::to_string(0));
+      ns.append(std::to_string(i));
+      nlohmann::json j;
+      j["id"] = s;
+      j["from"] = "N0";
+      j["to"] = ns;
+      auto e = std::make_unique<Network::Edge>(j,nodes);
+      edges.push_back(std::move(e));
+    }
+    net= Network::Net(std::move(nodes),std::move(edges));
+  }
   Network::Net net;
 
   void SetUp() override {}
   void TearDown() override {}
 };
 
-TEST_F(Nettestclass, test_NewNode_MakeEdgeBetween_ExistsEdgeBetween) {
+TEST_F(Nettest, test_ExistsEdgeBetween) {
 
 
-  bool u = net.exists_edge_between("N0", "N3");
-  bool v = net.exists_edge_between("N0", "N4");
+  bool existing_edge = net.exists_edge_between("N0", "N2");
+  bool non_existing_edge = net.exists_edge_between("N0", "N4");
 
-  EXPECT_EQ(u, true);
-  EXPECT_EQ(v, false);
+  EXPECT_EQ(existing_edge, true);
+  EXPECT_EQ(non_existing_edge, false);
 }
 
-TEST_F(Nettestclass, test_get_valid_node_ids) {
+TEST_F(Nettest, test_get_valid_node_ids) {
 
   auto vect = net.get_valid_node_ids();
+
   std::vector<std::string> BeautifulArray;
   for (unsigned int i = 0; i != 5; ++i) {
     std::string s("N");
@@ -68,108 +86,54 @@ TEST_F(Nettestclass, test_get_valid_node_ids) {
   EXPECT_EQ(vect, BeautifulArray);
 }
 
-// TEST(testNode, test_GetId) {
-//   std::vector<std::unique_ptr<Network::Node>> nodes;
-//   for (unsigned int i = 0; i != 5; ++i) {
-//     std::string s("N");
-//     s.append(std::to_string(i));
-//     nodes.push_back(std::unique_ptr<Network::Node>(new Network::Node(s)));
-//   }
+TEST_F(Nettest, test_exists_node) {
 
-//   std::vector<std::unique_ptr<Network::Edge>> edges;
-//   auto E1 = std::unique_ptr<Network::Edge>(
-//       new Network::Edge("edge", nodes[0].get(), nodes[3].get()));
-//   edges.push_back(std::move(E1));
-//   Network::Net net(std::move(nodes), std::move(edges));
-//   auto node1_ptr = net.get_node_by_id("N3");
+  nlohmann::json j;
+  j["id"]= "not_in_there";
+  auto not_in_there = std::make_unique<Network::Node>(j);
 
-//   auto v = node1_ptr->get_id();
+  Network::Node *e = net.exists_node(net.get_nodes()[3]);
+  Network::Node *n = net.exists_node(not_in_there.get());
 
-//   EXPECT_EQ(v, "N3");
-// }
+  EXPECT_EQ(n, nullptr);
+  EXPECT_NE(e, nullptr);
+}
 
-// TEST(testNode, test_exists_node) {
-//   std::vector<std::unique_ptr<Network::Node>> nodes;
-//   for (unsigned int i = 0; i != 5; ++i) {
-//     std::string s("N");
-//     s.append(std::to_string(i));
-//     nodes.push_back(std::unique_ptr<Network::Node>(new Network::Node(s)));
-//   }
+TEST_F(Nodetest, test_GetId) {
 
-//   std::vector<std::unique_ptr<Network::Edge>> edges;
-//   auto E1 = std::unique_ptr<Network::Edge>(
-//       new Network::Edge("edge", nodes[0].get(), nodes[3].get()));
-//   edges.push_back(std::move(E1));
-//   Network::Net net(std::move(nodes), std::move(edges));
+  
+  auto v = node.get_id();
 
-//   Network::Node *e = net.exists_node(net.get_nodes()[3]);
-//   auto not_in_there = std::unique_ptr<Network::Node>(new Network::Node("haha"));
+  EXPECT_EQ(v, "N1");
+}
 
-//   Network::Node *n = net.exists_node(not_in_there.get());
 
-//   EXPECT_EQ(n, nullptr);
-//   EXPECT_NE(e, nullptr);
-// }
+TEST_F(Nettest, test_get_starting_edges) {
 
-// TEST(testNode, test_get_starting_edges) {
+  auto nodevector=net.get_nodes();
+  auto edgevector = net.get_edges();
+  auto startedges0 = nodevector[0]->get_starting_edges();
+  auto startedges1 = nodevector[1]->get_starting_edges();
 
-//   std::vector<std::unique_ptr<Network::Node>> nodes;
-//   for (unsigned int i = 0; i != 5; ++i) {
-//     std::string s("N");
-//     s.append(std::to_string(i));
-//     nodes.push_back(std::unique_ptr<Network::Node>(new Network::Node(s)));
-//   }
+  std::vector<Network::Edge *> expected_start_edges0;
+  std::vector<Network::Edge *> expected_start_edges1;
 
-//   std::vector<std::unique_ptr<Network::Edge>> edges;
-//   edges.push_back(std::unique_ptr<Network::Edge>(
-//       new Network::Edge("E34", nodes[3].get(), nodes[4].get())));
+  //All edges start at N0!
+  for (unsigned int i = 0; i != 2; ++i) {
+    expected_start_edges0.push_back(edgevector[i]);
+  }
 
-//   for (unsigned int i = 1; i != 3; ++i) {
-//     std::string s("E");
-//     s.append(std::to_string(i));
-//     s.append(std::to_string(0));
-//     auto e = std::unique_ptr<Network::Edge>(
-//         new Network::Edge(s, nodes[0].get(), nodes[i].get()));
-//     edges.push_back(std::move(e));
-//   }
+  EXPECT_EQ(startedges0, expected_start_edges0);
+  EXPECT_EQ(startedges1, expected_start_edges1);
+}
 
-//   auto startedges = nodes[0]->get_starting_edges();
+// TEST_F(Nettest, test_attachEndingEdge_getEndingEdges) {
 
-//   std::vector<Network::Edge *> expected_start_edges;
+//   auto nodevector = net.get_nodes();
+//   auto edgevector = net.get_edges();
+//   auto startedges = nodevector[0]->get_starting_edges();
 
-//   for (unsigned int i = 1; i != 3; ++i) {
-//     expected_start_edges.push_back(edges[i].get());
-//   }
-
-//   auto endedges = nodes[0]->get_ending_edges();
-
-//   EXPECT_EQ(endedges.size(), 0);
-//   EXPECT_EQ(startedges, expected_start_edges);
-// }
-
-// TEST(testNode, test_attachEndingEdge_getEndingEdges) {
-
-//   std::vector<std::unique_ptr<Network::Node>> nodes;
-//   for (unsigned int i = 0; i != 5; ++i) {
-//     std::string s("N");
-//     s.append(std::to_string(i));
-//     nodes.push_back(std::unique_ptr<Network::Node>(new Network::Node(s)));
-//   }
-
-//   std::vector<std::unique_ptr<Network::Edge>> edges;
-//   edges.push_back(std::unique_ptr<Network::Edge>(
-//       new Network::Edge("E34", nodes[3].get(), nodes[4].get())));
-
-//   for (unsigned int i = 1; i != 3; ++i) {
-//     std::string s("E");
-//     s.append(std::to_string(i));
-//     s.append(std::to_string(0));
-//     auto e = std::unique_ptr<Network::Edge>(
-//         new Network::Edge(s, nodes[i].get(), nodes[0].get()));
-//     edges.push_back(std::move(e));
-//   }
-
-//   auto endedges = nodes[0]->get_ending_edges();
+//   auto endedges = nodevector[0]->get_ending_edges();
 
 //   std::vector<Network::Edge *> expected_end_edges;
 
