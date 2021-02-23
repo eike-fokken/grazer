@@ -45,19 +45,19 @@ set(release_msvc_options "/permissive-")
 
 
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options("$<$<CONFIG:DEBUG>:${my_debug_options}>")
   add_compile_options("$<$<CONFIG:DEBUG>:${debug_clang_options}>"
     "$<$<NOT:$<CONFIG:Debug>>:${release_clang_options}>")
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   add_compile_options("$<$<CONFIG:DEBUG>:${my_debug_options}>")
    add_compile_options("$<$<CONFIG:DEBUG>:${debug_gcc_options}>"
      "$<$<NOT:$<CONFIG:Debug>>:${release_gcc_options}>")
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
   add_compile_options("$<$<CONFIG:DEBUG>:${debug_msvc_options}>"
     "$<$<NOT:$<CONFIG:Debug>>:${release_msvc_options}>")
     else()
-  message(FATAL "Unknown compiler: ${CMAKE_CXX_COMPILER_ID}")
+  message(FATAL_ERROR "Unknown compiler: ${CMAKE_CXX_COMPILER_ID}")
 endif()
 
 
