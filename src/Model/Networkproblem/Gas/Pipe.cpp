@@ -17,23 +17,6 @@ namespace Model::Networkproblem::Gas {
 
   std::string Pipe::get_type(){return "Pipe";}
 
-  Pipe::Pipe(std::string _id, Network::Node *start_node,
-             Network::Node *end_node, nlohmann::ordered_json topology_json,
-             double _Delta_x)
-      : Edge(_id, start_node, end_node),
-        length(std::stod(topology_json["length"]["value"].get<std::string>()) *
-               1e3),
-        diameter(
-            std::stod(topology_json["diameter"]["value"].get<std::string>()) *
-            1e-3),
-        roughness(
-            std::stod(topology_json["roughness"]["value"].get<std::string>())),
-        number_of_points(static_cast<int>(std::ceil(length / _Delta_x)) + 1),
-        Delta_x(length / (number_of_points - 1)),
-        bl(Balancelaw::Isothermaleulerequation(Aux::circle_area(0.5 * diameter),
-                                               diameter, roughness)),
-        scheme() {}
-
   Pipe::Pipe(nlohmann::json const &topology,
              std::vector<std::unique_ptr<Network::Node>> &nodes)
       : Network::Edge(topology, nodes),

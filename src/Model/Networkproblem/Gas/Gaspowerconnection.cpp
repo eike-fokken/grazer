@@ -12,14 +12,6 @@ namespace Model::Networkproblem::Gas {
 
   std::string Gaspowerconnection::get_type() { return "Gaspowerconnection"; }
 
-  Gaspowerconnection::Gaspowerconnection(std::string _id,
-                                         Network::Node *start_node,
-                                         Network::Node *end_node,
-                                         nlohmann::ordered_json topology_json)
-      : Edge(_id, start_node, end_node),
-        gas2power_q_coefficient(std::stod(topology_json["gas2power_q_coeff"].get<std::string>())),
-        power2gas_q_coefficient(std::stod(topology_json["power2gas_q_coeff"].get<std::string>())) {}
-
   Gaspowerconnection::Gaspowerconnection(
       nlohmann::json const &topology,
       std::vector<std::unique_ptr<Network::Node>> &nodes)

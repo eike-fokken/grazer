@@ -11,20 +11,6 @@ namespace Model::Networkproblem::Power {
 
   bool Transmissionline::needs_boundary_values() { return false; }
 
-  Transmissionline::Transmissionline(std::string _id, Network::Node *start,
-                                     Network::Node *end, double _G, double _B)
-      : Edge(_id, start, end), G(_G), B(_B) {
-    Network::Node *startnode = get_starting_node();
-    auto start_powernode = dynamic_cast<Powernode *>(startnode);
-    if(!start_powernode) {gthrow({"Transmissionline ", get_id(),  " has starting node ", startnode->get_id(), ",which is not a powernode!"});}
-    Network::Node *endnode = get_ending_node();
-    auto end_powernode = dynamic_cast<Powernode *>(endnode);
-    if (!end_powernode) {
-      gthrow({"Transmissionline ", get_id(), " has ending node ",
-              endnode->get_id(), ",which is not a powernode!"});
-    }
-  }
-
   Transmissionline::Transmissionline(
       nlohmann::json const &topology,
       std::vector<std::unique_ptr<Network::Node>> &nodes)

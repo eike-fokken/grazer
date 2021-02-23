@@ -6,14 +6,8 @@
 namespace Model::Networkproblem::Gas {
 
   
-  Flowboundarynode::Flowboundarynode(std::string _id, nlohmann::ordered_json boundary_json,
-                 nlohmann::ordered_json )
-    : Gasnode(_id) {
-    boundaryvalue.set_boundary_condition(boundary_json);
-  }
-
   Flowboundarynode::Flowboundarynode(nlohmann::json const &data)
-      : Gasnode(data["id"].get<std::string>()) {
+      : Gasnode(data) {
     boundaryvalue.set_boundary_condition(data["boundary_values"]);
   }
 

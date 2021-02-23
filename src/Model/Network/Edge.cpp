@@ -5,15 +5,6 @@
 #include <string>
 namespace Network {
 
-  Edge::Edge(std::string const & _id, Node *start_node, Node *end_node)
-      : Idobject(_id), starting_node(start_node), ending_node(end_node) {
-    if (starting_node == ending_node) {
-      gthrow({"cant create an edge from a node to itself!"});
-    }
-    starting_node->attach_starting_edge(this);
-    ending_node->attach_ending_edge(this);
-  }
-
   Edge::Edge(nlohmann::json const &edge_json,
              std::vector<std::unique_ptr<Node>> &nodes)
       : Idobject(edge_json["id"].get<std::string>()),
@@ -49,14 +40,12 @@ namespace Network {
       if(direction == 1){
       gthrow({"The starting node ", nodeid,
               ", given by transmission line ", edge_json["id"],
-              ",\n is not defined in the nodes part of the topology ",
-              "file!"});
+              ",\n is not defined in the node vector supplied to the Edge constructor!"});
       }
       else {
         gthrow({"The ending node ", nodeid, ", given by transmission line ",
                 edge_json["id"],
-                ",\n is not defined in the nodes part of the topology ",
-                "file!"});
+                ",\n is not defined in the node vector supplied to the Edge constructor!"});
       }
     } else {
       return (*node_itr).get();

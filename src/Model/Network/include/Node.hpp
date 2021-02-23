@@ -20,7 +20,6 @@ namespace Network {
 
     Node() = delete;
 
-    Node(std::string const & _id);
     Node(nlohmann::json const & data);
 
     virtual ~Node(){};

@@ -8,8 +8,6 @@
 namespace Network {
   std::string Node::get_type() { gthrow({"This static method must be implemented in the class inherited from node!"}); }
 
-  Node::Node(std::string const &_id):Idobject(_id) {}
-
   Node::Node(nlohmann::json const & data) : Idobject(data["id"].get<std::string>()) {}
 
   bool Node::remove_edge(Edge *to_remove) {

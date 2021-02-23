@@ -12,10 +12,6 @@ namespace Model::Networkproblem::Gas {
     public:
       static std::string get_type();
 
-      Gaspowerconnection(std::string _id, Network::Node *start_node,
-                         Network::Node *end_node,
-                         nlohmann::ordered_json topology_json);
-
       Gaspowerconnection(nlohmann::json const &topology,
            std::vector<std::unique_ptr<Network::Node>> &nodes);
 
