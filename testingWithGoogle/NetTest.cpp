@@ -1,20 +1,12 @@
 #include "Net.hpp"
-#include "Boundaryvalue.hpp"
 #include "Edge.hpp"
-#include "MockSubproblem.hpp"
 #include "Node.hpp"
-#include "Problem.hpp"
-#include <Eigen/Dense>
 #include <gtest/gtest.h>
 #include <memory>
 #include <string>
 #include <vector>
 
 
-
-#include "gmock/gmock.h"
-
-#include <Matrixhandler.hpp>
 
 class Node : public ::testing::Test {
 
@@ -153,104 +145,40 @@ TEST_F(Nettest, test_get_starting_edges) {
   EXPECT_EQ(startedges1, expected_start_edges1);
 }
 
-// TEST_F(Nettest, getEndingEdges) {
+TEST_F(Nettest, getEndingEdges) {
 
-//   auto nodevector = net.get_nodes();
-//   auto edgevector = net.get_edges();
-//   auto startedges = nodevector[0]->get_starting_edges();
+  auto nodevector = net.get_nodes();
+  auto edgevector = net.get_edges();
+  
+  auto endedges0 = nodevector[0]->get_ending_edges();
+  auto endedges1 = nodevector[1]->get_ending_edges();
 
-//   auto endedges = nodevector[0]->get_ending_edges();
+  std::vector<Network::Edge *> expected_end_edges;
 
-//   std::vector<Network::Edge *> expected_end_edges;
+  expected_end_edges.push_back(edgevector[0]);
+  
 
-//   for (unsigned int i = 1; i != 3; ++i) {
-//     expected_end_edges.push_back(edges[i].get());
-//   }
 
-//   auto startedges = nodes[0]->get_starting_edges();
+  EXPECT_EQ(endedges0.size(), 0);
+  EXPECT_EQ(endedges1, expected_end_edges);
+}
 
-//   EXPECT_EQ(startedges.size(), 0);
-//   EXPECT_EQ(endedges, expected_end_edges);
-// }
+TEST_F(Nettest, test_getStartingNode) {
 
-// TEST(testEdge, test_getStartingNode) {
+  auto nodes = net.get_nodes();
+  auto edges = net.get_edges();
 
-//   std::vector<std::unique_ptr<Network::Node>> nodes;
-//   for (unsigned int i = 0; i != 2; ++i) {
-//     std::string s("N");
-//     s.append(std::to_string(i));
-//     nodes.push_back(std::unique_ptr<Network::Node>(new Network::Node(s)));
-//   }
+  EXPECT_EQ(edges[0]->get_starting_node(), nodes[0]);
+}
 
-//   auto edge = std::unique_ptr<Network::Edge>(
-//       new Network::Edge("E01", nodes[0].get(), nodes[1].get()));
+TEST_F(Nettest, test_getEndingNode) {
 
-//   EXPECT_EQ(edge->get_starting_node(), nodes[0].get());
-// }
+  auto nodes = net.get_nodes();
+  auto edges = net.get_edges();
 
-// TEST(testEdge, test_getEndingNode) {
+  EXPECT_EQ(edges[0]->get_ending_node(), nodes[1]);
+}
 
-//   std::vector<std::unique_ptr<Network::Node>> nodes;
-//   for (unsigned int i = 0; i != 2; ++i) {
-//     std::string s("N");
-//     s.append(std::to_string(i));
-//     nodes.push_back(std::unique_ptr<Network::Node>(new Network::Node(s)));
-//   }
-
-//   auto edge = std::unique_ptr<Network::Edge>(
-//       new Network::Edge("E10", nodes[1].get(), nodes[0].get()));
-
-//   EXPECT_EQ(edge->get_ending_node(), nodes[0].get());
-// }
-
-// TEST(modelTest, get_number_of_states) {
-
-//   // Test how often this class is being called
-//   GrazerTest::MockSubproblem mocksub;
-//   EXPECT_CALL(mocksub, reserve_indices(0)).Times(1);
-
-//   mocksub.set_indices(0);
-// }
-
-// TEST(modelSubproblem, Model_evaluate) {
-
-//   Model::Problem problem("");
-
-//   // make unique pointer of mocksub1 and mocksub2
-//   auto mock1_ptr = std::make_unique<GrazerTest::MockSubproblem>();
-//   auto mock2_ptr = std::make_unique<GrazerTest::MockSubproblem>();
-
-//   // add subproblem to problem
-//   problem.add_subproblem(std::move(mock1_ptr));
-//   problem.add_subproblem(std::move(mock2_ptr));
-
-//   // call problem.evaluate
-//   double last_time(0.0);
-//   double new_time(1.0);
-//   Eigen::VectorXd rootvalues(2);
-//   Eigen::VectorXd v1(2);
-//   v1(0) = 2;
-//   v1(1) = 3;
-//   Eigen::VectorXd v2(2);
-//   v1(0) = 3;
-//   v1(1) = 4;
-
-//   // This is necessary for the expect_call to work properly...
-//   // Eigen::Ref<Eigen::VectorXd> rootref(rootvalues);
-
-//   //  // expect the call to evaluate on the subproblems.
-//   //  // The cast magic is necessary to have the right type at hand...
-//   EXPECT_CALL(
-//       *dynamic_cast<GrazerTest::MockSubproblem *>(problem.get_subproblems()[0]),
-//       evaluate(Eigen::Ref<Eigen::VectorXd>(rootvalues), last_time, new_time, Eigen::Ref<Eigen::VectorXd const>(v1), Eigen::Ref<Eigen::VectorXd const> (v2)))
-//       .Times(1);
-//   EXPECT_CALL(
-//       *dynamic_cast<GrazerTest::MockSubproblem *>(problem.get_subproblems()[1]),
-//       evaluate(Eigen::Ref<Eigen::VectorXd>(rootvalues), last_time, new_time, Eigen::Ref<Eigen::VectorXd const>(v1), Eigen::Ref<Eigen::VectorXd const> (v2)))
-//       .Times(1);
-
-//   problem.evaluate(rootvalues, last_time, new_time, v1, v2);
-// }
 
 // TEST(Boundaryvalue, Operator) {
 

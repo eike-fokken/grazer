@@ -6,6 +6,7 @@
 #include "gmock/gmock.h"
 
 #include <Matrixhandler.hpp>
+#include <string>
 
 
 namespace GrazerTest {
@@ -13,6 +14,8 @@ namespace GrazerTest {
   class MockSubproblem : public Model::Subproblem {
 
   public:
+    MOCK_METHOD((std::string), get_type, (),
+                (override, const));
     MOCK_METHOD(void, evaluate,
                 ((Eigen::Ref<Eigen::VectorXd>),
                  (double), (double), (Eigen::Ref<Eigen::VectorXd const> const &),

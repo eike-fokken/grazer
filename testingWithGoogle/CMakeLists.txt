@@ -1,7 +1,13 @@
 add_executable(net_test NetTest.cpp)
 
-target_link_libraries(net_test PUBLIC network networkproblem problemlayer exception newton matrixhandler nlohmann_json)
+target_link_libraries(net_test PUBLIC network networkproblem nlohmann_json)
 target_link_libraries(net_test PUBLIC gtest gtest_main gmock)
+
+add_executable(model_test ModelTest.cpp)
+
+target_link_libraries(model_test PUBLIC network networkproblem problemlayer exception newton matrixhandler nlohmann_json)
+target_link_libraries(model_test PUBLIC gtest gtest_main gmock)
+
 
 
 add_executable(power_test PowerTest.cpp)
@@ -43,7 +49,11 @@ target_include_directories(testheader INTERFACE include)
 add_test(
     NAME net_test
     COMMAND net_test
-)
+    )
+  add_test(
+    NAME model_test
+    COMMAND model_test
+    )
 add_test(
   NAME power_test
   COMMAND power_test
