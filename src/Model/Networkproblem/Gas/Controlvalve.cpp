@@ -12,7 +12,7 @@ namespace Model::Networkproblem::Gas {
   Controlvalve::Controlvalve(nlohmann::json const &data,
                              std::vector<std::unique_ptr<Network::Node>> &nodes)
     : Shortcomponent(data, nodes) {
-    control_values.set_controls(data["controls"]);
+    control_values.set_controls(data["control_values"]);
   }
 
   void

@@ -26,17 +26,22 @@ namespace Model::Networkproblem {
 
     std::string topology_key = "topology_json";
     std::string boundary_key = "boundary_json";
+    std::string control_key = "control_json";
 
     aux_json::replace_entry_with_json_from_file(networkproblem_json,
                                                 topology_key);
     aux_json::replace_entry_with_json_from_file(networkproblem_json,
                                                 boundary_key);
+    aux_json::replace_entry_with_json_from_file(networkproblem_json,
+                                                control_key);
 
     nlohmann::json &topology = networkproblem_json[topology_key];
     nlohmann::json &boundary = networkproblem_json[boundary_key];
+    nlohmann::json &control = networkproblem_json[control_key];
 
     // build the node vector.
-    insert_boundary_conditions_in_topology_json(topology,boundary);
+    insert_second_json_in_topology_json(topology, boundary, "boundary_values");
+    insert_second_json_in_topology_json(topology, control, "control_values");
     supply_overall_values_to_components(networkproblem_json);
     auto nodes = build_node_vector(topology["nodes"]);
 

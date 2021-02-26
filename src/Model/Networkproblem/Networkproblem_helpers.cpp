@@ -94,24 +94,21 @@ namespace Model::Networkproblem {
     return edges;
   }
 
-  void insert_boundary_conditions_in_topology_json(nlohmann::json &topology,
-                                                   nlohmann::json &boundary) {
-    // Up to now there are no edges that take boundary values, but there may be
-    // some day.
+  void insert_second_json_in_topology_json(nlohmann::json &topology,
+                                                   nlohmann::json &second_json, std::string const & name_of_inserted_json) {
     for (auto const &component : {"nodes", "connections"}) {
-
-      // only fire if the boundary json contains entries of this component.
-      if (!boundary.contains(component)) {
+      // only fire if the json contains entries of this component.
+      if (!second_json.contains(component)) {
         continue;
       }
-      for (auto it = boundary[component].begin();
-           it != boundary[component].end(); ++it) {
+      for (auto it = second_json[component].begin();
+           it != second_json[component].end(); ++it) {
 
         if(!topology[component].contains(it.key())){
-          std::cout << "Note: Topology json does not contain "<< component << " of type " << it.key() << ", but the boundary json does contain such " << component << "." << std::endl;
+          std::cout << "Note: Topology json does not contain "<< component << " of type " << it.key() << ", but the "<< name_of_inserted_json << " json does contain such " << component << "." << std::endl;
           continue;
         }
-        auto &boundary_vector_json = boundary[component][it.key()];
+        auto &second_json_vector_json = second_json[component][it.key()];
         auto &topology_vector_json = topology[component][it.key()];
 
         // define a < function as a lambda:
@@ -122,12 +119,12 @@ namespace Model::Networkproblem {
 
         // Sorts the data in both topology and boundary json for easier
         // insertion afterwards.
-        std::sort(boundary_vector_json.begin(), boundary_vector_json.end(),
+        std::sort(second_json_vector_json.begin(), second_json_vector_json.end(),
                   id_compare_less);
         std::sort(topology_vector_json.begin(), topology_vector_json.end(),
                   id_compare_less);
 
-        auto bnd_it = boundary_vector_json.begin();
+        auto secjson_it = second_json_vector_json.begin();
         auto top_it = topology_vector_json.begin();
 
         // define an equals function as a lambda
@@ -138,11 +135,11 @@ namespace Model::Networkproblem {
 
         // Check for duplicate ids:
         auto bnd_first_pair =
-            std::adjacent_find(boundary_vector_json.begin(),
-                               boundary_vector_json.end(), id_equals);
-        if (bnd_first_pair != boundary_vector_json.end()) {
+            std::adjacent_find(second_json_vector_json.begin(),
+                               second_json_vector_json.end(), id_equals);
+        if (bnd_first_pair != second_json_vector_json.end()) {
           gthrow({"The id ", (*bnd_first_pair)["id"].get<std::string>(),
-                  " appears twice in the boundary json."});
+              " appears twice in the", name_of_inserted_json, " json."});
         }
 
         auto top_first_pair =
@@ -153,26 +150,27 @@ namespace Model::Networkproblem {
                   " appears twice in the topology json."});
         }
 
-        // assign boundary values to the topology json.
-        while (bnd_it != boundary_vector_json.end() and
+        // assign the additional values to the topology json.
+        while (secjson_it != second_json_vector_json.end() and
                top_it != topology_vector_json.end()) {
 
-          if (id_compare_less(*bnd_it, *top_it)) {
+          if (id_compare_less(*secjson_it, *top_it)) {
             std::cout << "The component with id "
-                      << (*bnd_it)["id"].get<std::string>() << '\n'
-                      << " has a boundary condition but is not given in the "
+                      << (*secjson_it)["id"].get<std::string>() << '\n'
+                      << " has an entry in the " << name_of_inserted_json
+                      << " json but is not given in the "
                          "topology json."
                       << std::endl;
-            ++bnd_it;
-          } else if (id_compare_less(*top_it, *bnd_it)) {
+            ++secjson_it;
+          } else if (id_compare_less(*top_it, *secjson_it)) {
             gthrow({"The component with id ",
                     (*top_it)["id"].get<std::string>(),
-                    "\n is given in the topology json but no boundary ",
-                    "condition is provided."});
+                    "\n is given in the topology json but no ",
+                    name_of_inserted_json, " condition is provided."});
 
           } else {
-            (*top_it)["boundary_values"] = (*bnd_it)["data"];
-            ++bnd_it;
+            (*top_it)[name_of_inserted_json] = (*secjson_it)["data"];
+            ++secjson_it;
             ++top_it;
           }
         }
@@ -180,22 +178,24 @@ namespace Model::Networkproblem {
     }
   }
 
-  void supply_overall_values_to_components(nlohmann::json &network_json) {
+    void supply_overall_values_to_components(nlohmann::json & network_json) {
 
-    // This list way well become longer!
-    auto pde_components = {"Pipe"};
-    if (network_json.contains("desired_delta_x")) {
-      for (auto const &type : pde_components) {
-        for (auto &pipe : network_json["topology_json"]["connections"][type]) {
-          if (!pipe.contains("desired_delta_x")) {
-            pipe["desired_delta_x"] = network_json["desired_delta_x"];
-          } else {
-            std::cout << "Object with id " << pipe["id"]
-                      << " has its own value of desired_delta_x." << std::endl;
+      // This list way well become longer!
+      auto pde_components = {"Pipe"};
+      if (network_json.contains("desired_delta_x")) {
+        for (auto const &type : pde_components) {
+          for (auto &pipe :
+               network_json["topology_json"]["connections"][type]) {
+            if (!pipe.contains("desired_delta_x")) {
+              pipe["desired_delta_x"] = network_json["desired_delta_x"];
+            } else {
+              std::cout << "Object with id " << pipe["id"]
+                        << " has its own value of desired_delta_x."
+                        << std::endl;
+            }
           }
         }
       }
     }
-  }
 
-} // namespace Model::Networkproblem
+  } // namespace Model::Networkproblem

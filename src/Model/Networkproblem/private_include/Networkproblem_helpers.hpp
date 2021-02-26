@@ -30,11 +30,13 @@ namespace Model::Networkproblem {
                     std::vector<std::unique_ptr<Network::Node>> & nodes);
 
 
-  /// \brief Enters the boundary condition into the topology json.
+  /// \brief Enters entries from a second json object into the topology json.
+  ///
+  /// Used for boundary and control jsons.
   void
-  insert_boundary_conditions_in_topology_json(nlohmann::json &topology,
-                                              nlohmann::json &boundary);
-
+  insert_second_json_in_topology_json(nlohmann::json &topology,
+                                      nlohmann::json &boundary,
+                                      std::string const &name_of_inserted_json);
 
   /// \brief Reads values that are meant for many components and writes them
   /// into each component json.
