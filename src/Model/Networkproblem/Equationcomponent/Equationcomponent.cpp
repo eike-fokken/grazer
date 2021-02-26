@@ -1,9 +1,8 @@
+#include "Equationcomponent.hpp"
+#include "Exception.hpp"
 #include <Eigen/Sparse>
-#include <Equationcomponent.hpp>
-#include <Exception.hpp>
 #include <iostream>
 #include <map>
-#include <nlohmann/json.hpp>
 
 namespace Model::Networkproblem {
 
