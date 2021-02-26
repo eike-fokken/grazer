@@ -10,7 +10,7 @@
         {
             "Network_problem":
             {
-                "initial_json":"initial_pretty.json"
+                "initial_json":"initial.json"
             }
         }
     },
@@ -21,8 +21,8 @@
             "Network_problem":
             {
                 "desired_delta_x": "10000",
-                "topology_json":"topology_pretty.json",
-                "boundary_json":"boundary_pretty_new.json",
+                "topology_json":"topology.json",
+                "boundary_json":"boundary.json",
                 "control_json":"control.json"
             }
         }
