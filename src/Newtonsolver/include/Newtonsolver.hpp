@@ -34,8 +34,8 @@ namespace Solver {
   /// so it can compute the solution of a non-linear problem.
   template <typename Problemtype> class Newtonsolver_temp {
   public:
-    Newtonsolver_temp(double _tolerance, int _maximal_iterations)
-      : tolerance(_tolerance), maximal_iterations(_maximal_iterations){};
+    Newtonsolver_temp(double _tolerance, int _maximal_iterations);
+
 
     /// \brief Reanalyzes the sparsity pattern of the jacobian the objective function and computes it.
     ///

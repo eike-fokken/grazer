@@ -5,7 +5,9 @@
 #include "TestProblem.hpp"
 
 namespace Solver {
-  
+  template <typename Problemtype>
+  Newtonsolver_temp<Problemtype>::Newtonsolver_temp(double _tolerance, int _maximal_iterations)
+      : tolerance(_tolerance), maximal_iterations(_maximal_iterations){}
 
 template<typename Problemtype>
 void Newtonsolver_temp<Problemtype>::evaluate_state_derivative_triplets(Problemtype &problem, double last_time,
@@ -120,7 +122,7 @@ Solutionstruct Newtonsolver_temp<Problemtype>::solve(
   return solstruct;
 }
 
-template class Newtonsolver_temp<Model::Problem>;
+  template class Newtonsolver_temp<Model::Problem>;
   template class Newtonsolver_temp <GrazerTest::TestProblem > ;
 
 } // namespace Solver

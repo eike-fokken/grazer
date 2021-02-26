@@ -1,12 +1,12 @@
 #include "Exception.hpp"
-#include <Subproblemchooser.hpp>
-#include <memory>
+#include "Subproblemchooser.hpp"
+#include "Networkproblem.hpp"
 
 namespace Model {
 
-  std::unique_ptr<Model::Subproblem>
-  Subproblemchooser::build_subproblem(std::string subproblem_type,
-                   nlohmann::json subproblem_json) {
+  std::unique_ptr<Subproblem>
+  build_subproblem(std::string subproblem_type,
+                   nlohmann::json &subproblem_json) {
     if(subproblem_type == "Network_problem"){
       return build_networkproblem(subproblem_json);
     }
@@ -15,8 +15,8 @@ namespace Model {
     }
   }
 
-  std::unique_ptr<Model::Networkproblem::Networkproblem>
-  Subproblemchooser::build_networkproblem(nlohmann::json subproblem_json){
-    return std::make_unique<Model::Networkproblem::Networkproblem>(subproblem_json);
+  std::unique_ptr<Subproblem>
+  build_networkproblem(nlohmann::json &subproblem_json) {
+    return std::make_unique<Networkproblem::Networkproblem>(subproblem_json);
   }
 } // namespace Model
