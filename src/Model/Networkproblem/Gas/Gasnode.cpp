@@ -155,6 +155,6 @@ namespace Model::Networkproblem::Gas {
       return; }
   }
 
-  int Gasnode::get_number_of_states() const { return 0;}
+  int Gasnode::get_number_of_states() const { return number_of_state_variables;}
 
 } // namespace Model::Networkproblem::Gas

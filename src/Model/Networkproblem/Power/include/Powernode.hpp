@@ -45,6 +45,9 @@ namespace Model::Networkproblem::Power {
     double B;
 
   private:
+    /// \brief number of state variables, this component needs.
+    static constexpr int number_of_state_variables{2};
+
     std::vector<std::tuple<double,double,Powernode*>> attached_component_data;
 
   };

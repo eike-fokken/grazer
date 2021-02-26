@@ -1,7 +1,11 @@
-add_library(gas STATIC Gasnode.cpp Gasedge.cpp Innode.cpp
-  Pipe.cpp  Shortpipe.cpp Source.cpp Sink.cpp  Flowboundarynode.cpp
-  Controlvalve.cpp Compressorstation.cpp Pressureboundarynode.cpp
-  Gaspowerconnection.cpp)
+add_library(gas STATIC
+  Gasnode.cpp Flowboundarynode.cpp Pressureboundarynode.cpp
+  Source.cpp Sink.cpp Innode.cpp
+  Gasedge.cpp 
+  Shortcomponent.cpp Shortpipe.cpp Controlvalve.cpp Compressorstation.cpp
+  Gaspowerconnection.cpp
+  Pipe.cpp
+  )
 
 
 target_link_libraries(gas PRIVATE network matrixhandler exception nlohmann_json power coloroutput misc)

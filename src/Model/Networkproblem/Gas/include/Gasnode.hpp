@@ -39,5 +39,9 @@ namespace Model::Networkproblem::Gas {
                                            Eigen::Ref<Eigen::VectorXd const> const &) const;
 
     std::vector<std::pair<int, Gasedge *>> directed_attached_gas_edges;
+
+  private:
+    /// \brief number of state variables, this component needs.
+    static constexpr int number_of_state_variables{0};
   };
 }

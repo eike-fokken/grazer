@@ -4,11 +4,11 @@
 
 namespace Model::Networkproblem::Gas {
 
-  class Compressorstation: public Shortpipe {
+  class Compressorstation final : public Shortpipe {
   public:
-    using Shortpipe::Shortpipe;
 
+    using Shortpipe::Shortpipe;
     static std::string get_type();
-    
+
   };
 }

@@ -70,7 +70,7 @@ namespace Model::Networkproblem::Power {
     }
   }
 
-  int Powernode::get_number_of_states() const { return 2; }
+  int Powernode::get_number_of_states() const { return number_of_state_variables; }
 
   // int Powernode::get_number_of_printout_states() const { return 4;}
 
