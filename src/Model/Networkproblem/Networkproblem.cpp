@@ -22,21 +22,6 @@ namespace Model::Networkproblem {
 
   /// The constructor takes an instance of Net and finds out which Edges and
   /// Nodes actually hold equations to solve
-  Networkproblem::Networkproblem(std::unique_ptr<Network::Net> _network)
-      : network(std::move(_network)) {
-    for (Network::Node *node : network->get_nodes()) {
-      if (auto equationcomponent = dynamic_cast<Equationcomponent *>(node)) {
-        equationcomponents.push_back(equationcomponent);
-      }
-    }
-
-    for (Network::Edge *edge : network->get_edges()) {
-      if (auto equationcomponent = dynamic_cast<Equationcomponent *>(edge)) {
-        equationcomponents.push_back(equationcomponent);
-      }
-    }
-  }
-
   Networkproblem::Networkproblem(nlohmann::json &networkproblem_json) {
 
     std::string topology_key = "topology_json";
