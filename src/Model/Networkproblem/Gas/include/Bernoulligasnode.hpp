@@ -2,6 +2,7 @@
 #include "Equationcomponent.hpp"
 #include "Gasedge.hpp"
 #include "Node.hpp"
+#include "Pipe.hpp"
 
 namespace Model::Networkproblem::Gas {
 
@@ -33,10 +34,11 @@ namespace Model::Networkproblem::Gas {
     void evaluate_flow_node_derivative(Aux::Matrixhandler *jacobianhandler,
                                        Eigen::Ref<Eigen::VectorXd const> const &state) const;
 
-    std::vector<std::pair<int, Gasedge *>> directed_attached_gas_edges;
-
-    int end_of_pipe_indices{-1};
   private:
+    std::vector<std::pair<int, Gasedge *>> directed_gas_edges;
+    std::vector<std::pair<int, Pipe *>> directed_pipes;
+    
+
     /// \brief number of state variables, this component needs.
     static constexpr int number_of_state_variables{0};
   };

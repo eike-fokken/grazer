@@ -33,9 +33,10 @@ namespace Model::Networkproblem::Gas {
     void evaluate_flow_node_derivative(Aux::Matrixhandler *jacobianhandler,
                                        Eigen::Ref<Eigen::VectorXd const> const &state) const;
 
-    std::vector<std::pair<int, Gasedge *>> directed_attached_gas_edges;
+    
 
   private:
+    std::vector<std::pair<int, Gasedge *>> directed_gas_edges;
     /// \brief number of state variables, this component needs.
     static constexpr int number_of_state_variables{0};
   };

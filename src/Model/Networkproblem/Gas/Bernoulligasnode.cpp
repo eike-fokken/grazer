@@ -13,8 +13,8 @@ namespace Model::Networkproblem::Gas {
                                            Eigen::Ref<Eigen::VectorXd const> const &state,
                                            double prescribed_qvol) const {
 
-    if(directed_attached_gas_edges.empty()){ return; }
-    auto [dir0,edge0] = directed_attached_gas_edges.front();
+    if(directed_gas_edges.empty()){ return; }
+    auto [dir0,edge0] = directed_gas_edges.front();
     auto p_qvol0 = edge0->get_boundary_p_qvol_bar(dir0,state);
     auto p0 = p_qvol0[0];
     auto q0 = p_qvol0[1];
@@ -24,8 +24,8 @@ namespace Model::Networkproblem::Gas {
     int old_equation_index = edge0->give_away_boundary_index(dir0);
 
     // We will write the flow balance into the last index:
-    int last_direction = directed_attached_gas_edges.back().first;
-    int last_equation_index = directed_attached_gas_edges.back().second->give_away_boundary_index(last_direction);
+    int last_direction = directed_gas_edges.back().first;
+    int last_equation_index = directed_gas_edges.back().second->give_away_boundary_index(last_direction);
     
 
     // prescribed boundary condition is like an attached pipe ending at this node...
@@ -34,7 +34,7 @@ namespace Model::Networkproblem::Gas {
 
 
     // std::cout << "number of gas edges: " << directed_attached_gas_edges.size() <<std::endl;
-    for(auto it=std::next(directed_attached_gas_edges.begin());it!=directed_attached_gas_edges.end();++it){
+    for(auto it=std::next(directed_gas_edges.begin());it!=directed_gas_edges.end();++it){
       int direction=it->first;
       Gasedge *edge = it->second;
       auto current_p_qvol = edge->get_boundary_p_qvol_bar(direction,state);
@@ -52,10 +52,10 @@ namespace Model::Networkproblem::Gas {
 
   void Bernoulligasnode::evaluate_flow_node_derivative(Aux::Matrixhandler * jacobianhandler, Eigen::Ref<Eigen::VectorXd const> const & state) const {
 
-    if(directed_attached_gas_edges.empty()){ return; }
+    if(directed_gas_edges.empty()){ return; }
 
-    auto [dir0,edge0] =directed_attached_gas_edges.front();
-    auto [dirlast,edgelast] = directed_attached_gas_edges.back();
+    auto [dir0,edge0] =directed_gas_edges.front();
+    auto [dirlast,edgelast] = directed_gas_edges.back();
     int last_equation_index = edgelast->give_away_boundary_index(dirlast);
     //    rootvalues[last_equation_index]=dir0*state0[1];
 
@@ -76,8 +76,8 @@ namespace Model::Networkproblem::Gas {
       edge0->dboundary_p_qvol_dstate(dir0,jacobianhandler, dF_0_dpq_0, old_equation_index, state);
 
       //first and last attached edge are special:
-      auto second_iterator = std::next(directed_attached_gas_edges.begin());
-      auto last_iterator = std::prev(directed_attached_gas_edges.end());
+      auto second_iterator = std::next(directed_gas_edges.begin());
+      auto last_iterator = std::prev(directed_gas_edges.end());
     for(auto it=second_iterator;it!=last_iterator;++it){
       int direction=it->first;
       Gasedge *edge = it->second;
@@ -102,13 +102,12 @@ namespace Model::Networkproblem::Gas {
 
   void Bernoulligasnode::setup() {
 
-    if(directed_attached_gas_edges.size()!=0){std::cout << YELLOW << "You are calling setup a second time!" << RESET <<std::endl;}
+    if(directed_gas_edges.size()!=0){std::cout << YELLOW << "You are calling setup a second time!" << RESET <<std::endl;}
 
 
-    directed_attached_gas_edges.clear();
+    directed_gas_edges.clear();
 
     //Treat pipes separately for bernoulli coupling:
-    std::vector<std::pair<int, Gasedge *>> directed_pipes;
     std::vector<std::pair<int, Gasedge *>> directed_other_edges;
 
     for (auto &startedge : get_starting_edges()) {
@@ -119,9 +118,10 @@ namespace Model::Networkproblem::Gas {
                   << std::endl;
         continue;
       }
-      auto * is_pipe=dynamic_cast<Pipe*>(startgasedge);
-      if(is_pipe){
-        directed_pipes.push_back({1,startgasedge});
+      auto * startpipe=dynamic_cast<Pipe*>(startgasedge);
+      if(startpipe){
+        directed_pipes.push_back({1,startpipe});
+        directed_gas_edges.push_back({1,startgasedge});
       } else {
       directed_other_edges.push_back({1, startgasedge});
       }
@@ -132,22 +132,21 @@ namespace Model::Networkproblem::Gas {
         std::cout << __FILE__ <<":"<< __LINE__ << " Warning: The non-gasedge" << endedge->get_id() << " is attached at node " << get_id()  << std::endl;
         std::cout << "node id: " << get_id() << std::endl;
         continue;}
-      auto *is_pipe = dynamic_cast<Pipe *>(endgasedge);
-      if (is_pipe) {
-        directed_pipes.push_back({-1, endgasedge});
+      auto *endpipe = dynamic_cast<Pipe *>(endgasedge);
+      if (endpipe) {
+        directed_pipes.push_back({-1, endpipe});
+        directed_gas_edges.push_back({-1, endgasedge});
       } else {
         directed_other_edges.push_back({-1, endgasedge});
       }
     }
 
-    end_of_pipe_indices=static_cast<int>(directed_pipes.size());
-
-    directed_attached_gas_edges = directed_pipes;
-    directed_attached_gas_edges.insert(directed_attached_gas_edges.end(),
+    // enter the non-pipes after the others:
+    directed_gas_edges.insert(directed_gas_edges.end(),
                                        directed_other_edges.begin(),
                                        directed_other_edges.end());
     // Notify the user of unconnected nodes:
-    if(directed_attached_gas_edges.empty()){
+    if(directed_gas_edges.empty()){
       std::cout << "Node " <<get_id() << " has no attached gas edges!" << std::endl;
       return; }
   }

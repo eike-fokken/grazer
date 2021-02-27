@@ -17,9 +17,8 @@ namespace Model::Networkproblem::Gas {
       Eigen::Ref<Eigen::VectorXd const> const &,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
 
-    if(Couplingnode::directed_attached_gas_edges.empty()){ return; }
-
-        this->evaluate_flow_node_balance(rootvalues,new_state, boundaryvalue(new_time)[0]);
+    
+    this->evaluate_flow_node_balance(rootvalues,new_state, boundaryvalue(new_time)[0]);
   }
 
   template <typename Couplingnode>
@@ -27,7 +26,6 @@ namespace Model::Networkproblem::Gas {
       Aux::Matrixhandler *jacobianhandler, double, double,
       Eigen::Ref<Eigen::VectorXd const> const &,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
-    if(this->directed_attached_gas_edges.empty()){ return; }
     this->evaluate_flow_node_derivative(jacobianhandler,new_state);
   }
 
