@@ -29,14 +29,9 @@ namespace Model::Networkproblem::Gas {
     void evaluate_flow_node_balance(Eigen::Ref<Eigen::VectorXd> rootvalues,
                                     Eigen::Ref<Eigen::VectorXd const> const &state,
                                     double prescribed_flow) const;
-    void evaluate_pressure_node_balance(Eigen::Ref<Eigen::VectorXd> rootvalues,
-                                        Eigen::Ref<Eigen::VectorXd const> const &state,
-                                        double prescribed_pressure) const;
 
     void evaluate_flow_node_derivative(Aux::Matrixhandler *jacobianhandler,
                                        Eigen::Ref<Eigen::VectorXd const> const &state) const;
-    void evaluate_pressure_node_derivative(Aux::Matrixhandler *jacobianhandler,
-                                           Eigen::Ref<Eigen::VectorXd const> const &) const;
 
     std::vector<std::pair<int, Gasedge *>> directed_attached_gas_edges;
 

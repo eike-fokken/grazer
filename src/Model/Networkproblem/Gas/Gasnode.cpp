@@ -48,22 +48,6 @@ namespace Model::Networkproblem::Gas {
     }
   }
 
-  /// This function sets pressure equality boundary conditions.
-  
-  void Gasnode::evaluate_pressure_node_balance(Eigen::Ref<Eigen::VectorXd> rootvalues, Eigen::Ref<Eigen::VectorXd const> const & state, double prescribed_p) const {
-
-    if(directed_attached_gas_edges.empty()){ return; }
-
-    for(auto & [direction,edge] : directed_attached_gas_edges){
-      auto current_p_qvol = edge->get_boundary_p_qvol_bar(direction,state);
-      double current_p=current_p_qvol[0];
-      int equation_index = edge->give_away_boundary_index(direction);
-      rootvalues[equation_index] = current_p - prescribed_p;
-    }
-
-  }
-
-
 
   void Gasnode::evaluate_flow_node_derivative(Aux::Matrixhandler * jacobianhandler, Eigen::Ref<Eigen::VectorXd const> const & state) const {
 
@@ -113,17 +97,6 @@ namespace Model::Networkproblem::Gas {
     edgelast->dboundary_p_qvol_dstate(dirlast,jacobianhandler, dF_old_dpq_last, old_equation_index, state);
     Eigen::RowVector2d dF_last_dpq_last(0.0, dirlast);
     edgelast->dboundary_p_qvol_dstate(dirlast,jacobianhandler, dF_last_dpq_last, last_equation_index, state);
-  }
-
-  void Gasnode::evaluate_pressure_node_derivative(Aux::Matrixhandler * jacobianhandler, Eigen::Ref<Eigen::VectorXd const> const & state ) const {
-
-    if(directed_attached_gas_edges.empty()){ return; }
-    for (auto & [direction, edge] : directed_attached_gas_edges) {
-      int equation_index = edge->give_away_boundary_index(direction);
-      Eigen::RowVector2d dF_now_dpq_now(1.0,0.0);
-      edge->dboundary_p_qvol_dstate(direction,jacobianhandler,dF_now_dpq_now,equation_index,state);
-    }
-
   }
 
   void Gasnode::setup() {
