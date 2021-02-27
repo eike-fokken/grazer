@@ -1,21 +1,25 @@
 #pragma once
+#include "Gasnode.hpp"
+#include "Bernoulligasnode.hpp"
 #include <Boundaryvalue.hpp>
-#include <Equationcomponent.hpp>
-#include <Gasnode.hpp>
-#include <Node.hpp>
 #include <nlohmann/json.hpp>
 #include <string>
 
+namespace Aux {
+  class Matrixhandler;
+}
+
 namespace Model::Networkproblem::Gas {
 
-class Flowboundarynode: public Gasnode {
+  template <typename Couplingnode>
+  class Flowboundarynode: public Couplingnode {
 
 public:
 
 
-  Flowboundarynode(nlohmann::json const & data);
+    Flowboundarynode<Couplingnode>(nlohmann::json const & data);
 
-  ~Flowboundarynode() override {};
+    ~Flowboundarynode<Couplingnode>() override {};
 
   
     void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
@@ -30,7 +34,13 @@ public:
 
 private:
   
-  Boundaryvalue<Flowboundarynode, 1> boundaryvalue;
+  Boundaryvalue<Flowboundarynode<Couplingnode>, 1> boundaryvalue;
   };
+
+  extern template class Flowboundarynode<Gasnode>;
+  extern template class Flowboundarynode<Bernoulligasnode>;
+
+  using Pressurecouplingnode = Flowboundarynode<Gasnode>;
+  using Bernoullicouplingnode = Flowboundarynode<Bernoulligasnode>;
 
 } // namespace Model::Networkproblem::Gas

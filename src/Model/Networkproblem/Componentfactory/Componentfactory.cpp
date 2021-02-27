@@ -1,10 +1,10 @@
 #include "Componentfactory.hpp"
+#include "Gasnodechooser.hpp"
 #include "Componentchooser.hpp"
 #include "Compressorstation.hpp"
 #include "Controlvalve.hpp"
 #include "Flowboundarynode.hpp"
 #include "Gaspowerconnection.hpp"
-#include "Innode.hpp"
 #include "PQnode.hpp"
 #include "PVnode.hpp"
 #include "Pipe.hpp"
@@ -25,7 +25,7 @@ namespace Model::Networkproblem::Componentfactory {
     buildervector.push_back(std::make_unique<Nodedatabuilder<Power::PQnode>>());
     buildervector.push_back(std::make_unique<Nodedatabuilder<Gas::Source>>());
     buildervector.push_back(std::make_unique<Nodedatabuilder<Gas::Sink>>());
-    buildervector.push_back(std::make_unique<Nodedatabuilder<Gas::Innode>>());
+    buildervector.push_back(std::make_unique<Innodebuilder>());
 
     for (auto &builder : buildervector) {
       data.insert({builder->get_type(), builder->build_data()});

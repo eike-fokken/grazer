@@ -1,4 +1,4 @@
-add_library(componentfactory STATIC Componentfactory.cpp)
+add_library(componentfactory STATIC Componentfactory.cpp Gasnodechooser.cpp)
 
 # This is needed in order to construct the specific components in Aux.cpp in construct_node
 target_link_libraries(componentfactory PRIVATE power gas nlohmann_json network)
