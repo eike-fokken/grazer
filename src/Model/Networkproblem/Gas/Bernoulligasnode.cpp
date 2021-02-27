@@ -9,6 +9,36 @@
 
 namespace Model::Networkproblem::Gas {
 
+  double bernoulli(Eigen::Vector2d p_qvol, Pipe const &pipe){
+
+    double p = p_qvol[0];
+    double q = p_qvol[1];
+    auto bl= pipe.bl;
+    double area = pipe.bl.Area;
+    double v = bl.rho_0 * q / (area * bl.rho(p));
+    double pressure_part = 1/bl.c_vac_squared *
+                      (log(p / bl.p_0) + bl.alpha * (p - bl.p_0));
+
+      return 0.5 * v * v + pressure_part;
+  }
+
+  Eigen::RowVector2d dbernoulli_dstate(Eigen::Vector2d p_qvol,
+                                       Pipe const &pipe) {
+    double p = p_qvol[0];
+    double q = p_qvol[1];
+    auto bl = pipe.bl;
+    double area = pipe.bl.Area;
+    double v = bl.rho_0 * q / (area * bl.rho(p));
+    auto db_dp =  -v * v * 1.0 / bl.c_vac_squared /
+      (bl.rho(p) * (1+bl.alpha*p)) +
+           1.0/ bl.c_vac_squared * (1 / p + bl.alpha);
+
+    double stuff = bl.rho_0 / (area * bl.rho(p));
+    auto db_dq = stuff * stuff * q;
+
+    return Eigen::RowVector2d(db_dp, db_dq);
+  }
+
   void Bernoulligasnode::evaluate_flow_node_balance(Eigen::Ref<Eigen::VectorXd> rootvalues,
                                            Eigen::Ref<Eigen::VectorXd const> const &state,
                                            double prescribed_qvol) const {
@@ -33,7 +63,6 @@ namespace Model::Networkproblem::Gas {
     rootvalues[last_equation_index] += dir0*q0;
 
 
-    // std::cout << "number of gas edges: " << directed_attached_gas_edges.size() <<std::endl;
     for(auto it=std::next(directed_gas_edges.begin());it!=directed_gas_edges.end();++it){
       int direction=it->first;
       Gasedge *edge = it->second;
