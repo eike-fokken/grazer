@@ -1,10 +1,15 @@
 #include "Sink.hpp"
+#include "Flowboundarynode.hpp"
 
 namespace Model::Networkproblem::Gas {
 
-  std::string Sink::get_type() {return "Sink";}
+  template <typename Flowboundarynode>
+  std::string Sink<Flowboundarynode>::get_type() {
+    return "Sink";
+  }
 
-  nlohmann::json Sink::revert_boundary_conditions(nlohmann::json const &data){
+  template <typename Flowboundarynode>
+  nlohmann::json Sink<Flowboundarynode>::revert_boundary_conditions(nlohmann::json const &data) {
 
     nlohmann::json reverted_boundary_json = data;
 
@@ -18,6 +23,11 @@ namespace Model::Networkproblem::Gas {
     return reverted_boundary_json;
   }
 
-  Sink::Sink(nlohmann::json const & data):Flowboundarynode(revert_boundary_conditions(data)){}
+  template <typename Flowboundarynode>
+  Sink<Flowboundarynode>::Sink(nlohmann::json const &data)
+      : Flowboundarynode(revert_boundary_conditions(data)) {}
+
+ template class Sink<Pressurecouplingnode>;
+ template class Sink<Bernoullicouplingnode>;
 
 } // namespace Model::Networkproblem::Gas

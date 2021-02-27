@@ -23,9 +23,9 @@ namespace Model::Networkproblem::Componentfactory {
     buildervector.push_back(std::make_unique<Nodedatabuilder<Power::Vphinode>>());
     buildervector.push_back(std::make_unique<Nodedatabuilder<Power::PVnode>>());
     buildervector.push_back(std::make_unique<Nodedatabuilder<Power::PQnode>>());
-    buildervector.push_back(std::make_unique<Nodedatabuilder<Gas::Source>>());
-    buildervector.push_back(std::make_unique<Nodedatabuilder<Gas::Sink>>());
     buildervector.push_back(std::make_unique<Innodebuilder>());
+    buildervector.push_back(std::make_unique<Sourcebuilder>());
+    buildervector.push_back(std::make_unique<Sinkbuilder>());
 
     for (auto &builder : buildervector) {
       data.insert({builder->get_type(), builder->build_data()});

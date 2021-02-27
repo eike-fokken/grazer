@@ -2,6 +2,11 @@
 
 namespace Model::Networkproblem::Gas {
 
-  std::string Source::get_type() {return "Source";}
+  template <typename Flowboundarynode>
+  std::string Source<Flowboundarynode>::get_type() {
+    return "Source";
+  }
 
+ template class Source<Pressurecouplingnode>;
+ template class Source<Bernoullicouplingnode>;
 }

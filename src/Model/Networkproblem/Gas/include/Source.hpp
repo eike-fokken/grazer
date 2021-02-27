@@ -3,6 +3,7 @@
 
 namespace Model::Networkproblem::Gas {
 
+  template<typename Flowboundarynode>
   class Source final : public Flowboundarynode {
 
   public:
@@ -10,5 +11,8 @@ namespace Model::Networkproblem::Gas {
 
     using Flowboundarynode::Flowboundarynode;
   };
+
+  extern template class Source<Pressurecouplingnode>;
+  extern template class Source<Bernoullicouplingnode>;
 
 } // namespace Model::Networkproblem::Gas
