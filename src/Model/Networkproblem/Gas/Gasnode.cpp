@@ -78,9 +78,8 @@ namespace Model::Networkproblem::Gas {
       auto second_iterator = std::next(directed_gas_edges.begin());
       auto last_iterator = std::prev(directed_gas_edges.end());
     for(auto it=second_iterator;it!=last_iterator;++it){
-      int direction=it->first;
-      Gasedge *edge = it->second;
-
+      auto [direction, edge] = *it;
+      
       int current_equation_index = edge->give_away_boundary_index(direction);
       Eigen::RowVector2d dF_old_dpq_now(1.0,0.0);  
       Eigen::RowVector2d dF_now_dpq_now(-1.0,0.0);

@@ -21,7 +21,7 @@
             "Network_problem":
             {
                 "desired_delta_x": "10000",
-                "topology_json":"topology.json",
+                "topology_json":"topology_bernoulli.json",
                 "boundary_json":"boundary.json",
                 "control_json":"control.json"
             }

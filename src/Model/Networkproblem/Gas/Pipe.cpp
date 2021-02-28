@@ -206,11 +206,11 @@ namespace Model::Networkproblem::Gas {
                                      Eigen::Ref<Eigen::VectorXd const> const &state) const {
     Eigen::Vector2d boundary_state = get_boundary_state(direction,state);
 
-        Eigen::Vector2d p_qvol = bl.p_qvol(boundary_state);
+    Eigen::Vector2d p_qvol = bl.p_qvol(boundary_state);
 
     Eigen::Matrix2d dp_qvol_dstate = bl.dp_qvol_dstate(boundary_state);
     Eigen::Matrix2d dpqvolbar_dpqvol =
-        bl.dp_qvol_bar_from_p_qvold_p_qvol(p_qvol);
+      bl.dp_qvol_bar_from_p_qvold_p_qvol(p_qvol);
 
     Eigen::Matrix2d dpqvol_bar_dstate = dpqvolbar_dpqvol*dp_qvol_dstate;
 
