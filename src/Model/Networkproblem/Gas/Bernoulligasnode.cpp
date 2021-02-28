@@ -13,16 +13,17 @@ namespace Model::Networkproblem::Gas {
   /// \brief computes the Bernoulli invariant.
   double bernoulli(Eigen::Vector2d p_qvol_bar, Pipe const &pipe) {
 
-    auto bl = pipe.bl;
-    double p = p_qvol_bar[0] * bl.bar;
-    double q = p_qvol_bar[1];
+    // auto bl = pipe.bl;
+    // double p = p_qvol_bar[0] * bl.bar;
+    // double q = p_qvol_bar[1];
 
-    double area = pipe.bl.Area;
-    double v = bl.rho_0 * q / (area * bl.rho(p));
-    double pressure_part =
-        1 / bl.c_vac_squared * (log(p / bl.p_0) + bl.alpha * (p - bl.p_0));
+    // double area = pipe.bl.Area;
+    // double v = bl.rho_0 * q / (area * bl.rho(p));
+    // double pressure_part =
+    //     1 / bl.c_vac_squared * (log(p / bl.p_0) + bl.alpha * (p - bl.p_0));
 
-    return 0.5 * v * v + pressure_part;
+    // return 0.5 * v * v + pressure_part;
+    return p_qvol_bar[0];
   }
 
   /// \brief computes the derivative of the bernoulli invariant.
@@ -31,19 +32,20 @@ namespace Model::Networkproblem::Gas {
   Eigen::RowVector2d dbernoulli_dstate(Eigen::Vector2d p_qvol_bar,
                                        Pipe const &pipe) {
 
-    auto bl = pipe.bl;
-    double p = p_qvol_bar[0] * bl.bar;
-    double q = p_qvol_bar[1];
-    double area = pipe.bl.Area;
-    double v = bl.rho_0 * q / (area * bl.rho(p));
-    auto db_dp = 1.0/bl.bar*
-        (-v * v / bl.c_vac_squared / (bl.rho(p) * (1.0 + bl.alpha * p)) +
-         1.0 / bl.c_vac_squared * (1.0 / p + bl.alpha));
+    // auto bl = pipe.bl;
+    // double p = p_qvol_bar[0] * bl.bar;
+    // double q = p_qvol_bar[1];
+    // double area = pipe.bl.Area;
+    // double v = bl.rho_0 * q / (area * bl.rho(p));
+    // auto db_dp = 1.0/bl.bar*
+    //     (-v * v / bl.c_vac_squared / (bl.rho(p) * (1.0 + bl.alpha * p)) +
+    //      1.0 / bl.c_vac_squared * (1.0 / p + bl.alpha));
 
-    double stuff = bl.rho_0 / (area * bl.rho(p));
-    auto db_dq = stuff * stuff * q;
+    // double stuff = bl.rho_0 / (area * bl.rho(p));
+    // auto db_dq = stuff * stuff * q;
 
-    return Eigen::RowVector2d(db_dp, db_dq);
+    // return Eigen::RowVector2d(db_dp, db_dq);
+    return Eigen::RowVector2d(1.0,0.0);
   }
 
   void Bernoulligasnode::evaluate_flow_node_balance(
