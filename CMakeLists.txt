@@ -68,13 +68,16 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
    add_compile_options("$<$<CONFIG:DEBUG>:${debug_gcc_options}>"
      "$<$<NOT:$<CONFIG:Debug>>:${release_gcc_options}>")
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-  add_compile_options("$<$<CONFIG:DEBUG>:${debug_msvc_options}>"
-    "$<$<NOT:$<CONFIG:Debug>>:${release_msvc_options}>")
-    else()
+  add_compile_options(
+    "$<$<CONFIG:DEBUG>:${debug_msvc_options}>"
+    "$<$<NOT:$<CONFIG:Debug>>:${release_msvc_options}>"
+  )
+  # eigen uses deprecated features 
+  # (Eigen\src/Core/util/Meta.h(568,2): warning C4996: 'std::equal_to<double>::result_type': warning STL4007: Many result_type typedefs and all argument_type, first_argument_type, and second_argument_type typedefs are deprecated in C++17.)
+  target_compile_options(eigen /wd4996)
+else()
   message(FATAL "Unknown compiler: ${CMAKE_CXX_COMPILER_ID}")
 endif()
-
-
 
 
 # add_compile_options("$<$<CONFIG:RELEASE>:-march=native>"
