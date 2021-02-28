@@ -49,7 +49,9 @@ set(debug_gcc_options "-fdiagnostics-color;-Wno-error=strict-overflow")
 # Warning 4127 warns of if statements that are compile time constants.
 # But templated if statements are often compile time constants and Eigen does not have
 # if constexpr in those places. Therefore we suppress this warning.
-set(debug_msvc_options "/permissive-;/W4;/WX;/wd4127")
+# W3 instead of W4: eigen uses deprecated features 
+# (Eigen\src/Core/util/Meta.h(568,2): warning C4996: 'std::equal_to<double>::result_type': warning STL4007: Many result_type typedefs and all argument_type, first_argument_type, and second_argument_type typedefs are deprecated in C++17.)
+set(debug_msvc_options "/permissive-;/W3;/WX;/wd4127")
 
 
 
@@ -72,9 +74,6 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     "$<$<CONFIG:DEBUG>:${debug_msvc_options}>"
     "$<$<NOT:$<CONFIG:Debug>>:${release_msvc_options}>"
   )
-  # eigen uses deprecated features 
-  # (Eigen\src/Core/util/Meta.h(568,2): warning C4996: 'std::equal_to<double>::result_type': warning STL4007: Many result_type typedefs and all argument_type, first_argument_type, and second_argument_type typedefs are deprecated in C++17.)
-  target_compile_options(eigen /wd4996)
 else()
   message(FATAL "Unknown compiler: ${CMAKE_CXX_COMPILER_ID}")
 endif()
