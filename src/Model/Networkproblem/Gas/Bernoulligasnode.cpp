@@ -59,20 +59,20 @@ namespace Model::Networkproblem::Gas {
     // We will write the flow balance into the last index:
     // if non-pipes are present, take the last of them.
     // Else take the last pipe.
-    int last_direction;
+    
     int last_equation_index;
-
     if (!directed_non_pipe_gas_edges.empty()) {
-      last_direction = directed_non_pipe_gas_edges.back().first;
+      int last_direction = directed_non_pipe_gas_edges.back().first;
       last_equation_index =
-          directed_non_pipe_gas_edges.back().second->give_away_boundary_index(
-              last_direction);
+        directed_non_pipe_gas_edges.back().second->give_away_boundary_index(
+                                                                            last_direction);
     } else { // Here pipes cannot be empty!
-      last_direction = directed_pipes.back().first;
+      int last_direction = directed_pipes.back().first;
       last_equation_index =
-          directed_pipes.back().second->give_away_boundary_index(
-              last_direction);
+        directed_pipes.back().second->give_away_boundary_index(
+                                                               last_direction);
     }
+    // add the boundary condition:
     rootvalues[last_equation_index] = -1.0 * prescribed_qvol;
 
     // deal with pipes:
@@ -146,15 +146,27 @@ namespace Model::Networkproblem::Gas {
       Aux::Matrixhandler *jacobianhandler,
       Eigen::Ref<Eigen::VectorXd const> const &state) const {
 
-    if (directed_non_pipe_gas_edges.empty()) {
+    if (directed_non_pipe_gas_edges.empty() and directed_pipes.empty()) {
       return;
     }
 
     // We will write the flow balance into the last index:
-    auto [dirlast, edgelast] = directed_non_pipe_gas_edges.back();
-    auto [dirpipelast, pipelast] = directed_pipes.back();
+    // if non-pipes are present, take the last of them.
+    // Else take the last pipe.
 
-    int last_equation_index = edgelast->give_away_boundary_index(dirlast);
+    int last_equation_index;
+    if (!directed_non_pipe_gas_edges.empty()) {
+      int last_direction = directed_non_pipe_gas_edges.back().first;
+      last_equation_index =
+          directed_non_pipe_gas_edges.back().second->give_away_boundary_index(
+              last_direction);
+    } else { // Here pipes cannot be empty!
+      int last_direction = directed_pipes.back().first;
+      last_equation_index =
+          directed_pipes.back().second->give_away_boundary_index(
+              last_direction);
+    }
+
     int old_equation_index;
     // deal with pipes:
     if (!directed_pipes.empty()) {
@@ -165,9 +177,9 @@ namespace Model::Networkproblem::Gas {
       pipe0->dboundary_p_qvol_dstate(dirpipe0, jacobianhandler, dF_last_dpq_0,
                                      last_equation_index, state);
 
-      // If this is the only attached edge, we are done:
-      if (directed_non_pipe_gas_edges.size() == 1) {
-        return;
+      // If this is the only attached pipe, we are done with the pipes:
+      if (directed_pipes.size() == 1) {
+        go to label!
       }
 
       old_equation_index = pipe0->give_away_boundary_index(dirpipe0);
