@@ -46,10 +46,16 @@ Eigen::Index Newtonsolver_temp<Problemtype>::get_number_non_zeros_jacobian() {
 }
 
 template <typename Problemtype>
-Solutionstruct Newtonsolver_temp<Problemtype>::solve(
-    Eigen::Ref<Eigen::VectorXd> new_state, Problemtype &problem, bool newjac,
-    double last_time, double new_time,
-    Eigen::Ref<Eigen::VectorXd const> const &last_state) {
+Eigen::Ref<Eigen::SparseMatrix<double> const>
+Newtonsolver_temp<Problemtype>::get_jacobian() {
+  return jacobian;
+}
+
+    template <typename Problemtype>
+    Solutionstruct Newtonsolver_temp<Problemtype>::solve(
+        Eigen::Ref<Eigen::VectorXd> new_state, Problemtype &problem,
+        bool newjac, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &last_state) {
   Solutionstruct solstruct;
 
   Eigen::VectorXd rootvalues(new_state.size());

@@ -2,6 +2,7 @@
 #include <Eigen/Sparse>
 #include <Eigen/SparseLU>
 #include <Eigen/SparseQR>
+#include <Eigen/src/SparseCore/SparseMatrixBase.h>
 
 namespace GrazerTest {
   class TestProblem;
@@ -60,6 +61,8 @@ namespace Solver {
     /// jacobian.
     Eigen::Index get_number_non_zeros_jacobian();
 
+
+    Eigen::Ref<Eigen::SparseMatrix<double> const> get_jacobian();
     /// \brief This method computes a solution to f(new_state) == 0.
     ///
     /// It uses
