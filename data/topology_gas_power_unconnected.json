@@ -7,7 +7,7 @@
         "documentation": "Adapted gaslib-134 combined with ieee-300 network."
     },
     "nodes": {
-        "source": [
+        "Source": [
             {
                 "id": "node_1",
                 "x": "10.000000",
@@ -105,7 +105,7 @@
                 }
             }
         ],
-        "innode": [
+        "Innode": [
             {
                 "id": "node_2",
                 "x": "20.000000",
@@ -2171,7 +2171,7 @@
                 }
             }
         ],
-        "sink": [
+        "Sink": [
             {
                 "id": "node_ld1",
                 "x": "40.000000",
@@ -3613,7 +3613,7 @@
                 }
             }
         ],
-        "Vphi": [
+        "Vphinode": [
             {
                 "B": "-26.2023789002",
                 "G": "1.7238407171",
@@ -3665,7 +3665,7 @@
                 "id": "N7071"
             }
         ],
-        "PV": [
+        "PVnode": [
             {
                 "B": "-72.9789803995",
                 "G": "18.0731863544",
@@ -3962,7 +3962,7 @@
                 "id": "N9055"
             }
         ],
-        "PQ": [
+        "PQnode": [
             {
                 "B": "-232.5962084027",
                 "G": "27.0270270270",
@@ -5121,8 +5121,7 @@
         ]
     },
     "connections": {
-        
-        "transmissionLine": [
+        "Transmissionline": [
             {
                 "B": "20.3070424823",
                 "G": "0.0000000000",
@@ -7987,7 +7986,7 @@
                 "to": "N9533"
             }
         ],
-        "shortPipe": [
+        "Shortpipe": [
             {
                 "id": "node_4_ld1",
                 "from": "node_4",
@@ -8754,7 +8753,7 @@
                 }
             }
         ],
-        "pipe": [
+        "Pipe": [
             {
                 "id": "p_br2",
                 "from": "node_2",
@@ -11680,7 +11679,7 @@
                 }
             }
         ],
-        "turboCompressor": [
+        "Compressorstation": [
             {
                 "id": "cs",
                 "from": "node_29",
@@ -11803,7 +11802,7 @@
                 }
             }
         ],
-        "controlValve": [
+        "Controlvalve": [
             {
                 "id": "controlValve_br65",
                 "from": "node_65",

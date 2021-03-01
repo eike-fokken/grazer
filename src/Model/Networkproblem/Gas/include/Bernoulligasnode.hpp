@@ -32,7 +32,7 @@ namespace Model::Networkproblem::Gas {
     void set_initial_values(Eigen::Ref<Eigen::VectorXd>,
                             nlohmann::ordered_json) final{};
 
-  protected:
+  // protected:
     void
     evaluate_flow_node_balance(Eigen::Ref<Eigen::VectorXd> rootvalues,
                                Eigen::Ref<Eigen::VectorXd const> const &state,

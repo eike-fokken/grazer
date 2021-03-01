@@ -14,17 +14,13 @@ namespace Model::Networkproblem::Gas {
 
     auto bl = pipe.bl;
     double p = p_qvol_bar[0] * bl.bar;
-    std::cout << "p: " << p <<std::endl;
     double q = p_qvol_bar[1];
 
     double area = pipe.bl.Area;
     double v = bl.rho_0 * q / (area * bl.rho(p));
-    std::cout << "gas speed: " <<v << std::endl;
-    std::cout << "speed of sound: " << sqrt(bl.c_vac_squared) <<std::endl;
     double pressure_part = bl.c_vac_squared * (log(p / bl.p_0) + bl.alpha * (p - bl.p_0));
     
     return 0.5 * v * v + pressure_part;
-    // return p_qvol_bar[0];
   }
 
   /// \brief computes the derivative of the bernoulli invariant.
@@ -39,7 +35,7 @@ namespace Model::Networkproblem::Gas {
     double area = pipe.bl.Area;
     double v = bl.rho_0 * q / (area * bl.rho(p));
     auto dv_part_dp_si = - v * v*bl.drho_dp(p)/bl.rho(p);
-    auto dpressure_part_dp_si = bl.bar/bl.c_vac_squared*(1.0/p+bl.alpha);
+    auto dpressure_part_dp_si = bl.c_vac_squared*(1.0/p+bl.alpha);
 
     auto q_coefficient = bl.rho_0/(area*bl.rho(p));
     auto dv_part_dq = q_coefficient*q_coefficient*q;
@@ -47,7 +43,6 @@ namespace Model::Networkproblem::Gas {
     auto dbernoulli_dp_bar = bl.bar * (dv_part_dp_si+dpressure_part_dp_si);
     auto dbernoulli_q = dv_part_dq;
     return Eigen::RowVector2d(dbernoulli_dp_bar, dbernoulli_q);
-    // return Eigen::RowVector2d(1.0,0.0);
   }
 
   void Bernoulligasnode::evaluate_flow_node_balance(
@@ -81,13 +76,11 @@ namespace Model::Networkproblem::Gas {
 
     // deal with pipes:
     if (!directed_pipes.empty()) {
-      std::cout << get_id() << std::endl;
       auto [dirpipe0, pipe0] = directed_pipes.front();
       auto p_qvol0 = pipe0->get_boundary_p_qvol_bar(dirpipe0, state);
       auto q0 = p_qvol0[1];
 
       double old_H = bernoulli(p_qvol0, *pipe0);
-      std::cout << old_H << std::endl;
       int old_equation_index = pipe0->give_away_boundary_index(dirpipe0);
 
       rootvalues[last_equation_index] += dirpipe0 * q0;
@@ -97,7 +90,6 @@ namespace Model::Networkproblem::Gas {
         auto [pipedir, pipe] = *it;
         auto current_p_qvol = pipe->get_boundary_p_qvol_bar(pipedir, state);
         auto current_H = bernoulli(current_p_qvol, *pipe);
-        std::cout << "H: " << current_H << std::endl;
         auto current_qvol = current_p_qvol[1];
         rootvalues[old_equation_index] = current_H - old_H;
         rootvalues[last_equation_index] += pipedir * current_qvol;
