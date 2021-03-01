@@ -10,7 +10,7 @@ namespace Model::Networkproblem::Gas {
 
   double bernoulli(Eigen::Vector2d p_qvol, Pipe const &pipe);
 
-  Eigen::RowVector2d dbernoulli_dstate(Eigen::Vector2d p_qvol,
+  Eigen::RowVector2d dbernoulli_dstate(Eigen::Vector2d const &p_qvol,
                                        Pipe const &pipe);
 
   class Bernoulligasnode : public Network::Node, public Equationcomponent {

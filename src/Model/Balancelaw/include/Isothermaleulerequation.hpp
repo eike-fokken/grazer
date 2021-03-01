@@ -36,8 +36,8 @@ public:
 
   double p(double rho) const;
   double dp_drho(double rho) const;
-  double rho(double rho) const;
-
+  double rho(double p) const;
+  double drho_dp(double p) const;
 
   double lambda_non_laminar(double Re) const;
   double dlambda_non_laminar_dRe(double Re) const;
@@ -51,10 +51,6 @@ public:
   double exact_turbulent_lambda(double Re) const;
 
 
-
-
-
-  
   // These are physical constants except for the temperature T.
   // Later on it may be useful to change them to include other gases.
   static constexpr double bar { 1e5};
@@ -71,12 +67,13 @@ public:
 
   static constexpr double c_vac_squared { p_0 * T/(z_0*T_0*rho_0)};
 
-private:
+
 
   double const Area;
   double const diameter;
   double const roughness;
 
+private:
   Eigen::Vector4d coefficients;
 
   // /// This is a tolerance for the newton iteration:

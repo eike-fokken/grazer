@@ -193,7 +193,12 @@ namespace Model::Balancelaw {
     rho = p / (c_vac_squared * (1 + alpha * p));
     return rho;
   }
-  double Isothermaleulerequation::lambda_non_laminar(double Re) const{
+
+  double Isothermaleulerequation::drho_dp(double p) const{
+    return 1 / (c_vac_squared * (1 + alpha * p) * (1 + alpha * p));
+  }
+
+  double Isothermaleulerequation::lambda_non_laminar(double Re) const {
 
     if(Re< 2000-Aux::EPSILON) {
       gthrow(

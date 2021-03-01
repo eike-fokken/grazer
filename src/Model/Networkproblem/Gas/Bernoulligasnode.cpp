@@ -5,7 +5,6 @@
 #include "Gasedge.hpp"
 #include "Matrixhandler.hpp"
 #include "Pipe.hpp"
-#include <Eigen/src/Core/Matrix.h>
 #include <iostream>
 
 namespace Model::Networkproblem::Gas {
@@ -13,39 +12,39 @@ namespace Model::Networkproblem::Gas {
   /// \brief computes the Bernoulli invariant.
   double bernoulli(Eigen::Vector2d p_qvol_bar, Pipe const &pipe) {
 
-    // auto bl = pipe.bl;
-    // double p = p_qvol_bar[0] * bl.bar;
-    // double q = p_qvol_bar[1];
+    auto bl = pipe.bl;
+    double p = p_qvol_bar[0] * bl.bar;
+    double q = p_qvol_bar[1];
 
-    // double area = pipe.bl.Area;
-    // double v = bl.rho_0 * q / (area * bl.rho(p));
-    // double pressure_part =
-    //     1 / bl.c_vac_squared * (log(p / bl.p_0) + bl.alpha * (p - bl.p_0));
+    double area = pipe.bl.Area;
+    double v = bl.rho_0 * q / (area * bl.rho(p));
+    double pressure_part =
+        1 / bl.c_vac_squared * (log(p / bl.p_0) + bl.alpha * (p - bl.p_0));
 
-    // return 0.5 * v * v + pressure_part;
-    return p_qvol_bar[0];
+    return 0.5 * v * v + pressure_part;
+    // return p_qvol_bar[0];
   }
 
   /// \brief computes the derivative of the bernoulli invariant.
   ///
   /// Be careful: The derivative is with respect to pressure measured in bar!
-  Eigen::RowVector2d dbernoulli_dstate(Eigen::Vector2d p_qvol_bar,
+  Eigen::RowVector2d dbernoulli_dstate(Eigen::Vector2d const & p_qvol_bar,
                                        Pipe const &pipe) {
 
-    // auto bl = pipe.bl;
-    // double p = p_qvol_bar[0] * bl.bar;
-    // double q = p_qvol_bar[1];
-    // double area = pipe.bl.Area;
-    // double v = bl.rho_0 * q / (area * bl.rho(p));
-    // auto db_dp = 1.0/bl.bar*
-    //     (-v * v / bl.c_vac_squared / (bl.rho(p) * (1.0 + bl.alpha * p)) +
-    //      1.0 / bl.c_vac_squared * (1.0 / p + bl.alpha));
+    auto bl = pipe.bl;
+    double p = p_qvol_bar[0] * bl.bar;
+    double q = p_qvol_bar[1];
+    double area = pipe.bl.Area;
+    double v = bl.rho_0 * q / (area * bl.rho(p));
+    auto dv_part_dp_si = v* (-v)*bl.drho_dp( p)/bl.rho(p);
+    auto dpressure_part_dp_si = 1/bl.c_vac_squared*(1/p+bl.alpha);
 
-    // double stuff = bl.rho_0 / (area * bl.rho(p));
-    // auto db_dq = stuff * stuff * q;
+    auto q_coefficient = bl.rho_0/area/bl.rho(p);
+    auto dv_part_dq = q_coefficient*q_coefficient*q;
 
-    // return Eigen::RowVector2d(db_dp, db_dq);
-    return Eigen::RowVector2d(1.0,0.0);
+    auto dbernoulli_dp_bar = 1/bl.bar *(dv_part_dp_si+dpressure_part_dp_si);
+    auto dbernoulli_q = dv_part_dq;
+    return Eigen::RowVector2d(dbernoulli_dp_bar, dbernoulli_q);
   }
 
   void Bernoulligasnode::evaluate_flow_node_balance(
@@ -137,7 +136,7 @@ namespace Model::Networkproblem::Gas {
           lastpipe->get_boundary_p_qvol_bar(lastpipedir, state);
       double p_lastpipe = p_qvol_bar_lastpipe[0];
       int last_unused_equation_index =
-          lastpipe->get_boundary_state_index(lastpipedir);
+          lastpipe->give_away_boundary_index(lastpipedir);
 
       rootvalues[last_unused_equation_index] = p_edge0 - p_lastpipe;
     }
@@ -146,7 +145,9 @@ namespace Model::Networkproblem::Gas {
   void Bernoulligasnode::evaluate_flow_node_derivative(
       Aux::Matrixhandler *jacobianhandler,
       Eigen::Ref<Eigen::VectorXd const> const &state) const {
+
     if (directed_non_pipe_gas_edges.empty() and directed_pipes.empty()) {
+      std::cout << "no attached gas edges!" <<std::endl;
       return;
     }
 
@@ -154,17 +155,13 @@ namespace Model::Networkproblem::Gas {
     // if non-pipes are present, take the last of them.
     // Else take the last pipe.
 
-    int last_equation_index;
-    if (!directed_non_pipe_gas_edges.empty()) {
+    int last_equation_index = -1;
+    if (!(directed_non_pipe_gas_edges.empty())) {
       int last_direction = directed_non_pipe_gas_edges.back().first;
-      last_equation_index =
-          directed_non_pipe_gas_edges.back().second->give_away_boundary_index(
-              last_direction);
+      last_equation_index = directed_non_pipe_gas_edges.back().second->give_away_boundary_index(last_direction);
     } else { // Here pipes cannot be empty!
       int last_direction = directed_pipes.back().first;
-      last_equation_index =
-          directed_pipes.back().second->give_away_boundary_index(
-              last_direction);
+      last_equation_index = directed_pipes.back().second->give_away_boundary_index(last_direction);
     }
 
     // deal with pipes:
@@ -173,17 +170,18 @@ namespace Model::Networkproblem::Gas {
       auto p_qvol0 = pipe0->get_boundary_p_qvol_bar(dirpipe0, state);
 
       Eigen::RowVector2d dF_last_dpq_pipe0(0.0, dirpipe0);
+
       pipe0->dboundary_p_qvol_dstate(dirpipe0, jacobianhandler, dF_last_dpq_pipe0,
                                      last_equation_index, state);
 
-      // If this was the only pipe, it bernoulli constant doesn't actually
+      // If this was the only pipe, its bernoulli constant doesn't actually
       // factor in here! And so we go on with the non-pipe edges.
-      int old_equation_index = pipe0->give_away_boundary_index(dirpipe0);
-      if (directed_pipes.size() != 1) {
+
+      if (directed_pipes.front().second !=directed_pipes.back().second) {
+        int old_equation_index = pipe0->give_away_boundary_index(dirpipe0);
         Eigen::RowVector2d dF_0_dpq_pipe0 = -dbernoulli_dstate(p_qvol0, *pipe0);
         pipe0->dboundary_p_qvol_dstate(dirpipe0, jacobianhandler, dF_0_dpq_pipe0,
                                        old_equation_index, state);
-
         auto second_iterator = std::next(directed_pipes.begin());
         auto last_iterator = std::prev(directed_pipes.end());
         for (auto it = second_iterator; it != last_iterator; ++it) {
@@ -192,10 +190,8 @@ namespace Model::Networkproblem::Gas {
               pipe->give_away_boundary_index(direction);
 
           auto p_qvol_bar = pipe->get_boundary_p_qvol_bar(direction, state);
-          Eigen::RowVector2d dF_old_dpq_now =
-              dbernoulli_dstate(p_qvol_bar, *pipe);
-          Eigen::RowVector2d dF_now_dpq_now =
-              -dbernoulli_dstate(p_qvol_bar, *pipe);
+          Eigen::RowVector2d dF_old_dpq_now = dbernoulli_dstate(p_qvol_bar, *pipe);
+          Eigen::RowVector2d dF_now_dpq_now = -dF_old_dpq_now;
           Eigen::RowVector2d dF_last_dpq_now(0.0, direction);
 
           pipe->dboundary_p_qvol_dstate(direction, jacobianhandler,
@@ -212,8 +208,7 @@ namespace Model::Networkproblem::Gas {
         // last pipe:
         auto [lastpipedir, lastpipe] = directed_pipes.back();
         auto p_qvol_bar = lastpipe->get_boundary_p_qvol_bar(lastpipedir, state);
-        Eigen::RowVector2d dF_old_dpq_lastpipe =
-            dbernoulli_dstate(p_qvol_bar, *lastpipe);
+        Eigen::RowVector2d dF_old_dpq_lastpipe = dbernoulli_dstate(p_qvol_bar, *lastpipe);
         Eigen::RowVector2d dF_last_dpq_lastpipe(0.0, lastpipedir);
         lastpipe->dboundary_p_qvol_dstate(lastpipedir, jacobianhandler,
                                           dF_old_dpq_lastpipe,
@@ -224,40 +219,30 @@ namespace Model::Networkproblem::Gas {
       }
     }
 
-    if (!directed_non_pipe_gas_edges.empty()) {
+    if (!(directed_non_pipe_gas_edges.empty())) {
       auto [dir0, edge0] = directed_non_pipe_gas_edges.front();
       Eigen::RowVector2d dF_last_dpq_0(0.0, dir0);
       edge0->dboundary_p_qvol_dstate(dir0, jacobianhandler, dF_last_dpq_0,
                                      last_equation_index, state);
-      int old_equation_index = edge0->give_away_boundary_index(dir0);
-
-      if (directed_non_pipe_gas_edges.size() != 1) {
+      if (directed_non_pipe_gas_edges.front().second!=directed_non_pipe_gas_edges.back().second) {
+        int old_equation_index = edge0->give_away_boundary_index(dir0);
         Eigen::RowVector2d dF_0_dpq_0(-1.0, 0.0);
-        edge0->dboundary_p_qvol_dstate(dir0, jacobianhandler, dF_0_dpq_0,
-                                       old_equation_index, state);
-
+        edge0->dboundary_p_qvol_dstate(dir0, jacobianhandler, dF_0_dpq_0, old_equation_index, state);
         // first and last attached edge are special:
         auto second_iterator = std::next(directed_non_pipe_gas_edges.begin());
         auto last_iterator = std::prev(directed_non_pipe_gas_edges.end());
         for (auto it = second_iterator; it != last_iterator; ++it) {
           auto [direction, edge] = *it;
 
-          int current_equation_index =
-              edge->give_away_boundary_index(direction);
+          int current_equation_index = edge->give_away_boundary_index(direction);
           Eigen::RowVector2d dF_old_dpq_now(1.0, 0.0);
           Eigen::RowVector2d dF_now_dpq_now(-1.0, 0.0);
           Eigen::RowVector2d dF_last_dpq_now(0.0, direction);
 
           // Let the attached edge write out the derivative:
-          edge->dboundary_p_qvol_dstate(direction, jacobianhandler,
-                                        dF_old_dpq_now, old_equation_index,
-                                        state);
-          edge->dboundary_p_qvol_dstate(direction, jacobianhandler,
-                                        dF_now_dpq_now, current_equation_index,
-                                        state);
-          edge->dboundary_p_qvol_dstate(direction, jacobianhandler,
-                                        dF_last_dpq_now, last_equation_index,
-                                        state);
+          edge->dboundary_p_qvol_dstate(direction, jacobianhandler, dF_old_dpq_now, old_equation_index, state);
+          edge->dboundary_p_qvol_dstate(direction, jacobianhandler, dF_now_dpq_now, current_equation_index, state);
+          edge->dboundary_p_qvol_dstate(direction, jacobianhandler, dF_last_dpq_now, last_equation_index, state);
           old_equation_index = current_equation_index;
         }
 
@@ -267,17 +252,19 @@ namespace Model::Networkproblem::Gas {
         edgelast->dboundary_p_qvol_dstate(dirlast, jacobianhandler,
                                           dF_old_dpq_last, old_equation_index,
                                           state);
-        Eigen::RowVector2d dF_last_dpq_last(0.0, dirlast);
+                Eigen::RowVector2d dF_last_dpq_last(0.0, dirlast);
         edgelast->dboundary_p_qvol_dstate(dirlast, jacobianhandler,
                                           dF_last_dpq_last, last_equation_index,
                                           state);
-      }
+              }
     }
-    if(!directed_pipes.empty() and !directed_non_pipe_gas_edges.empty()){
+    if(!(directed_pipes.empty()) and !(directed_non_pipe_gas_edges.empty())){
+
       auto [lastpipedir,lastpipe] = directed_pipes.back();
+
       auto [dir0, edge0] = directed_non_pipe_gas_edges.front();
-      int last_unused_equation_index =
-        lastpipe->get_boundary_state_index(lastpipedir);
+
+      int last_unused_equation_index = lastpipe->give_away_boundary_index(lastpipedir);
       Eigen::RowVector2d dF_lastunused_dpq_lastpipe(-1.0,0.0);
       Eigen::RowVector2d dF_lastunused_dpq_edge0(1.0, 0.0);
       lastpipe->dboundary_p_qvol_dstate(lastpipedir,jacobianhandler, dF_lastunused_dpq_lastpipe, last_unused_equation_index,state);
@@ -331,8 +318,13 @@ namespace Model::Networkproblem::Gas {
     if (directed_non_pipe_gas_edges.empty() and directed_pipes.empty()) {
       std::cout << "Node " << get_id() << " has no attached gas edges!"
                 << std::endl;
-      return;
     }
+    // if (get_starting_edges().size() + get_ending_edges().size() > 1) {
+    //   std::cout << get_starting_edges().size() + get_ending_edges().size()
+    //             << std::endl;
+    // }
+
+    // std::cout << get_id() << ", non-pipes: "<< directed_non_pipe_gas_edges.size() << " pipes: " << directed_pipes.size() << std::endl;
   }
 
   int Bernoulligasnode::get_number_of_states() const {
