@@ -49,9 +49,8 @@ set(debug_gcc_options "-fdiagnostics-color;-Wno-error=strict-overflow")
 # Warning 4127 warns of if statements that are compile time constants.
 # But templated if statements are often compile time constants and Eigen does not have
 # if constexpr in those places. Therefore we suppress this warning.
-# /wd4996: Eigen\src/Core/util/Meta.h(568,2): warning C4996: 'std::equal_to<double>::result_type': warning STL4007: Many result_type typedefs and all argument_type, first_argument_type, and second_argument_type typedefs are deprecated in C++17.
-# /wd4389: C:\gdrive\CodingPlayground\grazer\googletest\googletest\include\gtest/gtest.h(1545): warning C4389: '==': signed/unsigned mismatch
-set(debug_msvc_options "/permissive-;/W4;/WX;/wd4127;/wd4996;/wd4389")
+# /Zc:__cplusplus: https://gitlab.com/libeigen/eigen/-/issues/2170 might become superflous
+set(debug_msvc_options "/permissive-;/W4;/WX;/wd4127;/Zc:__cplusplus")
 
 
 
