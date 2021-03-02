@@ -1,11 +1,12 @@
 #pragma once
+#include <memory>
 #include <string>
 
 namespace Network {
 
   class Idobject {
   public:
-    Idobject(std::string _id) : id(_id){};
+    Idobject(std::string const &_id);
 
     virtual ~Idobject(){};
 
@@ -19,7 +20,7 @@ namespace Network {
 
   private:
     /// A unique id for the node.
-    std::string id;
+    std::unique_ptr<std::string> idptr;
   };
 
 } // namespace Network

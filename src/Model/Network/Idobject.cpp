@@ -3,10 +3,13 @@
 
 namespace Network {
 
-  std::string Idobject::get_id() const { return id; }
+  Idobject::Idobject(std::string const & _id)
+      : idptr(std::make_unique<std::string>(_id)) {}
 
-  void Idobject::display() const { std::cout << "id: " << id << "\n"; }
+  std::string Idobject::get_id() const { return (*idptr); }
 
-  void Idobject::print_id() const { std::cout << "id: " << id << ", "; }
+  void Idobject::display() const { std::cout << "id: " << (*idptr) << "\n"; }
+
+  void Idobject::print_id() const { std::cout << "id: " << (*idptr) << ", "; }
 
 } // namespace Network
