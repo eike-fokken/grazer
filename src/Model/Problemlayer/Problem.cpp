@@ -73,8 +73,10 @@ namespace Model {
   }
 
   void Problem::print_to_files() {
-    for (auto &subproblem : subproblems) {
-      subproblem->print_to_files(output_directory);
+    if (not output_directory.empty()) {
+      for (auto &subproblem : subproblems) {
+        subproblem->print_to_files(output_directory);
+      }
     }
   }
 
