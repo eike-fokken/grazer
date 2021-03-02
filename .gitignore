@@ -35,12 +35,13 @@
 
 #output directories:
 
+
 /output*
 build/**
 debug/**
 release/**
 mingw/**
-
+noteworthy_results/**
 
 gcc_release/**
 gcc_debug/**
@@ -57,3 +58,4 @@ compile_commands.json
 .devcontainer
 .clangd
 .cache
+
