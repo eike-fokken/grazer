@@ -17,7 +17,13 @@ namespace Model::Networkproblem {
         std::map<double, Eigen::Matrix<double, N, 1>> _boundary_values)
         : boundaryvalues(_boundary_values){};
 	
-    
+    void set_boundary_condition(nlohmann::json values_json) {
+      boundaryvalues.set_condition(values_json);
+    };
+
+    Eigen::VectorXd operator()(double t) const {
+      return boundaryvalues(t);
+    }
 
     //Eigen::VectorXd operator()(double t) const {
       
@@ -61,11 +67,8 @@ namespace Model::Networkproblem {
     //  double t_plus = next->first;
     //  Eigen::VectorXd value_plus = next->second;
 
-    //  Eigen::VectorXd value =
-    //      previous->second +
-    //      (t - t_minus) * (value_plus - value_minus) / (t_plus - t_minus);
-    //  return value;
-    // }
+    //  Eigen::VectorXd value = previous->second + (t - t_minus) * (value_plus -
+    //      value_minus) / (t_plus - t_minus); return value; }
 
 
    //void set_boundary_condition(nlohmann::ordered_json boundary_json) {
@@ -97,4 +100,5 @@ namespace Model::Networkproblem {
   private:
     Valuemap<N> boundaryvalues;
 
-} // namespace Model::Networkproblem
+  }; // namespace Model::Networkproblem
+}

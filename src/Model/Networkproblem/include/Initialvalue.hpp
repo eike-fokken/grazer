@@ -8,13 +8,21 @@
 #include <Mathfunctions.hpp>
 
 namespace Model::Networkproblem {
-  template <typename T, int N> class Initialvalue {
+  template <typename T, int N> class Initialvalue  {
 
    public:
     Initialvalue(){};
     Initialvalue(
         std::map<double, Eigen::Matrix<double, N, 1>> _initial_values)
         : initialvalues(_initial_values){};
+
+    void set_initial_condition(nlohmann::json values_json) {
+      initialvalues.set_condition(values_json);
+        };
+
+    Eigen::VectorXd operator()(double t) const {
+      return initialvalues(t);
+        }
 
     /*
     Eigen::VectorXd operator()(double t) const {

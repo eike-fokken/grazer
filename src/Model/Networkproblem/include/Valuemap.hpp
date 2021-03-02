@@ -29,7 +29,7 @@ namespace Model::Networkproblem {
 
       // This catches problems with doubles
       try {
-	if (t >= last_t) {
+        if (t >= last_t) {
           if (t > last_t + Aux::EPSILON) {
             throw std::out_of_range("Too high");
           } else {
