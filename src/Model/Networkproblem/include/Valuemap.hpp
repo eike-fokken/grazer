@@ -6,10 +6,46 @@
 #include <nlohmann/json.hpp>
 #include <iostream>
 #include <map>
+#include <stdexcept>
 #include <vector>
 
 namespace Model::Networkproblem {
-  template <int N> class Valuemap {
+
+  /// \brief This exception class returns information on whether too high or too low a value was requested.
+  ///
+  /// The returned data also indicates the maximal (or minimal) valid argument.
+
+    
+
+  class Valuemap_out_of_range : public std::out_of_range {
+  public:
+    Valuemap_out_of_range(std::string message, bool too_high, double requested_argument, double
+                          boundary_valid_argument)
+        : std::out_of_range(message)
+    {
+      std::ostringstream o;
+      if(too_high) {
+        o << "Requested value " << requested_argument
+          << " is higher than the last valid value: " << boundary_valid_argument
+          << "\n";
+      } else {
+        o << "Requested value " << requested_argument
+          << " is lower than the first valid value: " << boundary_valid_argument
+          << "\n";
+      }
+
+      msg = o.str();
+    }
+
+    /// -1 means too low, 1 means too high
+    std::string msg;
+    char const *what() const noexcept { return msg.c_str(); }
+    
+  };
+
+
+  template <int N>
+  class Valuemap {
 
   public:
     Valuemap(){};
@@ -17,8 +53,8 @@ namespace Model::Networkproblem {
         std::map<double, Eigen::Matrix<double, N, 1>> values)
         : Values(values){};
 
-    Eigen::VectorXd operator()(double t) const {
-      
+    Eigen::Matrix<double, N, 1> operator()(double t) const {
+
       //Note that by virtue of the function set_boundary condition, this map is never empty!
       // last element of the map:
       auto last_element = Values.rbegin();
@@ -28,27 +64,21 @@ namespace Model::Networkproblem {
       auto first_t = Values.begin()->first;
 
       // This catches problems with doubles
-      try {
-        if (t >= last_t) {
-          if (t > last_t + Aux::EPSILON) {
-            throw std::out_of_range("Too high");
-          } else {
-            return last_element->second;
-          }
+      if (t >= last_t) {
+        if (t > last_t + Aux::EPSILON) {
+          throw Valuemap_out_of_range("too high", 1, t, last_t);
         }
-        if (t <= first_t) {
-          if (t < first_t-Aux::EPSILON) {
-	    throw std::out_of_range("Too low");
-          } else {
-            return first_element->second;
-          }
+
+        return last_element->second;
+      }
+      if (t <= first_t) {
+        if (t < first_t - Aux::EPSILON) {
+          throw Valuemap_out_of_range("too low", -1, t, first_t);
         }
-      } catch (std::out_of_range& e) {
-        std::cout << "The value " << t
-		  << "is out of range of the initial/boundary values. The valid range is between "
-		  << first_t << " and " << last_t << "." << std::endl;
-      }       
-            
+        
+        return first_element->second;
+      }
+
       auto next = Values.lower_bound(t);
       auto previous = std::prev(next);
 
@@ -62,7 +92,6 @@ namespace Model::Networkproblem {
           (t - t_minus) * (value_plus - value_minus) / (t_plus - t_minus);
       return value;
     }
-
 
    void set_condition(nlohmann::json values_json) {
      if(values_json.size()==0) {
@@ -92,6 +121,6 @@ namespace Model::Networkproblem {
 
     private:
 	std::map<double, Eigen::Matrix<double, N, 1>> Values;
-    };
+  };
 
 } // namespace Model::Networkproblem
