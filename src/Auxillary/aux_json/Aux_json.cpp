@@ -22,7 +22,7 @@ namespace aux_json {
       auto json_pathstring = sub_json.get<std::string>();
       auto json_path = std::filesystem::path(json_pathstring);
       if(json_path.is_absolute()){
-        sub_json = get_json_from_string(json_path.string());
+        sub_json = get_json_from_file_path(json_path.string());
         return;
       } else { // json_path is relative
         if (!super_json.contains("GRAZER_file_directory")) {
@@ -32,7 +32,7 @@ namespace aux_json {
         }
         auto directory_path = std::filesystem::path(super_json["GRAZER_file_directory"]);
         auto json_full_path = directory_path / json_path;
-        sub_json = get_json_from_string(json_full_path.string());
+        sub_json = get_json_from_file_path(json_full_path.string());
         return;
       }
       
@@ -42,18 +42,17 @@ namespace aux_json {
     }
   }
 
-  nlohmann::json get_json_from_string(std::string const &json_string) {
+  nlohmann::json get_json_from_file_path(std::filesystem::path const &file_path) {
     nlohmann::json json_object;
-    auto json_path = std::filesystem::path(json_string);
-    if (!std::filesystem::exists((json_path))) {
-      gthrow({"The file \n", std::filesystem::absolute(json_path), "\n does not exist!"});
+    if (not std::filesystem::exists(file_path)) {
+      gthrow({"The file \n", std::filesystem::absolute(file_path), "\n does not exist!"});
     }
     try {
-      std::ifstream jsonfilestream(json_path);
+      std::ifstream jsonfilestream(file_path);
       jsonfilestream >> json_object;
     } catch (...) {
       std::cout << __FILE__ << ":" << __LINE__
-                << ": Couldn't load json from file: " << json_string
+                << ": Couldn't load json from file: " << file_path
                 << std::endl;
       throw;
     }

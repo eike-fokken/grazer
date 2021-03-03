@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
 
   // This must be wrapped in exception handling code!
 
-  auto all_json = aux_json::get_json_from_string(problem_data_file.string());
+  auto all_json = aux_json::get_json_from_file_path(problem_data_file);
 
   auto time_evolution_json = all_json["time_evolution_data"];
 

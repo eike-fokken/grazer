@@ -1,3 +1,4 @@
+#include <Aux_json.hpp>
 #include "MockSubproblem.hpp"
 #include "Problem.hpp"
 #include <gtest/gtest.h>
@@ -11,9 +12,14 @@ TEST(modelTest, get_number_of_states) {
   mocksub.set_indices(0);
 }
 
-// TEST(modelSubproblem, Model_evaluate) {
+TEST(modelSubproblem, Model_evaluate) {
+  
+  std::filesystem::path test_data_dir("data/problem_data.json");
 
-//   Model::Problem problem("");
+  auto all_data = aux_json::get_json_from_file_path(test_data_dir);
+  auto problem_data = all_data["problem_data"];
+
+  // Model::Problem problem("");
 
 //   // make unique pointer of mocksub1 and mocksub2
 //   auto mock1_ptr = std::make_unique<GrazerTest::MockSubproblem>();
@@ -49,4 +55,4 @@ TEST(modelTest, get_number_of_states) {
 //       .Times(1);
 
 //   problem.evaluate(rootvalues, last_time, new_time, v1, v2);
-// }
+}

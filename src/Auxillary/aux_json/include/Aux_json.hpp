@@ -1,5 +1,6 @@
 #pragma once
 #include <nlohmann/json.hpp>
+#include <filesystem>
 
 namespace aux_json {
   /// \brief replaces a filename string with the json from the file
@@ -13,7 +14,7 @@ namespace aux_json {
   /// \brief Constructs a json object from a file.
   ///
   ///
-  nlohmann::json get_json_from_string(std::string const &json_string);
+  nlohmann::json get_json_from_file_path(std::filesystem::path const &file_path);
 
 
 
