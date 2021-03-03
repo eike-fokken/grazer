@@ -5,7 +5,7 @@ target_link_libraries(net_test PUBLIC gtest gtest_main gmock)
 
 add_executable(model_test ModelTest.cpp)
 
-target_link_libraries(model_test PUBLIC network networkproblem problemlayer exception newton matrixhandler nlohmann_json aux_json)
+target_link_libraries(model_test PUBLIC network networkproblem problemlayer exception newton matrixhandler nlohmann_json)
 target_link_libraries(model_test PUBLIC gtest gtest_main gmock)
 
 
