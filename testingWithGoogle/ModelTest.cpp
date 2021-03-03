@@ -12,7 +12,7 @@ TEST(modelTest, get_number_of_states) {
 }
 
 TEST(modelSubproblem, Model_evaluate) {
-  
+
 
   auto problem_json = R"( {"subproblems": {}} )"_json;
   auto output_dir = std::filesystem::path("");
@@ -31,11 +31,7 @@ TEST(modelSubproblem, Model_evaluate) {
   double new_time(1.0);
   Eigen::VectorXd rootvalues(2);
   Eigen::VectorXd v1(2);
-  v1[0] = 2;
-  v1[1] = 3;
   Eigen::VectorXd v2(2);
-  v1[0] = 3;
-  v1[1] = 4;
 
   // This is necessary for the expect_call to work properly...
   Eigen::Ref<Eigen::VectorXd> rootref(rootvalues);
@@ -45,10 +41,10 @@ TEST(modelSubproblem, Model_evaluate) {
   EXPECT_CALL(
     *dynamic_cast<GrazerTest::MockSubproblem *>(problem.get_subproblems()[0]),
     evaluate(
-      Eigen::Ref<Eigen::VectorXd>(rootvalues), 
-      last_time, 
-      new_time, 
-      Eigen::Ref<Eigen::VectorXd const>(v1), 
+      Eigen::Ref<Eigen::VectorXd>(rootvalues),
+      last_time,
+      new_time,
+      Eigen::Ref<Eigen::VectorXd const>(v1),
       Eigen::Ref<Eigen::VectorXd const>(v2)
     )
   ).Times(1);
