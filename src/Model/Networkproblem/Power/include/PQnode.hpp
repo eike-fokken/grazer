@@ -22,6 +22,9 @@ namespace Model::Networkproblem::Power {
                                    Eigen::Ref<Eigen::VectorXd const> const &,
                                    Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
 
+    void save_values(double time,
+                     Eigen::Ref<Eigen::VectorXd const> const &state) override;
+
     void display() const final;
   };
 

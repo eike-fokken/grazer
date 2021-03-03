@@ -1,6 +1,3 @@
-#include "PQnode.hpp"
-#include "PVnode.hpp"
-#include "Vphinode.hpp"
 #include <Boundaryvalue.hpp>
 #include <Exception.hpp>
 #include <Matrixhandler.hpp>
@@ -101,28 +98,13 @@ namespace Model::Networkproblem::Power {
     output << std::endl;
   }
 
-  void Powernode::save_values(double time, Eigen::Ref<Eigen::VectorXd const> const &state) {
+  void Powernode::save_power_values(double time, Eigen::Ref<Eigen::VectorXd const> const &state,double P_val, double Q_val) {
 
     std::map<double, double> Pmap;
     std::map<double, double> Qmap;
     std::map<double, double> Vmap;
     std::map<double, double> phimap;
     std::vector<std::map<double, double>> value_vector;
-      double P_val;
-      double Q_val;
-      if (dynamic_cast<PQnode *>(this)) {
-        P_val = boundaryvalue(time)[0];
-        Q_val = boundaryvalue(time)[1];
-      } else if (dynamic_cast<PVnode *>(this)) {
-        P_val = boundaryvalue(time)[0];
-        Q_val = Q(state);
-      } else if (dynamic_cast<Vphinode *>(this)) {
-        P_val = P(state);
-        Q_val = Q(state);
-      } else {
-        gthrow({"Node with id: ", get_id(),
-                " is not of type PQ,PV or Vphi.  Aborting..."});
-      }
       Pmap = {{0.0, P_val}};
       Qmap = {{0.0, Q_val}};
       Vmap = {{0.0, state[get_start_state_index()]}};
