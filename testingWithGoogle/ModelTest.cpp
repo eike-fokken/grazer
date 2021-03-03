@@ -14,12 +14,10 @@ TEST(modelTest, get_number_of_states) {
 
 TEST(modelSubproblem, Model_evaluate) {
   
-  std::filesystem::path test_data_dir("data/problem_data.json");
 
-  auto all_data = aux_json::get_json_from_file_path(test_data_dir);
-  auto problem_data = all_data["problem_data"];
-
-  // Model::Problem problem("");
+  auto problem_json = R"( {"subproblems": {}} )"_json;
+  auto output_dir = std::filesystem::path("");
+  Model::Problem problem(problem_json, output_dir);
 
 //   // make unique pointer of mocksub1 and mocksub2
 //   auto mock1_ptr = std::make_unique<GrazerTest::MockSubproblem>();
