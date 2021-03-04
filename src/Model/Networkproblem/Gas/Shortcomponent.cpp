@@ -72,7 +72,7 @@ namespace Model::Networkproblem::Gas {
 
       // This tests whether the json is in the right format:
       try{
-      if ((!initial_json["data"].is_array()) or (!initial_json["data"][0]["value"].is_array()) or initial_json["data"][0]["value"].size() != 2 or initial_json["data"].size()!=2) {
+      if ((not initial_json["data"].is_array()) or (not initial_json["data"][0]["values"].is_array()) or initial_json["data"][0]["values"].size() != 2 or initial_json["data"].size()!=2) {
         std::cout << "The initial json for this " << type <<
                      " is given by:"
                   << "\n";
@@ -88,10 +88,10 @@ namespace Model::Networkproblem::Gas {
       auto end_p_index = get_boundary_state_index(-1);
       auto end_q_index = end_p_index + 1;
       try {
-      new_state[start_p_index] = initial_json["data"][0]["value"][0];
-      new_state[start_q_index] = initial_json["data"][0]["value"][1];
-      new_state[end_p_index] = initial_json["data"][1]["value"][0];
-      new_state[end_q_index] = initial_json["data"][1]["value"][1];
+      new_state[start_p_index] = initial_json["data"][0]["values"][0];
+      new_state[start_q_index] = initial_json["data"][0]["values"][1];
+      new_state[end_p_index] = initial_json["data"][1]["values"][0];
+      new_state[end_q_index] = initial_json["data"][1]["values"][1];
       } catch(...){
         std::cout << __FILE__ << ":" << __LINE__
                   << ": failed to read in initial values in " << type << "!"
