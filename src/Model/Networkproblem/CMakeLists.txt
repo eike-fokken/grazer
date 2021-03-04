@@ -3,7 +3,6 @@ add_subdirectory(Power)
 add_subdirectory(Gas)
 add_subdirectory(Componentfactory)
 
-
 add_library(networkproblem STATIC Networkproblem.cpp Networkproblem_helpers.cpp)
 
 target_link_libraries(networkproblem PRIVATE problemlayer network nlohmann_json aux_json componentfactory equationcomponent)

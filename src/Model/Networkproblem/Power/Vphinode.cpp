@@ -34,6 +34,13 @@ namespace Model::Networkproblem::Power {
     jacobianhandler->set_coefficient(phi_index, phi_index, 1.0);
   }
 
+  void Vphinode::save_values(double time,
+                   Eigen::Ref<Eigen::VectorXd const> const &state){
+    auto P_val = P(state);
+    auto Q_val = Q(state);
+    save_power_values(time, state, P_val, Q_val)  ;
+  }
+
   void Vphinode::display() const {
     Node::print_id();
     Equationcomponent::print_indices();

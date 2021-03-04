@@ -34,7 +34,12 @@ namespace Model::Networkproblem::Power {
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
 
   protected:
-    void save_values(double time, Eigen::Ref<Eigen::VectorXd const> const &state) final;
+
+    /// \brief saves the values of a power node for later printout into files.
+    ///
+    /// As the method for obtaining P_val and Q_val depend on the actual type, this is just a helper function
+    /// that is called from the respective Powernode.
+    void save_power_values(double time, Eigen::Ref<Eigen::VectorXd const> const &state, double P_val, double Q_val);
 
     
 

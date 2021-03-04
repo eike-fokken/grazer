@@ -6,7 +6,13 @@
 #include <vector>
 
 namespace Network {
-  std::string Node::get_type() { gthrow({"This static method must be implemented in the class inherited from node!"}); }
+  std::string Node::get_type() {
+    gthrow({"This static method must be implemented in the class inherited "
+            "from node!"});
+  }
+
+  Node::Node(nlohmann::json const &data)
+      : Idobject(data["id"].get<std::string>()) {}
 
   Node::Node(nlohmann::json const & data) : Idobject(data["id"].get<std::string>()) {}
 
