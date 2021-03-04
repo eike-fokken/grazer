@@ -9,7 +9,7 @@ updates:
       interval: "daily"
 
   # Enable version updates for submodules
-  - package-ecosystem: "gitsubmodules"
+  - package-ecosystem: "gitsubmodule"
     directory: "/"
     schedule:
       interval: "daily"

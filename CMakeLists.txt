@@ -49,7 +49,8 @@ set(debug_gcc_options "-fdiagnostics-color;-Wno-error=strict-overflow")
 # Warning 4127 warns of if statements that are compile time constants.
 # But templated if statements are often compile time constants and Eigen does not have
 # if constexpr in those places. Therefore we suppress this warning.
-set(debug_msvc_options "/permissive-;/W4;/WX;/wd4127")
+# /Zc:__cplusplus: https://gitlab.com/libeigen/eigen/-/issues/2170 might become superflous
+set(debug_msvc_options "/permissive-;/W4;/WX;/wd4127;/Zc:__cplusplus")
 
 
 
@@ -68,13 +69,13 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
    add_compile_options("$<$<CONFIG:DEBUG>:${debug_gcc_options}>"
      "$<$<NOT:$<CONFIG:Debug>>:${release_gcc_options}>")
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  add_compile_options("$<$<CONFIG:DEBUG>:${debug_msvc_options}>"
-    "$<$<NOT:$<CONFIG:Debug>>:${release_msvc_options}>")
-    else()
+  add_compile_options(
+    "$<$<CONFIG:DEBUG>:${debug_msvc_options}>"
+    "$<$<NOT:$<CONFIG:Debug>>:${release_msvc_options}>"
+  )
+else()
   message(FATAL_ERROR "Unknown compiler: ${CMAKE_CXX_COMPILER_ID}")
 endif()
-
-
 
 
 # add_compile_options("$<$<CONFIG:RELEASE>:-march=native>"
