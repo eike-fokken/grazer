@@ -8,7 +8,7 @@ add_library(gas STATIC
   )
 
 
-target_link_libraries(gas PRIVATE network matrixhandler exception nlohmann_json power coloroutput misc)
+target_link_libraries(gas PRIVATE network matrixhandler exception  power coloroutput misc)
 
 target_link_libraries(gas PUBLIC balancelaw scheme mathfunctions equationcomponent)
 

@@ -1,25 +1,25 @@
 add_executable(net_test NetTest.cpp)
 
-target_link_libraries(net_test PUBLIC network networkproblem nlohmann_json)
+target_link_libraries(net_test PUBLIC network networkproblem )
 target_link_libraries(net_test PUBLIC gtest gtest_main gmock)
 
 add_executable(model_test ModelTest.cpp)
 
-target_link_libraries(model_test PUBLIC problemlayer nlohmann_json)
+target_link_libraries(model_test PUBLIC problemlayer )
 target_link_libraries(model_test PUBLIC gtest gtest_main gmock)
 
 
 
 add_executable(power_test PowerTest.cpp)
 
-target_link_libraries(power_test PUBLIC problemlayer power networkproblem network exception newton matrixhandler nlohmann_json power)
+target_link_libraries(power_test PUBLIC problemlayer power networkproblem network exception newton matrixhandler  power)
 target_link_libraries(power_test PUBLIC gtest gtest_main gmock)
 
 
 
 add_executable(newton_test NewtonsolverTest.cpp)
 
-target_link_libraries(newton_test PUBLIC network exception newton matrixhandler problemlayer nlohmann_json)
+target_link_libraries(newton_test PUBLIC network exception newton matrixhandler problemlayer )
 target_link_libraries(newton_test PUBLIC gtest gtest_main gmock)
 target_include_directories(newton_test PUBLIC include)
 
@@ -38,12 +38,12 @@ target_link_libraries(implicitboxscheme_test PUBLIC gtest gtest_main gmock)
 
 add_executable(gas_test GasTest.cpp)
 
-target_link_libraries(gas_test PUBLIC problemlayer power networkproblem network exception newton matrixhandler nlohmann_json power gas coloroutput misc)
+target_link_libraries(gas_test PUBLIC problemlayer power networkproblem network exception newton matrixhandler  power gas coloroutput misc)
 target_link_libraries(gas_test PUBLIC gtest gtest_main gmock)
 
 
 add_library(testheader INTERFACE)
-target_link_libraries(testheader INTERFACE nlohmann_json matrixhandler problemlayer gtest gtest_main gmock)
+target_link_libraries(testheader INTERFACE  matrixhandler problemlayer gtest gtest_main gmock)
 target_include_directories(testheader INTERFACE include)
 
 add_test(

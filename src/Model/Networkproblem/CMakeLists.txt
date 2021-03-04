@@ -5,7 +5,7 @@ add_subdirectory(Componentfactory)
 
 add_library(networkproblem STATIC Networkproblem.cpp Networkproblem_helpers.cpp)
 
-target_link_libraries(networkproblem PRIVATE problemlayer network nlohmann_json aux_json componentfactory equationcomponent)
+target_link_libraries(networkproblem PRIVATE problemlayer network  aux_json componentfactory equationcomponent)
 target_link_libraries(networkproblem PUBLIC exception mathfunctions)
 
 target_include_directories(networkproblem PUBLIC include)

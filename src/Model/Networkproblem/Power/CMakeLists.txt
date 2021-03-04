@@ -2,4 +2,4 @@ add_library(power STATIC Powernode.cpp Vphinode.cpp PQnode.cpp PVnode.cpp Transm
 
 target_include_directories(power PUBLIC include)
 
-target_link_libraries(power PRIVATE equationcomponent network matrixhandler exception nlohmann_json)
+target_link_libraries(power PRIVATE equationcomponent network matrixhandler exception)
