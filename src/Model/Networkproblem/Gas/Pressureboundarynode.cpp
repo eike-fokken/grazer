@@ -26,10 +26,4 @@ namespace Model::Networkproblem::Gas {
       evaluate_pressure_node_derivative(jacobianhandler,new_state);
   }
 
-  void Pressureboundarynode::display() const {
-    Node::print_id();
-    Equationcomponent::print_indices();
-    std::cout << "NO FURTHER DISPLAY PARAMETERS IMPLEMENTED IN" << __FILE__ << ":" << __LINE__ << std::endl;
-    // here show information of the gas node!
-  }
 }

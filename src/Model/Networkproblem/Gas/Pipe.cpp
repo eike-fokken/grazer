@@ -93,15 +93,6 @@ namespace Model::Networkproblem::Gas {
     }
   }
 
-  void Pipe::display() const {
-    Edge::print_id();
-    std::cout << "number of points: " << number_of_points << std::endl;
-    std::cout << "Delta_x: "<< Delta_x << std::endl;
-    std::cout << "length: "<< length << std::endl;
-    std::cout << "roughness: "<< roughness << std::endl;
-    std::cout << "diameter: "<< diameter << std::endl;
-  }
-
   int Pipe::get_number_of_states() const {
     return 2*number_of_points;
   }
@@ -110,8 +101,8 @@ namespace Model::Networkproblem::Gas {
   void
   Pipe::print_to_files(std::filesystem::path const &output_directory) {
 
-    std::string pressure_file_name = (get_id().insert(0, "Gas_Pipe_"))+"_p";
-    std::string flow_file_name =(get_id().insert(0, "Gas_Pipe_"))+"_q";
+    std::string pressure_file_name = (get_id_copy().insert(0, "Gas_Pipe_"))+"_p";
+    std::string flow_file_name =(get_id_copy().insert(0, "Gas_Pipe_"))+"_q";
     std::filesystem::path shortpipe_output_pressure(output_directory /
                                                     pressure_file_name);
     std::filesystem::path shortpipe_output_flow(

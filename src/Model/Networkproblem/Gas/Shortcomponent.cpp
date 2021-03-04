@@ -9,8 +9,8 @@ namespace Model::Networkproblem::Gas {
   void Shortcomponent::print_helper(std::filesystem::path const &output_directory, std::string const & type) {
 
     std::string prestring = "Gas_"+type+"_";
-    std::string pressure_file_name = (get_id().insert(0, prestring))+"_p";
-    std::string flow_file_name =(get_id().insert(0, prestring))+"_q";
+    std::string pressure_file_name = (get_id_copy().insert(0, prestring))+"_p";
+    std::string flow_file_name =(get_id_copy().insert(0, prestring))+"_q";
     std::filesystem::path shortcomponent_output_pressure(output_directory /
                                                 pressure_file_name);
     std::filesystem::path shortcomponent_output_flow(

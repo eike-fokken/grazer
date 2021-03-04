@@ -80,12 +80,6 @@ namespace Model {
     }
   }
 
-  void Problem::display() const {
-    for (auto &subproblem : subproblems) {
-      subproblem->display();
-    }
-  }
-
   void Problem::set_initial_values(Eigen::Ref<Eigen::VectorXd> new_state,
                                    nlohmann::json & initial_json) {
 

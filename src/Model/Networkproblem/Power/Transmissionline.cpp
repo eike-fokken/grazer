@@ -21,11 +21,6 @@ namespace Model::Networkproblem::Power {
 
   double Transmissionline::get_B() const { return B; }
 
-  void Transmissionline::display() const {
-    Edge::print_id();
-    std::cout << "type: TL, G: " << G << ", B: " << B << "\n";
-  }
-
   Powernode * Transmissionline::get_starting_powernode() const {
     return dynamic_cast<Powernode *>(get_starting_node());
   }

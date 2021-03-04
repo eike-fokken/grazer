@@ -118,8 +118,6 @@ namespace Model::Networkproblem {
     }
   }
 
-  void Networkproblem::display() const { }
-
   void Networkproblem::set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
                                           nlohmann::json initial_json) {
 

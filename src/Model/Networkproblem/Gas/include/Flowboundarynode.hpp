@@ -25,8 +25,6 @@ public:
         Aux::Matrixhandler * jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &, Eigen::Ref<Eigen::VectorXd const> const &new_state) const override final;
 
-    void display() const override;
-
 
 private:
   

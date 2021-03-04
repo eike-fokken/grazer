@@ -52,8 +52,6 @@ namespace Model {
 
     void print_to_files();
 
-    void display() const;
-
     std::filesystem::path const &get_output_directory() const;
 
   private:

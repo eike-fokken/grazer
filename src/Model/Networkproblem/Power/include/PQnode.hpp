@@ -25,7 +25,6 @@ namespace Model::Networkproblem::Power {
     void save_values(double time,
                      Eigen::Ref<Eigen::VectorXd const> const &state) override;
 
-    void display() const final;
   };
 
 } // namespace Model::Networkproblem::Power

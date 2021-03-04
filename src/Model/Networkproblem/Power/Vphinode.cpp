@@ -41,10 +41,4 @@ namespace Model::Networkproblem::Power {
     save_power_values(time, state, P_val, Q_val)  ;
   }
 
-  void Vphinode::display() const {
-    Node::print_id();
-    Equationcomponent::print_indices();
-    std::cout << "type: Vphi, G: " << G << ", B: " << B << "\n";
-  }
-
 } // namespace Model::Networkproblem::Power

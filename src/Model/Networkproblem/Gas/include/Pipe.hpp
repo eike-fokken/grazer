@@ -23,8 +23,6 @@ namespace Model::Networkproblem::Gas {
 
 
 
-    void display() const override;
-
     int get_number_of_states() const override;
 
     void
