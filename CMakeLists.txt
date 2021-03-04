@@ -19,24 +19,34 @@ endif()
 enable_testing()
 add_subdirectory(googletest)
 
+
+
 #for multiple compiler compatibility:
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+#for development:
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# An option to exclude IPO from the release type to make better use of a compiler cache (like ccache) for development:
 
-#set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-# for Release types add link-time optimization
-
-check_ipo_supported(RESULT is_ipo_supported OUTPUT lto_error)
-if(is_ipo_supported)
-  set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
-  set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_DEBUG OFF)
-  message(STATUS "Interprocedural optimization supported!")
+if (NOT DEVEL_RELEASE)
+  #set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+  # for Release types add link-time optimization
+  check_ipo_supported(RESULT is_ipo_supported OUTPUT lto_error)
+  if(is_ipo_supported)
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_DEBUG OFF)
+    message(STATUS "Interprocedural optimization supported!")
+  else()
+    message(STATUS "NO INTERPROCESS OPTIMIZATION AVAILABLE!")
+    message(STATUS "${lto_error}")
+  endif()
 else()
-  message(STATUS "NO INTERPROCESS OPTIMIZATION AVAILABLE!")
-  message(STATUS "${lto_error}")
+  message(STATUS "")
+  message(STATUS "Interprocedural deactivated for development purposes!")
+  message(STATUS "To reactivate it, try disabling the option DEVEL_RELEASE.")
+  message(STATUS "")
 endif()
-
 # add_compile_options(-fopenmp)
 
 
