@@ -55,7 +55,7 @@ namespace Model::Networkproblem {
 
     Eigen::Matrix<double, N, 1> operator()(double t) const {
 
-      //Note that by virtue of the function set_boundary condition, this map is never empty!
+      //Note that by virtue of the function set_condition, this map is never empty!
       // last element of the map:
       auto last_element = Values.rbegin();
       auto last_t = Values.rbegin()->first;
@@ -93,7 +93,7 @@ namespace Model::Networkproblem {
       return value;
     }
 
-   void set_condition(nlohmann::json values_json) {
+    void set_condition(nlohmann::json values_json, std::string const & key) {
      if(values_json.size()==0) {
        gthrow({"data in node with id ", values_json["id"],
                " is empty!"})
@@ -115,7 +115,7 @@ namespace Model::Networkproblem {
           gthrow({"initial/boundary data in node with id ",values_json["id"],
                   " couldn't be assignd in vector, not a double?"})
             }
-        Values.insert({datapoint["time"], value});
+        Values.insert({datapoint[key], value});
       }
     }
 

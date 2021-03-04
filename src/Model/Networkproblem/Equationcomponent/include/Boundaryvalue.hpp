@@ -18,7 +18,7 @@ namespace Model::Networkproblem {
         : valuemap(_boundary_values){};
 	
     void set_boundary_condition(nlohmann::json values_json) {
-      valuemap.set_condition(values_json);
+      valuemap.set_condition(values_json,"time");
     };
 
     Eigen::Matrix<double, N, 1> operator()(double t) const {

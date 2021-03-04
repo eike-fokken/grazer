@@ -1,8 +1,9 @@
-#include <Boundaryvalue.hpp>
-#include <Exception.hpp>
-#include <Matrixhandler.hpp>
-#include <Powernode.hpp>
-#include <Transmissionline.hpp>
+#include "Powernode.hpp"
+#include "Boundaryvalue.hpp"
+#include "Exception.hpp"
+#include "Initialvalue.hpp"
+#include "Matrixhandler.hpp"
+#include "Transmissionline.hpp"
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -18,22 +19,18 @@ namespace Model::Networkproblem::Power {
 
   void Powernode::set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
                                      nlohmann::ordered_json initial_json) {
-
+    
     if (get_start_state_index() == -1) {
       gthrow({"This function may only be called if set_indices  has been "
               "called beforehand!"});
     }
 
-    if (initial_json["data"]["value"].size() != 4) {
-      std::cout << "The initial json for this power node is given by:"
-                << "\n";
-      std::cout << initial_json << std::endl;
-      gthrow({"This is not a power initial condition!"});
-    }
+    Initialvalue<Powernode, 4> initialvalues;
+    initialvalues.set_initial_condition(initial_json);
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
-    new_state[V_index] = initial_json["data"]["value"][2];
-    new_state[phi_index] = initial_json["data"]["value"][3];
+    new_state[V_index] = initialvalues(0)[2];
+    new_state[phi_index] = initialvalues(0)[3];
   }
 
 

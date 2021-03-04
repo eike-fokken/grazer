@@ -150,13 +150,5 @@ namespace Network {
       return false;
     }
   }
-  void Net::display() const {
-    for (auto &node : nodes) {
-      node->display();
-    }
-
-    for (auto &edge : edges) {
-      edge->display();
-    }
-  }
+  
 } // namespace Network

@@ -44,7 +44,8 @@ namespace Model::Networkproblem {
         }
       } else {
         std::cout << "Node type " << nodetype
-                  << " not present in the topology file.";
+                  << " not present in the topology file."
+                  << std::endl;
       }
     }
 
@@ -87,7 +88,8 @@ namespace Model::Networkproblem {
         }
       } else {
         std::cout << "Edge type " << edgetype
-                  << " not present in the topology file.";
+                  << " not present in the topology file."
+                  << std::endl;
       }
     }
 
@@ -169,7 +171,7 @@ namespace Model::Networkproblem {
                     name_of_inserted_json, " condition is provided."});
 
           } else {
-            (*top_it)[name_of_inserted_json] = (*secjson_it)["data"];
+            (*top_it)[name_of_inserted_json] = (*secjson_it);
             ++secjson_it;
             ++top_it;
           }

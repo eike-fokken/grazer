@@ -44,7 +44,7 @@ namespace Model::Networkproblem {
     void display() const override;
 
     virtual void set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
-                                    nlohmann::ordered_json initial_json) final;
+                                    nlohmann::json initial_json) final;
 
   private:
     std::unique_ptr<Network::Net> network;

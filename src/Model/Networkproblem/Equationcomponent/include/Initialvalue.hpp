@@ -18,7 +18,7 @@ namespace Model::Networkproblem {
         : valuemap(_initial_values){};
 
     void set_initial_condition(nlohmann::json values_json) {
-      valuemap.set_condition(values_json);
+      valuemap.set_condition(values_json,"x");
         };
 
         Eigen::Matrix<double, N, 1> operator()(double t) const {

@@ -37,7 +37,7 @@ namespace aux_json {
       }
       
     } else {
-      gthrow({"The value at \"", key, "\" is neither a valid json object, nor a "
+      gthrow({"The value, ", sub_json.dump() , " at \"", key, "\" is neither a valid json object, nor a ",
           "string pointing to a json file.\n It is given by ",sub_json.dump(4)});
     }
   }

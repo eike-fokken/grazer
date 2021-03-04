@@ -46,7 +46,7 @@ namespace Model {
     int set_indices(int const next_free_index);
 
     virtual void set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
-                                    nlohmann::ordered_json initial_json) = 0;
+                                    nlohmann::json initial_json) = 0;
 
     int get_number_of_states() const;
     int get_start_state_index() const;
