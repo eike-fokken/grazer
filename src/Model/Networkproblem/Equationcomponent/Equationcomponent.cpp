@@ -23,11 +23,6 @@ namespace Model::Networkproblem {
     return after_state_index;
   }
 
-  void Equationcomponent::print_indices() const {
-    std::cout << "start: " << start_state_index
-              << ", end: " << after_state_index << ", ";
-  }
-
   void Equationcomponent::push_to_values(
       double t, std::vector<std::map<double, double>> value_vector) {
     (values_ptr->times).push_back(t);
