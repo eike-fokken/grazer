@@ -44,9 +44,12 @@ mingw/**
 noteworthy_results/**
 
 gcc_release/**
+gcc_real/**
 gcc_debug/**
 gcc_relwithdebinfo/**
+
 clang_release/**
+clang_real/**
 clang_debug/**
 clang_relwithdebinfo/**
 
