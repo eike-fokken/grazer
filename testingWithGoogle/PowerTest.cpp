@@ -66,17 +66,19 @@ TEST(testPower, test_P_and_Q_1) {
     {"B", Bt}
   };
 
+  std::vector<std::unique_ptr<Model::Networkproblem::Power::Powernode>> nodes = {
+    std::make_unique<Model::Networkproblem::Power::Vphinode>(bd_json1),
+    std::make_unique<Model::Networkproblem::Power::PQnode>(bd_json2)
+  };
+  Model::Networkproblem::Power::Transmissionline t(
+    bd_json3, 
+    std::vector<std::unique_ptr<Network::Node>>(nodes)
+  );
 
-  Model::Networkproblem::Power::Vphinode n1(bd_json1);
-  Model::Networkproblem::Power::PQnode n2(bd_json2);
-
-  std::vector<std::unique_ptr<Network::Node>> nodes = {&n1, &n2};
-  Model::Networkproblem::Power::Transmissionline t(bd_json3, nodes);
-
-  auto a = n1.set_indices(0);
-  n2.set_indices(a);
-  n1.setup();
-  n2.setup();
+  auto a = nodes[0]->set_indices(0);
+  nodes[1]->set_indices(a);
+  nodes[0]->setup();
+  nodes[1]->setup();
 
   Eigen::VectorXd rootvalues(4);
   double last_time = 0.0;
@@ -85,8 +87,8 @@ TEST(testPower, test_P_and_Q_1) {
   Eigen::VectorXd new_state(4);
   new_state << V1, phi1, V2, phi2;
 
-  n1.evaluate(rootvalues, last_time, new_time, last_state, new_state);
-  n2.evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  nodes[0]->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  nodes[1]->evaluate(rootvalues, last_time, new_time, last_state, new_state);
 
   EXPECT_DOUBLE_EQ(rootvalues[0], new_state[0] - V1_bd);
   EXPECT_DOUBLE_EQ(rootvalues[1], new_state[1] - phi1_bd);
@@ -102,9 +104,9 @@ TEST(testPower, test_P_and_Q_1) {
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
   Aux::Triplethandler handler(&J);
 
-  n1.evaluate_state_derivative(&handler, last_time, new_time, last_state,
+  nodes[0]->evaluate_state_derivative(&handler, last_time, new_time, last_state,
                                new_state);
-  n2.evaluate_state_derivative(&handler, last_time, new_time, last_state,
+  nodes[1]->evaluate_state_derivative(&handler, last_time, new_time, last_state,
                                new_state);
   handler.set_matrix();
 
