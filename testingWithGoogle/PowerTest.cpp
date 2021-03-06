@@ -14,7 +14,6 @@
 
 using json = nlohmann::ordered_json;
 
-
 TEST(testPower, test_P_and_Q_1) {
 
   double V1_bd = 8.0;
@@ -36,19 +35,43 @@ TEST(testPower, test_P_and_Q_1) {
   double phi2 = 4.0;
 
   json bd_json1 = {
-      {"id", "N1"},
-      {"type", "Vphi"},
-      {"data", json::array({{{"time", 0.},
-                             {"values", json::array({V1_bd, phi1_bd})}}})}};
-  json bd_json2 = {
-      {"id", "N2"},
-      {"type", "PQ"},
-      {"data",
-       json::array({{{"time", 0.}, {"values", json::array({P2_bd, Q2_bd})}}})}};
+    {"id", "N1"},
+    {"type", "Vphi"},
+    {"G", G1},
+    {"B", B1},
+    {
+      "data",
+      json::array({
+        { {"time", 0.}, {"values", json::array({V1_bd, phi1_bd})} }
+      })
+    }
+  };
 
-  Model::Networkproblem::Power::Vphinode n1("N1", bd_json1, G1, B1);
-  Model::Networkproblem::Power::PQnode n2("N2", bd_json2, G2, B2);
-  Model::Networkproblem::Power::Transmissionline t("T1", &n1, &n2, Gt, Bt);
+  json bd_json2 = {
+    {"id", "N2"},
+    {"type", "PQ"},
+    {"G", G2},
+    {"B", B2},
+    {
+      "data", 
+      json::array({
+        { {"time", 0.}, {"values", json::array({P2_bd, Q2_bd})} }
+      })
+    }
+  };
+   
+  json bd_json3 = {
+    {"id", "T1"},
+    {"G", Gt},
+    {"B", Bt}
+  };
+
+
+  Model::Networkproblem::Power::Vphinode n1(bd_json1);
+  Model::Networkproblem::Power::PQnode n2(bd_json2);
+
+  std::vector<std::unique_ptr<Network::Node>> nodes = {&n1, &n2};
+  Model::Networkproblem::Power::Transmissionline t(bd_json3, nodes);
 
   auto a = n1.set_indices(0);
   n2.set_indices(a);
