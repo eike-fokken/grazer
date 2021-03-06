@@ -13,12 +13,15 @@ namespace Model::Networkproblem {
 
    public:
     Initialvalue(){};
-    Initialvalue(
-        std::map<double, Eigen::Matrix<double, N, 1>> _initial_values)
-        : valuemap(_initial_values){};
+    Initialvalue(nlohmann::json initialvalues):
+      valuemap(set_initial_condition(initialvalues)) {};
+
+    //    Initialvalue(
+    //    std::map<double, Eigen::Matrix<double, N, 1>> initialvalues)
+    //    : valuemap(initialvalues){};
 
     void set_initial_condition(nlohmann::json values_json) {
-      valuemap.set_condition(values_json,"x");
+      Valuemap<N>::set_condition(values_json,"x");
         };
 
         Eigen::Matrix<double, N, 1> operator()(double t) const {
@@ -36,3 +39,5 @@ namespace Model::Networkproblem {
   };
 
 } // namespace Model::Networkproblem
+
+

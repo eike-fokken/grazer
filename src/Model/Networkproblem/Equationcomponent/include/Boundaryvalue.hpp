@@ -14,8 +14,8 @@ namespace Model::Networkproblem {
   public:
     Boundaryvalue(){};
     Boundaryvalue(
-        std::map<double, Eigen::Matrix<double, N, 1>> _boundary_values)
-        : valuemap(_boundary_values){};
+        std::map<double, Eigen::Matrix<double, N, 1>> boundary_values)
+        : valuemap(boundary_values){};
 	
     void set_boundary_condition(nlohmann::json values_json) {
       valuemap.set_condition(values_json,"time");
