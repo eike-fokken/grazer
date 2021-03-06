@@ -1,0 +1,5 @@
+add_library(json_validation STATIC json_validation.cpp)
+
+target_link_libraries(json_validation PRIVATE nlohmann_json nlohmann_json_schema_validator)
+
+target_link_libraries(json_validation PUBLIC include)
