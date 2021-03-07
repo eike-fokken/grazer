@@ -19,62 +19,14 @@
     },
     "nodes": {
       "type": "object",
-      "required": ["Source", "Innode", "PVnode", "PQnode"],
+      "required": ["Source", "Innode", "Sink", "Vphinode", "PVnode", "PQnode"],
       "properties": {
-        "Source": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {"type": "string"},
-              "x": {"type": "number"},
-              "y": {"type": "number"},
-              "height": {"$ref": "#/$defs/unitMeasure"},
-              "temperature": {"$ref": "#/$defs/temperature"},
-              "pressureMin": {"$ref": "#/$defs/pressure"},
-              "pressureMax": {"$ref": "#/$defs/pressure"},
-              "pressureInit": {"$ref": "#/$defs/pressure"},
-              "flowMin": {"$ref": "#/$defs/flux"},
-              "flowMax": {"$ref": "#/$defs/flux"}
-            }
-          }
-        },
-        "Innode": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {"type": "string"},
-              "x": {"type": "number"},
-              "y": {"type": "number"},
-              "height": {"$ref": "#/$defs/unitMeasure"},
-              "temperature": {"$ref": "#/$defs/temperature"},
-              "pressureMin": {"$ref": "#/$defs/pressure"},
-              "pressureMax": {"$ref": "#/$defs/pressure"},
-              "pressureInit": {"$ref": "#/$defs/pressure"},
-              "flowMin": {"$ref": "#/$defs/flux"},
-              "flowMax": {"$ref": "#/$defs/flux"}
-            }
-          }
-        },
-        "PVnode": {
-          "type": "object",
-          "required": ["id", "G", "B"],
-          "properties": {
-            "id": {"type": "string"},
-            "G": {"type": "number", "description": "real part"},
-            "B": {"type": "number", "description": "imaginary part"}
-          }
-        },
-        "PQnode": {
-          "type": "object",
-          "required": ["id", "G", "B"],
-          "properties": {
-            "id": {"type": "string"},
-            "G": {"type": "number", "description": "real part"},
-            "B": {"type": "number", "description": "imaginary part"}
-          }
-        }
+        "Source": {"$ref": "#/$defs/node"},
+        "Innode": {"$ref": "#/$defs/node"},
+        "Sink": {"$ref": "#/$defs/node"},
+        "PVnode": {"$ref": "#/$defs/greekNode"},
+        "PQnode": {"$ref": "#/$defs/greekNode"},
+        "Vphinode": {"$ref": "#/$defs/greekNode"}
       }
     },
     "connections": {
@@ -82,42 +34,118 @@
       "properties": {
         "Gaspowerconnection": {"type": "array"},
         "Transmissionline": {"type": "array"},
-        "Shortpipe": {"type": "array"}
+        "Shortpipe": {"type": "array"},
+        "Pipe": {"type": "array"},
+        "Compressorstation": {"$ref": "#/$defs/connection/compressorstation"},
+        "Controlvalve": {"$ref": "#/$defs/connection/controlvalve"}
       }
     }
   },
   "$defs": {
-    "pressure": {
-      "type": "object",
-      "description": "pressure measure",
-      "required": ["value", "unit"],
-      "properties": {
-        "unit": {"type": "string", "enum": ["bar"]},
-        "value": {"type": "number"}
+    "node": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "x": {"type": "number"},
+          "y": {"type": "number"},
+          "height": {"$ref": "#/$defs/unitMeasure"},
+          "temperature": {"$ref": "#/$defs/temperature"},
+          "pressureMin": {"$ref": "#/$defs/pressure"},
+          "pressureMax": {"$ref": "#/$defs/pressure"},
+          "pressureInit": {"$ref": "#/$defs/pressure"},
+          "flowMin": {"$ref": "#/$defs/flux"},
+          "flowMax": {"$ref": "#/$defs/flux"}
+        }
       }
     },
-    "temperature": {
+    "greekNode": {
       "type": "object",
-      "description": "temperature measure",
-      "required": ["value", "unit"],
+      "required": ["id", "G", "B"],
       "properties": {
-        "unit": {"type": "string", "enum": ["K"]},
-        "value": {"type": "number"}
+        "id": {"type": "string"},
+        "G": {"type": "number", "description": "real part"},
+        "B": {"type": "number", "description": "imaginary part"}
       }
     },
-    "flux": {
-      "type": "object",
-      "description": "flux measure",
-      "required": ["value", "unit"],
-      "properties": {
-        "unit": {"type": "string", "enum": ["m_cube_per_s"]},
-        "value": {"type": "number"}
+    "units": {
+      "pressure": {
+        "type": "object",
+        "description": "pressure measure",
+        "required": ["value", "unit"],
+        "properties": {
+          "unit": {"type": "string", "enum": ["bar"]},
+          "value": {"type": "number"}
+        }
+      },
+      "temperature": {
+        "type": "object",
+        "description": "temperature measure",
+        "required": ["value", "unit"],
+        "properties": {
+          "unit": {"type": "string", "enum": ["K"]},
+          "value": {"type": "number"}
+        }
+      },
+      "flux": {
+        "type": "object",
+        "description": "flux measure",
+        "required": ["value", "unit"],
+        "properties": {
+          "unit": {"type": "string", "enum": ["m_cube_per_s"]},
+          "value": {"type": "number"}
+        }
+      },
+      "power": {
+        "type": "object",
+        "description": "power measure",
+        "required": ["value", "unit"],
+        "properties": {
+          "unit": {"type": "string", "enum": ["kW"]},
+          "value": {"type": "number"}
+        }
+      },
+      "unitMeasure": {
+        "type": "object",
+        "description": "default measure without unit type safety",
+        "required": ["value"],
+        "properties": {"unit": {"type": "string"}, "value": {"type": "number"}}
       }
     },
-    "unitMeasure": {
-      "type": "object",
-      "required": ["value"],
-      "properties": {"unit": {"type": "string"}, "value": {"type": "number"}}
+    
+    "connection": {
+      "controlvalve": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string"},
+            "from": {"type": "string"},
+            "to": {"type": "string"},
+            "flowMin": {"$ref": "#/$defs/flux"},
+            "flowMax": {"$ref": "#/$defs/flux"},
+            "flowInit": {"$ref": "#/$defs/flux"},
+            "pressureDifferentialMin": {"$ref": "#/$defs/pressure"},
+            "pressureDifferentialMax": {"$ref": "#/$defs/pressure"}
+          }
+        }
+      },
+      "compressorstation": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string"},
+            "from": {"type": "string"},
+            "to": {"type": "string"},
+            "typeOfControl": {"type": "string"},
+            "flowMin": {"$ref": "#/$defs/flux"},
+            "flowMax": {"$ref": "#/$defs/flux"},
+            "powerMin": {"$ref": "test"}
+          }
+        }
+      }
     }
   }
 }
