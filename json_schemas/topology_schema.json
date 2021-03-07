@@ -34,8 +34,8 @@
       "properties": {
         "Gaspowerconnection": {"type": "array"},
         "Transmissionline": {"type": "array"},
-        "Shortpipe": {"type": "array"},
-        "Pipe": {"type": "array"},
+        "Shortpipe": {"$ref": "#/$defs/connection/shortpipe"},
+        "Pipe": {"$ref": "#/$defs/connection/pipe"},
         "Compressorstation": {"$ref": "#/$defs/connection/compressorstation"},
         "Controlvalve": {"$ref": "#/$defs/connection/controlvalve"}
       }
@@ -93,7 +93,7 @@
         "description": "flux measure",
         "required": ["value", "unit"],
         "properties": {
-          "unit": {"type": "string", "enum": ["m_cube_per_s"]},
+          "unit": {"type": "string", "enum": ["m_cube_per_s", "1000m_cube_per_hour"]},
           "value": {"type": "number"}
         }
       },
@@ -115,6 +115,15 @@
           "value": {"type": "number"}
         }
       },
+      "length": {
+        "type": "object",
+        "description": "length measure",
+        "required": ["value", "unit"],
+        "properties": {
+          "unit": {"type": "string", "enum": ["km", "m", "mm"]},
+          "value": {"type": "number"}
+        }
+      },
       "defaultUnit": {
         "type": "object",
         "description": "default measure without unit type safety",
@@ -124,6 +133,39 @@
     },
     
     "connection": {
+      "shortpipe": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string"},
+            "from": {"type": "string"},
+            "to": {"type": "string"},
+            "flowMin": {"$ref": "#/$defs/unit/flux"},
+            "flowMax": {"$ref": "#/$defs/unit/flux"},
+            "flowInit": {"$ref": "#/$defs/unit/flux"}
+          }
+        }
+      },
+      "pipe": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string"},
+            "from": {"type": "string"},
+            "to": {"type": "string"},
+            "heatTransferCoefficient": "2",
+            "flowMin": {"$ref": "#/$defs/unit/flux"},
+            "flowMax": {"$ref": "#/$defs/unit/flux"},
+            "flowInInit": {"$ref": "#/$defs/unit/flux"},
+            "flowOutInit": {"$ref": "#/$defs/unit/flux"},
+            "length": {"$ref": "#/$defs/unit/length"},
+            "diameter": {"$ref": "#/$defs/unit/length"},
+            "roughness": {"$ref": "#/$defs/unit/length"}
+          }
+        }
+      },
       "controlvalve": {
         "type": "array",
         "items": {
