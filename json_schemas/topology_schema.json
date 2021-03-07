@@ -32,8 +32,8 @@
     "connections": {
       "type": "object",
       "properties": {
-        "Gaspowerconnection": {"$ref": "#/$defs/gaspowerconnection"},
-        "Transmissionline": {"$ref": "#/$defs/transmissionline"},
+        "Gaspowerconnection": {"$ref": "#/$defs/connection/gaspowerconnection"},
+        "Transmissionline": {"$ref": "#/$defs/connection/transmissionline"},
         "Shortpipe": {"$ref": "#/$defs/connection/shortpipe"},
         "Pipe": {"$ref": "#/$defs/connection/pipe"},
         "Compressorstation": {"$ref": "#/$defs/connection/compressorstation"},
@@ -61,12 +61,15 @@
       }
     },
     "greekNode": {
-      "type": "object",
-      "required": ["id", "G", "B"],
-      "properties": {
-        "id": {"type": "string"},
-        "G": {"type": "number", "description": "real part"},
-        "B": {"type": "number", "description": "imaginary part"}
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "G", "B"],
+        "properties": {
+          "id": {"type": "string"},
+          "G": {"type": "number", "description": "real part"},
+          "B": {"type": "number", "description": "imaginary part"}
+        }
       }
     },
     "unit": {
@@ -200,11 +203,11 @@
             "id": {"type": "string"},
             "from": {"type": "string"},
             "to": {"type": "string"},
-            "flowMin": {"$ref": "#/$defs/flux"},
-            "flowMax": {"$ref": "#/$defs/flux"},
-            "flowInit": {"$ref": "#/$defs/flux"},
-            "pressureDifferentialMin": {"$ref": "#/$defs/pressure"},
-            "pressureDifferentialMax": {"$ref": "#/$defs/pressure"}
+            "flowMin": {"$ref": "#/$defs/unit/flux"},
+            "flowMax": {"$ref": "#/$defs/unit/flux"},
+            "flowInit": {"$ref": "#/$defs/unit/flux"},
+            "pressureDifferentialMin": {"$ref": "#/$defs/unit/pressure"},
+            "pressureDifferentialMax": {"$ref": "#/$defs/unit/pressure"}
           }
         }
       },
@@ -222,7 +225,7 @@
             "powerMin": {"$ref": "#/$defs/unit/power"},
             "speedMin": {"$ref": "#/$defs/unit/frequency"},
             "speedMax": {"$ref": "#/$defs/unit/frequency"},
-            "ambientTemperature": {"$ref": "#/$defs/unit/temperaturedefaultUnit"},
+            "ambientTemperature": {"$ref": "#/$defs/unit/temperature"},
             "specificFuelConsumption": {"$ref": "#/$defs/unit/defaultUnit"},
             "efficiency": {"$ref": "#/$defs/unit/defaultUnit"},
             "n_isoline_coeff_1": {"$ref": "#/$defs/unit/defaultUnit"},
