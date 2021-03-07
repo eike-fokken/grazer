@@ -32,8 +32,8 @@
     "connections": {
       "type": "object",
       "properties": {
-        "Gaspowerconnection": {"type": "array"},
-        "Transmissionline": {"type": "array"},
+        "Gaspowerconnection": {"$ref": "#/$defs/gaspowerconnection"},
+        "Transmissionline": {"$ref": "#/$defs/transmissionline"},
         "Shortpipe": {"$ref": "#/$defs/connection/shortpipe"},
         "Pipe": {"$ref": "#/$defs/connection/pipe"},
         "Compressorstation": {"$ref": "#/$defs/connection/compressorstation"},
@@ -133,6 +133,32 @@
     },
     
     "connection": {
+      "gaspowerconnection": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string"},
+            "from": {"type": "string"},
+            "to": {"type": "string"},
+            "power2gas_q_coeff": {"type": "number"},
+            "gas2power_1_coeff": {"type": "number"}
+          }
+        }
+      },
+      "transmissionline": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string"},
+            "from": {"type": "string"},
+            "to": {"type": "string"},
+            "B": {"type": "number"},
+            "G": {"type": "number"}
+          }
+        }
+      },
       "shortpipe": {
         "type": "array",
         "items": {
