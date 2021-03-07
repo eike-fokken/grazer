@@ -1,0 +1,81 @@
+{
+	"$id": "https://raw.githubusercontent.com/eike-fokken/grazer/blob/master/json_schemas/problem_data_schema.json",
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"title": "Problem Data",
+	"description": "Problem Data Definition",
+	"type": "object",
+	"required": ["time_evolution_data", "initial_values", "problem_data"],
+	"properties": {
+		"time_evolution_data": {
+			"type": "object",
+			"title": "start, endtime and delta",
+			"description": "Start time, endtime and desired time delta for the simulation",
+			"required": ["start_time", "end_time", "desired_delta_t"],
+			"properties": {
+				"start_time": {
+					"type": "number"
+				},
+				"end_time": {
+					"type": "number"
+				},
+				"desired_delta_t": {
+					"type": "number",
+					"minimum": 0
+				}
+			}
+		},
+		"initial_values": {
+			"type": "object",
+			"properties": {
+				"subproblems": {
+					"type": "object",
+					"properties": {
+						"Network_problem": {
+							"type": "object",
+							"required": ["initial_json"],
+							"properties": {
+								"initial_json": {
+									"type": "string",
+									"format": "iri-reference"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"problem_data": {
+			"type": "object",
+			"properties": {
+				"subproblems": {
+					"type" : "object",
+					"properties": {
+						"Network_problem": {
+							"type": "object",
+							"required": ["desired_delta_x", "topology_json", "boundary_json", "control_json" ],
+							"properties": {
+								"desired_delta_x": {
+									"type": "number",
+									"minimum": 0
+								},
+								"topology_json": {
+									"type": "string",
+									"format": "iri-reference"
+								},
+								"boundary_json": {
+									"type": "string",
+									"format": "iri-reference"
+								},
+								"control_json": {
+									"type": "string",
+									"format": "iri-reference"
+								}
+							}
+						}
+					}
+				}
+
+			}
+		}
+	}
+}
