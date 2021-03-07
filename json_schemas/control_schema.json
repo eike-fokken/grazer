@@ -9,38 +9,29 @@
     "connections": {
       "type": "object",
       "properties": {
-        "ControlValve": {
-          "type": "object",
-          "properties": {
-            "id": {"type": "string"},
-            "data": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "time": {"type": "number"},
-                  "values": {"type": "array", "items": {"type": "number"}}
-                }
+        "Controlvalve": {"$ref": "#/$defs/data"},
+        "Compressorstation": {"$ref": "#/$defs/data"}
+      }
+    }
+  },
+  "$defs": {
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "time": {"type": "number"},
+                "values": {"type": "array", "items": {"type": "number"}}
               }
             }
           }
-        },
-				"Compressorstation": {
-					"type": "object",
-					"properties": {
-						"id": {"type": "string"},
-            "data": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "time": {"type": "number"},
-                  "values": {"type": "array", "items": {"type": "number"}}
-                }
-              }
-            }
-					}
-				}
+        }
       }
     }
   }
