@@ -1,233 +1,123 @@
 {
-	"$id": "https://raw.githubusercontent.com/eike-fokken/grazer/blob/master/json_schemas/topology_schema.json",
-	"$schema": "http://json-schema.org/draft-07/schema",
-	"title": "Topology",
-	"description": "Description of the Network Topology",
-	"required": [
-		"information",
-		"nodes"
-	],
-	"properties": {
-		"information": {
-			"type": "object",
-			"description": "Metadata",
-			"required": [
-				"type"
-			],
-			"properties": {
-				"title": {
-					"type": "string"
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"gas-power"
-					]
-				},
-				"author": {
-					"type": "string"
-				},
-				"date": {
-					"type": "string",
-					"format": "date"
-				},
-				"documentation": {
-					"type": "string"
-				}
-			}
-		},
-		"nodes": {
-			"type": "object",
-			"required": [
-				"Source",
-				"Innode",
-				"PVnode",
-				"PQnode"
-			],
-			"properties": {
-				"Source": {
-					"type": "array",
-					"items": {
-						"type": "object",
-						"properties": {
-							"id": {
-								"type": "string"
-							},
-							"x": {
-								"type": "number"
-							},
-							"y": {
-								"type": "number"
-							},
-							"height": {
-								"$ref": "#/$defs/unitMeasure"
-							},
-							"temperature": {
-								"$ref": "#/$defs/temperature"
-							},
-							"pressureMin": {
-								"$ref": "#/$defs/pressure"
-							},
-							"pressureMax": {
-								"$ref": "#/$defs/pressure"
-							},
-							"pressureInit": {
-								"$ref": "#/$defs/pressure"
-							},
-							"flowMin": {
-								"$ref": "#/$defs/flux"
-							},
-							"flowMax": {
-								"$ref": "#/$defs/flux"
-							}
-						}
-					}
-				},
-				"Innode": {
-					"type": "array",
-					"items": {
-						"type": "object",
-						"properties": {
-							"id": {
-								"type": "string"
-							},
-							"x": {
-								"type": "number"
-							},
-							"y": {
-								"type": "number"
-							},
-							"height": {
-								"$ref": "#/$defs/unitMeasure"
-							},
-							"temperature": {
-								"$ref": "#/$defs/temperature"
-							},
-							"pressureMin": {
-								"$ref": "#/$defs/pressure"
-							},
-							"pressureMax": {
-								"$ref": "#/$defs/pressure"
-							},
-							"pressureInit": {
-								"$ref": "#/$defs/pressure"
-							},
-							"flowMin": {
-								"$ref": "#/$defs/flux"
-							},
-							"flowMax": {
-								"$ref": "#/$defs/flux"
-							}
-						}
-					}
-				},
-				"PVnode": {
-					"type": "object",
-					"required": [ "id", "G", "B"],
-					"properties": {
-						"id": {
-							"type": "string"
-						},
-						"G": {
-							"type": "number",
-							"description": "real part"
-						},
-						"B": {
-							"type": "number",
-							"description": "imaginary part"
-						}
-					}
-				},
-				"PQnode": {
-					"type": "object",
-					"required": [ "id", "G", "B"],
-					"properties": {
-						"id": {
-							"type": "string"
-						},
-						"G": {
-							"type": "number",
-							"description": "real part"
-						},
-						"B": {
-							"type": "number",
-							"description": "imaginary part"
-						}
-					}
-				}
-			}
-		},
-		"connections": {
-			"type": "object",
-			"properties": {
-				"Gaspowerconnection": {
-					"type": "array"
-				},
-				"Transmissionline": {
-					"type": "array"
-				},
-				"Shortpipe": {
-					"type": "array"
-				}
-			}
-		}
-	},
-	"$defs": {
-		"pressure": {
-			"type": "object",
-			"description": "pressure measure",
-			"required": [ "value", "unit" ],
-			"properties": {
-				"unit": {
-					"type": "string",
-					"enum": ["bar"]
-				},
-				"value": {
-					"type": "number"
-				}
-			}
-		},
-		"temperature": {
-			"type": "object",
-			"description": "temperature measure",
-			"required": ["value", "unit"],
-			"properties": {
-				"unit": {
-					"type": "string",
-					"enum": ["K"]
-				},
-				"value": {
-					"type": "number"
-				}
-			}
-		},
-		"flux": {
-			"type": "object",
-			"description": "flux measure",
-			"required": ["value", "unit"],
-			"properties": {
-				"unit": {
-					"type": "string",
-					"enum": ["m_cube_per_s"]
-				},
-				"value": {
-					"type": "number"
-				}
-			}
-		},
-		"unitMeasure": {
-			"type": "object",
-			"required": [
-				"value"
-			],
-			"properties": {
-				"unit": {
-					"type": "string"
-				},
-				"value": {
-					"type": "number"
-				}
-			}
-		}
-	}
+  "$id": "https://raw.githubusercontent.com/eike-fokken/grazer/blob/master/json_schemas/topology_schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "Topology",
+  "description": "Description of the Network Topology",
+  "required": ["information", "nodes"],
+  "properties": {
+    "information": {
+      "type": "object",
+      "description": "Metadata",
+      "required": ["type"],
+      "properties": {
+        "title": {"type": "string"},
+        "type": {"type": "string", "enum": ["gas-power"]},
+        "author": {"type": "string"},
+        "date": {"type": "string", "format": "date"},
+        "documentation": {"type": "string"}
+      }
+    },
+    "nodes": {
+      "type": "object",
+      "required": ["Source", "Innode", "PVnode", "PQnode"],
+      "properties": {
+        "Source": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {"type": "string"},
+              "x": {"type": "number"},
+              "y": {"type": "number"},
+              "height": {"$ref": "#/$defs/unitMeasure"},
+              "temperature": {"$ref": "#/$defs/temperature"},
+              "pressureMin": {"$ref": "#/$defs/pressure"},
+              "pressureMax": {"$ref": "#/$defs/pressure"},
+              "pressureInit": {"$ref": "#/$defs/pressure"},
+              "flowMin": {"$ref": "#/$defs/flux"},
+              "flowMax": {"$ref": "#/$defs/flux"}
+            }
+          }
+        },
+        "Innode": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {"type": "string"},
+              "x": {"type": "number"},
+              "y": {"type": "number"},
+              "height": {"$ref": "#/$defs/unitMeasure"},
+              "temperature": {"$ref": "#/$defs/temperature"},
+              "pressureMin": {"$ref": "#/$defs/pressure"},
+              "pressureMax": {"$ref": "#/$defs/pressure"},
+              "pressureInit": {"$ref": "#/$defs/pressure"},
+              "flowMin": {"$ref": "#/$defs/flux"},
+              "flowMax": {"$ref": "#/$defs/flux"}
+            }
+          }
+        },
+        "PVnode": {
+          "type": "object",
+          "required": ["id", "G", "B"],
+          "properties": {
+            "id": {"type": "string"},
+            "G": {"type": "number", "description": "real part"},
+            "B": {"type": "number", "description": "imaginary part"}
+          }
+        },
+        "PQnode": {
+          "type": "object",
+          "required": ["id", "G", "B"],
+          "properties": {
+            "id": {"type": "string"},
+            "G": {"type": "number", "description": "real part"},
+            "B": {"type": "number", "description": "imaginary part"}
+          }
+        }
+      }
+    },
+    "connections": {
+      "type": "object",
+      "properties": {
+        "Gaspowerconnection": {"type": "array"},
+        "Transmissionline": {"type": "array"},
+        "Shortpipe": {"type": "array"}
+      }
+    }
+  },
+  "$defs": {
+    "pressure": {
+      "type": "object",
+      "description": "pressure measure",
+      "required": ["value", "unit"],
+      "properties": {
+        "unit": {"type": "string", "enum": ["bar"]},
+        "value": {"type": "number"}
+      }
+    },
+    "temperature": {
+      "type": "object",
+      "description": "temperature measure",
+      "required": ["value", "unit"],
+      "properties": {
+        "unit": {"type": "string", "enum": ["K"]},
+        "value": {"type": "number"}
+      }
+    },
+    "flux": {
+      "type": "object",
+      "description": "flux measure",
+      "required": ["value", "unit"],
+      "properties": {
+        "unit": {"type": "string", "enum": ["m_cube_per_s"]},
+        "value": {"type": "number"}
+      }
+    },
+    "unitMeasure": {
+      "type": "object",
+      "required": ["value"],
+      "properties": {"unit": {"type": "string"}, "value": {"type": "number"}}
+    }
+  }
 }
