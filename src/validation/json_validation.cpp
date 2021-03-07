@@ -11,7 +11,7 @@ using nlohmann::json;
 using nlohmann::json_schema::json_validator;
 
 
-inline json load_json_file(std::string location){
+json load_json_file(std::string location){
   if (location.rfind("http", 0) == 0) {
     // url 
     throw "Not Implemented yet";
@@ -25,7 +25,11 @@ inline json load_json_file(std::string location){
   }
 }
 
-bool validate_json(json data, std::string schema_location) {
+bool nlohmann::validate_json(json data) {
+  return validate_json(data, data["$schema"].get<std::string>());
+}
+
+bool nlohmann::validate_json(json data, std::string schema_location) {
   json schema = load_json_file(schema_location);
 
   // setup validator
