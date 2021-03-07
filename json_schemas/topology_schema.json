@@ -50,7 +50,7 @@
           "id": {"type": "string"},
           "x": {"type": "number"},
           "y": {"type": "number"},
-          "height": {"$ref": "#/$defs/unit/defaultUnit"},
+          "height": {"$ref": "#/$defs/unit/length"},
           "temperature": {"$ref": "#/$defs/unit/temperature"},
           "pressureMin": {"$ref": "#/$defs/unit/pressure"},
           "pressureMax": {"$ref": "#/$defs/unit/pressure"},

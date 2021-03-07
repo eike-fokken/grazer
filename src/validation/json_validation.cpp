@@ -1,6 +1,9 @@
 #include <iostream>
+#include <filesystem>
+#include <exception>
 #include <nlohmann/json.hpp>
 #include <nlohmann/json-schema.hpp>
+#include <Aux_json.hpp>
 
 #include "json_validation.hpp"
 
@@ -8,11 +11,24 @@ using nlohmann::json;
 using nlohmann::json_schema::json_validator;
 
 
-json load_json_file(std::string location);
+inline json load_json_file(std::string location){
+  if (location.rfind("http", 0) == 0) {
+    // url 
+    throw "Not Implemented yet";
+  } else {
+    auto path = std::filesystem::path(location);
+    if (std::filesystem::is_regular_file(path)) {
+      return aux_json::get_json_from_file_path(path);
+    } else {
+      throw "Neither File nor URL";
+    }
+  }
+}
 
-inline json_validator setup_json_validator(std::string schema_location) {
-  json schema load_json_file(schema_location);
+bool validate_json(json data, std::string schema_location) {
+  json schema = load_json_file(schema_location);
 
+  // setup validator
   json_validator validator;
   try {
     validator.set_root_schema(schema);
@@ -20,10 +36,8 @@ inline json_validator setup_json_validator(std::string schema_location) {
     std::cerr << "Validation of schema failed, here is why: " << e.what() << "\n";
     throw;
   }
-  return validator;
-}
 
-inline bool validate(json_validator validator, json data) {
+  // validate
   try {
     validator.validate(data);
   } catch (const std::exception &e) {
@@ -33,7 +47,3 @@ inline bool validate(json_validator validator, json data) {
   return true;
 }
 
-bool validate_json(json data) {
-  json_validator validator setup_json_validator(data["$schema"]);
-  return validate(validator, data);
-}
