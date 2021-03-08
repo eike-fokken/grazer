@@ -41,6 +41,11 @@ add_executable(gas_test GasTest.cpp)
 target_link_libraries(gas_test PUBLIC problemlayer power networkproblem network exception newton matrixhandler  power gas coloroutput misc)
 target_link_libraries(gas_test PUBLIC gtest gtest_main gmock)
 
+add_executable(json_validation_test validationTest.cpp)
+
+target_link_libraries(json_validation_test PUBLIC json_validation nlohmann)
+target_link_libraries(json_validation_test PUBLIC gtest gtest_main gmock)
+
 
 add_library(testheader INTERFACE)
 target_link_libraries(testheader INTERFACE  matrixhandler problemlayer gtest gtest_main gmock)
@@ -76,3 +81,8 @@ add_test(
   NAME gas_test
   COMMAND gas_test
   )
+
+add_test(
+  NAME json_validation
+  COMMAND json_validation_test
+)

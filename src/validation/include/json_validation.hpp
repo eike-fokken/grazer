@@ -1,5 +1,4 @@
 #pragma once
-#include <aux
 #include <nlohmann/json.hpp>
 
 namespace validation {
