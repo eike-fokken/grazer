@@ -26,11 +26,11 @@ json load_json_file(std::string const &location){
   }
 }
 
-bool nlohmann::validate_json(json const &data) {
-  return nlohmann::validate_json(data, data["$schema"].get<std::string>());
+bool validation::validate_json(json const &data) {
+  return validation::validate_json(data, data["$schema"].get<std::string>());
 }
 
-bool nlohmann::validate_json(json const &data, std::string const &schema_location) {
+bool validation::validate_json(json const &data, std::string const &schema_location) {
   json schema = load_json_file(schema_location);
 
   // setup validator

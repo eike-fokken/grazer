@@ -1,7 +1,8 @@
 #pragma once
+#include <aux
 #include <nlohmann/json.hpp>
 
-namespace nlohmann {
+namespace validation {
   /**
    * @brief assumes that the json data has a "$schema" key which points to
    * a valid json schema to validate the data against
