@@ -43,7 +43,7 @@ target_link_libraries(gas_test PUBLIC gtest gtest_main gmock)
 
 add_executable(json_validation_test validationTest.cpp)
 
-target_link_libraries(json_validation_test PUBLIC json_validation nlohmann)
+target_link_libraries(json_validation_test PUBLIC json_validation nlohmann_json)
 target_link_libraries(json_validation_test PUBLIC gtest gtest_main gmock)
 
 

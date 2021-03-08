@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <filesystem>
 #include <exception>
 #include <nlohmann/json.hpp>
@@ -26,29 +27,39 @@ json load_json_file(std::string const &location){
   }
 }
 
-bool validation::validate_json(json const &data) {
-  return validation::validate_json(data, data["$schema"].get<std::string>());
+void validation::validate_json(json const &data) {
+   validation::validate_json(data, data["$schema"].get<std::string>());
+   return;
 }
 
-bool validation::validate_json(json const &data, std::string const &schema_location) {
+
+void validation::validate_json(json const &data, std::string const &schema_location) {
   json schema = load_json_file(schema_location);
+  validation::validate_json(data, schema_location);
+}
+
+void validation::validate_json(json const &data, json const &schema) {
 
   // setup validator
   json_validator validator;
   try {
     validator.set_root_schema(schema);
   } catch (const std::exception &e) {
-    std::cerr << "Validation of schema failed, here is why: " << e.what() << "\n";
-    throw;
+    std::ostringstream o;
+    o << "Validation of schema failed, here is why: " << e.what() << "\n";
+    throw std::runtime_error(o.str());
   }
 
   // validate
   try {
     validator.validate(data);
   } catch (const std::exception &e) {
-    std::cerr << "Validation failed, here is why: " << e.what() << "\n";
-    throw;
+    std::ostringstream o;
+    o << "Validation failed, here is why: " << e.what() << "\n";
+    throw std::runtime_error(o.str());
   }
-  return true;
+
+  std::cout << "Validated Schema \"" << schema["title"].get<std::string>()<< "\"" << std::endl;
+  return; 
 }
 
