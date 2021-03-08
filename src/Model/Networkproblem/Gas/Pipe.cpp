@@ -17,6 +17,12 @@ namespace Model::Networkproblem::Gas {
 
   std::string Pipe::get_type(){return "Pipe";}
 
+  nlohmann::json const &Pipe::get_schema(){
+    return schema;
+  }
+
+  nlohmann::json const Pipe::schema = R"({"json schema here!"})"_json;
+
   Pipe::Pipe(nlohmann::json const &topology,
              std::vector<std::unique_ptr<Network::Node>> &nodes)
       : Network::Edge(topology, nodes),
