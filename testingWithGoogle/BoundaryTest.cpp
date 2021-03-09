@@ -1,9 +1,12 @@
 #include "Boundaryvalue.hpp"
+#include "Exception.hpp"
+#include "Valuemap.hpp"
 #include <gtest/gtest.h>
 #include <Eigen/Dense>
+#include <stdexcept>
 
 TEST(Boundaryvalue, Operator) {
-  
+
   Eigen::Vector2d a;
   a(0) = 0.0;
   a(1) = 1.0;
@@ -23,18 +26,9 @@ TEST(Boundaryvalue, Operator) {
 
   Model::Networkproblem::Boundaryvalue<double, 2> boundary_object(boundary_value_map);
 
-  EXPECT_ANY_THROW(boundary_object(3.5));
-  try {
-    boundary_object(3.5);
-  } catch (Exception &e) {
-    std::string message(e.what());
-    std::cout << message;
-    bool is_right_message =
-        (message.find("Requested boundary value is at a later time than the "
-                      "given values") != std::string::npos);
-    EXPECT_EQ(is_right_message, true);
-  }
-  EXPECT_ANY_THROW(boundary_object(0.5));
+  EXPECT_THROW(boundary_object(3.5),Exception);
+  EXPECT_THROW(boundary_object(0.5), Exception);
+  // EXPECT_ANY_THROW(boundary_object(0.5));
 
   // TEST2
   {
