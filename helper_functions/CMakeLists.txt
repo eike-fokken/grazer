@@ -1,3 +1,6 @@
 add_executable(boundaryprettyfy boundaryprettyfy.cpp)
 
 add_executable(transform_boundary transform_boundary.cpp)
+
+add_executable(stringify_values stringify_value_json.cpp)
+target_link_libraries(stringify_values PRIVATE misc)
