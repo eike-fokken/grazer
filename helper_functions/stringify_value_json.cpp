@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <nlohmann/json.hpp>
+#include <stdexcept>
 #include <string>
 
 int main(int argc, char *argv[]) {
@@ -38,12 +39,17 @@ int main(int argc, char *argv[]) {
 
   for (auto type : {"nodes", "connections"}) {
     if(value_json.contains(type)){
-      for (auto &nodetype : value_json[type]) {
+      for (auto &componenttype : value_json[type]) {
 
-        for (auto &nodejson : nodetype) {
+        for (auto &nodejson : componenttype) {
           for (auto &datapoint : nodejson["data"]) {
-
-            auto vec = datapoint["values"].get<std::vector<double>>();
+            std::vector<double> vec;
+            try{
+            vec = datapoint["values"].get<std::vector<double>>();
+            } catch (...){
+              std::cout << nodejson["id"] << std::endl;
+              throw;
+            }
             std::vector<std::string> string_vec;
             for (auto value : vec) {
               string_vec.push_back(Aux::to_string_precise(value));
