@@ -90,9 +90,9 @@ namespace Model::Networkproblem::Power {
       for (auto const &var : values[i]) {
         output << ",    " << var.at(0.0);
       }
-      output << std::endl;
+      output << "\n";
     }
-    output << std::endl;
+    output << "\n";
   }
 
   void Powernode::save_power_values(double time, Eigen::Ref<Eigen::VectorXd const> const &state,double P_val, double Q_val) {
