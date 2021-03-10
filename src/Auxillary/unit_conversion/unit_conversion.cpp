@@ -83,6 +83,10 @@ namespace Aux::unit {
     } 
     return num_prefix * search_si_prefix->second;
   }
+  double parse_prefix(std::string const &prefix);
+  double parse_prefix(std::string const &prefix){
+    return parse_prefix(prefix, si_prefixes);
+  }
 
   double parse(json const &unit_json, std::map<std::string, double> const &unit_map) {
     std::string unit = unit_json["unit"].get<std::string>();
@@ -90,6 +94,6 @@ namespace Aux::unit {
     auto [prefix, value] = parse_unit(unit, unit_map);
     value *= unit_json["value"].get<double>();
 
-    return value * parse_prefix(prefix, si_prefixes);
+    return value * parse_prefix(prefix);
   }
 }

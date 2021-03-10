@@ -5,7 +5,7 @@
 namespace unit = Aux::unit;
 using nlohmann::json;
 
-TEST(unitParser, directCall) {
+TEST(unitParser, happyPath) {
   json metres_10 = R"({
     "value": 10,
     "unit": "m"
