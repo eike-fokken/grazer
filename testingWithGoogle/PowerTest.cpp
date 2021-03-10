@@ -1,3 +1,4 @@
+#include "Matrixhandler.hpp"
 #include "Net.hpp"
 #include "PQnode.hpp"
 #include "PVnode.hpp"
@@ -232,8 +233,24 @@ TEST_F(PowerTEST, evaluate_Vphi) {
   EXPECT_DOUBLE_EQ(rootvalues[1], new_state[1] - phi1_bd);
 }
 
-//   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-//   Aux::Triplethandler handler(&J);
+TEST_F(PowerTEST, evaluate_state_derivative_Vphi) {
+
+  auto eqcomponents = get_eq_components();
+  new_state << V1, phi1, V2, phi2, V3, phi3;
+
+  Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
+  Aux::Triplethandler handler(&J);
+ 
+  for (auto &comp : eqcomponents) {
+    comp->evaluate_state_derivative(&handler, last_time,  new_time, last_state, new_state);
+  }
+     handler.set_matrix();
+  // Vphi node:
+     Eigen::MatrixXd DenseJ = J;
+     EXPECT_DOUBLE_EQ(DenseJ(0,0), 1.0);
+     EXPECT_DOUBLE_EQ(DenseJ(1, 1), 1.0);
+  }
+
 
 //   nodes[0]->evaluate_state_derivative(&handler, last_time, new_time,
 //   last_state,
