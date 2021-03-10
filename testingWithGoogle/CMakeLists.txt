@@ -16,7 +16,7 @@ target_link_libraries(boundary_test PUBLIC gtest gtest_main gmock)
 
 add_executable(power_test PowerTest.cpp)
 
-target_link_libraries(power_test PUBLIC problemlayer power networkproblem network exception newton matrixhandler  power)
+target_link_libraries(power_test PUBLIC power network)
 target_link_libraries(power_test PUBLIC gtest gtest_main gmock)
 
 
