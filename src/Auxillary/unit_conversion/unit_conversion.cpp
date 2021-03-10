@@ -5,8 +5,7 @@
 
 namespace Aux::unit {
   // https://en.wikipedia.org/wiki/Metric_prefix#List_of_SI_prefixes
-  // convert double to boost::units::quantity<si::length> add "*si::meters" to the entries
-  std::map<std::string, double> si_prefixes {
+  const std::map<std::string, double> si_prefixes {
     {"Y", 1e24},
     {"Z", 1e21},
     {"E", 1e18},
@@ -30,19 +29,36 @@ namespace Aux::unit {
     {"y", 1e-24}
   };
 
-  double parse_unit(json const &pressure_json, std::string const &symbol) {
-    double value = pressure_json["value"].get<double>();
-    std::string unit = pressure_json["unit"].get<std::string>();
 
-    // find symbol location in unit string
-    auto symbol_location = unit.rfind(symbol);
-    if (symbol_location == std::string::npos) { // not found?
-      std::ostringstream o;
-      o << "Missing unit symbol in " << unit << ", expected: " << symbol << "\n";
-      throw std::runtime_error(o.str());
+  const std::tuple<std::string, double> parse_unit(
+    std::string const &unit, 
+    std::map<std::string, double> const &unit_map
+  ) {
+    auto unit_size = unit.size();
+    for (auto const& [str_unit, val] : unit_map) {
+      auto symb_size = str_unit.size();
+      if (
+        unit_size >= symb_size 
+        and unit.compare(unit_size-symb_size, symb_size, str_unit) == 0
+      )
+      {
+        // match
+        return std::tuple<std::string, double>(
+          unit.substr(0, unit.size()-symb_size), 
+          val
+        );
+      }
     }
-    // split off prefix from symbol
-    std::string prefix = unit.substr(0, symbol_location);
+    std::ostringstream o;
+    o << "Could not find the unit of " << unit << " in the unit_map " << "\n";
+    throw std::runtime_error(o.str());
+  }
+
+  double parse(json const &unit_json, std::map<std::string, double> const &unit_map) {
+    std::string unit = unit_json["unit"].get<std::string>();
+
+    auto [prefix, value] = parse_unit(unit, unit_map);
+    value *= unit_json["value"].get<double>();
 
     // split into num_prefix and si_prefix
     std::string si_prefix;

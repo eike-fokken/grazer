@@ -18,9 +18,9 @@ TEST(unitParser, directCall) {
     "{\"value\": 1000,\"unit\": \"1e4 \u00B5m\"}"
   );
 
-  auto si_length = unit::parse_unit(metres_10, "m");
+  auto si_length = unit::parse(metres_10, unit::lenght_units);
 
-  // expect_eq(si_length, 10.0);
-  // expect_eq(si_length, unit::parse_unit(deca_metres_1, "m"));
-  EXPECT_EQ(si_length, unit::parse_unit(ten_thousand_micro_metres_1000, "m"));
+  EXPECT_EQ(si_length, 10.0);
+  EXPECT_EQ(si_length, unit::parse(deca_metres_1, unit::lenght_units));
+  EXPECT_EQ(si_length, unit::parse(ten_thousand_micro_metres_1000, unit::lenght_units));
 }
