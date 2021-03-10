@@ -92,7 +92,7 @@ namespace Aux::unit {
     std::string unit = unit_json["unit"].get<std::string>();
 
     auto [prefix, conv] = parse_unit<Conversion>(unit, unit_map);
-    return (unit_json["value"].get<double>() + parse_prefix_si(prefix))*conv.slope + conv.shift;
+    return (unit_json["value"].get<double>() * parse_prefix_si(prefix))*conv.slope + conv.shift;
   }
 
   double parse_mult_si(json const &unit_json, std::map<std::string, double> const &unit_map) {
