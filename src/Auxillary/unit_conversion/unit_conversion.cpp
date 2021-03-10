@@ -21,13 +21,13 @@ namespace Aux::unit {
     {"d", 0.1}, 
     {"c", 1e-2}, 
     {"m", 1e-3},
-    {"mu", 1e-3}, {"\xB5", 1e-3}, //unicode micro sign
-    {"n", 1e-3},
-    {"p", 1e-3},
-    {"f", 1e-3},
-    {"a", 1e-3},
-    {"z", 1e-3},
-    {"y", 1e-3}
+    {"mu", 1e-6}, {"\xB5", 1e-3}, //unicode micro sign
+    {"n", 1e-9},
+    {"p", 1e-12},
+    {"f", 1e-15},
+    {"a", 1e-18},
+    {"z", 1e-21},
+    {"y", 1e-24}
   };
 
   double parse_unit(json const &pressure_json, std::string const &symbol) {
@@ -44,8 +44,8 @@ namespace Aux::unit {
     // split off prefix from symbol
     std::string prefix = unit.substr(0, symbol_location);
 
-    // split into num_prefix and str_prefix
-    std::string str_prefix;
+    // split into num_prefix and si_prefix
+    std::string si_prefix;
     double num_prefix;
 
     std::string::size_type last_space = prefix.rfind(" ");
@@ -55,12 +55,19 @@ namespace Aux::unit {
       if (remaining != last_space) {
         throw std::runtime_error("Multiple spaces in unit not allowed. Format should be [(number) unit]");
       }
-      str_prefix = prefix.substr(remaining);
+      si_prefix = prefix.substr(remaining+1);
     } else {
       num_prefix = 1.0;
-      str_prefix = prefix;
+      si_prefix = prefix;
     }
 
-    return value * num_prefix * si_prefixes[str_prefix];
+    auto search_si_prefix = si_prefixes.find(si_prefix);
+    if (search_si_prefix == si_prefixes.end()) {
+      std::ostringstream o;
+      o << "Unknown si prefix: " << si_prefix <<"\n";
+      throw std::runtime_error(o.str());
+    } 
+
+    return value * num_prefix * search_si_prefix->second;
   }
 }
