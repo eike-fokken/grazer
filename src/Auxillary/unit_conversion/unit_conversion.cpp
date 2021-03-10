@@ -21,7 +21,7 @@ namespace Aux::unit {
     {"d", 0.1}, 
     {"c", 1e-2}, 
     {"m", 1e-3},
-    {"mu", 1e-6}, {"\xB5", 1e-3}, //unicode micro sign
+    {"mu", 1e-6}, {"\u00B5", 1e-6}, {"\u03BC", 1e-6}, //unicode micro and mu 
     {"n", 1e-9},
     {"p", 1e-12},
     {"f", 1e-15},

@@ -14,10 +14,9 @@ TEST(unitParser, directCall) {
     "value": 1,
     "unit": "dam"
   })"_json;
-  json ten_thousand_micro_metres_1000 = R"({
-    "value": 1000,
-    "unit": "1e4 mum"
-  })"_json;
+  json ten_thousand_micro_metres_1000 = json::parse(
+    "{\"value\": 1000,\"unit\": \"1e4 \u00B5m\"}"
+  );
 
   auto si_length = unit::parse_unit(metres_10, "m");
 
