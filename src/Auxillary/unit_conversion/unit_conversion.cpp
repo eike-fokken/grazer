@@ -40,9 +40,7 @@ namespace Aux::unit {
       if (
         unit_size >= symb_size 
         and unit.compare(unit_size-symb_size, symb_size, str_unit) == 0
-      )
-      {
-        // match
+      ){ // match
         return std::tuple<std::string, double>(
           unit.substr(0, unit.size()-symb_size), 
           val
@@ -54,12 +52,12 @@ namespace Aux::unit {
     throw std::runtime_error(o.str());
   }
 
-  double parse(json const &unit_json, std::map<std::string, double> const &unit_map) {
-    std::string unit = unit_json["unit"].get<std::string>();
-
-    auto [prefix, value] = parse_unit(unit, unit_map);
-    value *= unit_json["value"].get<double>();
-
+  double parse_prefix(
+    std::string const &prefix, std::map<std::string, double> const &prefix_map
+  );
+  double parse_prefix(
+    std::string const &prefix, std::map<std::string,double> const &prefix_map
+  ){
     // split into num_prefix and si_prefix
     std::string si_prefix;
     double num_prefix;
@@ -77,13 +75,21 @@ namespace Aux::unit {
       si_prefix = prefix;
     }
 
-    auto search_si_prefix = si_prefixes.find(si_prefix);
-    if (search_si_prefix == si_prefixes.end()) {
+    auto search_si_prefix = prefix_map.find(si_prefix);
+    if (search_si_prefix == prefix_map.end()) {
       std::ostringstream o;
       o << "Unknown si prefix: " << si_prefix <<"\n";
       throw std::runtime_error(o.str());
     } 
+    return num_prefix * search_si_prefix->second;
+  }
 
-    return value * num_prefix * search_si_prefix->second;
+  double parse(json const &unit_json, std::map<std::string, double> const &unit_map) {
+    std::string unit = unit_json["unit"].get<std::string>();
+
+    auto [prefix, value] = parse_unit(unit, unit_map);
+    value *= unit_json["value"].get<double>();
+
+    return value * parse_prefix(prefix, si_prefixes);
   }
 }
