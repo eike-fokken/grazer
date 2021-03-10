@@ -95,7 +95,7 @@ namespace Aux::unit {
     std::string const &unit, std::map<std::string, Conversion> const &unit_map
   );
 
-  double parse_conv_si(json const &unit_json, std::map<std::string, Conversion> const &unit_map);
+  double parse_to_si(json const &unit_json, std::map<std::string, Conversion> const &unit_map);
 
   /**
    * @brief parse a unit json into a unit with help of a unit_map
@@ -104,5 +104,5 @@ namespace Aux::unit {
    * @param unit_map e.g. {"m": 1.0, "yt": 0.0254}
    * @return double (e.g. with the values from above 0.5 [m = 10 * 5 cm])
    */
-  double parse_mult_si(json const &unit_json, std::map<std::string, double> const &unit_map);
+  double parse_to_si(json const &unit_json, std::map<std::string, double> const &unit_map);
 }
