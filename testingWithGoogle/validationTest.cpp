@@ -5,56 +5,58 @@
 
 using nlohmann::json;
 
-json TEST_SCHEMA = R"(
-{
-  "$schema": "http://json-schema.org/draft-07/schema",
-  "title": "Test Schema",
-  "type": "object",
-  "required": ["my_number"],
-  "properties": {
-    "my_number": {"type": "number"},
-    "my_string": {"type": "string"}
-  }
-}
-)"_json;
+class JsonContainer : public ::testing::Test {
 
-TEST(testJsonValidation, happyPath) {
-  json valid_data = R"(
+public:
+  const static json valid_schema = R"(
+  {
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "title": "Test Schema",
+    "type": "object",
+    "required": ["my_number"],
+    "properties": {
+      "my_number": {"type": "number"},
+      "my_string": {"type": "string"}
+    }
+  }
+  )"_json;
+
+  const static json valid_data = R"(
     {
       "$schema":  "my_test_schema",
       "title": "Valid Test Data",
       "my_number": 6.2
     }
   )"_json;
-  
-  ASSERT_NO_THROW(validation::validate_json(valid_data, TEST_SCHEMA));
-}
 
-TEST(testJsonValidation, wrongData) {
-  json missing_data = R"(
+  const static json missing_data = R"(
     {
       "$schema":  "my_test_schema",
       "title": "Valid Test Data",
       "my_string": "test"
     }
   )"_json;
-  
-  EXPECT_THROW(validation::validate_json(missing_data, TEST_SCHEMA), std::runtime_error);
 
-  json invalid_data = R"(
+  const static json invalid_data = R"(
     {
       "$schema":  "my_test_schema",
       "title": "Valid Test Data",
       "my_number": "test"
     }
   )"_json;
-  
-  EXPECT_THROW(validation::validate_json(invalid_data, TEST_SCHEMA), std::runtime_error);
+
+  const static json invalid_schema = R"( {"type": "invalid Schema"} )"_json;
+};
+
+TEST_F(JsonContainer, happyPath) {
+  EXPECT_NO_THROW(validation::validate_json(valid_data, valid_schema));
 }
 
-TEST(testJsonValidation, invalidSchema) {
-  json invalid_schema = R"( {"type": "invalid Schema"} )"_json;
-  json data = R"( {"$schema": "my_test_schema"})"_json;
+TEST_F(JsonContainer, wrongData) {
+  EXPECT_THROW(validation::validate_json(missing_data, valid_schema), std::runtime_error);
+  EXPECT_THROW(validation::validate_json(invalid_data, valid_schema), std::runtime_error);
+}
 
-  EXPECT_THROW(validation::validate_json(data, invalid_schema), std::runtime_error);
+TEST_F(JsonContainer, invalidSchema) {
+  EXPECT_THROW(validation::validate_json(valid_data, invalid_schema), std::runtime_error);
 }
