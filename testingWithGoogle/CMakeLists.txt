@@ -45,6 +45,11 @@ add_executable(gas_test GasTest.cpp)
 target_link_libraries(gas_test PUBLIC problemlayer power networkproblem network exception newton matrixhandler  power gas coloroutput misc)
 target_link_libraries(gas_test PUBLIC gtest gtest_main gmock)
 
+add_executable(aux_unit_conversion_test AuxUnitConversionTest.cpp)
+
+target_link_libraries(aux_unit_conversion_test PUBLIC aux_unit_conversion nlohmann_json)
+target_link_libraries(aux_unit_conversion_test PUBLIC gtest gtest_main gmock)
+
 
 add_library(testheader INTERFACE)
 target_link_libraries(testheader INTERFACE  matrixhandler problemlayer gtest gtest_main gmock)
@@ -84,3 +89,8 @@ add_test(
   NAME gas_test
   COMMAND gas_test
   )
+ 
+add_test(
+  NAME aux_unit_conversion
+  COMMAND aux_unit_conversion_test
+)

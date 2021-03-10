@@ -4,5 +4,5 @@
 using nlohmann::json;
 
 namespace Aux::unit {
-  double si_pressure(json const &pressure_json);
+  double parse_unit(json const &pressure_json, std::string const &symbol);
 }
