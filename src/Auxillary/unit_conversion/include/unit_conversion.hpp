@@ -95,14 +95,27 @@ namespace Aux::unit {
     std::string const &unit, std::map<std::string, Conversion> const &unit_map
   );
 
+
+
+  template <typename Conversiontype>
+  double
+  parse_to_si(json const &unit_json,
+              std::map<std::string, Conversiontype> const &unit_map);
+
+  extern template
   double parse_to_si(json const &unit_json, std::map<std::string, Conversion> const &unit_map);
 
-  /**
-   * @brief parse a unit json into a unit with help of a unit_map
-   * 
-   * @param unit_json e.g. {"value": 10, "unit": "5 cm" }
-   * @param unit_map e.g. {"m": 1.0, "yt": 0.0254}
-   * @return double (e.g. with the values from above 0.5 [m = 10 * 5 cm])
-   */
-  double parse_to_si(json const &unit_json, std::map<std::string, double> const &unit_map);
+
+  extern template double
+  parse_to_si(json const &unit_json,
+              std::map<std::string, double> const &unit_map);
+
+  // /**
+  //  * @brief parse a unit json into a unit with help of a unit_map
+  //  * 
+  //  * @param unit_json e.g. {"value": 10, "unit": "5 cm" }
+  //  * @param unit_map e.g. {"m": 1.0, "yt": 0.0254}
+  //  * @return double (e.g. with the values from above 0.5 [m = 10 * 5 cm])
+  //  */
+  // double parse_to_si(json const &unit_json, std::map<std::string, double> const &unit_map);
 }

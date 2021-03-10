@@ -106,4 +106,9 @@ namespace Aux::unit {
       unit_json["value"].get<double>() * parse_prefix_si(prefix), conv
     );
   }
+
+  template double parse_to_si<Conversion>(json const &unit_json,
+                                 std::map<std::string, Conversion> const &unit_map);
+  template double parse_to_si<double>(json const &unit_json,
+                                 std::map<std::string, double> const &unit_map);
 }
