@@ -127,6 +127,7 @@ endif()
 
 add_subdirectory(src)
 add_subdirectory(testingWithGoogle)
+add_subdirectory(nlohmann_json)
 
 
 # Typically you don't care so much for a third party library's tests to be

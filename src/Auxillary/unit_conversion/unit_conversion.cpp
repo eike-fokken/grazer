@@ -30,18 +30,18 @@ namespace Aux::unit {
   };
 
 
-  const std::tuple<std::string, double> parse_unit(
+  template<typename T> const std::tuple<std::string, T> parse_unit(
     std::string const &unit, 
-    std::map<std::string, double> const &unit_map
+    std::map<std::string, T> const &unit_mult_map
   ) {
     auto unit_size = unit.size();
-    for (auto const& [str_unit, val] : unit_map) {
+    for (auto const& [str_unit, val] : unit_mult_map) {
       auto symb_size = str_unit.size();
       if (
         unit_size >= symb_size 
         and unit.compare(unit_size-symb_size, symb_size, str_unit) == 0
       ){ // match
-        return std::tuple<std::string, double>(
+        return std::tuple<std::string, T>(
           unit.substr(0, unit.size()-symb_size), 
           val
         );
@@ -83,17 +83,24 @@ namespace Aux::unit {
     } 
     return num_prefix * search_si_prefix->second;
   }
-  double parse_prefix(std::string const &prefix);
-  double parse_prefix(std::string const &prefix){
+  double parse_prefix_si(std::string const &prefix);
+  double parse_prefix_si(std::string const &prefix){
     return parse_prefix(prefix, si_prefixes);
   }
 
-  double parse(json const &unit_json, std::map<std::string, double> const &unit_map) {
+  double parse_conv_si(json const &unit_json, std::map<std::string, Conversion> const &unit_map) {
     std::string unit = unit_json["unit"].get<std::string>();
 
-    auto [prefix, value] = parse_unit(unit, unit_map);
+    auto [prefix, conv] = parse_unit<Conversion>(unit, unit_map);
+    return (unit_json["value"].get<double>() + parse_prefix_si(prefix))*conv.slope + conv.shift;
+  }
+
+  double parse_mult_si(json const &unit_json, std::map<std::string, double> const &unit_map) {
+    std::string unit = unit_json["unit"].get<std::string>();
+
+    auto [prefix, value] = parse_unit<double>(unit, unit_map);
     value *= unit_json["value"].get<double>();
 
-    return value * parse_prefix(prefix);
+    return value * parse_prefix_si(prefix);
   }
 }
