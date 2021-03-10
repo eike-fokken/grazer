@@ -32,10 +32,10 @@ namespace Aux::unit {
 
   template<typename T> const std::tuple<std::string, T> parse_unit(
     std::string const &unit, 
-    std::map<std::string, T> const &unit_mult_map
+    std::map<std::string, T> const &unit_map
   ) {
     auto unit_size = unit.size();
-    for (auto const& [str_unit, val] : unit_mult_map) {
+    for (auto const& [str_unit, val] : unit_map) {
       auto symb_size = str_unit.size();
       if (
         unit_size >= symb_size 
@@ -50,6 +50,16 @@ namespace Aux::unit {
     std::ostringstream o;
     o << "Could not find the unit of " << unit << " in the unit_map " << "\n";
     throw std::runtime_error(o.str());
+  }
+
+  double unit_conversion(double value, double unit);
+  double unit_conversion(double value, double unit) {
+    return value * unit;
+  }
+
+  double unit_conversion(double value, Conversion unit);
+  double unit_conversion(double value, Conversion unit) {
+    return value * unit.slope + unit.shift;
   }
 
   double parse_prefix(
@@ -88,19 +98,19 @@ namespace Aux::unit {
     return parse_prefix(prefix, si_prefixes);
   }
 
-  double parse_conv_si(json const &unit_json, std::map<std::string, Conversion> const &unit_map) {
+  template <typename T> double parse_to_si(json const &unit_json, std::map<std::string, T> const &unit_map){
     std::string unit = unit_json["unit"].get<std::string>();
 
-    auto [prefix, conv] = parse_unit<Conversion>(unit, unit_map);
-    return (unit_json["value"].get<double>() * parse_prefix_si(prefix))*conv.slope + conv.shift;
+    auto [prefix, conv] = parse_unit<T>(unit, unit_map);
+    return unit_conversion(
+      unit_json["value"].get<double>() * parse_prefix_si(prefix), conv
+    );
+  }
+  double parse_conv_si(json const &unit_json, std::map<std::string, Conversion> const &unit_map) {
+    return parse_to_si(unit_json, unit_map);
   }
 
   double parse_mult_si(json const &unit_json, std::map<std::string, double> const &unit_map) {
-    std::string unit = unit_json["unit"].get<std::string>();
-
-    auto [prefix, value] = parse_unit<double>(unit, unit_map);
-    value *= unit_json["value"].get<double>();
-
-    return value * parse_prefix_si(prefix);
+    return parse_to_si(unit_json, unit_map);
   }
 }
