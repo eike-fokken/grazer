@@ -59,7 +59,8 @@ void validation::validate_json(json const &data, json const &schema) {
     throw std::runtime_error(o.str());
   }
 
-  std::cout << "Validated Schema \"" << schema["title"].get<std::string>()<< "\"" << std::endl;
+  // debugging
+  // std::cout << "Validated Schema \"" << schema["title"].get<std::string>()<< "\"" << std::endl;
   return; 
 }
 
