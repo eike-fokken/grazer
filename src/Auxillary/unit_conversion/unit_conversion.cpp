@@ -17,6 +17,7 @@ namespace Aux::unit {
     {"k", 1e3}, 
     {"h", 100}, 
     {"da", 10}, 
+    {"", 1},
     {"d", 0.1}, 
     {"c", 1e-2}, 
     {"m", 1e-3},
@@ -60,10 +61,6 @@ namespace Aux::unit {
       str_prefix = prefix;
     }
 
-    // process str_prefix
-
-
-
-    return value * num_prefix;
+    return value * num_prefix * si_prefixes[str_prefix];
   }
 }
