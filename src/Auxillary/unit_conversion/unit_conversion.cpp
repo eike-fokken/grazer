@@ -1,4 +1,6 @@
 #include <unit_conversion.hpp>
+
+#include <sstream>
 #include <map>
 
 namespace Aux::unit {
@@ -27,29 +29,41 @@ namespace Aux::unit {
     {"y", 1e-3}
   };
 
-  double si_pressure(json const &pressure_json) {
+  double parse_unit(json const &pressure_json, std::string const &symbol) {
     double value = pressure_json["value"].get<double>();
     std::string unit = pressure_json["unit"].get<std::string>();
 
-    // split into num_unit and string_unit
-    std::string string_unit;
-    double num_unit;
+    // find symbol location in unit string
+    auto symbol_location = unit.rfind(symbol);
+    if (symbol_location == std::string::npos) { // not found?
+      std::ostringstream o;
+      o << "Missing unit symbol in " << unit << ", expected: " << symbol << "\n";
+      throw std::runtime_error(o.str());
+    }
+    // split off prefix from symbol
+    std::string prefix = unit.substr(0, symbol_location);
 
-    std::string::size_type last_space = unit.rfind(" ");
+    // split into num_prefix and str_prefix
+    std::string str_prefix;
+    double num_prefix;
+
+    std::string::size_type last_space = prefix.rfind(" ");
     if (last_space != std::string::npos) {
       std::string::size_type remaining;
-      num_unit = std::stod(unit, &remaining);
+      num_prefix = std::stod(prefix, &remaining);
       if (remaining != last_space) {
         throw std::runtime_error("Multiple spaces in unit not allowed. Format should be [(number) unit]");
       }
-      string_unit = unit.substr(remaining);
+      str_prefix = prefix.substr(remaining);
     } else {
-      num_unit = 1.0;
-      string_unit = unit;
+      num_prefix = 1.0;
+      str_prefix = prefix;
     }
 
-    // process string_unit
+    // process str_prefix
 
-    return value;
+
+
+    return value * num_prefix;
   }
 }
