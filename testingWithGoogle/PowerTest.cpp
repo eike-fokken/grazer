@@ -339,6 +339,76 @@ TEST_F(PowerTEST, evaluate_state_derivative_PQ) {
 }
 
 
+TEST_F(PowerTEST, evaluate_PV) {
+
+  auto eqcomponents = get_eq_components();
+  new_state << V1, phi1, V2, phi2, V3, phi3;
+
+  for (auto &comp : eqcomponents) {
+    comp->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  }
+
+    EXPECT_DOUBLE_EQ(rootvalues[4],
+                     -P3_bd + G3 * V3 * V3 +
+                         V3 * V2 *
+                             (Gt2 * cos(phi3 - phi2) + Bt2 * sin(phi3 -
+                             phi2)));
+    EXPECT_DOUBLE_EQ(rootvalues[5], new_state[4] - V3_bd);
+  }
+
+// TEST_F(PowerTEST, evaluate_state_derivative_PV) {
+
+//   auto eqcomponents = get_eq_components();
+//   new_state << V1, phi1, V2, phi2, V3, phi3;
+
+//   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
+//   Aux::Triplethandler handler(&J);
+ 
+//   for (auto &comp : eqcomponents) {
+//     comp->evaluate_state_derivative(&handler, last_time,  new_time, last_state, new_state);
+//   }
+//      handler.set_matrix();
+//   // Vphi node:
+//      Eigen::MatrixXd DenseJ = J;
+//      //derivatives of index 2:
+
+//      EXPECT_DOUBLE_EQ(DenseJ(2, 0),
+//                       V2 * (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 - phi1)));
+//      EXPECT_DOUBLE_EQ(DenseJ(2, 1),
+//                       V1 * V2 *
+//                           (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 - phi1)));
+//      EXPECT_DOUBLE_EQ(DenseJ(2, 2),
+//          2 * G2 * V2 + V1 * (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 - phi1)) +
+//              V3 * (Gt2 * cos(phi2 - phi3) + Bt2 * sin(phi2 - phi3)));
+//      EXPECT_DOUBLE_EQ(DenseJ(2, 3),
+//          V2 * V1 * (-Gt1 * sin(phi2 - phi1) + Bt1 * cos(phi2 - phi1)) +
+//              V2 * V3 * (-Gt2 * sin(phi2 - phi3) + Bt2 * cos(phi2 - phi3)));
+
+
+
+
+//      EXPECT_DOUBLE_EQ(DenseJ(3, 0),
+//                       V2 * (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 - phi1)));
+//      EXPECT_DOUBLE_EQ(DenseJ(3, 1),
+//                       V2 * V1 *
+//                           (-Gt1 * cos(phi2 - phi1) - Bt1 * sin(phi2 - phi1)));
+//      EXPECT_DOUBLE_EQ(DenseJ(3, 2),
+//          -2 * B2 * V2 + V1 * (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 - phi1)) +
+//              V3 * (Gt2 * sin(phi2 - phi3) - Bt2 * cos(phi2 - phi3)));
+//      EXPECT_DOUBLE_EQ(
+//          DenseJ(3, 3),
+//          V2 * V1 * (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 - phi1)) +
+//              V2 * V3 * (Gt2 * cos(phi2 - phi3) + Bt2 * sin(phi2 - phi3)));
+//      EXPECT_DOUBLE_EQ(DenseJ(3, 4), V2 * (Gt2 * sin(phi2 - phi3) - Bt2 * cos(phi2 - phi3)));
+//      EXPECT_DOUBLE_EQ(DenseJ(3, 5),
+//                       V2 * V3 *
+//                           (-Gt2 * cos(phi2 - phi3) - Bt2 * sin(phi2 - phi3)));
+
+// }
+
+
+
+
   
 
 //   nodes[0]->evaluate_state_derivative(&handler, last_time, new_time,
