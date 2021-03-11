@@ -29,42 +29,14 @@ namespace Aux::unit {
     {"y", 1e-24}
   };
 
-
-  template<typename T> const std::tuple<std::string, T> parse_unit(
-    std::string const &unit, 
-    std::map<std::string, T> const &unit_map
-  ) {
-    auto unit_size = unit.size();
-    for (auto const& [str_unit, val] : unit_map) {
-      auto symb_size = str_unit.size();
-      if (
-        unit_size >= symb_size 
-        and unit.compare(unit_size-symb_size, symb_size, str_unit) == 0
-      ){ // match
-        return std::tuple<std::string, T>(
-          unit.substr(0, unit.size()-symb_size), 
-          val
-        );
-      }
-    }
-    std::ostringstream o;
-    o << "Could not find the unit of " << unit << " in the unit_map " << "\n";
-    throw std::runtime_error(o.str());
-  }
-
-  double unit_conversion(double value, double unit);
   double unit_conversion(double value, double unit) {
     return value * unit;
   }
 
-  double unit_conversion(double value, conversion conv);
   double unit_conversion(double value, conversion conv) {
     return conv(value);
   }
 
-  double parse_prefix(
-    std::string const &prefix, std::map<std::string, double> const &prefix_map
-  );
   double parse_prefix(
     std::string const &prefix, std::map<std::string,double> const &prefix_map
   ){
@@ -93,19 +65,11 @@ namespace Aux::unit {
     } 
     return num_prefix * search_si_prefix->second;
   }
-  double parse_prefix_si(std::string const &prefix);
+
   double parse_prefix_si(std::string const &prefix){
     return parse_prefix(prefix, si_prefixes);
   }
 
-  template <typename T> double parse_to_si(json const &unit_json, std::map<std::string, T> const &unit_map){
-    std::string unit = unit_json["unit"].get<std::string>();
-
-    auto [prefix, conv] = parse_unit<T>(unit, unit_map);
-    return unit_conversion(
-      unit_json["value"].get<double>() * parse_prefix_si(prefix), conv
-    );
-  }
 
   template double parse_to_si<conversion>(
     json const &unit_json,
