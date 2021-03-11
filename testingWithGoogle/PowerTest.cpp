@@ -247,7 +247,7 @@ TEST_F(PowerTEST, evaluate_state_derivative_Vphi) {
      handler.set_matrix();
   // Vphi node:
      Eigen::MatrixXd DenseJ = J;
-     //derivatives of index 0:
+     // derivatives of index 0, that is, V in the Vphi node:
      EXPECT_DOUBLE_EQ(DenseJ(0, 0), 1.0);
      EXPECT_DOUBLE_EQ(DenseJ(0, 1), 0.0);
      EXPECT_DOUBLE_EQ(DenseJ(0, 2), 0.0);
@@ -255,7 +255,7 @@ TEST_F(PowerTEST, evaluate_state_derivative_Vphi) {
      EXPECT_DOUBLE_EQ(DenseJ(0, 4), 0.0);
      EXPECT_DOUBLE_EQ(DenseJ(0, 5), 0.0);
 
-     // derivatives of index 1:
+     // derivatives of index 1, that is, phi in the Vphi node:
      EXPECT_DOUBLE_EQ(DenseJ(1, 0), 0.0);
      EXPECT_DOUBLE_EQ(DenseJ(1, 1), 1.0);
      EXPECT_DOUBLE_EQ(DenseJ(1, 2), 0.0);
@@ -302,8 +302,8 @@ TEST_F(PowerTEST, evaluate_state_derivative_PQ) {
      handler.set_matrix();
   // Vphi node:
      Eigen::MatrixXd DenseJ = J;
-     //derivatives of index 2:
 
+     // derivatives of index 2, that is, P in the PQ node:
      EXPECT_DOUBLE_EQ(DenseJ(2, 0),
                       V2 * (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 - phi1)));
      EXPECT_DOUBLE_EQ(DenseJ(2, 1),
@@ -315,10 +315,13 @@ TEST_F(PowerTEST, evaluate_state_derivative_PQ) {
      EXPECT_DOUBLE_EQ(DenseJ(2, 3),
          V2 * V1 * (-Gt1 * sin(phi2 - phi1) + Bt1 * cos(phi2 - phi1)) +
              V2 * V3 * (-Gt2 * sin(phi2 - phi3) + Bt2 * cos(phi2 - phi3)));
+     EXPECT_DOUBLE_EQ(DenseJ(2, 4),
+                      V2 * (Gt2 * cos(phi2 - phi3) + Bt2 * sin(phi2 - phi3)));
+     EXPECT_DOUBLE_EQ(DenseJ(2, 5),
+                      V3 * V2 *
+                          (Gt2 * sin(phi2 - phi3) - Bt2 * cos(phi2 - phi3)));
 
-
-
-
+     // derivatives of index 3, that is, Q in the PQ node:
      EXPECT_DOUBLE_EQ(DenseJ(3, 0),
                       V2 * (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 - phi1)));
      EXPECT_DOUBLE_EQ(DenseJ(3, 1),
@@ -356,314 +359,44 @@ TEST_F(PowerTEST, evaluate_PV) {
     EXPECT_DOUBLE_EQ(rootvalues[5], new_state[4] - V3_bd);
   }
 
-// TEST_F(PowerTEST, evaluate_state_derivative_PV) {
+TEST_F(PowerTEST, evaluate_state_derivative_PV) {
 
-//   auto eqcomponents = get_eq_components();
-//   new_state << V1, phi1, V2, phi2, V3, phi3;
+  auto eqcomponents = get_eq_components();
+  new_state << V1, phi1, V2, phi2, V3, phi3;
 
-//   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-//   Aux::Triplethandler handler(&J);
+  Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
+  Aux::Triplethandler handler(&J);
  
-//   for (auto &comp : eqcomponents) {
-//     comp->evaluate_state_derivative(&handler, last_time,  new_time, last_state, new_state);
-//   }
-//      handler.set_matrix();
-//   // Vphi node:
-//      Eigen::MatrixXd DenseJ = J;
-//      //derivatives of index 2:
+  for (auto &comp : eqcomponents) {
+    comp->evaluate_state_derivative(&handler, last_time,  new_time, last_state, new_state);
+  }
+     handler.set_matrix();
+     Eigen::MatrixXd DenseJ = J;
 
-//      EXPECT_DOUBLE_EQ(DenseJ(2, 0),
-//                       V2 * (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 - phi1)));
-//      EXPECT_DOUBLE_EQ(DenseJ(2, 1),
-//                       V1 * V2 *
-//                           (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 - phi1)));
-//      EXPECT_DOUBLE_EQ(DenseJ(2, 2),
-//          2 * G2 * V2 + V1 * (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 - phi1)) +
-//              V3 * (Gt2 * cos(phi2 - phi3) + Bt2 * sin(phi2 - phi3)));
-//      EXPECT_DOUBLE_EQ(DenseJ(2, 3),
-//          V2 * V1 * (-Gt1 * sin(phi2 - phi1) + Bt1 * cos(phi2 - phi1)) +
-//              V2 * V3 * (-Gt2 * sin(phi2 - phi3) + Bt2 * cos(phi2 - phi3)));
+     //derivatives of index 4, that is, P in the PV node:
+     EXPECT_DOUBLE_EQ(DenseJ(4, 0), 0.0);
+     EXPECT_DOUBLE_EQ(DenseJ(4, 1), 0.0);
+     EXPECT_DOUBLE_EQ(DenseJ(4, 2),
+                      V3 * (Gt2 * cos(phi3 - phi2) + Bt2 * sin(phi3 - phi2)));
+     EXPECT_DOUBLE_EQ(DenseJ(4, 3),
+                      V2 * V3 *
+                          (Gt2 * sin(phi3 - phi2) - Bt2 * cos(phi3 - phi2)));
 
+     EXPECT_DOUBLE_EQ(
+         DenseJ(4, 4),
+         2 * G3 * V3 + V2 * (Gt2 * cos(phi3 - phi2) + Bt2 * sin(phi3 - phi2)));
+     EXPECT_DOUBLE_EQ(
+         DenseJ(4, 5),
+         V3 * V2 * (-Gt2 * sin(phi3 - phi2) + Bt2 * cos(phi3 - phi2)));
 
-
-
-//      EXPECT_DOUBLE_EQ(DenseJ(3, 0),
-//                       V2 * (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 - phi1)));
-//      EXPECT_DOUBLE_EQ(DenseJ(3, 1),
-//                       V2 * V1 *
-//                           (-Gt1 * cos(phi2 - phi1) - Bt1 * sin(phi2 - phi1)));
-//      EXPECT_DOUBLE_EQ(DenseJ(3, 2),
-//          -2 * B2 * V2 + V1 * (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 - phi1)) +
-//              V3 * (Gt2 * sin(phi2 - phi3) - Bt2 * cos(phi2 - phi3)));
-//      EXPECT_DOUBLE_EQ(
-//          DenseJ(3, 3),
-//          V2 * V1 * (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 - phi1)) +
-//              V2 * V3 * (Gt2 * cos(phi2 - phi3) + Bt2 * sin(phi2 - phi3)));
-//      EXPECT_DOUBLE_EQ(DenseJ(3, 4), V2 * (Gt2 * sin(phi2 - phi3) - Bt2 * cos(phi2 - phi3)));
-//      EXPECT_DOUBLE_EQ(DenseJ(3, 5),
-//                       V2 * V3 *
-//                           (-Gt2 * cos(phi2 - phi3) - Bt2 * sin(phi2 - phi3)));
-
-// }
+     // derivatives of index 5, that is, V in the PV node:
+     EXPECT_DOUBLE_EQ(DenseJ(5, 0), 0.0);
+     EXPECT_DOUBLE_EQ(DenseJ(5, 1), 0.0);
+     EXPECT_DOUBLE_EQ(DenseJ(5, 2), 0.0);
+     EXPECT_DOUBLE_EQ(DenseJ(5, 3), 0.0);
+     EXPECT_DOUBLE_EQ(DenseJ(5, 4), 1.0);
+     EXPECT_DOUBLE_EQ(DenseJ(5, 5), 0.0);
+     
+}
 
 
-
-
-  
-
-//   nodes[0]->evaluate_state_derivative(&handler, last_time, new_time,
-//   last_state,
-//                                new_state);
-//   nodes[1]->evaluate_state_derivative(&handler, last_time, new_time,
-//   last_state,
-//                                new_state);
-//   handler.set_matrix();
-
-//   EXPECT_EQ(J.nonZeros(), 10);
-//   EXPECT_DOUBLE_EQ(J.coeff(0, 0), 1.0);
-//   EXPECT_DOUBLE_EQ(J.coeff(1, 1), 1.0);
-
-//   EXPECT_DOUBLE_EQ(J.coeff(2, 0),
-//                    V2 * (Gt * cos(phi2 - phi1) + Bt * sin(phi2 - phi1)));
-//   EXPECT_DOUBLE_EQ(J.coeff(2, 1),
-//                    V1 * V2 * (Gt * sin(phi2 - phi1) - Bt * cos(phi2 -
-//                    phi1)));
-
-//   EXPECT_DOUBLE_EQ(J.coeff(2, 2), 2 * G2 * V2 + V1 * (Gt * cos(phi2 - phi1) +
-//                                                       Bt * sin(phi2 -
-//                                                       phi1)));
-
-//   EXPECT_DOUBLE_EQ(J.coeff(2, 3),
-//                    V2 * V1 * (-Gt * sin(phi2 - phi1) + Bt * cos(phi2 -
-//                    phi1)));
-
-//   EXPECT_DOUBLE_EQ(J.coeff(3, 0),
-//                    V2 * (Gt * sin(phi2 - phi1) - Bt * cos(phi2 - phi1)));
-
-//   EXPECT_DOUBLE_EQ(J.coeff(3, 1),
-//                    V2 * V1 * (-Gt * cos(phi2 - phi1) - Bt * sin(phi2 -
-//                    phi1)));
-
-//   EXPECT_DOUBLE_EQ(J.coeff(3, 2), -2 * B2 * V2 + V1 * (Gt * sin(phi2 - phi1)
-//   -
-//                                                        Bt * cos(phi2 -
-//                                                        phi1)));
-//   EXPECT_DOUBLE_EQ(J.coeff(3, 3),
-//                    V2 * V1 * (Gt * cos(phi2 - phi1) + Bt * sin(phi2 -
-//                    phi1)));
-// }
-
-// TEST(testPower, test_P_and_Q_2) {
-
-//   double V1_bd = 8.0;
-//   double phi1_bd = 6.0;
-//   double G1 = 3.0;
-//   double B1 = -5.0;
-
-//   double P2_bd = 3.0;
-//   double Q2_bd = 7.0;
-//   double G2 = 2.0;
-//   double B2 = 2.0;
-
-//   double Gt = 2.0;
-//   double Bt = 4.0;
-
-//   double V1 = 1.0;
-//   double phi1 = 2.0;
-//   double V2 = 3.0;
-//   double phi2 = 4.0;
-//   // double V1_bd = 8.0;
-//   // double phi1_bd = 1.0;
-//   // double G1 = 1.0;
-//   // double B1 = 1.0;
-
-//   // double P2_bd = 3.0;
-//   // double Q2_bd = 7.0;
-//   // double G2 = 2.0;
-//   // double B2 = 2.0;
-
-//   // double Gt = 2.0;
-//   // double Bt = 4.0;
-
-//   // double V1 = 1.0;
-//   // double phi1 = 1.0;
-//   // double V2 = 1.0;
-//   // double phi2 = 1.0;
-
-//   nlohmann::json bd_json1 = {
-//       {"id", "N1"},
-//       {"type", "Vphi"},
-//       {"data", nlohmann::json::array({{{"time", 0.},
-//                              {"values", nlohmann::json::array({V1_bd,
-//                              phi1_bd})}}})}};
-//   nlohmann::json bd_json2 = {
-//       {"id", "N2"},
-//       {"type", "PQ"},
-//       {"data",
-//        nlohmann::json::array({{{"time", 0.}, {"values",
-//        nlohmann::json::array({P2_bd, Q2_bd})}}})}};
-
-//   Model::Networkproblem::Power::Vphinode n1("N1", bd_json1, G1, B1);
-//   Model::Networkproblem::Power::PQnode n2("N2", bd_json2, G2, B2);
-//   Model::Networkproblem::Power::Transmissionline t("T1", &n2, &n1, Gt, Bt);
-
-//   auto a = n1.set_indices(0);
-//   n2.set_indices(a);
-//   n1.setup();
-//   n2.setup();
-
-//   Eigen::VectorXd rootvalues(4);
-//   double last_time = 0.0;
-//   double new_time = 0.0;
-//   Eigen::VectorXd last_state(4);
-//   Eigen::VectorXd new_state(4);
-//   new_state << V1, phi1, V2, phi2;
-
-//   n1.evaluate(rootvalues, last_time, new_time, last_state, new_state);
-//   n2.evaluate(rootvalues, last_time, new_time, last_state, new_state);
-
-//   EXPECT_DOUBLE_EQ(rootvalues[0], new_state[0] - V1_bd);
-//   EXPECT_DOUBLE_EQ(rootvalues[1], new_state[1] - phi1_bd);
-//   EXPECT_DOUBLE_EQ(rootvalues[2],
-//                    -P2_bd + G2 * V2 * V2 +
-//                        V2 * V1 *
-//                            (Gt * cos(phi2 - phi1) + Bt * sin(phi2 - phi1)));
-//   EXPECT_DOUBLE_EQ(rootvalues[3],
-//                    -Q2_bd - B2 * V2 * V2 +
-//                        V2 * V1 *
-//                            (Gt * sin(phi2 - phi1) - Bt * cos(phi2 - phi1)));
-
-//   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-//   Aux::Triplethandler handler(&J);
-
-//   n1.evaluate_state_derivative(&handler, last_time, new_time, last_state,
-//                                new_state);
-//   n2.evaluate_state_derivative(&handler, last_time, new_time, last_state,
-//                                new_state);
-//   handler.set_matrix();
-
-//   EXPECT_EQ(J.nonZeros(), 10);
-
-//   EXPECT_DOUBLE_EQ(J.coeff(0, 0), 1.0);
-//   EXPECT_DOUBLE_EQ(J.coeff(1, 1), 1.0);
-
-//   EXPECT_DOUBLE_EQ(J.coeff(2, 0),
-//                    V2 * (Gt * cos(phi2 - phi1) + Bt * sin(phi2 - phi1)));
-//   EXPECT_DOUBLE_EQ(J.coeff(2, 1),
-//                    V1 * V2 * (Gt * sin(phi2 - phi1) - Bt * cos(phi2 -
-//                    phi1)));
-
-//   EXPECT_DOUBLE_EQ(J.coeff(2, 2), 2 * G2 * V2 + V1 * (Gt * cos(phi2 - phi1) +
-//                                                       Bt * sin(phi2 -
-//                                                       phi1)));
-
-//   EXPECT_DOUBLE_EQ(J.coeff(2, 3),
-//                    V2 * V1 * (-Gt * sin(phi2 - phi1) + Bt * cos(phi2 -
-//                    phi1)));
-
-//   EXPECT_DOUBLE_EQ(J.coeff(3, 0),
-//                    V2 * (Gt * sin(phi2 - phi1) - Bt * cos(phi2 - phi1)));
-
-//   EXPECT_DOUBLE_EQ(J.coeff(3, 1),
-//                    V2 * V1 * (-Gt * cos(phi2 - phi1) - Bt * sin(phi2 -
-//                    phi1)));
-
-//   EXPECT_DOUBLE_EQ(J.coeff(3, 2), -2 * B2 * V2 + V1 * (Gt * sin(phi2 - phi1)
-//   -
-//                                                        Bt * cos(phi2 -
-//                                                        phi1)));
-//   EXPECT_DOUBLE_EQ(J.coeff(3, 3),
-//                    V2 * V1 * (Gt * cos(phi2 - phi1) + Bt * sin(phi2 -
-//                    phi1)));
-// }
-
-// TEST(testPower, test_PV) {
-
-//   double V1_bd = 8.0;
-//   double phi1_bd = 6.0;
-//   double G1 = 3.0;
-//   double B1 = -5.0;
-
-//   double P2_bd = 3.0;
-//   double V2_bd = 7.0;
-//   double G2 = 2.0;
-//   double B2 = 2.0;
-
-//   double Gt = 2.0;
-//   double Bt = 4.0;
-
-//   double V1 = 1.0;
-//   double phi1 = 2.0;
-//   double V2 = 3.0;
-//   double phi2 = 4.0;
-
-//   nlohmann::json bd_json1 = {
-//       {"id", "N1"},
-//       {"type", "Vphi"},
-//       {"data", nlohmann::json::array({{{"time", 0.},
-//                              {"values", nlohmann::json::array({V1_bd,
-//                              phi1_bd})}}})}};
-//   nlohmann::json bd_json2 = {
-//       {"id", "N2"},
-//       {"type", "PV"},
-//       {"data",
-//        nlohmann::json::array({{{"time", 0.}, {"values",
-//        nlohmann::json::array({P2_bd, V2_bd})}}})}};
-
-//   Model::Networkproblem::Power::Vphinode n1("N1", bd_json1, G1, B1);
-//   Model::Networkproblem::Power::PVnode n2("N2", bd_json2, G2, B2);
-//   Model::Networkproblem::Power::Transmissionline t("T1", &n2, &n1, Gt, Bt);
-
-//   auto a = n1.set_indices(0);
-//   n2.set_indices(a);
-//   n1.setup();
-//   n2.setup();
-
-//   Eigen::VectorXd rootvalues(4);
-//   double last_time = 0.0;
-//   double new_time = 0.0;
-//   Eigen::VectorXd last_state(4);
-//   Eigen::VectorXd new_state(4);
-//   new_state << V1, phi1, V2, phi2;
-
-//   n1.evaluate(rootvalues, last_time, new_time, last_state, new_state);
-//   n2.evaluate(rootvalues, last_time, new_time, last_state, new_state);
-
-//   EXPECT_DOUBLE_EQ(rootvalues[0], new_state[0] - V1_bd);
-//   EXPECT_DOUBLE_EQ(rootvalues[1], new_state[1] - phi1_bd);
-//   EXPECT_DOUBLE_EQ(rootvalues[2],
-//                    -P2_bd + G2 * V2 * V2 +
-//                        V2 * V1 *
-//                            (Gt * cos(phi2 - phi1) + Bt * sin(phi2 - phi1)));
-//   EXPECT_DOUBLE_EQ(rootvalues[3], new_state[2] - V2_bd);
-
-//   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-//   Aux::Triplethandler handler(&J);
-
-//   n1.evaluate_state_derivative(&handler, last_time, new_time, last_state,
-//                                new_state);
-//   n2.evaluate_state_derivative(&handler, last_time, new_time, last_state,
-//                                new_state);
-//   handler.set_matrix();
-
-//   EXPECT_EQ(J.nonZeros(), 7);
-
-//   EXPECT_DOUBLE_EQ(J.coeff(0, 0), 1.0);
-//   EXPECT_DOUBLE_EQ(J.coeff(1, 1), 1.0);
-
-//   EXPECT_DOUBLE_EQ(J.coeff(2, 0),
-//                    V2 * (Gt * cos(phi2 - phi1) + Bt * sin(phi2 - phi1)));
-//   EXPECT_DOUBLE_EQ(J.coeff(2, 1),
-//                    V1 * V2 * (Gt * sin(phi2 - phi1) - Bt * cos(phi2 -
-//                    phi1)));
-
-//   EXPECT_DOUBLE_EQ(J.coeff(2, 2), 2 * G2 * V2 + V1 * (Gt * cos(phi2 - phi1) +
-//                                                       Bt * sin(phi2 -
-//                                                       phi1)));
-
-//   EXPECT_DOUBLE_EQ(J.coeff(2, 3),
-//                    V2 * V1 * (-Gt * sin(phi2 - phi1) + Bt * cos(phi2 -
-//                    phi1)));
-
-//   EXPECT_DOUBLE_EQ(J.coeff(3, 2), 1.0);
-// }
