@@ -12,20 +12,12 @@
 #include <string>
 #include <vector>
 
+//declarations:
 nlohmann::json make_boundary(std::string id, Eigen::Vector2d condition);
 
-nlohmann::json make_boundary(std::string id, Eigen::Vector2d condition) {
-  nlohmann::json bound;
-  bound["id"] = id;
-  bound["data"] = nlohmann::json::array();
-  nlohmann::json b0;
-  b0["time"] = 0;
-  b0["values"] = {condition[0], condition[1]};
-  bound["data"].push_back(b0);
 
-  return bound;
-}
-
+// Test fixture.
+// Defintions are at the bottom of the file.
 class PowerTEST : public ::testing::Test {
 
 public:
@@ -88,136 +80,6 @@ public:
 
 };
 
-void PowerTEST::set_custom_net(
-    Eigen::Vector2d vphi_par, Eigen::Vector2d pq_par, Eigen::Vector2d pv_par,
-    Eigen::Vector2d tl_vphi_pq_par, Eigen::Vector2d tl_pq_pv_par,
-    Eigen::Vector2d vphi_boundary, Eigen::Vector2d pq_boundary,
-    Eigen::Vector2d pv_boundary) {
-  std::vector<std::unique_ptr<Network::Node>> nodes;
-  std::vector<std::unique_ptr<Network::Edge>> edges;
-
-  {
-    nlohmann::json vphi_json;
-    vphi_json["id"] = "vphi";
-    vphi_json["G"] = std::to_string(vphi_par[0]);
-    vphi_json["B"] = std::to_string(vphi_par[1]);
-    auto b0 = make_boundary(vphi_json["id"], vphi_boundary);
-    vphi_json["boundary_values"] = b0;
-
-    nodes.push_back(
-        std::make_unique<Model::Networkproblem::Power::Vphinode>(vphi_json));
-  }
-  {
-    nlohmann::json pq_json;
-    pq_json["id"] = "pq";
-    pq_json["G"] = std::to_string(pq_par[0]);
-    pq_json["B"] = std::to_string(pq_par[1]);
-
-    auto b1 = make_boundary(pq_json["id"], pq_boundary);
-    pq_json["boundary_values"] = b1;
-
-    nodes.push_back(
-        std::make_unique<Model::Networkproblem::Power::PQnode>(pq_json));
-  }
-  {
-    nlohmann::json pv_json;
-    pv_json["id"] = "pv";
-    pv_json["G"] = std::to_string(pv_par[0]);
-    pv_json["B"] = std::to_string(pv_par[1]);
-
-    auto b2 = make_boundary(pv_json["id"], pv_boundary);
-    pv_json["boundary_values"] = b2;
-
-    nodes.push_back(
-        std::make_unique<Model::Networkproblem::Power::PVnode>(pv_json));
-  }
-  {
-    nlohmann::json tl_vphi_pq_json;
-    tl_vphi_pq_json["id"] = "tl_vphi_pq";
-    tl_vphi_pq_json["from"] = "vphi";
-    tl_vphi_pq_json["to"] = "pq";
-    tl_vphi_pq_json["G"] = std::to_string(tl_vphi_pq_par[0]);
-    tl_vphi_pq_json["B"] = std::to_string(tl_vphi_pq_par[1]);
-
-    edges.push_back(
-        std::make_unique<Model::Networkproblem::Power::Transmissionline>(
-            tl_vphi_pq_json, nodes));
-  }
-
-  {
-    nlohmann::json tl_pq_pv_json;
-    tl_pq_pv_json["id"] = "tl_pq_pv";
-    tl_pq_pv_json["from"] = "pq";
-    tl_pq_pv_json["to"] = "pv";
-    tl_pq_pv_json["G"] = std::to_string(tl_pq_pv_par[0]);
-    tl_pq_pv_json["B"] = std::to_string(tl_pq_pv_par[1]);
-
-    edges.push_back(
-        std::make_unique<Model::Networkproblem::Power::Transmissionline>(
-            tl_pq_pv_json, nodes));
-  }
-  net = Network::Net(std::move(nodes), std::move(edges));
-}
-
-std::vector<Model::Networkproblem::Equationcomponent *>
-PowerTEST::get_eq_components() {
-
-  std::vector<Model::Networkproblem::Equationcomponent *> eqcomponents;
-  for (auto &node : net.get_nodes()) {
-    auto eqcomp =
-        dynamic_cast<Model::Networkproblem::Equationcomponent *>(node);
-    if (eqcomp) {
-      eqcomponents.push_back(eqcomp);
-    }
-  }
-  for (auto &edge : net.get_edges()) {
-    auto eqcomp =
-        dynamic_cast<Model::Networkproblem::Equationcomponent *>(edge);
-    if (eqcomp) {
-      eqcomponents.push_back(eqcomp);
-    }
-  }
-  return eqcomponents;
-}
-
-void PowerTEST::SetUp(){
-  int next_free_index = 0;
-  auto eqcomponents = get_eq_components();
-  for (auto &comp : eqcomponents) {
-    next_free_index = comp->set_indices(next_free_index);
-  }
-  for (auto &comp : eqcomponents) {
-    comp->setup();
-  }
-}
-
-
-void PowerTEST::set_default_net() {
-
-  Eigen::Vector2d vphi_param;
-  vphi_param << G1, B1;
-  Eigen::Vector2d pq_param;
-  pq_param << G2, B2;
-  Eigen::Vector2d pv_param;
-  pv_param << G3, B3;
-
-  Eigen::Vector2d tl_vphi_pq_param;
-  tl_vphi_pq_param << Gt1, Bt1;
-
-  Eigen::Vector2d tl_pq_pv_param;
-  tl_pq_pv_param << Gt2, Bt2;
-
-  Eigen::Vector2d vphi_boundary;
-  vphi_boundary << V1_bd, phi1_bd;
-  Eigen::Vector2d pq_boundary;
-  pq_boundary << P2_bd, Q2_bd;
-
-  Eigen::Vector2d pv_boundary;
-  pv_boundary << P3_bd, V3_bd;
-
-  set_custom_net(vphi_param, pq_param, pv_param, tl_vphi_pq_param,
-                    tl_pq_pv_param, vphi_boundary, pq_boundary, pv_boundary);
-}
 
 TEST_F(PowerTEST, evaluate_Vphi) {
 
@@ -400,3 +262,152 @@ TEST_F(PowerTEST, evaluate_state_derivative_PV) {
 }
 
 
+
+
+//////////////////////////////////////////////////////
+// Here come the definitions of the fixture methods:
+/////////////////////////////////////////////////////
+
+nlohmann::json make_boundary(std::string id, Eigen::Vector2d condition) {
+  nlohmann::json bound;
+  bound["id"] = id;
+  bound["data"] = nlohmann::json::array();
+  nlohmann::json b0;
+  b0["time"] = 0;
+  b0["values"] = {condition[0], condition[1]};
+  bound["data"].push_back(b0);
+
+  return bound;
+}
+
+
+void PowerTEST::set_custom_net(
+    Eigen::Vector2d vphi_par, Eigen::Vector2d pq_par, Eigen::Vector2d pv_par,
+    Eigen::Vector2d tl_vphi_pq_par, Eigen::Vector2d tl_pq_pv_par,
+    Eigen::Vector2d vphi_boundary, Eigen::Vector2d pq_boundary,
+    Eigen::Vector2d pv_boundary) {
+  std::vector<std::unique_ptr<Network::Node>> nodes;
+  std::vector<std::unique_ptr<Network::Edge>> edges;
+
+  {
+    nlohmann::json vphi_json;
+    vphi_json["id"] = "vphi";
+    vphi_json["G"] = std::to_string(vphi_par[0]);
+    vphi_json["B"] = std::to_string(vphi_par[1]);
+    auto b0 = make_boundary(vphi_json["id"], vphi_boundary);
+    vphi_json["boundary_values"] = b0;
+
+    nodes.push_back(
+        std::make_unique<Model::Networkproblem::Power::Vphinode>(vphi_json));
+  }
+  {
+    nlohmann::json pq_json;
+    pq_json["id"] = "pq";
+    pq_json["G"] = std::to_string(pq_par[0]);
+    pq_json["B"] = std::to_string(pq_par[1]);
+
+    auto b1 = make_boundary(pq_json["id"], pq_boundary);
+    pq_json["boundary_values"] = b1;
+
+    nodes.push_back(
+        std::make_unique<Model::Networkproblem::Power::PQnode>(pq_json));
+  }
+  {
+    nlohmann::json pv_json;
+    pv_json["id"] = "pv";
+    pv_json["G"] = std::to_string(pv_par[0]);
+    pv_json["B"] = std::to_string(pv_par[1]);
+
+    auto b2 = make_boundary(pv_json["id"], pv_boundary);
+    pv_json["boundary_values"] = b2;
+
+    nodes.push_back(
+        std::make_unique<Model::Networkproblem::Power::PVnode>(pv_json));
+  }
+  {
+    nlohmann::json tl_vphi_pq_json;
+    tl_vphi_pq_json["id"] = "tl_vphi_pq";
+    tl_vphi_pq_json["from"] = "vphi";
+    tl_vphi_pq_json["to"] = "pq";
+    tl_vphi_pq_json["G"] = std::to_string(tl_vphi_pq_par[0]);
+    tl_vphi_pq_json["B"] = std::to_string(tl_vphi_pq_par[1]);
+
+    edges.push_back(
+        std::make_unique<Model::Networkproblem::Power::Transmissionline>(
+            tl_vphi_pq_json, nodes));
+  }
+
+  {
+    nlohmann::json tl_pq_pv_json;
+    tl_pq_pv_json["id"] = "tl_pq_pv";
+    tl_pq_pv_json["from"] = "pq";
+    tl_pq_pv_json["to"] = "pv";
+    tl_pq_pv_json["G"] = std::to_string(tl_pq_pv_par[0]);
+    tl_pq_pv_json["B"] = std::to_string(tl_pq_pv_par[1]);
+
+    edges.push_back(
+        std::make_unique<Model::Networkproblem::Power::Transmissionline>(
+            tl_pq_pv_json, nodes));
+  }
+  net = Network::Net(std::move(nodes), std::move(edges));
+}
+
+std::vector<Model::Networkproblem::Equationcomponent *>
+PowerTEST::get_eq_components() {
+
+  std::vector<Model::Networkproblem::Equationcomponent *> eqcomponents;
+  for (auto &node : net.get_nodes()) {
+    auto eqcomp =
+        dynamic_cast<Model::Networkproblem::Equationcomponent *>(node);
+    if (eqcomp) {
+      eqcomponents.push_back(eqcomp);
+    }
+  }
+  for (auto &edge : net.get_edges()) {
+    auto eqcomp =
+        dynamic_cast<Model::Networkproblem::Equationcomponent *>(edge);
+    if (eqcomp) {
+      eqcomponents.push_back(eqcomp);
+    }
+  }
+  return eqcomponents;
+}
+
+void PowerTEST::SetUp(){
+  int next_free_index = 0;
+  auto eqcomponents = get_eq_components();
+  for (auto &comp : eqcomponents) {
+    next_free_index = comp->set_indices(next_free_index);
+  }
+  for (auto &comp : eqcomponents) {
+    comp->setup();
+  }
+}
+
+
+void PowerTEST::set_default_net() {
+
+  Eigen::Vector2d vphi_param;
+  vphi_param << G1, B1;
+  Eigen::Vector2d pq_param;
+  pq_param << G2, B2;
+  Eigen::Vector2d pv_param;
+  pv_param << G3, B3;
+
+  Eigen::Vector2d tl_vphi_pq_param;
+  tl_vphi_pq_param << Gt1, Bt1;
+
+  Eigen::Vector2d tl_pq_pv_param;
+  tl_pq_pv_param << Gt2, Bt2;
+
+  Eigen::Vector2d vphi_boundary;
+  vphi_boundary << V1_bd, phi1_bd;
+  Eigen::Vector2d pq_boundary;
+  pq_boundary << P2_bd, Q2_bd;
+
+  Eigen::Vector2d pv_boundary;
+  pv_boundary << P3_bd, V3_bd;
+
+  set_custom_net(vphi_param, pq_param, pv_param, tl_vphi_pq_param,
+                    tl_pq_pv_param, vphi_boundary, pq_boundary, pv_boundary);
+}
