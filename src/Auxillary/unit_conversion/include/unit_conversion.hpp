@@ -50,72 +50,34 @@ namespace Aux::unit {
     {"lb", 0.45359237}
   };
 
-  struct Conversion {
-    double shift; // shift in SI
-    double slope;
+  typedef std::function<double (double)> conversion;
+  const std::map<std::string, conversion> temperature_units{
+    {"K", [](double x) { return x; }},
+    {"C", [](double x) { return x + 273.15; }},
+    {"\u2103", [](double x) { return x + 273.15; }},  // degree celcius symbol
+    {"\u00B0C", [](double x) { return x + 273.15; }}, // degree symbol plus C
+    {"F", [](double x) { return x * 5.0 / 9.0 + 459.67 * 5.0 / 9.0; }},
+    {"\u2109", [](double x) { return x * 5.0 / 9.0 + 459.67 * 5.0 / 9.0; }}, // degree fahrenheit symbol
+    {"\u00B0F", [](double x) { return x * 5.0 / 9.0 + 459.67 * 5.0 / 9.0; }}
   };
-
-  const std::map<std::string, Conversion> temperature_units{
-    {"K", {0.0, 1.0}},
-    {"C", {273.15, 1.0}},
-    {"\u2103", {273.15, 1.0}}, // degree celcius symbol
-    {"\u00B0C", {273.15, 1.0}}, // degree symbol plus C
-    {"F", {459.67 * 5.0 / 9.0, 5.0 / 9.0}},
-    {"\u2109", {459.67 * 5.0 / 9.0, 5.0 / 9.0}},// degree fahrenheit symbol
-    {"\u00B0F", {459.67 * 5.0 / 9.0, 5.0 / 9.0}}
-  };
-
-  /**
-   * @brief for a unit string match the base unit from a unit_map return the 
-   * prefix and the SI value of the base unit. 
-   * E.g. parse_unit("km", Aux::unit::length_units ) -> ("k", 1.0)
-   * parse_unit("10 ft", Aux::unit::length_units ) -> ("10 ", 0.3048)
-   * 
-   * ! Warning: do not use for units which are also shifted (e.g. temperature)
-   * 
-   * @param unit "[num][si_prefix][unit]"
-   * @param unit_map e.g. {"m": 1.0, "in": 0.0254, ...}
-   * @return const std::tuple<std::string, double>
-   */
-  const std::tuple<std::string, double> parse_unit(
-    std::string const &unit, std::map<std::string, double> const &unit_map
-  );
-
-  /**
-   * @brief for a unit string match the base unit from a unit_map return the 
-   * prefix and the SI value of the base unit. 
-   * E.g. parse_unit("C", Aux::unit::temperature_units) -> ("k", 1.0)
-   * parse_unit("10 ft", Aux::unit::temperature_units ) -> ("10 ", 0.3048)
-   * 
-   * @param unit "[num][si_prefix][unit]"
-   * @param unit_map e.g. {"m": 1.0, "in": 0.0254, ...}
-   * @return const std::tuple<std::string, double>
-   */
-  const std::tuple<std::string, double> parse_unit(
-    std::string const &unit, std::map<std::string, Conversion> const &unit_map
-  );
-
-
 
   template <typename Conversiontype>
-  double
-  parse_to_si(json const &unit_json,
-              std::map<std::string, Conversiontype> const &unit_map);
+  double parse_to_si(
+    json const &unit_json,
+    std::map<std::string, Conversiontype> const &unit_map
+  );
 
   extern template
-  double parse_to_si(json const &unit_json, std::map<std::string, Conversion> const &unit_map);
+  double parse_to_si<conversion>(
+    json const &unit_json,
+    std::map<std::string, conversion> const &unit_map
+  );
 
 
-  extern template double
-  parse_to_si(json const &unit_json,
-              std::map<std::string, double> const &unit_map);
+  extern template 
+  double parse_to_si<double>(
+    json const &unit_json,
+    std::map<std::string, double> const &unit_map
+  );
 
-  // /**
-  //  * @brief parse a unit json into a unit with help of a unit_map
-  //  * 
-  //  * @param unit_json e.g. {"value": 10, "unit": "5 cm" }
-  //  * @param unit_map e.g. {"m": 1.0, "yt": 0.0254}
-  //  * @return double (e.g. with the values from above 0.5 [m = 10 * 5 cm])
-  //  */
-  // double parse_to_si(json const &unit_json, std::map<std::string, double> const &unit_map);
 }

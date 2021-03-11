@@ -57,9 +57,9 @@ namespace Aux::unit {
     return value * unit;
   }
 
-  double unit_conversion(double value, Conversion unit);
-  double unit_conversion(double value, Conversion unit) {
-    return value * unit.slope + unit.shift;
+  double unit_conversion(double value, conversion conv);
+  double unit_conversion(double value, conversion conv) {
+    return conv(value);
   }
 
   double parse_prefix(
@@ -107,8 +107,12 @@ namespace Aux::unit {
     );
   }
 
-  template double parse_to_si<Conversion>(json const &unit_json,
-                                 std::map<std::string, Conversion> const &unit_map);
-  template double parse_to_si<double>(json const &unit_json,
-                                 std::map<std::string, double> const &unit_map);
+  template double parse_to_si<conversion>(
+    json const &unit_json,
+    std::map<std::string, conversion> const &unit_map
+  );
+  template double parse_to_si<double>(
+    json const &unit_json,
+    std::map<std::string, double> const &unit_map
+  );
 }
