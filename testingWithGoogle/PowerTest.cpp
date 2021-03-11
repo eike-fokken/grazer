@@ -247,29 +247,22 @@ TEST_F(PowerTEST, evaluate_state_derivative_Vphi) {
      handler.set_matrix();
   // Vphi node:
      Eigen::MatrixXd DenseJ = J;
-     //derivatives with respect to V:
-     EXPECT_DOUBLE_EQ(DenseJ(0,0), 1.0);
-     EXPECT_DOUBLE_EQ(DenseJ(1, 0), 0.0);
-     EXPECT_DOUBLE_EQ(DenseJ(2, 0),
-                      V2 * (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 - phi1)));
-     EXPECT_DOUBLE_EQ(DenseJ(3, 0),
-                        V2 * (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 -
-                        phi1)));
-     EXPECT_DOUBLE_EQ(DenseJ(4, 0),0);
-     EXPECT_DOUBLE_EQ(DenseJ(5, 0), 0);
-
-     // derivatives with respect to phi:
+     //derivatives of index 0:
+     EXPECT_DOUBLE_EQ(DenseJ(0, 0), 1.0);
      EXPECT_DOUBLE_EQ(DenseJ(0, 1), 0.0);
+     EXPECT_DOUBLE_EQ(DenseJ(0, 2), 0.0);
+     EXPECT_DOUBLE_EQ(DenseJ(0, 3), 0.0);
+     EXPECT_DOUBLE_EQ(DenseJ(0, 4), 0.0);
+     EXPECT_DOUBLE_EQ(DenseJ(0, 5), 0.0);
+
+     // derivatives of index 1:
+     EXPECT_DOUBLE_EQ(DenseJ(1, 0), 0.0);
      EXPECT_DOUBLE_EQ(DenseJ(1, 1), 1.0);
-       EXPECT_DOUBLE_EQ(DenseJ(2, 1),
-                        V1 * V2 * (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 -
-                        phi1)));
-         EXPECT_DOUBLE_EQ(DenseJ(3, 1),
-                          V2 * V1 * (-Gt1 * cos(phi2 - phi1) - Bt1 * sin(phi2 -
-                          phi1)));
-         EXPECT_DOUBLE_EQ(DenseJ(4, 1), 0.0);
-         EXPECT_DOUBLE_EQ(DenseJ(5, 1), 0.0);
-  }
+     EXPECT_DOUBLE_EQ(DenseJ(1, 2), 0.0);
+     EXPECT_DOUBLE_EQ(DenseJ(1, 3), 0.0);
+     EXPECT_DOUBLE_EQ(DenseJ(1, 4), 0.0);
+     EXPECT_DOUBLE_EQ(DenseJ(1, 5), 0.0);
+       }
 
 TEST_F(PowerTEST, evaluate_PQ) {
 
@@ -309,49 +302,40 @@ TEST_F(PowerTEST, evaluate_state_derivative_PQ) {
      handler.set_matrix();
   // Vphi node:
      Eigen::MatrixXd DenseJ = J;
-     //derivatives with respect to V:
+     //derivatives of index 2:
 
-     EXPECT_DOUBLE_EQ(DenseJ(0,2), 0.0);
-     EXPECT_DOUBLE_EQ(DenseJ(1, 2), 0.0);
-     EXPECT_DOUBLE_EQ(
-         J.coeff(2, 2),
+     EXPECT_DOUBLE_EQ(DenseJ(2, 0),
+                      V2 * (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 - phi1)));
+     EXPECT_DOUBLE_EQ(DenseJ(2, 1),
+                      V1 * V2 *
+                          (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 - phi1)));
+     EXPECT_DOUBLE_EQ(DenseJ(2, 2),
          2 * G2 * V2 + V1 * (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 - phi1)) +
              V3 * (Gt2 * cos(phi2 - phi3) + Bt2 * sin(phi2 - phi3)));
-     EXPECT_DOUBLE_EQ(
-         J.coeff(3, 2),
-         -2 * B2 * V2 + V1 * (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 - phi1)) +
-             V3 * (Gt2 * sin(phi2 - phi3) - Bt2 * cos(phi2 - phi3)));
-     EXPECT_DOUBLE_EQ(DenseJ(4, 2),
-                      V3 * (Gt2 * cos(phi3 - phi2) + Bt2 * sin(phi3 - phi2)));
-          EXPECT_DOUBLE_EQ(J.coeff(5, 2),0);
-
-
-     EXPECT_DOUBLE_EQ(
-         J.coeff(2, 3),
+     EXPECT_DOUBLE_EQ(DenseJ(2, 3),
          V2 * V1 * (-Gt1 * sin(phi2 - phi1) + Bt1 * cos(phi2 - phi1)) +
              V2 * V3 * (-Gt2 * sin(phi2 - phi3) + Bt2 * cos(phi2 - phi3)));
 
-     // EXPECT_DOUBLE_EQ(DenseJ(0, 2), 1.0);
-     // EXPECT_DOUBLE_EQ(DenseJ(1, 2), 0.0);
-     // EXPECT_DOUBLE_EQ(DenseJ(2, 2),
-     //                  V2 * (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 - phi1)));
-     // EXPECT_DOUBLE_EQ(DenseJ(3, 2),
-     //                    V2 * (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 -
-     //                    phi1)));
-     // EXPECT_DOUBLE_EQ(DenseJ(4, 2),0);
-     // EXPECT_DOUBLE_EQ(DenseJ(5, 2), 0);
 
-     // // derivatives with respect to phi:
-     // EXPECT_DOUBLE_EQ(DenseJ(0, 3), 0.0);
-     // EXPECT_DOUBLE_EQ(DenseJ(1, 3), 1.0);
-     // EXPECT_DOUBLE_EQ(DenseJ(2, 3),
-     //                    V1 * V2 * (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 -
-     //                    phi1)));
-     // EXPECT_DOUBLE_EQ(DenseJ(3, 3),
-     //                  V2 * V1 * (-Gt1 * cos(phi2 - phi1) - Bt1 * sin(phi2 -
-     //                                                                 phi1)));
-     // EXPECT_DOUBLE_EQ(DenseJ(4, 3), 0.0);
-     // EXPECT_DOUBLE_EQ(DenseJ(5, 3), 0.0);
+
+
+     EXPECT_DOUBLE_EQ(DenseJ(3, 0),
+                      V2 * (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 - phi1)));
+     EXPECT_DOUBLE_EQ(DenseJ(3, 1),
+                      V2 * V1 *
+                          (-Gt1 * cos(phi2 - phi1) - Bt1 * sin(phi2 - phi1)));
+     EXPECT_DOUBLE_EQ(DenseJ(3, 2),
+         -2 * B2 * V2 + V1 * (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 - phi1)) +
+             V3 * (Gt2 * sin(phi2 - phi3) - Bt2 * cos(phi2 - phi3)));
+     EXPECT_DOUBLE_EQ(
+         DenseJ(3, 3),
+         V2 * V1 * (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 - phi1)) +
+             V2 * V3 * (Gt2 * cos(phi2 - phi3) + Bt2 * sin(phi2 - phi3)));
+     EXPECT_DOUBLE_EQ(DenseJ(3, 4), V2 * (Gt2 * sin(phi2 - phi3) - Bt2 * cos(phi2 - phi3)));
+     EXPECT_DOUBLE_EQ(DenseJ(3, 5),
+                      V2 * V3 *
+                          (-Gt2 * cos(phi2 - phi3) - Bt2 * sin(phi2 - phi3)));
+
 }
 
 
