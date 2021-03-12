@@ -1,7 +1,6 @@
 add_subdirectory(Equationcomponent)
 add_subdirectory(Power)
 add_subdirectory(Gas)
-add_subdirectory(Componentfactory)
 
 add_library(networkproblem STATIC Networkproblem.cpp)
 

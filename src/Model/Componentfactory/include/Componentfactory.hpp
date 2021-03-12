@@ -1,29 +1,49 @@
 #pragma once
 #include "Edge.hpp"
 #include "Node.hpp"
-#include <iostream>
-#include <nlohmann/json.hpp>
-#include <tuple>
-#include <type_traits>
-#include <utility>
+#include <map>
+#include <memory>
 
-// this macro collection is ugly but hopefully makes for clearer compiler
+namespace Model::Componentfactory {
+
+  /// \brief This is the type of all factory functions for Nodes in a Networkproblem.
+  using Nodefactory =
+      std::unique_ptr<Network::Node> (*)(nlohmann::json const &topology);
+
+
+  /// \brief This is the type of all factory function for Edges in a
+  /// Networkproblem.
+  using Edgefactory = std::unique_ptr<Network::Edge> (*)(
+      nlohmann::json const &topology,
+      std::vector<std::unique_ptr<Network::Node>> &nodes);
+
+
+
+  /// \brief static interface for Componentfactories
+  ///
+  /// This is a CRTP interface for Componentfactories
+  template <typename Derived> class Componentfactory_interface {
+  protected:
+    Componentfactory_interface() {};
+
+  public:
+    std::map<std::string, Nodefactory> get_nodetypemap() {
+      return static_cast<Derived*>(this)->get_nodetypemap_impl();
+    }
+
+    std::map<std::string, Edgefactory> get_edgetypemap() {
+      return static_cast<Derived*>(this)->get_edgetypemap_impl();
+    }
+  };
+
+
+
+  // this macro collection is ugly but hopefully makes for clearer compiler
 // errors:
 #define STRINGIFY(nonstring) STRINGIFYII(nonstring)
 #define STRINGIFYII(nonstring) #nonstring
 #define LINE_NUMBER_STRING STRINGIFY(__LINE__)
 
-namespace Model::Networkproblem::Componentfactory {
-
-  using Nodefactory =
-      std::unique_ptr<Network::Node> (*)(nlohmann::json const &topology);
-
-  struct Nodedata {
-  public:
-    Nodedata(Nodefactory nodefactory) : Constructor(nodefactory){};
-
-    Nodefactory const Constructor;
-  };
 
   /// \brief Calls the relevant Node constructor
   ///
@@ -38,10 +58,7 @@ namespace Model::Networkproblem::Componentfactory {
   struct Nodedatabuilder_base {
     virtual ~Nodedatabuilder_base(){};
 
-    /// \brief builds a struct containing a bool stating whether Componenttype
-    /// needs boundary conditions and a pointer to a factory function for
-    /// Componenttype.
-    Nodedata build_data() const { return Nodedata(constructer_pointer()); };
+    Nodefactory get_factory() const { return constructer_pointer(); };
 
     /// \brief returns the string found in the json data files that identifies
     /// components of type Nodetype.
@@ -67,17 +84,6 @@ namespace Model::Networkproblem::Componentfactory {
     };
   };
 
-  using Edgefactory = std::unique_ptr<Network::Edge> (*)(
-      nlohmann::json const &topology,
-      std::vector<std::unique_ptr<Network::Node>> &nodes);
-
-  struct Edgedata {
-  public:
-    Edgedata(Edgefactory edgefactory) : Constructor(edgefactory){};
-
-    Edgefactory const Constructor;
-  };
-
   /// \brief Calls the relevant Edge constructor
   ///
   /// @returns a unique pointer to a newly constructed edge, which is cast to
@@ -95,8 +101,8 @@ namespace Model::Networkproblem::Componentfactory {
     /// \brief builds a struct containing a bool stating whether Componenttype
     /// needs boundary conditions and a pointer to a factory function for
     /// Componenttype.
-    Edgedata build_data() const { return Edgedata(constructer_pointer()); };
-
+    Edgefactory get_factory() const { return constructer_pointer(); };
+    
     /// \brief returns the string found in the json data files that identifies
     /// components of type Edgetype.
     virtual std::string get_type() = 0;
@@ -120,4 +126,6 @@ namespace Model::Networkproblem::Componentfactory {
       return build_specific_edge<Edgetype>;
     };
   };
-} // namespace Model::Networkproblem::Componentfactory
+
+
+}// namespace Model::Componentfactory
