@@ -1,6 +1,8 @@
 #include "Aux_json.hpp"
 #include "Net.hpp"
-#include "Networkproblem_helpers.hpp"
+#include "Node.hpp"
+#include "Edge.hpp"
+#include "Netfactory.hpp"
 #include "Componentfactory.hpp"
 #include "Exception.hpp"
 
@@ -10,8 +12,7 @@
 
 namespace Model::Networkproblem {
 
-  std::unique_ptr<Network::Net> build_net(nlohmann::json &networkproblem_json) {
-
+  nlohmann::json build_full_networkproblem_json(nlohmann::json & networkproblem_json){
     std::string topology_key = "topology_json";
     std::string boundary_key = "boundary_json";
     std::string control_key = "control_json";
@@ -31,11 +32,18 @@ namespace Model::Networkproblem {
     insert_second_json_in_topology_json(topology, boundary, "boundary_values");
     insert_second_json_in_topology_json(topology, control, "control_values");
     supply_overall_values_to_components(networkproblem_json);
+
+    return networkproblem_json[topology_key];
+  }
+
+
+  std::unique_ptr<Network::Net> build_net(nlohmann::json &networkproblem_json) {
+
+    auto topology = build_full_networkproblem_json(networkproblem_json);
     auto nodes = build_node_vector(topology["nodes"]);
 
     // build the edge vector.
     auto edges = build_edge_vector(topology["connections"], nodes);
-
     auto network = std::make_unique<Network::Net>(std::move(nodes), std::move(edges));
 
     return network;

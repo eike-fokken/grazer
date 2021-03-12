@@ -1,5 +1,4 @@
 #pragma once
-#include "Net.hpp"
 #include <nlohmann/json.hpp>
 #include <memory>
 #include <string>
@@ -7,14 +6,18 @@
 
 
 namespace Network {
+  class Net;
   class Node;
   class Edge;
 }
 
 namespace Model::Networkproblem {
 
-  std::unique_ptr<Network::Net>
-  build_net(nlohmann::json &networkproblem_json);
+  nlohmann::json
+  build_full_networkproblem_json(nlohmann::json &networkproblem_json);
+
+      std::unique_ptr<Network::Net> build_net(
+          nlohmann::json &networkproblem_json);
   /// \brief construct Nodes of types given by the json input and put their
   /// pointers in a vector
   ///

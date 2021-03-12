@@ -1,6 +1,11 @@
 #include "Exception.hpp"
 #include "Subproblemchooser.hpp"
 #include "Networkproblem.hpp"
+#include "Netfactory.hpp"
+#include "Networkproblem.hpp"
+#include "Net.hpp"
+#include "Edge.hpp"
+#include "Node.hpp"
 
 namespace Model {
 
@@ -16,9 +21,10 @@ namespace Model {
   }
 
   std::unique_ptr<Subproblem>
-  build_networkproblem(nlohmann::json &subproblem_json) {
+  build_networkproblem(nlohmann::json &networkproblem_json) {
     //build the net here and just pass it to networkproblem!
     //
-    return std::make_unique<Networkproblem::Networkproblem_base>(subproblem_json);
+    auto net_ptr = Networkproblem::build_net(networkproblem_json);
+    return std::make_unique<Networkproblem::Networkproblem>(std::move(net_ptr));
   }
 } // namespace Model

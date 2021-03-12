@@ -34,105 +34,105 @@ TEST(testFlowboundarynode_Shortpipe, evaluate_and_evaluate_state_derivative) {
 
   FAIL();
 
-  nlohmann::json node0_topology;
-  node0_topology["id"] = "node0";
-  double flow0start = 88.0;
-  double flow0end = 10.0;
-  auto b0 = make_boundary(node0_topology["id"],flow0start, flow0end);
-  node0_topology["boundary_values"] = b0;
+  // nlohmann::json node0_topology;
+  // node0_topology["id"] = "node0";
+  // double flow0start = 88.0;
+  // double flow0end = 10.0;
+  // auto b0 = make_boundary(node0_topology["id"],flow0start, flow0end);
+  // node0_topology["boundary_values"] = b0;
 
-  nlohmann::json node1_topology;
-  node1_topology["id"] = "node1";
-  double flow1start = -23.0;
-  double flow1end = -440.0;
-  auto b1 = make_boundary(node1_topology["id"], flow1start, flow1end);
-  node1_topology["boundary_values"] = b1;
+  // nlohmann::json node1_topology;
+  // node1_topology["id"] = "node1";
+  // double flow1start = -23.0;
+  // double flow1end = -440.0;
+  // auto b1 = make_boundary(node1_topology["id"], flow1start, flow1end);
+  // node1_topology["boundary_values"] = b1;
 
-  nlohmann::json shortpipe_topology;
-  shortpipe_topology["id"] = "shortpipe";
-  shortpipe_topology["from"] = "node0";
-  shortpipe_topology["to"] = "node1";
-
-
-  double pressure_start = 810;
-  double pressure_end = 125;
-  double flow_start =-4;
-  double flow_end = 1000;
-  json sp0_initial = {
-                     {"id", "node_4_ld1"},
-                     {"data", json::array({{{"x", 0.0},
-                                            {"value", json::array({pressure_start,flow_start})}},{{"x", 1.0},{"value", json::array({pressure_end,flow_end})}}})}};
-  //std::cout << sp0_initial<<std::endl;
+  // nlohmann::json shortpipe_topology;
+  // shortpipe_topology["id"] = "shortpipe";
+  // shortpipe_topology["from"] = "node0";
+  // shortpipe_topology["to"] = "node1";
 
 
-  Model::Networkproblem::Gas::Flowboundarynode  g0("gasnode0", bd_json0, flow_topology);
-  Model::Networkproblem::Gas::Flowboundarynode  g1("gasnode1", bd_json1, flow_topology);
-  Model::Networkproblem::Gas::Shortpipe sp0("SP0", &g0, &g1);
-
-  auto a = g0.set_indices(0);
-  auto b = g1.set_indices(a);
-  auto c = sp0.set_indices(b);
-
-  g0.setup();
-  g1.setup();
-
-  double last_time = 0.0;
-  double new_time = 0.0;
-  Eigen::VectorXd rootvalues(c);
-  rootvalues.setZero();
-  Eigen::VectorXd last_state(c);
-  Eigen::VectorXd new_state(c);
-
-  sp0.set_initial_values(new_state,sp0_initial);
-  // std::cout << "Initial conditions:" << std::endl;
-  // std::cout << new_state <<std::endl;
-
-  g0.evaluate(rootvalues, last_time, new_time, last_state, new_state);
-  // std::cout << "Evaluation  g0:" << std::endl;
-  // std::cout << rootvalues << std::endl;
+  // double pressure_start = 810;
+  // double pressure_end = 125;
+  // double flow_start =-4;
+  // double flow_end = 1000;
+  // json sp0_initial = {
+  //                    {"id", "node_4_ld1"},
+  //                    {"data", json::array({{{"x", 0.0},
+  //                                           {"value", json::array({pressure_start,flow_start})}},{{"x", 1.0},{"value", json::array({pressure_end,flow_end})}}})}};
+  // //std::cout << sp0_initial<<std::endl;
 
 
-  g1.evaluate(rootvalues, last_time, new_time, last_state, new_state);
-  // std::cout << "Evaluation  g1:" << std::endl;
-  // std::cout << rootvalues << std::endl;
+  // Model::Networkproblem::Gas::Flowboundarynode  g0("gasnode0", bd_json0, flow_topology);
+  // Model::Networkproblem::Gas::Flowboundarynode  g1("gasnode1", bd_json1, flow_topology);
+  // Model::Networkproblem::Gas::Shortpipe sp0("SP0", &g0, &g1);
 
-  sp0.evaluate(rootvalues, last_time, new_time, last_state, new_state);
-  // std::cout << "Evaluation shortpipe:" << std::endl;
-  // std::cout << rootvalues << std::endl;
+  // auto a = g0.set_indices(0);
+  // auto b = g1.set_indices(a);
+  // auto c = sp0.set_indices(b);
 
-  EXPECT_DOUBLE_EQ(rootvalues[0], flow_start-flow0start );
-  EXPECT_DOUBLE_EQ(rootvalues[3], -flow_end-flow1start );
-  EXPECT_DOUBLE_EQ(rootvalues[1], pressure_start-pressure_end );
-  EXPECT_DOUBLE_EQ(rootvalues[2], flow_start-flow_end );
+  // g0.setup();
+  // g1.setup();
 
-  Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-  Aux::Triplethandler handler(&J);
+  // double last_time = 0.0;
+  // double new_time = 0.0;
+  // Eigen::VectorXd rootvalues(c);
+  // rootvalues.setZero();
+  // Eigen::VectorXd last_state(c);
+  // Eigen::VectorXd new_state(c);
 
-  g0.evaluate_state_derivative(&handler, last_time, new_time, last_state,
-                               new_state);
-  g1.evaluate_state_derivative(&handler, last_time, new_time, last_state,
-                               new_state);
-  sp0.evaluate_state_derivative(&handler, last_time, new_time, last_state,new_state);
-  handler.set_matrix();
+  // sp0.set_initial_values(new_state,sp0_initial);
+  // // std::cout << "Initial conditions:" << std::endl;
+  // // std::cout << new_state <<std::endl;
 
-  // std::cout << J;
+  // g0.evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // // std::cout << "Evaluation  g0:" << std::endl;
+  // // std::cout << rootvalues << std::endl;
 
-  EXPECT_EQ(J.nonZeros(),8);
 
-  Eigen::MatrixXd expected_J(new_state.size(), new_state.size());
+  // g1.evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // // std::cout << "Evaluation  g1:" << std::endl;
+  // // std::cout << rootvalues << std::endl;
 
-  expected_J <<  //
-    0, 1,  0,  0, //
-    1, 0, -1,  0, //
-    0, 1,  0, -1, //
-    0, 0,  0, -1 ;//
+  // sp0.evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // // std::cout << "Evaluation shortpipe:" << std::endl;
+  // // std::cout << rootvalues << std::endl;
 
-  Eigen::SparseMatrix<double> sparse_expected = expected_J.sparseView();
+  // EXPECT_DOUBLE_EQ(rootvalues[0], flow_start-flow0start );
+  // EXPECT_DOUBLE_EQ(rootvalues[3], -flow_end-flow1start );
+  // EXPECT_DOUBLE_EQ(rootvalues[1], pressure_start-pressure_end );
+  // EXPECT_DOUBLE_EQ(rootvalues[2], flow_start-flow_end );
 
-  Eigen::SparseMatrix<double> difference = J-sparse_expected;
+  // Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
+  // Aux::Triplethandler handler(&J);
 
-  auto max = difference.coeffs().maxCoeff();
-  EXPECT_DOUBLE_EQ(max, 0.0);
+  // g0.evaluate_state_derivative(&handler, last_time, new_time, last_state,
+  //                              new_state);
+  // g1.evaluate_state_derivative(&handler, last_time, new_time, last_state,
+  //                              new_state);
+  // sp0.evaluate_state_derivative(&handler, last_time, new_time, last_state,new_state);
+  // handler.set_matrix();
+
+  // // std::cout << J;
+
+  // EXPECT_EQ(J.nonZeros(),8);
+
+  // Eigen::MatrixXd expected_J(new_state.size(), new_state.size());
+
+  // expected_J <<  //
+  //   0, 1,  0,  0, //
+  //   1, 0, -1,  0, //
+  //   0, 1,  0, -1, //
+  //   0, 0,  0, -1 ;//
+
+  // Eigen::SparseMatrix<double> sparse_expected = expected_J.sparseView();
+
+  // Eigen::SparseMatrix<double> difference = J-sparse_expected;
+
+  // auto max = difference.coeffs().maxCoeff();
+  // EXPECT_DOUBLE_EQ(max, 0.0);
 }
 
 
