@@ -12,7 +12,12 @@
     "required": ["value", "unit"],
     "additionalProperties": false,
     "properties": {
-      "unit": {"type": "string", "enum": ["bar"]},
+      "unit": {
+        "type": "string",
+        "oneOf": [
+          {"pattern": "^(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(Pa|bar|atm|psi)$"},
+          {"pattern": "^([0-9]*(\\.[0-9]+)? )(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(Pa|bar|atm|psi)$"}
+      ]},
       "value": {"type": "number"}
     }
   },
@@ -62,7 +67,12 @@
     "required": ["value", "unit"],
     "additionalProperties": false,
     "properties": {
-      "unit": {"type": "string", "enum": ["rpm", "Hz"]},
+      "unit": {
+        "type": "string",
+        "oneOf": [
+          {"pattern": "^(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(Hz|per_min|per_minute)$"},
+          {"pattern": "^([0-9]*(\\.[0-9]+)? )(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(Hz|per_min|per_minute)$"}
+      ]},
       "value": {"type": "number"}
     }
   },
