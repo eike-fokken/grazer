@@ -108,7 +108,7 @@
   },
   "mass": {
     "type": "object",
-    "description": "force measure",
+    "description": "mass measure",
     "required": ["value", "unit"],
     "additionalProperties": false,
     "properties": {
@@ -117,6 +117,21 @@
         "oneOf": [
           {"pattern": "^(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(g|t|oz|lb)$"},
           {"pattern": "^([0-9]*(\\.[0-9]+)? )(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(g|t|oz|lb)$"}
+      ]},
+      "value": {"type": "number"}
+    }
+  },
+  "volume": {
+    "type": "object",
+    "description": "volume measure",
+    "required": ["value", "unit"],
+    "additionalProperties": false,
+    "properties": {
+      "unit": {
+        "type": "string",
+        "oneOf": [
+          {"pattern": "^(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(m^3|L|l|\u2113)$"},
+          {"pattern": "^([0-9]*(\\.[0-9]+)? )(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(m^3|L|l|\u2113)$"}
       ]},
       "value": {"type": "number"}
     }
