@@ -1,14 +1,14 @@
 {
   "defaultUnit": {
     "type": "object",
-    "description": "default measure without unit type safety",
+    "description": "Default Measurement without unit type safety",
     "required": ["value", "unit"],
     "additionalProperties": false,
     "properties": {"unit": {"type": "string"}, "value": {"type": "number"}}
   },
   "pressure": {
     "type": "object",
-    "description": "pressure measure",
+    "description": "Dressure Measurement",
     "required": ["value", "unit"],
     "additionalProperties": false,
     "properties": {
@@ -23,7 +23,7 @@
   },
   "temperature": {
     "type": "object",
-    "description": "temperature measure",
+    "description": "Temperature Measurement",
     "required": ["value", "unit"],
     "additionalProperties": false,
     "properties": {
@@ -38,7 +38,7 @@
   },
   "flux": {
     "type": "object",
-    "description": "flux measure",
+    "description": "Flux Measurement",
     "required": ["value", "unit"],
     "additionalProperties": false,
     "properties": {
@@ -48,7 +48,7 @@
   },
   "power": {
     "type": "object",
-    "description": "power measure",
+    "description": "Power Measurement",
     "required": ["value", "unit"],
     "additionalProperties": false,
     "properties": {
@@ -63,7 +63,7 @@
   },
   "frequency": {
     "type": "object",
-    "description": "frequency measure",
+    "description": "Frequency Measurement",
     "required": ["value", "unit"],
     "additionalProperties": false,
     "properties": {
@@ -78,7 +78,7 @@
   },
   "length": {
     "type": "object",
-    "description": "length measure",
+    "description": "Length Measurement",
     "required": ["value", "unit"],
     "additionalProperties": false,
     "properties": {
@@ -93,7 +93,7 @@
   },
   "force": {
     "type": "object",
-    "description": "force measure",
+    "description": "Force Measurement",
     "required": ["value", "unit"],
     "additionalProperties": false,
     "properties": {
@@ -108,7 +108,7 @@
   },
   "mass": {
     "type": "object",
-    "description": "mass measure",
+    "description": "Mass Measurement",
     "required": ["value", "unit"],
     "additionalProperties": false,
     "properties": {
@@ -123,7 +123,7 @@
   },
   "volume": {
     "type": "object",
-    "description": "volume measure",
+    "description": "Volume Measurement",
     "required": ["value", "unit"],
     "additionalProperties": false,
     "properties": {
@@ -138,7 +138,7 @@
   },
   "angular_velocity": {
     "type": "object",
-    "description": "Angular Velocity Measure",
+    "description": "Angular Velocity Measurement",
     "required": ["value", "unit"],
     "additionalProperties": false,
     "properties": {
