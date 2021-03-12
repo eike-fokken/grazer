@@ -1,11 +1,11 @@
 <map id="Model::Networkproblem::Gas::Gaspowerconnection" name="Model::Networkproblem::Gas::Gaspowerconnection">
-<area shape="rect" id="node2" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="775,272,892,299"/>
-<area shape="rect" id="node3" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="588,355,725,382"/>
-<area shape="rect" id="node7" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="1454,304,1573,331"/>
-<area shape="rect" id="node5" title="STL class. " alt="" coords="193,355,280,382"/>
-<area shape="rect" id="node6" title="STL class. " alt="" coords="5,348,144,389"/>
-<area shape="rect" id="node13" href="$classModel_1_1Networkproblem_1_1Power_1_1Powernode.html" title="Model::Networkproblem\l::Power::Powernode" alt="" coords="1832,125,2011,166"/>
-<area shape="rect" id="node9" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html" title="This class is a base class for all Gas edges with a 2x2 balance law. " alt="" coords="1832,45,2011,86"/>
-<area shape="rect" id="node10" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="1424,45,1603,86"/>
-<area shape="rect" id="node15" href="$classModel_1_1Networkproblem_1_1Boundaryvalue.html" title="Model::Networkproblem\l::Boundaryvalue\&lt; Model\l::Networkproblem::Power\l::Powernode, 2 \&gt;" alt="" coords="1420,205,1607,276"/>
+<area shape="rect" id="node2" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="1429,290,1544,317"/>
+<area shape="rect" id="node3" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="642,341,774,367"/>
+<area shape="rect" id="node7" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="1026,290,1142,317"/>
+<area shape="rect" id="node5" title="STL class. " alt="" coords="192,341,279,367"/>
+<area shape="rect" id="node6" title="STL class. " alt="" coords="5,333,143,375"/>
+<area shape="rect" id="node13" href="$classModel_1_1Networkproblem_1_1Power_1_1Powernode.html" title="Model::Networkproblem\l::Power::Powernode" alt="" coords="1400,152,1573,193"/>
+<area shape="rect" id="node9" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html" title="This class is a base class for all Gas edges with a 2x2 balance law. " alt="" coords="1400,55,1573,96"/>
+<area shape="rect" id="node10" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="997,35,1171,76"/>
+<area shape="rect" id="node15" href="$classModel_1_1Networkproblem_1_1Boundaryvalue.html" title="Model::Networkproblem\l::Boundaryvalue\&lt; Model\l::Networkproblem::Power\l::Powernode, 2 \&gt;" alt="" coords="993,195,1175,265"/>
 </map>

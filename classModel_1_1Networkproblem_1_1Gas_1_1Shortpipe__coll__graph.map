@@ -1,9 +1,9 @@
 <map id="Model::Networkproblem::Gas::Shortpipe" name="Model::Networkproblem::Gas::Shortpipe">
-<area shape="rect" id="node2" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="972,66,1089,93"/>
-<area shape="rect" id="node3" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="734,13,871,39"/>
-<area shape="rect" id="node7" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="1561,46,1680,73"/>
-<area shape="rect" id="node5" title="STL class. " alt="" coords="193,13,280,39"/>
-<area shape="rect" id="node6" title="STL class. " alt="" coords="5,5,144,47"/>
-<area shape="rect" id="node9" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html" title="This class is a base class for all Gas edges with a 2x2 balance law. " alt="" coords="941,173,1120,215"/>
-<area shape="rect" id="node10" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="713,173,892,215"/>
+<area shape="rect" id="node2" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="1324,90,1439,117"/>
+<area shape="rect" id="node3" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="642,75,774,102"/>
+<area shape="rect" id="node7" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="1009,39,1125,66"/>
+<area shape="rect" id="node5" title="STL class. " alt="" coords="192,75,279,102"/>
+<area shape="rect" id="node6" title="STL class. " alt="" coords="5,68,143,109"/>
+<area shape="rect" id="node9" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html" title="This class is a base class for all Gas edges with a 2x2 balance law. " alt="" coords="1295,141,1468,183"/>
+<area shape="rect" id="node10" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="980,141,1153,183"/>
 </map>

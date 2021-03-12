@@ -1,6 +1,6 @@
 <map id="Model::Networkproblem::Power::PQnode" name="Model::Networkproblem::Power::PQnode">
-<area shape="rect" id="node2" href="$classModel_1_1Networkproblem_1_1Power_1_1Powernode.html" title="Model::Networkproblem\l::Power::Powernode" alt="" coords="92,169,271,211"/>
-<area shape="rect" id="node3" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="5,80,184,121"/>
-<area shape="rect" id="node4" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="209,87,327,114"/>
-<area shape="rect" id="node5" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="199,5,337,32"/>
+<area shape="rect" id="node2" href="$classModel_1_1Networkproblem_1_1Power_1_1Powernode.html" title="Model::Networkproblem\l::Power::Powernode" alt="" coords="89,169,263,211"/>
+<area shape="rect" id="node3" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="5,80,179,121"/>
+<area shape="rect" id="node4" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="203,87,319,114"/>
+<area shape="rect" id="node5" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="195,5,327,32"/>
 </map>

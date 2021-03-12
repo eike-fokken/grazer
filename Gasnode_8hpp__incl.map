@@ -1,7 +1,7 @@
 <map id="Model/Networkproblem/Gas/include/Gasnode.hpp" name="Model/Networkproblem/Gas/include/Gasnode.hpp">
-<area shape="rect" id="node2" href="$Gasedge_8hpp.html" title="Gasedge.hpp" alt="" coords="243,95,350,121"/>
-<area shape="rect" id="node8" href="$Equationcomponent_8hpp.html" title="Equationcomponent.hpp" alt="" coords="335,169,515,196"/>
+<area shape="rect" id="node2" href="$Gasedge_8hpp.html" title="Gasedge.hpp" alt="" coords="250,95,357,121"/>
+<area shape="rect" id="node8" href="$Equationcomponent_8hpp.html" title="Equationcomponent.hpp" alt="" coords="341,169,519,196"/>
 <area shape="rect" id="node11" href="$Node_8hpp.html" title="Node.hpp" alt="" coords="64,95,148,121"/>
-<area shape="rect" id="node3" href="$Edge_8hpp.html" title="Edge.hpp" alt="" coords="174,169,257,196"/>
-<area shape="rect" id="node4" href="$Idobject_8hpp.html" title="Idobject.hpp" alt="" coords="39,244,141,271"/>
+<area shape="rect" id="node3" href="$Edge_8hpp.html" title="Edge.hpp" alt="" coords="155,169,238,196"/>
+<area shape="rect" id="node4" href="$Idobject_8hpp.html" title="Idobject.hpp" alt="" coords="44,244,144,271"/>
 </map>
