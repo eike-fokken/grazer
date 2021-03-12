@@ -99,10 +99,9 @@ jobs:
     
     - name: Upload Doku to GitHub Pages
       if: ${{ matrix.name }} == Linux-GNU
-      working-directory: ${{github.workspace}}/build/docs
       uses: JamesIves/github-pages-deploy-action@4.1.0
       with:
         branch: gh-pages
-        folder: html
+        folder: build/docs/html
 
 
