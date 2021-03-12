@@ -135,5 +135,20 @@
       ]},
       "value": {"type": "number"}
     }
+  },
+  "angular_velocity": {
+    "type": "object",
+    "description": "Angular Velocity Measure",
+    "required": ["value", "unit"],
+    "additionalProperties": false,
+    "properties": {
+      "unit": {
+        "type": "string",
+        "oneOf": [
+          {"pattern": "^(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(rad/s|rpm)$"},
+          {"pattern": "^([0-9]*(\\.[0-9]+)? )(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(rad/s|rpm)$"}
+      ]},
+      "value": {"type": "number"}
+    }
   }
 }
