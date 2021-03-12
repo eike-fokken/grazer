@@ -45,7 +45,7 @@ namespace aux_json {
   nlohmann::json get_json_from_file_path(std::filesystem::path const &file_path) {
     nlohmann::json json_object;
     if (not std::filesystem::exists(file_path)) {
-      gthrow({"The file \n", std::filesystem::absolute(file_path), "\n does not exist!"});
+      gthrow({"The file \n", std::filesystem::absolute(file_path).string(), "\n does not exist!"});
     }
     try {
       std::ifstream jsonfilestream(file_path);
