@@ -7,11 +7,11 @@
 #include <vector>
 
 
-class Node : public ::testing::Test {
+class NodeTEST : public ::testing::Test {
 
   public:
 
-  Node():node(R"({"id":"N1"})"_json){};
+  NodeTEST():node(R"({"id":"N1"})"_json){};
 
   Network::Node node;
 
@@ -117,7 +117,7 @@ TEST_F(Nettest, test_exists_node) {
   EXPECT_NE(existing_node_pointer, nullptr);
 }
 
-TEST_F(Node, test_GetId) {
+TEST_F(NodeTEST, test_GetId) {
 
   auto v = node.get_id();
 
