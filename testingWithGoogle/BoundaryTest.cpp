@@ -30,8 +30,9 @@ TEST(Boundaryvalue, Operator) {
   boundary_value_map = {
     {"id" , "N213"},
     {"data" , {
-        {{"time" , 0}, {"values" , { 1.01, -0.2036799237 }}},
-        {{"time" , 86400}, {"values" , { 1.01, -0.2036799237 }}}
+        {{"time" , 1.0}, {"values" , { 0.0, 1.0 }}},
+        {{"time" , 2.0}, {"values" , { 1.0, 2.0 }}},
+        {{"time" , 3.0}, {"values" , { 2.0, 3.0 }}}
       }
     }
   };
