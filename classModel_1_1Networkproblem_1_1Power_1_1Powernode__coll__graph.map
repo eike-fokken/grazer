@@ -1,0 +1,9 @@
+<map id="Model::Networkproblem::Power::Powernode" name="Model::Networkproblem::Power::Powernode">
+<area shape="rect" id="node2" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="1007,95,1185,136"/>
+<area shape="rect" id="node5" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="1037,41,1155,67"/>
+<area shape="rect" id="node11" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="1445,14,1563,41"/>
+<area shape="rect" id="node6" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="645,13,782,39"/>
+<area shape="rect" id="node8" title="STL class. " alt="" coords="193,13,280,39"/>
+<area shape="rect" id="node9" title="STL class. " alt="" coords="5,5,144,47"/>
+<area shape="rect" id="node13" href="$classModel_1_1Networkproblem_1_1Boundaryvalue.html" title="Model::Networkproblem\l::Boundaryvalue\&lt; Model\l::Networkproblem::Power\l::Powernode, 2 \&gt;" alt="" coords="1003,255,1189,325"/>
+</map>

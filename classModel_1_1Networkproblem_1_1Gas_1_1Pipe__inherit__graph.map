@@ -1,0 +1,6 @@
+<map id="Model::Networkproblem::Gas::Pipe" name="Model::Networkproblem::Gas::Pipe">
+<area shape="rect" id="node2" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html" title="This class is a base class for all Gas edges with a 2x2 balance law. " alt="" coords="11,95,189,136"/>
+<area shape="rect" id="node3" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="5,5,184,47"/>
+<area shape="rect" id="node4" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="216,102,333,129"/>
+<area shape="rect" id="node5" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="209,13,346,39"/>
+</map>

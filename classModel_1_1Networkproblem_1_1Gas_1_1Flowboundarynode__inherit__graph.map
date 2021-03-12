@@ -1,0 +1,6 @@
+<map id="Model::Networkproblem::Gas::Flowboundarynode" name="Model::Networkproblem::Gas::Flowboundarynode">
+<area shape="rect" id="node2" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gasnode.html" title="Model::Networkproblem\l::Gas::Gasnode" alt="" coords="71,169,250,211"/>
+<area shape="rect" id="node3" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="15,87,133,114"/>
+<area shape="rect" id="node4" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="5,5,143,32"/>
+<area shape="rect" id="node5" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="158,80,337,121"/>
+</map>

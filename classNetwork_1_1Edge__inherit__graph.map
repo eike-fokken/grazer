@@ -1,0 +1,7 @@
+<map id="Network::Edge" name="Network::Edge">
+<area shape="rect" id="node3" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gaspowerconnection.html" title="Model::Networkproblem\l::Gas::Gaspowerconnection" alt="" coords="356,5,555,47"/>
+<area shape="rect" id="node4" href="$classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html" title="Model::Networkproblem\l::Gas::Pipe" alt="" coords="366,71,545,112"/>
+<area shape="rect" id="node5" href="$classModel_1_1Networkproblem_1_1Gas_1_1Shortpipe.html" title="Model::Networkproblem\l::Gas::Shortpipe" alt="" coords="366,136,545,177"/>
+<area shape="rect" id="node6" href="$classModel_1_1Networkproblem_1_1Power_1_1Transmissionline.html" title="Model::Networkproblem\l::Power::Transmissionline" alt="" coords="362,201,549,243"/>
+<area shape="rect" id="node2" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="5,111,143,138"/>
+</map>
