@@ -32,7 +32,9 @@ namespace Aux::unit {
   };
 
   const std::map<std::string, double> frequency_units {
-    {"Hz", 1.0}
+    {"Hz", 1.0},
+    {"per_min", 1.0/60.0},
+    {"per_minute", 1.0/60.0}
   };
 
   const std::map<std::string, double> force_units {
@@ -51,6 +53,11 @@ namespace Aux::unit {
     {"lb", 0.45359237}
   };
 
+  const std::map<std::string, double> volume_flux_units {
+    {"m_cube_per_s", 1.0},
+    {"1000m_cube_per_hour", 1000.0/3600.0}
+  };
+
   // arbitrary lambda conversions
   typedef std::function<double (double)> conversion;
 
@@ -58,6 +65,7 @@ namespace Aux::unit {
   const std::map<std::string, conversion> temperature_units{
     {"K", [](double x) { return x; }},
     {"C", [](double x) { return x + 273.15; }},
+    {"Celsius", [](double x) { return x + 273.15; }},
     {"\u2103", [](double x) { return x + 273.15; }},  // degree celcius symbol
     {"\u00B0C", [](double x) { return x + 273.15; }}, // degree symbol plus C
     {"F", [](double x) { return x * 5.0 / 9.0 + 459.67 * 5.0 / 9.0; }},
