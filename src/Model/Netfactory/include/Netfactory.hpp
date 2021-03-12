@@ -9,6 +9,13 @@
 
   namespace Model::Networkproblem {
 
+    /// \brief Constructs the full networkproblem json from file paths for the
+    /// respective files and fills all component jsons with their boundary and
+    /// control data.
+    ///
+    /// @param networkproblem_json A json containining
+    ... hier weiter!
+
     nlohmann::json
     build_full_networkproblem_json(nlohmann::json &networkproblem_json);
 
