@@ -48,13 +48,13 @@
           "id": {"type": "string"},
           "x": {"type": "number"},
           "y": {"type": "number"},
-          "height": {"$ref": "#/$defs/unit/length"},
-          "temperature": {"$ref": "#/$defs/unit/temperature"},
-          "pressureMin": {"$ref": "#/$defs/unit/pressure"},
-          "pressureMax": {"$ref": "#/$defs/unit/pressure"},
-          "pressureInit": {"$ref": "#/$defs/unit/pressure"},
-          "flowMin": {"$ref": "#/$defs/unit/flux"},
-          "flowMax": {"$ref": "#/$defs/unit/flux"}
+          "height": {"$ref": "unit_schema.json#/length"},
+          "temperature": {"$ref": "unit_schema.json#/temperature"},
+          "pressureMin": {"$ref": "unit_schema.json#/pressure"},
+          "pressureMax": {"$ref": "unit_schema.json#/pressure"},
+          "pressureInit": {"$ref": "unit_schema.json#/pressure"},
+          "flowMin": {"$ref": "unit_schema.json#/flux"},
+          "flowMax": {"$ref": "unit_schema.json#/flux"}
         }
       }
     },
@@ -70,69 +70,6 @@
         }
       }
     },
-    "unit": {
-      "pressure": {
-        "type": "object",
-        "description": "pressure measure",
-        "required": ["value", "unit"],
-        "properties": {
-          "unit": {"type": "string", "enum": ["bar"]},
-          "value": {"type": "number"}
-        }
-      },
-      "temperature": {
-        "type": "object",
-        "description": "temperature measure",
-        "required": ["value", "unit"],
-        "properties": {
-          "unit": {"type": "string", "enum": ["K"]},
-          "value": {"type": "number"}
-        }
-      },
-      "flux": {
-        "type": "object",
-        "description": "flux measure",
-        "required": ["value", "unit"],
-        "properties": {
-          "unit": {"type": "string", "enum": ["m_cube_per_s", "1000m_cube_per_hour"]},
-          "value": {"type": "number"}
-        }
-      },
-      "power": {
-        "type": "object",
-        "description": "power measure",
-        "required": ["value", "unit"],
-        "properties": {
-          "unit": {"type": "string", "enum": ["kW"]},
-          "value": {"type": "number"}
-        }
-      },
-      "frequency": {
-        "type": "object",
-        "description": "frequency measure",
-        "required": ["value", "unit"],
-        "properties": {
-          "unit": {"type": "string", "enum": ["rpm", "Hz"]},
-          "value": {"type": "number"}
-        }
-      },
-      "length": {
-        "type": "object",
-        "description": "length measure",
-        "required": ["value", "unit"],
-        "properties": {
-          "unit": {"type": "string", "enum": ["km", "m", "mm"]},
-          "value": {"type": "number"}
-        }
-      },
-      "defaultUnit": {
-        "type": "object",
-        "description": "default measure without unit type safety",
-        "required": ["value"],
-        "properties": {"unit": {"type": "string"}, "value": {"type": "number"}}
-      }
-    },
-    
     "connection": {
       "gaspowerconnection": {
         "type": "array",
@@ -168,9 +105,9 @@
             "id": {"type": "string"},
             "from": {"type": "string"},
             "to": {"type": "string"},
-            "flowMin": {"$ref": "#/$defs/unit/flux"},
-            "flowMax": {"$ref": "#/$defs/unit/flux"},
-            "flowInit": {"$ref": "#/$defs/unit/flux"}
+            "flowMin": {"$ref": "unit_schema.json#/flux"},
+            "flowMax": {"$ref": "unit_schema.json#/flux"},
+            "flowInit": {"$ref": "unit_schema.json#/flux"}
           }
         }
       },
@@ -183,13 +120,13 @@
             "from": {"type": "string"},
             "to": {"type": "string"},
             "heatTransferCoefficient": "2",
-            "flowMin": {"$ref": "#/$defs/unit/flux"},
-            "flowMax": {"$ref": "#/$defs/unit/flux"},
-            "flowInInit": {"$ref": "#/$defs/unit/flux"},
-            "flowOutInit": {"$ref": "#/$defs/unit/flux"},
-            "length": {"$ref": "#/$defs/unit/length"},
-            "diameter": {"$ref": "#/$defs/unit/length"},
-            "roughness": {"$ref": "#/$defs/unit/length"}
+            "flowMin": {"$ref": "unit_schema.json#/flux"},
+            "flowMax": {"$ref": "unit_schema.json#/flux"},
+            "flowInInit": {"$ref": "unit_schema.json#/flux"},
+            "flowOutInit": {"$ref": "unit_schema.json#/flux"},
+            "length": {"$ref": "unit_schema.json#/length"},
+            "diameter": {"$ref": "unit_schema.json#/length"},
+            "roughness": {"$ref": "unit_schema.json#/length"}
           }
         }
       },
@@ -201,11 +138,11 @@
             "id": {"type": "string"},
             "from": {"type": "string"},
             "to": {"type": "string"},
-            "flowMin": {"$ref": "#/$defs/unit/flux"},
-            "flowMax": {"$ref": "#/$defs/unit/flux"},
-            "flowInit": {"$ref": "#/$defs/unit/flux"},
-            "pressureDifferentialMin": {"$ref": "#/$defs/unit/pressure"},
-            "pressureDifferentialMax": {"$ref": "#/$defs/unit/pressure"}
+            "flowMin": {"$ref": "unit_schema.json#/flux"},
+            "flowMax": {"$ref": "unit_schema.json#/flux"},
+            "flowInit": {"$ref": "unit_schema.json#/flux"},
+            "pressureDifferentialMin": {"$ref": "unit_schema.json#/pressure"},
+            "pressureDifferentialMax": {"$ref": "unit_schema.json#/pressure"}
           }
         }
       },
@@ -218,41 +155,41 @@
             "from": {"type": "string"},
             "to": {"type": "string"},
             "typeOfControl": {"type": "string"},
-            "flowMin": {"$ref": "#/$defs/unit/flux"},
-            "flowMax": {"$ref": "#/$defs/unit/flux"},
-            "powerMin": {"$ref": "#/$defs/unit/power"},
-            "speedMin": {"$ref": "#/$defs/unit/frequency"},
-            "speedMax": {"$ref": "#/$defs/unit/frequency"},
-            "ambientTemperature": {"$ref": "#/$defs/unit/temperature"},
-            "specificFuelConsumption": {"$ref": "#/$defs/unit/defaultUnit"},
-            "efficiency": {"$ref": "#/$defs/unit/defaultUnit"},
-            "n_isoline_coeff_1": {"$ref": "#/$defs/unit/defaultUnit"},
-            "n_isoline_coeff_2": {"$ref": "#/$defs/unit/defaultUnit"},
-            "n_isoline_coeff_3": {"$ref": "#/$defs/unit/defaultUnit"},
-            "n_isoline_coeff_4": {"$ref": "#/$defs/unit/defaultUnit"},
-            "n_isoline_coeff_5": {"$ref": "#/$defs/unit/defaultUnit"},
-            "n_isoline_coeff_6": {"$ref": "#/$defs/unit/defaultUnit"},
-            "n_isoline_coeff_7": {"$ref": "#/$defs/unit/defaultUnit"},
-            "n_isoline_coeff_8": {"$ref": "#/$defs/unit/defaultUnit"},
-            "n_isoline_coeff_9": {"$ref": "#/$defs/unit/defaultUnit"},
-            "eta_ad_isoline_coeff_1": {"$ref": "#/$defs/unit/defaultUnit"},
-            "eta_ad_isoline_coeff_2": {"$ref": "#/$defs/unit/defaultUnit"},
-            "eta_ad_isoline_coeff_3": {"$ref": "#/$defs/unit/defaultUnit"},
-            "eta_ad_isoline_coeff_4": {"$ref": "#/$defs/unit/defaultUnit"},
-            "eta_ad_isoline_coeff_5": {"$ref": "#/$defs/unit/defaultUnit"},
-            "eta_ad_isoline_coeff_6": {"$ref": "#/$defs/unit/defaultUnit"},
-            "eta_ad_isoline_coeff_7": {"$ref": "#/$defs/unit/defaultUnit"},
-            "eta_ad_isoline_coeff_8": {"$ref": "#/$defs/unit/defaultUnit"},
-            "eta_ad_isoline_coeff_9": {"$ref": "#/$defs/unit/defaultUnit"},
-            "surgeline_coeff_2": {"$ref": "#/$defs/unit/defaultUnit"},
-            "surgeline_coeff_3": {"$ref": "#/$defs/unit/defaultUnit"},
-            "surgeline_coeff_4": {"$ref": "#/$defs/unit/defaultUnit"},
-            "chokeline_coeff_1": {"$ref": "#/$defs/unit/defaultUnit"},
-            "chokeline_coeff_2": {"$ref": "#/$defs/unit/defaultUnit"},
-            "chokeline_coeff_3": {"$ref": "#/$defs/unit/defaultUnit"},
-            "energy_rate_fun_coeff_1": {"$ref": "#/$defs/unit/defaultUnit"},
-            "energy_rate_fun_coeff_2": {"$ref": "#/$defs/unit/defaultUnit"},
-            "energy_rate_fun_coeff_3": {"$ref": "#/$defs/unit/defaultUnit"}
+            "flowMin": {"$ref": "unit_schema.json#/flux"},
+            "flowMax": {"$ref": "unit_schema.json#/flux"},
+            "powerMin": {"$ref": "unit_schema.json#/power"},
+            "speedMin": {"$ref": "unit_schema.json#/frequency"},
+            "speedMax": {"$ref": "unit_schema.json#/frequency"},
+            "ambientTemperature": {"$ref": "unit_schema.json#/temperature"},
+            "specificFuelConsumption": {"$ref": "unit_schema.json#/defaultUnit"},
+            "efficiency": {"$ref": "unit_schema.json#/defaultUnit"},
+            "n_isoline_coeff_1": {"$ref": "unit_schema.json#/defaultUnit"},
+            "n_isoline_coeff_2": {"$ref": "unit_schema.json#/defaultUnit"},
+            "n_isoline_coeff_3": {"$ref": "unit_schema.json#/defaultUnit"},
+            "n_isoline_coeff_4": {"$ref": "unit_schema.json#/defaultUnit"},
+            "n_isoline_coeff_5": {"$ref": "unit_schema.json#/defaultUnit"},
+            "n_isoline_coeff_6": {"$ref": "unit_schema.json#/defaultUnit"},
+            "n_isoline_coeff_7": {"$ref": "unit_schema.json#/defaultUnit"},
+            "n_isoline_coeff_8": {"$ref": "unit_schema.json#/defaultUnit"},
+            "n_isoline_coeff_9": {"$ref": "unit_schema.json#/defaultUnit"},
+            "eta_ad_isoline_coeff_1": {"$ref": "unit_schema.json#/defaultUnit"},
+            "eta_ad_isoline_coeff_2": {"$ref": "unit_schema.json#/defaultUnit"},
+            "eta_ad_isoline_coeff_3": {"$ref": "unit_schema.json#/defaultUnit"},
+            "eta_ad_isoline_coeff_4": {"$ref": "unit_schema.json#/defaultUnit"},
+            "eta_ad_isoline_coeff_5": {"$ref": "unit_schema.json#/defaultUnit"},
+            "eta_ad_isoline_coeff_6": {"$ref": "unit_schema.json#/defaultUnit"},
+            "eta_ad_isoline_coeff_7": {"$ref": "unit_schema.json#/defaultUnit"},
+            "eta_ad_isoline_coeff_8": {"$ref": "unit_schema.json#/defaultUnit"},
+            "eta_ad_isoline_coeff_9": {"$ref": "unit_schema.json#/defaultUnit"},
+            "surgeline_coeff_2": {"$ref": "unit_schema.json#/defaultUnit"},
+            "surgeline_coeff_3": {"$ref": "unit_schema.json#/defaultUnit"},
+            "surgeline_coeff_4": {"$ref": "unit_schema.json#/defaultUnit"},
+            "chokeline_coeff_1": {"$ref": "unit_schema.json#/defaultUnit"},
+            "chokeline_coeff_2": {"$ref": "unit_schema.json#/defaultUnit"},
+            "chokeline_coeff_3": {"$ref": "unit_schema.json#/defaultUnit"},
+            "energy_rate_fun_coeff_1": {"$ref": "unit_schema.json#/defaultUnit"},
+            "energy_rate_fun_coeff_2": {"$ref": "unit_schema.json#/defaultUnit"},
+            "energy_rate_fun_coeff_3": {"$ref": "unit_schema.json#/defaultUnit"}
           }
         }
       }
