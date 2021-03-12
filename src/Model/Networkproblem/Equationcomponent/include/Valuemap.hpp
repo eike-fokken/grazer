@@ -98,7 +98,7 @@ namespace Model::Networkproblem {
     }
 
     static std::map<double, Eigen::Matrix<double, N, 1>> set_condition(
-                              nlohmann::json values_json, std::string const & key){
+                              nlohmann::json values_json, std::string key){
 
       std::map<double, Eigen::Matrix<double, N, 1>> map_values;
 
