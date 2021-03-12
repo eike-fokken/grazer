@@ -13,10 +13,11 @@
                 "x": "10.000000",
                 "y": "10.000000",
                 "height": {
-                    "value": "0.000000"
+                    "value": "0.000000",
+                    "unit": "50 rm"
                 },
                 "temperature": {
-                    "unit": "K",
+                    "unit": "R",
                     "value": "283.150000"
                 },
                 "pressureMin": {
