@@ -22,15 +22,23 @@ namespace Model::Componentfactory {
   /// \brief static interface for Componentfactories
   ///
   /// This is a CRTP interface for Componentfactories
+  /// Its sole purpose is to provide maps of factory function pointers.
   template <typename Derived> class Componentfactory_interface {
   protected:
+    /// \brief The constructor is protected because this class should only ever be used as a base.
     Componentfactory_interface() {};
 
   public:
+    /// \brief Provides a map of all node factories for the factory.
+    ///
+    /// @returns a map from nodetype string (e.g. "Source") to factory function pointer.
     std::map<std::string, Nodefactory> get_nodetypemap() {
       return static_cast<Derived*>(this)->get_nodetypemap_impl();
     }
 
+    /// \brief Provides a map of all edge factories for the factory.
+    ///
+    /// @returns a map from edgetype string (e.g. "Pipe") to factory function pointer.
     std::map<std::string, Edgefactory> get_edgetypemap() {
       return static_cast<Derived*>(this)->get_edgetypemap_impl();
     }
