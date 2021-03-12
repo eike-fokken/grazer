@@ -2,13 +2,15 @@
   "defaultUnit": {
     "type": "object",
     "description": "default measure without unit type safety",
-    "required": ["value"],
+    "required": ["value", "unit"],
+    "additionalProperties": false,
     "properties": {"unit": {"type": "string"}, "value": {"type": "number"}}
   },
   "pressure": {
     "type": "object",
     "description": "pressure measure",
     "required": ["value", "unit"],
+    "additionalProperties": false,
     "properties": {
       "unit": {"type": "string", "enum": ["bar"]},
       "value": {"type": "number"}
@@ -18,6 +20,7 @@
     "type": "object",
     "description": "temperature measure",
     "required": ["value", "unit"],
+    "additionalProperties": false,
     "properties": {
       "unit": {"type": "string", "enum": ["K"]},
       "value": {"type": "number"}
@@ -27,6 +30,7 @@
     "type": "object",
     "description": "flux measure",
     "required": ["value", "unit"],
+    "additionalProperties": false,
     "properties": {
       "unit": {"type": "string", "enum": ["m_cube_per_s", "1000m_cube_per_hour"]},
       "value": {"type": "number"}
@@ -36,6 +40,7 @@
     "type": "object",
     "description": "power measure",
     "required": ["value", "unit"],
+    "additionalProperties": false,
     "properties": {
       "unit": {"type": "string", "enum": ["kW"]},
       "value": {"type": "number"}
@@ -45,6 +50,7 @@
     "type": "object",
     "description": "frequency measure",
     "required": ["value", "unit"],
+    "additionalProperties": false,
     "properties": {
       "unit": {"type": "string", "enum": ["rpm", "Hz"]},
       "value": {"type": "number"}
@@ -54,6 +60,7 @@
     "type": "object",
     "description": "length measure",
     "required": ["value", "unit"],
+    "additionalProperties": false,
     "properties": {
       "unit": {"type": "string", "enum": ["km", "m", "mm"]},
       "value": {"type": "number"}
