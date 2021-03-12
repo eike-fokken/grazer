@@ -1,4 +1,6 @@
 add_subdirectory(Full_factory)
+add_subdirectory(Power_factory)
+add_subdirectory(Gas_factory)
 
 add_library(componentfactory INTERFACE)
 

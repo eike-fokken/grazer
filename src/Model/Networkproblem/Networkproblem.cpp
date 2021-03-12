@@ -94,8 +94,7 @@ namespace Model::Networkproblem {
                                           nlohmann::json initial_json) {
 
     nlohmann::json & initial_json_vector = initial_json["initialvalues"];
-    for (Equationcomponent *eqcomponent :
-                                           equationcomponents) {
+    for (Equationcomponent *eqcomponent : equationcomponents) {
       auto idcomponent = dynamic_cast<Network::Idobject *>(eqcomponent);
       if (idcomponent == nullptr) {
         gthrow({"An equation component is not of type Idobject, which should "

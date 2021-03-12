@@ -33,6 +33,7 @@ namespace Model::Networkproblem {
     insert_second_json_in_topology_json(topology, control, "control_values");
     supply_overall_values_to_components(networkproblem_json);
 
+
     return networkproblem_json[topology_key];
   }
 
@@ -140,8 +141,7 @@ namespace Model::Networkproblem {
       }
       for (auto it = second_json[component].begin();
            it != second_json[component].end(); ++it) {
-
-        if(!topology[component].contains(it.key())){
+        if(not topology[component].contains(it.key())){
           std::cout << "Note: Topology json does not contain "<< component << " of type " << it.key() << ", but the "<< name_of_inserted_json << " json does contain such " << component << "." << std::endl;
           continue;
         }
@@ -221,16 +221,19 @@ namespace Model::Networkproblem {
       auto pde_components = {"Pipe"};
       if (network_json.contains("desired_delta_x")) {
         for (auto const &type : pde_components) {
-          for (auto &pipe :
-               network_json["topology_json"]["connections"][type]) {
-            if (!pipe.contains("desired_delta_x")) {
-              pipe["desired_delta_x"] = network_json["desired_delta_x"];
-            } else {
-              std::cout << "Object with id " << pipe["id"]
-                        << " has its own value of desired_delta_x."
-                        << std::endl;
+          if (not network_json["topology_json"]["connections"].contains(type)) {
+            continue;
             }
-          }
+            for (auto &pipe :
+                 network_json["topology_json"]["connections"][type]) {
+              if (!pipe.contains("desired_delta_x")) {
+                pipe["desired_delta_x"] = network_json["desired_delta_x"];
+              } else {
+                std::cout << "Object with id " << pipe["id"]
+                          << " has its own value of desired_delta_x."
+                          << std::endl;
+              }
+            }
         }
       }
     }
