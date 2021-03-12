@@ -1,4 +1,5 @@
 #pragma once
+#include "Net.hpp"
 #include <nlohmann/json.hpp>
 #include <memory>
 #include <string>
@@ -12,10 +13,14 @@ namespace Network {
 
 namespace Model::Networkproblem {
 
-  /// \brief construct Nodes of types given by the json input and put their pointers in a vector
+  std::unique_ptr<Network::Net>
+  build_net(nlohmann::json &networkproblem_json);
+  /// \brief construct Nodes of types given by the json input and put their
+  /// pointers in a vector
   ///
   /// This helper function constructs Nodes of specific (final) types.
-  /// @return a vector of unique pointers to Node to the newly constructed nodes.
+  /// @return a vector of unique pointers to Node to the newly constructed
+  /// nodes.
   std::vector<std::unique_ptr<Network::Node>>
   build_node_vector(nlohmann::json const &topology);
 

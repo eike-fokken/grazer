@@ -1,3 +1,5 @@
+#include "Aux_json.hpp"
+#include "Net.hpp"
 #include "Networkproblem_helpers.hpp"
 #include "Componentfactory.hpp"
 #include "Exception.hpp"
@@ -8,8 +10,39 @@
 
 namespace Model::Networkproblem {
 
-  std::vector<std::unique_ptr<Network::Node>>
-  build_node_vector(nlohmann::json const &node_topology) {
+  std::unique_ptr<Network::Net> build_net(nlohmann::json &networkproblem_json) {
+
+    std::string topology_key = "topology_json";
+    std::string boundary_key = "boundary_json";
+    std::string control_key = "control_json";
+
+    aux_json::replace_entry_with_json_from_file(networkproblem_json,
+                                                topology_key);
+    aux_json::replace_entry_with_json_from_file(networkproblem_json,
+                                                boundary_key);
+    aux_json::replace_entry_with_json_from_file(networkproblem_json,
+                                                control_key);
+
+    nlohmann::json &topology = networkproblem_json[topology_key];
+    nlohmann::json &boundary = networkproblem_json[boundary_key];
+    nlohmann::json &control = networkproblem_json[control_key];
+
+    // build the node vector.
+    insert_second_json_in_topology_json(topology, boundary, "boundary_values");
+    insert_second_json_in_topology_json(topology, control, "control_values");
+    supply_overall_values_to_components(networkproblem_json);
+    auto nodes = build_node_vector(topology["nodes"]);
+
+    // build the edge vector.
+    auto edges = build_edge_vector(topology["connections"], nodes);
+
+    auto network = std::make_unique<Network::Net>(std::move(nodes), std::move(edges));
+
+    return network;
+  }
+
+      std::vector<std::unique_ptr<Network::Node>> build_node_vector(
+          nlohmann::json const &node_topology) {
 
     Componentfactory::Nodechooser nodechooser;
 

@@ -17,6 +17,8 @@ namespace Model {
 
   std::unique_ptr<Subproblem>
   build_networkproblem(nlohmann::json &subproblem_json) {
-    return std::make_unique<Networkproblem::Networkproblem>(subproblem_json);
+    //build the net here and just pass it to networkproblem!
+    //
+    return std::make_unique<Networkproblem::Networkproblem_base>(subproblem_json);
   }
 } // namespace Model

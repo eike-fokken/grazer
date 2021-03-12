@@ -25,8 +25,7 @@ namespace Model::Networkproblem {
     ~Networkproblem() override; // override{};
 
     Networkproblem(std::unique_ptr<Network::Net> _network);
-    Networkproblem(nlohmann::json & networkproblem_json);
-
+    
     void
     evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
              double new_time,
