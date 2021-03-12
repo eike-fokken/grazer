@@ -1,11 +1,11 @@
 <map id="Model::Networkproblem::Gas::Pipe" name="Model::Networkproblem::Gas::Pipe">
-<area shape="rect" id="node2" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html" title="This class is a base class for all Gas edges with a 2x2 balance law. " alt="" coords="1332,84,1505,125"/>
-<area shape="rect" id="node3" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="980,64,1153,105"/>
-<area shape="rect" id="node6" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="1361,154,1476,181"/>
-<area shape="rect" id="node7" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="642,199,774,226"/>
-<area shape="rect" id="node11" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="1009,154,1125,181"/>
-<area shape="rect" id="node9" title="STL class. " alt="" coords="192,199,279,226"/>
-<area shape="rect" id="node10" title="STL class. " alt="" coords="5,192,143,233"/>
-<area shape="rect" id="node13" href="$classModel_1_1Scheme_1_1Implicitboxscheme.html" title="Model::Scheme::Implicitboxscheme" alt="" coords="1295,205,1543,231"/>
-<area shape="rect" id="node14" href="$classModel_1_1Balancelaw_1_1Isothermaleulerequation.html" title="Model::Balancelaw::\lIsothermaleulerequation" alt="" coords="1329,256,1508,297"/>
+<area shape="rect" id="node2" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html" title="This class is a base class for all Gas edges with a 2x2 balance law. " alt="" coords="979,141,1157,182"/>
+<area shape="rect" id="node3" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="713,141,892,182"/>
+<area shape="rect" id="node6" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="1009,76,1127,103"/>
+<area shape="rect" id="node7" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="734,22,871,48"/>
+<area shape="rect" id="node11" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="1636,31,1755,58"/>
+<area shape="rect" id="node9" title="STL class. " alt="" coords="193,22,280,48"/>
+<area shape="rect" id="node10" title="STL class. " alt="" coords="5,14,144,56"/>
+<area shape="rect" id="node13" href="$classModel_1_1Scheme_1_1Implicitboxscheme.html" title="Model::Scheme::Implicitboxscheme" alt="" coords="941,207,1195,234"/>
+<area shape="rect" id="node14" href="$classModel_1_1Balancelaw_1_1Isothermaleulerequation.html" title="Model::Balancelaw::\lIsothermaleulerequation" alt="" coords="977,258,1159,300"/>
 </map>

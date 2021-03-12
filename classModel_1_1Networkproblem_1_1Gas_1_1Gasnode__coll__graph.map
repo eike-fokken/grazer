@@ -1,7 +1,8 @@
 <map id="Model::Networkproblem::Gas::Gasnode" name="Model::Networkproblem::Gas::Gasnode">
-<area shape="rect" id="node2" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="1028,71,1144,98"/>
-<area shape="rect" id="node3" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="642,13,774,39"/>
-<area shape="rect" id="node5" title="STL class. " alt="" coords="192,13,279,39"/>
-<area shape="rect" id="node6" title="STL class. " alt="" coords="5,5,143,47"/>
-<area shape="rect" id="node8" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="999,129,1173,171"/>
+<area shape="rect" id="node2" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="1001,67,1119,93"/>
+<area shape="rect" id="node8" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="1400,68,1517,95"/>
+<area shape="rect" id="node3" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="645,105,782,132"/>
+<area shape="rect" id="node5" title="STL class. " alt="" coords="193,105,280,132"/>
+<area shape="rect" id="node6" title="STL class. " alt="" coords="5,98,144,139"/>
+<area shape="rect" id="node9" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="971,185,1149,226"/>
 </map>

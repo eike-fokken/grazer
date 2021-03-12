@@ -1,10 +1,10 @@
 <map id="Model::Networkproblem::Networkproblem" name="Model::Networkproblem::Networkproblem">
-<area shape="rect" id="node2" href="$classModel_1_1Subproblem.html" title="Model::Subproblem" alt="" coords="2585,10,2732,37"/>
-<area shape="rect" id="node4" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="2223,61,2396,103"/>
-<area shape="rect" id="node8" href="$classNetwork_1_1Net.html" title="Network::Net" alt="" coords="2257,134,2362,161"/>
-<area shape="rect" id="node11" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="1182,199,1297,226"/>
-<area shape="rect" id="node12" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="597,225,729,251"/>
-<area shape="rect" id="node16" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="889,170,1005,197"/>
-<area shape="rect" id="node14" title="STL class. " alt="" coords="192,225,279,251"/>
-<area shape="rect" id="node15" title="STL class. " alt="" coords="5,217,143,259"/>
+<area shape="rect" id="node2" href="$classModel_1_1Subproblem.html" title="Model::Subproblem" alt="" coords="2791,9,2937,35"/>
+<area shape="rect" id="node4" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="2423,60,2601,101"/>
+<area shape="rect" id="node8" href="$classNetwork_1_1Net.html" title="Network::Net" alt="" coords="2458,133,2566,159"/>
+<area shape="rect" id="node11" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="775,171,892,198"/>
+<area shape="rect" id="node12" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="588,254,725,281"/>
+<area shape="rect" id="node16" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="1404,189,1523,215"/>
+<area shape="rect" id="node14" title="STL class. " alt="" coords="193,254,280,281"/>
+<area shape="rect" id="node15" title="STL class. " alt="" coords="5,247,144,288"/>
 </map>
