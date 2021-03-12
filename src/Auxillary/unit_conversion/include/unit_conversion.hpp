@@ -73,26 +73,6 @@ namespace Aux::unit {
     {"\u00B0F", [](double x) { return x * 5.0 / 9.0 + 459.67 * 5.0 / 9.0; }}
   };
 
-  template <typename Conversiontype>
-  double parse_to_si(
-    json const &unit_json,
-    std::map<std::string, Conversiontype> const &unit_map
-  );
-  
-  extern template
-  double parse_to_si<conversion>(
-    json const &unit_json,
-    std::map<std::string, conversion> const &unit_map
-  );
-
-
-  extern template 
-  double parse_to_si<double>(
-    json const &unit_json,
-    std::map<std::string, double> const &unit_map
-  );
-
-
   /**
    * @brief In contrast to multiplicative conversions (e.g. feet to meter)
    * temperature conversion is more complicated. To allow simple multiplication
@@ -183,4 +163,16 @@ namespace Aux::unit {
     );
   }
 
+  extern template
+  double parse_to_si<conversion>(
+    json const &unit_json,
+    std::map<std::string, conversion> const &unit_map
+  );
+
+
+  extern template 
+  double parse_to_si<double>(
+    json const &unit_json,
+    std::map<std::string, double> const &unit_map
+  );
 }
