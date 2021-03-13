@@ -7,12 +7,11 @@
 #include <vector>
 
 
-
-class Node : public ::testing::Test {
+class NodeTEST : public ::testing::Test {
 
   public:
 
-  Node():node(R"({"id":"N1"})"_json){};
+  NodeTEST():node(R"({"id":"N1"})"_json){};
 
   Network::Node node;
 
@@ -118,7 +117,7 @@ TEST_F(Nettest, test_exists_node) {
   EXPECT_NE(existing_node_pointer, nullptr);
 }
 
-TEST_F(Node, test_GetId) {
+TEST_F(NodeTEST, test_GetId) {
 
   auto v = node.get_id();
 
@@ -180,69 +179,3 @@ TEST_F(Nettest, test_getEndingNode) {
 }
 
 
-// TEST(Boundaryvalue, Operator) {
-
-//   // ARRANGE
-//   typedef Eigen::Matrix<double, 2, 1> Matrix2f; // 2x1 matrix of double
-
-//   Matrix2f a;
-//   a(0, 0) = 0.0;
-//   a(1, 0) = 1.0;
-
-//   Matrix2f b;
-//   b(0, 0) = 1.0;
-//   b(1, 0) = 2.0;
-
-//   Matrix2f c;
-//   c(0, 0) = 2.0;
-//   c(1, 0) = 3.0;
-
-//   std::map<double, Eigen::Matrix<double, 2, 1>> MapOfBdrValues;
-//   MapOfBdrValues.insert(std::make_pair(1.0, a));
-//   MapOfBdrValues.insert(std::make_pair(2.0, b));
-//   MapOfBdrValues.insert(std::make_pair(3.0, c));
-
-//   Model::Networkproblem::Boundaryvalue<double, 2> myBdrclass(MapOfBdrValues);
-
-//   EXPECT_ANY_THROW(myBdrclass.operator()(3.5));
-//   try {
-//     myBdrclass(3.5);
-//   } catch (Exception &e) {
-//     std::string message(e.what());
-//     bool is_right_message =
-//         (message.find("Requested boundary value is at a later time than the "
-//                       "given values") != std::string::npos);
-//     EXPECT_EQ(is_right_message, true);
-//   }
-//   EXPECT_ANY_THROW(myBdrclass.operator()(0.5));
-
-//   // TEST2
-//   {
-//     Eigen::VectorXd v2(2);
-//     Eigen::VectorXd v(2);
-//     v = myBdrclass.operator()(1.0);
-//     v2 = a;
-//     // ACT
-//     EXPECT_EQ(v, v2);
-//   }
-
-//   {
-//     Eigen::VectorXd v2(2);
-//     Eigen::VectorXd v(2);
-//     v = myBdrclass.operator()(3.0);
-//     v2 = c;
-//     // ACT
-//     EXPECT_EQ(v, v2);
-//   }
-
-//   // ASSERT
-//   // Test that returns value of interpolation for specific time step
-//   {
-//     Eigen::VectorXd v2(2);
-//     Eigen::VectorXd v(2);
-//     v = myBdrclass.operator()(2.5);
-//     v2 = 0.5 * (b + c);
-//     // ACT
-//     EXPECT_EQ(v, v2);
-//   }
-// }

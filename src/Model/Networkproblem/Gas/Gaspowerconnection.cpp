@@ -78,14 +78,14 @@ namespace Model::Networkproblem::Gas {
         auto var = values[i][0];
         outputpressure << times[i];
         outputpressure << ",    " << var.at(0.0);
-        outputpressure << std::endl;
+        outputpressure << "\n";
       }
       {
         // write out flows:
         outputflow << times[i];
         auto var = values[i][1];
         outputflow << ",    " << var.at(0.0);
-        outputflow << std::endl;
+        outputflow << "\n";
       }
     }
   }
