@@ -1,4 +1,4 @@
-#include "Initialvalue.hpp"
+#include "Boundaryvalue.hpp"
 #include "Exception.hpp"
 #include "Valuemap.hpp"
 #include <gtest/gtest.h>
@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <nlohmann/json.hpp>
 
-TEST(Initialvalue, Operator) {
+TEST(Boundaryvalue, Operator) {
 
   Eigen::Vector2d a;
   a(0) = 0.0;
@@ -30,14 +30,14 @@ TEST(Initialvalue, Operator) {
   boundary_value_map = {
     {"id" , "N213"},
     {"data" , {
-        {{"x" , 1.0}, {"values" , { 0.0, 1.0 }}},
-        {{"x" , 2.0}, {"values" , { 1.0, 2.0 }}},
-        {{"x" , 3.0}, {"values" , { 2.0, 3.0 }}}
+        {{"time" , 1.0}, {"values" , { 0.0, 1.0 }}},
+        {{"time" , 2.0}, {"values" , { 1.0, 2.0 }}},
+        {{"time" , 3.0}, {"values" , { 2.0, 3.0 }}}
       }
     }
   };
 
-  Model::Networkproblem::Initialvalue<double, 2>
+  Model::Networkproblem::Boundaryvalue<double, 2>
       boundary_object(boundary_value_map);
 
   EXPECT_THROW(boundary_object(3.5),Exception);
