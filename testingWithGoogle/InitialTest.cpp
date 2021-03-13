@@ -19,15 +19,15 @@ TEST(Initialvalue, Operator) {
   Eigen::Vector2d c;
   c(0) = 2.0;
   c(1) = 3.0;
+ 
+  // std::map<double, Eigen::Vector2d> initial_value_map;
+  // initial_value_map.insert(std::make_pair(1.0, a));
+  // initial_value_map.insert(std::make_pair(2.0, b));
+  // initial_value_map.insert(std::make_pair(3.0, c));
 
-  // std::map<double, Eigen::Vector2d> boundary_value_map;
-  // boundary_value_map.insert(std::make_pair(1.0, a));
-  // boundary_value_map.insert(std::make_pair(2.0, b));
-  // boundary_value_map.insert(std::make_pair(3.0, c));
+  nlohmann::json initial_value_map;
 
-  nlohmann::json boundary_value_map;
-
-  boundary_value_map = {
+  initial_value_map = {
     {"id" , "N213"},
     {"data" , {
         {{"x" , 1.0}, {"values" , { 0.0, 1.0 }}},
@@ -38,17 +38,17 @@ TEST(Initialvalue, Operator) {
   };
 
   Model::Networkproblem::Initialvalue<double, 2>
-      boundary_object(boundary_value_map);
+      initial_object(initial_value_map);
 
-  EXPECT_THROW(boundary_object(3.5),Exception);
-  EXPECT_THROW(boundary_object(0.5), Exception);
-  // EXPECT_ANY_THROW(boundary_object(0.5));
+  EXPECT_THROW(initial_object(3.5),Exception);
+  EXPECT_THROW(initial_object(0.5), Exception);
+  // EXPECT_ANY_THROW(initial_object(0.5));
 
   // TEST2
   {
     Eigen::Vector2d v2;
     Eigen::Vector2d v;
-    v = boundary_object(1.0);
+    v = initial_object(1.0);
     v2 = a;
     // ACT
     EXPECT_EQ(v, v2);
@@ -57,7 +57,7 @@ TEST(Initialvalue, Operator) {
   {
     Eigen::Vector2d v2;
     Eigen::Vector2d v;
-    v = boundary_object(3.0);
+    v = initial_object(3.0);
     v2 = c;
     // ACT
     EXPECT_EQ(v, v2);
@@ -68,7 +68,7 @@ TEST(Initialvalue, Operator) {
   {
     Eigen::Vector2d v2;
     Eigen::Vector2d v;
-    v = boundary_object(2.5);
+    v = initial_object(2.5);
     v2 = 0.5 * (b + c);
     // ACT
     EXPECT_EQ(v, v2);

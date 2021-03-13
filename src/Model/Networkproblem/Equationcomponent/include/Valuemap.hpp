@@ -53,7 +53,8 @@ namespace Model::Networkproblem {
 
   public:
     Valuemap(){};
-    Valuemap(nlohmann::json & value_json, std::string key):values(set_condition(value_json,key)) {};
+    Valuemap(nlohmann::json & value_json, std::string key):
+      values(set_condition(value_json,key)) {};
     Valuemap(std::map<double, Eigen::Matrix<double, N, 1>> _values):
       values(_values) {};
 

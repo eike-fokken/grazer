@@ -13,13 +13,15 @@ add_executable(boundary_test BoundaryTest.cpp)
 target_link_libraries(boundary_test PUBLIC equationcomponent )
 target_link_libraries(boundary_test PUBLIC gtest gtest_main gmock)
 
+add_executable(initial_test InitialTest.cpp )
+
+target_link_libraries(initial_test PUBLIC equationcomponent )
+target_link_libraries(initial_test PUBLIC gtest gtest_main gmock)
 
 add_executable(power_test PowerTest.cpp)
 
 target_link_libraries(power_test PUBLIC power network matrixhandler)
 target_link_libraries(power_test PUBLIC gtest gtest_main gmock)
-
-
 
 add_executable(newton_test NewtonsolverTest.cpp)
 
@@ -61,6 +63,10 @@ add_test(
   add_test(
     NAME boundary_test
     COMMAND boundary_test
+    )
+  add_test(
+    NAME initial_test
+    COMMAND initial_test
     )
 add_test(
   NAME power_test
