@@ -14,7 +14,7 @@ namespace Model::Networkproblem {
    public:
     Initialvalue(){};
     Initialvalue(nlohmann::json initialvalues):
-      valuemap(initialvalues, "time") {};
+      valuemap(initialvalues, "x") {};
 
     // std::map<double, Eigen::Matrix<double, N, 1>> set_initial_condition(
                                                       // nlohmann::json values_json) {
