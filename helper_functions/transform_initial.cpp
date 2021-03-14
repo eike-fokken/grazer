@@ -55,8 +55,8 @@ int main(int argc, char *argv[]) {
         for (auto &componentjson : componenttypevector) {
           std::string const & component_id = componentjson["id"];
           auto finder = [component_id](nlohmann::ordered_json const &x) {
-            auto it = x.find("id");
-            return it != x.end() and it.value() == component_id;
+            auto itr = x.find("id");
+            return itr != x.end() and itr.value() == component_id;
           };
           auto initjson = std::find_if(initial_json_vector.begin(),
                                        initial_json_vector.end(), finder);

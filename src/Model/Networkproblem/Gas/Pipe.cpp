@@ -21,7 +21,7 @@ namespace Model::Networkproblem::Gas {
     return schema;
   }
 
-  nlohmann::json const Pipe::schema = R"({"json schema here!"})"_json;
+  nlohmann::json const Pipe::schema{R"({"test":"test"})"_json};
 
   Pipe::Pipe(nlohmann::json const &topology,
              std::vector<std::unique_ptr<Network::Node>> &nodes)

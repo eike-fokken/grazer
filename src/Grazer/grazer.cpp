@@ -61,10 +61,13 @@ int main(int argc, char **argv) {
               << "\nUse with caution!\n"
               << std::endl;
     std::cout << "The error message was: \n\n" << ex.what() << std::endl;
+    return 1;
   } catch (...) {
     std::cout << "An unknown type of exception was thrown.\n\n"
                  "This is a bug and must be fixed!\n\n"
                  "Please contact the maintainer of Grazer!"
               << std::endl;
+    return 1;
   }
+  return 0;
 }

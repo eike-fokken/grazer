@@ -66,14 +66,14 @@ namespace Model::Networkproblem {
       // This catches problems with doubles
       if (t >= last_t) {
         if (t > last_t + Aux::EPSILON) {
-          throw Valuemap_out_of_range("too high", 1, t, last_t);
+          throw Valuemap_out_of_range("too high", true, t, last_t);
         }
 
         return last_element->second;
       }
       if (t <= first_t) {
         if (t < first_t - Aux::EPSILON) {
-          throw Valuemap_out_of_range("too low", -1, t, first_t);
+          throw Valuemap_out_of_range("too low", false, t, first_t);
         }
         
         return first_element->second;
