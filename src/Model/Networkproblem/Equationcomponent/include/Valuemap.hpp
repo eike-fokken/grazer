@@ -8,6 +8,7 @@
 #include <map>
 #include <stdexcept>
 #include <vector>
+#include <string>
 
 namespace Model::Networkproblem {
 
@@ -109,7 +110,7 @@ namespace Model::Networkproblem {
         try {
           for (unsigned int i =0 ; i<N ; ++i) {
             // auto ijson= static_cast<nlohmann::basic_json::size_type>(i);
-          value[i] = datapoint["values"][i];
+            value[i] = std::stod(datapoint["values"][i].get<std::string>());
           }
         } catch (...) {
           gthrow({"initial/boundary data in node with id ",values_json["id"],
