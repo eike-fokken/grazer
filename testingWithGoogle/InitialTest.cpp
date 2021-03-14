@@ -40,8 +40,8 @@ TEST(Initialvalue, Operator) {
   Model::Networkproblem::Initialvalue<double, 2>
       initial_object(initial_value_map);
 
-  // EXPECT_THROW(initial_object(3.5),Exception);
-  // EXPECT_THROW(initial_object(0.5), Exception);
+  EXPECT_THROW(initial_object(3.5),Exception);
+  EXPECT_THROW(initial_object(0.5), Exception);
   // EXPECT_ANY_THROW(initial_object(0.5));
 
   // TEST2
