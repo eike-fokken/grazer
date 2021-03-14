@@ -1,4 +1,5 @@
 #include "Shortcomponent.hpp"
+#include "Initialvalue.hpp"
 #include "Matrixhandler.hpp"
 #include "Exception.hpp"
 #include <iostream>
@@ -64,40 +65,23 @@ namespace Model::Networkproblem::Gas {
   }
 
   void Shortcomponent::initial_values_helper(Eigen::Ref<Eigen::VectorXd> new_state,
-                                             nlohmann::ordered_json initial_json, std::string const & type) {
+                                             nlohmann::ordered_json initial_json) {
     if (get_start_state_index() == -1 or get_after_state_index() == -1) {
         gthrow({"This function may only be called if set_indices  has been "
                 "called beforehand!"});
       }
 
-      // This tests whether the json is in the right format:
-      try{
-      if ((not initial_json["data"].is_array()) or (not initial_json["data"][0]["values"].is_array()) or initial_json["data"][0]["values"].size() != 2 or initial_json["data"].size()!=2) {
-        std::cout << "The initial json for this " << type <<
-                     " is given by:"
-                  << "\n";
-        std::cout << initial_json << std::endl;
-        gthrow({"This is not a ", type, " initial condition!", "\n Maybe there are array brackets [] missing? "});
-      }
-      } catch (...) {
-        std::cout << __FILE__ << ":"<< __LINE__ << " The exception was thrown here." << std::endl;
-        throw;
-      }
       auto start_p_index = get_boundary_state_index(1);
       auto start_q_index = start_p_index + 1;
       auto end_p_index = get_boundary_state_index(-1);
       auto end_q_index = end_p_index + 1;
-      try {
-      new_state[start_p_index] = initial_json["data"][0]["values"][0];
-      new_state[start_q_index] = initial_json["data"][0]["values"][1];
-      new_state[end_p_index] = initial_json["data"][1]["values"][0];
-      new_state[end_q_index] = initial_json["data"][1]["values"][1];
-      } catch(...){
-        std::cout << __FILE__ << ":" << __LINE__
-                  << ": failed to read in initial values in " << type << "!"
-                  << std::endl;
-        throw;
-      }
+
+      Initialvalue<Shortcomponent, 2> initialvalues;
+      initialvalues.set_initial_condition(initial_json);
+      new_state[start_p_index] = initialvalues(0)[0];
+      new_state[start_q_index] = initialvalues(0)[1];
+      new_state[end_p_index] = initialvalues(1)[0];
+      new_state[end_q_index] = initialvalues(1)[1];
   }
 
   Eigen::Vector2d Shortcomponent::get_boundary_p_qvol_bar(int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const {
