@@ -1,12 +1,8 @@
-#include <Misc.hpp>
-#include <Vphinode.hpp>
-#include <Coloroutput.hpp>
-#include <Pipe.hpp>
-#include <Gaspowerconnection.hpp>
-#include <Flowboundarynode.hpp>
-#include <Innode.hpp>
-#include <Shortpipe.hpp>
-#include "Matrixhandler.hpp"
+#include "Flowboundarynode.hpp"
+#include "Gaspowerconnection.hpp"
+#include "Innode.hpp"
+#include "Pipe.hpp"
+#include "Shortpipe.hpp"
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 #include <gtest/gtest.h>
@@ -15,20 +11,13 @@
 #include <nlohmann/json.hpp>
 #include <string>
 #include <vector>
-#include <Eigen/Sparse>
-#include "Net.hpp"
+#include "Netfactory.hpp"
+#include "Gas_factory.hpp"
 
-nlohmann::json make_boundary(std::string id, double condition0, double condition1);
+// auto net_ptr = Model::Networkproblem::build_net<Model::Componentfactory::Gas_factory>(
+//     networkproblem_json);
 
-    class ShortpipeTEST : public ::testing::Test {
-
-public:
-
-  Network::Net net{std::vector<std::unique_ptr<Network::Node>>(),
-                   std::vector<std::unique_ptr<Network::Edge>>()};
-
-  void setup_default_shortpipe();
-};
+// return std::make_unique<Networkproblem::Networkproblem>(std::move(net_ptr));
 
 TEST(testFlowboundarynode_Shortpipe, evaluate_and_evaluate_state_derivative) {
 
@@ -1175,20 +1164,3 @@ TEST(testGaspowerconnection, generated_power) {
   // // }
 }
 
-nlohmann::json make_boundary(std::string id, double condition0, double condition1) {
-  nlohmann::json bound;
-  bound["id"] = id;
-  bound["data"] = nlohmann::json::array();
-  nlohmann::json b0;
-  b0["time"] = 0;
-  b0["values"] = nlohmann::json::array();
-  b0["values"].push_back(condition0);
-  nlohmann::json b1;
-  b1["time"] = 1;
-  b1["values"] = nlohmann::json::array();
-  b1["values"].push_back(condition1);
-  bound["data"].push_back(b0);
-  bound["data"].push_back(b1);
-
-  return bound;
-}

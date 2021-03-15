@@ -1,11 +1,7 @@
 #include "Exception.hpp"
 #include "Subproblemchooser.hpp"
-#include "Networkproblem.hpp"
 #include "Netfactory.hpp"
 #include "Networkproblem.hpp"
-#include "Net.hpp"
-#include "Edge.hpp"
-#include "Node.hpp"
 #include "Full_factory.hpp"
 
 namespace Model {
