@@ -13,8 +13,13 @@
     /// respective files and fills all component jsons with their boundary and
     /// control data.
     ///
-    /// @param networkproblem_json A json containining
-    ... hier weiter!
+    /// This function returns a json object which contains individual component
+    /// jsons that contain all information neccessary for constructing the
+    /// components.
+    /// @param networkproblem_json A json describing the networkproblem.
+    /// Contains topology, boundary and control data, possibly in form of file
+    /// paths to the respective json files.
+    /// @returns the topology json enriched with control and boundary data.
 
     nlohmann::json
     build_full_networkproblem_json(nlohmann::json &networkproblem_json);
@@ -51,6 +56,19 @@
     /// into each component json.
     void supply_overall_values_to_components(nlohmann::json &network_json);
 
+    /// \brief Constructs a \ref Network::Net "Net" object from the given json.
+    ///
+    /// @tparam Componentfactory Chooses the \ref
+    /// Model::Componentfactory::Componentfactory_interface "Componentfactory"
+    /// class and with that the types of components that are recognized.
+    /// @param network_json A json containing complete jsons to all components
+    /// that shall be constructed for the net.
+    /// @return A unique pointer to an instance of \ref Network::Net "Net"
+    /// containing all nodes and edges declared in networkproblem_json.
+    /// @throw std::runtime_error if a component type is found in the topology
+    /// that is not constructible in the Componentfactory.
+    /// @throw std::runtime_error if the passed json has errors.
+
     template <typename Componentfactory>
     std::unique_ptr<Network::Net>
     build_net(nlohmann::json &networkproblem_json) {
@@ -59,7 +77,7 @@
                     Model::Componentfactory::Componentfactory_interface<Componentfactory>,
                     Componentfactory>,
                     " The componentfactory used for networkproblem must inherit from "
-                    "Componentfactory_interface<Componentfactory>.");
+                    "Componentfactory_interface<Componentfactory> in the style of CRTP.");
 
       Componentfactory factory;
 
