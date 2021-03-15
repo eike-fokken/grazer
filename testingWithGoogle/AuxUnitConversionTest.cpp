@@ -18,11 +18,11 @@ TEST(unitParser, parsingWorks) {
     "{\"value\": 1000,\"unit\": \"1e4 \u00B5m\"}"
   );
 
-  auto si_length = unit::parse_to_si(metres_10, unit::lenght_units);
+  auto si_length = unit::parse_to_si(metres_10, unit::length_units);
 
   EXPECT_EQ(si_length, 10.0);
-  EXPECT_EQ(si_length, unit::parse_to_si(deca_metres_1, unit::lenght_units));
-  EXPECT_EQ(si_length, unit::parse_to_si(ten_thousand_micro_metres_1000, unit::lenght_units));
+  EXPECT_EQ(si_length, unit::parse_to_si(deca_metres_1, unit::length_units));
+  EXPECT_EQ(si_length, unit::parse_to_si(ten_thousand_micro_metres_1000, unit::length_units));
 
   json celcius = R"({
     "value": 1,
@@ -62,11 +62,11 @@ TEST(unitParser, mostUsedUnits) {
     234 // K
   );
   EXPECT_EQ(
-    unit::parse_to_si(R"({"value": 23, "unit":"km"})"_json, unit::lenght_units),
+    unit::parse_to_si(R"({"value": 23, "unit":"km"})"_json, unit::length_units),
     23000 // m
   );
   EXPECT_EQ(
-    unit::parse_to_si(R"({"value": 100, "unit": "mm"})"_json, unit::lenght_units),
+    unit::parse_to_si(R"({"value": 100, "unit": "mm"})"_json, unit::length_units),
     0.1 // m
   );
   EXPECT_EQ(

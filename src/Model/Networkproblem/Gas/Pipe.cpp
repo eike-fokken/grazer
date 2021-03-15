@@ -22,11 +22,11 @@ namespace Model::Networkproblem::Gas {
              std::vector<std::unique_ptr<Network::Node>> &nodes)
       : Network::Edge(topology, nodes),
         length(Aux::unit::parse_to_si(topology["length"],
-                                      Aux::unit::lenght_units)),
+                                      Aux::unit::length_units)),
         diameter(Aux::unit::parse_to_si(topology["diameter"],
-                                        Aux::unit::lenght_units)),
+                                        Aux::unit::length_units)),
         roughness(Aux::unit::parse_to_si(topology["roughness"],
-                                         Aux::unit::lenght_units)),
+                                         Aux::unit::length_units)),
         number_of_points(
             static_cast<int>(std::ceil(
                 length /

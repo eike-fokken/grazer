@@ -6,7 +6,7 @@ using nlohmann::json;
 
 namespace Aux::unit {
 
-  extern const std::map<std::string, double> lenght_units;
+  extern const std::map<std::string, double> length_units;
   extern const std::map<std::string, double> area_units;
   extern const std::map<std::string, double> volume_units;
   extern const std::map<std::string, double> pressure_units;

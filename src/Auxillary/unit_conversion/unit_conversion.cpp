@@ -5,7 +5,7 @@
 
 namespace Aux::unit {
   // convert double to boost::units::quantity<si::length> add "*si::meters" to the entries
-  const std::map<std::string, double> lenght_units {
+  const std::map<std::string, double> length_units {
     {"m", 1.0},
     {"in", 0.0254},
     {"ft",  0.3048},
