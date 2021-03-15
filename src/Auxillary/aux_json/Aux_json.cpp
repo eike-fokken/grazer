@@ -30,7 +30,7 @@ namespace aux_json {
                   " doesn't contain the key 'GRAZER_file_directory.\n",
                   "This is a bug. Please file a bug report.\n"});
         }
-        auto directory_path = std::filesystem::path(super_json["GRAZER_file_directory"]);
+        auto directory_path = std::filesystem::path(super_json["GRAZER_file_directory"].get<std::string>());
         auto json_full_path = directory_path / json_path;
         sub_json = get_json_from_file_path(json_full_path.string());
         return;
@@ -45,7 +45,7 @@ namespace aux_json {
   nlohmann::json get_json_from_file_path(std::filesystem::path const &file_path) {
     nlohmann::json json_object;
     if (not std::filesystem::exists(file_path)) {
-      gthrow({"The file \n", std::filesystem::absolute(file_path), "\n does not exist!"});
+      gthrow({"The file \n", std::filesystem::absolute(file_path).string(), "\n does not exist!"});
     }
     try {
       std::ifstream jsonfilestream(file_path);
