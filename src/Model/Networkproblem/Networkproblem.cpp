@@ -2,10 +2,12 @@
 #include "Edge.hpp"
 #include "Equationcomponent.hpp"
 #include "Exception.hpp"
+#include "Idobject.hpp"
 #include "Net.hpp"
 #include "Node.hpp"
 #include <Eigen/Sparse>
 #include <iostream>
+#include <iterator>
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <string>
@@ -118,7 +120,7 @@ namespace Model::Networkproblem {
         }
       }
     }
-  }
+    }
 
   int Networkproblem::reserve_indices(int const next_free_index) {
     int free_index = next_free_index;
