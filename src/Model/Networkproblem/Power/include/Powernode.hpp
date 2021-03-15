@@ -43,7 +43,7 @@ namespace Model::Networkproblem::Power {
 
     
 
-    Boundaryvalue<Powernode, 2> boundaryvalue;
+    Boundaryvalue<2> const boundaryvalue;
     /// Real part of the admittance of this node
     double G;
     /// Imaginary part of the admittance of this node

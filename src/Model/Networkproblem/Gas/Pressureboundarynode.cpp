@@ -6,9 +6,7 @@
 namespace Model::Networkproblem::Gas {
 
   Pressureboundarynode::Pressureboundarynode(nlohmann::json const &data)
-      : Gasnode(data) {
-    boundaryvalue.set_boundary_condition(data["boundary_values"]);
-  }
+      : Gasnode(data), boundaryvalue(data["boundary_values"]) {}
 
   void Pressureboundarynode::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double ,
                 double new_time, Eigen::Ref<Eigen::VectorXd const> const &,

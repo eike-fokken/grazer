@@ -25,7 +25,7 @@ public:
 
 
 private:
-  Boundaryvalue<Pressureboundarynode, 1> boundaryvalue;
+  Boundaryvalue<1> const boundaryvalue;
   };
 
 } // namespace Model::Networkproblem::Gas
