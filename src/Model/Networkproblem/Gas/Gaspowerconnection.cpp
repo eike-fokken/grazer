@@ -18,9 +18,9 @@ namespace Model::Networkproblem::Gas {
       std::vector<std::unique_ptr<Network::Node>> &nodes)
       : Network::Edge(topology, nodes),
         gas2power_q_coefficient(
-            std::stod(topology["gas2power_q_coeff"].get<std::string>())),
+            topology["gas2power_q_coeff"]),
         power2gas_q_coefficient(
-            std::stod(topology["power2gas_q_coeff"].get<std::string>())) {}
+            topology["power2gas_q_coeff"]) {}
 
 
   void Gaspowerconnection::evaluate(

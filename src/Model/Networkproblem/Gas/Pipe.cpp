@@ -1,3 +1,4 @@
+#include "unit_conversion.hpp"
 #include "Edge.hpp"
 #include <Coloroutput.hpp>
 #include <Eigen/Dense>
@@ -20,10 +21,12 @@ namespace Model::Networkproblem::Gas {
   Pipe::Pipe(nlohmann::json const &topology,
              std::vector<std::unique_ptr<Network::Node>> &nodes)
       : Network::Edge(topology, nodes),
-        length(std::stod(topology["length"]["value"].get<std::string>()) * 1e3),
-        diameter(std::stod(topology["diameter"]["value"].get<std::string>()) *
-                 1e-3),
-        roughness(std::stod(topology["roughness"]["value"].get<std::string>())),
+        length(Aux::unit::parse_to_si(topology["length"],
+                                      Aux::unit::length_units)),
+        diameter(Aux::unit::parse_to_si(topology["diameter"],
+                                        Aux::unit::length_units)),
+        roughness(Aux::unit::parse_to_si(topology["roughness"],
+                                         Aux::unit::length_units)),
         number_of_points(
             static_cast<int>(std::ceil(
                 length /

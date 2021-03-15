@@ -292,8 +292,8 @@ void PowerTEST::set_custom_net(
   {
     nlohmann::json vphi_json;
     vphi_json["id"] = "vphi";
-    vphi_json["G"] = std::to_string(vphi_par[0]);
-    vphi_json["B"] = std::to_string(vphi_par[1]);
+    vphi_json["G"] = vphi_par[0];
+    vphi_json["B"] = vphi_par[1];
     auto b0 = make_boundary(vphi_json["id"], vphi_boundary);
     vphi_json["boundary_values"] = b0;
 
@@ -303,8 +303,8 @@ void PowerTEST::set_custom_net(
   {
     nlohmann::json pq_json;
     pq_json["id"] = "pq";
-    pq_json["G"] = std::to_string(pq_par[0]);
-    pq_json["B"] = std::to_string(pq_par[1]);
+    pq_json["G"] = pq_par[0];
+    pq_json["B"] = pq_par[1];
 
     auto b1 = make_boundary(pq_json["id"], pq_boundary);
     pq_json["boundary_values"] = b1;
@@ -315,8 +315,8 @@ void PowerTEST::set_custom_net(
   {
     nlohmann::json pv_json;
     pv_json["id"] = "pv";
-    pv_json["G"] = std::to_string(pv_par[0]);
-    pv_json["B"] = std::to_string(pv_par[1]);
+    pv_json["G"] = pv_par[0];
+    pv_json["B"] = pv_par[1];
 
     auto b2 = make_boundary(pv_json["id"], pv_boundary);
     pv_json["boundary_values"] = b2;
@@ -329,8 +329,8 @@ void PowerTEST::set_custom_net(
     tl_vphi_pq_json["id"] = "tl_vphi_pq";
     tl_vphi_pq_json["from"] = "vphi";
     tl_vphi_pq_json["to"] = "pq";
-    tl_vphi_pq_json["G"] = std::to_string(tl_vphi_pq_par[0]);
-    tl_vphi_pq_json["B"] = std::to_string(tl_vphi_pq_par[1]);
+    tl_vphi_pq_json["G"] = tl_vphi_pq_par[0];
+    tl_vphi_pq_json["B"] = tl_vphi_pq_par[1];
 
     edges.push_back(
         std::make_unique<Model::Networkproblem::Power::Transmissionline>(
@@ -342,8 +342,8 @@ void PowerTEST::set_custom_net(
     tl_pq_pv_json["id"] = "tl_pq_pv";
     tl_pq_pv_json["from"] = "pq";
     tl_pq_pv_json["to"] = "pv";
-    tl_pq_pv_json["G"] = std::to_string(tl_pq_pv_par[0]);
-    tl_pq_pv_json["B"] = std::to_string(tl_pq_pv_par[1]);
+    tl_pq_pv_json["G"] = tl_pq_pv_par[0];
+    tl_pq_pv_json["B"] = tl_pq_pv_par[1];
 
     edges.push_back(
         std::make_unique<Model::Networkproblem::Power::Transmissionline>(
