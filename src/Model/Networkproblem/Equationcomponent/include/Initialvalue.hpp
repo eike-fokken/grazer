@@ -12,7 +12,6 @@ namespace Model::Networkproblem {
   template <typename T, int N> class Initialvalue  {
 
    public:
-    Initialvalue(){};
     Initialvalue(nlohmann::json initialvalues):
       valuemap(initialvalues, "x") {};
 

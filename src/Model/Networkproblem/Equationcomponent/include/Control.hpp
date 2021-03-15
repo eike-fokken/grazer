@@ -12,12 +12,8 @@ namespace Model::Networkproblem {
   template <typename T, int N> class Control  {
 
    public:
-    Control(){};
-    Control(nlohmann::json controls):
-      valuemap(controls, "time"){};
-    // Control(
-        // std::map<double, Eigen::Matrix<double, N, 1>> _controls)
-        // : valuemap(_controls){};
+    Control(nlohmann::json _controls)
+         : valuemap(_controls, "time"){};
 
     // void set_controls(nlohmann::json values_json) {
       // valuemap.set_condition(values_json,"time");

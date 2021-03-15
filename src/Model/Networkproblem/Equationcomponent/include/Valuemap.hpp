@@ -52,11 +52,11 @@ namespace Model::Networkproblem {
   class Valuemap {
 
   public:
-    Valuemap(){};
     Valuemap(nlohmann::json & value_json, std::string key):
       values(set_condition(value_json,key)) {};
-    Valuemap(std::map<double, Eigen::Matrix<double, N, 1>> _values):
-      values(_values) {};
+
+    // Valuemap(std::map<double, Eigen::Matrix<double, N, 1>> _values):
+    //   values(_values) {};
 
     Eigen::Matrix<double, N, 1> operator()(double t) const {
 
@@ -103,7 +103,7 @@ namespace Model::Networkproblem {
 
       std::map<double, Eigen::Matrix<double, N, 1>> map_values;
 
-      if (values_json.size() == 0) {
+      if (values_json["data"].size() == 0) {
         gthrow({"data in node with id ", values_json["id"], " is empty!"})
 
      }

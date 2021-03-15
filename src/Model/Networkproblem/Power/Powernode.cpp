@@ -13,9 +13,9 @@
 namespace Model::Networkproblem::Power {
 
   Powernode::Powernode(nlohmann::json const &topology)
-    : Node(topology), G(std::stod(topology["G"].get<std::string>())), B(std::stod(topology["B"].get<std::string>())) {
-    boundaryvalue.set_boundary_condition(topology["boundary_values"]);
-}
+    : Node(topology), boundaryvalue(topology["boundary_values"]),
+      G(std::stod(topology["G"].get<std::string>())),
+      B(std::stod(topology["B"].get<std::string>())) {}
 
   void Powernode::set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
                                      nlohmann::ordered_json initial_json) {
@@ -25,8 +25,7 @@ namespace Model::Networkproblem::Power {
               "called beforehand!"});
     }
 
-    Initialvalue<Powernode, 4> initialvalues;
-    initialvalues.set_initial_condition(initial_json);
+    Initialvalue<Powernode, 4> initialvalues(initial_json);
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
     new_state[V_index] = initialvalues(0)[2];
