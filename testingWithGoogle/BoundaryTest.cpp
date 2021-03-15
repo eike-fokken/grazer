@@ -4,6 +4,7 @@
 #include <gtest/gtest.h>
 #include <Eigen/Dense>
 #include <stdexcept>
+#include <nlohmann/json.hpp>
 
 TEST(Boundaryvalue, Operator) {
 
@@ -16,15 +17,28 @@ TEST(Boundaryvalue, Operator) {
   b(1) = 2.0;
 
   Eigen::Vector2d c;
-    c(0) = 2.0;
+  c(0) = 2.0;
   c(1) = 3.0;
 
-  std::map<double, Eigen::Vector2d> boundary_value_map;
-  boundary_value_map.insert(std::make_pair(1.0, a));
-  boundary_value_map.insert(std::make_pair(2.0, b));
-  boundary_value_map.insert(std::make_pair(3.0, c));
+  // std::map<double, Eigen::Vector2d> boundary_value_map;
+  // boundary_value_map.insert(std::make_pair(1.0, a));
+  // boundary_value_map.insert(std::make_pair(2.0, b));
+  // boundary_value_map.insert(std::make_pair(3.0, c));
 
-  Model::Networkproblem::Boundaryvalue<double, 2> boundary_object(boundary_value_map);
+  nlohmann::json boundary_value_map;
+
+  boundary_value_map = {
+    {"id" , "N213"},
+    {"data" , {
+        {{"time" , 1.0}, {"values" , { 0.0, 1.0 }}},
+        {{"time" , 2.0}, {"values" , { 1.0, 2.0 }}},
+        {{"time" , 3.0}, {"values" , { 2.0, 3.0 }}}
+      }
+    }
+  };
+
+  Model::Networkproblem::Boundaryvalue<2>
+      boundary_object(boundary_value_map);
 
   EXPECT_THROW(boundary_object(3.5),Exception);
   EXPECT_THROW(boundary_object(0.5), Exception);

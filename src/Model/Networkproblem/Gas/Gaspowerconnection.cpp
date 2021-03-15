@@ -1,5 +1,6 @@
 #include "Gaspowerconnection.hpp"
 #include "Exception.hpp"
+#include "Initialvalue.hpp"
 #include "Mathfunctions.hpp"
 #include "Matrixhandler.hpp"
 #include "Misc.hpp"
@@ -17,9 +18,9 @@ namespace Model::Networkproblem::Gas {
       std::vector<std::unique_ptr<Network::Node>> &nodes)
       : Network::Edge(topology, nodes),
         gas2power_q_coefficient(
-            std::stod(topology["gas2power_q_coeff"].get<std::string>())),
+            topology["gas2power_q_coeff"]),
         power2gas_q_coefficient(
-            std::stod(topology["power2gas_q_coeff"].get<std::string>())) {}
+            topology["power2gas_q_coeff"]) {}
 
 
   void Gaspowerconnection::evaluate(
@@ -111,24 +112,13 @@ namespace Model::Networkproblem::Gas {
               "called beforehand!"});
     }
     // This tests whether the json is in the right format:
-    try {
-      if ( (!initial_json["data"]["values"].is_array()) or
-          initial_json["data"]["values"].size() != 2) {
-        std::cout << "The initial json for this gaspowerconnection is given by:"
-                  << "\n";
-        std::cout << initial_json << std::endl;
-        gthrow({"This is not a gaspowerconnection initial condition!"});
-      }
-    } catch (...) {
-      std::cout << __FILE__ << ":" << __LINE__
-                << " The exception was thrown here." << std::endl;
-      throw;
-    }
     auto start_p_index = get_boundary_state_index(1);
     auto start_q_index = start_p_index + 1;
     try {
-      new_state[start_p_index] = initial_json["data"]["values"][0];
-      new_state[start_q_index] = initial_json["data"]["values"][1];
+
+      Initialvalue<2> initialvalues(initial_json);
+      new_state[start_p_index] = initialvalues(0)[0];
+      new_state[start_q_index] = initialvalues(0)[1];
     } catch (...) {
       std::cout << __FILE__ << ":" << __LINE__
                 << ": failed to read in initial values in gaspowerconnection!"

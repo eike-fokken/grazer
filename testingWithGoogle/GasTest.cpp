@@ -17,7 +17,6 @@
 #include <vector>
 #include <Eigen/Sparse>
 #include "Net.hpp"
-#include "Source.hpp"
 
 nlohmann::json make_boundary(std::string id, double condition0, double condition1);
 
@@ -33,41 +32,42 @@ public:
 
 TEST(testFlowboundarynode_Shortpipe, evaluate_and_evaluate_state_derivative) {
 
-  // FAIL();
+  FAIL();
 
-  nlohmann::json node0_topology;
-  node0_topology["id"] = "node0";
-  double flow0start = 88.0;
-  double flow0end = 10.0;
-  auto b0 = make_boundary(node0_topology["id"],flow0start, flow0end);
-  node0_topology["boundary_values"] = b0;
+  // nlohmann::json node0_topology;
+  // node0_topology["id"] = "node0";
+  // double flow0start = 88.0;
+  // double flow0end = 10.0;
+  // auto b0 = make_boundary(node0_topology["id"],flow0start, flow0end);
+  // node0_topology["boundary_values"] = b0;
 
-  nlohmann::json node1_topology;
-  node1_topology["id"] = "node1";
-  double flow1start = -23.0;
-  double flow1end = -440.0;
-  auto b1 = make_boundary(node1_topology["id"], flow1start, flow1end);
-  node1_topology["boundary_values"] = b1;
+  // nlohmann::json node1_topology;
+  // node1_topology["id"] = "node1";
+  // double flow1start = -23.0;
+  // double flow1end = -440.0;
+  // auto b1 = make_boundary(node1_topology["id"], flow1start, flow1end);
+  // node1_topology["boundary_values"] = b1;
 
-  nlohmann::json shortpipe_topology;
-  shortpipe_topology["id"] = "shortpipe";
-  shortpipe_topology["from"] = "node0";
-  shortpipe_topology["to"] = "node1";
+  // nlohmann::json shortpipe_topology;
+  // shortpipe_topology["id"] = "shortpipe";
+  // shortpipe_topology["from"] = "node0";
+  // shortpipe_topology["to"] = "node1";
 
 
-  std::vector<std::unique_ptr<Network::Node>> nodes;
-  std::vector<std::unique_ptr<Network::Edge>> edges;
+  // double pressure_start = 810;
+  // double pressure_end = 125;
+  // double flow_start =-4;
+  // double flow_end = 1000;
+  // json sp0_initial = {
+  //                    {"id", "node_4_ld1"},
+  //                    {"data", json::array({{{"x", 0.0},
+  //                                           {"value", json::array({pressure_start,flow_start})}},{{"x", 1.0},{"value", json::array({pressure_end,flow_end})}}})}};
+  // //std::cout << sp0_initial<<std::endl;
 
-  nodes.push_back(std::make_unique<Model::Networkproblem::Gas::Source>(node0_topology));
-  nodes.push_back(std::make_unique<Model::Networkproblem::Gas::Source>(node1_topology));
-  edges.push_back(std::make_unique< Model::Networkproblem::Gas::Shortpipe>(shortpipe_topology,nodes));
 
-  auto net = Network::Net(std::move(nodes), std::move(edges));
-
-  double pressure_start = 810;
-  double pressure_end = 125;
-  double flow_start = -4;
-  double flow_end = 1000;
+  // Model::Networkproblem::Gas::Flowboundarynode  g0("gasnode0", bd_json0, flow_topology);
+  // Model::Networkproblem::Gas::Flowboundarynode  g1("gasnode1", bd_json1, flow_topology);
+  // Model::Networkproblem::Gas::Shortpipe sp0("SP0", &g0, &g1);
 
   // auto a = g0.set_indices(0);
   // auto b = g1.set_indices(a);
