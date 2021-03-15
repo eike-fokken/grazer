@@ -17,7 +17,7 @@ namespace Model::Networkproblem::Gas {
     void save_values(double time, Eigen::Ref<Eigen::VectorXd const> const &state) final;
 
     void initial_values_helper(Eigen::Ref<Eigen::VectorXd>new_state,
-                               nlohmann::ordered_json initial_json, std::string const & type);
+                               nlohmann::ordered_json initial_json);
 
     /// Shortcomponents just use pressure and volumetric flow as their variables, so that this function simply returns the corresponding boundary state.
     Eigen::Vector2d get_boundary_p_qvol_bar(int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const final;

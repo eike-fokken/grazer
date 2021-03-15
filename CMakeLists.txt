@@ -20,6 +20,22 @@ enable_testing()
 add_subdirectory(googletest)
 
 
+# Typically you don't care so much for a third party library's tests to be
+# run from your own project's code.
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+
+# If you only include this third party in PRIVATE source files, you do not
+# need to install it when your main project gets installed.
+set(JSON_Install OFF CACHE INTERNAL "")
+add_subdirectory(nlohmann_json)
+if(BUILD_TESTS)
+  option(BUILD_TESTS OFF)
+add_subdirectory(json-schema-validator)
+option(BUILD_TESTS ON)
+else()
+  add_subdirectory(json-schema-validator)
+endif()
+
 
 #for multiple compiler compatibility:
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -127,20 +143,7 @@ endif()
 
 add_subdirectory(src)
 add_subdirectory(testingWithGoogle)
-add_subdirectory(nlohmann_json)
-add_subdirectory(json-schema-validator)
 
-# json-schema-validator uses old-style casts
-target_compile_options(nlohmann_json_schema_validator PRIVATE -Wno-old-style-cast -Wno-switch-default -Wno-conversion)
-
-
-# Typically you don't care so much for a third party library's tests to be
-# run from your own project's code.
-set(JSON_BuildTests OFF CACHE INTERNAL "")
-
-# If you only include this third party in PRIVATE source files, you do not
-# need to install it when your main project gets installed.
-set(JSON_Install OFF CACHE INTERNAL "")
 add_subdirectory(helper_functions)
 
 add_custom_target(cclean COMMAND cd ${CMAKE_SOURCE_DIR} && rm -r ${CMAKE_SOURCE_DIR}/build/ && mkdir ${CMAKE_SOURCE_DIR}/build/ && cd ${CMAKE_SOURCE_DIR}/build/
