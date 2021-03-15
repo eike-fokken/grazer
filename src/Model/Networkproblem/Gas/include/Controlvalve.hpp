@@ -32,7 +32,7 @@ namespace Model::Networkproblem::Gas {
 
   private:
 
-    Control<1> control_values;
+    Control<1> const control_values;
 
 
   };

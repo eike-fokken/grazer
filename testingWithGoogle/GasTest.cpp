@@ -4,7 +4,6 @@
 #include <Pipe.hpp>
 #include <Gaspowerconnection.hpp>
 #include <Flowboundarynode.hpp>
-#include <Pressureboundarynode.hpp>
 #include <Innode.hpp>
 #include <Shortpipe.hpp>
 #include "Matrixhandler.hpp"
@@ -17,34 +16,43 @@
 #include <string>
 #include <vector>
 #include <Eigen/Sparse>
+#include "Net.hpp"
 
-using json = nlohmann::ordered_json;
+nlohmann::json make_boundary(std::string id, double condition0, double condition1);
 
+    class ShortpipeTEST : public ::testing::Test {
+
+public:
+
+  Network::Net net{std::vector<std::unique_ptr<Network::Node>>(),
+                   std::vector<std::unique_ptr<Network::Edge>>()};
+
+  void setup_default_shortpipe();
+};
 
 TEST(testFlowboundarynode_Shortpipe, evaluate_and_evaluate_state_derivative) {
 
   FAIL();
+
+  // nlohmann::json node0_topology;
+  // node0_topology["id"] = "node0";
   // double flow0start = 88.0;
   // double flow0end = 10.0;
+  // auto b0 = make_boundary(node0_topology["id"],flow0start, flow0end);
+  // node0_topology["boundary_values"] = b0;
 
+  // nlohmann::json node1_topology;
+  // node1_topology["id"] = "node1";
   // double flow1start = -23.0;
   // double flow1end = -440.0;
+  // auto b1 = make_boundary(node1_topology["id"], flow1start, flow1end);
+  // node1_topology["boundary_values"] = b1;
 
-  // json flow_topology={};
+  // nlohmann::json shortpipe_topology;
+  // shortpipe_topology["id"] = "shortpipe";
+  // shortpipe_topology["from"] = "node0";
+  // shortpipe_topology["to"] = "node1";
 
-  // json bd_json0 = {
-  //                  {"id", "gasnode0"},
-  //                  {"type", "flow"},
-  //                  {"data", json::array({{{"time", 0.},
-  //                                         {"values", json::array({flow0start})}},{{"time", 100.},{"values", json::array({flow0end})}}})}};
-
-  // //std::cout << bd_json0 <<std::endl;
-  // json bd_json1 = {
-  //                  {"id", "gasnode1"},
-  //                  {"type", "flow"},
-  //                  {"data", json::array({{{"time", 0.},
-  //                                         {"values", json::array({flow1start})}},{{"time", 100.},{"values", json::array({flow1end})}}})}};
-  // //std::cout << bd_json1<<std::endl;
 
   // double pressure_start = 810;
   // double pressure_end = 125;
@@ -1165,4 +1173,22 @@ TEST(testGaspowerconnection, generated_power) {
 
   // //   std::cout << gp0.dgenerated_power_dq(i) <<std::endl;
   // // }
+}
+
+nlohmann::json make_boundary(std::string id, double condition0, double condition1) {
+  nlohmann::json bound;
+  bound["id"] = id;
+  bound["data"] = nlohmann::json::array();
+  nlohmann::json b0;
+  b0["time"] = 0;
+  b0["values"] = nlohmann::json::array();
+  b0["values"].push_back(condition0);
+  nlohmann::json b1;
+  b1["time"] = 1;
+  b1["values"] = nlohmann::json::array();
+  b1["values"].push_back(condition1);
+  bound["data"].push_back(b0);
+  bound["data"].push_back(b1);
+
+  return bound;
 }

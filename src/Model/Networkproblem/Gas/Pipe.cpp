@@ -44,10 +44,10 @@ namespace Model::Networkproblem::Gas {
 
       Eigen::Ref<Eigen::Vector2d> rootvalue_segment = rootvalues.segment<2>(i);
       
-      Eigen::Ref<Eigen::Vector2d const> const  last_left = last_state.segment<2>(i - 1);
-      Eigen::Ref<Eigen::Vector2d const> const  last_right = last_state.segment<2>(i + 1);
-      Eigen::Ref<Eigen::Vector2d const> const  new_left = new_state.segment<2>(i - 1);
-      Eigen::Ref<Eigen::Vector2d const> const  new_right = new_state.segment<2>(i + 1);
+      auto last_left = last_state.segment<2>(i - 1);
+      auto last_right = last_state.segment<2>(i + 1);
+      auto new_left = new_state.segment<2>(i - 1);
+      auto new_right = new_state.segment<2>(i + 1);
       
       scheme.evaluate_point(rootvalue_segment, last_time, new_time,
            Delta_x, last_left,
@@ -63,10 +63,10 @@ namespace Model::Networkproblem::Gas {
     for (int i = get_equation_start_index(); i != get_equation_after_index();
          i += 2) {
       // maybe use Eigen::Ref here to avoid copies.
-      Eigen::Ref<Eigen::Vector2d const> const last_left = last_state.segment<2>(i - 1);
-      Eigen::Ref<Eigen::Vector2d const> const last_right = last_state.segment<2>(i + 1);
-      Eigen::Ref<Eigen::Vector2d const> const new_left = new_state.segment<2>(i - 1);
-      Eigen::Ref<Eigen::Vector2d const> const new_right = new_state.segment<2>(i + 1);
+      auto last_left = last_state.segment<2>(i - 1);
+      auto last_right = last_state.segment<2>(i + 1);
+      auto new_left = new_state.segment<2>(i - 1);
+      auto new_right = new_state.segment<2>(i + 1);
 
       Eigen::Matrix2d current_derivative_left =
         scheme.devaluate_point_dleft(last_time, new_time, Delta_x,
