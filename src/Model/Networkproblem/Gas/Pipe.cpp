@@ -164,8 +164,7 @@ namespace Model::Networkproblem::Gas {
 
   void Pipe::set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
                                 nlohmann::ordered_json initial_json) {
-    Initialvalue<Pipe,2> initialvalues;
-    initialvalues.set_initial_condition(initial_json);
+    Initialvalue<Pipe,2> initialvalues(initial_json);
     for (int i = 0; i!=number_of_points;++i){
       try{
       new_state.segment<2>(get_start_state_index()+2*i) = bl.state(bl.p_qvol_from_p_qvol_bar(initialvalues(i*Delta_x)));

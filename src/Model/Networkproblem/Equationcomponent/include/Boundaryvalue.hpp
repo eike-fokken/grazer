@@ -12,7 +12,6 @@ namespace Model::Networkproblem {
   template <typename T, int N> class Boundaryvalue {
 
   public:
-    Boundaryvalue(){};
     Boundaryvalue(nlohmann::json boundaryvalues):
       valuemap(boundaryvalues,"time"){};
 	
