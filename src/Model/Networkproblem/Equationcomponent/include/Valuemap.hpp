@@ -7,6 +7,7 @@
 #include <iostream>
 #include <map>
 #include <stdexcept>
+#include <string>
 #include <vector>
 
 namespace Model::Networkproblem {
@@ -19,25 +20,26 @@ namespace Model::Networkproblem {
   public:
     Valuemap_out_of_range(std::string message) : std::out_of_range(message) {}
   };
-
+  
   template <int N>
   class Valuemap {
 
   public:
-    Valuemap(){};
-    Valuemap(
-        std::map<double, Eigen::Matrix<double, N, 1>> values)
-        : Values(values){};
+    Valuemap(nlohmann::json const & value_json, std::string key):
+      values(set_condition(value_json,key)) {};
+
+    // Valuemap(std::map<double, Eigen::Matrix<double, N, 1>> _values):
+    //   values(_values) {};
 
     Eigen::Matrix<double, N, 1> operator()(double t) const {
 
       //Note that by virtue of the function set_condition, this map is never empty!
       // last element of the map:
-      auto last_element = Values.rbegin();
-      auto last_t = Values.rbegin()->first;
+      auto last_element = values.rbegin();
+      auto last_t = values.rbegin()->first;
       // first element of the map:
-      auto first_element = Values.begin();
-      auto first_t = Values.begin()->first;
+      auto first_element = values.begin();
+      auto first_t = values.begin()->first;
 
       // This catches problems with doubles
       if (t >= last_t) {
@@ -60,11 +62,11 @@ namespace Model::Networkproblem {
             << first_t << "\n";
           throw Valuemap_out_of_range(error_message.str());
         }
-        
+
         return first_element->second;
       }
 
-      auto next = Values.lower_bound(t);
+      auto next = values.lower_bound(t);
       auto previous = std::prev(next);
 
       double t_minus = previous->first;
@@ -78,17 +80,20 @@ namespace Model::Networkproblem {
       return value;
     }
 
-    void set_condition(nlohmann::json values_json, std::string const & key) {
-     if(values_json.size()==0) {
-       gthrow({"data in node with id ", values_json["id"],
-               " is empty!"})
+    static std::map<double, Eigen::Matrix<double, N, 1>> set_condition(
+                              nlohmann::json values_json, std::string key){
+
+      std::map<double, Eigen::Matrix<double, N, 1>> map_values;
+
+      if (values_json["data"].size() == 0) {
+        gthrow({"data in node with id ", values_json["id"], " is empty!"})
 
      }
 
       for (auto &datapoint : values_json["data"]) {
         if (datapoint["values"].size() != N) {
           gthrow(
-                 {"Wrong number of initial/boundary values in node ", values_json["id"]});
+           {"Wrong number of initial/boundary values in node ", values_json["id"]});
         }
         Eigen::Matrix<double, N, 1> value;
         try {
@@ -99,13 +104,18 @@ namespace Model::Networkproblem {
         } catch (...) {
           gthrow({"initial/boundary data in node with id ",values_json["id"],
                   " couldn't be assignd in vector, not a double?"})
-            }
-        Values.insert({datapoint[key], value});
+        }
+        map_values.insert({datapoint[key], value});
       }
+      return map_values;
     }
 
+
     private:
-	std::map<double, Eigen::Matrix<double, N, 1>> Values;
+    //nlohmann::json values;
+
+    std::map<double, Eigen::Matrix<double, N, 1>> const values;
+
   };
 
 } // namespace Model::Networkproblem

@@ -13,13 +13,20 @@ add_executable(boundary_test BoundaryTest.cpp)
 target_link_libraries(boundary_test PUBLIC equationcomponent )
 target_link_libraries(boundary_test PUBLIC gtest gtest_main gmock)
 
+add_executable(initial_test InitialTest.cpp )
+
+target_link_libraries(initial_test PUBLIC equationcomponent )
+target_link_libraries(initial_test PUBLIC gtest gtest_main gmock)
+
+add_executable(control_test ControlTest.cpp )
+
+target_link_libraries(control_test PUBLIC equationcomponent )
+target_link_libraries(control_test PUBLIC gtest gtest_main gmock)
 
 add_executable(power_test PowerTest.cpp)
 
 target_link_libraries(power_test PUBLIC power network matrixhandler)
 target_link_libraries(power_test PUBLIC gtest gtest_main gmock)
-
-
 
 add_executable(newton_test NewtonsolverTest.cpp)
 
@@ -45,6 +52,11 @@ add_executable(gas_test GasTest.cpp)
 target_link_libraries(gas_test PUBLIC problemlayer power networkproblem network exception newton matrixhandler  power gas coloroutput misc)
 target_link_libraries(gas_test PUBLIC gtest gtest_main gmock)
 
+add_executable(aux_unit_conversion_test AuxUnitConversionTest.cpp)
+
+target_link_libraries(aux_unit_conversion_test PUBLIC aux_unit_conversion nlohmann_json)
+target_link_libraries(aux_unit_conversion_test PUBLIC gtest gtest_main gmock)
+
 
 add_library(testheader INTERFACE)
 target_link_libraries(testheader INTERFACE  matrixhandler problemlayer gtest gtest_main gmock)
@@ -61,6 +73,14 @@ add_test(
   add_test(
     NAME boundary_test
     COMMAND boundary_test
+    )
+  add_test(
+    NAME initial_test
+    COMMAND initial_test
+    )
+  add_test(
+    NAME control_test
+    COMMAND control_test
     )
 add_test(
   NAME power_test
@@ -84,3 +104,8 @@ add_test(
   NAME gas_test
   COMMAND gas_test
   )
+ 
+add_test(
+  NAME aux_unit_conversion
+  COMMAND aux_unit_conversion_test
+)

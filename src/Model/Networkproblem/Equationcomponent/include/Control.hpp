@@ -8,17 +8,15 @@
 #include <Mathfunctions.hpp>
 
 namespace Model::Networkproblem {
-  template <typename T, int N> class Control  {
+  template <int N> class Control  {
 
    public:
-    Control(){};
-    Control(
-        std::map<double, Eigen::Matrix<double, N, 1>> _controls)
-        : valuemap(_controls){};
+    Control(nlohmann::json const &control_json)
+         : valuemap(control_json, "time"){};
 
-    void set_controls(nlohmann::json values_json) {
-      valuemap.set_condition(values_json,"time");
-        };
+    // void set_controls(nlohmann::json values_json) {
+      // valuemap.set_condition(values_json,"time");
+        // };
 
         Eigen::Matrix<double, N, 1> operator()(double t) const {
           try {
@@ -31,7 +29,7 @@ namespace Model::Networkproblem {
 
 
       private:
-	Valuemap<N> valuemap;
+	Valuemap<N> const valuemap;
   };
 
 } // namespace Model::Networkproblem
