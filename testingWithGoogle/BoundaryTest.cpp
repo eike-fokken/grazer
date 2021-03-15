@@ -37,7 +37,7 @@ TEST(Boundaryvalue, Operator) {
     }
   };
 
-  Model::Networkproblem::Boundaryvalue<double, 2>
+  Model::Networkproblem::Boundaryvalue<2>
       boundary_object(boundary_value_map);
 
   EXPECT_THROW(boundary_object(3.5),Exception);

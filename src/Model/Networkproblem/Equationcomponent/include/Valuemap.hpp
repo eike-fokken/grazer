@@ -52,7 +52,7 @@ namespace Model::Networkproblem {
   class Valuemap {
 
   public:
-    Valuemap(nlohmann::json & value_json, std::string key):
+    Valuemap(nlohmann::json const & value_json, std::string key):
       values(set_condition(value_json,key)) {};
 
     // Valuemap(std::map<double, Eigen::Matrix<double, N, 1>> _values):
@@ -132,7 +132,7 @@ namespace Model::Networkproblem {
     private:
     //nlohmann::json values;
 
-    std::map<double, Eigen::Matrix<double, N, 1>> values;
+    std::map<double, Eigen::Matrix<double, N, 1>> const values;
 
   };
 

@@ -9,11 +9,11 @@
 #include <Mathfunctions.hpp>
 
 namespace Model::Networkproblem {
-  template <typename T, int N> class Initialvalue  {
+  template <int N> class Initialvalue  {
 
    public:
-    Initialvalue(nlohmann::json initialvalues):
-      valuemap(initialvalues, "x") {};
+    Initialvalue(nlohmann::json const &initial_json):
+      valuemap(initial_json, "x") {};
 
     // std::map<double, Eigen::Matrix<double, N, 1>> set_initial_condition(
                                                       // nlohmann::json values_json) {
@@ -31,7 +31,7 @@ namespace Model::Networkproblem {
 
 
       private:
-	Valuemap<N> valuemap;
+    Valuemap<N> const valuemap;
   };
 
 } // namespace Model::Networkproblem

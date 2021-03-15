@@ -37,7 +37,7 @@ TEST(Control, Operator) {
     }
   };
 
-  Model::Networkproblem::Control<double, 2>
+  Model::Networkproblem::Control<2>
       control_object(control_value_map);
 
   EXPECT_THROW(control_object(3.5),Exception);

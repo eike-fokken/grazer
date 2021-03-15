@@ -37,7 +37,7 @@ TEST(Initialvalue, Operator) {
     }
   };
 
-  Model::Networkproblem::Initialvalue<double, 2>
+  Model::Networkproblem::Initialvalue<2>
       initial_object(initial_value_map);
 
   EXPECT_THROW(initial_object(3.5),Exception);

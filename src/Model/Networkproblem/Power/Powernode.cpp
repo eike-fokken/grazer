@@ -25,7 +25,7 @@ namespace Model::Networkproblem::Power {
               "called beforehand!"});
     }
 
-    Initialvalue<Powernode, 4> initialvalues(initial_json);
+    Initialvalue<4> initialvalues(initial_json);
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
     new_state[V_index] = initialvalues(0)[2];

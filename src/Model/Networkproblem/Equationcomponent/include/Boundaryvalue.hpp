@@ -9,11 +9,11 @@
 #include <vector>
 
 namespace Model::Networkproblem {
-  template <typename T, int N> class Boundaryvalue {
+  template <int N> class Boundaryvalue {
 
   public:
-    Boundaryvalue(nlohmann::json boundaryvalues):
-      valuemap(boundaryvalues,"time"){};
+    Boundaryvalue(nlohmann::json const &boundary_json):
+      valuemap(boundary_json,"time"){};
 	
 
     Eigen::Matrix<double, N, 1> operator()(double t) const {
@@ -26,7 +26,7 @@ namespace Model::Networkproblem {
     
 
   private:
-    Valuemap<N> valuemap;
+    Valuemap<N> const valuemap;
 
   }; // namespace Model::Networkproblem
 }

@@ -9,11 +9,11 @@
 #include <Mathfunctions.hpp>
 
 namespace Model::Networkproblem {
-  template <typename T, int N> class Control  {
+  template <int N> class Control  {
 
    public:
-    Control(nlohmann::json _controls)
-         : valuemap(_controls, "time"){};
+    Control(nlohmann::json const &control_json)
+         : valuemap(control_json, "time"){};
 
     // void set_controls(nlohmann::json values_json) {
       // valuemap.set_condition(values_json,"time");
@@ -30,7 +30,7 @@ namespace Model::Networkproblem {
 
 
       private:
-	Valuemap<N> valuemap;
+	Valuemap<N> const valuemap;
   };
 
 } // namespace Model::Networkproblem
