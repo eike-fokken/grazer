@@ -93,24 +93,29 @@ namespace Model::Networkproblem {
   void Networkproblem::set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
                                           nlohmann::json initial_json) {
 
-    nlohmann::json & initial_json_vector = initial_json["initialvalues"];
+    std::vector<Network::Idobject* > idcomponents;
+    idcomponents.reserve(equationcomponents.size());
+
     for (Equationcomponent *eqcomponent : equationcomponents) {
       auto idcomponent = dynamic_cast<Network::Idobject *>(eqcomponent);
       if (idcomponent == nullptr) {
         gthrow({"An equation component is not of type Idobject, which should "
-                "never happen."});
+            "never happen."});
       }
-      auto component_id = idcomponent->get_id();
-      auto finder = [component_id](nlohmann::json &x) {
-        auto it = x.find("id");
-        return it != x.end() and it.value() == component_id;
-      };
-      auto initjson =
-          std::find_if(initial_json_vector.begin(), initial_json_vector.end(), finder);
-          if(initjson == initial_json_vector.end()) {
-        std::cout << " object " << component_id << " has no initial condition." << std::endl;
-          } else {
-            eqcomponent->set_initial_values(new_state, *initjson);
+      idcomponents.push_back(idcomponent);
+    }
+
+    for (auto const &component : {"nodes", "connections"}) {
+      for (auto const & componenttype : initial_json[component]) {
+        for (auto const & componentjson: componenttype){
+          auto component_id = componentjson["id"];
+          auto find_id = [component_id](Network::Idobject const * x) {
+            return component_id == x->get_id();
+          };
+          auto iterator = std::find_if(idcomponents.begin(),idcomponents.end(),find_id);
+          auto index = iterator - idcomponents.begin();
+          equationcomponents[static_cast<unsigned long>(index)]->set_initial_values(new_state, componentjson);
+        }
       }
     }
   }
