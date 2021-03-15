@@ -44,7 +44,7 @@ namespace Model::Networkproblem::Gas {
   }
 
   void Controlvalve::set_initial_values(Eigen::Ref<Eigen::VectorXd> new_state, nlohmann::ordered_json initial_json){
-    initial_values_helper(new_state, initial_json, get_type());
+    initial_values_helper(new_state, initial_json);
   }
 
   void Controlvalve::print_to_files(std::filesystem::path const &output_directory) {
