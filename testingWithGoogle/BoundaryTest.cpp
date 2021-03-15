@@ -26,8 +26,8 @@ TEST(Boundaryvalue, Operator) {
 
   Model::Networkproblem::Boundaryvalue<double, 2> boundary_object(boundary_value_map);
 
-  EXPECT_THROW(boundary_object(3.5),Exception);
-  EXPECT_THROW(boundary_object(0.5), Exception);
+  EXPECT_THROW(boundary_object(3.5),std::runtime_error);
+  EXPECT_THROW(boundary_object(0.5), std::runtime_error);
   // EXPECT_ANY_THROW(boundary_object(0.5));
 
   // TEST2

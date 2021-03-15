@@ -15,34 +15,10 @@ namespace Model::Networkproblem {
   ///
   /// The returned data also indicates the maximal (or minimal) valid argument.
 
-    
-
   class Valuemap_out_of_range : public std::out_of_range {
   public:
-    Valuemap_out_of_range(std::string message, bool too_high, double requested_argument, double
-                          boundary_valid_argument)
-        : std::out_of_range(message)
-    {
-      std::ostringstream o;
-      if(too_high) {
-        o << "Requested value " << requested_argument
-          << " is higher than the last valid value: " << boundary_valid_argument
-          << "\n";
-      } else {
-        o << "Requested value " << requested_argument
-          << " is lower than the first valid value: " << boundary_valid_argument
-          << "\n";
-      }
-
-      msg = o.str();
-    }
-
-    /// -1 means too low, 1 means too high
-    std::string msg;
-    char const *what() const noexcept { return msg.c_str(); }
-    
+    Valuemap_out_of_range(std::string message) : std::out_of_range(message) {}
   };
-
 
   template <int N>
   class Valuemap {
@@ -66,14 +42,23 @@ namespace Model::Networkproblem {
       // This catches problems with doubles
       if (t >= last_t) {
         if (t > last_t + Aux::EPSILON) {
-          throw Valuemap_out_of_range("too high", true, t, last_t);
+          std::ostringstream error_message;
+          error_message << "Requested value " << t
+            << " is higher than the last valid value: "
+            << last_t << "\n";
+
+          throw Valuemap_out_of_range(error_message.str());
         }
 
         return last_element->second;
       }
       if (t <= first_t) {
         if (t < first_t - Aux::EPSILON) {
-          throw Valuemap_out_of_range("too low", false, t, first_t);
+          std::ostringstream error_message;
+          error_message << "Requested value " << t
+            << " is lower than the first valid value: "
+            << first_t << "\n";
+          throw Valuemap_out_of_range(error_message.str());
         }
         
         return first_element->second;
