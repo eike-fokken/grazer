@@ -13,13 +13,15 @@ namespace Model::Networkproblem {
 
    public:
     Control(){};
-    Control(
-        std::map<double, Eigen::Matrix<double, N, 1>> _controls)
-        : valuemap(_controls){};
+    Control(nlohmann::json controls):
+      valuemap(controls, "time"){};
+    // Control(
+        // std::map<double, Eigen::Matrix<double, N, 1>> _controls)
+        // : valuemap(_controls){};
 
-    void set_controls(nlohmann::json values_json) {
-      valuemap.set_condition(values_json,"time");
-        };
+    // void set_controls(nlohmann::json values_json) {
+      // valuemap.set_condition(values_json,"time");
+        // };
 
         Eigen::Matrix<double, N, 1> operator()(double t) const {
           try {
