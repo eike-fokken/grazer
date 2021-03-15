@@ -9,17 +9,12 @@
 #include <vector>
 
 namespace Model::Networkproblem {
-  template <typename T, int N> class Boundaryvalue {
+  template <int N> class Boundaryvalue {
 
   public:
-    Boundaryvalue(){};
-    Boundaryvalue(
-        std::map<double, Eigen::Matrix<double, N, 1>> _boundary_values)
-        : valuemap(_boundary_values){};
+    Boundaryvalue(nlohmann::json const &boundary_json):
+      valuemap(boundary_json,"time"){};
 	
-    void set_boundary_condition(nlohmann::json values_json) {
-      valuemap.set_condition(values_json,"time");
-    };
 
     Eigen::Matrix<double, N, 1> operator()(double t) const {
       try {
@@ -31,7 +26,7 @@ namespace Model::Networkproblem {
     
 
   private:
-    Valuemap<N> valuemap;
+    Valuemap<N> const valuemap;
 
   }; // namespace Model::Networkproblem
 }

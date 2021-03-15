@@ -116,8 +116,7 @@ namespace Model::Networkproblem::Gas {
     auto start_q_index = start_p_index + 1;
     try {
 
-      Initialvalue<Gaspowerconnection, 2> initialvalues;
-      initialvalues.set_initial_condition(initial_json);
+      Initialvalue<2> initialvalues(initial_json);
       new_state[start_p_index] = initialvalues(0)[0];
       new_state[start_q_index] = initialvalues(0)[1];
     } catch (...) {
