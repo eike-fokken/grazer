@@ -1,8 +1,6 @@
 #pragma once
 #include "Componentfactory.hpp"
 #include "Net.hpp"
-#include "Node.hpp"
-#include "Edge.hpp"
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <string>
