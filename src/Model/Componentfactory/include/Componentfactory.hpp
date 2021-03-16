@@ -73,7 +73,11 @@ namespace Model::Componentfactory {
     std::string get_type() override { return Nodetype::get_type(); };
 
     Nodefactory get_factory() const override {
-      return std::make_unique<Nodetype>;
+      return [](
+          nlohmann::json const &topology
+      ) -> std::unique_ptr<Network::Node> {
+        return std::make_unique<Nodetype>(topology);
+      };
     };
   };
 
@@ -101,9 +105,17 @@ namespace Model::Componentfactory {
     std::string get_type() override { return Edgetype::get_type(); };
 
     Edgefactory get_factory() const override {
-      return std::make_unique<Edgetype>;
+      return [](
+          nlohmann::json const &topology,
+          std::vector<std::unique_ptr<Network::Node>> &nodes
+      ) -> std::unique_ptr<Network::Edge> {
+        return std::make_unique<Edgetype>(topology, nodes);
+      };
     };
   };
 
+  double test(
+      std::unique_ptr<Network::Edge> edge,
+      std::unique_ptr<Network::Node> very_long_parameter_to_trigger_enter);
 
 }// namespace Model::Componentfactory
