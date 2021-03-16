@@ -1,6 +1,9 @@
 #include "Flowboundarynode.hpp"
+#include "Gas_factory.hpp"
 #include "Gaspowerconnection.hpp"
 #include "Innode.hpp"
+#include "Netfactory.hpp"
+#include "Networkproblem.hpp"
 #include "Pipe.hpp"
 #include "Shortpipe.hpp"
 #include <Eigen/Dense>
@@ -12,10 +15,6 @@
 #include <streambuf>
 #include <string>
 #include <vector>
-#include "Netfactory.hpp"
-#include "Gas_factory.hpp"
-#include "Networkproblem.hpp"
-
 
 struct Catch_cout {
   Catch_cout( std::streambuf * new_buffer )
@@ -74,7 +73,7 @@ public:
     return Model::Networkproblem::Networkproblem(std::move(net_ptr));
   }
 
-  Model::Networkproblem::Networkproblem supersuper() {
+  Model::Networkproblem::Networkproblem get_Networkproblem() {
     nlohmann::json node0_topology;
       node0_topology["id"] = node0id;
       auto b0 = make_value_json(node0_topology["id"],"time", flow0start, flow0end);
@@ -116,63 +115,34 @@ public:
   }
 };
 
-    TEST_F(GasTEST, evaluate_and_evaluate_state_derivative) {
+    TEST_F(GasTEST, evaluate_on_Shortpipe) {
 
-      auto a = supersuper();
+      auto netprob = get_Networkproblem();
 
-      int number_of_variables = a.set_indices(0);
-      Eigen::VectorXd newstate(number_of_variables);
-      Eigen::VectorXd oldstate(number_of_variables);
+      int number_of_variables = netprob.set_indices(0);
 
+      double last_time = 0.0;
+      double new_time = 0.0;
+      Eigen::VectorXd rootvalues(number_of_variables);
+      rootvalues.setZero();
+      Eigen::VectorXd last_state(number_of_variables);
+      
       Eigen::Vector2d cond0(pressure_start, flow_start);
       Eigen::Vector2d cond1(pressure_end, flow_end);
 
-      auto initial_json =
-        make_value_json(connectionid, "x", cond0, cond1);
-      std::cout << initial_json.dump(4) <<std::endl;
-      
+      auto initial_json = make_value_json(connectionid, "x", cond0, cond1);
+
       nlohmann::json np_initialjson;
       np_initialjson["connections"]["Shortpipe"].push_back(initial_json);
+      netprob.set_initial_values(last_state, np_initialjson);
+      Eigen::VectorXd new_state = last_state;
       
-      a.set_initial_values(oldstate, np_initialjson);
-
-      std::cout << oldstate <<std::endl;
-      
-
-      // auto a = g0.set_indices(0);
-      // auto b = g1.set_indices(a);
-      // auto c = sp0.set_indices(b);
-
-      // g0.setup();
-      // g1.setup();
-
-      // double last_time = 0.0;
-      // double new_time = 0.0;
-      // Eigen::VectorXd rootvalues(c);
-      // rootvalues.setZero();
-      // Eigen::VectorXd last_state(c);
-      // Eigen::VectorXd new_state(c);
-
-      // sp0.set_initial_values(new_state,sp0_initial);
-      // // std::cout << "Initial conditions:" << std::endl;
-      // // std::cout << new_state <<std::endl;
-
-      // g0.evaluate(rootvalues, last_time, new_time, last_state, new_state);
-      // // std::cout << "Evaluation  g0:" << std::endl;
-      // // std::cout << rootvalues << std::endl;
-
-      // g1.evaluate(rootvalues, last_time, new_time, last_state, new_state);
-      // // std::cout << "Evaluation  g1:" << std::endl;
-      // // std::cout << rootvalues << std::endl;
-
-      // sp0.evaluate(rootvalues, last_time, new_time, last_state, new_state);
-      // // std::cout << "Evaluation shortpipe:" << std::endl;
-      // // std::cout << rootvalues << std::endl;
+      netprob.evaluate(rootvalues,  last_time, new_time, last_state, new_state);
 
       // EXPECT_DOUBLE_EQ(rootvalues[0], flow_start-flow0start );
-      // EXPECT_DOUBLE_EQ(rootvalues[3], -flow_end-flow1start );
-      // EXPECT_DOUBLE_EQ(rootvalues[1], pressure_start-pressure_end );
-      // EXPECT_DOUBLE_EQ(rootvalues[2], flow_start-flow_end );
+      EXPECT_DOUBLE_EQ(rootvalues[1], pressure_start-pressure_end );
+      EXPECT_DOUBLE_EQ(rootvalues[2], flow_start-flow_end );
+      // EXPECT_DOUBLE_EQ(rootvalues[3], -flow_end - flow1start);
 
       // Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
       // Aux::Triplethandler handler(&J);
