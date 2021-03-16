@@ -49,7 +49,7 @@ target_link_libraries(implicitboxscheme_test PUBLIC gtest gtest_main gmock)
 
 add_executable(gas_test GasTest.cpp)
 
-target_link_libraries(gas_test PUBLIC problemlayer gas_factory gas netfactory networkproblem)
+target_link_libraries(gas_test PUBLIC problemlayer gas_factory gas netfactory networkproblem matrixhandler)
 target_link_libraries(gas_test PUBLIC gtest gtest_main gmock)
 
 add_executable(aux_unit_conversion_test AuxUnitConversionTest.cpp)

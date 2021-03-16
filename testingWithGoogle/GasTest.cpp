@@ -2,6 +2,7 @@
 #include "Gas_factory.hpp"
 #include "Gaspowerconnection.hpp"
 #include "Innode.hpp"
+#include "Matrixhandler.hpp"
 #include "Netfactory.hpp"
 #include "Networkproblem.hpp"
 #include "Pipe.hpp"
@@ -43,37 +44,31 @@ make_value_json(std::string id, std::string key, Eigen::MatrixBase<Derived0> con
 nlohmann::json make_value_json(std::string id, std::string key,
                                double condition0, double condition1);
 
-class GasTEST : public ::testing::Test {
+class GasconnectionTEST : public ::testing::Test {
 public:
   /// ids:
   std::string node0id = "node0";
   std::string node1id = "node1";
   std::string connectionid = "connection";
-  
+
   // boundary values:
   double flow0start = 88.0;
   double flow0end = 10.0;
   double flow1start = -23.0;
   double flow1end = -440.0;
 
-  //initial values:
-  double pressure_start = 810;
-  double flow_start = -4;
-  double pressure_end = 125;
-  double flow_end = 1000;
-
   std::string output;
 
-  
-  Model::Networkproblem::Networkproblem
-  get_Networkproblem(nlohmann::json &netproblem) {
-    auto net_ptr =
-        Model::Networkproblem::build_net<Model::Componentfactory::Gas_factory>(
-            netproblem);
-    return Model::Networkproblem::Networkproblem(std::move(net_ptr));
-  }
 
-  Model::Networkproblem::Networkproblem get_Networkproblem() {
+  // Model::Networkproblem::Networkproblem
+  // get_Networkproblem(nlohmann::json &netproblem) {
+  //   auto net_ptr =
+  //       Model::Networkproblem::build_net<Model::Componentfactory::Gas_factory>(
+  //           netproblem);
+  //   return Model::Networkproblem::Networkproblem(std::move(net_ptr));
+  // }
+
+  Model::Networkproblem::Networkproblem get_Networkproblem(std::string const & type, nlohmann::json & connection_json) {
     nlohmann::json node0_topology;
       node0_topology["id"] = node0id;
       auto b0 = make_value_json(node0_topology["id"],"time", flow0start, flow0end);
@@ -84,10 +79,6 @@ public:
       auto b1 = make_value_json(node1_topology["id"], "time" ,flow1start, flow1end);
       node1_topology["boundary_values"] = b1;
 
-      nlohmann::json shortpipe_topology;
-      shortpipe_topology["id"] = connectionid;
-      shortpipe_topology["from"] = node0id;
-      shortpipe_topology["to"] = node1id;
 
       nlohmann::json np_json;
       np_json["boundary_json"]=nlohmann::json::object_t();
@@ -95,10 +86,10 @@ public:
 
       np_json["topology_json"]["nodes"]["Source"].push_back(node0_topology);
       np_json["topology_json"]["nodes"]["Source"].push_back(node1_topology);
-      np_json["topology_json"]["connections"]["Shortpipe"].push_back(
-          shortpipe_topology);
+      np_json["topology_json"]["connections"][type].push_back(
+          connection_json);
 
-      
+
 
       std::unique_ptr<Network::Net> net;
 
@@ -115,46 +106,99 @@ public:
   }
 };
 
-    TEST_F(GasTEST, evaluate_on_Shortpipe) {
+TEST_F(GasconnectionTEST, Shortpipe_evaluate) {
 
-      auto netprob = get_Networkproblem();
+  nlohmann::json shortpipe_topology;
+  shortpipe_topology["id"] = connectionid;
+  shortpipe_topology["from"] = node0id;
+  shortpipe_topology["to"] = node1id;
 
-      int number_of_variables = netprob.set_indices(0);
+  auto netprob = get_Networkproblem("Shortpipe",shortpipe_topology);
+  int number_of_variables = netprob.set_indices(0);
 
-      double last_time = 0.0;
-      double new_time = 0.0;
-      Eigen::VectorXd rootvalues(number_of_variables);
-      rootvalues.setZero();
-      Eigen::VectorXd last_state(number_of_variables);
-      
-      Eigen::Vector2d cond0(pressure_start, flow_start);
-      Eigen::Vector2d cond1(pressure_end, flow_end);
+  double last_time = 0.0;
+  double new_time = 0.0;
+  Eigen::VectorXd rootvalues(number_of_variables);
+  rootvalues.setZero();
+  Eigen::VectorXd last_state(number_of_variables);
 
-      auto initial_json = make_value_json(connectionid, "x", cond0, cond1);
+  // set initial values
 
-      nlohmann::json np_initialjson;
-      np_initialjson["connections"]["Shortpipe"].push_back(initial_json);
-      netprob.set_initial_values(last_state, np_initialjson);
-      Eigen::VectorXd new_state = last_state;
-      
-      netprob.evaluate(rootvalues,  last_time, new_time, last_state, new_state);
+  // initial values:
+  double pressure_start = 810;
+  double flow_start = -4;
+  double pressure_end = 125;
+  double flow_end = 1000;
+  Eigen::Vector2d cond0(pressure_start, flow_start);
+  Eigen::Vector2d cond1(pressure_end, flow_end);
 
-      // EXPECT_DOUBLE_EQ(rootvalues[0], flow_start-flow0start );
-      EXPECT_DOUBLE_EQ(rootvalues[1], pressure_start-pressure_end );
-      EXPECT_DOUBLE_EQ(rootvalues[2], flow_start-flow_end );
-      // EXPECT_DOUBLE_EQ(rootvalues[3], -flow_end - flow1start);
+  auto initial_json = make_value_json(connectionid, "x", cond0, cond1);
 
-      // Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-      // Aux::Triplethandler handler(&J);
+  nlohmann::json np_initialjson;
+  np_initialjson["connections"]["Shortpipe"].push_back(initial_json);
+  netprob.set_initial_values(last_state, np_initialjson);
+  Eigen::VectorXd new_state = last_state;
+  netprob.evaluate(rootvalues,  last_time, new_time, last_state, new_state);
 
-      // g0.evaluate_state_derivative(&handler, last_time, new_time, last_state,
-      //                              new_state);
-      // g1.evaluate_state_derivative(&handler, last_time, new_time, last_state,
-      //                              new_state);
-      // sp0.evaluate_state_derivative(&handler, last_time, new_time,
-      // last_state,new_state); handler.set_matrix();
 
-      // // std::cout << J;
+  EXPECT_DOUBLE_EQ(rootvalues[1], pressure_start-pressure_end );
+  EXPECT_DOUBLE_EQ(rootvalues[2], flow_start-flow_end );
+}
+
+TEST_F(GasconnectionTEST, Shortpipe_evaluate_state_derivative) {
+
+  nlohmann::json shortpipe_topology;
+  shortpipe_topology["id"] = connectionid;
+  shortpipe_topology["from"] = node0id;
+  shortpipe_topology["to"] = node1id;
+
+  auto netprob = get_Networkproblem("Shortpipe",shortpipe_topology);
+  int number_of_variables = netprob.set_indices(0);
+
+  double last_time = 0.0;
+  double new_time = 0.0;
+  Eigen::VectorXd rootvalues(number_of_variables);
+  rootvalues.setZero();
+  Eigen::VectorXd last_state(number_of_variables);
+
+  // set initial values
+
+  // initial values:
+  double pressure_start = 810;
+  double flow_start = -4;
+  double pressure_end = 125;
+  double flow_end = 1000;
+  Eigen::Vector2d cond0(pressure_start, flow_start);
+  Eigen::Vector2d cond1(pressure_end, flow_end);
+
+  auto initial_json = make_value_json(connectionid, "x", cond0, cond1);
+
+  nlohmann::json np_initialjson;
+  np_initialjson["connections"]["Shortpipe"].push_back(initial_json);
+  netprob.set_initial_values(last_state, np_initialjson);
+  Eigen::VectorXd new_state = last_state;
+  netprob.evaluate(rootvalues,  last_time, new_time, last_state, new_state);
+
+  Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
+  Aux::Triplethandler handler(&J);
+
+  netprob.evaluate_state_derivative(&handler, last_time, new_time, last_state,
+                               new_state);
+  handler.set_matrix();
+
+
+  Eigen::Matrix4d DenseJ = J;
+
+  EXPECT_DOUBLE_EQ(DenseJ(1, 0), 1.0);
+  EXPECT_DOUBLE_EQ(DenseJ(1, 1), 0.0);
+  EXPECT_DOUBLE_EQ(DenseJ(1, 2), -1.0);
+  EXPECT_DOUBLE_EQ(DenseJ(1, 3), 0.0);
+
+  EXPECT_DOUBLE_EQ(DenseJ(2, 0), 0.0);
+  EXPECT_DOUBLE_EQ(DenseJ(2, 1), 1.0);
+  EXPECT_DOUBLE_EQ(DenseJ(2, 2), 0.0);
+  EXPECT_DOUBLE_EQ(DenseJ(2, 3), -1.0);
+}
 
       // EXPECT_EQ(J.nonZeros(),8);
 
@@ -172,7 +216,7 @@ public:
 
       // auto max = difference.coeffs().maxCoeff();
       // EXPECT_DOUBLE_EQ(max, 0.0);
-    }
+  
 
     // TEST(testFlowboundarynode_Shortpipe,
     // Flowboundarynode_multiple_shortpipes) {
