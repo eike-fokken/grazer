@@ -4,8 +4,6 @@
 #include "Pipe.hpp"
 #include "Shortpipe.hpp"
 #include <Eigen/Dense>
-#include <Eigen/Sparse>
-#include <Eigen/src/Core/MatrixBase.h>
 #include <gtest/gtest.h>
 #include <iostream>
 #include <memory>
@@ -40,14 +38,34 @@ namespace Eigen {
 
 template <typename Derived0, typename Derived1>
 nlohmann::json
-make_value_json(std::string id, Eigen::MatrixBase<Derived0> const &condition0,
+make_value_json(std::string id, std::string key, Eigen::MatrixBase<Derived0> const &condition0,
                 Eigen::MatrixBase<Derived1> const &condition1);
 
-nlohmann::json
-    make_value_json(std::string id, double condition0, double condition1);
+nlohmann::json make_value_json(std::string id, std::string key,
+                               double condition0, double condition1);
 
 class GasTEST : public ::testing::Test {
 public:
+  /// ids:
+  std::string node0id = "node0";
+  std::string node1id = "node1";
+  std::string connectionid = "connection";
+  
+  // boundary values:
+  double flow0start = 88.0;
+  double flow0end = 10.0;
+  double flow1start = -23.0;
+  double flow1end = -440.0;
+
+  //initial values:
+  double pressure_start = 810;
+  double flow_start = -4;
+  double pressure_end = 125;
+  double flow_end = 1000;
+
+  std::string output;
+
+  
   Model::Networkproblem::Networkproblem
   get_Networkproblem(nlohmann::json &netproblem) {
     auto net_ptr =
@@ -55,46 +73,22 @@ public:
             netproblem);
     return Model::Networkproblem::Networkproblem(std::move(net_ptr));
   }
-    };
 
-    TEST_F(GasTEST, evaluate_and_evaluate_state_derivative) {
-
-      nlohmann::json node0_topology;
-      node0_topology["id"] = "node0";
-      double flow0start = 88.0;
-      double flow0end = 10.0;
-      auto b0 = make_value_json(node0_topology["id"], flow0start, flow0end);
+  Model::Networkproblem::Networkproblem supersuper() {
+    nlohmann::json node0_topology;
+      node0_topology["id"] = node0id;
+      auto b0 = make_value_json(node0_topology["id"],"time", flow0start, flow0end);
       node0_topology["boundary_values"] = b0;
 
-      std::cout << node0_topology.dump(4) << std::endl;
-
       nlohmann::json node1_topology;
-      node1_topology["id"] = "node1";
-      double flow1start = -23.0;
-      double flow1end = -440.0;
-      auto b1 = make_value_json(node1_topology["id"], flow1start, flow1end);
+      node1_topology["id"] = node1id;
+      auto b1 = make_value_json(node1_topology["id"], "time" ,flow1start, flow1end);
       node1_topology["boundary_values"] = b1;
 
-      std::cout << node1_topology.dump(4) << std::endl;
-
       nlohmann::json shortpipe_topology;
-      shortpipe_topology["id"] = "shortpipe";
-      shortpipe_topology["from"] = "node0";
-      shortpipe_topology["to"] = "node1";
-
-      std::cout << shortpipe_topology.dump(4) << std::endl;
-      double pressure_start = 810;
-      double flow_start = -4;
-
-      double pressure_end = 125;
-      double flow_end = 1000;
-
-      Eigen::Vector2d cond0(pressure_start, flow_start);
-      Eigen::Vector2d cond1(pressure_end, flow_end);
-
-      auto sp0_initial =
-          make_value_json(shortpipe_topology["id"], cond0, cond1);
-      std::cout << sp0_initial.dump(4) << std::endl;
+      shortpipe_topology["id"] = connectionid;
+      shortpipe_topology["from"] = node0id;
+      shortpipe_topology["to"] = node1id;
 
       nlohmann::json np_json;
       np_json["boundary_json"]=nlohmann::json::object_t();
@@ -105,21 +99,44 @@ public:
       np_json["topology_json"]["connections"]["Shortpipe"].push_back(
           shortpipe_topology);
 
-      std::cout << np_json.dump(4) <<std::endl;
       
 
       std::unique_ptr<Network::Net> net;
-      std::string output;
-      
+
       {
         std::stringstream buffer;
         Catch_cout catcher(buffer.rdbuf());
         net = Model::Networkproblem::build_net<
             Model::Componentfactory::Gas_factory>(np_json);
+
         output = buffer.str();
       }
 
-      std::cout << output <<std::endl;
+      return Model::Networkproblem::Networkproblem(std::move(net));
+  }
+};
+
+    TEST_F(GasTEST, evaluate_and_evaluate_state_derivative) {
+
+      auto a = supersuper();
+
+      int number_of_variables = a.set_indices(0);
+      Eigen::VectorXd newstate(number_of_variables);
+      Eigen::VectorXd oldstate(number_of_variables);
+
+      Eigen::Vector2d cond0(pressure_start, flow_start);
+      Eigen::Vector2d cond1(pressure_end, flow_end);
+
+      auto initial_json =
+        make_value_json(connectionid, "x", cond0, cond1);
+      std::cout << initial_json.dump(4) <<std::endl;
+      
+      nlohmann::json np_initialjson;
+      np_initialjson["connections"]["Shortpipe"].push_back(initial_json);
+      
+      a.set_initial_values(oldstate, np_initialjson);
+
+      std::cout << oldstate <<std::endl;
       
 
       // auto a = g0.set_indices(0);
@@ -1338,7 +1355,7 @@ void Eigen::to_json(nlohmann::json &j, const MatrixBase<Derived> &eig) {
 }
 
 template <typename Derived0, typename Derived1>
-nlohmann::json make_value_json(std::string id,
+nlohmann::json make_value_json(std::string id, std::string key,
                                Eigen::MatrixBase<Derived0> const &condition0,
                                Eigen::MatrixBase<Derived1> const &condition1) {
   EIGEN_STATIC_ASSERT_VECTOR_ONLY(Eigen::MatrixBase<Derived0>);
@@ -1347,10 +1364,10 @@ nlohmann::json make_value_json(std::string id,
   bound["id"] = id;
   bound["data"] = nlohmann::json::array();
   nlohmann::json b0;
-  b0["time"] = 0;
+  b0[key] = 0;
   b0["values"] = condition0;
   nlohmann::json b1;
-  b1["time"] = 1;
+  b1[key] = 1;
   b1["values"] = condition1;
   bound["data"].push_back(b0);
   bound["data"].push_back(b1);
@@ -1358,9 +1375,9 @@ nlohmann::json make_value_json(std::string id,
   return bound;
 }
 
-nlohmann::json make_value_json(std::string id, double condition0,
-                               double condition1) {
+nlohmann::json make_value_json(std::string id, std::string key,
+                               double condition0, double condition1) {
   Eigen::Matrix<double, 1, 1> cond0(condition0);
   Eigen::Matrix<double, 1, 1> cond1(condition1);
-  return make_value_json(id, cond0, cond1);
+  return make_value_json(id, key, cond0, cond1);
 }
