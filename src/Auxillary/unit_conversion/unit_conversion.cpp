@@ -20,7 +20,7 @@ namespace Aux::unit {
 
   const std::map<std::string, double> volume_units {
     {"m^3", 1.0},
-    {"L", 1e-3}, {"l", 1e-3}, {"\u2113", 1e-3},
+    {"L", 1e-3}, {"l", 1e-3}, {u8"\u2113", 1e-3},
   };
 
   const std::map<std::string, double> pressure_units {
@@ -61,11 +61,11 @@ namespace Aux::unit {
     {"K", [](double x) { return x; }},
     {"C", [](double x) { return x + 273.15; }},
     {"Celsius", [](double x) { return x + 273.15; }},
-    {"\u2103", [](double x) { return x + 273.15; }},  // degree celcius symbol
-    {"\u00B0C", [](double x) { return x + 273.15; }}, // degree symbol plus C
-    {"F", [](double x) { return x * 5.0 / 9.0 + 459.67 * 5.0 / 9.0; }},
-    {"\u2109", [](double x) { return x * 5.0 / 9.0 + 459.67 * 5.0 / 9.0; }}, // degree fahrenheit symbol
-    {"\u00B0F", [](double x) { return x * 5.0 / 9.0 + 459.67 * 5.0 / 9.0; }}
+    {u8"\u2103", [](double x) { return x + 273.15; }},  // degree celcius symbol
+    {u8"\u00B0C", [](double x) { return x + 273.15; }}, // degree symbol plus C
+    {u8"F", [](double x) { return x * 5.0 / 9.0 + 459.67 * 5.0 / 9.0; }},
+    {u8"\u2109", [](double x) { return x * 5.0 / 9.0 + 459.67 * 5.0 / 9.0; }}, // degree fahrenheit symbol
+    {u8"\u00B0F", [](double x) { return x * 5.0 / 9.0 + 459.67 * 5.0 / 9.0; }}
   };
 
 
@@ -85,7 +85,7 @@ namespace Aux::unit {
     {"d", 0.1}, 
     {"c", 1e-2}, 
     {"m", 1e-3},
-    {"mu", 1e-6}, {"\u00B5", 1e-6}, {"\u03BC", 1e-6}, //unicode micro and mu 
+    {"mu", 1e-6}, {u8"\u00B5", 1e-6}, {u8"\u03BC", 1e-6}, //unicode micro and mu 
     {"n", 1e-9},
     {"p", 1e-12},
     {"f", 1e-15},
