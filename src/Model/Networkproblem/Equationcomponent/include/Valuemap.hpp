@@ -20,7 +20,7 @@ namespace Model::Networkproblem {
   public:
     Valuemap_out_of_range(std::string message) : std::out_of_range(message) {}
   };
-  
+
   template <int N>
   class Valuemap {
 
@@ -65,13 +65,12 @@ namespace Model::Networkproblem {
 
         return first_element->second;
       }
+      auto argument_less =
+          [](std::pair<double, Eigen::Matrix<double, N, 1>> const & _pair,
+             const double argument) { return _pair.first < argument; };
 
-      auto next = std::lower_bound(values.begin(),
-                                   values.end(),
-                                   t,
-                                   [](std::pair<double, Eigen::Matrix<double, N, 1>> const _pair, const double t){
-                                     return _pair.first < t;
-                                   });
+      auto next =
+          std::lower_bound(values.begin(), values.end(), t, argument_less);
       auto previous = std::prev(next);
 
       double t_minus = previous->first;
@@ -113,10 +112,13 @@ namespace Model::Networkproblem {
         }
         pair_values.push_back({datapoint[key], value});
       }
-      std::sort(pair_values.begin(),pair_values.end(), [](std::pair<double,Eigen::Matrix<double, N, 1>> const pair1,
-                                                          std::pair<double,Eigen::Matrix<double, N, 1>> const pair2) {
+
+      auto argument_less = [](std::pair<double, Eigen::Matrix<double, N, 1>> const & pair1,
+         std::pair<double, Eigen::Matrix<double, N, 1>> const & pair2) {
         return pair1.first < pair2.first;
-      });
+      };
+
+      std::sort(pair_values.begin(), pair_values.end(), argument_less);
       return pair_values;
     }
 
@@ -126,5 +128,9 @@ namespace Model::Networkproblem {
     // std::map<double, Eigen::Matrix<double, N, 1>> const values;
       std::vector<std::pair<double, Eigen::Matrix<double, N, 1>>> const values;
   };
+
+  extern template class Valuemap<1>;
+  extern template class Valuemap<2>;
+  extern template class Valuemap<4>;
 
 } // namespace Model::Networkproblem
