@@ -2,7 +2,7 @@
 #include "Eigen/Sparse"
 #include "Exception.hpp"
 #include "Mathfunctions.hpp"
-
+#include <functional>
 #include <nlohmann/json.hpp>
 #include <iostream>
 #include <map>
@@ -20,7 +20,7 @@ namespace Model::Networkproblem {
   public:
     Valuemap_out_of_range(std::string message) : std::out_of_range(message) {}
   };
-  
+
   template <int N>
   class Valuemap {
 
@@ -65,8 +65,12 @@ namespace Model::Networkproblem {
 
         return first_element->second;
       }
+      auto argument_less =
+          [](std::pair<double, Eigen::Matrix<double, N, 1>> const & _pair,
+             const double argument) { return _pair.first < argument; };
 
-      auto next = values.lower_bound(t);
+      auto next =
+          std::lower_bound(values.begin(), values.end(), t, argument_less);
       auto previous = std::prev(next);
 
       double t_minus = previous->first;
@@ -80,10 +84,11 @@ namespace Model::Networkproblem {
       return value;
     }
 
-    static std::map<double, Eigen::Matrix<double, N, 1>> set_condition(
-                              nlohmann::json values_json, std::string key){
 
-      std::map<double, Eigen::Matrix<double, N, 1>> map_values;
+    static std::vector<std::pair<double, Eigen::Matrix<double, N, 1>>> set_condition(
+                                                  nlohmann::json values_json, std::string key) {
+
+      std::vector<std::pair<double, Eigen::Matrix<double, N, 1>>> pair_values;
 
       if (values_json["data"].size() == 0) {
         gthrow({"data in node with id ", values_json["id"], " is empty!"})
@@ -105,17 +110,27 @@ namespace Model::Networkproblem {
           gthrow({"initial/boundary data in node with id ",values_json["id"],
                   " couldn't be assignd in vector, not a double?"})
         }
-        map_values.insert({datapoint[key], value});
+        pair_values.push_back({datapoint[key], value});
       }
-      return map_values;
-    }
 
+      auto argument_less = [](std::pair<double, Eigen::Matrix<double, N, 1>> const & pair1,
+         std::pair<double, Eigen::Matrix<double, N, 1>> const & pair2) {
+        return pair1.first < pair2.first;
+      };
+
+      std::sort(pair_values.begin(), pair_values.end(), argument_less);
+      return pair_values;
+    }
 
     private:
     //nlohmann::json values;
 
-    std::map<double, Eigen::Matrix<double, N, 1>> const values;
-
+    // std::map<double, Eigen::Matrix<double, N, 1>> const values;
+      std::vector<std::pair<double, Eigen::Matrix<double, N, 1>>> const values;
   };
+
+  extern template class Valuemap<1>;
+  extern template class Valuemap<2>;
+  extern template class Valuemap<4>;
 
 } // namespace Model::Networkproblem
