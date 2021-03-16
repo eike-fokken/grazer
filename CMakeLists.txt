@@ -127,7 +127,7 @@ endif()
 
 add_subdirectory(src)
 add_subdirectory(testingWithGoogle)
-add_subdirectory(nlohmann_json)
+
 
 
 # Typically you don't care so much for a third party library's tests to be
@@ -137,6 +137,7 @@ set(JSON_BuildTests OFF CACHE INTERNAL "")
 # If you only include this third party in PRIVATE source files, you do not
 # need to install it when your main project gets installed.
 set(JSON_Install OFF CACHE INTERNAL "")
+add_subdirectory(nlohmann_json)
 add_subdirectory(helper_functions)
 
 add_custom_target(cclean COMMAND cd ${CMAKE_SOURCE_DIR} && rm -r ${CMAKE_SOURCE_DIR}/build/ && mkdir ${CMAKE_SOURCE_DIR}/build/ && cd ${CMAKE_SOURCE_DIR}/build/
