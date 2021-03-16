@@ -53,28 +53,14 @@ namespace Model::Componentfactory {
 #define LINE_NUMBER_STRING STRINGIFY(__LINE__)
 
 
-  /// \brief Calls the relevant Node constructor
-  ///
-  /// @returns a unique pointer to a newly constructed node, which is cast to
-  /// Node to enable polymorphism.
-  template <typename Nodetype>
-  std::unique_ptr<Network::Node>
-  build_specific_node(nlohmann::json const &topology) {
-    return std::make_unique<Nodetype>(topology);
-  }
-
   struct Nodedatabuilder_base {
     virtual ~Nodedatabuilder_base(){};
 
-    Nodefactory get_factory() const { return constructer_pointer(); };
+    virtual Nodefactory get_factory() const = 0;
 
     /// \brief returns the string found in the json data files that identifies
     /// components of type Nodetype.
     virtual std::string get_type() = 0;
-
-  private:
-    /// Returns a function pointer to a factory of Nodetype.
-    virtual Nodefactory constructer_pointer() const = 0;
   };
 
   template <typename Nodetype>
@@ -86,22 +72,10 @@ namespace Model::Componentfactory {
 
     std::string get_type() override { return Nodetype::get_type(); };
 
-  private:
-    Nodefactory constructer_pointer() const override {
-      return build_specific_node<Nodetype>;
+    Nodefactory get_factory() const override {
+      return std::make_unique<Nodetype>;
     };
   };
-
-  /// \brief Calls the relevant Edge constructor
-  ///
-  /// @returns a unique pointer to a newly constructed edge, which is cast to
-  /// Edge to enable polymorphism.
-  template <typename Edgetype>
-  std::unique_ptr<Network::Edge>
-  build_specific_edge(nlohmann::json const &topology,
-                      std::vector<std::unique_ptr<Network::Node>> &nodes) {
-    return std::make_unique<Edgetype>(topology, nodes);
-  }
 
   struct Edgedatabuilder_base {
     virtual ~Edgedatabuilder_base(){};
@@ -109,15 +83,12 @@ namespace Model::Componentfactory {
     /// \brief builds a struct containing a bool stating whether Componenttype
     /// needs boundary conditions and a pointer to a factory function for
     /// Componenttype.
-    Edgefactory get_factory() const { return constructer_pointer(); };
+    virtual Edgefactory get_factory() const = 0;
     
     /// \brief returns the string found in the json data files that identifies
     /// components of type Edgetype.
     virtual std::string get_type() = 0;
 
-  private:
-    /// Returns a function pointer to a factory of Edgetype.
-    virtual Edgefactory constructer_pointer() const = 0;
   };
 
   template <typename Edgetype>
@@ -129,9 +100,8 @@ namespace Model::Componentfactory {
 
     std::string get_type() override { return Edgetype::get_type(); };
 
-  private:
-    Edgefactory constructer_pointer() const override {
-      return build_specific_edge<Edgetype>;
+    Edgefactory get_factory() const override {
+      return std::make_unique<Edgetype>;
     };
   };
 
