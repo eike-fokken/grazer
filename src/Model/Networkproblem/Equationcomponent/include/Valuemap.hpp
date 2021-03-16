@@ -30,6 +30,11 @@ namespace Model::Networkproblem {
     // Valuemap(std::map<double, Eigen::Matrix<double, N, 1>> _values):
     //   values(_values) {};
 
+    bool compare_less = [] (std::pair<double, Eigen::Matrix<double, N, 1>> const _pair,
+                            double t) {
+      return _pair.first < t;
+    };
+
     Eigen::Matrix<double, N, 1> operator()(double t) const {
 
       //Note that by virtue of the function set_condition, this map is never empty!
@@ -65,7 +70,7 @@ namespace Model::Networkproblem {
         return first_element->second;
       }
 
-      auto next = values.lower_bound(t);
+      auto next = lower_bound(values.begin(),values.end(),t,compare_less);
       auto previous = std::prev(next);
 
       double t_minus = previous->first;
