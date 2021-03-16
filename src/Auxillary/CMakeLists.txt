@@ -1,3 +1,4 @@
+add_subdirectory(Exception)
 add_subdirectory(Matrixhandler)
 add_subdirectory(Mathfunctions)
 add_subdirectory(Coloroutput)
