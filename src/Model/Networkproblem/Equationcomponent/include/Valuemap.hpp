@@ -2,6 +2,7 @@
 #include "Eigen/Sparse"
 #include "Exception.hpp"
 #include "Mathfunctions.hpp"
+#include <functional>
 #include <nlohmann/json.hpp>
 #include <iostream>
 #include <map>
@@ -29,11 +30,6 @@ namespace Model::Networkproblem {
 
     // Valuemap(std::map<double, Eigen::Matrix<double, N, 1>> _values):
     //   values(_values) {};
-
-    bool compare_less = [] (std::pair<double, Eigen::Matrix<double, N, 1>> const _pair,
-                            double t) {
-      return _pair.first < t;
-    };
 
     Eigen::Matrix<double, N, 1> operator()(double t) const {
 
@@ -70,7 +66,12 @@ namespace Model::Networkproblem {
         return first_element->second;
       }
 
-      auto next = lower_bound(values.begin(),values.end(),t,compare_less);
+      auto next = std::lower_bound(values.begin(),
+                                   values.end(),
+                                   t,
+                                   [](std::pair<double, Eigen::Matrix<double, N, 1>> const _pair, const double t){
+                                     return _pair.first < t;
+                                   });
       auto previous = std::prev(next);
 
       double t_minus = previous->first;
@@ -84,33 +85,6 @@ namespace Model::Networkproblem {
       return value;
     }
 
-
-    //   std::map<double, Eigen::Matrix<double, N, 1>> map_values;
-
-    //   if (values_json["data"].size() == 0) {
-    //     gthrow({"data in node with id ", values_json["id"], " is empty!"})
-
-    //  }
-
-    //   for (auto &datapoint : values_json["data"]) {
-    //     if (datapoint["values"].size() != N) {
-    //       gthrow(
-    //        {"Wrong number of initial/boundary values in node ", values_json["id"]});
-    //     }
-    //     Eigen::Matrix<double, N, 1> value;
-    //     try {
-    //       for (unsigned int i =0 ; i<N ; ++i) {
-    //         // auto ijson= static_cast<nlohmann::basic_json::size_type>(i);
-    //       value[i] = datapoint["values"][i];
-    //       }
-    //     } catch (...) {
-    //       gthrow({"initial/boundary data in node with id ",values_json["id"],
-    //               " couldn't be assignd in vector, not a double?"})
-    //     }
-    //     map_values.insert({datapoint[key], value});
-    //   }
-    //   return map_values;
-    // }
 
     static std::vector<std::pair<double, Eigen::Matrix<double, N, 1>>> set_condition(
                                                   nlohmann::json values_json, std::string key) {
@@ -139,7 +113,10 @@ namespace Model::Networkproblem {
         }
         pair_values.push_back({datapoint[key], value});
       }
-      std::sort(pair_values.begin(),pair_values.end());
+      std::sort(pair_values.begin(),pair_values.end(), [](std::pair<double,Eigen::Matrix<double, N, 1>> const pair1,
+                                                          std::pair<double,Eigen::Matrix<double, N, 1>> const pair2) {
+        return pair1.first < pair2.first;
+      });
       return pair_values;
     }
 
