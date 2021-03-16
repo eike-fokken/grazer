@@ -114,8 +114,4 @@ namespace Model::Componentfactory {
     };
   };
 
-  double test(
-      std::unique_ptr<Network::Edge> edge,
-      std::unique_ptr<Network::Node> very_long_parameter_to_trigger_enter);
-
 }// namespace Model::Componentfactory
