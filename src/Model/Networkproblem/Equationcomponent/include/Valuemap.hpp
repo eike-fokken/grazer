@@ -2,7 +2,6 @@
 #include "Eigen/Sparse"
 #include "Exception.hpp"
 #include "Mathfunctions.hpp"
-
 #include <nlohmann/json.hpp>
 #include <iostream>
 #include <map>
@@ -80,10 +79,38 @@ namespace Model::Networkproblem {
       return value;
     }
 
-    static std::map<double, Eigen::Matrix<double, N, 1>> set_condition(
-                              nlohmann::json values_json, std::string key){
 
-      std::map<double, Eigen::Matrix<double, N, 1>> map_values;
+    //   std::map<double, Eigen::Matrix<double, N, 1>> map_values;
+
+    //   if (values_json["data"].size() == 0) {
+    //     gthrow({"data in node with id ", values_json["id"], " is empty!"})
+
+    //  }
+
+    //   for (auto &datapoint : values_json["data"]) {
+    //     if (datapoint["values"].size() != N) {
+    //       gthrow(
+    //        {"Wrong number of initial/boundary values in node ", values_json["id"]});
+    //     }
+    //     Eigen::Matrix<double, N, 1> value;
+    //     try {
+    //       for (unsigned int i =0 ; i<N ; ++i) {
+    //         // auto ijson= static_cast<nlohmann::basic_json::size_type>(i);
+    //       value[i] = datapoint["values"][i];
+    //       }
+    //     } catch (...) {
+    //       gthrow({"initial/boundary data in node with id ",values_json["id"],
+    //               " couldn't be assignd in vector, not a double?"})
+    //     }
+    //     map_values.insert({datapoint[key], value});
+    //   }
+    //   return map_values;
+    // }
+
+    static std::vector<std::pair<double, Eigen::Matrix<double, N, 1>>> set_condition(
+                                                  nlohmann::json values_json, std::string key) {
+
+      std::vector<std::pair<double, Eigen::Matrix<double, N, 1>>> pair_values;
 
       if (values_json["data"].size() == 0) {
         gthrow({"data in node with id ", values_json["id"], " is empty!"})
@@ -105,17 +132,17 @@ namespace Model::Networkproblem {
           gthrow({"initial/boundary data in node with id ",values_json["id"],
                   " couldn't be assignd in vector, not a double?"})
         }
-        map_values.insert({datapoint[key], value});
+        pair_values.push_back({datapoint[key], value});
       }
-      return map_values;
+      std::sort(pair_values.begin(),pair_values.end());
+      return pair_values;
     }
-
 
     private:
     //nlohmann::json values;
 
-    std::map<double, Eigen::Matrix<double, N, 1>> const values;
-
+    // std::map<double, Eigen::Matrix<double, N, 1>> const values;
+      std::vector<std::pair<double, Eigen::Matrix<double, N, 1>>> const values;
   };
 
 } // namespace Model::Networkproblem
