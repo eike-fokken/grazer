@@ -62,6 +62,7 @@ jobs:
         submodules: recursive
     
     - name: Check clang-format style
+      if: ${{ matrix.name }} == Linux-Clang
       uses: jidicula/clang-format-action@v3.2.0
       with: 
         clang-format-version: "11"
