@@ -39,8 +39,8 @@ namespace Model::Networkproblem {
 
   void Networkproblem::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> const &last_state,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
+      Eigen::Ref<Eigen::VectorXd const> last_state,
+      Eigen::Ref<Eigen::VectorXd const> new_state) const {
 
     // // This should evaluate in parallel, test on bigger problems later on:
     // std::for_each(std::execution::par_unseq, equationcomponents.begin(),
@@ -59,8 +59,8 @@ namespace Model::Networkproblem {
 
   void Networkproblem::evaluate_state_derivative(
       ::Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> const &last_state,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
+      Eigen::Ref<Eigen::VectorXd const> last_state,
+      Eigen::Ref<Eigen::VectorXd const> new_state) const {
 
     // // This should evaluate in parallel, test on bigger problems later on:
     // std::for_each(std::execution::par_unseq, equationcomponents.begin(),

@@ -26,14 +26,14 @@ namespace Model::Networkproblem::Power {
     void set_initial_values(Eigen::Ref<Eigen::VectorXd> new_state,
                             nlohmann::ordered_json initial_json) final;
 
-    double P(Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
-    double Q(Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
+    double P(Eigen::Ref<Eigen::VectorXd const>new_state) const;
+    double Q(Eigen::Ref<Eigen::VectorXd const>new_state) const;
     void evaluate_P_derivative(
         int equationindex, Aux::Matrixhandler *jacobianhandler,
-        Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
+        Eigen::Ref<Eigen::VectorXd const>new_state) const;
     void evaluate_Q_derivative(
         int equationindex, Aux::Matrixhandler *jacobianhandler,
-        Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
+        Eigen::Ref<Eigen::VectorXd const>new_state) const;
 
   protected:
     /// \brief saves the values of a power node for later printout into files.
@@ -42,7 +42,7 @@ namespace Model::Networkproblem::Power {
     /// this is just a helper function that is called from the respective
     /// Powernode.
     void save_power_values(double time,
-                           Eigen::Ref<Eigen::VectorXd const> const &state,
+                           Eigen::Ref<Eigen::VectorXd const>state,
                            double P_val, double Q_val);
 
     Boundaryvalue<2> const boundaryvalue;

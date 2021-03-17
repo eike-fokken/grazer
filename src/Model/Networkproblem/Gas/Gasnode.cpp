@@ -10,7 +10,7 @@ namespace Model::Networkproblem::Gas {
 
   void Gasnode::evaluate_flow_node_balance(
       Eigen::Ref<Eigen::VectorXd> rootvalues,
-      Eigen::Ref<Eigen::VectorXd const> const &state,
+      Eigen::Ref<Eigen::VectorXd const>state,
       double prescribed_qvol) const {
 
     if (directed_attached_gas_edges.empty()) {
@@ -56,7 +56,7 @@ namespace Model::Networkproblem::Gas {
 
   void Gasnode::evaluate_pressure_node_balance(
       Eigen::Ref<Eigen::VectorXd> rootvalues,
-      Eigen::Ref<Eigen::VectorXd const> const &state,
+      Eigen::Ref<Eigen::VectorXd const>state,
       double prescribed_p) const {
 
     if (directed_attached_gas_edges.empty()) {
@@ -73,7 +73,7 @@ namespace Model::Networkproblem::Gas {
 
   void Gasnode::evaluate_flow_node_derivative(
       Aux::Matrixhandler *jacobianhandler,
-      Eigen::Ref<Eigen::VectorXd const> const &state) const {
+      Eigen::Ref<Eigen::VectorXd const>state) const {
 
     if (directed_attached_gas_edges.empty()) {
       return;
@@ -134,7 +134,7 @@ namespace Model::Networkproblem::Gas {
 
   void Gasnode::evaluate_pressure_node_derivative(
       Aux::Matrixhandler *jacobianhandler,
-      Eigen::Ref<Eigen::VectorXd const> const &state) const {
+      Eigen::Ref<Eigen::VectorXd const>state) const {
 
     if (directed_attached_gas_edges.empty()) {
       return;
