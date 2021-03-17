@@ -58,9 +58,12 @@ namespace Model::Componentfactory {
 
     virtual Nodefactory get_factory() const = 0;
 
+    virtual std::unique_ptr<Network::Node> make_instance(
+      nlohmann::json const &topology) const = 0;
+
     /// \brief returns the string found in the json data files that identifies
     /// components of type Nodetype.
-    virtual std::string get_name() = 0;
+    virtual std::string get_name() const = 0;
   };
 
   template <typename Node>
@@ -70,7 +73,12 @@ namespace Model::Componentfactory {
                            ": Node must inherit from Network::Node.\n Check "
                            "whether an edge was added to the Nodechooser.");
 
-    std::string get_name() override { return Node::get_type(); };
+    std::string get_name() const override { return Node::get_type(); };
+    std::unique_ptr<Network::Node> make_instance(
+      nlohmann::json const &topology
+    ) const override {
+      return std::make_unique<Node>(topology);
+    };
 
     Nodefactory get_factory() const override {
       return [](
@@ -115,11 +123,11 @@ namespace Model::Componentfactory {
   };
 
   struct Componentfactory {
-    std::map<std::string, AbstractNodeType> node_type_map;
-    std::map<std::string, AbstractEdgeType> edge_type_map;
+    std::map<std::string, std::unique_ptr<AbstractNodeType>> node_type_map;
+    std::map<std::string, std::unique_ptr<AbstractNodeType>> edge_type_map;
 
-    std::map<std::string, AbstractNodeType> get_node_type_map();
-    std::map<std::string, AbstractEdgeType> get_edge_type_map();
+    std::map<std::string, std::unique_ptr<AbstractNodeType>> get_node_type_map();
+    std::map<std::string, std::unique_ptr<AbstractEdgeType>> get_edge_type_map();
     
   };
 
