@@ -4,6 +4,10 @@
 
 namespace Model::Componentfactory {
 
+  struct PowerFactory : public Componentfactory {
+    PowerFactory();
+  };
+
   /// \brief Provides factories for power component types.
   struct Power_factory : public Componentfactory_interface<Power_factory> {
 

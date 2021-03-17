@@ -7,6 +7,18 @@
 
 namespace Model::Componentfactory {
 
+  PowerFactory::PowerFactory() {
+    std::vector<std::unique_ptr<AbstractNodeType>> node_types;
+
+    node_types.push_back(std::make_unique<NodeType<Networkproblem::Power::Vphinode>>());
+    node_types.push_back(std::make_unique<NodeType<Networkproblem::Power::PVnode>>());
+    node_types.push_back(std::make_unique<NodeType<Networkproblem::Power::PQnode>>());
+
+    for (auto const &node_type : node_types) {
+      this->node_type_map.insert({node_type->get_name(), node_type});
+    }
+  }
+
   std::map<std::string, Nodefactory> Power_factory::get_nodetypemap_impl(){
 
     std::map<std::string, Nodefactory> data;
