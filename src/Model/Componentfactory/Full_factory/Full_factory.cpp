@@ -28,7 +28,7 @@ namespace Model::Componentfactory {
     buildervector.push_back(std::make_unique<NodeType<Networkproblem::Gas::Innode>>());
 
     for (auto const &builder : buildervector) {
-      data.insert({builder->get_type(), builder->get_factory()});
+      data.insert({builder->get_name(), builder->get_factory()});
     }
 
     return data;
@@ -45,7 +45,7 @@ namespace Model::Componentfactory {
     buildervector.push_back(std::make_unique<EdgeType<Networkproblem::Gas::Gaspowerconnection>>());
 
     for (auto const &builder : buildervector) {
-      data.insert({builder->get_type(), builder->get_factory()});
+      data.insert({builder->get_name(), builder->get_factory()});
     }
     return data;
   }

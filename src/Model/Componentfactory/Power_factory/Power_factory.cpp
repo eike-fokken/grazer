@@ -17,7 +17,7 @@ namespace Model::Componentfactory {
     buildervector.push_back(std::make_unique<NodeType<Networkproblem::Power::PQnode>>());
 
     for (auto const &builder : buildervector) {
-      data.insert({builder->get_type(), builder->get_factory()});
+      data.insert({builder->get_name(), builder->get_factory()});
     }
 
     return data;
@@ -29,7 +29,7 @@ namespace Model::Componentfactory {
     buildervector.push_back(std::make_unique<EdgeType<Networkproblem::Power::Transmissionline>>());
 
     for (auto const &builder : buildervector) {
-      data.insert({builder->get_type(), builder->get_factory()});
+      data.insert({builder->get_name(), builder->get_factory()});
     }
     return data;
   }

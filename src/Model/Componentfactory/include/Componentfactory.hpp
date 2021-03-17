@@ -60,7 +60,7 @@ namespace Model::Componentfactory {
 
     /// \brief returns the string found in the json data files that identifies
     /// components of type Nodetype.
-    virtual std::string get_type() = 0;
+    virtual std::string get_name() = 0;
   };
 
   template <typename Node>
@@ -70,7 +70,7 @@ namespace Model::Componentfactory {
                            ": Node must inherit from Network::Node.\n Check "
                            "whether an edge was added to the Nodechooser.");
 
-    std::string get_type() override { return Node::get_type(); };
+    std::string get_name() override { return Node::get_type(); };
 
     Nodefactory get_factory() const override {
       return [](
@@ -91,7 +91,7 @@ namespace Model::Componentfactory {
     
     /// \brief returns the string found in the json data files that identifies
     /// components of type Edgetype.
-    virtual std::string get_type() = 0;
+    virtual std::string get_name() = 0;
 
   };
 
@@ -102,7 +102,7 @@ namespace Model::Componentfactory {
                            ": Edge must inherit from Edge.\n Check "
                            "whether a node was added to the Edgechooser.");
 
-    std::string get_type() override { return Edge::get_type(); };
+    std::string get_name() override { return Edge::get_type(); };
 
     Edgefactory get_factory() const override {
       return [](
