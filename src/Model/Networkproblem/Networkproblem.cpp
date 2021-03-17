@@ -115,8 +115,12 @@ namespace Model::Networkproblem {
             return component_id == x->get_id();
           };
           auto iterator = std::find_if(idcomponents.begin(),idcomponents.end(),find_id);
-          auto index = iterator - idcomponents.begin();
+          if(iterator != idcomponents.end()){
+            auto index = iterator - idcomponents.begin();
           equationcomponents[static_cast<unsigned long>(index)]->set_initial_values(new_state, componentjson);
+          } else {
+            std::cout << "Note: Component with id " << component_id << "appears in the initial values but not in the topology." <<std::endl;
+          }
         }
       }
     }
