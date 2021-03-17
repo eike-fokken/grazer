@@ -53,8 +53,8 @@ namespace Model::Componentfactory {
 #define LINE_NUMBER_STRING STRINGIFY(__LINE__)
 
 
-  struct Nodedatabuilder_base {
-    virtual ~Nodedatabuilder_base(){};
+  struct AbstractNodeType {
+    virtual ~AbstractNodeType(){};
 
     virtual Nodefactory get_factory() const = 0;
 
@@ -63,20 +63,20 @@ namespace Model::Componentfactory {
     virtual std::string get_type() = 0;
   };
 
-  template <typename Nodetype>
-  struct Nodedatabuilder final : public Nodedatabuilder_base {
-    static_assert(std::is_base_of_v<Network::Node, Nodetype>,
+  template <typename Node>
+  struct NodeType final : public AbstractNodeType {
+    static_assert(std::is_base_of_v<Network::Node, Node>,
                   __FILE__ ":" LINE_NUMBER_STRING
-                           ": Nodetype must inherit from Node.\n Check "
+                           ": Node must inherit from Network::Node.\n Check "
                            "whether an edge was added to the Nodechooser.");
 
-    std::string get_type() override { return Nodetype::get_type(); };
+    std::string get_type() override { return Node::get_type(); };
 
     Nodefactory get_factory() const override {
       return [](
           nlohmann::json const &topology
       ) -> std::unique_ptr<Network::Node> {
-        return std::make_unique<Nodetype>(topology);
+        return std::make_unique<Node>(topology);
       };
     };
   };

@@ -14,11 +14,11 @@ namespace Model::Componentfactory {
   std::map<std::string, Nodefactory> Gas_factory::get_nodetypemap_impl(){
 
     std::map<std::string, Nodefactory> data;
-        std::vector<std::unique_ptr<Nodedatabuilder_base>> buildervector;
+        std::vector<std::unique_ptr<AbstractNodeType>> buildervector;
 
-    buildervector.push_back(std::make_unique<Nodedatabuilder<Networkproblem::Gas::Source>>());
-    buildervector.push_back(std::make_unique<Nodedatabuilder<Networkproblem::Gas::Sink>>());
-    buildervector.push_back(std::make_unique<Nodedatabuilder<Networkproblem::Gas::Innode>>());
+    buildervector.push_back(std::make_unique<NodeType<Networkproblem::Gas::Source>>());
+    buildervector.push_back(std::make_unique<NodeType<Networkproblem::Gas::Sink>>());
+    buildervector.push_back(std::make_unique<NodeType<Networkproblem::Gas::Innode>>());
 
     for (auto const &builder : buildervector) {
       data.insert({builder->get_type(), builder->get_factory()});
