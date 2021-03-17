@@ -110,8 +110,7 @@ TEST_F(GasTEST, Shortpipe_evaluate) {
   rootvalues.setZero();
   Eigen::VectorXd last_state(number_of_variables);
 
-  // set initial values
-
+  
   // initial values:
   double pressure_start = 810;
   double flow_start = -4;
@@ -260,34 +259,10 @@ TEST_F(GasTEST, Shortpipe_evaluate_state_derivative) {
 
       netprob->set_initial_values(new_state, initial_json);
 
-      // sp0.set_initial_values(new_state, sp0_initial);
-      // // std::cout << "Initial conditions sp0:" << std::endl;
-      // // std::cout << new_state <<std::endl;
+      netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
 
-      // sp1.set_initial_values(new_state, sp1_initial);
-      // // std::cout << "Initial conditions sp1:" << std::endl;
-      // // std::cout << new_state <<std::endl;
 
-      // g0.evaluate(rootvalues, last_time, new_time, last_state, new_state);
-      // // std::cout << "Evaluation  g0:" << std::endl;
-      // // std::cout << rootvalues << std::endl;
-
-      // g1.evaluate(rootvalues, last_time, new_time, last_state, new_state);
-      // // std::cout << "Evaluation  g1:" << std::endl;
-      // // std::cout << rootvalues << std::endl;
-
-      // g2.evaluate(rootvalues, last_time, new_time, last_state, new_state);
-      // // std::cout << "Evaluation  g2:" << std::endl;
-      // // std::cout << rootvalues << std::endl;
-
-      // sp0.evaluate(rootvalues, last_time, new_time, last_state, new_state);
-      // // std::cout << "Evaluation shortpipe0:" << std::endl;
-      // // std::cout << rootvalues << std::endl;
-
-      // sp1.evaluate(rootvalues, last_time, new_time, last_state, new_state);
-      // // std::cout << "Evaluation shortpipe1:" << std::endl;
-      // // std::cout << rootvalues << std::endl;
-
+      std::cout << rootvalues <<std::endl;
       // // inner node (multiple pipes connected)
       // EXPECT_DOUBLE_EQ(rootvalues[4], sp0_pressure_end-sp1_pressure_start );
       // EXPECT_DOUBLE_EQ(rootvalues[3], sp1_flow_start - sp0_flow_end );
@@ -315,144 +290,144 @@ TEST_F(GasTEST, Shortpipe_evaluate_state_derivative) {
 
     // TEST(testFlowboundarynode_Shortpipe, Flowboundarynode_three_shortpipes) {
     //   SUCCEED();
-    //   // double flow0start = 88.0;
-    //   //   double flow0end = 10.0;
+      // double flow0start = 88.0;
+      //   double flow0end = 10.0;
 
-    //   //   double flow3start = -723.0;
-    //   //   double flow3end = -640.0;
+      //   double flow3start = -723.0;
+      //   double flow3end = -640.0;
 
-    //   //   double flow2start = -23.0;
-    //   //   double flow2end = -440.0;
+      //   double flow2start = -23.0;
+      //   double flow2end = -440.0;
 
-    //   //   json flow_topology={};
+      //   json flow_topology={};
 
-    //   //   json bd_json0 = {
-    //   //                    {"id", "gasnode0"},
-    //   //                    {"type", "flow"},
-    //   //                    {"data", json::array({{{"time", 0.},
-    //   //                                           {"values",
-    //   // json::array({flow0start})}},{{"time",
-    //   //                                           100.},{"values",
-    //   // json::array({flow0end})}}})}};
+      //   json bd_json0 = {
+      //                    {"id", "gasnode0"},
+      //                    {"type", "flow"},
+      //                    {"data", json::array({{{"time", 0.},
+      //                                           {"values",
+      // json::array({flow0start})}},{{"time",
+      //                                           100.},{"values",
+      // json::array({flow0end})}}})}};
 
-    //   //   //std::cout << bd_json0 <<std::endl;
+      //   //std::cout << bd_json0 <<std::endl;
 
-    //   //   json bd_json2 = {
-    //   //                    {"id", "gasnode2"},
-    //   //                    {"type", "flow"},
-    //   //                    {"data", json::array({{{"time", 0.},
-    //   //                                           {"values",
-    //   // json::array({flow2start})}},{{"time",
-    //   //                                           100.},{"values",
-    //   // json::array({flow2end})}}})}};
-    //   //   //std::cout << bd_json1<<std::endl;
+      //   json bd_json2 = {
+      //                    {"id", "gasnode2"},
+      //                    {"type", "flow"},
+      //                    {"data", json::array({{{"time", 0.},
+      //                                           {"values",
+      // json::array({flow2start})}},{{"time",
+      //                                           100.},{"values",
+      // json::array({flow2end})}}})}};
+      //   //std::cout << bd_json1<<std::endl;
 
-    //   //   json bd_json3 = {
-    //   //                    {"id", "gasnode3"},
-    //   //                    {"type", "flow"},
-    //   //                    {"data", json::array({{{"time", 0.},
-    //   //                                           {"values",
-    //   // json::array({flow3start})}},{{"time",
-    //   //                                           100.},{"values",
-    //   // json::array({flow3end})}}})}};
-    //   //   //std::cout << bd_json1<<std::endl;
+      //   json bd_json3 = {
+      //                    {"id", "gasnode3"},
+      //                    {"type", "flow"},
+      //                    {"data", json::array({{{"time", 0.},
+      //                                           {"values",
+      // json::array({flow3start})}},{{"time",
+      //                                           100.},{"values",
+      // json::array({flow3end})}}})}};
+      //   //std::cout << bd_json1<<std::endl;
 
-    //   //   double sp0_pressure_start = 810;
-    //   //   double sp0_flow_start = -4;
-    //   //   double sp0_pressure_end = 125;
-    //   //   double sp0_flow_end = 1000;
-    //   //   json sp0_initial = {
-    //   //       {"id", "node_4_ld1"},
-    //   //       {"data",
-    //   //        json::array(
-    //   //            {{{"x", 0.0},
-    //   //              {"value", json::array({sp0_pressure_start,
-    //   //              sp0_flow_start})}},
-    //   //             {{"x", 1.0},
-    //   //              {"value", json::array({sp0_pressure_end,
-    //   //              sp0_flow_end})}}})}};
-    //   //   //std::cout << sp0_initial<<std::endl;
+      //   double sp0_pressure_start = 810;
+      //   double sp0_flow_start = -4;
+      //   double sp0_pressure_end = 125;
+      //   double sp0_flow_end = 1000;
+      //   json sp0_initial = {
+      //       {"id", "node_4_ld1"},
+      //       {"data",
+      //        json::array(
+      //            {{{"x", 0.0},
+      //              {"value", json::array({sp0_pressure_start,
+      //              sp0_flow_start})}},
+      //             {{"x", 1.0},
+      //              {"value", json::array({sp0_pressure_end,
+      //              sp0_flow_end})}}})}};
+      //   //std::cout << sp0_initial<<std::endl;
 
-    //   //   double sp1_pressure_start = 811;
-    //   //   double sp1_flow_start = -8;
-    //   //   double sp1_pressure_end = 131;
-    //   //   double sp1_flow_end = 1111;
+      //   double sp1_pressure_start = 811;
+      //   double sp1_flow_start = -8;
+      //   double sp1_pressure_end = 131;
+      //   double sp1_flow_end = 1111;
 
-    //   //   json sp1_initial = {
-    //   //       {"id", "node_4_ld1"},
-    //   //       {"data",
-    //   //        json::array(
-    //   //            {{{"x", 0.0},
-    //   //              {"value", json::array({sp1_pressure_start,
-    //   //              sp1_flow_start})}},
-    //   //             {{"x", 1.0},
-    //   //              {"value", json::array({sp1_pressure_end,
-    //   //              sp1_flow_end})}}})}};
-    //   //   //std::cout << sp1_initial<<std::endl;
+        // json sp1_initial = {
+        //     {"id", "node_4_ld1"},
+        //     {"data",
+        //      json::array(
+        //          {{{"x", 0.0},
+        //            {"value", json::array({sp1_pressure_start,
+        //            sp1_flow_start})}},
+        //           {{"x", 1.0},
+        //            {"value", json::array({sp1_pressure_end,
+        //            sp1_flow_end})}}})}};
+        // //std::cout << sp1_initial<<std::endl;
 
-    //   //   double sp2_pressure_start = 822;
-    //   //   double sp2_flow_start = -20;
-    //   //   double sp2_pressure_end = 232;
-    //   //   double sp2_flow_end = 2222;
+        // double sp2_pressure_start = 822;
+        // double sp2_flow_start = -20;
+        // double sp2_pressure_end = 232;
+        // double sp2_flow_end = 2222;
 
-    //   //   json sp2_initial = {
-    //   //                       {"id", "node_4_ld2"},
-    //   //                       {"data",
-    //   //                        json::array(
-    //   //                                    {{{"x", 0.0},
-    //   //                                      {"value",
-    //   // json::array({sp2_pressure_start,
-    //   //                                      sp2_flow_start})}},
-    //   //                                     {{"x", 1.0},
-    //   //                                      {"value",
-    //   //                                      json::array({sp2_pressure_end,
-    //   //                                      sp2_flow_end})}}})}};
-    //   //   //std::cout << sp2_initial<<std::endl;
+      //   json sp2_initial = {
+      //                       {"id", "node_4_ld2"},
+      //                       {"data",
+      //                        json::array(
+      //                                    {{{"x", 0.0},
+      //                                      {"value",
+      // json::array({sp2_pressure_start,
+      //                                      sp2_flow_start})}},
+      //                                     {{"x", 1.0},
+      //                                      {"value",
+      //                                      json::array({sp2_pressure_end,
+      //                                      sp2_flow_end})}}})}};
+      //   //std::cout << sp2_initial<<std::endl;
 
-    //   //   Model::Networkproblem::Gas::Flowboundarynode g0("gasnode0",
-    //   bd_json0,
-    //   //   flow_topology); Model::Networkproblem::Gas::Innode g1("innode1");
-    //   //   Model::Networkproblem::Gas::Flowboundarynode g2("gasnode2",
-    //   bd_json2,
-    //   //   flow_topology); Model::Networkproblem::Gas::Pressureboundarynode
-    //   //   g3("gasnode3", bd_json3, flow_topology);
-    //   //   Model::Networkproblem::Gas::Shortpipe sp0("SP0", &g0, &g1);
-    //   //   Model::Networkproblem::Gas::Shortpipe sp1("SP1", &g1, &g2);
-    //   //   Model::Networkproblem::Gas::Shortpipe sp2("SP1", &g1, &g3);
+      //   Model::Networkproblem::Gas::Flowboundarynode g0("gasnode0",
+      // bd_json0,
+      //   flow_topology); Model::Networkproblem::Gas::Innode g1("innode1");
+      //   Model::Networkproblem::Gas::Flowboundarynode g2("gasnode2",
+      // bd_json2,
+      //   flow_topology); Model::Networkproblem::Gas::Pressureboundarynode
+      //   g3("gasnode3", bd_json3, flow_topology);
+      //   Model::Networkproblem::Gas::Shortpipe sp0("SP0", &g0, &g1);
+      //   Model::Networkproblem::Gas::Shortpipe sp1("SP1", &g1, &g2);
+      //   Model::Networkproblem::Gas::Shortpipe sp2("SP1", &g1, &g3);
 
-    //   //   auto a = g0.set_indices(0);
-    //   //   auto b = g1.set_indices(a);
-    //   //   auto c = g2.set_indices(b);
-    //   //   auto c2 = g3.set_indices(c);
-    //   //   auto d = sp0.set_indices(c2);
-    //   //   auto f = sp1.set_indices(d);
-    //   //   auto e = sp2.set_indices(f);
+      //   auto a = g0.set_indices(0);
+      //   auto b = g1.set_indices(a);
+      //   auto c = g2.set_indices(b);
+      //   auto c2 = g3.set_indices(c);
+      //   auto d = sp0.set_indices(c2);
+      //   auto f = sp1.set_indices(d);
+      //   auto e = sp2.set_indices(f);
 
-    //   // g0.setup();
-    //   // g1.setup();
-    //   // g2.setup();
-    //   // g3.setup();
+      // g0.setup();
+      // g1.setup();
+      // g2.setup();
+      // g3.setup();
 
-    //   //   double last_time = 0.0;
-    //   //   double new_time = 0.0;
-    //   //   Eigen::VectorXd rootvalues(e);
-    //   //   rootvalues.setZero();
-    //   //   Eigen::VectorXd last_state(e);
-    //   //   Eigen::VectorXd new_state(e);
+      //   double last_time = 0.0;
+      //   double new_time = 0.0;
+      //   Eigen::VectorXd rootvalues(e);
+      //   rootvalues.setZero();
+      //   Eigen::VectorXd last_state(e);
+      //   Eigen::VectorXd new_state(e);
 
-    //   //   sp0.set_initial_values(new_state, sp0_initial);
-    //   //   // std::cout << "Initial conditions sp0:" << std::endl;
-    //   //   // std::cout << new_state <<std::endl;
+      //   sp0.set_initial_values(new_state, sp0_initial);
+      //   // std::cout << "Initial conditions sp0:" << std::endl;
+      //   // std::cout << new_state <<std::endl;
 
-    //   //   sp1.set_initial_values(new_state, sp1_initial);
-    //   //   // std::cout << "Initial conditions sp1:" << std::endl;
-    //   //   // std::cout << new_state <<std::endl;
+      //   sp1.set_initial_values(new_state, sp1_initial);
+      //   // std::cout << "Initial conditions sp1:" << std::endl;
+      //   // std::cout << new_state <<std::endl;
 
-    //   //   sp2.set_initial_values(new_state, sp2_initial);
-    //   //   // std::cout << "Initial conditions sp2:" << std::endl;
-    //   //   // std::cout << new_state <<std::endl;
+      //   sp2.set_initial_values(new_state, sp2_initial);
+      //   // std::cout << "Initial conditions sp2:" << std::endl;
+      //   // std::cout << new_state <<std::endl;
 
-    //   //   g0.evaluate(rootvalues, last_time, new_time, last_state,
+      //   g0.evaluate(rootvalues, last_time, new_time, last_state,
     //   new_state);
     //   //   // std::cout << "Evaluation  g0:" << std::endl;
     //   //   // std::cout << rootvalues << std::endl;
