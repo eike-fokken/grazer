@@ -114,4 +114,13 @@ namespace Model::Componentfactory {
     };
   };
 
+  struct Componentfactory {
+    std::map<std::string, AbstractNodeType> node_type_map;
+    std::map<std::string, AbstractEdgeType> edge_type_map;
+
+    std::map<std::string, AbstractNodeType> get_node_type_map();
+    std::map<std::string, AbstractEdgeType> get_edge_type_map();
+    
+  };
+
 }// namespace Model::Componentfactory
