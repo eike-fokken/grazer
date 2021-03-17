@@ -24,9 +24,9 @@ namespace Model::Componentfactory {
   }
   std::map<std::string, Edgefactory> Power_factory::get_edgetypemap_impl(){
     std::map<std::string, Edgefactory> data;
-    std::vector<std::unique_ptr<Edgedatabuilder_base>> buildervector;
+    std::vector<std::unique_ptr<AbstractEdgeType>> buildervector;
 
-    buildervector.push_back(std::make_unique<Edgedatabuilder<Networkproblem::Power::Transmissionline>>());
+    buildervector.push_back(std::make_unique<EdgeType<Networkproblem::Power::Transmissionline>>());
 
     for (auto const &builder : buildervector) {
       data.insert({builder->get_type(), builder->get_factory()});

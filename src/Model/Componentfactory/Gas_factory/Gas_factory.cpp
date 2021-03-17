@@ -28,13 +28,13 @@ namespace Model::Componentfactory {
   }
   std::map<std::string, Edgefactory> Gas_factory::get_edgetypemap_impl(){
     std::map<std::string, Edgefactory> data;
-    std::vector<std::unique_ptr<Edgedatabuilder_base>> buildervector;
+    std::vector<std::unique_ptr<AbstractEdgeType>> buildervector;
 
-    buildervector.push_back(std::make_unique<Edgedatabuilder<Networkproblem::Gas::Pipe>>());
-    buildervector.push_back(std::make_unique<Edgedatabuilder<Networkproblem::Gas::Shortpipe>>());
-    buildervector.push_back(std::make_unique<Edgedatabuilder<Networkproblem::Gas::Controlvalve>>());
-    buildervector.push_back(std::make_unique<Edgedatabuilder<Networkproblem::Gas::Compressorstation>>());
-    buildervector.push_back(std::make_unique<Edgedatabuilder<Networkproblem::Gas::Gaspowerconnection>>());
+    buildervector.push_back(std::make_unique<EdgeType<Networkproblem::Gas::Pipe>>());
+    buildervector.push_back(std::make_unique<EdgeType<Networkproblem::Gas::Shortpipe>>());
+    buildervector.push_back(std::make_unique<EdgeType<Networkproblem::Gas::Controlvalve>>());
+    buildervector.push_back(std::make_unique<EdgeType<Networkproblem::Gas::Compressorstation>>());
+    buildervector.push_back(std::make_unique<EdgeType<Networkproblem::Gas::Gaspowerconnection>>());
 
     for (auto const &builder : buildervector) {
       data.insert({builder->get_type(), builder->get_factory()});

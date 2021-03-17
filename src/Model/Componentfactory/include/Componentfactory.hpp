@@ -81,8 +81,8 @@ namespace Model::Componentfactory {
     };
   };
 
-  struct Edgedatabuilder_base {
-    virtual ~Edgedatabuilder_base(){};
+  struct AbstractEdgeType {
+    virtual ~AbstractEdgeType(){};
 
     /// \brief builds a struct containing a bool stating whether Componenttype
     /// needs boundary conditions and a pointer to a factory function for
@@ -95,21 +95,21 @@ namespace Model::Componentfactory {
 
   };
 
-  template <typename Edgetype>
-  struct Edgedatabuilder final : public Edgedatabuilder_base {
-    static_assert(std::is_base_of_v<Network::Edge, Edgetype>,
+  template <typename Edge>
+  struct EdgeType final : public AbstractEdgeType {
+    static_assert(std::is_base_of_v<Network::Edge, Edge>,
                   __FILE__ ":" LINE_NUMBER_STRING
-                           ": Edgetype must inherit from Edge.\n Check "
+                           ": Edge must inherit from Edge.\n Check "
                            "whether a node was added to the Edgechooser.");
 
-    std::string get_type() override { return Edgetype::get_type(); };
+    std::string get_type() override { return Edge::get_type(); };
 
     Edgefactory get_factory() const override {
       return [](
           nlohmann::json const &topology,
           std::vector<std::unique_ptr<Network::Node>> &nodes
       ) -> std::unique_ptr<Network::Edge> {
-        return std::make_unique<Edgetype>(topology, nodes);
+        return std::make_unique<Edge>(topology, nodes);
       };
     };
   };
