@@ -14,8 +14,15 @@ namespace Model::Componentfactory {
     node_types.push_back(std::make_unique<NodeType<Networkproblem::Power::PVnode>>());
     node_types.push_back(std::make_unique<NodeType<Networkproblem::Power::PQnode>>());
 
-    for (auto const &node_type : node_types) {
-      this->node_type_map.insert({node_type->get_name(), node_type});
+    for (auto &node_type : node_types) {
+      this->node_type_map.insert({node_type->get_name(), std::move(node_type)});
+    }
+    std::vector<std::unique_ptr<AbstractEdgeType>> edge_types;
+
+    edge_types.push_back(std::make_unique<EdgeType<Networkproblem::Power::Transmissionline>>());
+
+    for (auto &edge_type: edge_types) {
+      this->edge_type_map.insert({edge_type->get_name(), std::move(edge_type)});
     }
   }
 

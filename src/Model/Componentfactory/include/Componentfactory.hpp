@@ -124,7 +124,7 @@ namespace Model::Componentfactory {
 
   struct Componentfactory {
     std::map<std::string, std::unique_ptr<AbstractNodeType>> node_type_map;
-    std::map<std::string, std::unique_ptr<AbstractNodeType>> edge_type_map;
+    std::map<std::string, std::unique_ptr<AbstractEdgeType>> edge_type_map;
 
     std::map<std::string, std::unique_ptr<AbstractNodeType>> get_node_type_map();
     std::map<std::string, std::unique_ptr<AbstractEdgeType>> get_edge_type_map();
