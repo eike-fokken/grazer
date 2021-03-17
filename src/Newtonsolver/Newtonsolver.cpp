@@ -9,31 +9,29 @@ namespace Solver {
   Newtonsolver_temp<Problemtype>::Newtonsolver_temp(double _tolerance, int _maximal_iterations)
       : tolerance(_tolerance), maximal_iterations(_maximal_iterations){}
 
-template<typename Problemtype>
-void Newtonsolver_temp<Problemtype>::evaluate_state_derivative_triplets(Problemtype &problem, double last_time,
-                                        double new_time,
-                                        Eigen::Ref<Eigen::VectorXd const> const &last_state,
-                                        Eigen::Ref<Eigen::VectorXd>new_state) {
+  template <typename Problemtype>
+  void Newtonsolver_temp<Problemtype>::evaluate_state_derivative_triplets(
+      Problemtype &problem, double last_time, double new_time,
+      Eigen::Ref<Eigen::VectorXd const> last_state,
+      Eigen::Ref<Eigen::VectorXd> new_state) {
 
-  {
-    jacobian.resize(new_state.size(), new_state.size());
-    Aux::Triplethandler handler(&jacobian);
+    {
+      jacobian.resize(new_state.size(), new_state.size());
+      Aux::Triplethandler handler(&jacobian);
 
-    Aux::Triplethandler *const handler_ptr = &handler;
-    problem.evaluate_state_derivative(handler_ptr, last_time, new_time,
-                                      last_state, new_state);
-    handler.set_matrix();
+      Aux::Triplethandler *const handler_ptr = &handler;
+      problem.evaluate_state_derivative(handler_ptr, last_time, new_time,
+                                        last_state, new_state);
+      handler.set_matrix();
+    }
+    lusolver.analyzePattern(jacobian);
   }
-  lusolver.analyzePattern(jacobian);
-}
-
-  
 
 template <typename Problemtype>
 void Newtonsolver_temp<Problemtype>::evaluate_state_derivative_coeffref(Problemtype &problem, double last_time,
                                         double new_time,
-                                        Eigen::Ref<Eigen::VectorXd const> const &last_state,
-                                        Eigen::Ref<Eigen::VectorXd const> const &new_state) {
+                                        Eigen::Ref<Eigen::VectorXd const> last_state,
+                                        Eigen::Ref<Eigen::VectorXd const> new_state) {
   Aux::Coeffrefhandler handler(&jacobian);
   Aux::Coeffrefhandler *const handler_ptr = &handler;
   problem.evaluate_state_derivative(handler_ptr, last_time, new_time,
@@ -49,7 +47,7 @@ template <typename Problemtype>
 Solutionstruct Newtonsolver_temp<Problemtype>::solve(
     Eigen::Ref<Eigen::VectorXd> new_state, Problemtype &problem, bool newjac,
     double last_time, double new_time,
-    Eigen::Ref<Eigen::VectorXd const> const &last_state) {
+    Eigen::Ref<Eigen::VectorXd const> last_state) {
   Solutionstruct solstruct;
 
   Eigen::VectorXd rootvalues(new_state.size());

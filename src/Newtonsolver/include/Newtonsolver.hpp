@@ -41,10 +41,10 @@ namespace Solver {
     ///
     /// The jacobian is saved into the data member named "jacobian".
 
-    void evaluate_state_derivative_triplets(Problemtype &problem,
-                                            double last_time, double new_time,
-                                            Eigen::Ref<Eigen::VectorXd const> const &last_state,
-                                            Eigen::Ref<Eigen::VectorXd>new_state);
+    void evaluate_state_derivative_triplets(
+        Problemtype &problem, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> last_state,
+        Eigen::Ref<Eigen::VectorXd> new_state);
 
     /// \brief Computes the jacobian with the assumption that the sparsity pattern has not changed.
     ///
@@ -53,8 +53,8 @@ namespace Solver {
 
     void evaluate_state_derivative_coeffref(Problemtype &problem,
                                             double last_time, double new_time,
-                                            Eigen::Ref<Eigen::VectorXd const> const &last_state,
-                                            Eigen::Ref<Eigen::VectorXd const> const &new_state);
+                                            Eigen::Ref<Eigen::VectorXd const> last_state,
+                                            Eigen::Ref<Eigen::VectorXd const> new_state);
 
     /// \brief Returns the number of structurally non-zero indices of the
     /// jacobian.
@@ -69,7 +69,7 @@ namespace Solver {
     /// tolerance).
     Solutionstruct solve(Eigen::Ref<Eigen::VectorXd>new_state, Problemtype &problem,
                          bool newjac, double last_time, double new_time,
-                         Eigen::Ref<Eigen::VectorXd const> const &last_state);
+                         Eigen::Ref<Eigen::VectorXd const> last_state);
   private:
     /// Holds an instance of the actual solver, to save computation time it
     /// is kept from previous time steps because usually the sparsity
