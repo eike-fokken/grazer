@@ -16,7 +16,6 @@ namespace Aux_executable {
   absolute_file_path_in_root(const std::filesystem::path &problem_root_path,
                              const std::filesystem::path &filepath);
 
-
   /// Checks, whether the given output directory path is present.
   ///
   /// If not,

@@ -14,16 +14,15 @@ namespace Model::Networkproblem::Gas {
     Controlvalve(nlohmann::json const &edge_json,
                  std::vector<std::unique_ptr<Network::Node>> &nodes);
 
-    void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-                  double new_time,
-                  Eigen::Ref<Eigen::VectorXd const> const &last_state,
-                  Eigen::Ref<Eigen::VectorXd const> const &new_state)
-        const override;
-    void evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,
-                                   double last_time, double new_time,
-                                   Eigen::Ref<Eigen::VectorXd const> const &,
-                                   Eigen::Ref<Eigen::VectorXd const> const
-                                       &new_state) const override;
+    void
+    evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
+             double new_time,
+             Eigen::Ref<Eigen::VectorXd const> const &last_state,
+             Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
+    void evaluate_state_derivative(
+        Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
 
     void set_initial_values(Eigen::Ref<Eigen::VectorXd> new_state,
                             nlohmann::ordered_json initial_json) override;
@@ -31,12 +30,7 @@ namespace Model::Networkproblem::Gas {
     void print_to_files(std::filesystem::path const &output_directory) override;
 
   private:
-
     Control<1> const control_values;
-
-
   };
 
-
-
-}
+} // namespace Model::Networkproblem::Gas

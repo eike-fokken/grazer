@@ -1,9 +1,8 @@
 #include "Powernode.hpp"
+#include <Exception.hpp>
 #include <Transmissionline.hpp>
 #include <iostream>
-#include <Exception.hpp>
 #include <tuple>
-
 
 namespace Model::Networkproblem::Power {
 
@@ -14,18 +13,17 @@ namespace Model::Networkproblem::Power {
   Transmissionline::Transmissionline(
       nlohmann::json const &topology,
       std::vector<std::unique_ptr<Network::Node>> &nodes)
-      : Edge(topology, nodes), G(topology["G"]),
-        B(topology["B"]) {}
+      : Edge(topology, nodes), G(topology["G"]), B(topology["B"]) {}
 
   double Transmissionline::get_G() const { return G; }
 
   double Transmissionline::get_B() const { return B; }
 
-  Powernode * Transmissionline::get_starting_powernode() const {
+  Powernode *Transmissionline::get_starting_powernode() const {
     return dynamic_cast<Powernode *>(get_starting_node());
   }
 
-  Powernode * Transmissionline::get_ending_powernode() const {
+  Powernode *Transmissionline::get_ending_powernode() const {
     return dynamic_cast<Powernode *>(get_ending_node());
   }
 

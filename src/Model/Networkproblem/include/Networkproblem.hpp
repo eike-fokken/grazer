@@ -19,13 +19,12 @@ namespace Model::Networkproblem {
   class Networkproblem final : public Subproblem {
 
   public:
-
     std::string get_type() const override;
 
     ~Networkproblem() override; // override{};
 
     Networkproblem(std::unique_ptr<Network::Net> _network);
-    
+
     void
     evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
              double new_time,
@@ -36,12 +35,11 @@ namespace Model::Networkproblem {
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
 
-    void save_values(double time, Eigen::Ref<Eigen::VectorXd>new_state) final;
+    void save_values(double time, Eigen::Ref<Eigen::VectorXd> new_state) final;
 
     void print_to_files(std::filesystem::path const &output_directory) final;
 
-
-    virtual void set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
+    virtual void set_initial_values(Eigen::Ref<Eigen::VectorXd> new_state,
                                     nlohmann::json initial_json) final;
 
   private:

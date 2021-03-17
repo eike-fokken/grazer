@@ -9,6 +9,5 @@ namespace Model::Componentfactory {
 
     std::map<std::string, Nodefactory> get_nodetypemap_impl();
     std::map<std::string, Edgefactory> get_edgetypemap_impl();
-
   };
-}
+} // namespace Model::Componentfactory

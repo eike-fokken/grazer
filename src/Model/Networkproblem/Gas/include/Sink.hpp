@@ -8,11 +8,11 @@ namespace Model::Networkproblem::Gas {
   public:
     static std::string get_type();
 
-    Sink(nlohmann::json const & data);
+    Sink(nlohmann::json const &data);
 
   private:
-    static nlohmann::json revert_boundary_conditions(nlohmann::json const & data);
-
+    static nlohmann::json
+    revert_boundary_conditions(nlohmann::json const &data);
   };
 
 } // namespace Model::Networkproblem::Gas

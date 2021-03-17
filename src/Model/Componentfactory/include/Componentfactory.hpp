@@ -6,10 +6,10 @@
 
 namespace Model::Componentfactory {
 
-  /// \brief This is the type of all factory functions for Nodes in a Networkproblem.
+  /// \brief This is the type of all factory functions for Nodes in a
+  /// Networkproblem.
   using Nodefactory =
       std::unique_ptr<Network::Node> (*)(nlohmann::json const &topology);
-
 
   /// \brief This is the type of all factory function for Edges in a
   /// Networkproblem.
@@ -17,41 +17,39 @@ namespace Model::Componentfactory {
       nlohmann::json const &topology,
       std::vector<std::unique_ptr<Network::Node>> &nodes);
 
-
-
   /// \brief static interface for Componentfactories
   ///
   /// This is a CRTP interface for Componentfactories
   /// Its sole purpose is to provide maps of factory function pointers.
   template <typename Derived> class Componentfactory_interface {
   protected:
-    /// \brief The constructor is protected because this class should only ever be used as a base.
-    Componentfactory_interface() {};
+    /// \brief The constructor is protected because this class should only ever
+    /// be used as a base.
+    Componentfactory_interface(){};
 
   public:
     /// \brief Provides a map of all node factories for the factory.
     ///
-    /// @returns a map from nodetype string (e.g. "Source") to factory function pointer.
+    /// @returns a map from nodetype string (e.g. "Source") to factory function
+    /// pointer.
     std::map<std::string, Nodefactory> get_nodetypemap() {
-      return static_cast<Derived*>(this)->get_nodetypemap_impl();
+      return static_cast<Derived *>(this)->get_nodetypemap_impl();
     }
 
     /// \brief Provides a map of all edge factories for the factory.
     ///
-    /// @returns a map from edgetype string (e.g. "Pipe") to factory function pointer.
+    /// @returns a map from edgetype string (e.g. "Pipe") to factory function
+    /// pointer.
     std::map<std::string, Edgefactory> get_edgetypemap() {
-      return static_cast<Derived*>(this)->get_edgetypemap_impl();
+      return static_cast<Derived *>(this)->get_edgetypemap_impl();
     }
   };
-
-
 
   // this macro collection is ugly but hopefully makes for clearer compiler
 // errors:
 #define STRINGIFY(nonstring) STRINGIFYII(nonstring)
 #define STRINGIFYII(nonstring) #nonstring
 #define LINE_NUMBER_STRING STRINGIFY(__LINE__)
-
 
   /// \brief Calls the relevant Node constructor
   ///
@@ -110,7 +108,7 @@ namespace Model::Componentfactory {
     /// needs boundary conditions and a pointer to a factory function for
     /// Componenttype.
     Edgefactory get_factory() const { return constructer_pointer(); };
-    
+
     /// \brief returns the string found in the json data files that identifies
     /// components of type Edgetype.
     virtual std::string get_type() = 0;
@@ -135,5 +133,4 @@ namespace Model::Componentfactory {
     };
   };
 
-
-}// namespace Model::Componentfactory
+} // namespace Model::Componentfactory

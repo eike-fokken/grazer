@@ -23,36 +23,34 @@ namespace Model {
     return _Number_of_timesteps;
   }
 
-  double Timedata::get_starttime() const {return starttime;}
-  double Timedata::get_endtime() const {return endtime;}
-  double Timedata::get_delta_t() const {return delta_t;}
-  double Timedata::get_timeinterval() const {return endtime - starttime;}
-  int Timedata::get_number_of_steps() const{ return Number_of_timesteps;}
+  double Timedata::get_starttime() const { return starttime; }
+  double Timedata::get_endtime() const { return endtime; }
+  double Timedata::get_delta_t() const { return delta_t; }
+  double Timedata::get_timeinterval() const { return endtime - starttime; }
+  int Timedata::get_number_of_steps() const { return Number_of_timesteps; }
 
   double Timedata::init_delta_t() const {
     return get_timeinterval() / Number_of_timesteps;
   }
 
-  Timeevolver::Timeevolver(double tolerance,
-                           int maximal_number_of_iterations)
-    : solver(tolerance,maximal_number_of_iterations) {}
+  Timeevolver::Timeevolver(double tolerance, int maximal_number_of_iterations)
+      : solver(tolerance, maximal_number_of_iterations) {}
 
-
-
-  void Timeevolver::simulate(Timedata timedata, Model::Problem & problem,
-                             int number_of_states, nlohmann::json &problem_initial_json) {
+  void Timeevolver::simulate(Timedata timedata, Model::Problem &problem,
+                             int number_of_states,
+                             nlohmann::json &problem_initial_json) {
     double last_time = timedata.get_starttime();
     Eigen::VectorXd last_state(number_of_states);
 
-    problem.set_initial_values(last_state,problem_initial_json);
+    problem.set_initial_values(last_state, problem_initial_json);
     problem.save_values(last_time, last_state);
 
     double new_time = last_time + timedata.get_delta_t();
 
     Eigen::VectorXd new_state(last_state);
 
-    solver.evaluate_state_derivative_triplets(problem, last_time, new_time, last_state,
-                                              new_state);
+    solver.evaluate_state_derivative_triplets(problem, last_time, new_time,
+                                              last_state, new_state);
 
     std::cout << "Number of variables: " << number_of_states << std::endl;
     std::cout << "number of non-zeros in jacobian: "
@@ -73,4 +71,4 @@ namespace Model {
       last_time = new_time;
     }
   }
-}
+} // namespace Model

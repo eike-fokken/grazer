@@ -1,9 +1,9 @@
 #pragma once
 #include <Idobject.hpp>
 #include <memory>
+#include <nlohmann/json.hpp>
 #include <string>
 #include <vector>
-#include <nlohmann/json.hpp>
 
 namespace Network {
 
@@ -24,8 +24,9 @@ namespace Network {
 
     /// \brief Builds an edge from an appropriate json AND registers it in the
     /// start and end nodes.
-        
-    Edge(nlohmann::json const & edge_json, std::vector<std::unique_ptr<Node>> & nodes);
+
+    Edge(nlohmann::json const &edge_json,
+         std::vector<std::unique_ptr<Node>> &nodes);
 
     virtual ~Edge(){};
 
@@ -39,8 +40,9 @@ namespace Network {
 
   private:
     /// \brief gets the pointer out of the already constructed node vector.
-    static Node *get_node_from_json(int direction, nlohmann::json const &edge_json,
-        std::vector<std::unique_ptr<Node>> &nodes);
+    static Node *get_node_from_json(int direction,
+                                    nlohmann::json const &edge_json,
+                                    std::vector<std::unique_ptr<Node>> &nodes);
 
     Node *starting_node{nullptr};
     Node *ending_node{nullptr};
