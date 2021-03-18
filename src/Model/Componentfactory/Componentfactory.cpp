@@ -48,7 +48,7 @@ namespace Model::Componentfactory {
       node_schemas[name] = component->get_schema();
     }
     auto edge_schemas = topology_schema["properties"]["connections"]["properties"];
-    for (auto const &[name, component] : this->node_type_map) {
+    for (auto const &[name, component] : this->edge_type_map) {
       edge_schemas[name] = component->get_schema();
     }
 
