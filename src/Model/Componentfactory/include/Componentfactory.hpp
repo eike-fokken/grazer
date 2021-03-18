@@ -52,20 +52,19 @@ namespace Model::Componentfactory {
 #define STRINGIFYII(nonstring) #nonstring
 #define LINE_NUMBER_STRING STRINGIFY(__LINE__)
 
+  struct AbstractComponentType {
+    virtual ~AbstractComponentType(){};
 
-  struct AbstractNodeType {
+    virtual std::string get_name() const = 0;
+    virtual nlohmann::json get_schema() const = 0;
+  };
+
+  struct AbstractNodeType : public AbstractComponentType {
     virtual ~AbstractNodeType(){};
 
     virtual Nodefactory get_factory() const = 0;
-
     virtual std::unique_ptr<Network::Node> make_instance(
       nlohmann::json const &topology) const = 0;
-
-    /// \brief returns the string found in the json data files that identifies
-    /// components of type Nodetype.
-    virtual std::string get_name() const = 0;
-
-    virtual nlohmann::json get_schema() = 0;
   };
 
   template <typename Node>
@@ -76,7 +75,7 @@ namespace Model::Componentfactory {
                            "whether an edge was added to the Nodechooser.");
 
     std::string get_name() const override { return Node::get_type(); };
-    nlohmann::json get_schema() override { return Node::get_schema(); };
+    nlohmann::json get_schema() const override { return Node::get_schema(); };
     std::unique_ptr<Network::Node> make_instance(
       nlohmann::json const &topology
     ) const override {
@@ -92,7 +91,7 @@ namespace Model::Componentfactory {
     };
   };
 
-  struct AbstractEdgeType {
+  struct AbstractEdgeType : public AbstractComponentType {
     virtual ~AbstractEdgeType(){};
 
     /// \brief builds a struct containing a bool stating whether Componenttype
@@ -100,12 +99,6 @@ namespace Model::Componentfactory {
     /// Componenttype.
     virtual Edgefactory get_factory() const = 0;
     
-    /// \brief returns the string found in the json data files that identifies
-    /// components of type Edgetype.
-    virtual std::string get_name() = 0;
-    
-    virtual nlohmann::json get_schema() = 0;
-
     virtual std::unique_ptr<Network::Edge> make_instance(
       nlohmann::json const &topology,
       std::vector<std::unique_ptr<Network::Node>> &nodes
@@ -119,8 +112,8 @@ namespace Model::Componentfactory {
                            ": Edge must inherit from Network::Edge.\n Check "
                            "whether a node was added to the Edgechooser.");
 
-    std::string get_name() override { return Edge::get_type(); };
-    nlohmann::json get_schema() override { return Edge::get_schema(); };
+    std::string get_name() const override { return Edge::get_type(); };
+    nlohmann::json get_schema() const override { return Edge::get_schema(); };
 
     std::unique_ptr<Network::Edge> make_instance(
       nlohmann::json const &topology,
