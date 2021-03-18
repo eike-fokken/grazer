@@ -55,16 +55,52 @@ namespace Model::Componentfactory {
   struct AbstractComponentType {
     virtual ~AbstractComponentType(){};
 
+    /**
+     * @brief get the name of the component used inside the topology.json definition
+     * @return std::string 
+     */
     virtual std::string get_name() const = 0;
+
+    /**
+     * @brief Get the json schema describing the necessary properties of a component
+     * @return nlohmann::json 
+     */
     virtual nlohmann::json get_schema() const = 0;
   };
 
   struct AbstractNodeType : public AbstractComponentType {
     virtual ~AbstractNodeType(){};
 
+    /** deprecated */
     virtual Nodefactory get_factory() const = 0;
+
+    /**
+     * @brief Create an instance of this NodeType
+     * 
+     * @param topology the json snippet describing this Node from the topology.json
+     * @return std::unique_ptr<Network::Node> 
+     */
     virtual std::unique_ptr<Network::Node> make_instance(
       nlohmann::json const &topology) const = 0;
+  };
+
+  struct AbstractEdgeType : public AbstractComponentType {
+    virtual ~AbstractEdgeType(){};
+
+    /** deprecated */
+    virtual Edgefactory get_factory() const = 0;
+    
+    /**
+     * @brief Create an instance of this EdgeType
+     * 
+     * @param topology the json snippet describing this Edge from the topology.json
+     * @param nodes the adjacent nodes
+     * @return std::unique_ptr<Network::Edge> 
+     */
+    virtual std::unique_ptr<Network::Edge> make_instance(
+      nlohmann::json const &topology,
+      std::vector<std::unique_ptr<Network::Node>> &nodes
+    ) const = 0;
   };
 
   template <typename Node>
@@ -91,19 +127,6 @@ namespace Model::Componentfactory {
     };
   };
 
-  struct AbstractEdgeType : public AbstractComponentType {
-    virtual ~AbstractEdgeType(){};
-
-    /// \brief builds a struct containing a bool stating whether Componenttype
-    /// needs boundary conditions and a pointer to a factory function for
-    /// Componenttype.
-    virtual Edgefactory get_factory() const = 0;
-    
-    virtual std::unique_ptr<Network::Edge> make_instance(
-      nlohmann::json const &topology,
-      std::vector<std::unique_ptr<Network::Node>> &nodes
-    ) const = 0;
-  };
 
   template <typename Edge>
   struct EdgeType final : public AbstractEdgeType {
