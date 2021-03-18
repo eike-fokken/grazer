@@ -450,6 +450,8 @@ TEST_F(GasTEST, Sink_evaluate) {
 
   netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
 
+
+  // Note that for sinks the boundary conditions should have the opposite signs compared to sources.
   // node0:
   EXPECT_DOUBLE_EQ(rootvalues[0],-sp01_pressure_start + sp20_pressure_end);
   EXPECT_DOUBLE_EQ(rootvalues[7],flow0start+sp01_flow_start- sp20_flow_end);
