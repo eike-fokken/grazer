@@ -32,10 +32,9 @@ public:
 
 TEST(testFlowboundarynode_Shortpipe, evaluate_and_evaluate_state_derivative) {
 
-  FAIL();
 
-  // nlohmann::json node0_topology;
-  // node0_topology["id"] = "node0";
+FAIL();
+
   // double flow0start = 88.0;
   // double flow0end = 10.0;
   // auto b0 = make_boundary(node0_topology["id"],flow0start, flow0end);
@@ -137,7 +136,7 @@ TEST(testFlowboundarynode_Shortpipe, evaluate_and_evaluate_state_derivative) {
 
 
 TEST(testFlowboundarynode_Shortpipe, Flowboundarynode_multiple_shortpipes) {
-  FAIL();
+FAIL();
   // double flow0start = 88.0;
   // double flow0end = 10.0;
 
@@ -278,7 +277,7 @@ TEST(testFlowboundarynode_Shortpipe, Flowboundarynode_multiple_shortpipes) {
 
 
 TEST(testFlowboundarynode_Shortpipe, Flowboundarynode_three_shortpipes) {
-  FAIL();
+FAIL();
   // double flow0start = 88.0;
 //   double flow0end = 10.0;
 
@@ -469,7 +468,7 @@ TEST(testFlowboundarynode_Shortpipe, Flowboundarynode_three_shortpipes) {
 
 
 TEST(testPipe, evaluate) {
-  FAIL();
+FAIL();
 //   double flow0start = 88.0;
 //   double flow0end = 10.0;
 
@@ -868,7 +867,7 @@ TEST(testPipe, evaluate) {
 
 
 TEST(testGaspowerconnection, evaluate) {
-  FAIL();
+FAIL();
 //   double G1 = 1.0;
 //   double B1 = -5.0;
 
@@ -985,7 +984,7 @@ TEST(testGaspowerconnection, evaluate) {
 
 
 TEST(testGaspowerconnection, evaluate_state_derivative) {
-  FAIL();
+FAIL();
 //   double G1 = 1.0;
 //   double B1 = -5.0;
 
@@ -1123,7 +1122,7 @@ TEST(testGaspowerconnection, evaluate_state_derivative) {
 
 
 TEST(testGaspowerconnection, generated_power) {
-  FAIL();
+FAIL();
   // double G1 = 1.0;
   // double B1 = -5.0;
   // double V1_bd = 8.0;

@@ -11,7 +11,7 @@
 #include <string>
 
 int main(int argc, char **argv) {
-
+  try{
   std::vector<std::string> cmd_arguments =
       Aux_executable::make_cmd_argument_vector(argc, argv);
 
@@ -45,7 +45,6 @@ int main(int argc, char **argv) {
 
   // This try block makes sure, the destructor of problem is called in order to
   // print out all data, we have already.
-  try {
     Model::Problem problem(problem_json, output_dir);
     int number_of_states = problem.set_indices();
     std::cout << "data read" << std::endl;
@@ -57,7 +56,9 @@ int main(int argc, char **argv) {
               << "All available data has been printed to output files.\n"
               << "\nUse with caution!\n"
               << std::endl;
-    std::cout << "The error message was: \n\n" << ex.what() << std::endl;
+    std::cout << "The error message was: \n\n"
+              << "###############################################\n" << ex.what()
+              << "\n###############################################\n\n" << std::endl;
     return 1;
   } catch (...) {
     std::cout << "An unknown type of exception was thrown.\n\n"

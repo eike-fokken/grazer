@@ -3,7 +3,6 @@
 #include <Eigen/Sparse>
 #include <Exception.hpp>
 #include <map>
-#include <stdexcept>
 #include <vector>
 #include <nlohmann/json.hpp>
 #include <Mathfunctions.hpp>
