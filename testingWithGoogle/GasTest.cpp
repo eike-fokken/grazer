@@ -385,6 +385,194 @@ TEST_F(GasTEST, Source_evaluate_state_derivative) {
 }
 
 
+TEST_F(GasTEST, Sink_evaluate) {
+
+  double flow0start = 88.0;
+  double flow0end = 10.0;
+
+  double flow1start = -23.0;
+  double flow1end = -440.0;
+
+  double flow2start = -383.0;
+  double flow2end = 81.0;
+
+
+  auto node0_json = sink_json("node0", flow0start, flow0end);
+  auto node1_json = sink_json("node1", flow1start, flow1end);
+  auto node2_json = sink_json("node2", flow2start, flow2end);
+
+  auto shortpipe01_json =
+    shortpipe_json("shortpipe01", node0_json, node1_json);
+  auto shortpipe20_json =
+    shortpipe_json("shortpipe20", node2_json, node0_json);
+
+  auto np_json =
+    make_full_json({},{node0_json, node1_json, node2_json}, {}, 
+                   {shortpipe01_json, shortpipe20_json}, {});
+
+  auto netprob = get_Networkproblem(np_json);
+  int number_of_variables = netprob->set_indices(0);
+
+  double sp01_pressure_start = 810;
+  double sp01_flow_start = -4;
+  double sp01_pressure_end = 125;
+  double sp01_flow_end = 1000;
+
+  nlohmann::json initial01;
+  {
+    Eigen::Vector2d cond0(sp01_pressure_start,sp01_flow_start);
+    Eigen::Vector2d cond1(sp01_pressure_end, sp01_flow_end);
+    initial01 = make_value_json("shortpipe01","x",cond0,cond1);
+  }
+  double sp20_pressure_start = 811;
+  double sp20_flow_start = -8;
+  double sp20_pressure_end = 131;
+  double sp20_flow_end = 1111;
+
+  nlohmann::json initial20;
+  {
+    Eigen::Vector2d cond0(sp20_pressure_start, sp20_flow_start);
+    Eigen::Vector2d cond1(sp20_pressure_end, sp20_flow_end);
+    initial20 = make_value_json("shortpipe20", "x", cond0, cond1);
+  }
+
+  auto initial_json = make_initial_json({initial01,initial20},{});
+
+
+  double last_time = 0.0;
+  double new_time = 0.0;
+  Eigen::VectorXd rootvalues(number_of_variables);
+  rootvalues.setZero();
+  Eigen::VectorXd last_state(number_of_variables);
+  Eigen::VectorXd new_state(number_of_variables);
+
+  netprob->set_initial_values(new_state, initial_json);
+
+  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+
+  // node0:
+  EXPECT_DOUBLE_EQ(rootvalues[0],-sp01_pressure_start + sp20_pressure_end);
+  EXPECT_DOUBLE_EQ(rootvalues[7],flow0start+sp01_flow_start- sp20_flow_end);
+
+  //node 1:
+  EXPECT_DOUBLE_EQ(rootvalues[3], flow1start -sp01_flow_end);
+
+  // node 2:
+  EXPECT_DOUBLE_EQ(rootvalues[4], flow2start + sp20_flow_start);
+
+}
+
+
+TEST_F(GasTEST, Sink_evaluate_state_derivative) {
+
+  double flow0start = 86.0;
+  double flow0end = 193.0;
+
+  double flow1start = -23.0;
+  double flow1end = -499.0;
+
+  double flow2start = -983.0;
+  double flow2end = 8000.0;
+
+
+  auto node0_json = sink_json("node0", flow0start, flow0end);
+  auto node1_json = sink_json("node1", flow1start, flow1end);
+  auto node2_json = sink_json("node2", flow2start, flow2end);
+
+  auto shortpipe01_json =
+    shortpipe_json("shortpipe01", node0_json, node1_json);
+  auto shortpipe20_json =
+    shortpipe_json("shortpipe20", node2_json, node0_json);
+
+  auto np_json =
+    make_full_json({},{node0_json, node1_json, node2_json}, {}, 
+                   {shortpipe01_json, shortpipe20_json}, {});
+
+  auto netprob = get_Networkproblem(np_json);
+  int number_of_variables = netprob->set_indices(0);
+
+  double sp01_pressure_start = 810;
+  double sp01_flow_start = -4;
+  double sp01_pressure_end = 125;
+  double sp01_flow_end = 1000;
+
+  nlohmann::json initial01;
+  {
+    Eigen::Vector2d cond0(sp01_pressure_start,sp01_flow_start);
+    Eigen::Vector2d cond1(sp01_pressure_end, sp01_flow_end);
+    initial01 = make_value_json("shortpipe01","x",cond0,cond1);
+  }
+  double sp20_pressure_start = 811;
+  double sp20_flow_start = -8;
+  double sp20_pressure_end = 131;
+  double sp20_flow_end = 1111;
+
+  nlohmann::json initial20;
+  {
+    Eigen::Vector2d cond0(sp20_pressure_start, sp20_flow_start);
+    Eigen::Vector2d cond1(sp20_pressure_end, sp20_flow_end);
+    initial20 = make_value_json("shortpipe20", "x", cond0, cond1);
+  }
+  auto initial_json = make_initial_json({initial01,initial20},{});
+
+
+  double last_time = 0.0;
+  double new_time = 0.0;
+  Eigen::VectorXd rootvalues(number_of_variables);
+  rootvalues.setZero();
+  Eigen::VectorXd last_state(number_of_variables);
+  Eigen::VectorXd new_state(number_of_variables);
+
+  netprob->set_initial_values(new_state, initial_json);
+
+  Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
+  Aux::Triplethandler handler(&J);
+
+  netprob->evaluate_state_derivative(&handler, last_time, new_time, last_state,
+                                     new_state);
+  handler.set_matrix();
+
+  Eigen::MatrixXd DenseJ = J;
+
+  // node0:
+  EXPECT_DOUBLE_EQ(DenseJ(0,0),-1);
+  EXPECT_DOUBLE_EQ(DenseJ(0, 6), 1);
+  for(Eigen::Index i= 0;i!=8;++i){
+    if(i == 0 or i==6){
+      continue;
+    }
+    EXPECT_DOUBLE_EQ(DenseJ(0,i),0.0);
+  }
+
+  EXPECT_DOUBLE_EQ(DenseJ(7, 1), 1);
+  EXPECT_DOUBLE_EQ(DenseJ(7, 7), -1);
+  for (Eigen::Index i = 0; i != 8; ++i) {
+    if (i == 1 or i == 7) {
+      continue;
+    }
+    EXPECT_DOUBLE_EQ(DenseJ(7, i), 0.0);
+  }
+
+  //node1:
+  EXPECT_DOUBLE_EQ(DenseJ(3,3), -1);
+  for (Eigen::Index i = 0; i != 8; ++i) {
+    if (i == 3) {
+      continue;
+    }
+    EXPECT_DOUBLE_EQ(DenseJ(3, i), 0.0);
+  }
+
+  //node2:
+  EXPECT_DOUBLE_EQ(DenseJ(4, 5), 1);
+  for (Eigen::Index i = 0; i != 8; ++i) {
+    if (i == 5) {
+      continue;
+    }
+    EXPECT_DOUBLE_EQ(DenseJ(4, i), 0.0);
+  }
+}
+
+
 
 // TEST(testFlowboundarynode_Shortpipe, Flowboundarynode_three_shortpipes) {
 //   SUCCEED();
