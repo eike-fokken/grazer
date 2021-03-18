@@ -7,8 +7,12 @@
 
 namespace Network {
   std::string Node::get_type() {
-    gthrow({"This static method must be implemented in the class inherited "
+    gthrow({"This static method must be implemented in the class inheriting "
             "from node!"});
+  }
+
+  nlohmann::json Node::get_schema() {
+    gthrow({"This static method must be implemented in the class inheriting from node!"});
   }
 
   Node::Node(nlohmann::json const &data)

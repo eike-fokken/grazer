@@ -4,6 +4,14 @@
 #include <memory>
 #include <string>
 namespace Network {
+  std::string Edge::get_type() {
+    gthrow({"This static method must be implemented in the class inheriting "
+            "from edge!"});
+  }
+
+  nlohmann::json Edge::get_schema() {
+    gthrow({"This static method must be implemented in the class inheriting from edge!"});
+  }
 
   Edge::Edge(nlohmann::json const &edge_json,
              std::vector<std::unique_ptr<Node>> &nodes)

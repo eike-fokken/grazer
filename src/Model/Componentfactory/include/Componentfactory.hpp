@@ -64,6 +64,8 @@ namespace Model::Componentfactory {
     /// \brief returns the string found in the json data files that identifies
     /// components of type Nodetype.
     virtual std::string get_name() const = 0;
+
+    virtual nlohmann::json get_schema() = 0;
   };
 
   template <typename Node>
@@ -74,6 +76,7 @@ namespace Model::Componentfactory {
                            "whether an edge was added to the Nodechooser.");
 
     std::string get_name() const override { return Node::get_type(); };
+    nlohmann::json get_schema() override { return Node::get_schema(); };
     std::unique_ptr<Network::Node> make_instance(
       nlohmann::json const &topology
     ) const override {
@@ -100,17 +103,31 @@ namespace Model::Componentfactory {
     /// \brief returns the string found in the json data files that identifies
     /// components of type Edgetype.
     virtual std::string get_name() = 0;
+    
+    virtual nlohmann::json get_schema() = 0;
 
+    virtual std::unique_ptr<Network::Edge> make_instance(
+      nlohmann::json const &topology,
+      std::vector<std::unique_ptr<Network::Node>> &nodes
+    ) const = 0;
   };
 
   template <typename Edge>
   struct EdgeType final : public AbstractEdgeType {
     static_assert(std::is_base_of_v<Network::Edge, Edge>,
                   __FILE__ ":" LINE_NUMBER_STRING
-                           ": Edge must inherit from Edge.\n Check "
+                           ": Edge must inherit from Network::Edge.\n Check "
                            "whether a node was added to the Edgechooser.");
 
     std::string get_name() override { return Edge::get_type(); };
+    nlohmann::json get_schema() override { return Edge::get_schema(); };
+
+    std::unique_ptr<Network::Edge> make_instance(
+      nlohmann::json const &topology,
+      std::vector<std::unique_ptr<Network::Node>> &nodes
+    ) const override {
+      return std::make_unique<Edge>(topology, nodes);
+    };
 
     Edgefactory get_factory() const override {
       return [](
@@ -131,6 +148,8 @@ namespace Model::Componentfactory {
 
     void add_node_type(std::unique_ptr<AbstractNodeType> nodeType);
     void add_edge_type(std::unique_ptr<AbstractEdgeType> edgeType);
+
+    nlohmann::json get_topology_schema();
     
   };
 
