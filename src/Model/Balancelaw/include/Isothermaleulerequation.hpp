@@ -9,7 +9,7 @@ class Isothermaleulerequation {
 
 public:
 
-  Isothermaleulerequation(double diameter,double roughness);
+  Isothermaleulerequation(double diameter,double roughness) {};
 
   static Eigen::Vector2d flux(Eigen::Vector2d const &state, double diameter);
   static Eigen::Matrix2d dflux_dstate(Eigen::Vector2d const &state,
@@ -71,18 +71,12 @@ public:
 private:
   static Eigen::Vector4d get_coefficients(double diameter,double roughness);
 
-  static constexpr double laminar_border{2000};
-  static constexpr double turbulent_border{4000};
-  static const Eigen::Matrix4d coeff_helper_matrix;
+  static constexpr double laminar_border{2000.0};
+  static constexpr double turbulent_border{4000.0};
 
-  static Eigen::Matrix4d const set_coeff_helper_matrix() {
-    Eigen::Matrix4d mat;
-    mat << laminar_border * laminar_border * laminar_border, laminar_border * laminar_border, laminar_border, 1, //
-        3 * laminar_border * laminar_border, 2 * laminar_border, 1, 0,    //
-        turbulent_border * turbulent_border * turbulent_border, turbulent_border * turbulent_border, turbulent_border, 1,    //
-        3 * turbulent_border * turbulent_border, 2 * turbulent_border, 1, 0;
-    return mat;
-  };
+  static Eigen::Matrix4d const set_coeff_helper_matrix();
+
+  static const Eigen::Matrix4d coeff_helper_matrix;
 
   // Eigen::Vector4d coefficients;
 

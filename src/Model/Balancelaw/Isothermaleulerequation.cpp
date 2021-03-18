@@ -1,12 +1,22 @@
 #include <Exception.hpp>
 #include <Isothermaleulerequation.hpp>
 #include <Mathfunctions.hpp>
-#include <cmath>
-#include <string>
 
 namespace Model::Balancelaw {
 
-  Eigen::Matrix4d const Isothermaleulerequation::coeff_helper_matrix = Isothermaleulerequation::set_coeff_helper_matrix();
+  Eigen::Matrix4d const Isothermaleulerequation::set_coeff_helper_matrix() {
+    double a = laminar_border;
+    double b = turbulent_border;
+
+    Eigen::Matrix4d mat;
+    mat << a * a * a, a * a, a, 1, //
+        3 * a * a, 2 * a, 1, 0, //
+        b * b * b, b * b, b, 1, //
+        3 * b * b, 2 * b, 1, 0;
+    return mat;
+  }
+
+  Eigen::Matrix4d const Isothermaleulerequation::coeff_helper_matrix = set_coeff_helper_matrix();
 
   Eigen::Vector4d Isothermaleulerequation::get_coefficients(double diameter,double roughness){
 
@@ -14,12 +24,12 @@ namespace Model::Balancelaw {
         64. / laminar_border, -64. / (laminar_border * laminar_border),
         Swamee_Jain(turbulent_border, diameter, roughness),
         dSwamee_Jain_dRe(turbulent_border, diameter, roughness));
-    auto coefficients = coeff_helper_matrix.lu().solve(spline_constraints);
-    return coefficients;
+    return coeff_helper_matrix.lu().solve(spline_constraints);
+    
+    
   }
 
-  Isothermaleulerequation::Isothermaleulerequation(double diameter,double roughness) { }
-
+  
   Eigen::Vector2d
   Isothermaleulerequation::flux(Eigen::Vector2d const &state, double diameter) {
 
@@ -59,7 +69,7 @@ namespace Model::Balancelaw {
     Eigen::Vector2d source;
     source[0] = 0.0;
     auto Area = Aux::circle_area(0.5 * diameter);
-    if (Re < 2000) { // laminar, that is linear friction:
+    if (Re < laminar_border) { // laminar, that is linear friction:
       source[1] = -rho_0 / (2 * Area* diameter) * 64 / coeff_of_Reynolds(diameter) * q / rho;
     } else { // transitional and turbulent friction:
       source[1] = -rho_0 / (2 * Area * diameter) * lambda_non_laminar(Re,diameter,roughness) * std::abs(q) * q / rho;
@@ -80,7 +90,7 @@ namespace Model::Balancelaw {
 
     auto Area = Aux::circle_area(0.5 * diameter);
 
-    if (Re < 2000) { // laminar, that is, linear friction:
+    if (Re < laminar_border) { // laminar, that is, linear friction:
       dsource(1, 0) = rho_0 / (2 * Area * diameter) * 64/coeff_of_Reynolds(diameter) * q / (rho * rho);
       dsource(1, 1) =
           -rho_0 / (2 * Area * diameter) * 64 / coeff_of_Reynolds(diameter) / rho;
@@ -199,13 +209,13 @@ namespace Model::Balancelaw {
   }
   double Isothermaleulerequation::lambda_non_laminar(double Re,double diameter,double roughness){
 
-    if(Re< 2000-Aux::EPSILON) {
+    if(Re< laminar_border-Aux::EPSILON) {
       gthrow(
           {"This function is only valid for Reynolds numbers over and at 2000!",
            " For other values, manually insert "
            "\"64/Reynolds(q)\" instead"});
     }
-    if(Re >4000){
+    if(Re >turbulent_border){
       return Swamee_Jain(Re,diameter,roughness);
     } else {
       Eigen::Vector4d monomials(Re*Re*Re,Re*Re,Re,1);
@@ -217,10 +227,10 @@ namespace Model::Balancelaw {
   Isothermaleulerequation::dlambda_non_laminar_dRe(double Re, double diameter,
                                                    double roughness){
 
-    if (Re < 2000-Aux::EPSILON) {gthrow({"This function is only valid for Reynolds numbers over and at 2000!",
+    if (Re < laminar_border-Aux::EPSILON) {gthrow({"This function is only valid for Reynolds numbers over and at 2000!",
         " For other values, manually insert \"-64/(Reynolds(q)*Reynolds(q))\" instead"});}
 
-    if (Re > 4000) {
+    if (Re > turbulent_border) {
       return dSwamee_Jain_dRe(Re,diameter,roughness);
     } else {
       Eigen::Vector4d monomials(3*Re *  Re, 2 * Re, 1, 0);
@@ -244,7 +254,7 @@ namespace Model::Balancelaw {
   double Isothermaleulerequation::dReynolds_dq(double q,
                                                double diameter){
 
-    if (Reynolds(q,diameter) < 2000-Aux::EPSILON) {
+    if (Reynolds(q,diameter) < laminar_border-Aux::EPSILON) {
       gthrow(
              {"This function", __FUNCTION__ ,", should only be called for Reynolds "
                                          "numbers over and at 2000!"});
@@ -256,7 +266,7 @@ namespace Model::Balancelaw {
 
   double Isothermaleulerequation::Swamee_Jain(double Re,
                                               double diameter, double roughness){
-    if(Re<4000-Aux::EPSILON) {
+    if(Re<turbulent_border-Aux::EPSILON) {
       gthrow({"This function must not be called for Reynolds numbers smaller than 4000!"});
     }
 
@@ -267,7 +277,7 @@ namespace Model::Balancelaw {
 
   double Isothermaleulerequation::dSwamee_Jain_dRe(double Re, double diameter,
                                                    double roughness){
-    if (Re < 4000-Aux::EPSILON) {
+    if (Re < turbulent_border-Aux::EPSILON) {
       gthrow({"This function must not be called for Reynolds numbers smaller "
               "than 4000!"});
     }
@@ -282,7 +292,7 @@ namespace Model::Balancelaw {
   double
   Isothermaleulerequation::exact_turbulent_lambda(double Re, double diameter,
                                                   double roughness){
-    if (Re < 4000-Aux::EPSILON) {
+    if (Re < turbulent_border-Aux::EPSILON) {
       gthrow({"This function must not be called for Reynolds numbers smaller "
               "than 4000!"});
     }
