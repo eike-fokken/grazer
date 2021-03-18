@@ -8,8 +8,8 @@ TEST(testImplicitboxscheme, evaluate_point) {
 
   double diameter = 3.5;
   double roughness = 1.0;
-  Model::Balancelaw::Isothermaleulerequation bl(diameter, roughness);
-
+  Model::Balancelaw::Isothermaleulerequation bl;
+  
   
   Eigen::VectorXd new_state(4);
   Eigen::VectorXd last_state(4);
@@ -56,7 +56,7 @@ TEST(testImplicitboxscheme, devaluate_point_dleft) {
 
   double diameter = 3.5;
   double roughness = 1.0;
-  Model::Balancelaw::Isothermaleulerequation bl(diameter, roughness);
+  Model::Balancelaw::Isothermaleulerequation bl;
 
   
   Eigen::VectorXd new_state(4);
@@ -132,7 +132,7 @@ TEST(testImplicitboxscheme, devaluate_point_dright) {
 
   double diameter = 3.5;
   double roughness = 1.0;
-  Model::Balancelaw::Isothermaleulerequation bl(diameter, roughness);
+  Model::Balancelaw::Isothermaleulerequation bl;
 
   
   Eigen::VectorXd new_state(4);

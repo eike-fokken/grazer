@@ -7,8 +7,7 @@ TEST(testIsothermaleulerequation, flux) {
 
   double diameter = 3.5;
   double Area = Aux::circle_area(0.5 * diameter);
-  double roughness = 1.0;
-  Model::Balancelaw::Isothermaleulerequation Iso(diameter, roughness);
+  Model::Balancelaw::Isothermaleulerequation Iso;
   for (int i = -20; i != 21; ++i) {
 
     double rho = std::abs(i + 1e-2);
@@ -28,8 +27,7 @@ TEST(testIsothermaleulerequation, flux) {
 TEST(testIsothermaleulerequation, dflux_state) {
 
   double diameter = 3.5;
-  double roughness = 1.0;
-  Model::Balancelaw::Isothermaleulerequation Iso(diameter, roughness);
+  Model::Balancelaw::Isothermaleulerequation Iso;
 
   for (int i = -20; i != 21; ++i) {
 
@@ -72,7 +70,7 @@ TEST(testIsothermaleulerequation, dflux_state) {
 TEST(testIsothermaleulerequation, source) {
   double diameter = 3.5;
   double roughness = 1.0;
-  Model::Balancelaw::Isothermaleulerequation Iso(diameter, roughness);
+  Model::Balancelaw::Isothermaleulerequation Iso;
   for (int i = -20; i != 21; ++i) {
 
     double rho = std::abs(i + 1e-2);
@@ -98,7 +96,7 @@ TEST(testIsothermaleulerequation, dsource_dstate) {
 
   double diameter = 3.5;
   double roughness = 1.0;
-  Model::Balancelaw::Isothermaleulerequation Iso(diameter, roughness);
+  Model::Balancelaw::Isothermaleulerequation Iso;
 
   for (int i = -20; i != 21; ++i) {
 
@@ -145,10 +143,7 @@ TEST(testIsothermaleulerequation, dsource_dstate) {
 
 TEST(testIsothermaleulerequation, p_qvol_and_state) {
 
-  double diameter = 3.5;
-  double roughness = 1.0;
-
-  Model::Balancelaw::Isothermaleulerequation Iso(diameter, roughness);
+  Model::Balancelaw::Isothermaleulerequation Iso;
   for (int i = -20; i != 21; ++i) {
 
     double rho = std::abs(i + 1e-2);
@@ -166,10 +161,8 @@ TEST(testIsothermaleulerequation, p_qvol_and_state) {
 
 TEST(testIsothermaleulerequation, dp_qvol_dstate) {
 
-  double diameter = 3.5;
-  double roughness = 1.0;
 
-  Model::Balancelaw::Isothermaleulerequation Iso(diameter, roughness);
+  Model::Balancelaw::Isothermaleulerequation Iso;
 
   for (int i = -20; i != 21; ++i) {
 
@@ -209,9 +202,7 @@ TEST(testIsothermaleulerequation, dp_qvol_dstate) {
 
 TEST(testIsothermaleulerequation, p_and_rho) {
 
-  double diameter = 3.5;
-  double roughness = 1.0;
-  Model::Balancelaw::Isothermaleulerequation Iso(diameter, roughness);
+  Model::Balancelaw::Isothermaleulerequation Iso;
   for (int i = 1; i != 21; ++i) {
 
     double rho = i;
@@ -227,9 +218,7 @@ TEST(testIsothermaleulerequation, p_and_rho) {
 
 TEST(testIsothermaleulerequation, dp_drho) {
 
-  double diameter = 3.5;
-  double roughness = 1.0;
-  Model::Balancelaw::Isothermaleulerequation Iso(diameter, roughness);
+  Model::Balancelaw::Isothermaleulerequation Iso;
 
   EXPECT_DOUBLE_EQ(Iso.c_vac_squared, Iso.dp_drho(0.0));
   for (int i = 1; i != 21; ++i) {
@@ -248,7 +237,7 @@ TEST(testIsothermaleulerequation, lambda_non_laminar) {
 
   double diameter = 3.5;
   double roughness = 1.0;
-  Model::Balancelaw::Isothermaleulerequation Iso(diameter, roughness);
+  Model::Balancelaw::Isothermaleulerequation Iso;
 
   {
     double Re = 2000 - 1e-9;
@@ -267,7 +256,7 @@ TEST(testIsothermaleulerequation, dlambda_non_laminar_dRe) {
 
   double diameter = 3.5;
   double roughness = 1.0;
-  Model::Balancelaw::Isothermaleulerequation Iso(diameter, roughness);
+  Model::Balancelaw::Isothermaleulerequation Iso;
 
   {
     double Re0 = 2000 + 1e-9;
@@ -306,10 +295,9 @@ TEST(testIsothermaleulerequation, coeff_of_Reynolds) {}
 TEST(testIsothermaleulerequation, dReynolds_dq) {
 
   double diameter = 3.5;
-  double roughness = 1.0;
 
   double q0 = 5e-3;
-  Model::Balancelaw::Isothermaleulerequation Iso(diameter, roughness);
+  Model::Balancelaw::Isothermaleulerequation Iso;
 
   EXPECT_ANY_THROW(Iso.dReynolds_dq(q0, diameter));
 
@@ -334,7 +322,7 @@ TEST(testIsothermaleulerequation, Swamee_Jain) {
   double diameter = 3.5;
   double roughness = 1.0;
 
-  Model::Balancelaw::Isothermaleulerequation Iso(diameter, roughness);
+  Model::Balancelaw::Isothermaleulerequation Iso;
 
   double Re0 = 3999;
 
@@ -356,7 +344,7 @@ TEST(testIsothermaleulerequation, dSwamee_Jain_dRe) {
   double diameter = 3.5;
   double roughness = 1.0;
 
-  Model::Balancelaw::Isothermaleulerequation Iso(diameter, roughness);
+  Model::Balancelaw::Isothermaleulerequation Iso;
 
   double Re0 = 3999;
 

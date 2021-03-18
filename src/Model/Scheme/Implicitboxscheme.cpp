@@ -11,7 +11,7 @@ namespace Model::Scheme {
       Eigen::Ref<Eigen::Vector2d const> const &new_left,
       Eigen::Ref<Eigen::Vector2d const> const &new_right,
       Model::Balancelaw::Isothermaleulerequation const &bl, double diameter,
-      double roughness) const {
+      double roughness) {
 
     double Delta_t = new_time - last_time;
     result = 0.5 * (new_left + new_right) - 0.5 * (last_left + last_right) -
@@ -26,7 +26,7 @@ namespace Model::Scheme {
       Eigen::Ref<Eigen::Vector2d const> const &,
       Eigen::Ref<Eigen::Vector2d const> const &new_left,
       Eigen::Ref<Eigen::Vector2d const> const &,
-      Model::Balancelaw::Isothermaleulerequation const &bl,double diameter,double roughness) const {
+      Model::Balancelaw::Isothermaleulerequation const &bl,double diameter,double roughness) {
     double Delta_t = new_time - last_time;
     Eigen::Matrix2d jac;
     Eigen::Matrix2d id;
@@ -43,7 +43,7 @@ namespace Model::Scheme {
       Eigen::Ref<Eigen::Vector2d const> const &,
       Eigen::Ref<Eigen::Vector2d const> const &,
       Eigen::Ref<Eigen::Vector2d const> const &new_right,
-      Model::Balancelaw::Isothermaleulerequation const &bl,double diameter,double roughness) const {
+      Model::Balancelaw::Isothermaleulerequation const &bl,double diameter,double roughness) {
     double Delta_t = new_time - last_time;
     Eigen::Matrix2d jac;
     Eigen::Matrix2d id;

@@ -9,7 +9,7 @@ class Isothermaleulerequation {
 
 public:
 
-  Isothermaleulerequation(double diameter,double roughness) {};
+  Isothermaleulerequation(){};
 
   static Eigen::Vector2d flux(Eigen::Vector2d const &state, double diameter);
   static Eigen::Matrix2d dflux_dstate(Eigen::Vector2d const &state,

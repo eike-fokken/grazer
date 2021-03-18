@@ -32,9 +32,7 @@ namespace Model::Networkproblem::Gas {
                 length /
                 std::stod(topology["desired_delta_x"].get<std::string>()))) +
             1),
-        Delta_x(length / (number_of_points - 1)),
-        bl(Balancelaw::Isothermaleulerequation(diameter, roughness)),
-        scheme() {}
+        Delta_x(length / (number_of_points - 1)) {}
 
   void Pipe::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
                 double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
