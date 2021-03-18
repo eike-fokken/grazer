@@ -37,7 +37,7 @@ target_include_directories(newton_test PUBLIC include)
 
 add_executable(isothermaleulerequation_test IsothermaleulerequationTest.cpp)
 
-target_link_libraries(isothermaleulerequation_test PUBLIC balancelaw)
+target_link_libraries(isothermaleulerequation_test PUBLIC balancelaw mathfunctions)
 target_link_libraries(isothermaleulerequation_test PUBLIC gtest gtest_main gmock)
 
 

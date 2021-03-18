@@ -10,14 +10,16 @@ class Isothermaleulerequation {
 public:
 
 
-  Isothermaleulerequation(double _Area, double _diameter,
-                          double _roughness);
+  Isothermaleulerequation(double diameter,double roughness);
 
-  Eigen::Vector2d flux(Eigen::Vector2d const &state) const;
-  Eigen::Matrix2d dflux_dstate(Eigen::Vector2d const &state) const;
+  Eigen::Vector2d flux(Eigen::Vector2d const &state, double diameter) const;
+  Eigen::Matrix2d dflux_dstate(Eigen::Vector2d const &state,
+                               double diameter) const;
 
-  Eigen::Vector2d source(Eigen::Vector2d const & state) const;
-  Eigen::Matrix2d dsource_dstate(Eigen::Vector2d const & state) const;
+  Eigen::Vector2d source(Eigen::Vector2d const &state, double diameter,
+                         double roughness) const;
+  Eigen::Matrix2d dsource_dstate(Eigen::Vector2d const &state, double diameter,
+                                 double roughness) const;
 
   Eigen::Vector2d p_qvol(Eigen::Vector2d const & state) const;
   Eigen::Matrix2d dp_qvol_dstate(Eigen::Vector2d const &state) const;
@@ -38,53 +40,43 @@ public:
   double dp_drho(double rho) const;
   double rho(double rho) const;
 
+  double lambda_non_laminar(double Re, double diameter, double roughness) const;
+  double dlambda_non_laminar_dRe(double Re, double diameter,
+                                 double roughness) const;
+    double Reynolds(double q, double diameter) const;
+    double coeff_of_Reynolds(double diameter) const;
+    double dReynolds_dq(double q, double diameter) const;
 
-  double lambda_non_laminar(double Re) const;
-  double dlambda_non_laminar_dRe(double Re) const;
-  double Reynolds(double q) const;
-  double coeff_of_Reynolds() const;
-  double dReynolds_dq(double q) const;
+    double Swamee_Jain(double Re, double diameter, double roughness) const;
+    double dSwamee_Jain_dRe(double Re, double diameter, double roughness) const;
 
-  double Swamee_Jain(double Re) const;
-  double dSwamee_Jain_dRe(double Re) const;
+    double exact_turbulent_lambda(double Re, double diameter, double roughness)
+        const;
 
-  double exact_turbulent_lambda(double Re) const;
+    // These are physical constants except for the temperature T.
+    // Later on it may be useful to change them to include other gases.
+    static constexpr double bar{1e5};
+    static constexpr double rho_0{0.785};
+    static constexpr double T_0{273.15};
+    static constexpr double T_crit{192.033};
+    static constexpr double z_0{1.005};
+    static constexpr double p_0{1.01325 * bar};
+    static constexpr double p_crit{46.4512 * bar};
+    static constexpr double T{283.15};
+    static constexpr double alpha{
+        (0.257 / p_crit - 0.533 * T_crit / (p_crit * T))};
 
+    static constexpr double eta{1e-5};
 
+    static constexpr double c_vac_squared{p_0 * T / (z_0 * T_0 * rho_0)};
 
+  private:
 
+    Eigen::Vector4d coefficients;
 
-  
-  // These are physical constants except for the temperature T.
-  // Later on it may be useful to change them to include other gases.
-  static constexpr double bar { 1e5};
-  static constexpr double rho_0 { 0.785};
-  static constexpr double T_0 { 273.15};
-  static constexpr double T_crit { 192.033};
-  static constexpr double z_0 { 1.005};
-  static constexpr double p_0 { 1.01325 * bar};
-  static constexpr double p_crit { 46.4512 * bar};
-  static constexpr double T { 283.15};
-  static constexpr double alpha { (0.257 / p_crit - 0.533 * T_crit / (p_crit * T))};
-
-  static constexpr double eta { 1e-5};
-
-  static constexpr double c_vac_squared { p_0 * T/(z_0*T_0*rho_0)};
-
-private:
-
-  double const Area;
-  double const diameter;
-  double const roughness;
-
-  Eigen::Vector4d coefficients;
-
-  // /// This is a tolerance for the newton iteration:
-  // static constexpr double tolerance = 1e-6;
-  // /// This is an ad-hoc mechanism to prevent too many Newton iterations in finding the correct friction factor lambda.
-  // double last_mu{10.0};
-  
-
+    // /// This is a tolerance for the newton iteration:
+    // static constexpr double tolerance = 1e-6;
+    // /// This is an ad-hoc mechanism to prevent too many Newton iterations in
+    // finding the correct friction factor lambda. double last_mu{10.0};
   };
-
 }

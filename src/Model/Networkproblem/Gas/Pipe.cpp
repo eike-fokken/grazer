@@ -33,8 +33,7 @@ namespace Model::Networkproblem::Gas {
                 std::stod(topology["desired_delta_x"].get<std::string>()))) +
             1),
         Delta_x(length / (number_of_points - 1)),
-        bl(Balancelaw::Isothermaleulerequation(Aux::circle_area(0.5 * diameter),
-                                               diameter, roughness)),
+        bl(Balancelaw::Isothermaleulerequation(diameter, roughness)),
         scheme() {}
 
   void Pipe::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
@@ -51,8 +50,7 @@ namespace Model::Networkproblem::Gas {
       
       scheme.evaluate_point(rootvalue_segment, last_time, new_time,
            Delta_x, last_left,
-           last_right, new_left,
-           new_right, bl);
+           last_right, new_left, new_right, bl,diameter,roughness);
     }
   }
 
@@ -68,26 +66,18 @@ namespace Model::Networkproblem::Gas {
       auto new_left = new_state.segment<2>(i - 1);
       auto new_right = new_state.segment<2>(i + 1);
 
-      Eigen::Matrix2d current_derivative_left =
-        scheme.devaluate_point_dleft(last_time, new_time, Delta_x,
-                                     last_left,
-                                     last_right,
-                                     new_left,
-                                     new_right,
-                                     bl);
+      Eigen::Matrix2d current_derivative_left = scheme.devaluate_point_dleft(
+          last_time, new_time, Delta_x, last_left, last_right, new_left,
+          new_right, bl, diameter, roughness);
 
       jacobianhandler->set_coefficient(i,i-1 ,current_derivative_left(0,0));
       jacobianhandler->set_coefficient(i, i , current_derivative_left(0, 1));
       jacobianhandler->set_coefficient(i+1, i - 1, current_derivative_left(1, 0));
       jacobianhandler->set_coefficient(i+1, i, current_derivative_left(1, 1));
 
-      Eigen::Matrix2d current_derivative_right =
-        scheme.devaluate_point_dright(last_time, new_time, Delta_x,
-                                      last_left,
-                                      last_right,
-                                      new_left,
-                                      new_right,
-                                      bl);
+      Eigen::Matrix2d current_derivative_right = scheme.devaluate_point_dright(
+          last_time, new_time, Delta_x, last_left, last_right, new_left,
+          new_right, bl, diameter, roughness);
 
       jacobianhandler->set_coefficient(i, i + 1, current_derivative_right(0, 0));
       jacobianhandler->set_coefficient(i, i+2, current_derivative_right(0, 1));
