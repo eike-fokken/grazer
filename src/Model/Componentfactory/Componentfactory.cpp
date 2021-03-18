@@ -29,6 +29,26 @@ namespace Model::Componentfactory {
     this->edge_type_map.insert({edgeType->get_name(), std::move(edgeType)});
   }
 
+  nlohmann::json Componentfactory::get_topology_schema() {
+    nlohmann::json topology_schema = R"(
+    {
+      "$schema": "http://json-schema.org/draft-07/schema",
+      "title": "Topology",
+      "description": "Description of the Network Topology",
+      "required": ["nodes", "connections"],
+      "properties" {
+        "nodes": {"type": "object", "properties": {}},
+        "connections": {"type": "object", "properties": {}}
+      }
+    }
+    )"_json;
+
+    nlohmann::json node_schemas = topology_schema["properties"]["nodes"]["properties"];
+
+
+    return topology_schema;
+  }
+
   void add_gas_components(Componentfactory &factory) {
     factory.add_node_type(std::make_unique<NodeType<Networkproblem::Gas::Source>>());
     factory.add_node_type(std::make_unique<NodeType<Networkproblem::Gas::Sink>>());
