@@ -6,23 +6,22 @@
 
 namespace Model::Balancelaw {
 
-  Isothermaleulerequation::Isothermaleulerequation(double diameter,double roughness) {
-    double a = 2000;
-    double b = 4000;
+  Eigen::Matrix4d const Isothermaleulerequation::coeff_helper_matrix = Isothermaleulerequation::set_coeff_helper_matrix();
 
-    Eigen::Matrix4d aux;
-    aux << a * a * a, a * a, a, 1, //
-        3 * a * a, 2 * a, 1, 0,    //
-        b * b * b, b * b, b, 1,    //
-        3 * b * b, 2 * b, 1, 0;    //
+  Eigen::Vector4d Isothermaleulerequation::get_coefficients(double diameter,double roughness){
+
     Eigen::Vector4d spline_constraints(
-        64. / a, -64. / (a * a), Swamee_Jain(b, diameter, roughness),
-        dSwamee_Jain_dRe(b, diameter, roughness));
-    coefficients = aux.lu().solve(spline_constraints);
+        64. / laminar_border, -64. / (laminar_border * laminar_border),
+        Swamee_Jain(turbulent_border, diameter, roughness),
+        dSwamee_Jain_dRe(turbulent_border, diameter, roughness));
+    auto coefficients = coeff_helper_matrix.lu().solve(spline_constraints);
+    return coefficients;
   }
 
+  Isothermaleulerequation::Isothermaleulerequation(double diameter,double roughness) { }
+
   Eigen::Vector2d
-  Isothermaleulerequation::flux(Eigen::Vector2d const &state, double diameter) const {
+  Isothermaleulerequation::flux(Eigen::Vector2d const &state, double diameter) {
 
     double rho = state[0];
     double q = state[1];
@@ -36,7 +35,7 @@ namespace Model::Balancelaw {
   }
 
   Eigen::Matrix2d
-  Isothermaleulerequation::dflux_dstate(Eigen::Vector2d const &state, double diameter) const {
+  Isothermaleulerequation::dflux_dstate(Eigen::Vector2d const &state, double diameter) {
 
     double rho = state[0];
     double q = state[1];
@@ -51,7 +50,7 @@ namespace Model::Balancelaw {
   }
 
   Eigen::Vector2d
-  Isothermaleulerequation::source(Eigen::Vector2d const &state, double diameter, double roughness) const{
+  Isothermaleulerequation::source(Eigen::Vector2d const &state, double diameter, double roughness){
 
     double rho = state[0];
     double q = state[1];
@@ -70,7 +69,7 @@ namespace Model::Balancelaw {
 
   Eigen::Matrix2d
   Isothermaleulerequation::dsource_dstate(Eigen::Vector2d const &state,
-                                          double diameter,double roughness) const {
+                                          double diameter,double roughness){
     double rho = state[0];
     double q = state[1];
 
@@ -101,7 +100,7 @@ namespace Model::Balancelaw {
   }
 
   Eigen::Vector2d
-  Isothermaleulerequation::p_qvol(Eigen::Vector2d const &state) const {
+  Isothermaleulerequation::p_qvol(Eigen::Vector2d const &state){
     double rho = state[0];
     double q = state[1];
 
@@ -113,7 +112,7 @@ namespace Model::Balancelaw {
     return p_qvol;
   }
 
-  Eigen::Matrix2d Isothermaleulerequation::dp_qvol_dstate(Eigen::Vector2d const &state) const{
+  Eigen::Matrix2d Isothermaleulerequation::dp_qvol_dstate(Eigen::Vector2d const &state){
     double rho = state[0];
 
     Eigen::Matrix2d dp_qvol;
@@ -125,7 +124,7 @@ namespace Model::Balancelaw {
   }
 
   Eigen::Vector2d
-  Isothermaleulerequation::state(Eigen::Vector2d const &p_qvol) const {
+  Isothermaleulerequation::state(Eigen::Vector2d const &p_qvol){
 
     double p = p_qvol[0];
     double q = p_qvol[1];
@@ -136,7 +135,7 @@ namespace Model::Balancelaw {
   }
 
   
-  Eigen::Vector2d Isothermaleulerequation::p_qvol_from_p_qvol_bar(Eigen::Vector2d const &p_qvol_bar) const {
+  Eigen::Vector2d Isothermaleulerequation::p_qvol_from_p_qvol_bar(Eigen::Vector2d const &p_qvol_bar){
     double p_bar = p_qvol_bar[0];
     double q = p_qvol_bar[1];
     Eigen::Vector2d p_qvol;
@@ -146,23 +145,23 @@ namespace Model::Balancelaw {
   }
 
   double
-  Isothermaleulerequation::p_pascal_from_p_bar(double p) const {
+  Isothermaleulerequation::p_pascal_from_p_bar(double p){
     return p*bar;
   }
 
 
   double
-  Isothermaleulerequation::p_bar_from_p_pascal(double p) const {
+  Isothermaleulerequation::p_bar_from_p_pascal(double p){
     return p/bar;
   }
 
   double
-  Isothermaleulerequation::dp_bar_from_p_pascal_dp_pascal(double) const {
+  Isothermaleulerequation::dp_bar_from_p_pascal_dp_pascal(double){
     return 1.0/bar;
   }
 
 
-  Eigen::Vector2d Isothermaleulerequation::p_qvol_bar_from_p_qvol(Eigen::Vector2d const &p_qvol) const {
+  Eigen::Vector2d Isothermaleulerequation::p_qvol_bar_from_p_qvol(Eigen::Vector2d const &p_qvol){
     double p = p_qvol[0];
     double q = p_qvol[1];
     Eigen::Vector2d p_qvol_bar;
@@ -171,7 +170,7 @@ namespace Model::Balancelaw {
     return p_qvol_bar;
   }
 
-  Eigen::Matrix2d Isothermaleulerequation::dp_qvol_bar_from_p_qvold_p_qvol(Eigen::Vector2d const &p_qvol) const {
+  Eigen::Matrix2d Isothermaleulerequation::dp_qvol_bar_from_p_qvold_p_qvol(Eigen::Vector2d const &p_qvol){
     double p_pascal = p_qvol[0];
     Eigen::Matrix2d dp_qvol;
     dp_qvol(0,0) = dp_bar_from_p_pascal_dp_pascal(p_pascal);
@@ -181,24 +180,24 @@ namespace Model::Balancelaw {
     return dp_qvol;
   }
 
-  double Isothermaleulerequation::p(double rho) const {
+  double Isothermaleulerequation::p(double rho){
     double p;
     p = c_vac_squared * rho / (1 - alpha * c_vac_squared * rho);
     return p;
   }
-  double Isothermaleulerequation::dp_drho(double rho) const {
+  double Isothermaleulerequation::dp_drho(double rho){
     double dp;
     double D = (1 - alpha * c_vac_squared * rho);
     dp = c_vac_squared / (D * D);
     return dp;
   }
 
-  double Isothermaleulerequation::rho(double p) const {
+  double Isothermaleulerequation::rho(double p){
     double rho;
     rho = p / (c_vac_squared * (1 + alpha * p));
     return rho;
   }
-  double Isothermaleulerequation::lambda_non_laminar(double Re,double diameter,double roughness) const{
+  double Isothermaleulerequation::lambda_non_laminar(double Re,double diameter,double roughness){
 
     if(Re< 2000-Aux::EPSILON) {
       gthrow(
@@ -210,13 +209,13 @@ namespace Model::Balancelaw {
       return Swamee_Jain(Re,diameter,roughness);
     } else {
       Eigen::Vector4d monomials(Re*Re*Re,Re*Re,Re,1);
-      return coefficients.dot(monomials);
+      return get_coefficients(diameter,roughness).dot(monomials);
     }
   }
 
   double
   Isothermaleulerequation::dlambda_non_laminar_dRe(double Re, double diameter,
-                                                   double roughness) const {
+                                                   double roughness){
 
     if (Re < 2000-Aux::EPSILON) {gthrow({"This function is only valid for Reynolds numbers over and at 2000!",
         " For other values, manually insert \"-64/(Reynolds(q)*Reynolds(q))\" instead"});}
@@ -225,25 +224,25 @@ namespace Model::Balancelaw {
       return dSwamee_Jain_dRe(Re,diameter,roughness);
     } else {
       Eigen::Vector4d monomials(3*Re *  Re, 2 * Re, 1, 0);
-      return coefficients.dot(monomials);
+      return get_coefficients(diameter,roughness).dot(monomials);
     }
   }
 
   double Isothermaleulerequation::Reynolds(double q,
-                                           double diameter) const {
+                                           double diameter){
     double Re;
     Re = diameter / eta * rho_0 * std::abs(q);
     return Re;
   }
 
-  double Isothermaleulerequation::coeff_of_Reynolds(double diameter) const {
+  double Isothermaleulerequation::coeff_of_Reynolds(double diameter){
     double coeff;
     coeff = diameter / eta * rho_0;
     return coeff;
   }
 
   double Isothermaleulerequation::dReynolds_dq(double q,
-                                               double diameter) const {
+                                               double diameter){
 
     if (Reynolds(q,diameter) < 2000-Aux::EPSILON) {
       gthrow(
@@ -256,7 +255,7 @@ namespace Model::Balancelaw {
   }
 
   double Isothermaleulerequation::Swamee_Jain(double Re,
-                                              double diameter, double roughness) const {
+                                              double diameter, double roughness){
     if(Re<4000-Aux::EPSILON) {
       gthrow({"This function must not be called for Reynolds numbers smaller than 4000!"});
     }
@@ -267,7 +266,7 @@ namespace Model::Balancelaw {
   }
 
   double Isothermaleulerequation::dSwamee_Jain_dRe(double Re, double diameter,
-                                                   double roughness) const {
+                                                   double roughness){
     if (Re < 4000-Aux::EPSILON) {
       gthrow({"This function must not be called for Reynolds numbers smaller "
               "than 4000!"});
@@ -282,7 +281,7 @@ namespace Model::Balancelaw {
 
   double
   Isothermaleulerequation::exact_turbulent_lambda(double Re, double diameter,
-                                                  double roughness) const {
+                                                  double roughness){
     if (Re < 4000-Aux::EPSILON) {
       gthrow({"This function must not be called for Reynolds numbers smaller "
               "than 4000!"});
