@@ -1,5 +1,8 @@
 #include "Full_factory.hpp"
 
+#include <Gas_factory.hpp>
+#include <Power_factory.hpp>
+
 #include "Compressorstation.hpp"
 #include "Controlvalve.hpp"
 #include "Gaspowerconnection.hpp"
@@ -14,6 +17,11 @@
 #include "Vphinode.hpp"
 
 namespace Model::Componentfactory {
+
+  void add_all_components(Componentfactory &factory){
+    add_power_components(factory);
+    add_gas_components(factory);
+  }
 
   std::map<std::string, Nodefactory> Full_factory::get_nodetypemap_impl(){
 

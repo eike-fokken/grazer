@@ -169,8 +169,5 @@ namespace Model::Componentfactory {
     
   };
 
-  void add_gas_components(Componentfactory &factory);
-  void add_power_components(Componentfactory &factory);
-  void add_all_components(Componentfactory &factory);
 
 }// namespace Model::Componentfactory
