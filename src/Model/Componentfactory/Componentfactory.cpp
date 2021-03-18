@@ -43,11 +43,11 @@ namespace Model::Componentfactory {
     }
     )"_json;
 
-    nlohmann::json node_schemas = topology_schema["properties"]["nodes"]["properties"];
+    auto node_schemas = topology_schema["properties"]["nodes"]["properties"];
     for (auto const &[name, component] : this->node_type_map) {
       node_schemas[name] = component->get_schema();
     }
-    nlohmann::json edge_schemas = topology_schema["properties"]["connections"]["properties"];
+    auto edge_schemas = topology_schema["properties"]["connections"]["properties"];
     for (auto const &[name, component] : this->node_type_map) {
       edge_schemas[name] = component->get_schema();
     }
