@@ -23,7 +23,7 @@ namespace Model::Componentfactory {
       "title": "Topology",
       "description": "Description of the Network Topology",
       "required": ["nodes", "connections"],
-      "properties" {
+      "properties": {
         "nodes": {"type": "object", "properties": {}},
         "connections": {"type": "object", "properties": {}}
       }

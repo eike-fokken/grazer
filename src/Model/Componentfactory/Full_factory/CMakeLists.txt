@@ -4,3 +4,7 @@ add_library(full_factory STATIC Full_factory.cpp)
 target_link_libraries(full_factory PRIVATE componentfactory power_factory gas_factory power gas network)
 
 target_include_directories(full_factory PUBLIC include)
+
+
+add_executable(full_factory_schema create_topology_schema.cpp)
+target_link_libraries(full_factory_schema componentfactory full_factory)
