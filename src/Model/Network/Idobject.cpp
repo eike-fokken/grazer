@@ -7,7 +7,7 @@ namespace Network {
   nlohmann::json Idobject::get_schema() {
     nlohmann::json schema;
     schema["type"] = "object";
-    Aux::schema::add_required(schema, "id", Aux::schema::type::string);
+    Aux::schema::add_required(schema, "id", Aux::schema::type::string());
     return schema;
   }
 

@@ -11,7 +11,9 @@ namespace Aux::schema {
     const json number(); 
     const json number(std::string description); 
     const json number(std::string title, std::string description); 
-    const json string = R"({"type": "string"})"_json;
+    const json string(); 
+    const json string(std::string description); 
+    const json string(std::string title, std::string description); 
     const json length = R"({"$ref": "unit_schema.json#/length"})"_json;
   }
 

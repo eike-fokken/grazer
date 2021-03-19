@@ -14,8 +14,8 @@ namespace Network {
   nlohmann::json Edge::get_schema() {
     nlohmann::json schema = Idobject::get_schema();
 
-    Aux::schema::add_required(schema, "from", Aux::schema::type::string);
-    Aux::schema::add_required(schema, "to", Aux::schema::type::string);
+    Aux::schema::add_required(schema, "from", Aux::schema::type::string("Node Id"));
+    Aux::schema::add_required(schema, "to", Aux::schema::type::string("Node Id"));
 
     return schema;
   }
