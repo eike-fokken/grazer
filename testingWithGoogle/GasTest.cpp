@@ -1,7 +1,9 @@
 #include "Flowboundarynode.hpp"
 #include "Gas_factory.hpp"
 #include "Gaspowerconnection.hpp"
+#include "Implicitboxscheme.hpp"
 #include "Innode.hpp"
+#include "Isothermaleulerequation.hpp"
 #include "Matrixhandler.hpp"
 #include "Netfactory.hpp"
 #include "Networkproblem.hpp"
@@ -90,14 +92,16 @@ nlohmann::json sink_json(std::string id , double flowstart,
 nlohmann::json shortpipe_json(std::string id,nlohmann::json startnode,
                               nlohmann::json endnode);
 
-// nlohmann::json pipe_json(nlohmann::json startnode, nlohmann::json endnode,
-//                               std::string id = "pipe");
+nlohmann::json
+pipe_json(std::string id, nlohmann::json startnode, nlohmann::json endnode,
+          double length, std::string length_unit, double diameter,
+          std::string diameter_unit, double roughness, std::string roughness_unit, double desired_delta_x);
 
-nlohmann::json make_full_json(std::vector<nlohmann::json> sources,
-                              std::vector<nlohmann::json> sinks,
-                              std::vector<nlohmann::json> innodes,
-                              std::vector<nlohmann::json> shortpipes,
-                              std::vector<nlohmann::json> pipes);
+    nlohmann::json make_full_json(std::vector<nlohmann::json> sources,
+                                  std::vector<nlohmann::json> sinks,
+                                  std::vector<nlohmann::json> innodes,
+                                  std::vector<nlohmann::json> shortpipes,
+                                  std::vector<nlohmann::json> pipes);
 
 nlohmann::json make_initial_json(std::vector<nlohmann::json> shortpipes,
                                  std::vector<nlohmann::json> pipes);
@@ -764,174 +768,80 @@ TEST_F(GasTEST, Innode_evaluate_state_derivative) {
 
 
 
- TEST(testPipe, evaluate) {
+ TEST_F(GasTEST, Pipe_evaluate) {
 
+   nlohmann::json node0;
+   nlohmann::json node1;
+   node0["id"] = "node0";
+   node1["id"] = "node1";
 
-   std::array<double,4> f{1,2,3,4};
-   nlohmann::json j;
+   std::string id = "pipe";
+   double length= 15250;
+   double diameter = 0.9144;
+   double roughness = 8e-6;
+   double desired_delta_x = 20000;
 
-   j["test"] = f;
+   nlohmann::json pipe_topology =
+     pipe_json(id, node0, node1, length, "m", diameter, "m", roughness, "m",desired_delta_x);
+   // pipe_topology["id"] = "pipe";
+   // pipe_topology["from"] = node0["id"];
+   // pipe_topology["to"] = node1["id"];
+   // pipe_topology["length"]["value"] = 15.25;
+   // pipe_topology["length"]["unit"] = "km";
+   // pipe_topology["diameter"]["value"] = 914.400000;
+   // pipe_topology["diameter"]["unit"] = "mm";
+   // pipe_topology["roughness"]["value"] = 0.000008;
+   // pipe_topology["roughness"]["unit"] = "m";
 
-   std::cout << j.dump(4) <<std::endl;
-   Eigen::Vector2d cond0(0.,1.);
-   Eigen::Vector2d cond1(3.,4.);
+   std::vector<std::pair<double, Eigen::Matrix<double,2,1>>> initialvalues;
+   using E2d =
+     Eigen::Matrix<double, 2, 1>;
+   double initial_Delta_x = 3812.5;
+   initialvalues.push_back({0, E2d(75.046978, 58.290215)});
+   initialvalues.push_back({initial_Delta_x, E2d(75.032557, 58.105963)});
+   initialvalues.push_back({2 * initial_Delta_x, E2d(75.01822, 57.921692)});
+   initialvalues.push_back({3 * initial_Delta_x, E2d(75.003966, 57.737405)});
+   initialvalues.push_back({4 * initial_Delta_x, E2d(74.989795, 57.553105)});
 
-   std::vector<Eigen::Vector2d> vec;
-   vec.push_back(cond0);
-   vec.push_back(cond1);
-   std::vector<double> arg;
-   // make_value_json("asdf","qwerf",{0.,1.},vec);
-   
+   nlohmann::json pipe_initial = make_value_json(id, "x",
+       initialvalues);
 
-   //    double pressure_start = 810;
-   //    double pressure_end = 125;
-   //    double flow_start =-4;
-   //    double flow_end = 1000;
-   //    json p0_initial = {
-   //                        {"id", "node_4_ld1"},
-   //                        {"data", json::array({{{"x", 0.0},
-   //                                               {"value",
-   //  json::array({pressure_start,flow_start})}},{{"x",
-   //                                               1.0},{"value",
-   //  json::array({pressure_end,flow_end})}}})}};
-   //    std::cout << sp0_initial<<std::endl;
+   nlohmann::json net_initial = make_initial_json({},{pipe_initial});
 
-   //    std::string pipe_topology_string =
-   //      "{\n"
-   //      "\"id\": \"p_br2\",\n"
-   //      "\"from\": \"node_2\",\n"
-   //      "\"to\": \"node_3\",\n"
-   //      "\"heatTransferCoefficient\": \"2\",\n"
-   //      "\"flowMin\": {\n"
-   //      "\"unit\": \"m_cube_per_s\",\n"
-   //      "\"value\": \"-6369.426752\"\n"
-   //      "},\n"
-   //      "\"flowMax\": {\n"
-   //      "\"unit\": \"m_cube_per_s\",\n"
-   //      "\"value\": \"6369.426752\"\n"
-   //      "},\n"
-   //      "\"flowInInit\": {\n"
-   //      "\"unit\": \"m_cube_per_s\",\n"
-   //      "\"value\": \"-6369.426752\"\n"
-   //      "},\n"
-   //      "\"flowOutInit\": {\n"
-   //      "\"unit\": \"m_cube_per_s\",\n"
-   //      "\"value\": \"-6369.426752\"\n"
-   //      "},\n"
-   //      "\"length\": {\n"
-   //      "\"unit\": \"km\",\n"
-   //      "\"value\": \"15.25\"\n"
-   //      "},\n"
-   //      "\"diameter\": {\n"
-   //      "\"unit\": \"mm\",\n"
-   //      "\"value\": \"914.400000\"\n"
-   //      "},\n"
-   //      "\"roughness\": {\n"
-   //      "\"unit\": \"m\",\n"
-   //      "\"value\": \"0.000008\"\n"
-   //      "}\n"
-   //      "}";
-   //    json pipe_topology = json::parse(pipe_topology_string);
+   auto netprop_json = make_full_json({},{}, {node0,node1},{},{pipe_topology});
+   auto netprob = get_Networkproblem(netprop_json);
 
-   //    std::string pipe_initial_string ="{\n"
-   //      " \"id\": \"p_br2\",\n"
-   //      " \"data\": [\n"
-   //      "{\n"
-   //      "  \"x\": 0.0,\n"
-   //      "    \"value\": [\n"
-   //      "              75.046978,\n"
-   //      "              58.290215\n"
-   //      "              ]\n"
-   //      "    },\n"
-   //      "{\n"
-   //      "  \"x\": 3812.5,\n"
-   //      "    \"value\": [\n"
-   //      "              75.032557,\n"
-   //      "              58.105963\n"
-   //      "              ]\n"
-   //      "    },\n"
-   //      "{\n"
-   //      "  \"x\": 7625.0,\n"
-   //      "    \"value\": [\n"
-   //      "              75.01822,\n"
-   //      "              57.921692\n"
-   //      "              ]\n"
-   //      "    },\n"
-   //      "{\n"
-   //      "  \"x\": 11437.5,\n"
-   //      "    \"value\": [\n"
-   //      "              75.003966,\n"
-   //      "              57.737405\n"
-   //      "              ]\n"
-   //      "    },\n"
-   //      "{\n"
-   //      "  \"x\": 15250.0,\n"
-   //      "    \"value\": [\n"
-   //      "              74.989795,\n"
-   //      "              57.553105\n"
-   //      "              ]\n"
-   //      "    }\n"
-   //      "          ]\n"
-   //      "}";
+   int number_of_variables = netprob->set_indices(0);
 
-   //    json pipe_initial = json::parse(pipe_initial_string);
-   //    double Delta_x = 20000;
+      double last_time = 0.0;
+      double new_time = 10.0;
+      Eigen::VectorXd rootvalues(number_of_variables);
+      rootvalues.setZero();
+      Eigen::VectorXd last_state(number_of_variables);
+      Eigen::VectorXd new_state(number_of_variables);
 
-   //    Model::Networkproblem::Gas::Flowboundarynode  g0("gasnode0",
-   // bd_json0,
-   //    flow_topology); Model::Networkproblem::Gas::Flowboundarynode
-   //    g1("gasnode1", bd_json1, flow_topology);
-   //    Model::Networkproblem::Gas::Pipe p0("P0", &g0, &g1, pipe_topology,
-   //    Delta_x);
+      netprob->set_initial_values(new_state, net_initial);
 
-   //    auto a = g0.set_indices(0);
-   //    auto b = g1.set_indices(a);
-   //    auto c = p0.set_indices(b);
+      netprob->evaluate( rootvalues, last_time,  new_time, last_state, new_state);
 
-   //    g0.setup();
-   //    g1.setup();
+      Eigen::Vector2d last_left = last_state.segment<2>(0);
+      Eigen::Vector2d last_right = last_state.segment<2>(2);
 
-   //    double last_time = 0.0;
-   //    double new_time = 10.0;
-   //    Eigen::VectorXd rootvalues(c);
-   //    rootvalues.setZero();
-   //    Eigen::VectorXd last_state(c);
-   //    Eigen::VectorXd new_state(c);
+      Eigen::Vector2d new_left = new_state.segment<2>(0);
+      Eigen::Vector2d new_right = new_state.segment<2>(2);
 
-   //    p0.set_initial_values(new_state,pipe_initial);
-   //    last_state = new_state;
-   //     std::cout << "Initial conditions:" << std::endl;
-   //     std::cout << new_state <<std::endl;
+      Eigen::Vector2d expected_result;
 
-   //     std::cout << p0.get_boundary_p_qvol_bar(1,new_state)
-   // <<std::endl;
-   //     std::cout << p0.get_boundary_p_qvol_bar(-1,new_state)
-   // <<std::endl;
+      double actual_Delta_x = length;
 
-   //    p0.evaluate(rootvalues, last_time, new_time, last_state,
-   // new_state);
+      Model::Balancelaw::Isothermaleulerequation bl;
+      Model::Scheme::Implicitboxscheme scheme;
+      scheme.evaluate_point(expected_result, last_time, new_time,
+                            actual_Delta_x, last_left, last_right, new_left,
+                            new_right, bl, diameter, roughness);
 
-   //    Eigen::Vector2d last_left = last_state.segment<2>(0);
-   //    Eigen::Vector2d last_right = last_state.segment<2>(2);
-
-   //    Eigen::Vector2d new_left = new_state.segment<2>(0);
-   //    Eigen::Vector2d new_right = new_state.segment<2>(2);
-
-   //    Eigen::Vector2d expected_result;
-
-   //    double actual_Delta_x = p0.Delta_x;
-
-   //    p0.scheme.evaluate_point(expected_result, last_time, new_time,
-   //    actual_Delta_x,
-   //                             last_left,
-   //                             last_right,
-   //                             new_left,
-   //                             new_right,
-   //                             p0.bl);
-
-   //    EXPECT_DOUBLE_EQ(expected_result[0],rootvalues.segment<2>(1)[0]);
-   //    EXPECT_DOUBLE_EQ(expected_result[1],rootvalues.segment<2>(1)[1]);
-
+      EXPECT_DOUBLE_EQ(expected_result[0],rootvalues.segment<2>(1)[0]);
+      EXPECT_DOUBLE_EQ(expected_result[1],rootvalues.segment<2>(1)[1]);
     }
 
 //   // TEST(testPipe, evaluate_state_derivative) {
@@ -1673,4 +1583,23 @@ nlohmann::json shortpipe_json(std::string id,nlohmann::json startnode,
   shortpipe_topology["to"] = endnode["id"];
 
   return shortpipe_topology;
+}
+
+nlohmann::json pipe_json(std::string id, nlohmann::json startnode,
+                         nlohmann::json endnode, double length,
+                         std::string length_unit, double diameter,
+                         std::string diameter_unit, double roughness,
+                         std::string roughness_unit, double desired_delta_x){
+  nlohmann::json pipe_topology;
+  pipe_topology["id"] = id;
+  pipe_topology["from"] = startnode["id"];
+  pipe_topology["to"] = endnode["id"];
+  pipe_topology["length"]["value"] = length;
+  pipe_topology["length"]["unit"] = length_unit;
+  pipe_topology["diameter"]["value"] = diameter;
+  pipe_topology["diameter"]["unit"] = diameter_unit;
+  pipe_topology["roughness"]["value"] = roughness;
+  pipe_topology["roughness"]["unit"] = roughness_unit;
+  pipe_topology["desired_delta_x"] = std::to_string(desired_delta_x);
+  return pipe_topology;
 }
