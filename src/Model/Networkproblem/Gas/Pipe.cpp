@@ -36,7 +36,7 @@ namespace Model::Networkproblem::Gas {
         number_of_points(
             static_cast<int>(std::ceil(
                 length /
-                std::stod(topology["desired_delta_x"].get<std::string>()))) +
+                topology["desired_delta_x"].get<double>())) +
             1),
         Delta_x(length / (number_of_points - 1)),
         bl(Balancelaw::Isothermaleulerequation(Aux::circle_area(0.5 * diameter),
