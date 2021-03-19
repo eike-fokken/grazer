@@ -11,14 +11,6 @@ namespace Network {
             "from node!"});
   }
 
-  nlohmann::json Node::get_schema() {
-    nlohmann::json schema;
-    schema["type"] = "object";
-    schema["required"] = {"id"};
-    schema["properties"]["id"]["type"] = "string";
-    return schema;
-  }
-
   Node::Node(nlohmann::json const &data)
       : Idobject(data["id"].get<std::string>()) {}
 

@@ -3,6 +3,14 @@
 
 namespace Network {
 
+  nlohmann::json Idobject::get_schema() {
+    nlohmann::json schema;
+    schema["type"] = "object";
+    schema["required"] = {"id"};
+    schema["properties"]["id"]["type"] = "string";
+    return schema;
+  }
+
   Idobject::Idobject(std::string const & _id)
       : idptr(std::make_unique<std::string const >(_id)) {}
 
