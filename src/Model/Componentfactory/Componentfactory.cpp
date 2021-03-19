@@ -25,8 +25,8 @@ namespace Model::Componentfactory {
       "description": "Description of the Network Topology",
       "required": ["nodes", "connections"],
       "properties": {
-        "nodes": {"type": "object", "properties": {}},
-        "connections": {"type": "object", "properties": {}}
+        "nodes": {"type": "object", "additionalProperties": false, "properties": {}},
+        "connections": {"type": "object", "additionalProperties": false, "properties": {}}
       }
     }
     )"_json;
