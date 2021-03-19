@@ -12,7 +12,11 @@ namespace Network {
   }
 
   nlohmann::json Node::get_schema() {
-    gthrow({"This static method must be implemented in the class inheriting from node!"});
+    nlohmann::json schema;
+    schema["type"] = "object";
+    schema["required"] = {"id"};
+    schema["properties"]["id"]["type"] = "string";
+    return schema;
   }
 
   Node::Node(nlohmann::json const &data)
