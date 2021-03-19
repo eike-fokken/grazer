@@ -16,6 +16,15 @@ namespace Model::Componentfactory {
     this->edge_type_map.insert({edgeType->get_name(), std::move(edgeType)});
   }
 
+  nlohmann::json make_list_schema_of(nlohmann::json const &element_schema);
+  nlohmann::json make_list_schema_of(nlohmann::json const &element_schema) {
+    nlohmann::json list_schema;
+    list_schema["type"] = "array";
+    list_schema["items"] = element_schema;
+
+    return list_schema;
+  }
+
   nlohmann::json Componentfactory::get_topology_schema() {
     nlohmann::json topology_schema = R"(
     {
@@ -32,11 +41,11 @@ namespace Model::Componentfactory {
 
     auto node_schemas = topology_schema["properties"]["nodes"]["properties"];
     for (auto const &[name, component] : this->node_type_map) {
-      node_schemas[name] = component->get_schema();
+      node_schemas[name] = make_list_schema_of(component->get_schema());
     }
     auto edge_schemas = topology_schema["properties"]["connections"]["properties"];
     for (auto const &[name, component] : this->edge_type_map) {
-      edge_schemas[name] = component->get_schema();
+      edge_schemas[name] = make_list_schema_of(component->get_schema());
     }
 
     return topology_schema;
