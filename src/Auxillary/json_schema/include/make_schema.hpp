@@ -6,6 +6,7 @@ using nlohmann::json;
 namespace Aux::schema {
   namespace type {
     const json numeric = R"({"type": "numeric"})"_json;
+    const json string = R"({"type": "string"})"_json;
     const json length = R"({"$ref": "unit_schema.json#/length"})"_json;
   }
 

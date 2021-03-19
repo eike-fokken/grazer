@@ -1,13 +1,13 @@
 #include <Idobject.hpp>
 #include <iostream>
+#include <make_schema.hpp>
 
 namespace Network {
 
   nlohmann::json Idobject::get_schema() {
     nlohmann::json schema;
     schema["type"] = "object";
-    schema["required"] = {"id"};
-    schema["properties"]["id"]["type"] = "string";
+    Aux::schema::add_required(schema, "id", Aux::schema::type::string);
     return schema;
   }
 
