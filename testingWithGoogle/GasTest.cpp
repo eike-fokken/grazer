@@ -36,10 +36,10 @@ namespace Eigen {
   void to_json(nlohmann::json &j, const MatrixBase<Derived> &eig);
 }
 
-template <typename Derived0, typename Derived1>
+template <typename Derived>
 nlohmann::json
-make_value_json(std::string id, std::string key, Eigen::MatrixBase<Derived0> const &condition0,
-                Eigen::MatrixBase<Derived1> const &condition1);
+make_value_json(std::string id, std::string key, Eigen::MatrixBase<Derived> const &condition0,
+                Eigen::MatrixBase<Derived> const &condition1);
 
 nlohmann::json make_value_json(std::string id, std::string key,
                                double condition0, double condition1);
@@ -1747,13 +1747,12 @@ void Eigen::to_json(nlohmann::json &j, const MatrixBase<Derived> &eig) {
   }
 }
 
-template <typename Derived0, typename Derived1>
+template <typename Derived>
 nlohmann::json make_value_json(std::string id, std::string key,
-                               Eigen::MatrixBase<Derived0> const &condition0,
-                               Eigen::MatrixBase<Derived1> const &condition1) {
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(Eigen::MatrixBase<Derived0>);
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(Eigen::MatrixBase<Derived1>);
-  nlohmann::json bound;
+                               Eigen::MatrixBase<Derived> const &condition0,
+                               Eigen::MatrixBase<Derived> const &condition1) {
+  EIGEN_STATIC_ASSERT_VECTOR_ONLY(Eigen::MatrixBase<Derived>);
+    nlohmann::json bound;
   bound["id"] = id;
   bound["data"] = nlohmann::json::array();
   nlohmann::json b0;
