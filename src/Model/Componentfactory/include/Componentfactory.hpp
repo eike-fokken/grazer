@@ -6,47 +6,7 @@
 
 namespace Model::Componentfactory {
 
-  /// \brief This is the type of all factory functions for Nodes in a Networkproblem.
-  using Nodefactory =
-      std::unique_ptr<Network::Node> (*)(nlohmann::json const &topology);
-
-
-  /// \brief This is the type of all factory function for Edges in a
-  /// Networkproblem.
-  using Edgefactory = std::unique_ptr<Network::Edge> (*)(
-      nlohmann::json const &topology,
-      std::vector<std::unique_ptr<Network::Node>> &nodes);
-
-
-
-  /// \brief static interface for Componentfactories
-  ///
-  /// This is a CRTP interface for Componentfactories
-  /// Its sole purpose is to provide maps of factory function pointers.
-  template <typename Derived> class Componentfactory_interface {
-  protected:
-    /// \brief The constructor is protected because this class should only ever be used as a base.
-    Componentfactory_interface() {};
-
-  public:
-    /// \brief Provides a map of all node factories for the factory.
-    ///
-    /// @returns a map from nodetype string (e.g. "Source") to factory function pointer.
-    std::map<std::string, Nodefactory> get_nodetypemap() {
-      return static_cast<Derived*>(this)->get_nodetypemap_impl();
-    }
-
-    /// \brief Provides a map of all edge factories for the factory.
-    ///
-    /// @returns a map from edgetype string (e.g. "Pipe") to factory function pointer.
-    std::map<std::string, Edgefactory> get_edgetypemap() {
-      return static_cast<Derived*>(this)->get_edgetypemap_impl();
-    }
-  };
-
-
-
-  // this macro collection is ugly but hopefully makes for clearer compiler
+// this macro collection is ugly but hopefully makes for clearer compiler
 // errors:
 #define STRINGIFY(nonstring) STRINGIFYII(nonstring)
 #define STRINGIFYII(nonstring) #nonstring
@@ -71,9 +31,6 @@ namespace Model::Componentfactory {
   struct AbstractNodeType : public AbstractComponentType {
     virtual ~AbstractNodeType(){};
 
-    /** deprecated */
-    virtual Nodefactory get_factory() const = 0;
-
     /**
      * @brief Create an instance of this NodeType
      * 
@@ -87,9 +44,6 @@ namespace Model::Componentfactory {
   struct AbstractEdgeType : public AbstractComponentType {
     virtual ~AbstractEdgeType(){};
 
-    /** deprecated */
-    virtual Edgefactory get_factory() const = 0;
-    
     /**
      * @brief Create an instance of this EdgeType
      * 
@@ -117,14 +71,6 @@ namespace Model::Componentfactory {
     ) const override {
       return std::make_unique<Node>(topology);
     };
-
-    Nodefactory get_factory() const override {
-      return [](
-          nlohmann::json const &topology
-      ) -> std::unique_ptr<Network::Node> {
-        return std::make_unique<Node>(topology);
-      };
-    };
   };
 
 
@@ -143,15 +89,6 @@ namespace Model::Componentfactory {
       std::vector<std::unique_ptr<Network::Node>> &nodes
     ) const override {
       return std::make_unique<Edge>(topology, nodes);
-    };
-
-    Edgefactory get_factory() const override {
-      return [](
-          nlohmann::json const &topology,
-          std::vector<std::unique_ptr<Network::Node>> &nodes
-      ) -> std::unique_ptr<Network::Edge> {
-        return std::make_unique<Edge>(topology, nodes);
-      };
     };
   };
 
