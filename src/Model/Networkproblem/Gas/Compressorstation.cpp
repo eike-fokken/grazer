@@ -9,8 +9,8 @@ namespace Model::Networkproblem::Gas {
     nlohmann::json schema = Shortpipe::get_schema();
     Aux::schema::add_property(schema, "control_values", Aux::schema::make_boundary_schema(1));
 
-    Aux::schema::add_required(schema, "gas2power_q_coeff", Aux::schema::type::numeric);
-    Aux::schema::add_required(schema, "power2gas_q_coeff", Aux::schema::type::numeric);
+    Aux::schema::add_required(schema, "gas2power_q_coeff", Aux::schema::type::number());
+    Aux::schema::add_required(schema, "power2gas_q_coeff", Aux::schema::type::number());
 
     return schema;
   }

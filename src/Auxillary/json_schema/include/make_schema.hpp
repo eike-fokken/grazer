@@ -5,7 +5,12 @@ using nlohmann::json;
 
 namespace Aux::schema {
   namespace type {
-    const json numeric = R"({"type": "numeric"})"_json;
+    inline const json simple(std::string type);
+    inline const json simple(std::string type, std::string description);
+    inline const json simple(std::string type, std::string title, std::string description);
+    const json number(); 
+    const json number(std::string description); 
+    const json number(std::string title, std::string description); 
     const json string = R"({"type": "string"})"_json;
     const json length = R"({"$ref": "unit_schema.json#/length"})"_json;
   }

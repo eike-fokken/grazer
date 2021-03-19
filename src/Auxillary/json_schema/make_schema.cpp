@@ -1,6 +1,41 @@
 #include <make_schema.hpp>
 
+using nlohmann::json;
+
 namespace Aux::schema {
+
+    inline const json type::simple(std::string type){
+      json type_schema;
+      type_schema["type"] = type;
+      return type_schema;
+    }
+
+    inline const json type::simple(std::string type, std::string description){
+      json type_schema;
+      type_schema["type"] = type;
+      type_schema["description"] = description;
+      return type_schema;
+    }
+
+    inline const json type::simple(std::string type, std::string title, std::string description){
+      json type_schema;
+      type_schema["type"] = type;
+      type_schema["title"] = title;
+      type_schema["description"] = description;
+      return type_schema;
+    }
+    const json type::number(){
+      return type::simple("number");
+    }
+
+    const json type::number(std::string description){
+      return type::simple("number", description);
+    }
+
+    const json type::number(std::string title, std::string description){
+      return type::simple("number", title, description);
+    }
+
 
   nlohmann::json make_list_schema_of(nlohmann::json const &element_schema) {
     return make_list_schema_of(element_schema, 0, 0);
@@ -31,9 +66,9 @@ namespace Aux::schema {
     })"_json;
 
     nlohmann::json data_element;
-    data_element["time"] = type::numeric;
+    data_element["time"] = type::number();
     data_element["values"] = make_list_schema_of(
-      type::numeric, num_values, num_values
+      type::number(), num_values, num_values
     );
 
     schema["properties"]["data"] = make_list_schema_of(data_element);
