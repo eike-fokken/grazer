@@ -10,7 +10,7 @@ namespace Network {
   }
 
   nlohmann::json Edge::get_schema() {
-    nlohmann::json schema Idobject::get_schema();
+    nlohmann::json schema = Idobject::get_schema();
     schema["required"].push_back("from");
     schema["required"].push_back("to");
 
