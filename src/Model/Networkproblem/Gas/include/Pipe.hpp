@@ -12,7 +12,7 @@ namespace Model::Networkproblem::Gas {
 
     static std::string get_type();
 
-    static nlohmann::json const & get_schema();
+    static nlohmann::json get_schema();
 
     Pipe(nlohmann::json const &topology, std::vector<std::unique_ptr<Network::Node>> &nodes);
 
@@ -42,8 +42,6 @@ namespace Model::Networkproblem::Gas {
     void dboundary_p_qvol_dstate(int direction, Aux::Matrixhandler * jacobianhandler, Eigen::RowVector2d function_derivative, int rootvalues_index, Eigen::Ref<Eigen::VectorXd const> const &state) const override;
 
 
-
-    static const nlohmann::json schema;
 
     double const length;
     double const diameter;

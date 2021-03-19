@@ -12,17 +12,28 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <make_schema.hpp>
 
 
 namespace Model::Networkproblem::Gas {
 
   std::string Pipe::get_type() {return "Pipe";}
 
-  nlohmann::json const &Pipe::get_schema(){
+  nlohmann::json Pipe::get_schema(){
+    nlohmann::json schema = Network::Edge::get_schema();
+
+    schema["required"].push_back("length");
+    schema["properties"]["length"] = Aux::schema::type::length;
+
+    schema["required"].push_back("diameter");
+    schema["properties"]["diameter"] = Aux::schema::type::length;
+
+    schema["required"].push_back("roughness");
+    schema["properties"]["roughness"] = Aux::schema::type::length;
+
+    schema["desired_delta_x"] = Aux::schema::type::numeric;
     return schema;
   }
-
-  nlohmann::json const Pipe::schema = R"({"Schema":"Schema"})"_json;
 
   Pipe::Pipe(nlohmann::json const &topology,
              std::vector<std::unique_ptr<Network::Node>> &nodes)
