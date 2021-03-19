@@ -40,4 +40,9 @@ namespace Aux::schema {
     return schema;
 
   }
+
+  void add_required(json &schema, std::string const &property_name, json const &property_def){
+    schema["required"].push_back(property_name);
+    schema["properties"][property_name] = property_def;
+  }
 }
