@@ -3,9 +3,17 @@
 #include <iostream>
 #include <Exception.hpp>
 #include <tuple>
-
+#include <make_schema.hpp>
 
 namespace Model::Networkproblem::Power {
+
+  nlohmann::json Transmissionline::get_schema(){
+    nlohmann::json schema = Network::Edge::get_schema();
+    Aux::schema::add_required(schema, "B", Aux::schema::type::numeric);
+    Aux::schema::add_required(schema, "G", Aux::schema::type::numeric);
+    
+    return schema;
+  }
 
   std::string Transmissionline::get_type() { return "Transmissionline"; }
 

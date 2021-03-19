@@ -9,8 +9,18 @@
 #include <map>
 #include <nlohmann/json.hpp>
 #include <tuple>
+#include <make_schema.hpp>
 
 namespace Model::Networkproblem::Power {
+
+  nlohmann::json Powernode::get_schema(){
+    nlohmann::json schema = Network::Node::get_schema();
+    Aux::schema::add_required(schema, "B", Aux::schema::type::numeric);
+    Aux::schema::add_required(schema, "G", Aux::schema::type::numeric);
+    
+    Aux::schema::add_property(schema, "boundary_values", Aux::schema::make_boundary_schema(2));
+    return schema;
+  }
 
   Powernode::Powernode(nlohmann::json const &topology)
     : Node(topology), boundaryvalue(topology["boundary_values"]),
