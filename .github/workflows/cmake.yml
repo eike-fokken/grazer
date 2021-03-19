@@ -6,7 +6,21 @@ on:
     types: [synchronize, opened, reopened, ready_for_review]
 
 jobs:
-  build:
+  format-check:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    
+    - name: Check clang-format style
+      uses: jidicula/clang-format-action@v3.2.0
+      with: 
+        clang-format-version: "11"
+        check-path: src
+
+
+  build-and-test:
     if: github.event.pull_request.draft == false
     strategy:
       matrix:
@@ -61,13 +75,6 @@ jobs:
       with:
         submodules: recursive
     
-    - name: Check clang-format style
-      if: matrix.name == 'Linux-Clang'
-      uses: jidicula/clang-format-action@v3.2.0
-      with: 
-        clang-format-version: "11"
-        check-path: src
-
     - name: Install Dependencies
       run: ${{ matrix.dep-install }}
 
