@@ -22,16 +22,11 @@ namespace Model::Networkproblem::Gas {
   nlohmann::json Pipe::get_schema(){
     nlohmann::json schema = Network::Edge::get_schema();
 
-    schema["required"].push_back("length");
-    schema["properties"]["length"] = Aux::schema::type::length;
+    Aux::schema::add_required(schema, "length", Aux::schema::type::length);
+    Aux::schema::add_required(schema, "diameter", Aux::schema::type::length);
+    Aux::schema::add_required(schema, "roughness", Aux::schema::type::length);
 
-    schema["required"].push_back("diameter");
-    schema["properties"]["diameter"] = Aux::schema::type::length;
-
-    schema["required"].push_back("roughness");
-    schema["properties"]["roughness"] = Aux::schema::type::length;
-
-    schema["desired_delta_x"] = Aux::schema::type::numeric;
+    schema["properties"]["desired_delta_x"] = Aux::schema::type::numeric;
     return schema;
   }
 
