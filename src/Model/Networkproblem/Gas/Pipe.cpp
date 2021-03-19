@@ -21,18 +21,19 @@ namespace Model::Networkproblem::Gas {
   Pipe::Pipe(nlohmann::json const &topology,
              std::vector<std::unique_ptr<Network::Node>> &nodes)
       : Network::Edge(topology, nodes),
-        length(Aux::unit::parse_to_si(topology["length"],
-                                      Aux::unit::length_units)),
         diameter(Aux::unit::parse_to_si(topology["diameter"],
                                         Aux::unit::length_units)),
         roughness(Aux::unit::parse_to_si(topology["roughness"],
                                          Aux::unit::length_units)),
         number_of_points(
-            static_cast<int>(std::ceil(
-                length /
+                         static_cast<int>(std::ceil(
+                Aux::unit::parse_to_si(topology["length"],
+                                       Aux::unit::length_units) /
                 std::stod(topology["desired_delta_x"].get<std::string>()))) +
             1),
-        Delta_x(length / (number_of_points - 1)) {}
+        Delta_x(Aux::unit::parse_to_si(topology["length"],
+                                       Aux::unit::length_units) /
+                (number_of_points - 1)) {}
 
   void Pipe::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
                 double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
@@ -162,8 +163,8 @@ namespace Model::Networkproblem::Gas {
       } catch(...){
         std::cout<< "could not set initial value of pipe " << get_id() << ".\n"
                  << "Requested point was " << i*Delta_x << ". \n" <<
-          "Length of line is " << length <<std::endl;
-        std::cout << "requested - length: " << (i*Delta_x - length) << std::endl;
+          "Length of line is " << get_length() <<std::endl;
+        std::cout << "requested - length: " << (i*Delta_x - get_length()) << std::endl;
         throw;
       }
     }
@@ -204,6 +205,10 @@ namespace Model::Networkproblem::Gas {
     jacobianhandler->set_coefficient(rootvalues_index, rho_index,
                                      derivative[0]);
     jacobianhandler->set_coefficient(rootvalues_index, q_index, derivative[1]);
+  }
+
+  double Pipe::get_length(){
+    return (number_of_points-1)*Delta_x;
   }
 
 } // namespace Model::Networkproblem::Gas
