@@ -39,9 +39,8 @@ namespace Model::Componentfactory {
     }
     )"_json;
 
-    auto node_schemas = topology_schema["properties"]["nodes"]["properties"];
     for (auto const &[name, component] : this->node_type_map) {
-      node_schemas[name] = make_list_schema_of(component->get_schema());
+      topology_schema["properties"]["nodes"]["properties"][name] = make_list_schema_of(component->get_schema());
     }
     auto edge_schemas = topology_schema["properties"]["connections"]["properties"];
     for (auto const &[name, component] : this->edge_type_map) {
