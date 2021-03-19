@@ -31,9 +31,9 @@ namespace Aux::schema {
     })"_json;
 
     nlohmann::json data_element;
-    data_element["time"] = R"({"type": "numeric"})"_json;
+    data_element["time"] = type::numeric;
     data_element["values"] = make_list_schema_of(
-      R"({"type": "numeric"})"_json, num_values, num_values
+      type::numeric, num_values, num_values
     );
 
     schema["properties"]["data"] = make_list_schema_of(data_element);

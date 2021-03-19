@@ -1,9 +1,16 @@
 #pragma once
 #include <nlohmann/json.hpp>
 
+using nlohmann::json;
+
 namespace Aux::schema {
-  nlohmann::json make_list_schema_of(nlohmann::json const &element_schema);
-  nlohmann::json make_list_schema_of(nlohmann::json const &element_schema, int min_items, int max_items);
+  namespace type {
+    const json numeric = R"({"type": "numeric"})"_json;
+    const json length = R"({"$ref": "unit_schema.json#/length"})"_json;
+  }
+
+  json make_list_schema_of(json const &element_schema);
+  json make_list_schema_of(json const &element_schema, int min_items, int max_items);
 
   /**
    * @brief creates a schema for boundary values
@@ -11,5 +18,5 @@ namespace Aux::schema {
    * @param num_values number of values per timestamp
    * @return nlohmann::json 
    */
-  nlohmann::json make_boundary_schema(int num_values);
+  json make_boundary_schema(int num_values);
 }
