@@ -15,13 +15,10 @@ namespace Model::Networkproblem::Gas {
 
   Gaspowerconnection::Gaspowerconnection(
       nlohmann::json const &topology,
-      std::vector<std::unique_ptr<Network::Node>> &nodes)
-      : Network::Edge(topology, nodes),
-        gas2power_q_coefficient(
-            topology["gas2power_q_coeff"]),
-        power2gas_q_coefficient(
-            topology["power2gas_q_coeff"]) {}
-
+      std::vector<std::unique_ptr<Network::Node>> &nodes) :
+      Network::Edge(topology, nodes),
+      gas2power_q_coefficient(topology["gas2power_q_coeff"].get<double>()),
+      power2gas_q_coefficient(topology["power2gas_q_coeff"].get<double>()) {}
 
   void Gaspowerconnection::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double,
