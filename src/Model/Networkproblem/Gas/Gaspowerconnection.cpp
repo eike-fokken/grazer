@@ -12,6 +12,14 @@
 namespace Model::Networkproblem::Gas {
 
   std::string Gaspowerconnection::get_type() { return "Gaspowerconnection"; }
+  nlohmann::json Gaspowerconnection::get_schema() {
+    nlohmann::json schema = Network::Edge::get_schema();
+
+    Aux::schema::add_required(schema, "gas2power_q_coeff", Aux::schema::type::number());
+    Aux::schema::add_required(schema, "power2gas_q_coeff", Aux::schema::type::number());
+
+    return schema;
+  }
 
   Gaspowerconnection::Gaspowerconnection(
       nlohmann::json const &topology,

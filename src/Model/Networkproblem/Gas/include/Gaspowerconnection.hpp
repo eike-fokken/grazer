@@ -1,6 +1,7 @@
 #pragma once
 #include "Edge.hpp"
 #include <Gasedge.hpp>
+#include <make_schema.hpp>
 
 namespace Model::Networkproblem::Power {
   class Powernode;  
@@ -11,6 +12,7 @@ namespace Model::Networkproblem::Gas {
     class Gaspowerconnection final : public Network::Edge, public Gasedge {
     public:
       static std::string get_type();
+      static nlohmann::json get_schema();
 
       Gaspowerconnection(nlohmann::json const &topology,
            std::vector<std::unique_ptr<Network::Node>> &nodes);
