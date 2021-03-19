@@ -21,4 +21,5 @@ namespace Aux::schema {
   json make_boundary_schema(int num_values);
 
   void add_required(json &schema, std::string const &property_name, json const &property_def);
+  void add_property(json &schema, std::string const &property_name, json const &property_def);
 }
