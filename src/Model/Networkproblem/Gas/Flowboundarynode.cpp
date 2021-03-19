@@ -2,8 +2,15 @@
 #include <Flowboundarynode.hpp>
 #include <iostream>
 #include <Eigen/Sparse>
+#include <make_schema.hpp>
 
 namespace Model::Networkproblem::Gas {
+
+  nlohmann::json Flowboundarynode::get_schema() {
+    nlohmann::json schema = Gasnode::get_schema();
+    schema["properties"]["boundary_values"] = Aux::schema::make_boundary_schema(1);
+    return schema;
+  }
 
   Flowboundarynode::Flowboundarynode(nlohmann::json const &data)
       : Gasnode(data), boundaryvalue(data["boundary_values"]) {}

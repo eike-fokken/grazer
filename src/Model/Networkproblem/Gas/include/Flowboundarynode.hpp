@@ -12,6 +12,7 @@ class Flowboundarynode: public Gasnode {
 
 public:
 
+  static nlohmann::json get_schema();
 
   Flowboundarynode(nlohmann::json const & data);
 
