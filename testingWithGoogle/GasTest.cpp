@@ -868,6 +868,8 @@ TEST_F(GasTEST, Innode_evaluate_state_derivative) {
       Eigen::VectorXd new_state(number_of_variables);
 
       netprob->set_initial_values(new_state, net_initial);
+      (void) last_time;
+      (void) new_time;
   }
             // Eigen::VectorXd rootvalues(number_of_variables);
             // Eigen::VectorXd rootvalues0(number_of_variables);
