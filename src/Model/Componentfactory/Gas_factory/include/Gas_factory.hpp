@@ -10,6 +10,7 @@ namespace Model::Componentfactory {
    */
   void add_gas_components(Componentfactory &factory);
 
+  /// \brief This class provides a Componentfactory of all Gas components.
   struct Gas_factory : public Componentfactory {
     Gas_factory();
   };

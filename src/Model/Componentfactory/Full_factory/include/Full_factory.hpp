@@ -11,8 +11,8 @@ namespace Model::Componentfactory {
    */
   void add_all_components(Componentfactory &factory);
 
-  struct Full_factory: public Componentfactory{
-    Full_factory();
-  };
-
+  /// \brief This class provides a Componentfactory of all Component types defined for the Networkproblem.
+  ///
+  /// At the moment these are Gas components and Power components.
+  struct Full_factory : public Componentfactory { Full_factory(); };
 }

@@ -12,6 +12,7 @@ namespace Model::Componentfactory {
   void add_power_components(Componentfactory &factory);
 
 
+  /// \brief This class provides a Componentfactory of all Power components.
   struct Power_factory: public Componentfactory{
     Power_factory();
   };
