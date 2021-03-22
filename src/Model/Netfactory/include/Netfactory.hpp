@@ -12,9 +12,9 @@ namespace Network{
 }
 
 namespace Model::Componentfactory {
-  class Componentfactory;
-  class AbstractNodeType;
-  class AbstractEdgeType;
+  struct Componentfactory;
+  struct AbstractNodeType;
+  struct AbstractEdgeType;
 }
 
 
