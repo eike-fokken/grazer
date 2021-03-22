@@ -1,11 +1,13 @@
-#include <Exception.hpp>
-#include <Matrixhandler.hpp>
-#include <Newtonsolver.hpp>
-#include <Problem.hpp>
-#include <TestProblem.hpp>
+#include "Exception.hpp"
+#include "Matrixhandler.hpp"
+#include "Newtonsolver.hpp"
+#include "Problem.hpp"
+#include "TestProblem.hpp"
 
 namespace Solver {
-  
+  template <typename Problemtype>
+  Newtonsolver_temp<Problemtype>::Newtonsolver_temp(double _tolerance, int _maximal_iterations)
+      : tolerance(_tolerance), maximal_iterations(_maximal_iterations){}
 
 template<typename Problemtype>
 void Newtonsolver_temp<Problemtype>::evaluate_state_derivative_triplets(Problemtype &problem, double last_time,
@@ -38,8 +40,10 @@ void Newtonsolver_temp<Problemtype>::evaluate_state_derivative_coeffref(Problemt
                                     last_state, new_state);
 }
 
-// template <typename Problemtype>
-// auto Newtonsolver_temp<Problemtype>::get_number_non_zeros_jacobian() 
+template <typename Problemtype>
+Eigen::Index Newtonsolver_temp<Problemtype>::get_number_non_zeros_jacobian() {
+  return jacobian.nonZeros();
+}
 
 template <typename Problemtype>
 Solutionstruct Newtonsolver_temp<Problemtype>::solve(
@@ -118,7 +122,7 @@ Solutionstruct Newtonsolver_temp<Problemtype>::solve(
   return solstruct;
 }
 
-template class Newtonsolver_temp<Model::Problem>;
+  template class Newtonsolver_temp<Model::Problem>;
   template class Newtonsolver_temp <GrazerTest::TestProblem > ;
 
 } // namespace Solver

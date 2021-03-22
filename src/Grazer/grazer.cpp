@@ -1,135 +1,71 @@
+#include "Aux_json.hpp"
+#include "Input_output.hpp"
+#include "Problem.hpp"
+#include "Timeevolver.hpp"
 #include <Eigen/Sparse>
-#include <Exception.hpp>
-#include <Jsonreader.hpp>
-#include <Newtonsolver.hpp>
-#include <Printguard.hpp>
-#include <Problem.hpp>
 #include <chrono>
 #include <filesystem>
 #include <iostream>
 #include <memory>
+#include <nlohmann/json.hpp>
 #include <string>
 
 int main(int argc, char **argv) {
+  try{
+  std::vector<std::string> cmd_arguments =
+      Aux_executable::make_cmd_argument_vector(argc, argv);
 
-  if (argc != 4 and argc != 1 and argc !=7) {
-    gthrow({" Wrong number of arguments."})
-  }
+  std::filesystem::path problem_data_file =
+      Aux_executable::extract_input_data(cmd_arguments);
 
-  std::filesystem::path topology;
-  std::filesystem::path initial;
-  std::filesystem::path boundary;
-  if (argc >= 4) {
-    topology = argv[1];
-    initial = argv[2];
-    boundary = argv[3];
-    if (!std::filesystem::is_regular_file(topology) or
-        !std::filesystem::is_regular_file(initial) or
-        !std::filesystem::is_regular_file(boundary)) {
-      std::cout
-          << "One of the given files is not a regular file, I will abort now."
-          << std::endl;
-      return 1;
-    }
-  } else {
-    topology = "topology_pretty.json";
-    initial = "initial_pretty.json";
-    boundary = "boundary_pretty.json";
-  }
+  std::filesystem::path output_dir =
+      Aux_executable::prepare_output_dir("output");
 
-  
-  double Delta_t = 1800;
-  double Delta_x = 10000;
-  double T = 86400;
-  if(argc==7){
-    Delta_t= std::stod(argv[4]);
-    Delta_x= std::stod(argv[5]);
-    T = std::stod(argv[6]);
-  }
+  // This must be wrapped in exception handling code!
+
+  auto all_json = aux_json::get_json_from_file_path(problem_data_file);
+
+  auto time_evolution_json = all_json["time_evolution_data"];
+
+  auto problem_json = all_json["problem_data"];
+
+  // give the path information of the file:
+  auto directory_path = std::filesystem::absolute(problem_data_file.parent_path());
+  problem_json["GRAZER_file_directory"] = directory_path.string();
 
 
-  //   std::filesystem::path topology(argv[1]);
-  // std::filesystem::path initial(argv[2]);
-  // std::filesystem::path boundary(argv[3]);
+  auto initial_value_json = all_json["initial_values"];
+  initial_value_json["GRAZER_file_directory"] = directory_path.string();
+  Model::Timedata timedata(time_evolution_json);
 
-  //////////////////////////////////////////////////
-  ////////////////// SANITIZE INPUT FIRST!!!!
-  //////////////////////////////////////////////////
-  // Important task: validate the json before using it.
+  double tolerance = 1e-8;
+  int maximal_number_of_newton_iterations = 50;
+  Model::Timeevolver timeevolver(tolerance,
+                                 maximal_number_of_newton_iterations);
 
-  std::filesystem::path output_dir("output");
-
-  if (std::filesystem::exists(output_dir)) {
-    if (!std::filesystem::is_directory(output_dir)) {
-      std::cout << "The output directory \"output\"\n"
-                   "is present, but not a directory, I will abort now."
-                << std::endl;
-      return 1;
-    }
-    auto ms_since_epoch = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::system_clock::now().time_since_epoch());
-    std::string milli = std::to_string(ms_since_epoch.count());
-    std::string moved_output_dir;
-    moved_output_dir = output_dir.string();
-    moved_output_dir.append("_");
-    moved_output_dir.append(milli);
-    std::filesystem::rename(output_dir.string(), moved_output_dir);
-    std::cout << "moved old directory " << output_dir << " to "
-              << moved_output_dir << std::endl;
-    std::cout << "result files will be saved to " << output_dir << std::endl;
-  }
-  std::filesystem::create_directory(output_dir);
-
-  auto p = Jsonreader::setup_problem(topology, boundary, output_dir,Delta_x);
-
-  int number = p->set_indices();
-  std::cout << "Number of variables: " <<number << std::endl;
-  // p->display();
-  try {
-    Aux::Printguard guard(p);
-
-    Solver::Newtonsolver solver(1e-8, 50);
-
-    int N = static_cast<int>(std::ceil(T / Delta_t));
-    double delta_t = (T / N);
-
-    Eigen::VectorXd state1(number);
-
-    
-    double last_time(-delta_t);
-    double new_time=0.0;
-    Jsonreader::set_initial_values(state1, initial, p);
-    Eigen::VectorXd state2 = state1;
-    // p->save_values(0.0,state1);
-    solver.evaluate_state_derivative_triplets(*p,
-                                               last_time,  new_time,
-                                              state2,
-                                              state1);
-    std::cout << "number of non-zeros in jacobian: " << solver.get_number_non_zeros_jacobian() << std::endl;
+  // This try block makes sure, the destructor of problem is called in order to
+  // print out all data, we have already.
+    Model::Problem problem(problem_json, output_dir);
+    int number_of_states = problem.set_indices();
     std::cout << "data read" << std::endl;
 
-    for (int i = 0; i != N + 1; ++i) {
-      new_time = i * delta_t;
-      // maybe always recompute the structure. Its safer and only introduces one analyzePattern per time step!
-      auto solstruct = solver.solve(state1, *p, true, last_time, new_time, state2);
-      p->save_values(new_time, state1);
-
-      std::cout << new_time << ": ";
-      std::cout << solstruct.residual << ", ";
-      std::cout << solstruct.used_iterations << std::endl;
-
-      // write new_state to last state:
-      state2 = state1;
-      // set next time step:
-      last_time = new_time;
-    }
-
-    p->print_to_files();
-  } catch (...) {
-    std::cout << "An uncaught exception was thrown!\n"
+    timeevolver.simulate(timedata, problem, number_of_states,
+                         initial_value_json);
+  } catch (std::exception const &ex) {
+    std::cout << "An exception was thrown!\n"
               << "All available data has been printed to output files.\n"
               << "\nUse with caution!\n"
               << std::endl;
-    throw;
+    std::cout << "The error message was: \n\n"
+              << "###############################################\n" << ex.what()
+              << "\n###############################################\n\n" << std::endl;
+    return 1;
+  } catch (...) {
+    std::cout << "An unknown type of exception was thrown.\n\n"
+                 "This is a bug and must be fixed!\n\n"
+                 "Please contact the maintainer of Grazer!"
+              << std::endl;
+    return 1;
   }
+  return 0;
 }

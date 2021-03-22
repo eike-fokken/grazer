@@ -1,34 +1,35 @@
-#include <Misc.hpp>
-#include <Mathfunctions.hpp>
+#include "Gaspowerconnection.hpp"
+#include "Exception.hpp"
+#include "Initialvalue.hpp"
+#include "Mathfunctions.hpp"
 #include "Matrixhandler.hpp"
+#include "Misc.hpp"
 #include "Node.hpp"
-#include <Gaspowerconnection.hpp>
-#include <Exception.hpp>
-#include <iostream>
+#include "Powernode.hpp"
 #include <fstream>
-#include <Powernode.hpp>
+#include <iostream>
 
 namespace Model::Networkproblem::Gas {
 
-  Gaspowerconnection::Gaspowerconnection(std::string _id,
-                                         Network::Node *start_node,
-                                         Network::Node *end_node,
-                                         nlohmann::ordered_json topology_json)
-      : Edge(_id, start_node, end_node),
-        gas2power_q_coefficient(std::stod(topology_json["gas2power_q_coeff"].get<std::string>())),
-        power2gas_q_coefficient(std::stod(topology_json["power2gas_q_coeff"].get<std::string>())) {}
+  std::string Gaspowerconnection::get_type() { return "Gaspowerconnection"; }
+
+  Gaspowerconnection::Gaspowerconnection(
+      nlohmann::json const &topology,
+      std::vector<std::unique_ptr<Network::Node>> &nodes)
+      : Network::Edge(topology, nodes),
+        gas2power_q_coefficient(
+            topology["gas2power_q_coeff"]),
+        power2gas_q_coefficient(
+            topology["power2gas_q_coeff"]) {}
 
 
-
-  void Gaspowerconnection::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double ,
-                                    double , Eigen::Ref<Eigen::VectorXd const> const &,
-                                    Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
+  void Gaspowerconnection::evaluate(
+      Eigen::Ref<Eigen::VectorXd> rootvalues, double, double,
+      Eigen::Ref<Eigen::VectorXd const> const &,
+      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     int q_index = get_start_state_index() + 1;
     rootvalues[q_index] = powerendnode->P(new_state) - generated_power(new_state[q_index]);
   }
-
-
-
 
   void Gaspowerconnection::evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler, double , double ,
                                                      Eigen::Ref<Eigen::VectorXd const> const &, Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
@@ -54,8 +55,8 @@ namespace Model::Networkproblem::Gas {
 
   void
   Gaspowerconnection::print_to_files(std::filesystem::path const &output_directory) {
-    std::string pressure_file_name = (get_id().insert(0, "Gas_Gaspowerconnection_"))+"_p";
-    std::string flow_file_name =(get_id().insert(0, "Gas_Gaspowerconnection_"))+"_q";
+    std::string pressure_file_name = (get_id_copy().insert(0, "Gas_Gaspowerconnection_"))+"_p";
+    std::string flow_file_name =(get_id_copy().insert(0, "Gas_Gaspowerconnection_"))+"_q";
     std::filesystem::path shortpipe_output_pressure(output_directory /
                                                     pressure_file_name);
     std::filesystem::path shortpipe_output_flow(
@@ -78,14 +79,14 @@ namespace Model::Networkproblem::Gas {
         auto var = values[i][0];
         outputpressure << times[i];
         outputpressure << ",    " << var.at(0.0);
-        outputpressure << std::endl;
+        outputpressure << "\n";
       }
       {
         // write out flows:
         outputflow << times[i];
         auto var = values[i][1];
         outputflow << ",    " << var.at(0.0);
-        outputflow << std::endl;
+        outputflow << "\n";
       }
     }
   }
@@ -111,24 +112,13 @@ namespace Model::Networkproblem::Gas {
               "called beforehand!"});
     }
     // This tests whether the json is in the right format:
-    try {
-      if ( (!initial_json["data"]["value"].is_array()) or
-          initial_json["data"]["value"].size() != 2) {
-        std::cout << "The initial json for this gaspowerconnection is given by:"
-                  << "\n";
-        std::cout << initial_json << std::endl;
-        gthrow({"This is not a gaspowerconnection initial condition!"});
-      }
-    } catch (...) {
-      std::cout << __FILE__ << ":" << __LINE__
-                << " The exception was thrown here." << std::endl;
-      throw;
-    }
     auto start_p_index = get_boundary_state_index(1);
     auto start_q_index = start_p_index + 1;
     try {
-      new_state[start_p_index] = initial_json["data"]["value"][0];
-      new_state[start_q_index] = initial_json["data"]["value"][1];
+
+      Initialvalue<2> initialvalues(initial_json);
+      new_state[start_p_index] = initialvalues(0)[0];
+      new_state[start_q_index] = initialvalues(0)[1];
     } catch (...) {
       std::cout << __FILE__ << ":" << __LINE__
                 << ": failed to read in initial values in gaspowerconnection!"

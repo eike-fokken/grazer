@@ -4,6 +4,7 @@
 
 namespace Aux {
 
+  /// \brief A utility base class that is used to setup and modify a sparse matrix.
   class Matrixhandler {
 
   public:

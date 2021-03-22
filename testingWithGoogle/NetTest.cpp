@@ -1,89 +1,99 @@
 #include "Net.hpp"
-#include "Boundaryvalue.hpp"
 #include "Edge.hpp"
-#include "MockSubproblem.hpp"
 #include "Node.hpp"
-#include "Problem.hpp"
-#include <Eigen/Dense>
 #include <gtest/gtest.h>
 #include <memory>
 #include <string>
 #include <vector>
 
 
+class NodeTEST : public ::testing::Test {
 
-#include "gmock/gmock.h"
+  public:
 
-#include <Matrixhandler.hpp>
+  NodeTEST():node(R"({"id":"N1"})"_json){};
 
+  Network::Node node;
 
-// namespace GrazerTest {
-
-//   class MockSubproblem : public Model::Subproblem {
-
-//   public:
-//     MOCK_METHOD(void, evaluate,
-//                 ((Eigen::Ref<Eigen::VectorXd>),
-//                  (double), (double), (Eigen::Ref<Eigen::VectorXd const> const &),
-//                  (Eigen::Ref<Eigen::VectorXd const> const &)),
-//                 (const, override));
-//     MOCK_METHOD(void, evaluate_state_derivative,
-//                 ((Aux::Matrixhandler *), (double), (double),
-//                  (Eigen::Ref<Eigen::VectorXd const> const &last_state),
-//                  (Eigen::Ref<Eigen::VectorXd const> const &new_state)),
-//                 (const,override));
-//     MOCK_METHOD(int, reserve_indices, (int const next_free_index), (override));
-//     MOCK_METHOD(void, display, (), (override, const));
-//     MOCK_METHOD((void), set_initial_values,
-//                 (Eigen::Ref<Eigen::VectorXd>, nlohmann::ordered_json), (override));
-//     MOCK_METHOD((void), save_values, (double, Eigen::Ref<Eigen::VectorXd>), (override));
-//     MOCK_METHOD((void), print_to_files, (std::filesystem::path const &),
-//                 (override));
-//   };
-// } // namespace Model
+};
 
 
+class Nettest : public ::testing::Test {
 
+public:
+  Nettest()
+      : net(std::vector<std::unique_ptr<Network::Node>>(),
+            std::vector<std::unique_ptr<Network::Edge>>()) {
+    std::vector<std::unique_ptr<Network::Node>> nodes;
+    for (unsigned int i = 0; i != 5; ++i) {
+      std::string s("N");
+      s.append(std::to_string(i));
+      nlohmann::json j;
+      j["id"] = s;
+      nodes.push_back(std::make_unique<Network::Node>(j));
+    }
 
-
-TEST(testNet, test_NewNode_MakeEdgeBetween_ExistsEdgeBetween) {
-
-  std::vector<std::unique_ptr<Network::Node>> nodes;
-  for (unsigned int i = 0; i != 5; ++i) {
-    std::string s("N");
-    s.append(std::to_string(i));
-    nodes.push_back(std::unique_ptr<Network::Node>(new Network::Node(s)));
+    std::vector<std::unique_ptr<Network::Edge>> edges;
+    for (unsigned int i = 1; i != 3; ++i) {
+      std::string s("E");
+      std::string ns("N");
+      s.append(std::to_string(i));
+      s.append(std::to_string(0));
+      ns.append(std::to_string(i));
+      nlohmann::json j;
+      j["id"] = s;
+      j["from"] = "N0";
+      j["to"] = ns;
+      auto e = std::make_unique<Network::Edge>(j,nodes);
+      edges.push_back(std::move(e));
+    }
+    net = Network::Net(std::move(nodes),std::move(edges));
   }
+  Network::Net net;
 
-  std::vector<std::unique_ptr<Network::Edge>> edges;
-  auto E1 = std::unique_ptr<Network::Edge>(
-      new Network::Edge("edge", nodes[0].get(), nodes[3].get()));
-  edges.push_back(std::move(E1));
-  Network::Net net(std::move(nodes), std::move(edges));
+};
 
-  bool u = net.exists_edge_between("N0", "N3");
-  bool v = net.exists_edge_between("N0", "N4");
+TEST(Node_basic, test_successful_construction){
 
-  EXPECT_EQ(u, true);
-  EXPECT_EQ(v, false);
+  Network::Node node(R"({"id":"N1"})"_json);
+
+  EXPECT_EQ(node.get_id(), "N1");
+  EXPECT_EQ(node.get_starting_edges(), std::vector<Network::Edge *>());
+  EXPECT_EQ(node.get_ending_edges(), std::vector<Network::Edge *>());
 }
 
-TEST(testNet, test_get_valid_node_ids) {
+TEST(Edge, test_succesful_construction) {
+
   std::vector<std::unique_ptr<Network::Node>> nodes;
-  for (unsigned int i = 0; i != 5; ++i) {
-    std::string s("N");
-    s.append(std::to_string(i));
-    nodes.push_back(std::unique_ptr<Network::Node>(new Network::Node(s)));
-  }
+  nodes.push_back(std::make_unique<Network::Node>(R"({"id":"N1"})"_json));
+  nodes.push_back(std::make_unique<Network::Node>(R"({"id":"N2"})"_json));
 
-  std::vector<std::unique_ptr<Network::Edge>> edges;
-  auto E1 = std::unique_ptr<Network::Edge>(
-      new Network::Edge("edge", nodes[0].get(), nodes[3].get()));
-  edges.push_back(std::move(E1));
+  auto edge_json = R"(
+{
+"id":"edgeid",
+"from":"N1",
+"to":"N2"
+}
+)"_json;
+  Network::Edge edge(edge_json,nodes);
+  EXPECT_EQ(edge.get_id(),"edgeid");
+  EXPECT_EQ(edge.get_starting_node(),nodes[0].get());
+  EXPECT_EQ(edge.get_ending_node(), nodes[1].get());
+}
 
-  Network::Net net(std::move(nodes), std::move(edges));
+TEST_F(Nettest, test_ExistsEdgeBetween) {
+
+  bool existing_edge = net.exists_edge_between("N0", "N2");
+  bool non_existing_edge = net.exists_edge_between("N0", "N4");
+
+  EXPECT_EQ(existing_edge, true);
+  EXPECT_EQ(non_existing_edge, false);
+}
+
+TEST_F(Nettest, test_get_valid_node_ids) {
 
   auto vect = net.get_valid_node_ids();
+
   std::vector<std::string> BeautifulArray;
   for (unsigned int i = 0; i != 5; ++i) {
     std::string s("N");
@@ -94,263 +104,78 @@ TEST(testNet, test_get_valid_node_ids) {
   EXPECT_EQ(vect, BeautifulArray);
 }
 
-TEST(testNode, test_GetId) {
-  std::vector<std::unique_ptr<Network::Node>> nodes;
-  for (unsigned int i = 0; i != 5; ++i) {
-    std::string s("N");
-    s.append(std::to_string(i));
-    nodes.push_back(std::unique_ptr<Network::Node>(new Network::Node(s)));
-  }
+TEST_F(Nettest, test_exists_node) {
 
-  std::vector<std::unique_ptr<Network::Edge>> edges;
-  auto E1 = std::unique_ptr<Network::Edge>(
-      new Network::Edge("edge", nodes[0].get(), nodes[3].get()));
-  edges.push_back(std::move(E1));
-  Network::Net net(std::move(nodes), std::move(edges));
-  auto node1_ptr = net.get_node_by_id("N3");
+  nlohmann::json j;
+  j["id"]= "not_in_there";
+  auto not_in_net = std::make_unique<Network::Node>(j);
 
-  auto v = node1_ptr->get_id();
+  Network::Node *existing_node_pointer = net.exists_node(net.get_nodes()[3]);
+  Network::Node *not_in_net_pointer = net.exists_node(not_in_net.get());
 
-  EXPECT_EQ(v, "N3");
+  EXPECT_EQ(not_in_net_pointer, nullptr);
+  EXPECT_NE(existing_node_pointer, nullptr);
 }
 
-TEST(testNode, test_exists_node) {
-  std::vector<std::unique_ptr<Network::Node>> nodes;
-  for (unsigned int i = 0; i != 5; ++i) {
-    std::string s("N");
-    s.append(std::to_string(i));
-    nodes.push_back(std::unique_ptr<Network::Node>(new Network::Node(s)));
-  }
+TEST_F(NodeTEST, test_GetId) {
 
-  std::vector<std::unique_ptr<Network::Edge>> edges;
-  auto E1 = std::unique_ptr<Network::Edge>(
-      new Network::Edge("edge", nodes[0].get(), nodes[3].get()));
-  edges.push_back(std::move(E1));
-  Network::Net net(std::move(nodes), std::move(edges));
+  auto v = node.get_id();
 
-  Network::Node *e = net.exists_node(net.get_nodes()[3]);
-  auto not_in_there = std::unique_ptr<Network::Node>(new Network::Node("haha"));
-
-  Network::Node *n = net.exists_node(not_in_there.get());
-
-  EXPECT_EQ(n, nullptr);
-  EXPECT_NE(e, nullptr);
+  EXPECT_EQ(v, "N1");
 }
 
-TEST(testNode, test_get_starting_edges) {
 
-  std::vector<std::unique_ptr<Network::Node>> nodes;
-  for (unsigned int i = 0; i != 5; ++i) {
-    std::string s("N");
-    s.append(std::to_string(i));
-    nodes.push_back(std::unique_ptr<Network::Node>(new Network::Node(s)));
+TEST_F(Nettest, test_get_starting_edges) {
+
+  auto nodevector=net.get_nodes();
+  auto edgevector = net.get_edges();
+  auto startedges0 = nodevector[0]->get_starting_edges();
+  auto startedges1 = nodevector[1]->get_starting_edges();
+
+  std::vector<Network::Edge *> expected_start_edges0;
+  std::vector<Network::Edge *> expected_start_edges1;
+
+  //All edges start at N0!
+  for (unsigned int i = 0; i != 2; ++i) {
+    expected_start_edges0.push_back(edgevector[i]);
   }
 
-  std::vector<std::unique_ptr<Network::Edge>> edges;
-  edges.push_back(std::unique_ptr<Network::Edge>(
-      new Network::Edge("E34", nodes[3].get(), nodes[4].get())));
-
-  for (unsigned int i = 1; i != 3; ++i) {
-    std::string s("E");
-    s.append(std::to_string(i));
-    s.append(std::to_string(0));
-    auto e = std::unique_ptr<Network::Edge>(
-        new Network::Edge(s, nodes[0].get(), nodes[i].get()));
-    edges.push_back(std::move(e));
-  }
-
-  auto startedges = nodes[0]->get_starting_edges();
-
-  std::vector<Network::Edge *> expected_start_edges;
-
-  for (unsigned int i = 1; i != 3; ++i) {
-    expected_start_edges.push_back(edges[i].get());
-  }
-
-  auto endedges = nodes[0]->get_ending_edges();
-
-  EXPECT_EQ(endedges.size(), 0);
-  EXPECT_EQ(startedges, expected_start_edges);
+  EXPECT_EQ(startedges0, expected_start_edges0);
+  EXPECT_EQ(startedges1, expected_start_edges1);
 }
 
-TEST(testNode, test_attachEndingEdge_getEndingEdges) {
+TEST_F(Nettest, getEndingEdges) {
 
-  std::vector<std::unique_ptr<Network::Node>> nodes;
-  for (unsigned int i = 0; i != 5; ++i) {
-    std::string s("N");
-    s.append(std::to_string(i));
-    nodes.push_back(std::unique_ptr<Network::Node>(new Network::Node(s)));
-  }
-
-  std::vector<std::unique_ptr<Network::Edge>> edges;
-  edges.push_back(std::unique_ptr<Network::Edge>(
-      new Network::Edge("E34", nodes[3].get(), nodes[4].get())));
-
-  for (unsigned int i = 1; i != 3; ++i) {
-    std::string s("E");
-    s.append(std::to_string(i));
-    s.append(std::to_string(0));
-    auto e = std::unique_ptr<Network::Edge>(
-        new Network::Edge(s, nodes[i].get(), nodes[0].get()));
-    edges.push_back(std::move(e));
-  }
-
-  auto endedges = nodes[0]->get_ending_edges();
+  auto nodevector = net.get_nodes();
+  auto edgevector = net.get_edges();
+  
+  auto endedges0 = nodevector[0]->get_ending_edges();
+  auto endedges1 = nodevector[1]->get_ending_edges();
 
   std::vector<Network::Edge *> expected_end_edges;
 
-  for (unsigned int i = 1; i != 3; ++i) {
-    expected_end_edges.push_back(edges[i].get());
-  }
+  expected_end_edges.push_back(edgevector[0]);
+  
 
-  auto startedges = nodes[0]->get_starting_edges();
 
-  EXPECT_EQ(startedges.size(), 0);
-  EXPECT_EQ(endedges, expected_end_edges);
+  EXPECT_EQ(endedges0.size(), 0);
+  EXPECT_EQ(endedges1, expected_end_edges);
 }
 
-TEST(testEdge, test_getStartingNode) {
+TEST_F(Nettest, test_getStartingNode) {
 
-  std::vector<std::unique_ptr<Network::Node>> nodes;
-  for (unsigned int i = 0; i != 2; ++i) {
-    std::string s("N");
-    s.append(std::to_string(i));
-    nodes.push_back(std::unique_ptr<Network::Node>(new Network::Node(s)));
-  }
+  auto nodes = net.get_nodes();
+  auto edges = net.get_edges();
 
-  auto edge = std::unique_ptr<Network::Edge>(
-      new Network::Edge("E01", nodes[0].get(), nodes[1].get()));
-
-  EXPECT_EQ(edge->get_starting_node(), nodes[0].get());
+  EXPECT_EQ(edges[0]->get_starting_node(), nodes[0]);
 }
 
-TEST(testEdge, test_getEndingNode) {
+TEST_F(Nettest, test_getEndingNode) {
 
-  std::vector<std::unique_ptr<Network::Node>> nodes;
-  for (unsigned int i = 0; i != 2; ++i) {
-    std::string s("N");
-    s.append(std::to_string(i));
-    nodes.push_back(std::unique_ptr<Network::Node>(new Network::Node(s)));
-  }
+  auto nodes = net.get_nodes();
+  auto edges = net.get_edges();
 
-  auto edge = std::unique_ptr<Network::Edge>(
-      new Network::Edge("E10", nodes[1].get(), nodes[0].get()));
-
-  EXPECT_EQ(edge->get_ending_node(), nodes[0].get());
+  EXPECT_EQ(edges[0]->get_ending_node(), nodes[1]);
 }
 
-TEST(modelTest, get_number_of_states) {
 
-  // Test how often this class is being called
-  GrazerTest::MockSubproblem mocksub;
-  EXPECT_CALL(mocksub, reserve_indices(0)).Times(1);
-
-  mocksub.set_indices(0);
-}
-
-TEST(modelSubproblem, Model_evaluate) {
-
-  Model::Problem problem("");
-
-  // make unique pointer of mocksub1 and mocksub2
-  auto mock1_ptr = std::make_unique<GrazerTest::MockSubproblem>();
-  auto mock2_ptr = std::make_unique<GrazerTest::MockSubproblem>();
-
-  // add subproblem to problem
-  problem.add_subproblem(std::move(mock1_ptr));
-  problem.add_subproblem(std::move(mock2_ptr));
-
-  // call problem.evaluate
-  double last_time(0.0);
-  double new_time(1.0);
-  Eigen::VectorXd rootvalues(2);
-  Eigen::VectorXd v1(2);
-  v1(0) = 2;
-  v1(1) = 3;
-  Eigen::VectorXd v2(2);
-  v1(0) = 3;
-  v1(1) = 4;
-
-  // This is necessary for the expect_call to work properly...
-  // Eigen::Ref<Eigen::VectorXd> rootref(rootvalues);
-
-  //  // expect the call to evaluate on the subproblems.
-  //  // The cast magic is necessary to have the right type at hand...
-  EXPECT_CALL(
-      *dynamic_cast<GrazerTest::MockSubproblem *>(problem.get_subproblems()[0]),
-      evaluate(Eigen::Ref<Eigen::VectorXd>(rootvalues), last_time, new_time, Eigen::Ref<Eigen::VectorXd const>(v1), Eigen::Ref<Eigen::VectorXd const> (v2)))
-      .Times(1);
-  EXPECT_CALL(
-      *dynamic_cast<GrazerTest::MockSubproblem *>(problem.get_subproblems()[1]),
-      evaluate(Eigen::Ref<Eigen::VectorXd>(rootvalues), last_time, new_time, Eigen::Ref<Eigen::VectorXd const>(v1), Eigen::Ref<Eigen::VectorXd const> (v2)))
-      .Times(1);
-
-  problem.evaluate(rootvalues, last_time, new_time, v1, v2);
-}
-
-TEST(Boundaryvalue, Operator) {
-
-  // ARRANGE
-  typedef Eigen::Matrix<double, 2, 1> Matrix2f; // 2x1 matrix of double
-
-  Matrix2f a;
-  a(0, 0) = 0.0;
-  a(1, 0) = 1.0;
-
-  Matrix2f b;
-  b(0, 0) = 1.0;
-  b(1, 0) = 2.0;
-
-  Matrix2f c;
-  c(0, 0) = 2.0;
-  c(1, 0) = 3.0;
-
-  std::map<double, Eigen::Matrix<double, 2, 1>> MapOfBdrValues;
-  MapOfBdrValues.insert(std::make_pair(1.0, a));
-  MapOfBdrValues.insert(std::make_pair(2.0, b));
-  MapOfBdrValues.insert(std::make_pair(3.0, c));
-
-  Model::Networkproblem::Boundaryvalue<double, 2> myBdrclass(MapOfBdrValues);
-
-  EXPECT_ANY_THROW(myBdrclass.operator()(3.5));
-  try {
-    myBdrclass(3.5);
-  } catch (Exception &e) {
-    std::string message(e.what());
-    bool is_right_message =
-        (message.find("Requested boundary value is at a later time than the "
-                      "given values") != std::string::npos);
-    EXPECT_EQ(is_right_message, true);
-  }
-  EXPECT_ANY_THROW(myBdrclass.operator()(0.5));
-
-  // TEST2
-  {
-    Eigen::VectorXd v2(2);
-    Eigen::VectorXd v(2);
-    v = myBdrclass.operator()(1.0);
-    v2 = a;
-    // ACT
-    EXPECT_EQ(v, v2);
-  }
-
-  {
-    Eigen::VectorXd v2(2);
-    Eigen::VectorXd v(2);
-    v = myBdrclass.operator()(3.0);
-    v2 = c;
-    // ACT
-    EXPECT_EQ(v, v2);
-  }
-
-  // ASSERT
-  // Test that returns value of interpolation for specific time step
-  {
-    Eigen::VectorXd v2(2);
-    Eigen::VectorXd v(2);
-    v = myBdrclass.operator()(2.5);
-    v2 = 0.5 * (b + c);
-    // ACT
-    EXPECT_EQ(v, v2);
-  }
-}

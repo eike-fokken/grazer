@@ -1,3 +1,2 @@
 add_executable(grazer grazer.cpp)
-target_include_directories(grazer PRIVATE "include")
-target_link_libraries(grazer PRIVATE nlohmann_json problemlayer network jsonreader exception printguard newton)
+target_link_libraries(grazer PRIVATE problemlayer aux_json input_output)

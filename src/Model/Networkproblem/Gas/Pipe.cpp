@@ -1,3 +1,5 @@
+#include "unit_conversion.hpp"
+#include "Edge.hpp"
 #include <Coloroutput.hpp>
 #include <Eigen/Dense>
 #include <Implicitboxscheme.hpp>
@@ -14,18 +16,22 @@
 
 namespace Model::Networkproblem::Gas {
 
-  Pipe::Pipe(std::string _id, Network::Node *start_node,
-             Network::Node *end_node, nlohmann::ordered_json topology_json,
-             double _Delta_x)
-      : Edge(_id, start_node, end_node),
-        length(std::stod(topology_json["length"]["value"].get<std::string>()) *
-               1e3),
-        diameter(
-            std::stod(topology_json["diameter"]["value"].get<std::string>()) *
-            1e-3),
-        roughness(
-            std::stod(topology_json["roughness"]["value"].get<std::string>())),
-        number_of_points(static_cast<int>(std::ceil(length / _Delta_x)) + 1),
+  std::string Pipe::get_type(){return "Pipe";}
+
+  Pipe::Pipe(nlohmann::json const &topology,
+             std::vector<std::unique_ptr<Network::Node>> &nodes)
+      : Network::Edge(topology, nodes),
+        length(Aux::unit::parse_to_si(topology["length"],
+                                      Aux::unit::length_units)),
+        diameter(Aux::unit::parse_to_si(topology["diameter"],
+                                        Aux::unit::length_units)),
+        roughness(Aux::unit::parse_to_si(topology["roughness"],
+                                         Aux::unit::length_units)),
+        number_of_points(
+            static_cast<int>(std::ceil(
+                length /
+                std::stod(topology["desired_delta_x"].get<std::string>()))) +
+            1),
         Delta_x(length / (number_of_points - 1)),
         bl(Balancelaw::Isothermaleulerequation(Aux::circle_area(0.5 * diameter),
                                                diameter, roughness)),
@@ -38,10 +44,10 @@ namespace Model::Networkproblem::Gas {
 
       Eigen::Ref<Eigen::Vector2d> rootvalue_segment = rootvalues.segment<2>(i);
       
-      Eigen::Ref<Eigen::Vector2d const> const  last_left = last_state.segment<2>(i - 1);
-      Eigen::Ref<Eigen::Vector2d const> const  last_right = last_state.segment<2>(i + 1);
-      Eigen::Ref<Eigen::Vector2d const> const  new_left = new_state.segment<2>(i - 1);
-      Eigen::Ref<Eigen::Vector2d const> const  new_right = new_state.segment<2>(i + 1);
+      auto last_left = last_state.segment<2>(i - 1);
+      auto last_right = last_state.segment<2>(i + 1);
+      auto new_left = new_state.segment<2>(i - 1);
+      auto new_right = new_state.segment<2>(i + 1);
       
       scheme.evaluate_point(rootvalue_segment, last_time, new_time,
            Delta_x, last_left,
@@ -57,10 +63,10 @@ namespace Model::Networkproblem::Gas {
     for (int i = get_equation_start_index(); i != get_equation_after_index();
          i += 2) {
       // maybe use Eigen::Ref here to avoid copies.
-      Eigen::Ref<Eigen::Vector2d const> const last_left = last_state.segment<2>(i - 1);
-      Eigen::Ref<Eigen::Vector2d const> const last_right = last_state.segment<2>(i + 1);
-      Eigen::Ref<Eigen::Vector2d const> const new_left = new_state.segment<2>(i - 1);
-      Eigen::Ref<Eigen::Vector2d const> const new_right = new_state.segment<2>(i + 1);
+      auto last_left = last_state.segment<2>(i - 1);
+      auto last_right = last_state.segment<2>(i + 1);
+      auto new_left = new_state.segment<2>(i - 1);
+      auto new_right = new_state.segment<2>(i + 1);
 
       Eigen::Matrix2d current_derivative_left =
         scheme.devaluate_point_dleft(last_time, new_time, Delta_x,
@@ -90,15 +96,6 @@ namespace Model::Networkproblem::Gas {
     }
   }
 
-  void Pipe::display() const {
-    Edge::print_id();
-    std::cout << "number of points: " << number_of_points << std::endl;
-    std::cout << "Delta_x: "<< Delta_x << std::endl;
-    std::cout << "length: "<< length << std::endl;
-    std::cout << "roughness: "<< roughness << std::endl;
-    std::cout << "diameter: "<< diameter << std::endl;
-  }
-
   int Pipe::get_number_of_states() const {
     return 2*number_of_points;
   }
@@ -107,8 +104,8 @@ namespace Model::Networkproblem::Gas {
   void
   Pipe::print_to_files(std::filesystem::path const &output_directory) {
 
-    std::string pressure_file_name = (get_id().insert(0, "Gas_Pipe_"))+"_p";
-    std::string flow_file_name =(get_id().insert(0, "Gas_Pipe_"))+"_q";
+    std::string pressure_file_name = (get_id_copy().insert(0, "Gas_Pipe_"))+"_p";
+    std::string flow_file_name =(get_id_copy().insert(0, "Gas_Pipe_"))+"_q";
     std::filesystem::path shortpipe_output_pressure(output_directory /
                                                     pressure_file_name);
     std::filesystem::path shortpipe_output_flow(
@@ -170,8 +167,7 @@ namespace Model::Networkproblem::Gas {
 
   void Pipe::set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
                                 nlohmann::ordered_json initial_json) {
-    Initialvalue<Pipe,2> initialvalues;
-    initialvalues.set_initial_condition(initial_json);
+    Initialvalue<2> initialvalues(initial_json);
     for (int i = 0; i!=number_of_points;++i){
       try{
       new_state.segment<2>(get_start_state_index()+2*i) = bl.state(bl.p_qvol_from_p_qvol_bar(initialvalues(i*Delta_x)));

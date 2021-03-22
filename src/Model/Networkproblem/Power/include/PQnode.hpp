@@ -6,6 +6,9 @@ namespace Model::Networkproblem::Power {
   class PQnode final : public Powernode {
 
   public:
+    static std::string get_type();
+    static bool needs_boundary_values();
+
     using Powernode::Powernode;
 
     /// In this node we set V to its boundary value and evaluate the equation
@@ -19,7 +22,9 @@ namespace Model::Networkproblem::Power {
                                    Eigen::Ref<Eigen::VectorXd const> const &,
                                    Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
 
-    void display() const final;
+    void save_values(double time,
+                     Eigen::Ref<Eigen::VectorXd const> const &state) override;
+
   };
 
 } // namespace Model::Networkproblem::Power

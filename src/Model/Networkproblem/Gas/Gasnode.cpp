@@ -1,8 +1,9 @@
-#include <Coloroutput.hpp>
-#include <Exception.hpp>
-#include <Gasedge.hpp>
-#include <Gasnode.hpp>
-#include <Matrixhandler.hpp>
+#include "Gasnode.hpp"
+#include "Coloroutput.hpp"
+#include "Edge.hpp"
+#include "Exception.hpp"
+#include "Gasedge.hpp"
+#include "Matrixhandler.hpp"
 #include <iostream>
 
 namespace Model::Networkproblem::Gas {
@@ -154,6 +155,6 @@ namespace Model::Networkproblem::Gas {
       return; }
   }
 
-  int Gasnode::get_number_of_states() const { return 0;}
+  int Gasnode::get_number_of_states() const { return number_of_state_variables;}
 
 } // namespace Model::Networkproblem::Gas

@@ -7,6 +7,9 @@
 
 namespace Model::Networkproblem::Power {
 
+  std::string PQnode::get_type(){ return "PQnode";}
+  bool PQnode::needs_boundary_values() {return true;}
+
   void PQnode::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
                         Eigen::Ref<Eigen::VectorXd const> const &,
                         Eigen::Ref<Eigen::VectorXd const> const &new_state) const{
@@ -29,10 +32,11 @@ namespace Model::Networkproblem::Power {
     evaluate_Q_derivative(second_equation_index, jacobianhandler, new_state);
   }
 
-  void PQnode::display() const {
-    Node::print_id();
-    Equationcomponent::print_indices();
-    std::cout << "type: PQ, G: " << G << ", B: " << B << "\n";
+  void PQnode::save_values(double time,
+                             Eigen::Ref<Eigen::VectorXd const> const &state) {
+    auto P_val = boundaryvalue(time)[0];
+    auto Q_val = boundaryvalue(time)[1];
+    save_power_values(time, state, P_val, Q_val);
   }
 
 } // namespace Model::Networkproblem::Power

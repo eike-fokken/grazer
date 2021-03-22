@@ -1,11 +1,9 @@
-#include "PQnode.hpp"
-#include "PVnode.hpp"
-#include "Vphinode.hpp"
-#include <Boundaryvalue.hpp>
-#include <Exception.hpp>
-#include <Matrixhandler.hpp>
-#include <Powernode.hpp>
-#include <Transmissionline.hpp>
+#include "Powernode.hpp"
+#include "Boundaryvalue.hpp"
+#include "Exception.hpp"
+#include "Initialvalue.hpp"
+#include "Matrixhandler.hpp"
+#include "Transmissionline.hpp"
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -14,31 +12,24 @@
 
 namespace Model::Networkproblem::Power {
 
-  Powernode::Powernode(std::string _id, nlohmann::ordered_json boundary_json,
-                       double _G, double _B)
-      : Node(_id), G(_G), B(_B) {
-    boundaryvalue.set_boundary_condition(boundary_json);
-  }
-
+  Powernode::Powernode(nlohmann::json const &topology)
+    : Node(topology), boundaryvalue(topology["boundary_values"]),
+      G(topology["G"]),
+      B(topology["B"]) {}
 
   void Powernode::set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
                                      nlohmann::ordered_json initial_json) {
-
+    
     if (get_start_state_index() == -1) {
       gthrow({"This function may only be called if set_indices  has been "
               "called beforehand!"});
     }
 
-    if (initial_json["data"]["value"].size() != 4) {
-      std::cout << "The initial json for this power node is given by:"
-                << "\n";
-      std::cout << initial_json << std::endl;
-      gthrow({"This is not a power initial condition!"});
-    }
+    Initialvalue<4> initialvalues(initial_json);
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
-    new_state[V_index] = initial_json["data"]["value"][2];
-    new_state[phi_index] = initial_json["data"]["value"][3];
+    new_state[V_index] = initialvalues(0)[2];
+    new_state[phi_index] = initialvalues(0)[3];
   }
 
 
@@ -72,7 +63,7 @@ namespace Model::Networkproblem::Power {
     }
   }
 
-  int Powernode::get_number_of_states() const { return 2; }
+  int Powernode::get_number_of_states() const { return number_of_state_variables; }
 
   // int Powernode::get_number_of_printout_states() const { return 4;}
 
@@ -83,7 +74,7 @@ namespace Model::Networkproblem::Power {
   void
   Powernode::print_to_files(std::filesystem::path const &output_directory) {
     std::filesystem::path node_output_directory(output_directory /
-                                                (get_id().insert(0, "Power_")));
+                                                (get_id_copy().insert(0, "Power_")));
 
 
     std::ofstream output(node_output_directory);
@@ -98,33 +89,18 @@ namespace Model::Networkproblem::Power {
       for (auto const &var : values[i]) {
         output << ",    " << var.at(0.0);
       }
-      output << std::endl;
+      output << "\n";
     }
-    output << std::endl;
+    output << "\n";
   }
 
-  void Powernode::save_values(double time, Eigen::Ref<Eigen::VectorXd const> const &state) {
+  void Powernode::save_power_values(double time, Eigen::Ref<Eigen::VectorXd const> const &state,double P_val, double Q_val) {
 
     std::map<double, double> Pmap;
     std::map<double, double> Qmap;
     std::map<double, double> Vmap;
     std::map<double, double> phimap;
     std::vector<std::map<double, double>> value_vector;
-      double P_val;
-      double Q_val;
-      if (dynamic_cast<PQnode *>(this)) {
-        P_val = boundaryvalue(time)[0];
-        Q_val = boundaryvalue(time)[1];
-      } else if (dynamic_cast<PVnode *>(this)) {
-        P_val = boundaryvalue(time)[0];
-        Q_val = Q(state);
-      } else if (dynamic_cast<Vphinode *>(this)) {
-        P_val = P(state);
-        Q_val = Q(state);
-      } else {
-        gthrow({"Node with id: ", get_id(),
-                " is not of type PQ,PV or Vphi.  Aborting..."});
-      }
       Pmap = {{0.0, P_val}};
       Qmap = {{0.0, Q_val}};
       Vmap = {{0.0, state[get_start_state_index()]}};

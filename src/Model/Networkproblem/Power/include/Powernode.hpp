@@ -10,8 +10,7 @@ namespace Model::Networkproblem::Power {
   class Powernode : public Equationcomponent, public Network::Node {
 
   public:
-    Powernode(std::string _id, nlohmann::ordered_json boundary_json, double _G,
-              double _B);
+    Powernode(nlohmann::json const & topology);
 
     virtual ~Powernode(){};
 
@@ -35,17 +34,25 @@ namespace Model::Networkproblem::Power {
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
 
   protected:
-    void save_values(double time, Eigen::Ref<Eigen::VectorXd const> const &state) final;
+
+    /// \brief saves the values of a power node for later printout into files.
+    ///
+    /// As the method for obtaining P_val and Q_val depend on the actual type, this is just a helper function
+    /// that is called from the respective Powernode.
+    void save_power_values(double time, Eigen::Ref<Eigen::VectorXd const> const &state, double P_val, double Q_val);
 
     
 
-    Boundaryvalue<Powernode, 2> boundaryvalue;
+    Boundaryvalue<2> const boundaryvalue;
     /// Real part of the admittance of this node
     double G;
     /// Imaginary part of the admittance of this node
     double B;
 
   private:
+    /// \brief number of state variables, this component needs.
+    static constexpr int number_of_state_variables{2};
+
     std::vector<std::tuple<double,double,Powernode*>> attached_component_data;
 
   };

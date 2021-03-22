@@ -1,3 +1,4 @@
+#include "Exception.hpp"
 #include <Eigen/Dense>
 #include <Matrixhandler.hpp>
 #include <Problem.hpp>
@@ -5,10 +6,26 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include <Subproblemchooser.hpp>
+#include <Aux_json.hpp>
 
 namespace Model {
 
-  // class Model;
+  Problem::Problem(nlohmann::json problem_data,std::filesystem::path const &_output_directory)
+      : output_directory(_output_directory) {
+    auto subproblem_map = problem_data["subproblems"].get<std::map<std::string, nlohmann::json>>();
+    for(auto & [subproblem_type,subproblem_json] : subproblem_map)
+      {
+        subproblem_json["GRAZER_file_directory"] = problem_data["GRAZER_file_directory"];
+        std::unique_ptr<Subproblem> subproblem_ptr =
+            build_subproblem(subproblem_type, subproblem_json);
+        add_subproblem(std::move(subproblem_ptr));
+    }
+  }
+
+
+  Problem::~Problem() {print_to_files();}
+
 
   void Problem::add_subproblem(std::unique_ptr<Subproblem> subproblem_ptr) {
     subproblems.push_back(std::move(subproblem_ptr));
@@ -56,23 +73,32 @@ namespace Model {
   }
 
   void Problem::print_to_files() {
-    for (auto &subproblem : subproblems) {
-      subproblem->print_to_files(output_directory);
+    if (not output_directory.empty()) {
+      for (auto &subproblem : subproblems) {
+        subproblem->print_to_files(output_directory);
+      }
     }
   }
 
-  void Problem::display() const {
+  void Problem::set_initial_values(Eigen::Ref<Eigen::VectorXd> new_state,
+                                   nlohmann::json & initial_json) {
+
     for (auto &subproblem : subproblems) {
-      subproblem->display();
+      auto type = subproblem->get_type();
+      
+      auto initial_json_iterator = initial_json["subproblems"].find(type);
+      if (initial_json_iterator == initial_json["subproblems"].end()){
+        gthrow({"Subproblem ", type, " has no initial values in the json files!"});
+      }
+
+      auto & subproblem_initial_json = *initial_json_iterator;
+      subproblem_initial_json["GRAZER_file_directory"] = initial_json["GRAZER_file_directory"];
+      aux_json::replace_entry_with_json_from_file(subproblem_initial_json,
+                                                  "initial_json");
+      subproblem->set_initial_values(new_state, subproblem_initial_json["initial_json"]);
     }
   }
 
-  void Problem::set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
-                                   nlohmann::ordered_json initialjson) {
-    for (auto &subproblem : subproblems) {
-      subproblem->set_initial_values(new_state, initialjson);
-    }
-  }
 
   std::filesystem::path const &Problem::get_output_directory() const {
     return output_directory;

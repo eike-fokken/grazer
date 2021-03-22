@@ -2,6 +2,8 @@
 #include <Idobject.hpp>
 #include <memory>
 #include <string>
+#include <vector>
+#include <nlohmann/json.hpp>
 
 namespace Network {
 
@@ -19,8 +21,11 @@ namespace Network {
     // Creating an edge without also providing its start and
     // end node is prohibited:
     Edge() = delete;
-    // Instead creating the edge with start and end node is a good idea:
-    Edge(std::string _id, Node *start_node, Node *end_node);
+
+    /// \brief Builds an edge from an appropriate json AND registers it in the
+    /// start and end nodes.
+        
+    Edge(nlohmann::json const & edge_json, std::vector<std::unique_ptr<Node>> & nodes);
 
     virtual ~Edge(){};
 
@@ -33,7 +38,11 @@ namespace Network {
     Node *get_ending_node() const;
 
   private:
-    Node *starting_node;
-    Node *ending_node;
+    /// \brief gets the pointer out of the already constructed node vector.
+    static Node *get_node_from_json(int direction, nlohmann::json const &edge_json,
+        std::vector<std::unique_ptr<Node>> &nodes);
+
+    Node *starting_node{nullptr};
+    Node *ending_node{nullptr};
   };
 } // namespace Network

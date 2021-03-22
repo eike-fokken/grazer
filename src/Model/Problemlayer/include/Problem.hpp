@@ -17,15 +17,17 @@ namespace Aux {
  */
 namespace Model {
 
-  class Subproblem;
-
   class Problem {
 
   public:
     /// The constructor needs to declare Delta_t
     ///
-    Problem(std::filesystem::path const &_output_directory)
-        : output_directory(_output_directory){};
+    Problem(nlohmann::json subproblem_data,
+            std::filesystem::path const &_output_directory);
+
+    ~Problem();
+
+
 
     void add_subproblem(std::unique_ptr<Subproblem> subproblem_ptr);
 
@@ -46,11 +48,9 @@ namespace Model {
     std::vector<Subproblem *> get_subproblems() const;
 
     void set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
-                            nlohmann::ordered_json initialjson);
+                            nlohmann::json & initialjson);
 
     void print_to_files();
-
-    void display() const;
 
     std::filesystem::path const &get_output_directory() const;
 

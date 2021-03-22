@@ -9,9 +9,10 @@ namespace Model::Networkproblem::Gas {
   class Pipe final: public Gasedge, public Network::Edge {
   public:
 
-    Pipe(std::string _id, Network::Node *start_node, Network::Node *end_node, nlohmann::ordered_json topology_json, double Delta_x);
 
+    static std::string get_type();
 
+    Pipe(nlohmann::json const &topology, std::vector<std::unique_ptr<Network::Node>> &nodes);
 
     void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
                   double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
@@ -21,8 +22,6 @@ namespace Model::Networkproblem::Gas {
                                    Eigen::Ref<Eigen::VectorXd const> const &, Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
 
 
-
-    void display() const override;
 
     int get_number_of_states() const override;
 

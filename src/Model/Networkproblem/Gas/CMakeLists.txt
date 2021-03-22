@@ -1,10 +1,15 @@
-add_library(gas STATIC Gasnode.cpp Gasedge.cpp Innode.cpp  Pipe.cpp  Shortpipe.cpp
-  Sink.cpp  Flowboundarynode.cpp Controlvalve.cpp Compressorstation.cpp
-  Pressureboundarynode.cpp Gaspowerconnection.cpp)
-  
+add_library(gas STATIC
+  Gasnode.cpp Flowboundarynode.cpp
+  Source.cpp Sink.cpp Innode.cpp
+  Gasedge.cpp 
+  Shortcomponent.cpp Shortpipe.cpp Controlvalve.cpp Compressorstation.cpp
+  Gaspowerconnection.cpp
+  Pipe.cpp
+  )
 
-target_link_libraries(gas PRIVATE networkproblem network matrixhandler exception nlohmann_json power coloroutput misc)
 
-target_link_libraries(gas PUBLIC balancelaw scheme mathfunctions)
+target_link_libraries(gas PRIVATE network matrixhandler exception  power coloroutput misc aux_unit_conversion)
+
+target_link_libraries(gas PUBLIC balancelaw scheme mathfunctions equationcomponent)
 
 target_include_directories(gas PUBLIC include)

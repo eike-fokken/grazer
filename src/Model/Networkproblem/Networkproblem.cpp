@@ -1,23 +1,28 @@
-#include <Edge.hpp>
-#include <Equationcomponent.hpp>
-#include <Exception.hpp>
-#include <Net.hpp>
-#include <Networkproblem.hpp>
-#include <Node.hpp>
+#include "Networkproblem.hpp"
+#include "Edge.hpp"
+#include "Equationcomponent.hpp"
+#include "Exception.hpp"
+#include "Idobject.hpp"
+#include "Net.hpp"
+#include "Node.hpp"
+#include <Eigen/Sparse>
 #include <iostream>
+#include <iterator>
 #include <memory>
+#include <nlohmann/json.hpp>
 #include <string>
 #include <utility>
 #include <vector>
 // #include <execution>
-#include <Eigen/Sparse>
-
 namespace Model::Networkproblem {
+
+  std::string Networkproblem::get_type() const {return "Network_problem";}
+
+  Networkproblem::~Networkproblem() {}
 
   /// The constructor takes an instance of Net and finds out which Edges and
   /// Nodes actually hold equations to solve
-  Networkproblem::Networkproblem(std::unique_ptr<Network::Net> _network)
-      : network(std::move(_network)) {
+  Networkproblem::Networkproblem(std::unique_ptr<Network::Net> _network): network(std::move(_network)) {
     for (Network::Node *node : network->get_nodes()) {
       if (auto equationcomponent = dynamic_cast<Equationcomponent *>(node)) {
         equationcomponents.push_back(equationcomponent);
@@ -31,10 +36,12 @@ namespace Model::Networkproblem {
     }
   }
 
-  void Networkproblem::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-                                double new_time,
-                                Eigen::Ref<Eigen::VectorXd const> const &last_state,
-                                Eigen::Ref<Eigen::VectorXd const> const &new_state) const{
+
+
+      void Networkproblem::evaluate(
+          Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
+          double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
+          Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
 
     // // This should evaluate in parallel, test on bigger problems later on:
     // std::for_each(std::execution::par_unseq, equationcomponents.begin(),
@@ -52,7 +59,7 @@ namespace Model::Networkproblem {
   }
 
   void Networkproblem::evaluate_state_derivative(
-      Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
+      ::Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state, Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
 
     // // This should evaluate in parallel, test on bigger problems later on:
@@ -85,30 +92,39 @@ namespace Model::Networkproblem {
     }
   }
 
-  void Networkproblem::display() const { network->display(); }
-
   void Networkproblem::set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
-                                          nlohmann::ordered_json initial_json) {
+                                          nlohmann::json initial_json) {
+
+    std::vector<Network::Idobject* > idcomponents;
+    idcomponents.reserve(equationcomponents.size());
+
     for (Equationcomponent *eqcomponent : equationcomponents) {
       auto idcomponent = dynamic_cast<Network::Idobject *>(eqcomponent);
       if (idcomponent == nullptr) {
         gthrow({"An equation component is not of type Idobject, which should "
-                "never happen."});
+            "never happen."});
       }
-      auto component_id = idcomponent->get_id();
-      auto finder = [component_id](nlohmann::ordered_json &x) {
-        auto it = x.find("id");
-        return it != x.end() and it.value() == component_id;
-      };
-      auto initjson =
-          std::find_if(initial_json.begin(), initial_json.end(), finder);
-          if(initjson == initial_json.end()) {
-        std::cout << " object " << component_id << " has no initial condition." << std::endl;
-      } else {
-        eqcomponent->set_initial_values(new_state, *initjson);
+      idcomponents.push_back(idcomponent);
+    }
+
+    for (auto const &component : {"nodes", "connections"}) {
+      for (auto const & componenttype : initial_json[component]) {
+        for (auto const & componentjson: componenttype){
+          auto component_id = componentjson["id"];
+          auto find_id = [component_id](Network::Idobject const * x) {
+            return component_id == x->get_id();
+          };
+          auto iterator = std::find_if(idcomponents.begin(),idcomponents.end(),find_id);
+          if(iterator != idcomponents.end()){
+            auto index = iterator - idcomponents.begin();
+          equationcomponents[static_cast<unsigned long>(index)]->set_initial_values(new_state, componentjson);
+          } else {
+            std::cout << "Note: Component with id " << component_id << "appears in the initial values but not in the topology." <<std::endl;
+          }
+        }
       }
     }
-  }
+    }
 
   int Networkproblem::reserve_indices(int const next_free_index) {
     int free_index = next_free_index;

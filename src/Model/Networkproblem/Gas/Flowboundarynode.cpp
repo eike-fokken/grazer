@@ -5,11 +5,8 @@
 
 namespace Model::Networkproblem::Gas {
 
-  Flowboundarynode::Flowboundarynode(std::string _id, nlohmann::ordered_json boundary_json,
-                 nlohmann::ordered_json )
-    : Gasnode(_id) {
-    boundaryvalue.set_boundary_condition(boundary_json);
-  }
+  Flowboundarynode::Flowboundarynode(nlohmann::json const &data)
+      : Gasnode(data), boundaryvalue(data["boundary_values"]) {}
 
   void Flowboundarynode::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double ,
                 double new_time, Eigen::Ref<Eigen::VectorXd const> const &,
@@ -28,10 +25,5 @@ namespace Model::Networkproblem::Gas {
     evaluate_flow_node_derivative(jacobianhandler,new_state);
   }
 
-  void Flowboundarynode::display() const {
-    Node::print_id();
-    Equationcomponent::print_indices();
-    std::cout << "NO FURTHER DISPLAY PARAMETERS IMPLEMENTED IN" << __FILE__ << ":" << __LINE__ << std::endl;
-    // here show information of the gas node!
-  }
+
 }

@@ -5,6 +5,8 @@
 
 namespace Model::Networkproblem::Power {
 
+  std::string PVnode::get_type() { return "PVnode"; }
+  bool PVnode::needs_boundary_values() { return true; }
   void PVnode::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
                         Eigen::Ref<Eigen::VectorXd const> const &,
                         Eigen::Ref<Eigen::VectorXd const> const &new_state) const{
@@ -28,10 +30,11 @@ namespace Model::Networkproblem::Power {
     jacobianhandler->set_coefficient(phi_index, V_index, 1.0);
   }
 
-  void PVnode::display() const {
-    Node::print_id();
-    Equationcomponent::print_indices();
-    std::cout << "type: PV, G: " << G << ", B: " << B << "\n";
+  void PVnode::save_values(double time,
+                             Eigen::Ref<Eigen::VectorXd const> const &state) {
+    auto P_val = boundaryvalue(time)[0];
+    auto Q_val = Q(state);
+    save_power_values(time, state, P_val, Q_val);
   }
 
 } // namespace Model::Networkproblem::Power

@@ -19,26 +19,30 @@ namespace Model::Networkproblem {
   class Networkproblem final : public Subproblem {
 
   public:
-    ~Networkproblem() override{};
+
+    std::string get_type() const override;
+
+    ~Networkproblem() override; // override{};
 
     Networkproblem(std::unique_ptr<Network::Net> _network);
-
-    void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-                  double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
-                  Eigen::Ref<Eigen::VectorXd const> const &new_state) const final;
-    void evaluate_state_derivative(Aux::Matrixhandler *jacobian,
-                                   double last_time, double new_time,
-                                   Eigen::Ref<Eigen::VectorXd const> const &last_state,
-                                   Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
+    
+    void
+    evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
+             double new_time,
+             Eigen::Ref<Eigen::VectorXd const> const &last_state,
+             Eigen::Ref<Eigen::VectorXd const> const &new_state) const final;
+    void evaluate_state_derivative(
+        Aux::Matrixhandler *jacobian, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
 
     void save_values(double time, Eigen::Ref<Eigen::VectorXd>new_state) final;
 
     void print_to_files(std::filesystem::path const &output_directory) final;
 
-    void display() const override;
 
     virtual void set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
-                                    nlohmann::ordered_json initial_json) final;
+                                    nlohmann::json initial_json) final;
 
   private:
     std::unique_ptr<Network::Net> network;
