@@ -16,6 +16,8 @@ TEST(Aux_json, replace_entry_with_json_from_file) {
                        {"data", {{{"time", 0}, {"values", {1.0, 2.0}}}}}};
 
   // string pointing to the json file is relative
+  // Not solved yet: how to set an "absolute" path within the grazer directory such that
+  // it is absolute for everyone? The path below ony works for my (Tibors) file system
   relative_path_json = {{"key", "data/aux_sub_json_test.json"},
                         {"GRAZER_file_directory","/Users/Tibor_Cornelli1/Desktop/nos.nosync/grazer"}};
 
