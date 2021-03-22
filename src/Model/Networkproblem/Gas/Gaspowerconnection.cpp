@@ -8,6 +8,7 @@
 #include "Powernode.hpp"
 #include <fstream>
 #include <iostream>
+#include "make_schema.hpp"
 
 namespace Model::Networkproblem::Gas {
 

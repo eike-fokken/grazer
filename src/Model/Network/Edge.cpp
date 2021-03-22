@@ -3,7 +3,7 @@
 #include <Node.hpp>
 #include <memory>
 #include <string>
-#include <make_schema.hpp>
+#include "make_schema.hpp"
 
 namespace Network {
   std::string Edge::get_type() {

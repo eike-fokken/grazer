@@ -9,7 +9,7 @@
 #include <map>
 #include <nlohmann/json.hpp>
 #include <tuple>
-#include <make_schema.hpp>
+#include "make_schema.hpp"
 
 namespace Model::Networkproblem::Power {
 

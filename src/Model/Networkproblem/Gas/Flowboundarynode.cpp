@@ -2,7 +2,7 @@
 #include <Flowboundarynode.hpp>
 #include <iostream>
 #include <Eigen/Sparse>
-#include <make_schema.hpp>
+#include "make_schema.hpp"
 
 namespace Model::Networkproblem::Gas {
 
