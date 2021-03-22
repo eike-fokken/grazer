@@ -40,7 +40,7 @@ namespace Model::Networkproblem::Gas {
                 Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     for (int i = get_equation_start_index(); i!=get_equation_after_index();i+=2){
 
-      Eigen::Ref<Eigen::Vector2d> rootvalue_segment = rootvalues.segment<2>(i);
+      auto rootvalue_segment = rootvalues.segment<2>(i);
       
       auto last_left = last_state.segment<2>(i - 1);
       auto last_right = last_state.segment<2>(i + 1);
