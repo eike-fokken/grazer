@@ -57,47 +57,44 @@ namespace Model::Componentfactory {
     ) const = 0;
   };
 
-  template <typename Node>
+  template <typename ConcreteNode>
   struct NodeType final : public AbstractNodeType {
-    static_assert(std::is_base_of_v<Network::Node, Node>,
+    static_assert(std::is_base_of_v<Network::Node, ConcreteNode>,
                   __FILE__ ":" LINE_NUMBER_STRING
-                           ": Node must inherit from Network::Node.\n Check "
+                           ": ConcreteNode must inherit from Network::Node.\n Check "
                            "whether an edge was added to the Nodechooser.");
 
-    std::string get_name() const override { return Node::get_type(); };
-    nlohmann::json get_schema() const override { return Node::get_schema(); };
+    std::string get_name() const override { return ConcreteNode::get_type(); };
+    nlohmann::json get_schema() const override { return ConcreteNode::get_schema(); };
     std::unique_ptr<Network::Node> make_instance(
       nlohmann::json const &topology
     ) const override {
-      return std::make_unique<Node>(topology);
+      return std::make_unique<ConcreteNode>(topology);
     };
   };
 
 
-  template <typename Edge>
+  template <typename ConcreteEdge>
   struct EdgeType final : public AbstractEdgeType {
-    static_assert(std::is_base_of_v<Network::Edge, Edge>,
+    static_assert(std::is_base_of_v<Network::Edge, ConcreteEdge>,
                   __FILE__ ":" LINE_NUMBER_STRING
-                           ": Edge must inherit from Network::Edge.\n Check "
+                           ": ConcreteEdge must inherit from Network::Edge.\n Check "
                            "whether a node was added to the Edgechooser.");
 
-    std::string get_name() const override { return Edge::get_type(); };
-    nlohmann::json get_schema() const override { return Edge::get_schema(); };
+    std::string get_name() const override { return ConcreteEdge::get_type(); };
+    nlohmann::json get_schema() const override { return ConcreteEdge::get_schema(); };
 
     std::unique_ptr<Network::Edge> make_instance(
       nlohmann::json const &topology,
       std::vector<std::unique_ptr<Network::Node>> &nodes
     ) const override {
-      return std::make_unique<Edge>(topology, nodes);
+      return std::make_unique<ConcreteEdge>(topology, nodes);
     };
   };
 
   struct Componentfactory {
     std::map<std::string, std::unique_ptr<AbstractNodeType>> node_type_map;
     std::map<std::string, std::unique_ptr<AbstractEdgeType>> edge_type_map;
-
-    // std::map<std::string, std::unique_ptr<AbstractNodeType>> get_node_type_map();
-    // std::map<std::string, std::unique_ptr<AbstractEdgeType>> get_edge_type_map();
 
     void add_node_type(std::unique_ptr<AbstractNodeType> nodeType);
     void add_edge_type(std::unique_ptr<AbstractEdgeType> edgeType);
