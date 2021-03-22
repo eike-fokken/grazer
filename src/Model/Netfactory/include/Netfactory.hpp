@@ -4,7 +4,18 @@
 #include <string>
 #include <type_traits>
 #include <vector>
-#include "Componentfactory.hpp"
+
+namespace Network{
+  class Node;
+  class Edge;
+  class Net;
+}
+
+namespace Model::Componentfactory {
+  class Componentfactory;
+  class AbstractNodeType;
+  class AbstractEdgeType;
+}
 
 
   namespace Model::Networkproblem {
