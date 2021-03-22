@@ -10,4 +10,7 @@ namespace Model::Componentfactory {
    */
   void add_gas_components(Componentfactory &factory);
 
+  struct Gas_factory : public Componentfactory {
+    Gas_factory();
+  };
 }

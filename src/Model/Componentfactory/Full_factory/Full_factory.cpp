@@ -23,4 +23,8 @@ namespace Model::Componentfactory {
     add_gas_components(factory);
   }
 
+  Full_factory::Full_factory(){
+    add_power_components(*this);
+    add_gas_components(*this);
+  }
 }

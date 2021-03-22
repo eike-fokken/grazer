@@ -10,4 +10,9 @@ namespace Model::Componentfactory {
    * @param factory to which to add the Power Components
    */
   void add_power_components(Componentfactory &factory);
+
+
+  struct Power_factory: public Componentfactory{
+    Power_factory();
+  };
 }

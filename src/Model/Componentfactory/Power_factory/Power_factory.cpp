@@ -15,4 +15,7 @@ namespace Model::Componentfactory {
     factory.add_edge_type(std::make_unique<EdgeType<Networkproblem::Power::Transmissionline>>());
   }
 
+  Power_factory::Power_factory(){
+    add_power_components(*this);
+  }
 }

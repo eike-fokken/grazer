@@ -11,4 +11,8 @@ namespace Model::Componentfactory {
    */
   void add_all_components(Componentfactory &factory);
 
+  struct Full_factory: public Componentfactory{
+    Full_factory();
+  };
+
 }

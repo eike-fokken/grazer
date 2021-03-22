@@ -23,4 +23,7 @@ namespace Model::Componentfactory {
     factory.add_edge_type(std::make_unique<EdgeType<Networkproblem::Gas::Gaspowerconnection>>());
   }
 
+  Gas_factory::Gas_factory(){
+    add_gas_components(*this);
+  }
 }
