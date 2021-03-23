@@ -149,14 +149,54 @@ TEST_F(GaspowerconnectionTEST, dsmoothing_polynomial) {
   }
 }
 
-TEST_F(GaspowerconnectionTEST, evaluate){
-
+TEST_F(GaspowerconnectionTEST, generated_power) {
   nlohmann::json innode_json;
   innode_json["id"] = "innode";
   double G = 4;
   double B = 123;
-  Eigen::Vector2d cond0(345,333);
+  Eigen::Vector2d cond0(345, 333);
   Eigen::Vector2d cond1(341, 3331);
+  auto vphi_json = vphinode_json("vphi", G, B, cond0, cond1);
+
+  double gas2power_q_coefficient = 34;
+  double power2gas_q_coefficient = 55;
+
+  auto gp_json =
+      gaspowerconnection_json("gp", innode_json, vphi_json,
+                              gas2power_q_coefficient, power2gas_q_coefficient);
+
+  auto netprob_json =
+      make_full_json({{"Innode", {innode_json}}, {"Vphinode", {vphi_json}}},
+                     {{"Gaspowerconnection", {gp_json}}});
+  auto netprob = get_Networkproblem(netprob_json);
+
+  auto edges = netprob->get_network().get_edges();
+  if(edges.size()!=1){FAIL();}
+  auto gp = dynamic_cast<Model::Networkproblem::Gaspowerconnection::Gaspowerconnection const*>(edges.front());
+  if(not gp){FAIL();}
+
+  EXPECT_DOUBLE_EQ(gp->generated_power(0), 0);
+
+  EXPECT_DOUBLE_EQ(gp->generated_power(gp->kappa+1),
+                   gas2power_q_coefficient * (gp->kappa+1));
+
+  EXPECT_DOUBLE_EQ(gp->generated_power(gp->kappa),
+                   gas2power_q_coefficient * gp->kappa);
+  EXPECT_DOUBLE_EQ(gp->generated_power(-gp->kappa),
+                   power2gas_q_coefficient * (-gp->kappa));
+
+  EXPECT_DOUBLE_EQ(gp->generated_power(-gp->kappa-1),
+                   power2gas_q_coefficient * (-gp->kappa-1));
+}
+
+TEST_F(GaspowerconnectionTEST, evaluate){
+
+  nlohmann::json innode_json;
+  innode_json["id"] = "innode";
+  double G = 10;
+  double B = 20;
+  Eigen::Vector2d cond0(100,200);
+  Eigen::Vector2d cond1(100, 200);
   auto vphi_json = vphinode_json("vphi", G, B, cond0, cond1);
 
   double gas2power_q_coefficient = 34;
@@ -176,19 +216,32 @@ TEST_F(GaspowerconnectionTEST, evaluate){
   rootvalues.setZero();
   Eigen::VectorXd last_state(number_of_variables);
   Eigen::VectorXd new_state(number_of_variables);
-  last_state.setRandom();
+  last_state.setOnes();
 
-  double initial_pressure = 18;
-  double initial_flow = -45;
-  Eigen::Vector2d cond(initial_pressure, initial_flow);
-  std::vector<std::pair<double, Eigen::Vector2d>> initial_vector({{0.0, cond}});
-  auto gp_initial = make_value_json("gp", "x", initial_vector);
-  auto net_initial =
-      make_initial_json({}, {{"Gaspowerconnection", {gp_initial}}});
-  netprob->set_initial_values(new_state, net_initial);
+  for(int i= 0;i!=number_of_variables;++i){
+    new_state[i] = i;}
   netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  auto edges = netprob->get_network().get_edges();
+  if (edges.size() != 1) {
+    FAIL();
+  }
 
-
+  auto nodes = netprob->get_network().get_nodes();
+  if (nodes.size() != 2) {
+    FAIL();
+  }
+  auto vphi = dynamic_cast<Model::Networkproblem::Power::Vphinode const *>(nodes.back());
+  if (not vphi) {
+    FAIL();
+  }
   
+
+  auto gp = dynamic_cast<
+      Model::Networkproblem::Gaspowerconnection::Gaspowerconnection const *>(
+      edges.front());
+  if (not gp) {
+    FAIL();
+  }
+  EXPECT_DOUBLE_EQ(rootvalues[3],vphi->P(new_state) -gp->generated_power(new_state[3]));  
 
 }
