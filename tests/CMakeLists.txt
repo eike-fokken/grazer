@@ -53,10 +53,17 @@ target_link_libraries(implicitboxscheme_test PUBLIC gtest gtest_main gmock)
 
 
 add_executable(gas_test GasTest.cpp)
-
 target_link_libraries(gas_test PUBLIC gas_factory gas netfactory networkproblem matrixhandler eqcomp_helpers)
 target_link_libraries(gas_test PUBLIC gtest gtest_main gmock)
 target_include_directories(gas_test PRIVATE include)
+
+
+add_executable(gaspowerconnection_test GaspowerconnectionTest.cpp)
+target_link_libraries(gaspowerconnection_test PUBLIC full_factory gaspowerconnection power netfactory networkproblem matrixhandler eqcomp_helpers)
+target_link_libraries(gaspowerconnection_test PUBLIC gtest gtest_main gmock)
+target_include_directories(gaspowerconnection_test PRIVATE include)
+
+
 
 add_executable(aux_unit_conversion_test AuxUnitConversionTest.cpp)
 
