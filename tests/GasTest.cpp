@@ -1,3 +1,4 @@
+#include "Equationcomponent_test_helpers.hpp"
 #include "Flowboundarynode.hpp"
 #include "Gas_factory.hpp"
 #include "Gaspowerconnection.hpp"
@@ -9,41 +10,14 @@
 #include "Networkproblem.hpp"
 #include "Pipe.hpp"
 #include "Shortpipe.hpp"
-#include <Eigen/Dense>
 #include <gtest/gtest.h>
-#include <iostream>
 #include <memory>
-#include <nlohmann/json.hpp>
 #include <sstream>
 #include <stdexcept>
-#include <streambuf>
 #include <string>
 #include <type_traits>
 #include <vector>
 
-struct Catch_cout {
-  Catch_cout(std::streambuf *new_buffer) : old(std::cout.rdbuf(new_buffer)) {}
-
-  ~Catch_cout() { std::cout.rdbuf(old); }
-
-private:
-  std::streambuf *old;
-};
-
-namespace Eigen {
-  template <typename Derived>
-  void to_json(nlohmann::json &j, const MatrixBase<Derived> &eig);
-}
-
-// this is for T = double or T = Eigen::Vector...
-template <typename T>
-nlohmann::json make_value_json(std::string id, std::string key, T &condition0,
-                               T &condition1);
-
-// this is for T = double or T = Eigen::Vector...
-template <typename T>
-nlohmann::json make_value_json(std::string id, std::string key,
-                               std::vector<std::pair<double, T>> pairs);
 
 class GasTEST : public ::testing::Test {
 public:
@@ -79,14 +53,6 @@ nlohmann::json pipe_json(std::string id, nlohmann::json startnode,
                          std::string diameter_unit, double roughness,
                          std::string roughness_unit, double desired_delta_x);
 
-nlohmann::json make_full_json(std::vector<nlohmann::json> sources,
-                              std::vector<nlohmann::json> sinks,
-                              std::vector<nlohmann::json> innodes,
-                              std::vector<nlohmann::json> shortpipes,
-                              std::vector<nlohmann::json> pipes);
-
-nlohmann::json make_initial_json(std::vector<nlohmann::json> shortpipes,
-                                 std::vector<nlohmann::json> pipes);
 
 TEST_F(GasTEST, Shortpipe_evaluate) {
 
@@ -100,8 +66,8 @@ TEST_F(GasTEST, Shortpipe_evaluate) {
   auto node1_topology = source_json("node1", flow1start, flow1end);
   auto shortpipe_topology =
       shortpipe_json("shortpipe", node0_topology, node1_topology);
-  auto np_json = make_full_json({node0_topology, node1_topology}, {}, {},
-                                {shortpipe_topology}, {});
+  auto np_json = make_full_json({{"Source", {node0_topology, node1_topology}}},
+                                {{"Shortpipe", {shortpipe_topology}}});
 
   auto netprob = get_Networkproblem(np_json);
   int number_of_variables = netprob->set_indices(0);
@@ -122,8 +88,8 @@ TEST_F(GasTEST, Shortpipe_evaluate) {
 
   auto initial_json = make_value_json("shortpipe", "x", cond0, cond1);
 
-  nlohmann::json np_initialjson;
-  np_initialjson["connections"]["Shortpipe"].push_back(initial_json);
+  nlohmann::json np_initialjson = make_initial_json({},{{"Shortpipe",{initial_json}}});;
+  
   netprob->set_initial_values(last_state, np_initialjson);
   Eigen::VectorXd new_state = last_state;
   netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
@@ -144,8 +110,8 @@ TEST_F(GasTEST, Shortpipe_evaluate_state_derivative) {
   auto node1_topology = source_json("node1", flow1start, flow1end);
   auto shortpipe_topology =
       shortpipe_json("shortpipe", node0_topology, node1_topology);
-  auto np_json = make_full_json({node0_topology, node1_topology}, {}, {},
-                                {shortpipe_topology}, {});
+  auto np_json = make_full_json({{"Source", {node0_topology, node1_topology}}},
+                                {{"Shortpipe", {shortpipe_topology}}});
 
   auto netprob = get_Networkproblem(np_json);
 
@@ -169,8 +135,9 @@ TEST_F(GasTEST, Shortpipe_evaluate_state_derivative) {
 
   auto initial_json = make_value_json("shortpipe", "x", cond0, cond1);
 
-  nlohmann::json np_initialjson;
-  np_initialjson["connections"]["Shortpipe"].push_back(initial_json);
+  nlohmann::json np_initialjson =
+      make_initial_json({}, {{"Shortpipe", {initial_json}}});
+  
   netprob->set_initial_values(last_state, np_initialjson);
   Eigen::VectorXd new_state = last_state;
   netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
@@ -213,8 +180,8 @@ TEST_F(GasTEST, Source_evaluate) {
   auto shortpipe01_json = shortpipe_json("shortpipe01", node0_json, node1_json);
   auto shortpipe20_json = shortpipe_json("shortpipe20", node2_json, node0_json);
 
-  auto np_json = make_full_json({node0_json, node1_json, node2_json}, {}, {},
-                                {shortpipe01_json, shortpipe20_json}, {});
+  auto np_json = make_full_json({{"Source", {node0_json, node1_json,node2_json}}},
+                                {{"Shortpipe", {shortpipe01_json,shortpipe20_json}}});
 
   auto netprob = get_Networkproblem(np_json);
   int number_of_variables = netprob->set_indices(0);
@@ -242,7 +209,8 @@ TEST_F(GasTEST, Source_evaluate) {
     initial20 = make_value_json("shortpipe20", "x", cond0, cond1);
   }
 
-  auto initial_json = make_initial_json({initial01, initial20}, {});
+  auto initial_json =
+      make_initial_json({}, {{"Shortpipe", {initial01, initial20}}});
 
   double last_time = 0.0;
   double new_time = 0.0;
@@ -285,8 +253,9 @@ TEST_F(GasTEST, Source_evaluate_state_derivative) {
   auto shortpipe01_json = shortpipe_json("shortpipe01", node0_json, node1_json);
   auto shortpipe20_json = shortpipe_json("shortpipe20", node2_json, node0_json);
 
-  auto np_json = make_full_json({node0_json, node1_json, node2_json}, {}, {},
-                                {shortpipe01_json, shortpipe20_json}, {});
+  auto np_json =
+      make_full_json({{"Source", {node0_json, node1_json, node2_json}}},
+                     {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
 
   auto netprob = get_Networkproblem(np_json);
   int number_of_variables = netprob->set_indices(0);
@@ -313,7 +282,9 @@ TEST_F(GasTEST, Source_evaluate_state_derivative) {
     Eigen::Vector2d cond1(sp20_pressure_end, sp20_flow_end);
     initial20 = make_value_json("shortpipe20", "x", cond0, cond1);
   }
-  auto initial_json = make_initial_json({initial01, initial20}, {});
+  auto initial_json =
+      make_initial_json({}, {{"Shortpipe", {initial01, initial20}}});
+
 
   double last_time = 0.0;
   double new_time = 0.0;
@@ -389,8 +360,9 @@ TEST_F(GasTEST, Sink_evaluate) {
   auto shortpipe01_json = shortpipe_json("shortpipe01", node0_json, node1_json);
   auto shortpipe20_json = shortpipe_json("shortpipe20", node2_json, node0_json);
 
-  auto np_json = make_full_json({}, {node0_json, node1_json, node2_json}, {},
-                                {shortpipe01_json, shortpipe20_json}, {});
+  auto np_json =
+      make_full_json({{"Sink", {node0_json, node1_json, node2_json}}},
+                     {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
 
   auto netprob = get_Networkproblem(np_json);
   int number_of_variables = netprob->set_indices(0);
@@ -418,7 +390,9 @@ TEST_F(GasTEST, Sink_evaluate) {
     initial20 = make_value_json("shortpipe20", "x", cond0, cond1);
   }
 
-  auto initial_json = make_initial_json({initial01, initial20}, {});
+  auto initial_json =
+      make_initial_json({}, {{"Shortpipe", {initial01, initial20}}});
+
 
   double last_time = 0.0;
   double new_time = 0.0;
@@ -461,8 +435,9 @@ TEST_F(GasTEST, Sink_evaluate_state_derivative) {
   auto shortpipe01_json = shortpipe_json("shortpipe01", node0_json, node1_json);
   auto shortpipe20_json = shortpipe_json("shortpipe20", node2_json, node0_json);
 
-  auto np_json = make_full_json({}, {node0_json, node1_json, node2_json}, {},
-                                {shortpipe01_json, shortpipe20_json}, {});
+  auto np_json =
+      make_full_json({{"Sink", {node0_json, node1_json, node2_json}}},
+                     {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
 
   auto netprob = get_Networkproblem(np_json);
   int number_of_variables = netprob->set_indices(0);
@@ -489,7 +464,9 @@ TEST_F(GasTEST, Sink_evaluate_state_derivative) {
     Eigen::Vector2d cond1(sp20_pressure_end, sp20_flow_end);
     initial20 = make_value_json("shortpipe20", "x", cond0, cond1);
   }
-  auto initial_json = make_initial_json({initial01, initial20}, {});
+  auto initial_json =
+      make_initial_json({}, {{"Shortpipe", {initial01, initial20}}});
+
 
   double last_time = 0.0;
   double new_time = 0.0;
@@ -559,8 +536,9 @@ TEST_F(GasTEST, Innode_evaluate) {
   auto shortpipe01_json = shortpipe_json("shortpipe01", node0_json, node1_json);
   auto shortpipe20_json = shortpipe_json("shortpipe20", node2_json, node0_json);
 
-  auto np_json = make_full_json({}, {}, {node0_json, node1_json, node2_json},
-                                {shortpipe01_json, shortpipe20_json}, {});
+  auto np_json =
+      make_full_json({{"Innode", {node0_json, node1_json, node2_json}}},
+                     {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
 
   auto netprob = get_Networkproblem(np_json);
   int number_of_variables = netprob->set_indices(0);
@@ -588,7 +566,8 @@ TEST_F(GasTEST, Innode_evaluate) {
     initial20 = make_value_json("shortpipe20", "x", cond0, cond1);
   }
 
-  auto initial_json = make_initial_json({initial01, initial20}, {});
+  auto initial_json =
+      make_initial_json({}, {{"Shortpipe", {initial01, initial20}}});
 
   double last_time = 0.0;
   double new_time = 0.0;
@@ -624,8 +603,9 @@ TEST_F(GasTEST, Innode_evaluate_state_derivative) {
   auto shortpipe01_json = shortpipe_json("shortpipe01", node0_json, node1_json);
   auto shortpipe20_json = shortpipe_json("shortpipe20", node2_json, node0_json);
 
-  auto np_json = make_full_json({}, {}, {node0_json, node1_json, node2_json},
-                                {shortpipe01_json, shortpipe20_json}, {});
+  auto np_json =
+      make_full_json({{"Innode", {node0_json, node1_json, node2_json}}},
+                     {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
 
   auto netprob = get_Networkproblem(np_json);
   int number_of_variables = netprob->set_indices(0);
@@ -652,7 +632,7 @@ TEST_F(GasTEST, Innode_evaluate_state_derivative) {
     Eigen::Vector2d cond1(sp20_pressure_end, sp20_flow_end);
     initial20 = make_value_json("shortpipe20", "x", cond0, cond1);
   }
-  auto initial_json = make_initial_json({initial01, initial20}, {});
+  auto initial_json = make_initial_json({},{{"Shortpipe",{initial01, initial20}}});
 
   double last_time = 0.0;
   double new_time = 0.0;
@@ -738,10 +718,12 @@ TEST_F(GasTEST, Pipe_evaluate) {
 
   nlohmann::json pipe_initial = make_value_json(id, "x", initialvalues);
 
-  nlohmann::json net_initial = make_initial_json({}, {pipe_initial});
+  nlohmann::json net_initial = make_initial_json({}, {{"Pipe",{pipe_initial}}});
 
   auto netprop_json =
-      make_full_json({}, {}, {node0, node1}, {}, {pipe_topology});
+      make_full_json({{"Innode", {node0, node1}}},
+                     {{"Pipe", {pipe_topology}}});
+
   auto netprob = get_Networkproblem(netprop_json);
 
   int number_of_variables = netprob->set_indices(0);
@@ -805,13 +787,14 @@ TEST_F(GasTEST, Pipe_evaluate_state_derivative) {
   }
   
   nlohmann::json pipe_initial = make_value_json(id, "x", initialvalues);
-  nlohmann::json net_initial = make_initial_json({}, {pipe_initial});
+  nlohmann::json net_initial = make_initial_json({},{{"Pipe",{pipe_initial}}});
 
   auto netprop_json =
-      make_full_json({}, {}, {node0, node1}, {}, {pipe_topology});
+      make_full_json({{"Innode", {node0, node1}}}, {{"Pipe", {pipe_topology}}});
+
   auto netprob = get_Networkproblem(netprop_json);
 
-  int number_of_variables = netprob->set_indices(0);
+    int number_of_variables = netprob->set_indices(0);
 
     double last_time = 0.0;
   double new_time = 10.0;
@@ -1199,123 +1182,6 @@ TEST_F(GasTEST, Pipe_evaluate_state_derivative) {
 //   // //   std::cout << gp0.dgenerated_power_dq(i) <<std::endl;
 //   // // }
 // }
-
-template <typename Derived>
-void Eigen::to_json(nlohmann::json &j, const MatrixBase<Derived> &eig) {
-  EIGEN_STATIC_ASSERT_VECTOR_ONLY(MatrixBase<Derived>);
-  // static_assert(eig.cols() == 1,
-  //               "This function is only for vectors, not for
-  //               matrices.");
-  j = nlohmann::json::array();
-
-  for (Eigen::Index i = 0; i != eig.rows(); ++i) {
-    j.push_back(eig(i));
-  }
-}
-
-template <typename T>
-nlohmann::json make_value_json(std::string id, std::string key, T &condition0,
-                               T &condition1) {
-  nlohmann::json bound;
-  bound["id"] = id;
-  bound["data"] = nlohmann::json::array();
-  nlohmann::json b0;
-  nlohmann::json b1;
-  b1[key] = 1;
-  b0[key] = 0;
-  if constexpr (std::is_same_v<T, double>) {
-    b0["values"].push_back(condition0);
-    b1["values"].push_back(condition1);
-  } else {
-    b0["values"] = condition0;
-    b1["values"] = condition1;
-  }
-  bound["data"].push_back(b0);
-  bound["data"].push_back(b1);
-  return bound;
-}
-
-template <typename T>
-nlohmann::json make_value_json(std::string id, std::string key,
-                               std::vector<std::pair<double, T>> pairs) {
-
-  if (pairs.empty()) {
-    throw std::runtime_error("Pairs empty.");
-  }
-  nlohmann::json bound;
-  bound["id"] = id;
-  bound["data"] = nlohmann::json::array();
-
-  for (auto [x, values] : pairs) {
-    nlohmann::json b;
-    b[key] = x;
-    if constexpr (std::is_same_v<T, double>) {
-      b["values"].push_back(values);
-    } else {
-      b["values"] = values;
-    }
-    bound["data"].push_back(b);
-  }
-  return bound;
-}
-
-nlohmann::json make_initial_json(std::vector<nlohmann::json> shortpipes,
-                                 std::vector<nlohmann::json> pipes) {
-  nlohmann::json initial_json;
-
-  if (not pipes.empty()) {
-    for (auto &pipe : pipes) {
-      initial_json["connections"]["Pipe"].push_back(pipe);
-    }
-  }
-  if (not shortpipes.empty()) {
-    for (auto &shortpipe : shortpipes) {
-      initial_json["connections"]["Shortpipe"].push_back(shortpipe);
-    }
-  }
-
-  return initial_json;
-}
-
-nlohmann::json make_full_json(std::vector<nlohmann::json> sources,
-                              std::vector<nlohmann::json> sinks,
-                              std::vector<nlohmann::json> innodes,
-                              std::vector<nlohmann::json> shortpipes,
-                              std::vector<nlohmann::json> pipes) {
-  nlohmann::json full_json;
-  full_json["boundary_json"] = nlohmann::json::object_t();
-  full_json["control_json"] = nlohmann::json::object_t();
-  full_json["topology_json"] = nlohmann::json::object_t();
-  if (not sources.empty()) {
-    for (auto &source : sources) {
-      full_json["topology_json"]["nodes"]["Source"].push_back(source);
-    }
-  }
-  if (not sinks.empty()) {
-    for (auto &sink : sinks) {
-      full_json["topology_json"]["nodes"]["Sink"].push_back(sink);
-    }
-  }
-  if (not innodes.empty()) {
-    for (auto &innode : innodes) {
-      full_json["topology_json"]["nodes"]["Innode"].push_back(innode);
-    }
-  }
-
-  if (not pipes.empty()) {
-    for (auto &pipe : pipes) {
-      full_json["topology_json"]["connections"]["Pipe"].push_back(pipe);
-    }
-  }
-  if (not shortpipes.empty()) {
-    for (auto &shortpipe : shortpipes) {
-      full_json["topology_json"]["connections"]["Shortpipe"].push_back(
-          shortpipe);
-    }
-  }
-
-  return full_json;
-}
 
 nlohmann::json source_json(std::string id, double flowstart, double flowend) {
   nlohmann::json topology;

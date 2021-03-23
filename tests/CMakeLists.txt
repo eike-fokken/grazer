@@ -1,3 +1,8 @@
+add_library(eqcomp_helpers STATIC Equationcomponent_test_helpers.cpp)
+target_include_directories(eqcomp_helpers PUBLIC include)
+
+
+
 add_executable(net_test NetTest.cpp)
 
 target_link_libraries(net_test PUBLIC network)
@@ -49,8 +54,9 @@ target_link_libraries(implicitboxscheme_test PUBLIC gtest gtest_main gmock)
 
 add_executable(gas_test GasTest.cpp)
 
-target_link_libraries(gas_test PUBLIC gas_factory gas netfactory networkproblem matrixhandler)
+target_link_libraries(gas_test PUBLIC gas_factory gas netfactory networkproblem matrixhandler eqcomp_helpers)
 target_link_libraries(gas_test PUBLIC gtest gtest_main gmock)
+target_include_directories(gas_test PRIVATE include)
 
 add_executable(aux_unit_conversion_test AuxUnitConversionTest.cpp)
 
