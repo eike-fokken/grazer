@@ -1,7 +1,6 @@
 #include "Equationcomponent_test_helpers.hpp"
 #include "Flowboundarynode.hpp"
 #include "Gas_factory.hpp"
-#include "Gaspowerconnection.hpp"
 #include "Implicitboxscheme.hpp"
 #include "Innode.hpp"
 #include "Isothermaleulerequation.hpp"
