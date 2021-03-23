@@ -292,3 +292,77 @@ TEST_F(GaspowerconnectionTEST, evaluate){
     EXPECT_DOUBLE_EQ(rootvalues[3],vphi->P(new_state) -gp->generated_power(new_state[3]));  
   }
 }
+
+TEST_F(GaspowerconnectionTEST, evaluate_state_derivative){
+
+  nlohmann::json innode_json;
+  innode_json["id"] = "innode";
+  double G = 10;
+  double B = 20;
+  Eigen::Vector2d cond0(100,200);
+  Eigen::Vector2d cond1(100, 200);
+  auto vphi_json = vphinode_json("vphi", G, B, cond0, cond1);
+
+  double gas2power_q_coefficient = 34;
+  double power2gas_q_coefficient = 554;
+
+  auto gp_json = gaspowerconnection_json("gp", innode_json, vphi_json,  gas2power_q_coefficient, power2gas_q_coefficient);
+
+  auto netprob_json =
+      make_full_json({{"Innode", {innode_json}}, {"Vphinode", {vphi_json}}},
+                     {{"Gaspowerconnection",{gp_json}}});
+  auto netprob = get_Networkproblem(netprob_json);
+  auto number_of_variables = netprob->set_indices(0);
+
+  double last_time = 0.0;
+  double new_time = 1.0;
+  Eigen::VectorXd rootvalues(number_of_variables);
+  rootvalues.setZero();
+  Eigen::VectorXd last_state(number_of_variables);
+  Eigen::VectorXd new_state(number_of_variables);
+  last_state.setOnes();
+
+  for(int i= 0;i!=number_of_variables;++i){
+    new_state[i] = i;
+  }
+  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  auto edges = netprob->get_network().get_edges();
+  if (edges.size() != 1) {
+    FAIL();
+  }
+
+  auto nodes = netprob->get_network().get_nodes();
+  if (nodes.size() != 2) {
+    FAIL();
+  }
+  auto vphi = dynamic_cast<Model::Networkproblem::Power::Vphinode const *>(nodes.back());
+  if (not vphi) {
+    FAIL();
+  }
+  
+
+  auto gp = dynamic_cast<
+      Model::Networkproblem::Gaspowerconnection::Gaspowerconnection const *>(
+      edges.front());
+  if (not gp) {
+    FAIL();
+  }
+
+
+  for(int i=0;i!=10;++i){
+    Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
+    Aux::Triplethandler handler(&J);
+
+    Eigen::Matrix4d DenseJ;
+    new_state.setRandom();
+    netprob->evaluate_state_derivative(&handler, last_time, new_time,
+                                       last_state, new_state);
+    handler.set_matrix();
+    DenseJ=J;
+    EXPECT_DOUBLE_EQ(DenseJ(3,0),2*G*new_state[0]);
+    EXPECT_DOUBLE_EQ(DenseJ(3, 1), 0);
+    EXPECT_DOUBLE_EQ(DenseJ(3, 2), 0);
+    EXPECT_DOUBLE_EQ(DenseJ(3, 3), - gp->dgenerated_power_dq(new_state[3]));
+  }
+}
+
