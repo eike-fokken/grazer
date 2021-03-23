@@ -67,10 +67,10 @@ endif()
 
 
 
-set(my_debug_options -O0 -Werror -Wconversion -pedantic-errors -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wstrict-overflow=5 -Wswitch-default -Wundef -Wunused -Wno-error=unused-parameter -Wno-error=unused-variable -Wno-error=unused-value -Wdelete-non-virtual-dtor)
+set(my_debug_options -O0 -Werror -Wconversion -pedantic-errors -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wstrict-overflow=5 -Wswitch-default -Wundef -Wunused -Wno-error=unused-parameter -Wno-error=unused -Wno-error=unused-variable -Wno-error=unused-value -Wdelete-non-virtual-dtor)
 set(debug_clang_options "-fcolor-diagnostics;-Wno-error=unused-private-field;-Wmissing-prototypes")
 
-set(debug_gcc_options "-fdiagnostics-color;-Wno-error=strict-overflow")
+set(debug_gcc_options "-fdiagnostics-color;-Wno-error=strict-overflow;-Wno-error=unused-but-set-variable")
 
 # Warning 4127 warns of if statements that are compile time constants.
 # But templated if statements are often compile time constants and Eigen does not have
@@ -142,7 +142,7 @@ else()
 endif()
 
 add_subdirectory(src)
-add_subdirectory(testingWithGoogle)
+add_subdirectory(tests)
 add_subdirectory(helper_functions)
 
 add_custom_target(cclean COMMAND cd ${CMAKE_SOURCE_DIR} && rm -r ${CMAKE_SOURCE_DIR}/build/ && mkdir ${CMAKE_SOURCE_DIR}/build/ && cd ${CMAKE_SOURCE_DIR}/build/

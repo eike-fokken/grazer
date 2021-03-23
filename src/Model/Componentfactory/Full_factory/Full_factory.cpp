@@ -1,7 +1,6 @@
 #include "Full_factory.hpp"
-
-#include <Gas_factory.hpp>
-#include <Power_factory.hpp>
+#include "Gas_factory.hpp"
+#include "Power_factory.hpp"
 
 #include "Compressorstation.hpp"
 #include "Controlvalve.hpp"
@@ -21,10 +20,11 @@ namespace Model::Componentfactory {
   void add_all_components(Componentfactory &factory){
     add_power_components(factory);
     add_gas_components(factory);
+    factory.add_edge_type(
+        std::make_unique<EdgeType<Networkproblem::Gaspowerconnection::Gaspowerconnection>>());
   }
 
   Full_factory::Full_factory(){
-    add_power_components(*this);
-    add_gas_components(*this);
+    add_all_components(*this);
   }
 }

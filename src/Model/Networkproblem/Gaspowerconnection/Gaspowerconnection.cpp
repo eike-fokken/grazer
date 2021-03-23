@@ -10,7 +10,7 @@
 #include <iostream>
 #include "make_schema.hpp"
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Networkproblem::Gaspowerconnection {
 
   std::string Gaspowerconnection::get_type() { return "Gaspowerconnection"; }
   nlohmann::json Gaspowerconnection::get_schema() {

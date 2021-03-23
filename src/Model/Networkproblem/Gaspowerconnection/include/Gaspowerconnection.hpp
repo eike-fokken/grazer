@@ -7,10 +7,10 @@ namespace Model::Networkproblem::Power {
   class Powernode;  
 } // namespace Model::Networkproblem::Power
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Networkproblem::Gaspowerconnection {
 
-    class Gaspowerconnection final : public Network::Edge, public Gasedge {
-    public:
+  class Gaspowerconnection final : public Network::Edge, public Gas::Gasedge {
+  public:
       static std::string get_type();
       static nlohmann::json get_schema();
 

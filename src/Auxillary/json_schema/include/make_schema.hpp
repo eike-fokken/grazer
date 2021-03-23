@@ -5,16 +5,16 @@ using nlohmann::json;
 
 namespace Aux::schema {
   namespace type {
-    inline const json simple(std::string type);
-    inline const json simple(std::string type, std::string description);
-    inline const json simple(std::string type, std::string title, std::string description);
-    const json number(); 
-    const json number(std::string description); 
-    const json number(std::string title, std::string description); 
-    const json string(); 
-    const json string(std::string description); 
-    const json string(std::string title, std::string description); 
-    const json length = R"({"$ref": "unit_schema.json#/length"})"_json;
+    json const simple(std::string type);
+    json const simple(std::string type, std::string description);
+    json const simple(std::string type, std::string title, std::string description);
+    json const number();
+    json const number(std::string description);
+    json const number(std::string title, std::string description);
+    json const string();
+    json const string(std::string description);
+    json const string(std::string title, std::string description);
+    json const length = R"({"$ref": "unit_schema.json#/length"})"_json;
   }
 
   json make_list_schema_of(json const &element_schema);
@@ -22,9 +22,9 @@ namespace Aux::schema {
 
   /**
    * @brief creates a schema for boundary values
-   * 
+   *
    * @param num_values number of values per timestamp
-   * @return nlohmann::json 
+   * @return nlohmann::json
    */
   json make_boundary_schema(int num_values);
 

@@ -43,7 +43,8 @@ namespace Model::Networkproblem::Gas {
 
 
 
-    double const length;
+  private:
+    double get_length();
     double const diameter;
     double const roughness;
     int const number_of_points;

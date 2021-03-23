@@ -2,7 +2,6 @@
 
 #include "Compressorstation.hpp"
 #include "Controlvalve.hpp"
-#include "Gaspowerconnection.hpp"
 #include "Innode.hpp"
 #include "Pipe.hpp"
 #include "Shortpipe.hpp"
@@ -20,7 +19,6 @@ namespace Model::Componentfactory {
     factory.add_edge_type(std::make_unique<EdgeType<Networkproblem::Gas::Shortpipe>>());
     factory.add_edge_type(std::make_unique<EdgeType<Networkproblem::Gas::Controlvalve>>());
     factory.add_edge_type(std::make_unique<EdgeType<Networkproblem::Gas::Compressorstation>>());
-    factory.add_edge_type(std::make_unique<EdgeType<Networkproblem::Gas::Gaspowerconnection>>());
   }
 
   Gas_factory::Gas_factory(){

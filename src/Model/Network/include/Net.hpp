@@ -25,8 +25,10 @@ namespace Network {
     std::vector<std::string> get_valid_node_ids() const;
 
     std::vector<Node *> get_nodes();
+    std::vector<Node const *> get_nodes() const;
 
     std::vector<Edge *> get_edges();
+    std::vector<Edge const *> get_edges() const;
     /// This function indicates whether an edge between two nodes exists or
     /// not. The order of nodes in the edge is not relevant. Its reverse edge
     /// is thus also checked.

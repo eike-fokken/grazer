@@ -4,20 +4,20 @@ using nlohmann::json;
 
 namespace Aux::schema {
 
-    inline const json type::simple(std::string type){
+    const json type::simple(std::string type){
       json type_schema;
       type_schema["type"] = type;
       return type_schema;
     }
 
-    inline const json type::simple(std::string type, std::string description){
+    const json type::simple(std::string type, std::string description){
       json type_schema;
       type_schema["type"] = type;
       type_schema["description"] = description;
       return type_schema;
     }
 
-    inline const json type::simple(std::string type, std::string title, std::string description){
+    const json type::simple(std::string type, std::string title, std::string description){
       json type_schema;
       type_schema["type"] = type;
       type_schema["title"] = title;

@@ -14,6 +14,7 @@ namespace Aux {
 
   void Triplethandler::set_matrix() {
     matrix->setFromTriplets(tripletlist.begin(), tripletlist.end());
+    tripletlist.clear();
   }
 
   void Coeffrefhandler::set_coefficient(int row, int col, double value) {
