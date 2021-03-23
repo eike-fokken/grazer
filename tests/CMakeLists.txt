@@ -117,7 +117,13 @@ add_test(
   NAME gas_test
   COMMAND gas_test
   )
- 
+
+add_test(
+  NAME gaspowerconnection
+  COMMAND gaspowerconnection_test
+  )
+
+
 add_test(
   NAME aux_unit_conversion
   COMMAND aux_unit_conversion_test

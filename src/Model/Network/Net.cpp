@@ -71,8 +71,24 @@ namespace Network {
     return raw_nodes;
   }
 
+  std::vector<Node const*> Net::get_nodes() const {
+    std::vector<Node const*> raw_nodes;
+    for (auto &node_sptr : nodes) {
+      raw_nodes.push_back(node_sptr.get());
+    }
+    return raw_nodes;
+  }
+
   std::vector<Edge *> Net::get_edges() {
     std::vector<Edge *> raw_edges;
+    for (auto &edge_uptr : edges) {
+      raw_edges.push_back(edge_uptr.get());
+    }
+    return raw_edges;
+  }
+
+  std::vector<Edge const *> Net::get_edges() const{
+    std::vector<Edge const *> raw_edges;
     for (auto &edge_uptr : edges) {
       raw_edges.push_back(edge_uptr.get());
     }

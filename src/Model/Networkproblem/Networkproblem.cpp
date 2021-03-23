@@ -126,16 +126,20 @@ namespace Model::Networkproblem {
     }
     }
 
-  int Networkproblem::reserve_indices(int const next_free_index) {
-    int free_index = next_free_index;
-    for (Equationcomponent *eqcomponent : equationcomponents) {
-      free_index = eqcomponent->set_indices(free_index);
-    }
-    for (Equationcomponent *eqcomponent : equationcomponents) {
-      eqcomponent->setup();
-    }
+  Network::Net const & Networkproblem::get_network() const{
+    return *network;
+  }
 
-    return free_index;
+    int Networkproblem::reserve_indices(int const next_free_index) {
+      int free_index = next_free_index;
+      for (Equationcomponent *eqcomponent : equationcomponents) {
+        free_index = eqcomponent->set_indices(free_index);
+      }
+      for (Equationcomponent *eqcomponent : equationcomponents) {
+        eqcomponent->setup();
+      }
+
+      return free_index;
   }
 
 } // namespace Model::Networkproblem

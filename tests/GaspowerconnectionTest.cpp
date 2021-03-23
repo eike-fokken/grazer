@@ -1,6 +1,7 @@
 #include "Gaspowerconnection.hpp"
 #include "Equationcomponent_test_helpers.hpp"
 #include "Innode.hpp"
+#include "Mathfunctions.hpp"
 #include "Matrixhandler.hpp"
 #include "Netfactory.hpp"
 #include "Networkproblem.hpp"
@@ -8,6 +9,7 @@
 #include "Vphinode.hpp"
 #include <Eigen/src/Core/Matrix.h>
 #include <gtest/gtest.h>
+#include <stdexcept>
 
 class GaspowerconnectionTEST : public ::testing::Test {
 public:
@@ -62,6 +64,90 @@ nlohmann::json vphinode_json(std::string id, double G, double B,
   return vphi_topology;
 }
 
+TEST_F(GaspowerconnectionTEST, smoothing_polynomial) {
+  nlohmann::json innode_json;
+  innode_json["id"] = "innode";
+  double G = 4;
+  double B = 123;
+  Eigen::Vector2d cond0(345, 333);
+  Eigen::Vector2d cond1(341, 3331);
+  auto vphi_json = vphinode_json("vphi", G, B, cond0, cond1);
+
+  double gas2power_q_coefficient = 34;
+  double power2gas_q_coefficient = 55;
+
+  auto gp_json =
+      gaspowerconnection_json("gp", innode_json, vphi_json,
+                              gas2power_q_coefficient, power2gas_q_coefficient);
+
+  auto netprob_json =
+      make_full_json({{"Innode", {innode_json}}, {"Vphinode", {vphi_json}}},
+                     {{"Gaspowerconnection", {gp_json}}});
+  auto netprob = get_Networkproblem(netprob_json);
+
+  auto edges = netprob->get_network().get_edges();
+  if(edges.size()!=1){FAIL();}
+  auto gp = dynamic_cast<Model::Networkproblem::Gaspowerconnection::Gaspowerconnection const*>(edges.front());
+  if(not gp){FAIL();}
+
+  EXPECT_DOUBLE_EQ(gp->smoothing_polynomial(0),
+                   0);
+  EXPECT_DOUBLE_EQ(gp->smoothing_polynomial(gp->kappa),
+                   gas2power_q_coefficient * gp->kappa);
+  EXPECT_DOUBLE_EQ(gp->smoothing_polynomial(-gp->kappa),
+                   power2gas_q_coefficient * (-gp->kappa));
+  EXPECT_THROW(gp->smoothing_polynomial(gp->kappa+1), std::runtime_error);
+  EXPECT_THROW(gp->smoothing_polynomial(-gp->kappa - 1), std::runtime_error);
+}
+
+TEST_F(GaspowerconnectionTEST, dsmoothing_polynomial) {
+  nlohmann::json innode_json;
+  innode_json["id"] = "innode";
+  double G = 4;
+  double B = 123;
+  Eigen::Vector2d cond0(345, 333);
+  Eigen::Vector2d cond1(341, 3331);
+  auto vphi_json = vphinode_json("vphi", G, B, cond0, cond1);
+
+  double gas2power_q_coefficient = 34;
+  double power2gas_q_coefficient = 55;
+
+  auto gp_json =
+      gaspowerconnection_json("gp", innode_json, vphi_json,
+                              gas2power_q_coefficient, power2gas_q_coefficient);
+
+  auto netprob_json =
+      make_full_json({{"Innode", {innode_json}}, {"Vphinode", {vphi_json}}},
+                     {{"Gaspowerconnection", {gp_json}}});
+  auto netprob = get_Networkproblem(netprob_json);
+
+  auto edges = netprob->get_network().get_edges();
+  if(edges.size()!=1){FAIL();}
+  auto gp = dynamic_cast<Model::Networkproblem::Gaspowerconnection::Gaspowerconnection const*>(edges.front());
+  if(not gp){FAIL();}
+
+  EXPECT_DOUBLE_EQ(gp->dsmoothing_polynomial_dq(gp->kappa),
+                   gas2power_q_coefficient);
+  EXPECT_DOUBLE_EQ(gp->dsmoothing_polynomial_dq(-gp->kappa),
+                   power2gas_q_coefficient);
+
+  EXPECT_THROW(gp->dsmoothing_polynomial_dq(gp->kappa+1), std::runtime_error);
+  EXPECT_THROW(gp->dsmoothing_polynomial_dq(-gp->kappa - 1), std::runtime_error);
+
+  double h = sqrt(Aux::EPSILON);
+  {
+    auto numderivative = (gp->smoothing_polynomial(gp->kappa) -
+                          gp->smoothing_polynomial(gp->kappa - h)) /
+                         h;
+    EXPECT_NEAR(numderivative, gp->dsmoothing_polynomial_dq(gp->kappa), h);
+  }
+  {
+    auto numderivative = (gp->smoothing_polynomial(-gp->kappa+h) -
+                          gp->smoothing_polynomial(-gp->kappa )) /
+                         h;
+    EXPECT_NEAR(numderivative, gp->dsmoothing_polynomial_dq(-gp->kappa), h);
+  }
+}
 
 TEST_F(GaspowerconnectionTEST, evaluate){
 
@@ -100,7 +186,9 @@ TEST_F(GaspowerconnectionTEST, evaluate){
   auto net_initial =
       make_initial_json({}, {{"Gaspowerconnection", {gp_initial}}});
   netprob->set_initial_values(new_state, net_initial);
-
   netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
-  std::cout << rootvalues << std::endl;
+
+
+  
+
 }
