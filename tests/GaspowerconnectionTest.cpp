@@ -189,6 +189,49 @@ TEST_F(GaspowerconnectionTEST, generated_power) {
                    power2gas_q_coefficient * (-gp->kappa-1));
 }
 
+TEST_F(GaspowerconnectionTEST, dgenerated_power_dq) {
+  nlohmann::json innode_json;
+  innode_json["id"] = "innode";
+  double G = 4;
+  double B = 123;
+  Eigen::Vector2d cond0(345, 333);
+  Eigen::Vector2d cond1(341, 3331);
+  auto vphi_json = vphinode_json("vphi", G, B, cond0, cond1);
+
+  double gas2power_q_coefficient = 34;
+  double power2gas_q_coefficient = 55;
+
+  auto gp_json =
+      gaspowerconnection_json("gp", innode_json, vphi_json,
+                              gas2power_q_coefficient, power2gas_q_coefficient);
+
+  auto netprob_json =
+      make_full_json({{"Innode", {innode_json}}, {"Vphinode", {vphi_json}}},
+                     {{"Gaspowerconnection", {gp_json}}});
+  auto netprob = get_Networkproblem(netprob_json);
+
+  auto edges = netprob->get_network().get_edges();
+  if(edges.size()!=1){FAIL();}
+  auto gp = dynamic_cast<Model::Networkproblem::Gaspowerconnection::Gaspowerconnection const*>(edges.front());
+  if(not gp){FAIL();}
+
+  EXPECT_DOUBLE_EQ(gp->dgenerated_power_dq(0), gp->dsmoothing_polynomial_dq(0));
+
+  EXPECT_DOUBLE_EQ(gp->dgenerated_power_dq(gp->kappa+1),
+                   gas2power_q_coefficient);
+
+  EXPECT_DOUBLE_EQ(gp->dgenerated_power_dq(gp->kappa),
+                   gas2power_q_coefficient);
+  EXPECT_DOUBLE_EQ(gp->dgenerated_power_dq(-gp->kappa),
+                   power2gas_q_coefficient);
+
+  EXPECT_DOUBLE_EQ(gp->dgenerated_power_dq(-gp->kappa-1),
+                   power2gas_q_coefficient);
+}
+
+
+
+
 TEST_F(GaspowerconnectionTEST, evaluate){
 
   nlohmann::json innode_json;
