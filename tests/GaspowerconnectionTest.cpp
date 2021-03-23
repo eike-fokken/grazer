@@ -243,7 +243,7 @@ TEST_F(GaspowerconnectionTEST, evaluate){
   auto vphi_json = vphinode_json("vphi", G, B, cond0, cond1);
 
   double gas2power_q_coefficient = 34;
-  double power2gas_q_coefficient = 55;
+  double power2gas_q_coefficient = 554;
 
   auto gp_json = gaspowerconnection_json("gp", innode_json, vphi_json,  gas2power_q_coefficient, power2gas_q_coefficient);
 
@@ -285,6 +285,10 @@ TEST_F(GaspowerconnectionTEST, evaluate){
   if (not gp) {
     FAIL();
   }
-  EXPECT_DOUBLE_EQ(rootvalues[3],vphi->P(new_state) -gp->generated_power(new_state[3]));  
 
+  for(int i=0;i!=10;++i){
+    new_state.setRandom();
+    netprob->evaluate(rootvalues, last_time,  new_time, last_state, new_state);
+    EXPECT_DOUBLE_EQ(rootvalues[3],vphi->P(new_state) -gp->generated_power(new_state[3]));  
+  }
 }
