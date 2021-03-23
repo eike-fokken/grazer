@@ -42,7 +42,7 @@ namespace Model::Componentfactory {
     buildervector.push_back(std::make_unique<Edgedatabuilder<Networkproblem::Gas::Shortpipe>>());
     buildervector.push_back(std::make_unique<Edgedatabuilder<Networkproblem::Gas::Controlvalve>>());
     buildervector.push_back(std::make_unique<Edgedatabuilder<Networkproblem::Gas::Compressorstation>>());
-    buildervector.push_back(std::make_unique<Edgedatabuilder<Networkproblem::Gas::Gaspowerconnection>>());
+    buildervector.push_back(std::make_unique<Edgedatabuilder<Networkproblem::Gaspowerconnection::Gaspowerconnection>>());
 
     for (auto const &builder : buildervector) {
       data.insert({builder->get_type(), builder->get_factory()});

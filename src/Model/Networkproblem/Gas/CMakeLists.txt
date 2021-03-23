@@ -3,12 +3,11 @@ add_library(gas STATIC
   Source.cpp Sink.cpp Innode.cpp
   Gasedge.cpp 
   Shortcomponent.cpp Shortpipe.cpp Controlvalve.cpp Compressorstation.cpp
-  Gaspowerconnection.cpp
   Pipe.cpp
   )
 
 
-target_link_libraries(gas PRIVATE network matrixhandler exception  power coloroutput misc aux_unit_conversion)
+target_link_libraries(gas PRIVATE network matrixhandler exception coloroutput misc aux_unit_conversion)
 
 target_link_libraries(gas PUBLIC balancelaw scheme mathfunctions equationcomponent)
 

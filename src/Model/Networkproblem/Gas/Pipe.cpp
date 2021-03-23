@@ -21,28 +21,26 @@ namespace Model::Networkproblem::Gas {
   Pipe::Pipe(nlohmann::json const &topology,
              std::vector<std::unique_ptr<Network::Node>> &nodes)
       : Network::Edge(topology, nodes),
-        length(Aux::unit::parse_to_si(topology["length"],
-                                      Aux::unit::length_units)),
         diameter(Aux::unit::parse_to_si(topology["diameter"],
                                         Aux::unit::length_units)),
         roughness(Aux::unit::parse_to_si(topology["roughness"],
                                          Aux::unit::length_units)),
         number_of_points(
-            static_cast<int>(std::ceil(
-                length /
+                         static_cast<int>(std::ceil(
+                Aux::unit::parse_to_si(topology["length"],
+                                       Aux::unit::length_units) /
                 std::stod(topology["desired_delta_x"].get<std::string>()))) +
             1),
-        Delta_x(length / (number_of_points - 1)),
-        bl(Balancelaw::Isothermaleulerequation(Aux::circle_area(0.5 * diameter),
-                                               diameter, roughness)),
-        scheme() {}
+        Delta_x(Aux::unit::parse_to_si(topology["length"],
+                                       Aux::unit::length_units) /
+                (number_of_points - 1)) {}
 
   void Pipe::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
                 double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
                 Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     for (int i = get_equation_start_index(); i!=get_equation_after_index();i+=2){
 
-      Eigen::Ref<Eigen::Vector2d> rootvalue_segment = rootvalues.segment<2>(i);
+      auto rootvalue_segment = rootvalues.segment<2>(i);
       
       auto last_left = last_state.segment<2>(i - 1);
       auto last_right = last_state.segment<2>(i + 1);
@@ -51,8 +49,7 @@ namespace Model::Networkproblem::Gas {
       
       scheme.evaluate_point(rootvalue_segment, last_time, new_time,
            Delta_x, last_left,
-           last_right, new_left,
-           new_right, bl);
+           last_right, new_left, new_right, bl,diameter,roughness);
     }
   }
 
@@ -68,26 +65,18 @@ namespace Model::Networkproblem::Gas {
       auto new_left = new_state.segment<2>(i - 1);
       auto new_right = new_state.segment<2>(i + 1);
 
-      Eigen::Matrix2d current_derivative_left =
-        scheme.devaluate_point_dleft(last_time, new_time, Delta_x,
-                                     last_left,
-                                     last_right,
-                                     new_left,
-                                     new_right,
-                                     bl);
+      Eigen::Matrix2d current_derivative_left = scheme.devaluate_point_dleft(
+          last_time, new_time, Delta_x, last_left, last_right, new_left,
+          new_right, bl, diameter, roughness);
 
       jacobianhandler->set_coefficient(i,i-1 ,current_derivative_left(0,0));
       jacobianhandler->set_coefficient(i, i , current_derivative_left(0, 1));
       jacobianhandler->set_coefficient(i+1, i - 1, current_derivative_left(1, 0));
       jacobianhandler->set_coefficient(i+1, i, current_derivative_left(1, 1));
 
-      Eigen::Matrix2d current_derivative_right =
-        scheme.devaluate_point_dright(last_time, new_time, Delta_x,
-                                      last_left,
-                                      last_right,
-                                      new_left,
-                                      new_right,
-                                      bl);
+      Eigen::Matrix2d current_derivative_right = scheme.devaluate_point_dright(
+          last_time, new_time, Delta_x, last_left, last_right, new_left,
+          new_right, bl, diameter, roughness);
 
       jacobianhandler->set_coefficient(i, i + 1, current_derivative_right(0, 0));
       jacobianhandler->set_coefficient(i, i+2, current_derivative_right(0, 1));
@@ -174,8 +163,8 @@ namespace Model::Networkproblem::Gas {
       } catch(...){
         std::cout<< "could not set initial value of pipe " << get_id() << ".\n"
                  << "Requested point was " << i*Delta_x << ". \n" <<
-          "Length of line is " << length <<std::endl;
-        std::cout << "requested - length: " << (i*Delta_x - length) << std::endl;
+          "Length of line is " << get_length() <<std::endl;
+        std::cout << "requested - length: " << (i*Delta_x - get_length()) << std::endl;
         throw;
       }
     }
@@ -216,6 +205,10 @@ namespace Model::Networkproblem::Gas {
     jacobianhandler->set_coefficient(rootvalues_index, rho_index,
                                      derivative[0]);
     jacobianhandler->set_coefficient(rootvalues_index, q_index, derivative[1]);
+  }
+
+  double Pipe::get_length(){
+    return (number_of_points-1)*Delta_x;
   }
 
 } // namespace Model::Networkproblem::Gas

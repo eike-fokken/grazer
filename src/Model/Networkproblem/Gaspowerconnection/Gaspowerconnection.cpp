@@ -9,7 +9,7 @@
 #include <fstream>
 #include <iostream>
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Networkproblem::Gaspowerconnection {
 
   std::string Gaspowerconnection::get_type() { return "Gaspowerconnection"; }
 
