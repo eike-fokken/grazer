@@ -93,6 +93,10 @@ namespace Model::Componentfactory {
   };
 
   struct Componentfactory {
+  protected:
+    ~Componentfactory() = default;
+  public:
+
     /// @brief A map of Node types.
     ///
     /// The keys in this map are names of the node types as given in the topology json.
