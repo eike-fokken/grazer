@@ -8,6 +8,8 @@
 
 // #include <iostream>
 
+#define pln std::cout << __LINE__ << std::endl;
+
 TEST(Aux_json, replace_entry_with_json_from_file) {
   
   nlohmann::json aux_sub_json_test;
@@ -22,21 +24,29 @@ TEST(Aux_json, replace_entry_with_json_from_file) {
   // Exemplary sub json file
   aux_sub_json_test = {{"id", "M000"},
                        {"data", {{{"time", 0}, {"values", {1.0, 2.0}}}}}};
-
+  pln
   // Creating a temporary json file
   temp_json_name = "temporary_json_test1.json";
-  absolute_path = std::filesystem::absolute(temp_json_name);
-  if (not std::filesystem::exists(temp_json_name)) {
-    std::ofstream file(temp_json_name);
+  std::filesystem::path temp_json_path(temp_json_name);
+  absolute_path = std::filesystem::absolute(temp_json_path);
+  pln
+  if (not std::filesystem::exists(temp_json_path)) {
+    pln
+    std::ofstream file(temp_json_path);
+    pln
     file << aux_sub_json_test;
+    pln
   } else {
-    std::cout << "There is already a file named " << temp_json_name
+    pln
+    std::cout << "There is already a file named " << temp_json_path.string()
               << ", cannot execute the test. Please remove the file at\n"
               << absolute_path.string()
               << std::endl;
+    pln
     FAIL();
+    pln
   }
-
+  pln
 
   // Testing jsons containing an Object
   object_json_test = {{"key", aux_sub_json_test}};
@@ -50,9 +60,9 @@ TEST(Aux_json, replace_entry_with_json_from_file) {
   EXPECT_EQ(aux_sub_json_test, absolute_path_json["key"]);
 
   // Testing jsons containing a relative path
-  relative_path_json = {{"key", temp_json_name},
+  relative_path_json = {{"key", temp_json_path.string()},
                          {"GRAZER_file_directory",
-                          std::filesystem::current_path()}};
+                          std::filesystem::current_path().string()}};
   aux_json::replace_entry_with_json_from_file(relative_path_json, "key");
   EXPECT_EQ(aux_sub_json_test, relative_path_json["key"]);
 
@@ -63,8 +73,9 @@ TEST(Aux_json, replace_entry_with_json_from_file) {
                std::runtime_error);
 
   // Removing temporary file
-  std::filesystem::remove(temp_json_name);
-
+  pln
+  std::filesystem::remove(temp_json_path);
+  pln
 }
 
 TEST(Aux_json, get_json_from_file_path) {
