@@ -1,20 +1,21 @@
 #pragma once
 #include <nlohmann/json.hpp>
 
-using nlohmann::json;
+
 
 namespace Aux::schema {
+  using nlohmann::json;
   namespace type {
-    json const simple(std::string type);
-    json const simple(std::string type, std::string description);
-    json const simple(std::string type, std::string title, std::string description);
-    json const number();
-    json const number(std::string description);
-    json const number(std::string title, std::string description);
-    json const string();
-    json const string(std::string description);
-    json const string(std::string title, std::string description);
-    json const length = R"({"$ref": "unit_schema.json#/length"})"_json;
+    json simple(std::string type);
+    json simple(std::string type, std::string description);
+    json simple(std::string type, std::string title, std::string description);
+    json number();
+    json number(std::string description);
+    json number(std::string title, std::string description);
+    json string();
+    json string(std::string description);
+    json string(std::string title, std::string description);
+    json length();
   }
 
   json make_list_schema_of(json const &element_schema);

@@ -1,52 +1,55 @@
 #include "make_schema.hpp"
-
-using nlohmann::json;
+#include "unit_conversion.hpp"
 
 namespace Aux::schema {
 
-    const json type::simple(std::string type){
+    json type::simple(std::string type){
       json type_schema;
       type_schema["type"] = type;
       return type_schema;
     }
 
-    const json type::simple(std::string type, std::string description){
+    json type::simple(std::string type, std::string description){
       json type_schema;
       type_schema["type"] = type;
       type_schema["description"] = description;
       return type_schema;
     }
 
-    const json type::simple(std::string type, std::string title, std::string description){
+    json type::simple(std::string type, std::string title, std::string description){
       json type_schema;
       type_schema["type"] = type;
       type_schema["title"] = title;
       type_schema["description"] = description;
       return type_schema;
     }
-    const json type::number(){
+    json type::number(){
       return type::simple("number");
     }
 
-    const json type::number(std::string description){
+    json type::number(std::string description){
       return type::simple("number", description);
     }
 
-    const json type::number(std::string title, std::string description){
+    json type::number(std::string title, std::string description){
       return type::simple("number", title, description);
     }
 
-    const json type::string(){
+    json type::string(){
       return type::simple("string");
     }
 
-    const json type::string(std::string description){
+    json type::string(std::string description){
       return type::simple("string", description);
     }
 
-    const json type::string(std::string title, std::string description){
+    json type::string(std::string title, std::string description){
       return type::simple("string", title, description);
     }
+
+  json type::length(){
+    return Aux::unit::get_length_schema();
+  }
 
   nlohmann::json make_list_schema_of(nlohmann::json const &element_schema) {
     return make_list_schema_of(element_schema, 0, 0);

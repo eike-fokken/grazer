@@ -2,11 +2,13 @@
 #include <sstream>
 #include <nlohmann/json.hpp>
 
-using nlohmann::json;
+
 
 namespace Aux::unit {
-
+  using nlohmann::json;
   extern const std::map<std::string, double> length_units;
+  json get_length_schema();
+
   extern const std::map<std::string, double> area_units;
   extern const std::map<std::string, double> volume_units;
   extern const std::map<std::string, double> pressure_units;
@@ -15,6 +17,7 @@ namespace Aux::unit {
   extern const std::map<std::string, double> power_units;
   extern const std::map<std::string, double> mass_units;
   extern const std::map<std::string, double> volume_flux_units;
+
   // arbitrary lambda conversions
   typedef std::function<double (double)> conversion;
 
