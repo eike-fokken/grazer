@@ -15,11 +15,11 @@ TEST(Input_output, absolute_file_path_in_root) {
   EXPECT_FALSE(
       Aux_executable::absolute_file_path_in_root(problem_root_path_false, filepath));
 
-};
+}
 
 TEST(Input_output, make_argument_vector) {
 
 
 
 
-};
+}
