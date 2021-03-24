@@ -39,7 +39,6 @@ target_link_libraries(newton_test PUBLIC network exception newton matrixhandler 
 target_link_libraries(newton_test PUBLIC gtest gtest_main gmock)
 target_include_directories(newton_test PUBLIC include)
 
-
 add_executable(isothermaleulerequation_test IsothermaleulerequationTest.cpp)
 
 target_link_libraries(isothermaleulerequation_test PUBLIC balancelaw mathfunctions)
@@ -75,6 +74,17 @@ add_executable(aux_unit_conversion_test AuxUnitConversionTest.cpp)
 target_link_libraries(aux_unit_conversion_test PUBLIC aux_unit_conversion nlohmann_json)
 target_link_libraries(aux_unit_conversion_test PUBLIC gtest gtest_main gmock)
 
+add_executable(aux_json_test AuxJsonTest.cpp)
+
+target_link_libraries(aux_json_test PUBLIC aux_json)
+target_link_libraries(aux_json_test PUBLIC gtest gtest_main gmock)
+target_include_directories(aux_json_test PUBLIC include)
+
+add_executable(input_output_test InputOutputTest.cpp)
+
+target_link_libraries(input_output_test PUBLIC input_output)
+target_link_libraries(input_output_test PUBLIC gtest gtest_main gmock)
+target_include_directories(input_output_test PUBLIC include)
 
 add_library(testheader INTERFACE)
 target_link_libraries(testheader INTERFACE  matrixhandler problemlayer gtest gtest_main gmock)
@@ -137,4 +147,12 @@ add_test(
 add_test(
   NAME json_validation
   COMMAND json_validation_test
+)
+add_test(
+  NAME aux_json_test
+  COMMAND aux_json_test
+)
+add_test(
+  NAME input_output_test
+  COMMAND input_output_test
 )
