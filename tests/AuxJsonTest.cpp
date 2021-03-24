@@ -1,5 +1,5 @@
 #include "Aux_json.hpp"
-// #indlude <Exception.hpp>
+#include <Exception.hpp>
 #include <filesystem>
 #include <fstream>
 #include <gtest/gtest.h>
@@ -29,9 +29,9 @@ TEST(Aux_json, replace_entry_with_json_from_file) {
     std::ofstream file(temp_json_name);
     file << aux_sub_json_test;
     absolute_path = std::filesystem::absolute(temp_json_name);
-  } /*else {
+  } else {
     gthrow({"File Name ", temp_json_name, " already taken"});
-    }*/
+  }
 
 
   // Testing jsons containing an Object
