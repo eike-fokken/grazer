@@ -24,13 +24,13 @@ TEST(Aux_json, replace_entry_with_json_from_file) {
                        {"data", {{{"time", 0}, {"values", {1.0, 2.0}}}}}};
 
   // Creating a temporary json file
-  temp_json_name = "temporary_json.json";
+  temp_json_name = "temporary_json_test1.json";
   if (not std::filesystem::exists(temp_json_name)) {
     std::ofstream file(temp_json_name);
     file << aux_sub_json_test;
     absolute_path = std::filesystem::absolute(temp_json_name);
   } else {
-    gthrow({"File Name ", temp_json_name, " already taken"});
+    gthrow({"Temporary file Name ", temp_json_name, " already taken"});
   }
 
 
@@ -65,16 +65,35 @@ TEST(Aux_json, replace_entry_with_json_from_file) {
 
 TEST(Aux_json, get_json_from_file_path) {
 
+  std::string temp_json_name;
   std::string wrong_path = "/wrong/path.json";
-  std::string right_path = "/Users/Tibor_Cornelli1/Desktop/nos.nosync/grazer/data/aux_sub_json_test.json";
+  std::string absolute_path;
   nlohmann::json aux_sub_json_test;
 
+
+  // Testing wrong paths
   EXPECT_ANY_THROW(aux_json::get_json_from_file_path(wrong_path));
 
+
+  // Testing right path
   aux_sub_json_test = {{"id", "M000"},
                        {"data", {{{"time", 0}, {"values", {1.0, 2.0}}}}}};
 
+  // Creating a temporary json file
+  temp_json_name = "temporary_json_test2.json";
+  if (not std::filesystem::exists(temp_json_name)) {
+    std::ofstream file(temp_json_name);
+    file << aux_sub_json_test;
+    absolute_path = std::filesystem::absolute(temp_json_name);
+  } else {
+    gthrow({"Temporary file Name ", temp_json_name, " already taken"});
+  }
+
   EXPECT_EQ(aux_sub_json_test,
-            aux_json::get_json_from_file_path(right_path));
+            aux_json::get_json_from_file_path(absolute_path));
+
+
+  // Removing temporary file
+  std::filesystem::remove(temp_json_name);
 
 };
