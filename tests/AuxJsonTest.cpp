@@ -1,14 +1,17 @@
 #include "Aux_json.hpp"
-#indlude <Exception.hpp>
+// #indlude <Exception.hpp>
 #include <filesystem>
 #include <fstream>
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
 
+// #include <iostream>
+
 TEST(Aux_json, replace_entry_with_json_from_file) {
   
   nlohmann::json aux_sub_json_test;
+  nlohmann::json object_json_test;
   nlohmann::json absolute_path_json;
   nlohmann::json relative_path_json;
   nlohmann::json wrong_path_json;
@@ -26,21 +29,26 @@ TEST(Aux_json, replace_entry_with_json_from_file) {
     std::ofstream file(temp_json_name);
     file << aux_sub_json_test;
     absolute_path = std::filesystem::absolute(temp_json_name);
-  } else {
-    gthrow({"File Name already taken"});
-  }
+  } /*else {
+    gthrow({"File Name ", temp_json_name, " already taken"});
+    }*/
+
+
+  // Testing jsons containing an Object
+  object_json_test = {{"key", aux_sub_json_test}};
+  aux_json::replace_entry_with_json_from_file(object_json_test, "key");
+  EXPECT_EQ(aux_sub_json_test, object_json_test["key"]);
 
 
   // Testing jsons containing the absolute path
   absolute_path_json = {{"key", absolute_path}};
   aux_json::replace_entry_with_json_from_file(absolute_path_json, "key");
-  EXPECT_EQ(aux_sub_json_test, absolute_path_json);
-
+  EXPECT_EQ(aux_sub_json_test, absolute_path_json["key"]);
 
   // Testing jsons containing a relative path
   relative_path_json = {{"key", temp_json_name},
-                        {"GRAZER_file_directory",
-                         absolute_path + "/.."}};
+                         {"GRAZER_file_directory",
+                          std::filesystem::current_path()}};
   aux_json::replace_entry_with_json_from_file(relative_path_json, "key");
   EXPECT_EQ(aux_sub_json_test, relative_path_json["key"]);
 
@@ -51,7 +59,7 @@ TEST(Aux_json, replace_entry_with_json_from_file) {
                std::runtime_error);
 
   // Removing temporary file
-  // std::filesystem::remove(temp_json_name);
+  std::filesystem::remove(temp_json_name);
 
 };
 
