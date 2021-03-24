@@ -1,5 +1,4 @@
 #include "Aux_json.hpp"
-#include <Exception.hpp>
 #include <filesystem>
 #include <fstream>
 #include <gtest/gtest.h>
