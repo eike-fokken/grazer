@@ -10,7 +10,8 @@
    
 ** TODO  Durchgehen und Dokumentation schreiben!
 
-** TODO  Think about Exception handling for data input validation. Whatever you do: Catch all exceptions and display the error message instead of rethrowing in the end!
+** DONE Think about Exception handling for data input validation. Whatever you do: Catch all exceptions and display the error message instead of rethrowing in the end!
+   CLOSED: [2021-03-11 Thu 18:07]
 
 ** TODO  Introduce an optional CFL check for schemes.
 
@@ -27,9 +28,11 @@
 
 ** TODO  Validate the json!
 
-** TODO  Make a function that dispatches to various constructors. Also make all constructors take the same arguments.
+** DONE Make a function that dispatches to various constructors. Also make all constructors take the same arguments.
+   CLOSED: [2021-03-11 Thu 18:06]
 *** Here there is already much progress.
     
+
 ** TODO  Go back to strings in json files. DONE: topology file. Still todo: initial and boundary values.
 
 ** TODO  Refactor Isothermaleulerequation into an Isentropiceulerequation template, that takes an Isentropicpressurelaw

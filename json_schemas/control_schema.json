@@ -1,0 +1,38 @@
+{
+  "$id": "https://raw.githubusercontent.com/eike-fokken/grazer/blob/master/json_schemas/control_schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "Control Data",
+  "description": "Data about control (e.g. valves) inputs to the system",
+  "type": "object",
+  "required": ["connections"],
+  "properties": {
+    "connections": {
+      "type": "object",
+      "properties": {
+        "Controlvalve": {"$ref": "#/$defs/data"},
+        "Compressorstation": {"$ref": "#/$defs/data"}
+      }
+    }
+  },
+  "$defs": {
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "time": {"type": "number"},
+                "values": {"type": "array", "items": {"type": "number"}}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

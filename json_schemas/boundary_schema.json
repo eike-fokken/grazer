@@ -1,0 +1,32 @@
+{
+  "$id": "https://raw.githubusercontent.com/eike-fokken/grazer/blob/master/json_schemas/boundary_schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "Boundary Data",
+  "description": "Data on boundary behaviour",
+  "type": "object",
+  "required": ["nodes"],
+  "properties": {
+    "nodes": {
+      "Vphinode": {"$ref": "#/$defs/node"},
+      "PVnode": {"$ref": "#/$defs/node"},
+      "PQnode": {"$ref": "#/$defs/node"},
+      "Source": {"$ref": "#/$defs/node"},
+      "Sink": {"$ref": "#/$defs/node"}
+    }
+  },
+  "$defs": {
+    "node": {
+      "type": "object",
+      "properties":{
+        "id": {"type": "string"},
+        "data":{
+          "type": "array",
+          "items": {
+            "time": {"type": "numeric"},
+            "values": {"type": "array", "items": {"type": "numeric"}}
+          }
+        }
+      }
+    }
+  }
+}

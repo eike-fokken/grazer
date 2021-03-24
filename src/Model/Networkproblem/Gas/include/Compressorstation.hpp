@@ -9,6 +9,7 @@ namespace Model::Networkproblem::Gas {
 
     using Shortpipe::Shortpipe;
     static std::string get_type();
+    static nlohmann::json get_schema();
 
   };
 }

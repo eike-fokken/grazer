@@ -7,31 +7,15 @@
 
 namespace Model::Componentfactory {
 
-  std::map<std::string, Nodefactory> Power_factory::get_nodetypemap_impl(){
+  void add_power_components(Componentfactory &factory) {
+    factory.add_node_type(std::make_unique<NodeType<Networkproblem::Power::Vphinode>>());
+    factory.add_node_type(std::make_unique<NodeType<Networkproblem::Power::PVnode>>());
+    factory.add_node_type(std::make_unique<NodeType<Networkproblem::Power::PQnode>>());
 
-    std::map<std::string, Nodefactory> data;
-        std::vector<std::unique_ptr<Nodedatabuilder_base>> buildervector;
-
-    buildervector.push_back(std::make_unique<Nodedatabuilder<Networkproblem::Power::Vphinode>>());
-    buildervector.push_back(std::make_unique<Nodedatabuilder<Networkproblem::Power::PVnode>>());
-    buildervector.push_back(std::make_unique<Nodedatabuilder<Networkproblem::Power::PQnode>>());
-
-    for (auto const &builder : buildervector) {
-      data.insert({builder->get_type(), builder->get_factory()});
-    }
-
-    return data;
-  }
-  std::map<std::string, Edgefactory> Power_factory::get_edgetypemap_impl(){
-    std::map<std::string, Edgefactory> data;
-    std::vector<std::unique_ptr<Edgedatabuilder_base>> buildervector;
-
-    buildervector.push_back(std::make_unique<Edgedatabuilder<Networkproblem::Power::Transmissionline>>());
-
-    for (auto const &builder : buildervector) {
-      data.insert({builder->get_type(), builder->get_factory()});
-    }
-    return data;
+    factory.add_edge_type(std::make_unique<EdgeType<Networkproblem::Power::Transmissionline>>());
   }
 
+  Power_factory::Power_factory(){
+    add_power_components(*this);
+  }
 }

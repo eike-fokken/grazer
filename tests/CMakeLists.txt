@@ -1,3 +1,8 @@
+add_library(eqcomp_helpers STATIC Equationcomponent_test_helpers.cpp)
+target_include_directories(eqcomp_helpers PUBLIC include)
+
+
+
 add_executable(net_test NetTest.cpp)
 
 target_link_libraries(net_test PUBLIC network)
@@ -5,7 +10,7 @@ target_link_libraries(net_test PUBLIC gtest gtest_main gmock)
 
 add_executable(model_test ModelTest.cpp)
 
-target_link_libraries(model_test PUBLIC problemlayer )
+target_link_libraries(model_test PUBLIC problemlayer subproblem)
 target_link_libraries(model_test PUBLIC gtest gtest_main gmock)
 
 add_executable(boundary_test BoundaryTest.cpp)
@@ -36,7 +41,7 @@ target_include_directories(newton_test PUBLIC include)
 
 add_executable(isothermaleulerequation_test IsothermaleulerequationTest.cpp)
 
-target_link_libraries(isothermaleulerequation_test PUBLIC balancelaw)
+target_link_libraries(isothermaleulerequation_test PUBLIC balancelaw mathfunctions)
 target_link_libraries(isothermaleulerequation_test PUBLIC gtest gtest_main gmock)
 
 
@@ -47,9 +52,22 @@ target_link_libraries(implicitboxscheme_test PUBLIC gtest gtest_main gmock)
 
 
 add_executable(gas_test GasTest.cpp)
-
-target_link_libraries(gas_test PUBLIC problemlayer power networkproblem network exception newton matrixhandler  power gas coloroutput misc)
+target_link_libraries(gas_test PUBLIC gas_factory gas netfactory networkproblem matrixhandler eqcomp_helpers)
 target_link_libraries(gas_test PUBLIC gtest gtest_main gmock)
+target_include_directories(gas_test PRIVATE include)
+
+
+add_executable(gaspowerconnection_test GaspowerconnectionTest.cpp)
+target_link_libraries(gaspowerconnection_test PUBLIC full_factory gaspowerconnection power netfactory networkproblem matrixhandler eqcomp_helpers)
+target_link_libraries(gaspowerconnection_test PUBLIC gtest gtest_main gmock)
+target_include_directories(gaspowerconnection_test PRIVATE include)
+
+
+
+add_executable(json_validation_test validationTest.cpp)
+
+target_link_libraries(json_validation_test PUBLIC json_validation nlohmann_json)
+target_link_libraries(json_validation_test PUBLIC gtest gtest_main gmock)
 
 add_executable(aux_unit_conversion_test AuxUnitConversionTest.cpp)
 
@@ -114,10 +132,21 @@ add_test(
   NAME gas_test
   COMMAND gas_test
   )
- 
+
+add_test(
+  NAME gaspowerconnection
+  COMMAND gaspowerconnection_test
+  )
+
+
 add_test(
   NAME aux_unit_conversion
   COMMAND aux_unit_conversion_test
+  )
+
+add_test(
+  NAME json_validation
+  COMMAND json_validation_test
 )
 add_test(
   NAME aux_json_test
