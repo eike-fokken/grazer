@@ -44,7 +44,6 @@ TEST(Aux_json, replace_entry_with_json_from_file) {
               << std::endl;
     pln
     FAIL();
-    pln
   }
   pln
 
