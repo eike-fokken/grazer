@@ -12,19 +12,18 @@
 #include <string>
 #include <vector>
 
-//declarations:
+// declarations:
 nlohmann::json make_boundary(std::string id, Eigen::Vector2d condition);
-
 
 // Test fixture.
 // Defintions are at the bottom of the file.
 class PowerTEST : public ::testing::Test {
 
 public:
-  PowerTEST() {
-    set_default_net();
-  }
-  Network::Net net{std::vector<std::unique_ptr<Network::Node>>(), std::vector<std::unique_ptr<Network::Edge>>()};
+  PowerTEST() { set_default_net(); }
+  Network::Net net{
+      std::vector<std::unique_ptr<Network::Node>>(),
+      std::vector<std::unique_ptr<Network::Edge>>()};
   // values for the Vphinode:
   double V1_bd = 8.0;
   double phi1_bd = 6.0;
@@ -65,21 +64,18 @@ public:
   Eigen::VectorXd last_state{6};
   Eigen::VectorXd new_state{6};
 
- void set_default_net();
+  void set_default_net();
 
-  void
-  set_custom_net(Eigen::Vector2d vphi_par, Eigen::Vector2d pq_par,
-             Eigen::Vector2d pv_par, Eigen::Vector2d tl_vphi_pq_par,
-             Eigen::Vector2d tl_pq_pv_par, Eigen::Vector2d vphi_boundary,
-             Eigen::Vector2d pq_boundary, Eigen::Vector2d pv_boundary);
+  void set_custom_net(
+      Eigen::Vector2d vphi_par, Eigen::Vector2d pq_par, Eigen::Vector2d pv_par,
+      Eigen::Vector2d tl_vphi_pq_par, Eigen::Vector2d tl_pq_pv_par,
+      Eigen::Vector2d vphi_boundary, Eigen::Vector2d pq_boundary,
+      Eigen::Vector2d pv_boundary);
 
-  std::vector<Model::Networkproblem::Equationcomponent *>
-  get_eq_components();
+  std::vector<Model::Networkproblem::Equationcomponent *> get_eq_components();
 
   void SetUp() override;
-
 };
-
 
 TEST_F(PowerTEST, evaluate_Vphi) {
 
@@ -102,29 +98,30 @@ TEST_F(PowerTEST, evaluate_state_derivative_Vphi) {
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
   Aux::Triplethandler handler(&J);
- 
-  for (auto &comp : eqcomponents) {
-    comp->evaluate_state_derivative(&handler, last_time,  new_time, last_state, new_state);
-  }
-     handler.set_matrix();
-  // Vphi node:
-     Eigen::MatrixXd DenseJ = J;
-     // derivatives of index 0, that is, V in the Vphi node:
-     EXPECT_DOUBLE_EQ(DenseJ(0, 0), 1.0);
-     EXPECT_DOUBLE_EQ(DenseJ(0, 1), 0.0);
-     EXPECT_DOUBLE_EQ(DenseJ(0, 2), 0.0);
-     EXPECT_DOUBLE_EQ(DenseJ(0, 3), 0.0);
-     EXPECT_DOUBLE_EQ(DenseJ(0, 4), 0.0);
-     EXPECT_DOUBLE_EQ(DenseJ(0, 5), 0.0);
 
-     // derivatives of index 1, that is, phi in the Vphi node:
-     EXPECT_DOUBLE_EQ(DenseJ(1, 0), 0.0);
-     EXPECT_DOUBLE_EQ(DenseJ(1, 1), 1.0);
-     EXPECT_DOUBLE_EQ(DenseJ(1, 2), 0.0);
-     EXPECT_DOUBLE_EQ(DenseJ(1, 3), 0.0);
-     EXPECT_DOUBLE_EQ(DenseJ(1, 4), 0.0);
-     EXPECT_DOUBLE_EQ(DenseJ(1, 5), 0.0);
-       }
+  for (auto &comp : eqcomponents) {
+    comp->evaluate_state_derivative(
+        &handler, last_time, new_time, last_state, new_state);
+  }
+  handler.set_matrix();
+  // Vphi node:
+  Eigen::MatrixXd DenseJ = J;
+  // derivatives of index 0, that is, V in the Vphi node:
+  EXPECT_DOUBLE_EQ(DenseJ(0, 0), 1.0);
+  EXPECT_DOUBLE_EQ(DenseJ(0, 1), 0.0);
+  EXPECT_DOUBLE_EQ(DenseJ(0, 2), 0.0);
+  EXPECT_DOUBLE_EQ(DenseJ(0, 3), 0.0);
+  EXPECT_DOUBLE_EQ(DenseJ(0, 4), 0.0);
+  EXPECT_DOUBLE_EQ(DenseJ(0, 5), 0.0);
+
+  // derivatives of index 1, that is, phi in the Vphi node:
+  EXPECT_DOUBLE_EQ(DenseJ(1, 0), 0.0);
+  EXPECT_DOUBLE_EQ(DenseJ(1, 1), 1.0);
+  EXPECT_DOUBLE_EQ(DenseJ(1, 2), 0.0);
+  EXPECT_DOUBLE_EQ(DenseJ(1, 3), 0.0);
+  EXPECT_DOUBLE_EQ(DenseJ(1, 4), 0.0);
+  EXPECT_DOUBLE_EQ(DenseJ(1, 5), 0.0);
+}
 
 TEST_F(PowerTEST, evaluate_PQ) {
 
@@ -135,20 +132,17 @@ TEST_F(PowerTEST, evaluate_PQ) {
     comp->evaluate(rootvalues, last_time, new_time, last_state, new_state);
   }
 
-    EXPECT_DOUBLE_EQ(rootvalues[2],
-                     -P2_bd + G2 * V2 * V2 +
-                         V2 * V1 *
-                             (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 -
-                             phi1)) +
-                         V2 * V3 *
-                             (Gt2 * cos(phi2 - phi3) + Bt2 * sin(phi2 -
-                                                                 phi3)));
-    EXPECT_DOUBLE_EQ(
-        rootvalues[3],
-        -Q2_bd - B2 * V2 * V2 +
-            V2 * V1 * (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 - phi1)) +
-            V2 * V3 * (Gt2 * sin(phi2 - phi3) - Bt2 * cos(phi2 - phi3)));
-  }
+  EXPECT_DOUBLE_EQ(
+      rootvalues[2],
+      -P2_bd + G2 * V2 * V2
+          + V2 * V1 * (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 - phi1))
+          + V2 * V3 * (Gt2 * cos(phi2 - phi3) + Bt2 * sin(phi2 - phi3)));
+  EXPECT_DOUBLE_EQ(
+      rootvalues[3],
+      -Q2_bd - B2 * V2 * V2
+          + V2 * V1 * (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 - phi1))
+          + V2 * V3 * (Gt2 * sin(phi2 - phi3) - Bt2 * cos(phi2 - phi3)));
+}
 
 TEST_F(PowerTEST, evaluate_state_derivative_PQ) {
 
@@ -157,52 +151,55 @@ TEST_F(PowerTEST, evaluate_state_derivative_PQ) {
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
   Aux::Triplethandler handler(&J);
- 
+
   for (auto &comp : eqcomponents) {
-    comp->evaluate_state_derivative(&handler, last_time,  new_time, last_state, new_state);
+    comp->evaluate_state_derivative(
+        &handler, last_time, new_time, last_state, new_state);
   }
-     handler.set_matrix();
+  handler.set_matrix();
   // Vphi node:
-     Eigen::MatrixXd DenseJ = J;
+  Eigen::MatrixXd DenseJ = J;
 
-     // derivatives of index 2, that is, P in the PQ node:
-     EXPECT_DOUBLE_EQ(DenseJ(2, 0),
-                      V2 * (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 - phi1)));
-     EXPECT_DOUBLE_EQ(DenseJ(2, 1),
-                      V1 * V2 *
-                          (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 - phi1)));
-     EXPECT_DOUBLE_EQ(DenseJ(2, 2),
-         2 * G2 * V2 + V1 * (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 - phi1)) +
-             V3 * (Gt2 * cos(phi2 - phi3) + Bt2 * sin(phi2 - phi3)));
-     EXPECT_DOUBLE_EQ(DenseJ(2, 3),
-         V2 * V1 * (-Gt1 * sin(phi2 - phi1) + Bt1 * cos(phi2 - phi1)) +
-             V2 * V3 * (-Gt2 * sin(phi2 - phi3) + Bt2 * cos(phi2 - phi3)));
-     EXPECT_DOUBLE_EQ(DenseJ(2, 4),
-                      V2 * (Gt2 * cos(phi2 - phi3) + Bt2 * sin(phi2 - phi3)));
-     EXPECT_DOUBLE_EQ(DenseJ(2, 5),
-                      V3 * V2 *
-                          (Gt2 * sin(phi2 - phi3) - Bt2 * cos(phi2 - phi3)));
+  // derivatives of index 2, that is, P in the PQ node:
+  EXPECT_DOUBLE_EQ(
+      DenseJ(2, 0), V2 * (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 - phi1)));
+  EXPECT_DOUBLE_EQ(
+      DenseJ(2, 1),
+      V1 * V2 * (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 - phi1)));
+  EXPECT_DOUBLE_EQ(
+      DenseJ(2, 2),
+      2 * G2 * V2 + V1 * (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 - phi1))
+          + V3 * (Gt2 * cos(phi2 - phi3) + Bt2 * sin(phi2 - phi3)));
+  EXPECT_DOUBLE_EQ(
+      DenseJ(2, 3),
+      V2 * V1 * (-Gt1 * sin(phi2 - phi1) + Bt1 * cos(phi2 - phi1))
+          + V2 * V3 * (-Gt2 * sin(phi2 - phi3) + Bt2 * cos(phi2 - phi3)));
+  EXPECT_DOUBLE_EQ(
+      DenseJ(2, 4), V2 * (Gt2 * cos(phi2 - phi3) + Bt2 * sin(phi2 - phi3)));
+  EXPECT_DOUBLE_EQ(
+      DenseJ(2, 5),
+      V3 * V2 * (Gt2 * sin(phi2 - phi3) - Bt2 * cos(phi2 - phi3)));
 
-     // derivatives of index 3, that is, Q in the PQ node:
-     EXPECT_DOUBLE_EQ(DenseJ(3, 0),
-                      V2 * (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 - phi1)));
-     EXPECT_DOUBLE_EQ(DenseJ(3, 1),
-                      V2 * V1 *
-                          (-Gt1 * cos(phi2 - phi1) - Bt1 * sin(phi2 - phi1)));
-     EXPECT_DOUBLE_EQ(DenseJ(3, 2),
-         -2 * B2 * V2 + V1 * (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 - phi1)) +
-             V3 * (Gt2 * sin(phi2 - phi3) - Bt2 * cos(phi2 - phi3)));
-     EXPECT_DOUBLE_EQ(
-         DenseJ(3, 3),
-         V2 * V1 * (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 - phi1)) +
-             V2 * V3 * (Gt2 * cos(phi2 - phi3) + Bt2 * sin(phi2 - phi3)));
-     EXPECT_DOUBLE_EQ(DenseJ(3, 4), V2 * (Gt2 * sin(phi2 - phi3) - Bt2 * cos(phi2 - phi3)));
-     EXPECT_DOUBLE_EQ(DenseJ(3, 5),
-                      V2 * V3 *
-                          (-Gt2 * cos(phi2 - phi3) - Bt2 * sin(phi2 - phi3)));
-
+  // derivatives of index 3, that is, Q in the PQ node:
+  EXPECT_DOUBLE_EQ(
+      DenseJ(3, 0), V2 * (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 - phi1)));
+  EXPECT_DOUBLE_EQ(
+      DenseJ(3, 1),
+      V2 * V1 * (-Gt1 * cos(phi2 - phi1) - Bt1 * sin(phi2 - phi1)));
+  EXPECT_DOUBLE_EQ(
+      DenseJ(3, 2),
+      -2 * B2 * V2 + V1 * (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 - phi1))
+          + V3 * (Gt2 * sin(phi2 - phi3) - Bt2 * cos(phi2 - phi3)));
+  EXPECT_DOUBLE_EQ(
+      DenseJ(3, 3),
+      V2 * V1 * (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 - phi1))
+          + V2 * V3 * (Gt2 * cos(phi2 - phi3) + Bt2 * sin(phi2 - phi3)));
+  EXPECT_DOUBLE_EQ(
+      DenseJ(3, 4), V2 * (Gt2 * sin(phi2 - phi3) - Bt2 * cos(phi2 - phi3)));
+  EXPECT_DOUBLE_EQ(
+      DenseJ(3, 5),
+      V2 * V3 * (-Gt2 * cos(phi2 - phi3) - Bt2 * sin(phi2 - phi3)));
 }
-
 
 TEST_F(PowerTEST, evaluate_PV) {
 
@@ -213,13 +210,12 @@ TEST_F(PowerTEST, evaluate_PV) {
     comp->evaluate(rootvalues, last_time, new_time, last_state, new_state);
   }
 
-    EXPECT_DOUBLE_EQ(rootvalues[4],
-                     -P3_bd + G3 * V3 * V3 +
-                         V3 * V2 *
-                             (Gt2 * cos(phi3 - phi2) + Bt2 * sin(phi3 -
-                             phi2)));
-    EXPECT_DOUBLE_EQ(rootvalues[5], new_state[4] - V3_bd);
-  }
+  EXPECT_DOUBLE_EQ(
+      rootvalues[4],
+      -P3_bd + G3 * V3 * V3
+          + V3 * V2 * (Gt2 * cos(phi3 - phi2) + Bt2 * sin(phi3 - phi2)));
+  EXPECT_DOUBLE_EQ(rootvalues[5], new_state[4] - V3_bd);
+}
 
 TEST_F(PowerTEST, evaluate_state_derivative_PV) {
 
@@ -228,41 +224,38 @@ TEST_F(PowerTEST, evaluate_state_derivative_PV) {
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
   Aux::Triplethandler handler(&J);
- 
+
   for (auto &comp : eqcomponents) {
-    comp->evaluate_state_derivative(&handler, last_time,  new_time, last_state, new_state);
+    comp->evaluate_state_derivative(
+        &handler, last_time, new_time, last_state, new_state);
   }
-     handler.set_matrix();
-     Eigen::MatrixXd DenseJ = J;
+  handler.set_matrix();
+  Eigen::MatrixXd DenseJ = J;
 
-     //derivatives of index 4, that is, P in the PV node:
-     EXPECT_DOUBLE_EQ(DenseJ(4, 0), 0.0);
-     EXPECT_DOUBLE_EQ(DenseJ(4, 1), 0.0);
-     EXPECT_DOUBLE_EQ(DenseJ(4, 2),
-                      V3 * (Gt2 * cos(phi3 - phi2) + Bt2 * sin(phi3 - phi2)));
-     EXPECT_DOUBLE_EQ(DenseJ(4, 3),
-                      V2 * V3 *
-                          (Gt2 * sin(phi3 - phi2) - Bt2 * cos(phi3 - phi2)));
+  // derivatives of index 4, that is, P in the PV node:
+  EXPECT_DOUBLE_EQ(DenseJ(4, 0), 0.0);
+  EXPECT_DOUBLE_EQ(DenseJ(4, 1), 0.0);
+  EXPECT_DOUBLE_EQ(
+      DenseJ(4, 2), V3 * (Gt2 * cos(phi3 - phi2) + Bt2 * sin(phi3 - phi2)));
+  EXPECT_DOUBLE_EQ(
+      DenseJ(4, 3),
+      V2 * V3 * (Gt2 * sin(phi3 - phi2) - Bt2 * cos(phi3 - phi2)));
 
-     EXPECT_DOUBLE_EQ(
-         DenseJ(4, 4),
-         2 * G3 * V3 + V2 * (Gt2 * cos(phi3 - phi2) + Bt2 * sin(phi3 - phi2)));
-     EXPECT_DOUBLE_EQ(
-         DenseJ(4, 5),
-         V3 * V2 * (-Gt2 * sin(phi3 - phi2) + Bt2 * cos(phi3 - phi2)));
+  EXPECT_DOUBLE_EQ(
+      DenseJ(4, 4),
+      2 * G3 * V3 + V2 * (Gt2 * cos(phi3 - phi2) + Bt2 * sin(phi3 - phi2)));
+  EXPECT_DOUBLE_EQ(
+      DenseJ(4, 5),
+      V3 * V2 * (-Gt2 * sin(phi3 - phi2) + Bt2 * cos(phi3 - phi2)));
 
-     // derivatives of index 5, that is, V in the PV node:
-     EXPECT_DOUBLE_EQ(DenseJ(5, 0), 0.0);
-     EXPECT_DOUBLE_EQ(DenseJ(5, 1), 0.0);
-     EXPECT_DOUBLE_EQ(DenseJ(5, 2), 0.0);
-     EXPECT_DOUBLE_EQ(DenseJ(5, 3), 0.0);
-     EXPECT_DOUBLE_EQ(DenseJ(5, 4), 1.0);
-     EXPECT_DOUBLE_EQ(DenseJ(5, 5), 0.0);
-     
+  // derivatives of index 5, that is, V in the PV node:
+  EXPECT_DOUBLE_EQ(DenseJ(5, 0), 0.0);
+  EXPECT_DOUBLE_EQ(DenseJ(5, 1), 0.0);
+  EXPECT_DOUBLE_EQ(DenseJ(5, 2), 0.0);
+  EXPECT_DOUBLE_EQ(DenseJ(5, 3), 0.0);
+  EXPECT_DOUBLE_EQ(DenseJ(5, 4), 1.0);
+  EXPECT_DOUBLE_EQ(DenseJ(5, 5), 0.0);
 }
-
-
-
 
 //////////////////////////////////////////////////////
 // Here come the definitions of the fixture methods:
@@ -279,7 +272,6 @@ nlohmann::json make_boundary(std::string id, Eigen::Vector2d condition) {
 
   return bound;
 }
-
 
 void PowerTEST::set_custom_net(
     Eigen::Vector2d vphi_par, Eigen::Vector2d pq_par, Eigen::Vector2d pv_par,
@@ -357,15 +349,15 @@ PowerTEST::get_eq_components() {
 
   std::vector<Model::Networkproblem::Equationcomponent *> eqcomponents;
   for (auto &node : net.get_nodes()) {
-    auto eqcomp =
-        dynamic_cast<Model::Networkproblem::Equationcomponent *>(node);
+    auto eqcomp
+        = dynamic_cast<Model::Networkproblem::Equationcomponent *>(node);
     if (eqcomp) {
       eqcomponents.push_back(eqcomp);
     }
   }
   for (auto &edge : net.get_edges()) {
-    auto eqcomp =
-        dynamic_cast<Model::Networkproblem::Equationcomponent *>(edge);
+    auto eqcomp
+        = dynamic_cast<Model::Networkproblem::Equationcomponent *>(edge);
     if (eqcomp) {
       eqcomponents.push_back(eqcomp);
     }
@@ -373,17 +365,14 @@ PowerTEST::get_eq_components() {
   return eqcomponents;
 }
 
-void PowerTEST::SetUp(){
+void PowerTEST::SetUp() {
   int next_free_index = 0;
   auto eqcomponents = get_eq_components();
   for (auto &comp : eqcomponents) {
     next_free_index = comp->set_indices(next_free_index);
   }
-  for (auto &comp : eqcomponents) {
-    comp->setup();
-  }
+  for (auto &comp : eqcomponents) { comp->setup(); }
 }
-
 
 void PowerTEST::set_default_net() {
 
@@ -408,6 +397,7 @@ void PowerTEST::set_default_net() {
   Eigen::Vector2d pv_boundary;
   pv_boundary << P3_bd, V3_bd;
 
-  set_custom_net(vphi_param, pq_param, pv_param, tl_vphi_pq_param,
-                    tl_pq_pv_param, vphi_boundary, pq_boundary, pv_boundary);
+  set_custom_net(
+      vphi_param, pq_param, pv_param, tl_vphi_pq_param, tl_pq_pv_param,
+      vphi_boundary, pq_boundary, pv_boundary);
 }

@@ -22,19 +22,21 @@ namespace Model::Networkproblem {
   class Equationcomponent {
 
   public:
-    virtual ~Equationcomponent() {};
+    virtual ~Equationcomponent(){};
 
     /// \brief evaluates the model equations into rootvalues.
     ///
-    /// @param[out] rootvalues Results of the model equations, when evaluated on the other parameters.
+    /// @param[out] rootvalues Results of the model equations, when evaluated on
+    /// the other parameters.
     /// @param last_time time point of the last time step. Usually important for
     /// PDEs
     /// @param new_time time point of the current time step.
     /// @param last_state value of the state at last time step.
     /// @param new_state value of the state at current time step.
-    virtual void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-                          double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
-                          Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
+    virtual void evaluate(
+        Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
 
     /// \brief derivative of Equationcomponent::evaluate.
     ///
@@ -49,7 +51,8 @@ namespace Model::Networkproblem {
     /// @param new_state value of the state at current time step.
     virtual void evaluate_state_derivative(
         Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> const &, Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
+        Eigen::Ref<Eigen::VectorXd const> const &,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
 
     /// \brief Returns number of state variables needed by this component.
     ///
@@ -60,17 +63,19 @@ namespace Model::Networkproblem {
 
     virtual int get_number_of_states() const = 0;
 
-    /// \brief Utility for setup of things that cannot be done during construction.
+    /// \brief Utility for setup of things that cannot be done during
+    /// construction.
     ///
     /// is called during set_indices.
     /// Usually does nothing, but for example gas nodes
     /// claim indices from their attached gas edges.
     virtual void setup();
 
-
-    /// \brief This function sets the indices #start_state_index and #after_state_index AND calls setup()
+    /// \brief This function sets the indices #start_state_index and
+    /// #after_state_index AND calls setup()
     ///
-    /// @param next_free_index The first index that is currently not claimed by another component.
+    /// @param next_free_index The first index that is currently not claimed by
+    /// another component.
     /// @returns The new lowest free index.
     int set_indices(int const next_free_index);
 
@@ -80,24 +85,33 @@ namespace Model::Networkproblem {
     /// \brief getter for #after_state_index
     int get_after_state_index() const;
 
+    /// \brief Prints values contained in #values_ptr into a file in
+    /// output_directory.
+    virtual void print_to_files(std::filesystem::path const &output_directory)
+        = 0;
 
-    /// \brief Prints values contained in #values_ptr into a file in output_directory.
-    virtual void
-    print_to_files(std::filesystem::path const &output_directory) = 0;
-
-    /// \brief Saves values at the owned indices of this component into #values_ptr.
+    /// \brief Saves values at the owned indices of this component into
+    /// #values_ptr.
     ///
     /// @param time time of the timestep to be saved.
-    /// @param state State of all variables. Only the values in the owned indices are saved.
-    virtual void save_values(double time, Eigen::Ref<Eigen::VectorXd const> const &state) = 0;
+    /// @param state State of all variables. Only the values in the owned
+    /// indices are saved.
+    virtual void
+    save_values(double time, Eigen::Ref<Eigen::VectorXd const> const &state)
+        = 0;
 
-    /// \brief Fills the indices owned by this component with initial values from a json.
+    /// \brief Fills the indices owned by this component with initial values
+    /// from a json.
     ///
-    /// Relies on the exact format of the json. \todo { Document the intial json format. }
-    /// @param[out] new_state state vector, who shall contain the initial values.
+    /// Relies on the exact format of the json. \todo { Document the intial json
+    /// format. }
+    /// @param[out] new_state state vector, who shall contain the initial
+    /// values.
     /// @param initial_json Json object that contains the initial values.
-    virtual void set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
-                                    nlohmann::ordered_json initial_json) = 0;
+    virtual void set_initial_values(
+        Eigen::Ref<Eigen::VectorXd> new_state,
+        nlohmann::ordered_json initial_json)
+        = 0;
 
   protected:
     /// \brief helper function for save_values() that deals with the data
@@ -106,7 +120,8 @@ namespace Model::Networkproblem {
     /// @param t time to be inserted
     /// @param valuemap map of values to be inserted. key is the x position on
     /// the component. x==0 for components without spatial dimension.
-    void push_to_values(double t, std::vector<std::map<double, double>> valuemap);
+    void
+    push_to_values(double t, std::vector<std::map<double, double>> valuemap);
 
     /// \brief getter for the vector of times saved in #values_ptr
     std::vector<double> const &get_times() const;
@@ -116,15 +131,18 @@ namespace Model::Networkproblem {
     get_values() const;
 
   private:
-    /// \brief a container class to group the times and values together for later access for printout.
-    /// As this may change we don't expose it publicly.
+    /// \brief a container class to group the times and values together for
+    /// later access for printout. As this may change we don't expose it
+    /// publicly.
     struct Valuecontainer {
       std::vector<double> times;
       std::vector<std::vector<std::map<double, double>>> values;
     };
 
-    /// \brief contains the computed values of states for use in the print_to_files() method.
-    std::unique_ptr<Valuecontainer> values_ptr{std::make_unique<Valuecontainer>()};
+    /// \brief contains the computed values of states for use in the
+    /// print_to_files() method.
+    std::unique_ptr<Valuecontainer> values_ptr{
+        std::make_unique<Valuecontainer>()};
 
     /// \brief The first index, this Equationcomponent "owns".
     ///

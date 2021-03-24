@@ -3,17 +3,19 @@
 
 namespace Model::Networkproblem::Gas {
 
-  std::string Sink::get_type() {return "Sink";}
+  std::string Sink::get_type() { return "Sink"; }
 
-  Sink::Sink(nlohmann::json const &data)
-      : Flowboundarynode(revert_boundary_conditions(data)) {}
+  Sink::Sink(nlohmann::json const &data) :
+      Flowboundarynode(revert_boundary_conditions(data)) {}
 
-  nlohmann::json Sink::revert_boundary_conditions(nlohmann::json const &data){
+  nlohmann::json Sink::revert_boundary_conditions(nlohmann::json const &data) {
 
     nlohmann::json reverted_boundary_json = data;
-    if(not reverted_boundary_json.contains("boundary_values")){
-      gthrow({"The sink json ", data["id"] ," did not contain boundary values.  Something went wrong.\n",
-          "Its json was: ", data.dump(4)});
+    if (not reverted_boundary_json.contains("boundary_values")) {
+      gthrow(
+          {"The sink json ", data["id"],
+           " did not contain boundary values.  Something went wrong.\n",
+           "Its json was: ", data.dump(4)});
     }
     for (auto &datum : reverted_boundary_json["boundary_values"]["data"]) {
       for (auto &value_json : datum["values"]) {
@@ -24,7 +26,5 @@ namespace Model::Networkproblem::Gas {
 
     return reverted_boundary_json;
   }
-
-
 
 } // namespace Model::Networkproblem::Gas

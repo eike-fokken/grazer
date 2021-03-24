@@ -1,10 +1,10 @@
 #include "Boundaryvalue.hpp"
 #include "Exception.hpp"
 #include "Valuemap.hpp"
-#include <gtest/gtest.h>
 #include <Eigen/Dense>
-#include <stdexcept>
+#include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
+#include <stdexcept>
 
 TEST(Boundaryvalue, Operator) {
 
@@ -14,16 +14,16 @@ TEST(Boundaryvalue, Operator) {
 
   nlohmann::json boundary_value_map;
 
-  boundary_value_map = {{"id", "N213"},
-                       {"data",
-                        {{{"time", 1.0}, {"values", {a(0), a(1)}}},
-                         {{"time", 2.0}, {"values", {b(0), b(1)}}},
-                         {{"time", 3.0}, {"values", {c(0), c(1)}}}}}};
+  boundary_value_map
+      = {{"id", "N213"},
+         {"data",
+          {{{"time", 1.0}, {"values", {a(0), a(1)}}},
+           {{"time", 2.0}, {"values", {b(0), b(1)}}},
+           {{"time", 3.0}, {"values", {c(0), c(1)}}}}}};
 
-  Model::Networkproblem::Boundaryvalue<2>
-      boundary_object(boundary_value_map);
+  Model::Networkproblem::Boundaryvalue<2> boundary_object(boundary_value_map);
 
-  EXPECT_THROW(boundary_object(3.5),std::runtime_error);
+  EXPECT_THROW(boundary_object(3.5), std::runtime_error);
   EXPECT_THROW(boundary_object(0.5), std::runtime_error);
   // EXPECT_ANY_THROW(boundary_object(0.5));
 

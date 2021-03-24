@@ -21,21 +21,21 @@ namespace Eigen {
 
 // this is for T = double or T = Eigen::Vector...
 template <typename T>
-nlohmann::json make_value_json(std::string id, std::string key, T &condition0,
-                               T &condition1);
+nlohmann::json
+make_value_json(std::string id, std::string key, T &condition0, T &condition1);
 
 // this is for T = double or T = Eigen::Vector...
 template <typename T>
-nlohmann::json make_value_json(std::string id, std::string key,
-                               std::vector<std::pair<double, T>> pairs);
+nlohmann::json make_value_json(
+    std::string id, std::string key, std::vector<std::pair<double, T>> pairs);
 
-nlohmann::json
-make_full_json(std::map<std::string, std::vector<nlohmann::json>> nodemap,
-               std::map<std::string, std::vector<nlohmann::json>> edgemap);
+nlohmann::json make_full_json(
+    std::map<std::string, std::vector<nlohmann::json>> nodemap,
+    std::map<std::string, std::vector<nlohmann::json>> edgemap);
 
-nlohmann::json
-make_initial_json(std::map<std::string, std::vector<nlohmann::json>> nodemap,
-                  std::map<std::string, std::vector<nlohmann::json>> edgemap);
+nlohmann::json make_initial_json(
+    std::map<std::string, std::vector<nlohmann::json>> nodemap,
+    std::map<std::string, std::vector<nlohmann::json>> edgemap);
 
 template <typename Derived>
 void Eigen::to_json(nlohmann::json &j, const MatrixBase<Derived> &eig) {
@@ -45,14 +45,12 @@ void Eigen::to_json(nlohmann::json &j, const MatrixBase<Derived> &eig) {
   //               matrices.");
   j = nlohmann::json::array();
 
-  for (Eigen::Index i = 0; i != eig.rows(); ++i) {
-    j.push_back(eig(i));
-  }
+  for (Eigen::Index i = 0; i != eig.rows(); ++i) { j.push_back(eig(i)); }
 }
 
 template <typename T>
-nlohmann::json make_value_json(std::string id, std::string key, T &condition0,
-                               T &condition1) {
+nlohmann::json
+make_value_json(std::string id, std::string key, T &condition0, T &condition1) {
   nlohmann::json bound;
   bound["id"] = id;
   bound["data"] = nlohmann::json::array();
@@ -73,8 +71,8 @@ nlohmann::json make_value_json(std::string id, std::string key, T &condition0,
 }
 
 template <typename T>
-nlohmann::json make_value_json(std::string id, std::string key,
-                               std::vector<std::pair<double, T>> pairs) {
+nlohmann::json make_value_json(
+    std::string id, std::string key, std::vector<std::pair<double, T>> pairs) {
 
   if (pairs.empty()) {
     throw std::runtime_error("Pairs empty.");

@@ -6,7 +6,17 @@ on:
     types: [synchronize, opened, reopened, ready_for_review]
 
 jobs:
-  build:
+  format-check:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check clang-format style
+      uses: jidicula/clang-format-action@v3.2.0
+      with: 
+        clang-format-version: "11"
+    
+
+  build-and-test:
     if: github.event.pull_request.draft == false
     strategy:
       matrix:

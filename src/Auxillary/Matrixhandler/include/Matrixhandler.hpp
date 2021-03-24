@@ -21,7 +21,8 @@ namespace Aux {
     /// @param value The value to be added to the already present coefficient.
     virtual void add_to_coefficient(int row, int col, double value) = 0;
 
-    /// \brief Sets a coefficient. For #Triplethandler this actually behaves like #add_to_coefficient.
+    /// \brief Sets a coefficient. For #Triplethandler this actually behaves
+    /// like #add_to_coefficient.
     ///
     /// @param row The row index of the coefficient.
     /// @param col The column index of the coefficient.
@@ -55,7 +56,8 @@ namespace Aux {
     std::vector<Eigen::Triplet<double>> tripletlist;
   };
 
-  /// \brief The Coeffrefhandler variety directly sets the coefficients and contains no state.
+  /// \brief The Coeffrefhandler variety directly sets the coefficients and
+  /// contains no state.
   class Coeffrefhandler final : public Matrixhandler {
 
   public:

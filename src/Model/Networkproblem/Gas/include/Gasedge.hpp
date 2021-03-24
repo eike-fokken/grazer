@@ -16,9 +16,8 @@ namespace Model::Networkproblem::Gas {
     int get_equation_after_index() const;
 
     /// Returns the boundary
-    Eigen::Vector2d
-    get_boundary_state(int direction,
-                       Eigen::Ref<Eigen::VectorXd const> const &state) const;
+    Eigen::Vector2d get_boundary_state(
+        int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const;
 
     /// returns the boundary state expressed in pressure and volumetric flow.
     /// It is the responsibility of the edge to decide what that means.

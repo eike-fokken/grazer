@@ -21,7 +21,7 @@ namespace Network {
 
     Node() = delete;
 
-    Node(nlohmann::json const & data);
+    Node(nlohmann::json const &data);
 
     virtual ~Node(){};
 
@@ -50,11 +50,12 @@ namespace Network {
     std::vector<Network::Edge *> get_ending_edges() const;
 
   private:
-    struct Edgecollection{
+    struct Edgecollection {
       std::vector<Network::Edge *> starting_edges;
       std::vector<Network::Edge *> ending_edges;
     };
-    std::unique_ptr<Edgecollection> attached_edges{std::make_unique<Edgecollection>()};
+    std::unique_ptr<Edgecollection> attached_edges{
+        std::make_unique<Edgecollection>()};
   };
 
 } // namespace Network

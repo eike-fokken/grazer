@@ -11,16 +11,16 @@ namespace Model {
 
 namespace Model {
 
-  struct Timedata{
+  struct Timedata {
 
     Timedata() = delete;
-    Timedata(nlohmann::json const & time_evolution_data);
+    Timedata(nlohmann::json const &time_evolution_data);
 
-    double get_starttime() const ;
-    double get_endtime() const ;
-    double get_delta_t() const ;
-    double get_timeinterval() const ;
-    int  get_number_of_steps() const ;
+    double get_starttime() const;
+    double get_endtime() const;
+    double get_delta_t() const;
+    double get_timeinterval() const;
+    int get_number_of_steps() const;
 
   private:
     double const starttime;
@@ -35,18 +35,18 @@ namespace Model {
     double init_delta_t() const;
   };
 
-
   class Timeevolver {
 
   public:
     Timeevolver() = delete;
     Timeevolver(double tolerance, int maximal_number_of_iterations);
 
-    void simulate(Timedata timedata, Model::Problem & problem,
-                  int number_of_states, nlohmann::json & problem_initial_json);
+    void simulate(
+        Timedata timedata, Model::Problem &problem, int number_of_states,
+        nlohmann::json &problem_initial_json);
 
-  private :
-        Solver::Newtonsolver solver;
-    };
+  private:
+    Solver::Newtonsolver solver;
+  };
 
 } // namespace Model

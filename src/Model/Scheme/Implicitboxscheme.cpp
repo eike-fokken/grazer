@@ -14,9 +14,13 @@ namespace Model::Scheme {
       double roughness) {
 
     double Delta_t = new_time - last_time;
-    result = 0.5 * (new_left + new_right) - 0.5 * (last_left + last_right) -
-      Delta_t / Delta_x * (bl.flux(new_left,diameter) - bl.flux(new_right,diameter)) -
-      0.5 * Delta_t * (bl.source(new_right,diameter,roughness) + bl.source(new_left,diameter,roughness));
+    result
+        = 0.5 * (new_left + new_right) - 0.5 * (last_left + last_right)
+          - Delta_t / Delta_x
+                * (bl.flux(new_left, diameter) - bl.flux(new_right, diameter))
+          - 0.5 * Delta_t
+                * (bl.source(new_right, diameter, roughness)
+                   + bl.source(new_left, diameter, roughness));
   }
 
   /// The derivative with respect to \code{.cpp}last_left\endcode
@@ -26,13 +30,14 @@ namespace Model::Scheme {
       Eigen::Ref<Eigen::Vector2d const> const &,
       Eigen::Ref<Eigen::Vector2d const> const &new_left,
       Eigen::Ref<Eigen::Vector2d const> const &,
-      Model::Balancelaw::Isothermaleulerequation const &bl,double diameter,double roughness) {
+      Model::Balancelaw::Isothermaleulerequation const &bl, double diameter,
+      double roughness) {
     double Delta_t = new_time - last_time;
     Eigen::Matrix2d jac;
     Eigen::Matrix2d id;
     id.setIdentity();
-    jac = 0.5 * id - Delta_t / Delta_x * bl.dflux_dstate(new_left,diameter) -
-      0.5 * Delta_t * bl.dsource_dstate(new_left,diameter,roughness);
+    jac = 0.5 * id - Delta_t / Delta_x * bl.dflux_dstate(new_left, diameter)
+          - 0.5 * Delta_t * bl.dsource_dstate(new_left, diameter, roughness);
     return jac;
   }
 
@@ -43,13 +48,14 @@ namespace Model::Scheme {
       Eigen::Ref<Eigen::Vector2d const> const &,
       Eigen::Ref<Eigen::Vector2d const> const &,
       Eigen::Ref<Eigen::Vector2d const> const &new_right,
-      Model::Balancelaw::Isothermaleulerequation const &bl,double diameter,double roughness) {
+      Model::Balancelaw::Isothermaleulerequation const &bl, double diameter,
+      double roughness) {
     double Delta_t = new_time - last_time;
     Eigen::Matrix2d jac;
     Eigen::Matrix2d id;
     id.setIdentity();
-    jac = 0.5 * id + Delta_t / Delta_x * bl.dflux_dstate(new_right,diameter) -
-      0.5 * Delta_t * bl.dsource_dstate(new_right,diameter,roughness);
+    jac = 0.5 * id + Delta_t / Delta_x * bl.dflux_dstate(new_right, diameter)
+          - 0.5 * Delta_t * bl.dsource_dstate(new_right, diameter, roughness);
     return jac;
   }
 

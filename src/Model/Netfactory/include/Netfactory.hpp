@@ -7,17 +7,17 @@
 #include <type_traits>
 #include <vector>
 
-namespace Network{
+namespace Network {
   class Node;
   class Edge;
   class Net;
-}
+} // namespace Network
 
 namespace Model::Componentfactory {
   struct Componentfactory;
   struct AbstractNodeType;
   struct AbstractEdgeType;
-}
+} // namespace Model::Componentfactory
 
 namespace Model::Networkproblem {
 
@@ -44,7 +44,10 @@ namespace Model::Networkproblem {
   /// nodes.
   std::vector<std::unique_ptr<Network::Node>> build_node_vector(
       nlohmann::json const &node_topology,
-        std::map<std::string, std::unique_ptr<Componentfactory::AbstractNodeType>> const &nodetypemap);
+      std::map<
+          std::string,
+          std::unique_ptr<Componentfactory::AbstractNodeType>> const
+          &nodetypemap);
 
   /// \brief construct Edges of types given by the json input and put their
   /// pointers in a vector
@@ -55,18 +58,21 @@ namespace Model::Networkproblem {
   std::vector<std::unique_ptr<Network::Edge>> build_edge_vector(
       nlohmann::json const &edge_topology,
       std::vector<std::unique_ptr<Network::Node>> &nodes,
-        std::map<std::string, std::unique_ptr<Componentfactory::AbstractEdgeType>> const &edgetypemap);
+      std::map<
+          std::string,
+          std::unique_ptr<Componentfactory::AbstractEdgeType>> const
+          &edgetypemap);
 
-    /// \brief Enters entries from a second json object into the topology json.
-    ///
-    /// Used for boundary and control jsons.
-    void insert_second_json_in_topology_json(
-        nlohmann::json &topology, nlohmann::json &boundary,
-        std::string const &name_of_inserted_json);
+  /// \brief Enters entries from a second json object into the topology json.
+  ///
+  /// Used for boundary and control jsons.
+  void insert_second_json_in_topology_json(
+      nlohmann::json &topology, nlohmann::json &boundary,
+      std::string const &name_of_inserted_json);
 
-    /// \brief Reads values that are meant for many components and writes them
-    /// into each component json.
-    void supply_overall_values_to_components(nlohmann::json &network_json);
+  /// \brief Reads values that are meant for many components and writes them
+  /// into each component json.
+  void supply_overall_values_to_components(nlohmann::json &network_json);
 
   /// \brief Constructs a \ref Network::Net "Net" object from the given json.
   ///
@@ -81,6 +87,8 @@ namespace Model::Networkproblem {
   /// that is not constructible in the Componentfactory.
   /// @throw std::runtime_error if the passed json has errors.
 
-    std::unique_ptr<Network::Net> build_net(nlohmann::json &networkproblem_json, Componentfactory::Componentfactory const & factory);
+  std::unique_ptr<Network::Net> build_net(
+      nlohmann::json &networkproblem_json,
+      Componentfactory::Componentfactory const &factory);
 
-  } // namespace Model::Networkproblem
+} // namespace Model::Networkproblem

@@ -14,4 +14,4 @@ namespace Model::Componentfactory {
   struct Gas_factory : public Componentfactory {
     Gas_factory();
   };
-}
+} // namespace Model::Componentfactory

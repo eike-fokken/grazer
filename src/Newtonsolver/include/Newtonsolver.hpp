@@ -8,9 +8,8 @@ namespace GrazerTest {
 }
 
 namespace Model {
-  class Problem;  
+  class Problem;
 } // namespace Model
-
 
 /// \brief This namespace holds tools for solving numerical problems, e.g.
 /// finding the root of a non-linear function.
@@ -36,25 +35,27 @@ namespace Solver {
   public:
     Newtonsolver_temp(double _tolerance, int _maximal_iterations);
 
-
-    /// \brief Reanalyzes the sparsity pattern of the jacobian the objective function and computes it.
+    /// \brief Reanalyzes the sparsity pattern of the jacobian the objective
+    /// function and computes it.
     ///
     /// The jacobian is saved into the data member named "jacobian".
 
-    void evaluate_state_derivative_triplets(Problemtype &problem,
-                                            double last_time, double new_time,
-                                            Eigen::Ref<Eigen::VectorXd const> const &last_state,
-                                            Eigen::Ref<Eigen::VectorXd>new_state);
+    void evaluate_state_derivative_triplets(
+        Problemtype &problem, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd> new_state);
 
-    /// \brief Computes the jacobian with the assumption that the sparsity pattern has not changed.
+    /// \brief Computes the jacobian with the assumption that the sparsity
+    /// pattern has not changed.
     ///
     /// The jacobian is saved into the data member named "jacobian".
-    /// Only call this version if you are sure that the sparsity pattern is unchanged.
+    /// Only call this version if you are sure that the sparsity pattern is
+    /// unchanged.
 
-    void evaluate_state_derivative_coeffref(Problemtype &problem,
-                                            double last_time, double new_time,
-                                            Eigen::Ref<Eigen::VectorXd const> const &last_state,
-                                            Eigen::Ref<Eigen::VectorXd const> const &new_state);
+    void evaluate_state_derivative_coeffref(
+        Problemtype &problem, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state);
 
     /// \brief Returns the number of structurally non-zero indices of the
     /// jacobian.
@@ -67,19 +68,21 @@ namespace Solver {
     /// "Deuflhard and Hohmann: Numerical Analysis in Modern Scientific
     /// Computing". Afterwards there should hold f(new_state) == 0 (up to
     /// tolerance).
-    Solutionstruct solve(Eigen::Ref<Eigen::VectorXd>new_state, Problemtype &problem,
-                         bool newjac, double last_time, double new_time,
-                         Eigen::Ref<Eigen::VectorXd const> const &last_state);
+    Solutionstruct solve(
+        Eigen::Ref<Eigen::VectorXd> new_state, Problemtype &problem,
+        bool newjac, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &last_state);
+
   private:
     /// Holds an instance of the actual solver, to save computation time it
     /// is kept from previous time steps because usually the sparsity
     /// pattern will not change.
     Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>>
-    lusolver;
+        lusolver;
 
-    // Later on we will include qr decomposition for badly conditioned jacobians.
-    // Eigen::SparseQR<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>>
-    // qrsolver;
+    // Later on we will include qr decomposition for badly conditioned
+    // jacobians. Eigen::SparseQR<Eigen::SparseMatrix<double>,
+    // Eigen::COLAMDOrdering<int>> qrsolver;
 
     /// This will be the jacobian matrix.  We hold it here so its sparsity
     /// pattern is preserved.

@@ -17,25 +17,28 @@ namespace Model {
   public:
     /// \brief returns the type of an instance
     ///
-    /// @returns the string that is the corresponding json key in the problem_data_file.json
-    /// This function is expensive but called only once.
-    virtual std::string get_type() const =0;
+    /// @returns the string that is the corresponding json key in the
+    /// problem_data_file.json This function is expensive but called only once.
+    virtual std::string get_type() const = 0;
 
     virtual ~Subproblem(){};
 
     // purely virtual functions:
-    virtual void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-                          double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
-                          Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
+    virtual void evaluate(
+        Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
     virtual void evaluate_state_derivative(
         Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> const &, Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
+        Eigen::Ref<Eigen::VectorXd const> const &,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
 
-    virtual void save_values(double time, Eigen::Ref<Eigen::VectorXd>new_state) = 0;
+    virtual void save_values(double time, Eigen::Ref<Eigen::VectorXd> new_state)
+        = 0;
 
-    virtual void
-    print_to_files(std::filesystem::path const &output_directory) = 0;
-    
+    virtual void print_to_files(std::filesystem::path const &output_directory)
+        = 0;
+
     // Reserves indices from the state vector
     // @param int next_free_index the first non-reserved index of the state
     // vector.
@@ -43,8 +46,9 @@ namespace Model {
     // state vector.
     int set_indices(int const next_free_index);
 
-    virtual void set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
-                                    nlohmann::json initial_json) = 0;
+    virtual void set_initial_values(
+        Eigen::Ref<Eigen::VectorXd> new_state, nlohmann::json initial_json)
+        = 0;
 
     int get_number_of_states() const;
     int get_start_state_index() const;

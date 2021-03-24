@@ -52,17 +52,24 @@ const json JsonValidationData::invalid_data = R"(
   }
 )"_json;
 
-const json JsonValidationData::invalid_schema = R"( {"type": "invalid Schema"} )"_json;
+const json JsonValidationData::invalid_schema
+    = R"( {"type": "invalid Schema"} )"_json;
 
 TEST_F(JsonValidationData, happyPath) {
   EXPECT_NO_THROW(validation::validate_json(valid_data, valid_schema));
 }
 
 TEST_F(JsonValidationData, wrongData) {
-  EXPECT_THROW(validation::validate_json(missing_data, valid_schema), std::runtime_error);
-  EXPECT_THROW(validation::validate_json(invalid_data, valid_schema), std::runtime_error);
+  EXPECT_THROW(
+      validation::validate_json(missing_data, valid_schema),
+      std::runtime_error);
+  EXPECT_THROW(
+      validation::validate_json(invalid_data, valid_schema),
+      std::runtime_error);
 }
 
 TEST_F(JsonValidationData, invalidSchema) {
-  EXPECT_THROW(validation::validate_json(valid_data, invalid_schema), std::runtime_error);
+  EXPECT_THROW(
+      validation::validate_json(valid_data, invalid_schema),
+      std::runtime_error);
 }

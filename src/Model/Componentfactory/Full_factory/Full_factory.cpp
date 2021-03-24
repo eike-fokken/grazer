@@ -17,14 +17,13 @@
 
 namespace Model::Componentfactory {
 
-  void add_all_components(Componentfactory &factory){
+  void add_all_components(Componentfactory &factory) {
     add_power_components(factory);
     add_gas_components(factory);
     factory.add_edge_type(
-        std::make_unique<EdgeType<Networkproblem::Gaspowerconnection::Gaspowerconnection>>());
+        std::make_unique<EdgeType<
+            Networkproblem::Gaspowerconnection::Gaspowerconnection>>());
   }
 
-  Full_factory::Full_factory(){
-    add_all_components(*this);
-  }
-}
+  Full_factory::Full_factory() { add_all_components(*this); }
+} // namespace Model::Componentfactory

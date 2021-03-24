@@ -43,27 +43,27 @@ TEST(testIsothermaleulerequation, dflux_state) {
 
     Eigen::Matrix2d exact_dflux_matrix = Iso.dflux_dstate(x, diameter);
 
-    Eigen::Vector2d difference_dflux0 =
-        0.5 * (Iso.flux(x + h0, diameter) - Iso.flux(x - h0, diameter)) /
-        epsilon;
+    Eigen::Vector2d difference_dflux0
+        = 0.5 * (Iso.flux(x + h0, diameter) - Iso.flux(x - h0, diameter))
+          / epsilon;
     Eigen::Vector2d exact_dflux0 = exact_dflux_matrix * h0 / epsilon;
 
-    EXPECT_NEAR(exact_dflux0[0], difference_dflux0[0],
-                finite_difference_threshold);
-    EXPECT_NEAR(exact_dflux0[1], difference_dflux0[1],
-                finite_difference_threshold);
+    EXPECT_NEAR(
+        exact_dflux0[0], difference_dflux0[0], finite_difference_threshold);
+    EXPECT_NEAR(
+        exact_dflux0[1], difference_dflux0[1], finite_difference_threshold);
 
     Eigen::Vector2d h1(0, epsilon);
 
-    Eigen::Vector2d difference_dflux1 =
-        0.5 * (Iso.flux(x + h1, diameter) - Iso.flux(x - h1, diameter)) /
-        epsilon;
+    Eigen::Vector2d difference_dflux1
+        = 0.5 * (Iso.flux(x + h1, diameter) - Iso.flux(x - h1, diameter))
+          / epsilon;
     Eigen::Vector2d exact_dflux1 = exact_dflux_matrix * h1 / epsilon;
 
-    EXPECT_NEAR(exact_dflux1[0], difference_dflux1[0],
-                finite_difference_threshold);
-    EXPECT_NEAR(exact_dflux1[1], difference_dflux1[1],
-                finite_difference_threshold);
+    EXPECT_NEAR(
+        exact_dflux1[0], difference_dflux1[0], finite_difference_threshold);
+    EXPECT_NEAR(
+        exact_dflux1[1], difference_dflux1[1], finite_difference_threshold);
   }
 }
 
@@ -110,34 +110,34 @@ TEST(testIsothermaleulerequation, dsource_dstate) {
 
     Eigen::Vector2d h0(epsilon, 0);
 
-    Eigen::Matrix2d exact_dsource_matrix =
-        Iso.dsource_dstate(x, diameter, roughness);
+    Eigen::Matrix2d exact_dsource_matrix
+        = Iso.dsource_dstate(x, diameter, roughness);
 
-    Eigen::Vector2d difference_dsource0 =
-        0.5 *
-        (Iso.source(x + h0, diameter, roughness) -
-         Iso.source(x - h0, diameter, roughness)) /
-        epsilon;
+    Eigen::Vector2d difference_dsource0
+        = 0.5
+          * (Iso.source(x + h0, diameter, roughness)
+             - Iso.source(x - h0, diameter, roughness))
+          / epsilon;
     Eigen::Vector2d exact_dsource0 = exact_dsource_matrix * h0 / epsilon;
 
-    EXPECT_NEAR(exact_dsource0[0], difference_dsource0[0],
-                finite_difference_threshold);
-    EXPECT_NEAR(exact_dsource0[1], difference_dsource0[1],
-                finite_difference_threshold);
+    EXPECT_NEAR(
+        exact_dsource0[0], difference_dsource0[0], finite_difference_threshold);
+    EXPECT_NEAR(
+        exact_dsource0[1], difference_dsource0[1], finite_difference_threshold);
 
     Eigen::Vector2d h1(0, epsilon);
 
-    Eigen::Vector2d difference_dsource1 =
-        0.5 *
-        (Iso.source(x + h1, diameter, roughness) -
-         Iso.source(x - h1, diameter, roughness)) /
-        epsilon;
+    Eigen::Vector2d difference_dsource1
+        = 0.5
+          * (Iso.source(x + h1, diameter, roughness)
+             - Iso.source(x - h1, diameter, roughness))
+          / epsilon;
     Eigen::Vector2d exact_dsource1 = exact_dsource_matrix * h1 / epsilon;
 
-    EXPECT_NEAR(exact_dsource1[0], difference_dsource1[0],
-                finite_difference_threshold);
-    EXPECT_NEAR(exact_dsource1[1], difference_dsource1[1],
-                finite_difference_threshold);
+    EXPECT_NEAR(
+        exact_dsource1[0], difference_dsource1[0], finite_difference_threshold);
+    EXPECT_NEAR(
+        exact_dsource1[1], difference_dsource1[1], finite_difference_threshold);
   }
 }
 
@@ -161,7 +161,6 @@ TEST(testIsothermaleulerequation, p_qvol_and_state) {
 
 TEST(testIsothermaleulerequation, dp_qvol_dstate) {
 
-
   Model::Balancelaw::Isothermaleulerequation Iso;
 
   for (int i = -20; i != 21; ++i) {
@@ -178,25 +177,25 @@ TEST(testIsothermaleulerequation, dp_qvol_dstate) {
 
     Eigen::Matrix2d exact_dp_qvol_dstate_matrix = Iso.dp_qvol_dstate(x);
 
-    Eigen::Vector2d difference_dp_qvol0 =
-        0.5 * (Iso.p_qvol(x + h0) - Iso.p_qvol(x - h0)) / epsilon;
+    Eigen::Vector2d difference_dp_qvol0
+        = 0.5 * (Iso.p_qvol(x + h0) - Iso.p_qvol(x - h0)) / epsilon;
     Eigen::Vector2d exact_dflux0 = exact_dp_qvol_dstate_matrix * h0 / epsilon;
 
-    EXPECT_NEAR(exact_dflux0[0], difference_dp_qvol0[0],
-                finite_difference_threshold);
-    EXPECT_NEAR(exact_dflux0[1], difference_dp_qvol0[1],
-                finite_difference_threshold);
+    EXPECT_NEAR(
+        exact_dflux0[0], difference_dp_qvol0[0], finite_difference_threshold);
+    EXPECT_NEAR(
+        exact_dflux0[1], difference_dp_qvol0[1], finite_difference_threshold);
 
     Eigen::Vector2d h1(0, epsilon);
 
-    Eigen::Vector2d difference_dp_qvol1 =
-        0.5 * (Iso.p_qvol(x + h1) - Iso.p_qvol(x - h1)) / epsilon;
+    Eigen::Vector2d difference_dp_qvol1
+        = 0.5 * (Iso.p_qvol(x + h1) - Iso.p_qvol(x - h1)) / epsilon;
     Eigen::Vector2d exact_dflux1 = exact_dp_qvol_dstate_matrix * h1 / epsilon;
 
-    EXPECT_NEAR(exact_dflux1[0], difference_dp_qvol1[0],
-                finite_difference_threshold);
-    EXPECT_NEAR(exact_dflux1[1], difference_dp_qvol1[1],
-                finite_difference_threshold);
+    EXPECT_NEAR(
+        exact_dflux1[0], difference_dp_qvol1[0], finite_difference_threshold);
+    EXPECT_NEAR(
+        exact_dflux1[1], difference_dp_qvol1[1], finite_difference_threshold);
   }
 }
 
@@ -277,11 +276,11 @@ TEST(testIsothermaleulerequation, dlambda_non_laminar_dRe) {
     double h = epsilon;
     double finite_difference_threshold = sqrt(epsilon);
     double exact_dlambda = Iso.dlambda_non_laminar_dRe(Re, diameter, roughness);
-    double difference_dlambda =
-        0.5 *
-        (Iso.lambda_non_laminar(Re + h, diameter, roughness) -
-         Iso.lambda_non_laminar(Re - h, diameter, roughness)) /
-        h;
+    double difference_dlambda
+        = 0.5
+          * (Iso.lambda_non_laminar(Re + h, diameter, roughness)
+             - Iso.lambda_non_laminar(Re - h, diameter, roughness))
+          / h;
     EXPECT_NEAR(exact_dlambda, difference_dlambda, finite_difference_threshold);
   }
 }
@@ -309,11 +308,12 @@ TEST(testIsothermaleulerequation, dReynolds_dq) {
 
     if (Iso.Reynolds(q, diameter) > 2000) {
       double exact_dReynolds = Iso.dReynolds_dq(q, diameter);
-      double difference_dReynolds =
-          0.5 *
-          (Iso.Reynolds(q + h, diameter) - Iso.Reynolds(q - h, diameter)) / h;
-      EXPECT_NEAR(exact_dReynolds, difference_dReynolds,
-                  finite_difference_threshold);
+      double difference_dReynolds
+          = 0.5
+            * (Iso.Reynolds(q + h, diameter) - Iso.Reynolds(q - h, diameter))
+            / h;
+      EXPECT_NEAR(
+          exact_dReynolds, difference_dReynolds, finite_difference_threshold);
     }
   }
 }
@@ -355,14 +355,15 @@ TEST(testIsothermaleulerequation, dSwamee_Jain_dRe) {
     double epsilon = pow(DBL_EPSILON, 1.0 / 3.0);
     double h = epsilon;
     double finite_difference_threshold = sqrt(epsilon);
-    double exact_dSwamee_Jain_dRe =
-        Iso.dSwamee_Jain_dRe(Re, diameter, roughness);
-    double difference_dSwamee_Jain_dRe =
-        0.5 *
-        (Iso.Swamee_Jain(Re + h, diameter, roughness) -
-         Iso.Swamee_Jain(Re - h, diameter, roughness)) /
-        h;
-    EXPECT_NEAR(exact_dSwamee_Jain_dRe, difference_dSwamee_Jain_dRe,
-                finite_difference_threshold);
+    double exact_dSwamee_Jain_dRe
+        = Iso.dSwamee_Jain_dRe(Re, diameter, roughness);
+    double difference_dSwamee_Jain_dRe
+        = 0.5
+          * (Iso.Swamee_Jain(Re + h, diameter, roughness)
+             - Iso.Swamee_Jain(Re - h, diameter, roughness))
+          / h;
+    EXPECT_NEAR(
+        exact_dSwamee_Jain_dRe, difference_dSwamee_Jain_dRe,
+        finite_difference_threshold);
   }
 }
