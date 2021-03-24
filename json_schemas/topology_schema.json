@@ -1,0 +1,198 @@
+{
+  "$id": "https://raw.githubusercontent.com/eike-fokken/grazer/blob/master/json_schemas/topology_schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "Topology",
+  "description": "Description of the Network Topology",
+  "required": ["nodes"],
+  "properties": {
+    "information": {
+      "type": "object",
+      "description": "Metadata",
+      "properties": {
+        "title": {"type": "string"},
+        "type": {"type": "string", "enum": ["gas-power"]},
+        "author": {"type": "string"},
+        "date": {"type": "string", "format": "date"},
+        "documentation": {"type": "string"}
+      }
+    },
+    "nodes": {
+      "type": "object",
+      "properties": {
+        "Source": {"$ref": "#/$defs/node"},
+        "Innode": {"$ref": "#/$defs/node"},
+        "Sink": {"$ref": "#/$defs/node"},
+        "PVnode": {"$ref": "#/$defs/greekNode"},
+        "PQnode": {"$ref": "#/$defs/greekNode"},
+        "Vphinode": {"$ref": "#/$defs/greekNode"}
+      }
+    },
+    "connections": {
+      "type": "object",
+      "properties": {
+        "Gaspowerconnection": {"$ref": "#/$defs/connection/gaspowerconnection"},
+        "Transmissionline": {"$ref": "#/$defs/connection/transmissionline"},
+        "Shortpipe": {"$ref": "#/$defs/connection/shortpipe"},
+        "Pipe": {"$ref": "#/$defs/connection/pipe"},
+        "Compressorstation": {"$ref": "#/$defs/connection/compressorstation"},
+        "Controlvalve": {"$ref": "#/$defs/connection/controlvalve"}
+      }
+    }
+  },
+  "$defs": {
+    "node": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "x": {"type": "number"},
+          "y": {"type": "number"},
+          "height": {"$ref": "unit_schema.json#/length"},
+          "temperature": {"$ref": "unit_schema.json#/temperature"},
+          "pressureMin": {"$ref": "unit_schema.json#/pressure"},
+          "pressureMax": {"$ref": "unit_schema.json#/pressure"},
+          "pressureInit": {"$ref": "unit_schema.json#/pressure"},
+          "flowMin": {"$ref": "unit_schema.json#/flux"},
+          "flowMax": {"$ref": "unit_schema.json#/flux"}
+        }
+      }
+    },
+    "greekNode": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "G", "B"],
+        "properties": {
+          "id": {"type": "string"},
+          "G": {"type": "number", "description": "real part"},
+          "B": {"type": "number", "description": "imaginary part"}
+        }
+      }
+    },
+    "connection": {
+      "gaspowerconnection": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string"},
+            "from": {"type": "string"},
+            "to": {"type": "string"},
+            "power2gas_q_coeff": {"type": "number"},
+            "gas2power_1_coeff": {"type": "number"}
+          }
+        }
+      },
+      "transmissionline": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string"},
+            "from": {"type": "string"},
+            "to": {"type": "string"},
+            "B": {"type": "number"},
+            "G": {"type": "number"}
+          }
+        }
+      },
+      "shortpipe": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string"},
+            "from": {"type": "string"},
+            "to": {"type": "string"},
+            "flowMin": {"$ref": "unit_schema.json#/flux"},
+            "flowMax": {"$ref": "unit_schema.json#/flux"},
+            "flowInit": {"$ref": "unit_schema.json#/flux"}
+          }
+        }
+      },
+      "pipe": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string"},
+            "from": {"type": "string"},
+            "to": {"type": "string"},
+            "heatTransferCoefficient": "2",
+            "flowMin": {"$ref": "unit_schema.json#/flux"},
+            "flowMax": {"$ref": "unit_schema.json#/flux"},
+            "flowInInit": {"$ref": "unit_schema.json#/flux"},
+            "flowOutInit": {"$ref": "unit_schema.json#/flux"},
+            "length": {"$ref": "unit_schema.json#/length"},
+            "diameter": {"$ref": "unit_schema.json#/length"},
+            "roughness": {"$ref": "unit_schema.json#/length"}
+          }
+        }
+      },
+      "controlvalve": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string"},
+            "from": {"type": "string"},
+            "to": {"type": "string"},
+            "flowMin": {"$ref": "unit_schema.json#/flux"},
+            "flowMax": {"$ref": "unit_schema.json#/flux"},
+            "flowInit": {"$ref": "unit_schema.json#/flux"},
+            "pressureDifferentialMin": {"$ref": "unit_schema.json#/pressure"},
+            "pressureDifferentialMax": {"$ref": "unit_schema.json#/pressure"}
+          }
+        }
+      },
+      "compressorstation": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string"},
+            "from": {"type": "string"},
+            "to": {"type": "string"},
+            "typeOfControl": {"type": "string"},
+            "flowMin": {"$ref": "unit_schema.json#/flux"},
+            "flowMax": {"$ref": "unit_schema.json#/flux"},
+            "powerMin": {"$ref": "unit_schema.json#/power"},
+            "speedMin": {"$ref": "unit_schema.json#/angular_velocity"},
+            "speedMax": {"$ref": "unit_schema.json#/angular_velocity"},
+            "ambientTemperature": {"$ref": "unit_schema.json#/temperature"},
+            "specificFuelConsumption": {"$ref": "unit_schema.json#/defaultUnit"},
+            "efficiency": {"$ref": "unit_schema.json#/defaultUnit"},
+            "n_isoline_coeff_1": {"$ref": "unit_schema.json#/defaultUnit"},
+            "n_isoline_coeff_2": {"$ref": "unit_schema.json#/defaultUnit"},
+            "n_isoline_coeff_3": {"$ref": "unit_schema.json#/defaultUnit"},
+            "n_isoline_coeff_4": {"$ref": "unit_schema.json#/defaultUnit"},
+            "n_isoline_coeff_5": {"$ref": "unit_schema.json#/defaultUnit"},
+            "n_isoline_coeff_6": {"$ref": "unit_schema.json#/defaultUnit"},
+            "n_isoline_coeff_7": {"$ref": "unit_schema.json#/defaultUnit"},
+            "n_isoline_coeff_8": {"$ref": "unit_schema.json#/defaultUnit"},
+            "n_isoline_coeff_9": {"$ref": "unit_schema.json#/defaultUnit"},
+            "eta_ad_isoline_coeff_1": {"$ref": "unit_schema.json#/defaultUnit"},
+            "eta_ad_isoline_coeff_2": {"$ref": "unit_schema.json#/defaultUnit"},
+            "eta_ad_isoline_coeff_3": {"$ref": "unit_schema.json#/defaultUnit"},
+            "eta_ad_isoline_coeff_4": {"$ref": "unit_schema.json#/defaultUnit"},
+            "eta_ad_isoline_coeff_5": {"$ref": "unit_schema.json#/defaultUnit"},
+            "eta_ad_isoline_coeff_6": {"$ref": "unit_schema.json#/defaultUnit"},
+            "eta_ad_isoline_coeff_7": {"$ref": "unit_schema.json#/defaultUnit"},
+            "eta_ad_isoline_coeff_8": {"$ref": "unit_schema.json#/defaultUnit"},
+            "eta_ad_isoline_coeff_9": {"$ref": "unit_schema.json#/defaultUnit"},
+            "surgeline_coeff_2": {"$ref": "unit_schema.json#/defaultUnit"},
+            "surgeline_coeff_3": {"$ref": "unit_schema.json#/defaultUnit"},
+            "surgeline_coeff_4": {"$ref": "unit_schema.json#/defaultUnit"},
+            "chokeline_coeff_1": {"$ref": "unit_schema.json#/defaultUnit"},
+            "chokeline_coeff_2": {"$ref": "unit_schema.json#/defaultUnit"},
+            "chokeline_coeff_3": {"$ref": "unit_schema.json#/defaultUnit"},
+            "energy_rate_fun_coeff_1": {"$ref": "unit_schema.json#/defaultUnit"},
+            "energy_rate_fun_coeff_2": {"$ref": "unit_schema.json#/defaultUnit"},
+            "energy_rate_fun_coeff_3": {"$ref": "unit_schema.json#/defaultUnit"}
+          }
+        }
+      }
+    }
+  }
+}

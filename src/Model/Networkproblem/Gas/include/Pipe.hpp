@@ -12,6 +12,8 @@ namespace Model::Networkproblem::Gas {
 
     static std::string get_type();
 
+    static nlohmann::json get_schema();
+
     Pipe(nlohmann::json const &topology, std::vector<std::unique_ptr<Network::Node>> &nodes);
 
     void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
@@ -41,9 +43,8 @@ namespace Model::Networkproblem::Gas {
 
 
 
-
-
-    double const length;
+  private:
+    double get_length();
     double const diameter;
     double const roughness;
     int const number_of_points;

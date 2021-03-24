@@ -1,9 +1,9 @@
 {
     "time_evolution_data":
     {
-        "start_time":"0",
-        "end_time":"86400",
-        "desired_delta_t":"1800"
+        "start_time": 0,
+        "end_time": 86400,
+        "desired_delta_t": 1800
     },
     "initial_values":{
         "subproblems":
@@ -20,7 +20,7 @@
         {
             "Network_problem":
             {
-                "desired_delta_x": "10000",
+                "desired_delta_x": 10000,
                 "topology_json":"topology.json",
                 "boundary_json":"boundary.json",
                 "control_json":"control.json"

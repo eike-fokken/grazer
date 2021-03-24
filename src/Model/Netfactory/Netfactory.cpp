@@ -52,7 +52,8 @@ namespace Model::Networkproblem {
 
   std::vector<std::unique_ptr<Network::Node>> build_node_vector(
       nlohmann::json const &node_topology,
-      std::map<std::string, Componentfactory::Nodefactory> nodetypemap) {
+      std::map<std::string, std::unique_ptr<Componentfactory::AbstractNodeType>> const &
+          nodetypemap) {
 
     // Here we check, whether all nodetypes defined in the topology file were
     // built. It will throw an exception, if a node type is encountered that is
@@ -61,11 +62,11 @@ namespace Model::Networkproblem {
     for (auto nodetype_itr = node_topology.begin();
          nodetype_itr != node_topology.end(); ++nodetype_itr) {
 
-      std::string nodetype = nodetype_itr.key();
+      std::string nodetypename = nodetype_itr.key();
 
-      auto type_itr = nodetypemap.find(nodetype);
+      auto type_itr = nodetypemap.find(nodetypename);
       if (type_itr == nodetypemap.end()) {
-        gthrow({"The node type ", nodetype,
+        gthrow({"The node type ", nodetypename,
                 ", given in the topology file, is unknown to grazer."});
       }
     }
@@ -74,15 +75,15 @@ namespace Model::Networkproblem {
 
     std::vector<std::unique_ptr<Network::Node>> nodes;
 
-    for (auto const &[nodetype, nodedata] : nodetypemap) {
-      if (node_topology.find(nodetype) != node_topology.end()) {
+    for (auto const &[nodetypename, nodetype] : nodetypemap) {
+      if (node_topology.find(nodetypename) != node_topology.end()) {
 
-        for (auto node : node_topology[nodetype]) {
-          auto current_node = nodedata(node);
+        for (auto node : node_topology[nodetypename]) {
+          auto current_node = nodetype->make_instance(node);
           nodes.push_back(std::move(current_node));
         }
       } else {
-        std::cout << "Node type " << nodetype
+        std::cout << "Node type " << nodetypename
                   << " not present in the topology file."
                   << std::endl;
       }
@@ -94,20 +95,21 @@ namespace Model::Networkproblem {
   std::vector<std::unique_ptr<Network::Edge>> build_edge_vector(
       nlohmann::json const &edge_topology,
       std::vector<std::unique_ptr<Network::Node>> &nodes,
-      std::map<std::string, Componentfactory::Edgefactory> edgetypemap) {
+      std::map<std::string, std::unique_ptr<Componentfactory::AbstractEdgeType>>
+      const &edgetypemap) {
 
-        // Here we check, whether all edgetypes defined in the topology file were
+    // Here we check, whether all edgetypes defined in the topology file were
     // built. It will throw an exception, if a edge type is encountered that
     // is not known.
 
     for (auto edgetype_itr = edge_topology.begin();
          edgetype_itr != edge_topology.end(); ++edgetype_itr) {
 
-      std::string edgetype = edgetype_itr.key();
+      std::string edgetypename = edgetype_itr.key();
 
-      auto type_itr = edgetypemap.find(edgetype);
+      auto type_itr = edgetypemap.find(edgetypename);
       if (type_itr == edgetypemap.end()) {
-        gthrow({"The edge type ", edgetype,
+        gthrow({"The edge type ", edgetypename,
                 ", given in the topology file, is unknown to grazer."});
       }
     }
@@ -115,15 +117,15 @@ namespace Model::Networkproblem {
     // Now we actually construct the edge vector:
     std::vector<std::unique_ptr<Network::Edge>> edges;
 
-    for (auto const &[edgetype, edgedata] : edgetypemap) {
-      if (edge_topology.find(edgetype) != edge_topology.end()) {
+    for (auto const &[edgetypename, edgetype] : edgetypemap) {
+      if (edge_topology.find(edgetypename) != edge_topology.end()) {
 
-        for (auto edge : edge_topology[edgetype]) {
-          auto current_edge = edgedata(edge, nodes);
+        for (auto edge : edge_topology[edgetypename]) {
+          auto current_edge = edgetype->make_instance(edge, nodes);
           edges.push_back(std::move(current_edge));
         }
       } else {
-        std::cout << "Edge type " << edgetype
+        std::cout << "Edge type " << edgetypename
                   << " not present in the topology file."
                   << std::endl;
       }
@@ -238,4 +240,18 @@ namespace Model::Networkproblem {
       }
     }
 
-  } // namespace Model::Networkproblem
+    std::unique_ptr<Network::Net> build_net(
+        nlohmann::json &networkproblem_json,
+        Componentfactory::Componentfactory const &factory) {
+      auto topology = build_full_networkproblem_json(networkproblem_json);
+      auto nodes = build_node_vector(topology["nodes"], factory.node_type_map);
+
+      // build the edge vector.
+      auto edges = build_edge_vector(
+          topology["connections"], nodes, factory.edge_type_map);
+      auto network
+          = std::make_unique<Network::Net>(std::move(nodes), std::move(edges));
+
+      return network;
+    }
+} // namespace Model::Networkproblem

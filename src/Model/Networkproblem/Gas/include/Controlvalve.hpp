@@ -10,6 +10,7 @@ namespace Model::Networkproblem::Gas {
   class Controlvalve final : public Shortcomponent {
   public:
     static std::string get_type();
+    static nlohmann::json get_schema();
 
     Controlvalve(nlohmann::json const &edge_json,
                  std::vector<std::unique_ptr<Network::Node>> &nodes);

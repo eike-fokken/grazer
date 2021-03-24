@@ -10,6 +10,8 @@ namespace Model::Networkproblem::Power {
   class Powernode : public Equationcomponent, public Network::Node {
 
   public:
+    static nlohmann::json get_schema();
+
     Powernode(nlohmann::json const & topology);
 
     virtual ~Powernode(){};

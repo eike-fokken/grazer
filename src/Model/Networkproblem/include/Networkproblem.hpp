@@ -44,6 +44,8 @@ namespace Model::Networkproblem {
     virtual void set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
                                     nlohmann::json initial_json) final;
 
+    Network::Net const & get_network() const;
+
   private:
     std::unique_ptr<Network::Net> network;
     std::vector<Equationcomponent *> equationcomponents;

@@ -3,7 +3,22 @@
 #include <Node.hpp>
 #include <memory>
 #include <string>
+#include "make_schema.hpp"
+
 namespace Network {
+  std::string Edge::get_type() {
+    gthrow({"This static method must be implemented in the class inheriting "
+            "from edge!"});
+  }
+
+  nlohmann::json Edge::get_schema() {
+    nlohmann::json schema = Idobject::get_schema();
+
+    Aux::schema::add_required(schema, "from", Aux::schema::type::string("Node id"));
+    Aux::schema::add_required(schema, "to", Aux::schema::type::string("Node id"));
+
+    return schema;
+  }
 
   Edge::Edge(nlohmann::json const &edge_json,
              std::vector<std::unique_ptr<Node>> &nodes)

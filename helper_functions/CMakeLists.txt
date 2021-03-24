@@ -6,3 +6,7 @@ add_executable(stringify_values stringify_value_json.cpp)
 target_link_libraries(stringify_values PRIVATE misc)
 
 add_executable(transform_initial transform_initial.cpp)
+
+add_executable(full_factory_schema create_topology_schema.cpp)
+target_link_libraries(full_factory_schema componentfactory full_factory)
+

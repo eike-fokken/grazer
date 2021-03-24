@@ -1,7 +1,15 @@
 #include <Idobject.hpp>
 #include <iostream>
+#include "make_schema.hpp"
 
 namespace Network {
+
+  nlohmann::json Idobject::get_schema() {
+    nlohmann::json schema;
+    schema["type"] = "object";
+    Aux::schema::add_required(schema, "id", Aux::schema::type::string());
+    return schema;
+  }
 
   Idobject::Idobject(std::string const & _id)
       : idptr(std::make_unique<std::string const >(_id)) {}

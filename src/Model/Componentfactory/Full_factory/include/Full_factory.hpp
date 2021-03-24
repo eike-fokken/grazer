@@ -4,11 +4,15 @@
 
 namespace Model::Componentfactory {
 
-  /// \brief Provides factories for all types of Networkcomponents defined in grazer.
-  struct Full_factory : public Componentfactory_interface<Full_factory> {
+  /**
+   * @brief add all components to the provided Componentfactory
+   * 
+   * @param factory to which the components should be added
+   */
+  void add_all_components(Componentfactory &factory);
 
-    std::map<std::string, Nodefactory> get_nodetypemap_impl();
-    std::map<std::string, Edgefactory> get_edgetypemap_impl();
-
-  };
+  /// \brief This class provides a Componentfactory of all Component types defined for the Networkproblem.
+  ///
+  /// At the moment these are Gas components and Power components.
+  struct Full_factory : public Componentfactory { Full_factory(); };
 }

@@ -7,10 +7,10 @@ namespace Model {
 
   Timedata::Timedata(nlohmann::json const &time_evolution_data)
       : starttime(
-            std::stod(time_evolution_data["start_time"].get<std::string>())),
-        endtime(std::stod(time_evolution_data["end_time"].get<std::string>())),
-        Number_of_timesteps(init_Number_of_timesteps(std::stod(
-            time_evolution_data["desired_delta_t"].get<std::string>()))),
+            time_evolution_data["start_time"].get<double>()),
+        endtime(time_evolution_data["end_time"].get<double>()),
+        Number_of_timesteps(init_Number_of_timesteps(
+            time_evolution_data["desired_delta_t"].get<double>())),
         delta_t(init_delta_t()) {
     std::cout << "Start_time: " << starttime << std::endl;
     std::cout << "end_time: " << endtime << std::endl;
