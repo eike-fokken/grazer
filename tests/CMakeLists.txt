@@ -76,7 +76,7 @@ target_link_libraries(aux_unit_conversion_test PUBLIC gtest gtest_main gmock)
 
 add_executable(aux_json_test AuxJsonTest.cpp)
 
-target_link_libraries(aux_json_test PUBLIC aux_json)
+target_link_libraries(aux_json_test PUBLIC exception aux_json)
 target_link_libraries(aux_json_test PUBLIC gtest gtest_main gmock)
 target_include_directories(aux_json_test PUBLIC include)
 
