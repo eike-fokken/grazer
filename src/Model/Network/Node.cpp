@@ -7,7 +7,7 @@
 
 namespace Network {
   std::string Node::get_type() {
-    gthrow({"This static method must be implemented in the class inherited "
+    gthrow({"This static method must be implemented in the class inheriting "
             "from node!"});
   }
 

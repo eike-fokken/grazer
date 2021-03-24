@@ -8,20 +8,26 @@
 #include "Powernode.hpp"
 #include <fstream>
 #include <iostream>
+#include "make_schema.hpp"
 
 namespace Model::Networkproblem::Gaspowerconnection {
 
   std::string Gaspowerconnection::get_type() { return "Gaspowerconnection"; }
+  nlohmann::json Gaspowerconnection::get_schema() {
+    nlohmann::json schema = Network::Edge::get_schema();
+
+    Aux::schema::add_required(schema, "gas2power_q_coeff", Aux::schema::type::number());
+    Aux::schema::add_required(schema, "power2gas_q_coeff", Aux::schema::type::number());
+
+    return schema;
+  }
 
   Gaspowerconnection::Gaspowerconnection(
       nlohmann::json const &topology,
-      std::vector<std::unique_ptr<Network::Node>> &nodes)
-      : Network::Edge(topology, nodes),
-        gas2power_q_coefficient(
-            topology["gas2power_q_coeff"]),
-        power2gas_q_coefficient(
-            topology["power2gas_q_coeff"]) {}
-
+      std::vector<std::unique_ptr<Network::Node>> &nodes) :
+      Network::Edge(topology, nodes),
+      gas2power_q_coefficient(topology["gas2power_q_coeff"].get<double>()),
+      power2gas_q_coefficient(topology["power2gas_q_coeff"].get<double>()) {}
 
   void Gaspowerconnection::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double,

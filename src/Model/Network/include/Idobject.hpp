@@ -1,11 +1,14 @@
 #pragma once
 #include <memory>
 #include <string>
+#include <nlohmann/json.hpp>
 
 namespace Network {
   /// \brief Provides a unified "name" to inheriting classes.
   class Idobject {
   public:
+    static nlohmann::json get_schema();
+
     Idobject(std::string const &_id);
 
     /// \brief Getter for a const reference to the id.

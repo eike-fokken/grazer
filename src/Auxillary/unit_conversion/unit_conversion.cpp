@@ -12,6 +12,27 @@ namespace Aux::unit {
     {"yd", 0.9144},
     {"mi", 1609.344}
   };
+    json get_length_schema() {
+    json type_schema;
+    type_schema["type"] = "object";
+    type_schema["description"] = "Length Measurement";
+    type_schema["required"] = {"value","unit"};
+    type_schema["additionalProperties"] = false;
+    type_schema["properties"]["unit"]["type"] = "string";
+    json pattern1;
+    pattern1["pattern"]
+        = "^(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\\u00B5|\\u03BC|n|p|f|a|z|y)?(m|ft|in|"
+          "yd|mi)$";
+    type_schema["properties"]["unit"]["oneOf"]
+              .push_back(pattern1);
+    json pattern2;
+    pattern2["pattern"]
+        = "^([0-9]*(\\.[0-9]+)? )(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\\u00B5|\\u03BC|n|"
+          "p|f|a|z|y)?(m|ft|in|yd|mi)$";
+    type_schema["properties"]["unit"]["oneOf"].push_back(pattern2);
+    type_schema["properties"]["value"]["type"]= "number";
+    return type_schema;
+  }
 
   const std::map<std::string, double> area_units {
     {"m^2", 1.0},

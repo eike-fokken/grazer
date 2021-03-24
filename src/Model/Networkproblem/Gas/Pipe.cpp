@@ -1,39 +1,53 @@
-#include "unit_conversion.hpp"
+#include "Pipe.hpp"
+#include "Coloroutput.hpp"
 #include "Edge.hpp"
-#include <Coloroutput.hpp>
+#include "Implicitboxscheme.hpp"
+#include "Initialvalue.hpp"
+#include "Isothermaleulerequation.hpp"
+#include "Mathfunctions.hpp"
+#include "Matrixhandler.hpp"
+#include "make_schema.hpp"
+#include "unit_conversion.hpp"
+
 #include <Eigen/Dense>
-#include <Implicitboxscheme.hpp>
-#include <Initialvalue.hpp>
-#include <Isothermaleulerequation.hpp>
-#include <Mathfunctions.hpp>
-#include <Matrixhandler.hpp>
-#include <Pipe.hpp>
 #include <cmath>
 #include <fstream>
 #include <iostream>
 #include <string>
 
-
 namespace Model::Networkproblem::Gas {
 
-  std::string Pipe::get_type(){return "Pipe";}
+  std::string Pipe::get_type() {return "Pipe";}
 
-  Pipe::Pipe(nlohmann::json const &topology,
-             std::vector<std::unique_ptr<Network::Node>> &nodes)
-      : Network::Edge(topology, nodes),
-        diameter(Aux::unit::parse_to_si(topology["diameter"],
-                                        Aux::unit::length_units)),
-        roughness(Aux::unit::parse_to_si(topology["roughness"],
-                                         Aux::unit::length_units)),
-        number_of_points(
-                         static_cast<int>(std::ceil(
-                Aux::unit::parse_to_si(topology["length"],
-                                       Aux::unit::length_units) /
-                std::stod(topology["desired_delta_x"].get<std::string>()))) +
-            1),
-        Delta_x(Aux::unit::parse_to_si(topology["length"],
-                                       Aux::unit::length_units) /
-                (number_of_points - 1)) {}
+  nlohmann::json Pipe::get_schema(){
+    nlohmann::json schema = Network::Edge::get_schema();
+
+    Aux::schema::add_required(schema, "length", Aux::schema::type::length());
+    Aux::schema::add_required(schema, "diameter", Aux::schema::type::length());
+    Aux::schema::add_required(schema, "roughness", Aux::schema::type::length());
+
+    Aux::schema::add_property(schema, "desired_delta_x", Aux::schema::type::number());
+
+    return schema;
+  }
+
+  Pipe::Pipe(
+      nlohmann::json const &topology,
+      std::vector<std::unique_ptr<Network::Node>> &nodes) :
+      Network::Edge(topology, nodes),
+      diameter(Aux::unit::parse_to_si(
+          topology["diameter"], Aux::unit::length_units)),
+      roughness(Aux::unit::parse_to_si(
+          topology["roughness"], Aux::unit::length_units)),
+      number_of_points(
+          static_cast<int>(std::ceil(
+              Aux::unit::parse_to_si(
+                  topology["length"], Aux::unit::length_units)
+              / topology["desired_delta_x"].get<double>()))
+          + 1),
+      Delta_x(
+          Aux::unit::parse_to_si(topology["length"], Aux::unit::length_units)
+          / (number_of_points - 1)) {}
 
   void Pipe::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
                 double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,

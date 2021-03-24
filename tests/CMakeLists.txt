@@ -65,6 +65,11 @@ target_include_directories(gaspowerconnection_test PRIVATE include)
 
 
 
+add_executable(json_validation_test validationTest.cpp)
+
+target_link_libraries(json_validation_test PUBLIC json_validation nlohmann_json)
+target_link_libraries(json_validation_test PUBLIC gtest gtest_main gmock)
+
 add_executable(aux_unit_conversion_test AuxUnitConversionTest.cpp)
 
 target_link_libraries(aux_unit_conversion_test PUBLIC aux_unit_conversion nlohmann_json)
@@ -127,4 +132,9 @@ add_test(
 add_test(
   NAME aux_unit_conversion
   COMMAND aux_unit_conversion_test
+  )
+
+add_test(
+  NAME json_validation
+  COMMAND json_validation_test
 )

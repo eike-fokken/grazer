@@ -4,11 +4,16 @@
 
 namespace Model::Componentfactory {
 
-  /// \brief Provides factories for power component types.
-  struct Power_factory : public Componentfactory_interface<Power_factory> {
+  /**
+   * @brief add the Power Components to the provided Componentfactory
+   * 
+   * @param factory to which to add the Power Components
+   */
+  void add_power_components(Componentfactory &factory);
 
-    std::map<std::string, Nodefactory> get_nodetypemap_impl();
-    std::map<std::string, Edgefactory> get_edgetypemap_impl();
 
+  /// \brief This class provides a Componentfactory of all Power components.
+  struct Power_factory: public Componentfactory{
+    Power_factory();
   };
 }

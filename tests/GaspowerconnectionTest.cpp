@@ -21,8 +21,8 @@ public:
     {
       std::stringstream buffer;
       Catch_cout catcher(buffer.rdbuf());
-      auto net_ptr = Model::Networkproblem::build_net<
-          Model::Componentfactory::Full_factory>(netproblem);
+      Model::Componentfactory::Full_factory factory;
+      auto net_ptr = Model::Networkproblem::build_net(netproblem, factory);
       netprob = std::make_unique<Model::Networkproblem::Networkproblem>(
           std::move(net_ptr));
       output = buffer.str();

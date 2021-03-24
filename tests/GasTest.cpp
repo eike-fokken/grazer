@@ -28,8 +28,8 @@ public:
     {
       std::stringstream buffer;
       Catch_cout catcher(buffer.rdbuf());
-      auto net_ptr = Model::Networkproblem::build_net<
-          Model::Componentfactory::Gas_factory>(netproblem);
+      Model::Componentfactory::Gas_factory factory;
+      auto net_ptr = Model::Networkproblem::build_net(netproblem,factory);
       netprob = std::make_unique<Model::Networkproblem::Networkproblem>(
           std::move(net_ptr));
       output = buffer.str();
@@ -1218,6 +1218,6 @@ nlohmann::json pipe_json(std::string id, nlohmann::json startnode,
   pipe_topology["diameter"]["unit"] = diameter_unit;
   pipe_topology["roughness"]["value"] = roughness;
   pipe_topology["roughness"]["unit"] = roughness_unit;
-  pipe_topology["desired_delta_x"] = std::to_string(desired_delta_x);
+  pipe_topology["desired_delta_x"] = desired_delta_x;
   return pipe_topology;
 }

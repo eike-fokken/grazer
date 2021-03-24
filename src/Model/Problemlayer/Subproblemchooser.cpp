@@ -19,9 +19,9 @@ namespace Model {
 
   std::unique_ptr<Subproblem>
   build_networkproblem(nlohmann::json &networkproblem_json) {
+    Componentfactory::Full_factory componentfactory;
 
-    auto net_ptr = Networkproblem::build_net<Componentfactory::Full_factory>(networkproblem_json);
-    
+    auto net_ptr = Networkproblem::build_net(networkproblem_json, componentfactory);
     return std::make_unique<Networkproblem::Networkproblem>(std::move(net_ptr));
   }
 } // namespace Model
