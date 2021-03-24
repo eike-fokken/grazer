@@ -12,10 +12,9 @@ namespace Aux_executable {
   ///
   /// If yes, returns a normalized path.
   /// If no, throws.
-  bool
-  absolute_file_path_in_root(const std::filesystem::path &problem_root_path,
-                             const std::filesystem::path &filepath);
-
+  bool absolute_file_path_in_root(
+      const std::filesystem::path &problem_root_path,
+      const std::filesystem::path &filepath);
 
   /// Checks, whether the given output directory path is present.
   ///

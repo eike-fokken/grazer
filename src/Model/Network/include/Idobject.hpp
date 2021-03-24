@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
-#include <string>
 #include <nlohmann/json.hpp>
+#include <string>
 
 namespace Network {
   /// \brief Provides a unified "name" to inheriting classes.
@@ -12,7 +12,7 @@ namespace Network {
     Idobject(std::string const &_id);
 
     /// \brief Getter for a const reference to the id.
-    std::string const & get_id() const;
+    std::string const &get_id() const;
 
     /// \brief Getter for a copy of the id.
     std::string get_id_copy() const;
@@ -24,7 +24,7 @@ namespace Network {
     /// the stack. The price for dereferencing is acceptable because the id is
     /// used only during construction of a network and during writing out the
     /// data to the output files.
-    std::unique_ptr<std::string const > const idptr;
+    std::unique_ptr<std::string const> const idptr;
   };
 
 } // namespace Network

@@ -13,7 +13,6 @@ TEST(modelTest, get_number_of_states) {
 
 TEST(modelSubproblem, Model_evaluate) {
 
-
   auto problem_json = R"( {"subproblems": {}} )"_json;
   auto output_dir = std::filesystem::path("");
   Model::Problem problem(problem_json, output_dir);
@@ -36,28 +35,22 @@ TEST(modelSubproblem, Model_evaluate) {
   // This is necessary for the expect_call to work properly...
   Eigen::Ref<Eigen::VectorXd> rootref(rootvalues);
 
-   // expect the call to evaluate on the subproblems.
-   // The cast magic is necessary to have the right type at hand...
+  // expect the call to evaluate on the subproblems.
+  // The cast magic is necessary to have the right type at hand...
   EXPECT_CALL(
-    *dynamic_cast<GrazerTest::MockSubproblem *>(problem.get_subproblems()[0]),
-    evaluate(
-      Eigen::Ref<Eigen::VectorXd>(rootvalues),
-      last_time,
-      new_time,
-      Eigen::Ref<Eigen::VectorXd const>(v1),
-      Eigen::Ref<Eigen::VectorXd const>(v2)
-    )
-  ).Times(1);
+      *dynamic_cast<GrazerTest::MockSubproblem *>(problem.get_subproblems()[0]),
+      evaluate(
+          Eigen::Ref<Eigen::VectorXd>(rootvalues), last_time, new_time,
+          Eigen::Ref<Eigen::VectorXd const>(v1),
+          Eigen::Ref<Eigen::VectorXd const>(v2)))
+      .Times(1);
   EXPECT_CALL(
-    *dynamic_cast<GrazerTest::MockSubproblem *>(problem.get_subproblems()[1]),
-    evaluate(
-      Eigen::Ref<Eigen::VectorXd>(rootvalues),
-      last_time,
-      new_time,
-      Eigen::Ref<Eigen::VectorXd const>(v1),
-      Eigen::Ref<Eigen::VectorXd const>(v2)
-    )
-  ).Times(1);
+      *dynamic_cast<GrazerTest::MockSubproblem *>(problem.get_subproblems()[1]),
+      evaluate(
+          Eigen::Ref<Eigen::VectorXd>(rootvalues), last_time, new_time,
+          Eigen::Ref<Eigen::VectorXd const>(v1),
+          Eigen::Ref<Eigen::VectorXd const>(v2)))
+      .Times(1);
 
   problem.evaluate(rootvalues, last_time, new_time, v1, v2);
 }

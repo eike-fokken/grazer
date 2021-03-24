@@ -8,28 +8,28 @@
 
 namespace Model::Networkproblem::Gas {
 
-class Flowboundarynode: public Gasnode {
+  class Flowboundarynode : public Gasnode {
 
-public:
+  public:
+    static nlohmann::json get_schema();
 
-  static nlohmann::json get_schema();
+    Flowboundarynode(nlohmann::json const &data);
 
-  Flowboundarynode(nlohmann::json const & data);
+    ~Flowboundarynode() override{};
 
-  ~Flowboundarynode() override {};
-
-  
-    void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-                  double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
-                  Eigen::Ref<Eigen::VectorXd const> const &new_state) const override final;
+    void evaluate(
+        Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state)
+        const override final;
     void evaluate_state_derivative(
-        Aux::Matrixhandler * jacobianhandler, double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> const &, Eigen::Ref<Eigen::VectorXd const> const &new_state) const override final;
+        Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state)
+        const override final;
 
-
-private:
-  
-  Boundaryvalue<1> const boundaryvalue;
+  private:
+    Boundaryvalue<1> const boundaryvalue;
   };
 
 } // namespace Model::Networkproblem::Gas

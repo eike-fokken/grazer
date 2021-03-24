@@ -1,6 +1,6 @@
 #include <filesystem>
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <nlohmann/json.hpp>
 #include <string>
 
@@ -43,23 +43,24 @@ int main(int argc, char *argv[]) {
     initialvalues_filestream >> initialvalues;
   }
 
-  std::map<std::string,bool> initial_values_present = {{"nodes", false},{"connections",false}};
-  auto const & initial_json_vector = initialvalues["initialvalues"];
+  std::map<std::string, bool> initial_values_present
+      = {{"nodes", false}, {"connections", false}};
+  auto const &initial_json_vector = initialvalues["initialvalues"];
   for (auto type : {"nodes", "connections"}) {
     if (topology.contains(type)) {
-      for (auto it = topology[type].begin(); it != topology[type].end();++it
+      for (auto it = topology[type].begin(); it != topology[type].end(); ++it
            // auto &componenttype : topology[type]
       ) {
         auto componenttypename = it.key();
         auto componenttypevector = it.value();
         for (auto &componentjson : componenttypevector) {
-          std::string const & component_id = componentjson["id"];
+          std::string const &component_id = componentjson["id"];
           auto finder = [component_id](nlohmann::ordered_json const &x) {
             auto itr = x.find("id");
             return itr != x.end() and itr.value() == component_id;
           };
-          auto initjson = std::find_if(initial_json_vector.begin(),
-                                       initial_json_vector.end(), finder);
+          auto initjson = std::find_if(
+              initial_json_vector.begin(), initial_json_vector.end(), finder);
           if (initjson == initial_json_vector.end()) {
             std::cout << " object " << component_id
                       << " has no initial condition." << std::endl;

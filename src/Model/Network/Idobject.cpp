@@ -1,6 +1,6 @@
+#include "make_schema.hpp"
 #include <Idobject.hpp>
 #include <iostream>
-#include "make_schema.hpp"
 
 namespace Network {
 
@@ -11,10 +11,10 @@ namespace Network {
     return schema;
   }
 
-  Idobject::Idobject(std::string const & _id)
-      : idptr(std::make_unique<std::string const >(_id)) {}
+  Idobject::Idobject(std::string const &_id) :
+      idptr(std::make_unique<std::string const>(_id)) {}
 
-  std::string const & Idobject::get_id() const { return (*idptr); }
+  std::string const &Idobject::get_id() const { return (*idptr); }
 
   std::string Idobject::get_id_copy() const { return (*idptr); }
 

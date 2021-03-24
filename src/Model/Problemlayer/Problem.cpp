@@ -1,31 +1,32 @@
 #include "Exception.hpp"
+#include <Aux_json.hpp>
 #include <Eigen/Dense>
 #include <Matrixhandler.hpp>
 #include <Problem.hpp>
 #include <Subproblem.hpp>
+#include <Subproblemchooser.hpp>
 #include <iostream>
 #include <memory>
 #include <vector>
-#include <Subproblemchooser.hpp>
-#include <Aux_json.hpp>
 
 namespace Model {
 
-  Problem::Problem(nlohmann::json problem_data,std::filesystem::path const &_output_directory)
-      : output_directory(_output_directory) {
-    auto subproblem_map = problem_data["subproblems"].get<std::map<std::string, nlohmann::json>>();
-    for(auto & [subproblem_type,subproblem_json] : subproblem_map)
-      {
-        subproblem_json["GRAZER_file_directory"] = problem_data["GRAZER_file_directory"];
-        std::unique_ptr<Subproblem> subproblem_ptr =
-            build_subproblem(subproblem_type, subproblem_json);
-        add_subproblem(std::move(subproblem_ptr));
+  Problem::Problem(
+      nlohmann::json problem_data,
+      std::filesystem::path const &_output_directory) :
+      output_directory(_output_directory) {
+    auto subproblem_map = problem_data["subproblems"]
+                              .get<std::map<std::string, nlohmann::json>>();
+    for (auto &[subproblem_type, subproblem_json] : subproblem_map) {
+      subproblem_json["GRAZER_file_directory"]
+          = problem_data["GRAZER_file_directory"];
+      std::unique_ptr<Subproblem> subproblem_ptr
+          = build_subproblem(subproblem_type, subproblem_json);
+      add_subproblem(std::move(subproblem_ptr));
     }
   }
 
-
-  Problem::~Problem() {print_to_files();}
-
+  Problem::~Problem() { print_to_files(); }
 
   void Problem::add_subproblem(std::unique_ptr<Subproblem> subproblem_ptr) {
     subproblems.push_back(std::move(subproblem_ptr));
@@ -39,26 +40,28 @@ namespace Model {
     return next_free_index;
   }
 
-  void Problem::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-                         double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
-                         Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
+  void Problem::evaluate(
+      Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time, double new_time,
+      Eigen::Ref<Eigen::VectorXd const> const &last_state,
+      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     for (auto &subproblem : subproblems) {
-      subproblem->evaluate(rootvalues, last_time, new_time, last_state,
-                           new_state);
+      subproblem->evaluate(
+          rootvalues, last_time, new_time, last_state, new_state);
     }
   }
 
-  void Problem::evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,
-                                          double last_time, double new_time,
-                                          Eigen::Ref<Eigen::VectorXd const> const &last_state,
-                                          Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
+  void Problem::evaluate_state_derivative(
+      Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
+      Eigen::Ref<Eigen::VectorXd const> const &last_state,
+      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     for (auto &subproblem : subproblems) {
-      subproblem->evaluate_state_derivative(jacobianhandler, last_time,
-                                            new_time, last_state, new_state);
+      subproblem->evaluate_state_derivative(
+          jacobianhandler, last_time, new_time, last_state, new_state);
     }
   }
 
-  void Problem::save_values(double time, Eigen::Ref<Eigen::VectorXd>new_state) {
+  void
+  Problem::save_values(double time, Eigen::Ref<Eigen::VectorXd> new_state) {
     for (auto &subproblem : subproblems) {
       subproblem->save_values(time, new_state);
     }
@@ -80,25 +83,27 @@ namespace Model {
     }
   }
 
-  void Problem::set_initial_values(Eigen::Ref<Eigen::VectorXd> new_state,
-                                   nlohmann::json & initial_json) {
+  void Problem::set_initial_values(
+      Eigen::Ref<Eigen::VectorXd> new_state, nlohmann::json &initial_json) {
 
     for (auto &subproblem : subproblems) {
       auto type = subproblem->get_type();
-      
+
       auto initial_json_iterator = initial_json["subproblems"].find(type);
-      if (initial_json_iterator == initial_json["subproblems"].end()){
-        gthrow({"Subproblem ", type, " has no initial values in the json files!"});
+      if (initial_json_iterator == initial_json["subproblems"].end()) {
+        gthrow(
+            {"Subproblem ", type, " has no initial values in the json files!"});
       }
 
-      auto & subproblem_initial_json = *initial_json_iterator;
-      subproblem_initial_json["GRAZER_file_directory"] = initial_json["GRAZER_file_directory"];
-      aux_json::replace_entry_with_json_from_file(subproblem_initial_json,
-                                                  "initial_json");
-      subproblem->set_initial_values(new_state, subproblem_initial_json["initial_json"]);
+      auto &subproblem_initial_json = *initial_json_iterator;
+      subproblem_initial_json["GRAZER_file_directory"]
+          = initial_json["GRAZER_file_directory"];
+      aux_json::replace_entry_with_json_from_file(
+          subproblem_initial_json, "initial_json");
+      subproblem->set_initial_values(
+          new_state, subproblem_initial_json["initial_json"]);
     }
   }
-
 
   std::filesystem::path const &Problem::get_output_directory() const {
     return output_directory;

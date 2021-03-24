@@ -1,5 +1,4 @@
 #pragma once
-#include <string>
 #include <memory>
 #include <string>
 #include <vector>
@@ -36,8 +35,8 @@ namespace Network {
     /// @param node_id_2 Ending Node of edge
     /// @returns Return True if the given edge or its reverse edge exists and
     /// false if neither exist.
-    bool exists_edge_between(std::string const id1,
-                             std::string const id2) const;
+    bool
+    exists_edge_between(std::string const id1, std::string const id2) const;
 
     /// This function returns (by providing the nodes id) a pointer of type
     /// <Node>.
@@ -53,8 +52,8 @@ namespace Network {
     /// @param node_id_1 Nodes id of starting node
     /// @param node_id_2 Nodes id of ending node
     /// @returns Returns shared pointer of type < Edge >
-    Edge *get_edge_by_node_ids(std::string const id1,
-                               std::string const id2) const;
+    Edge *
+    get_edge_by_node_ids(std::string const id1, std::string const id2) const;
 
     Edge *get_edge_by_id(std::string const id) const;
 

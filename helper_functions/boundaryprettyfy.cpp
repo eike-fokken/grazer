@@ -79,8 +79,8 @@ json get_node_type_json(json boundarydata) {
 
   std::map<std::string, std::vector<int>> lin;
 
-  json conditions =
-      boundarydata["boundaryConditions"]["linearBoundaryCondition"];
+  json conditions
+      = boundarydata["boundaryConditions"]["linearBoundaryCondition"];
 
   json nodes;
   for (auto itr = conditions.begin(); itr != conditions.end(); ++itr) {
@@ -116,8 +116,8 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  if (std::filesystem::exists(argv[2]) or std::filesystem::exists(argv[4]) or
-      std::filesystem::exists(argv[6])) {
+  if (std::filesystem::exists(argv[2]) or std::filesystem::exists(argv[4])
+      or std::filesystem::exists(argv[6])) {
     std::cout << "one of the output files exists, overwrite?" << '\n';
     std::string answer;
     std::cin >> answer;
@@ -154,8 +154,8 @@ int main(int argc, char *argv[]) {
   json newnetdata = get_node_type_json(boundarydata);
 
   auto bdcond = newnetdata["boundarycondition"];
-  json conditions =
-      boundarydata["boundaryConditions"]["linearBoundaryCondition"];
+  json conditions
+      = boundarydata["boundaryConditions"]["linearBoundaryCondition"];
 
   for (auto itr = conditions.begin(); itr != conditions.end(); ++itr) {
     auto res = std::find_if(bdcond.begin(), bdcond.end(), [itr](const json &x) {
@@ -264,9 +264,7 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  for (auto &node : bdcond) {
-    node.erase("var");
-  }
+  for (auto &node : bdcond) { node.erase("var"); }
 
   for (auto &node : bdcond) {
     json newdata;
@@ -288,8 +286,8 @@ int main(int argc, char *argv[]) {
   json PQ;
   json Vphi;
   for (auto &powernode : nodes["powerGridNode"]) {
-    auto res =
-        std::find_if(bdcond.begin(), bdcond.end(), [powernode](const json &x) {
+    auto res = std::find_if(
+        bdcond.begin(), bdcond.end(), [powernode](const json &x) {
           auto it = x.find("id");
           return it != x.end() and it.value() == powernode["id"];
         });
@@ -312,7 +310,6 @@ int main(int argc, char *argv[]) {
 
   ////// Topology: remove strings, make doubles.
   topologydata["nodes"] = nodes;
-
 
   json initialconditions = initialdata["objectCondition"];
 

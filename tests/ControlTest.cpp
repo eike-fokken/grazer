@@ -1,10 +1,10 @@
 #include "Control.hpp"
 #include "Exception.hpp"
 #include "Valuemap.hpp"
-#include <gtest/gtest.h>
 #include <Eigen/Dense>
-#include <stdexcept>
+#include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
+#include <stdexcept>
 
 TEST(Control, Operator) {
 
@@ -14,17 +14,16 @@ TEST(Control, Operator) {
 
   nlohmann::json control_value_map;
 
-  control_value_map = {{"id", "N213"},
-                        {"data",
-                         {{{"time", 1.0}, {"values", {a(0), a(1)}}},
-                          {{"time", 2.0}, {"values", {b(0), b(1)}}},
-                          {{"time", 3.0}, {"values", {c(0), c(1)}}}}}};
+  control_value_map
+      = {{"id", "N213"},
+         {"data",
+          {{{"time", 1.0}, {"values", {a(0), a(1)}}},
+           {{"time", 2.0}, {"values", {b(0), b(1)}}},
+           {{"time", 3.0}, {"values", {c(0), c(1)}}}}}};
 
+  Model::Networkproblem::Control<2> control_object(control_value_map);
 
-  Model::Networkproblem::Control<2>
-      control_object(control_value_map);
-
-  EXPECT_THROW(control_object(3.5),std::runtime_error);
+  EXPECT_THROW(control_object(3.5), std::runtime_error);
   EXPECT_THROW(control_object(0.5), std::runtime_error);
   // EXPECT_ANY_THROW(boundary_object(0.5));
 

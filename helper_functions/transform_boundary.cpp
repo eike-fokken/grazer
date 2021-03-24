@@ -1,7 +1,7 @@
 #include <filesystem>
+#include <fstream>
 #include <iostream>
 #include <nlohmann/json.hpp>
-#include <fstream>
 #include <string>
 #include <vector>
 
@@ -30,23 +30,22 @@ int main(int argc, char *argv[]) {
     }
   }
 
-
   json oldboundary;
   json newboundary;
 
-  std::vector<std::string> nodetypes = {"Vphinode", "PVnode", "PQnode",
-                                        "Flowboundarynode"};
-  for(auto const & type: nodetypes){
+  std::vector<std::string> nodetypes
+      = {"Vphinode", "PVnode", "PQnode", "Flowboundarynode"};
+  for (auto const &type : nodetypes) {
     newboundary["nodes"][type] = json::array();
-    }
+  }
   {
     std::ifstream boundary_filestream(argv[1]);
     boundary_filestream >> oldboundary;
   }
 
   for (auto condition : oldboundary["boundarycondition"]) {
-    for (auto const & type: nodetypes){
-      if(condition["type"]==type){
+    for (auto const &type : nodetypes) {
+      if (condition["type"] == type) {
         condition.erase("type");
         newboundary["nodes"][type].push_back(condition);
       }
@@ -55,5 +54,4 @@ int main(int argc, char *argv[]) {
 
   std::ofstream boundary_ofstream(argv[2]);
   boundary_ofstream << std::setw(4) << newboundary << std::endl;
-
-  }
+}

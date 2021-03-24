@@ -1,7 +1,7 @@
 #include "Misc.hpp"
 #include <filesystem>
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
 #include <string>
@@ -62,5 +62,5 @@ int main(int argc, char *argv[]) {
     }
   }
   std::ofstream out(argv[2]);
-  out << std::setw(4) << value_json <<std::endl;
+  out << std::setw(4) << value_json << std::endl;
 }
