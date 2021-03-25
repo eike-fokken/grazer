@@ -81,20 +81,20 @@ namespace Model::Networkproblem::Gas {
            ", which is not +1 or -1! Edge id is: ", this_idobject->get_id()});
     }
   }
-  Eigen::Vector2d Gasedge::get_starting_state(
-      Eigen::Ref<Eigen::VectorXd const> const &state) const {
+  Eigen::Vector2d
+  Gasedge::get_starting_state(Eigen::Ref<Eigen::VectorXd const> state) const {
     Eigen::Vector2d starting_state
         = state.segment<2>(get_starting_state_index());
     return starting_state;
   }
 
-  Eigen::Vector2d Gasedge::get_ending_state(
-      Eigen::Ref<Eigen::VectorXd const> const &state) const {
+  Eigen::Vector2d
+  Gasedge::get_ending_state(Eigen::Ref<Eigen::VectorXd const> state) const {
     Eigen::Vector2d ending_state = state.segment<2>(get_ending_state_index());
     return ending_state;
   }
   Eigen::Vector2d Gasedge::get_boundary_state(
-      int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const {
+      int direction, Eigen::Ref<Eigen::VectorXd const> state) const {
     if (direction == 1) {
       return get_starting_state(state);
     } else if (direction == -1) {

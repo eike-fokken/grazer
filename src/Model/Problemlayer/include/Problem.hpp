@@ -34,13 +34,13 @@ namespace Model {
 
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-        double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
-        Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
+        double new_time, Eigen::Ref<Eigen::VectorXd const> last_state,
+        Eigen::Ref<Eigen::VectorXd const> new_state) const;
 
     void evaluate_state_derivative(
         Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> const &last_state,
-        Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
+        Eigen::Ref<Eigen::VectorXd const> last_state,
+        Eigen::Ref<Eigen::VectorXd const> new_state) const;
 
     void save_values(double time, Eigen::Ref<Eigen::VectorXd> new_state);
     /// As we have unique pointers, we can only give back a pointer to our

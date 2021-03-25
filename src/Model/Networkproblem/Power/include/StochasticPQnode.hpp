@@ -10,15 +10,15 @@ namespace Model::Networkproblem::Power {
 
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-        double new_time, const Eigen::Ref<const Eigen::VectorXd> &last_state,
-        const Eigen::Ref<const Eigen::VectorXd> &new_state) const override;
+        double new_time, Eigen::Ref<Eigen::VectorXd const> last_state,
+        Eigen::Ref<Eigen::VectorXd const> new_state) const override;
 
     void evaluate_state_derivative(
         Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
-        const Eigen::Ref<const Eigen::VectorXd> &,
-        const Eigen::Ref<const Eigen::VectorXd> &new_state) const override;
+        Eigen::Ref<Eigen::VectorXd const>,
+        Eigen::Ref<Eigen::VectorXd const> new_state) const override;
 
-    void save_values(
-        double time, const Eigen::Ref<const Eigen::VectorXd> &state) override;
+    void
+    save_values(double time, Eigen::Ref<Eigen::VectorXd const> state) override;
   };
 } // namespace Model::Networkproblem::Power

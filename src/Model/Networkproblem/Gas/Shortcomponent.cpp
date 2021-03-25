@@ -55,7 +55,7 @@ namespace Model::Networkproblem::Gas {
   }
 
   void Shortcomponent::save_values(
-      double time, Eigen::Ref<Eigen::VectorXd const> const &state) {
+      double time, Eigen::Ref<Eigen::VectorXd const> state) {
     std::map<double, double> pressure_map;
     std::map<double, double> flow_map;
 
@@ -92,14 +92,14 @@ namespace Model::Networkproblem::Gas {
   }
 
   Eigen::Vector2d Shortcomponent::get_boundary_p_qvol_bar(
-      int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const {
+      int direction, Eigen::Ref<Eigen::VectorXd const> state) const {
     return get_boundary_state(direction, state);
   }
 
   void Shortcomponent::dboundary_p_qvol_dstate(
       int direction, Aux::Matrixhandler *jacobianhandler,
       Eigen::RowVector2d function_derivative, int rootvalues_index,
-      Eigen::Ref<Eigen::VectorXd const> const &) const {
+      Eigen::Ref<Eigen::VectorXd const>) const {
     int p_index = get_boundary_state_index(direction);
     int q_index = p_index + 1;
 

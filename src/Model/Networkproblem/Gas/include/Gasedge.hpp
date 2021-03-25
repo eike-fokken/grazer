@@ -17,13 +17,12 @@ namespace Model::Networkproblem::Gas {
 
     /// Returns the boundary
     Eigen::Vector2d get_boundary_state(
-        int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const;
+        int direction, Eigen::Ref<Eigen::VectorXd const> state) const;
 
     /// returns the boundary state expressed in pressure and volumetric flow.
     /// It is the responsibility of the edge to decide what that means.
     virtual Eigen::Vector2d get_boundary_p_qvol_bar(
-        int direction,
-        Eigen::Ref<Eigen::VectorXd const> const &state) const = 0;
+        int direction, Eigen::Ref<Eigen::VectorXd const> state) const = 0;
 
     /// @brief Set the derivatives with respect to the boundary states.
     ///
@@ -36,13 +35,13 @@ namespace Model::Networkproblem::Gas {
     virtual void dboundary_p_qvol_dstate(
         int direction, Aux::Matrixhandler *jacobianhandler,
         Eigen::RowVector2d function_derivative, int rootvalues_index,
-        Eigen::Ref<Eigen::VectorXd const> const &state) const = 0;
+        Eigen::Ref<Eigen::VectorXd const> state) const = 0;
 
   private:
     Eigen::Vector2d
-    get_starting_state(Eigen::Ref<Eigen::VectorXd const> const &state) const;
+    get_starting_state(Eigen::Ref<Eigen::VectorXd const> state) const;
     Eigen::Vector2d
-    get_ending_state(Eigen::Ref<Eigen::VectorXd const> const &state) const;
+    get_ending_state(Eigen::Ref<Eigen::VectorXd const> state) const;
 
     int give_away_start_index() const;
     int give_away_end_index() const;

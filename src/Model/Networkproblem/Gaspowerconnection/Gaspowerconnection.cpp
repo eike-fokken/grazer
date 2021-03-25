@@ -33,8 +33,8 @@ namespace Model::Networkproblem::Gaspowerconnection {
 
   void Gaspowerconnection::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double,
-      Eigen::Ref<Eigen::VectorXd const> const &,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
+      Eigen::Ref<Eigen::VectorXd const>,
+      Eigen::Ref<Eigen::VectorXd const> new_state) const {
     int q_index = get_start_state_index() + 1;
     rootvalues[q_index]
         = powerendnode->P(new_state) - generated_power(new_state[q_index]);
@@ -42,8 +42,8 @@ namespace Model::Networkproblem::Gaspowerconnection {
 
   void Gaspowerconnection::evaluate_state_derivative(
       Aux::Matrixhandler *jacobianhandler, double, double,
-      Eigen::Ref<Eigen::VectorXd const> const &,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
+      Eigen::Ref<Eigen::VectorXd const>,
+      Eigen::Ref<Eigen::VectorXd const> new_state) const {
     int q_index = get_start_state_index() + 1;
     double q = new_state[q_index];
     jacobianhandler->set_coefficient(q_index, q_index, -dgenerated_power_dq(q));
@@ -109,7 +109,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
   }
 
   void Gaspowerconnection::save_values(
-      double time, Eigen::Ref<Eigen::VectorXd const> const &state) {
+      double time, Eigen::Ref<Eigen::VectorXd const> state) {
     std::map<double, double> pressure_map;
     std::map<double, double> flow_map;
 
@@ -147,14 +147,14 @@ namespace Model::Networkproblem::Gaspowerconnection {
   }
 
   Eigen::Vector2d Gaspowerconnection::get_boundary_p_qvol_bar(
-      int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const {
+      int direction, Eigen::Ref<Eigen::VectorXd const> state) const {
     return get_boundary_state(direction, state);
   }
 
   void Gaspowerconnection::dboundary_p_qvol_dstate(
       int direction, Aux::Matrixhandler *jacobianhandler,
       Eigen::RowVector2d function_derivative, int rootvalues_index,
-      Eigen::Ref<Eigen::VectorXd const> const &) const {
+      Eigen::Ref<Eigen::VectorXd const>) const {
     int p_index = get_boundary_state_index(direction);
     int q_index = p_index + 1;
     jacobianhandler->set_coefficient(
