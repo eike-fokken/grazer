@@ -8,7 +8,6 @@
 namespace Model::Networkproblem::Power {
 
   std::string PQnode::get_type() { return "PQnode"; }
-  bool PQnode::needs_boundary_values() { return true; }
 
   void PQnode::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
