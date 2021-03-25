@@ -15,5 +15,9 @@ namespace Model::Networkproblem::Power {
       const Eigen::Ref<const Eigen::VectorXd> &new_state) const {}
 
   void StochasticPQnode::save_values(
-      double time, const Eigen::Ref<const Eigen::VectorXd> &state) {}
+      double time, const Eigen::Ref<const Eigen::VectorXd> &state) {
+    auto P_val = P(state);
+    auto Q_val = Q(state);
+    save_power_values(time, state, P_val, Q_val);
+  }
 } // namespace Model::Networkproblem::Power
