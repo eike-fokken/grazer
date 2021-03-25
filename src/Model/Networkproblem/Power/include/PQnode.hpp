@@ -10,8 +10,8 @@ namespace Model::Networkproblem::Power {
 
     using Powernode::Powernode;
 
-    /// In this node we set V to its boundary value and evaluate the equation
-    /// for P.
+    /// In this node  evaluate the equation
+    /// for P and Q.
     virtual void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
