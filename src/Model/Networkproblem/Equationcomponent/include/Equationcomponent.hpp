@@ -35,8 +35,8 @@ namespace Model::Networkproblem {
     /// @param new_state value of the state at current time step.
     virtual void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-        double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
-        Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
+        double new_time, Eigen::Ref<Eigen::VectorXd const> last_state,
+        Eigen::Ref<Eigen::VectorXd const> new_state) const = 0;
 
     /// \brief derivative of Equationcomponent::evaluate.
     ///
@@ -51,8 +51,8 @@ namespace Model::Networkproblem {
     /// @param new_state value of the state at current time step.
     virtual void evaluate_state_derivative(
         Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> const &,
-        Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
+        Eigen::Ref<Eigen::VectorXd const>,
+        Eigen::Ref<Eigen::VectorXd const> new_state) const = 0;
 
     /// \brief Returns number of state variables needed by this component.
     ///
@@ -97,7 +97,7 @@ namespace Model::Networkproblem {
     /// @param state State of all variables. Only the values in the owned
     /// indices are saved.
     virtual void
-    save_values(double time, Eigen::Ref<Eigen::VectorXd const> const &state)
+    save_values(double time, Eigen::Ref<Eigen::VectorXd const> state)
         = 0;
 
     /// \brief Fills the indices owned by this component with initial values

@@ -6,10 +6,10 @@ namespace Model::Scheme {
   /// Computes the implicit box scheme at one point.
   void Implicitboxscheme::evaluate_point(
       Eigen::Ref<Eigen::Vector2d> result, double last_time, double new_time,
-      double Delta_x, Eigen::Ref<Eigen::Vector2d const> const &last_left,
-      Eigen::Ref<Eigen::Vector2d const> const &last_right,
-      Eigen::Ref<Eigen::Vector2d const> const &new_left,
-      Eigen::Ref<Eigen::Vector2d const> const &new_right,
+      double Delta_x, Eigen::Ref<Eigen::Vector2d const> last_left,
+      Eigen::Ref<Eigen::Vector2d const> last_right,
+      Eigen::Ref<Eigen::Vector2d const> new_left,
+      Eigen::Ref<Eigen::Vector2d const> new_right,
       Model::Balancelaw::Isothermaleulerequation const &bl, double diameter,
       double roughness) {
 
@@ -26,10 +26,9 @@ namespace Model::Scheme {
   /// The derivative with respect to \code{.cpp}last_left\endcode
   Eigen::Matrix2d Implicitboxscheme::devaluate_point_dleft(
       double last_time, double new_time, double Delta_x,
-      Eigen::Ref<Eigen::Vector2d const> const &,
-      Eigen::Ref<Eigen::Vector2d const> const &,
-      Eigen::Ref<Eigen::Vector2d const> const &new_left,
-      Eigen::Ref<Eigen::Vector2d const> const &,
+      Eigen::Ref<Eigen::Vector2d const>, Eigen::Ref<Eigen::Vector2d const>,
+      Eigen::Ref<Eigen::Vector2d const> new_left,
+      Eigen::Ref<Eigen::Vector2d const>,
       Model::Balancelaw::Isothermaleulerequation const &bl, double diameter,
       double roughness) {
     double Delta_t = new_time - last_time;
@@ -44,10 +43,9 @@ namespace Model::Scheme {
   /// The derivative with respect to \code{.cpp}last_right\endcode
   Eigen::Matrix2d Implicitboxscheme::devaluate_point_dright(
       double last_time, double new_time, double Delta_x,
-      Eigen::Ref<Eigen::Vector2d const> const &,
-      Eigen::Ref<Eigen::Vector2d const> const &,
-      Eigen::Ref<Eigen::Vector2d const> const &,
-      Eigen::Ref<Eigen::Vector2d const> const &new_right,
+      Eigen::Ref<Eigen::Vector2d const>, Eigen::Ref<Eigen::Vector2d const>,
+      Eigen::Ref<Eigen::Vector2d const>,
+      Eigen::Ref<Eigen::Vector2d const> new_right,
       Model::Balancelaw::Isothermaleulerequation const &bl, double diameter,
       double roughness) {
     double Delta_t = new_time - last_time;
