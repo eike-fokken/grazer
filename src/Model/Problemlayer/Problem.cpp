@@ -42,8 +42,8 @@ namespace Model {
 
   void Problem::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> const &last_state,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
+      Eigen::Ref<Eigen::VectorXd const> last_state,
+      Eigen::Ref<Eigen::VectorXd const> new_state) const {
     for (auto &subproblem : subproblems) {
       subproblem->evaluate(
           rootvalues, last_time, new_time, last_state, new_state);
@@ -52,8 +52,8 @@ namespace Model {
 
   void Problem::evaluate_state_derivative(
       Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> const &last_state,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
+      Eigen::Ref<Eigen::VectorXd const> last_state,
+      Eigen::Ref<Eigen::VectorXd const> new_state) const {
     for (auto &subproblem : subproblems) {
       subproblem->evaluate_state_derivative(
           jacobianhandler, last_time, new_time, last_state, new_state);

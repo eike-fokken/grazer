@@ -8,30 +8,34 @@ namespace Model::Balancelaw {
   public:
     Isothermaleulerequation(){};
 
-    static Eigen::Vector2d flux(Eigen::Vector2d const &state, double diameter);
-    static Eigen::Matrix2d
-    dflux_dstate(Eigen::Vector2d const &state, double diameter);
-
     static Eigen::Vector2d
-    source(Eigen::Vector2d const &state, double diameter, double roughness);
+    flux(Eigen::Ref<Eigen::Vector2d const> state, double diameter);
+    static Eigen::Matrix2d
+    dflux_dstate(Eigen::Ref<Eigen::Vector2d const> state, double diameter);
+
+    static Eigen::Vector2d source(
+        Eigen::Ref<Eigen::Vector2d const> state, double diameter,
+        double roughness);
     static Eigen::Matrix2d dsource_dstate(
-        Eigen::Vector2d const &state, double diameter, double roughness);
+        Eigen::Ref<Eigen::Vector2d const> state, double diameter,
+        double roughness);
 
-    static Eigen::Vector2d p_qvol(Eigen::Vector2d const &state);
-    static Eigen::Matrix2d dp_qvol_dstate(Eigen::Vector2d const &state);
+    static Eigen::Vector2d p_qvol(Eigen::Ref<Eigen::Vector2d const> state);
+    static Eigen::Matrix2d
+    dp_qvol_dstate(Eigen::Ref<Eigen::Vector2d const> state);
 
-    static Eigen::Vector2d state(Eigen::Vector2d const &p_qvol);
+    static Eigen::Vector2d state(Eigen::Ref<Eigen::Vector2d const> p_qvol);
     static double p_pascal_from_p_bar(double p);
     static Eigen::Vector2d
-    p_qvol_from_p_qvol_bar(Eigen::Vector2d const &p_qvol_bar);
+    p_qvol_from_p_qvol_bar(Eigen::Ref<Eigen::Vector2d const> p_qvol_bar);
 
     static double p_bar_from_p_pascal(double p);
     static double dp_bar_from_p_pascal_dp_pascal(double p);
 
     static Eigen::Vector2d
-    p_qvol_bar_from_p_qvol(Eigen::Vector2d const &p_qvol);
+    p_qvol_bar_from_p_qvol(Eigen::Ref<Eigen::Vector2d const> p_qvol);
     static Eigen::Matrix2d
-    dp_qvol_bar_from_p_qvold_p_qvol(Eigen::Vector2d const &p_qvol);
+    dp_qvol_bar_from_p_qvold_p_qvol(Eigen::Ref<Eigen::Vector2d const> p_qvol);
 
     static double p(double rho);
     static double dp_drho(double rho);
@@ -78,12 +82,5 @@ namespace Model::Balancelaw {
     static Eigen::Matrix4d const set_coeff_helper_matrix();
 
     static const Eigen::Matrix4d coeff_helper_matrix;
-
-    // Eigen::Vector4d coefficients;
-
-    // /// This is a tolerance for the newton iteration:
-    // static constexpr double tolerance = 1e-6;
-    // /// This is an ad-hoc mechanism to prevent too many Newton iterations in
-    // finding the correct friction factor lambda. double last_mu{10.0};
   };
 } // namespace Model::Balancelaw

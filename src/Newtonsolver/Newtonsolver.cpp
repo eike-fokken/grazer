@@ -13,7 +13,7 @@ namespace Solver {
   template <typename Problemtype>
   void Newtonsolver_temp<Problemtype>::evaluate_state_derivative_triplets(
       Problemtype &problem, double last_time, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> const &last_state,
+      Eigen::Ref<Eigen::VectorXd const> last_state,
       Eigen::Ref<Eigen::VectorXd> new_state) {
 
     {
@@ -31,8 +31,8 @@ namespace Solver {
   template <typename Problemtype>
   void Newtonsolver_temp<Problemtype>::evaluate_state_derivative_coeffref(
       Problemtype &problem, double last_time, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> const &last_state,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state) {
+      Eigen::Ref<Eigen::VectorXd const> last_state,
+      Eigen::Ref<Eigen::VectorXd const> new_state) {
     Aux::Coeffrefhandler handler(&jacobian);
     Aux::Coeffrefhandler *const handler_ptr = &handler;
     problem.evaluate_state_derivative(
@@ -48,7 +48,7 @@ namespace Solver {
   Solutionstruct Newtonsolver_temp<Problemtype>::solve(
       Eigen::Ref<Eigen::VectorXd> new_state, Problemtype &problem, bool newjac,
       double last_time, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> const &last_state) {
+      Eigen::Ref<Eigen::VectorXd const> last_state) {
     Solutionstruct solstruct;
 
     Eigen::VectorXd rootvalues(new_state.size());
