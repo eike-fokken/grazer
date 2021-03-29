@@ -33,8 +33,6 @@ namespace Aux {
     return rng;
   }
 
-  Normaldistribution::Normaldistribution() {}
-
   double
   Normaldistribution::operator()(double mean, double standard_deviation) {
     std::normal_distribution<>::param_type parameters(mean, standard_deviation);
@@ -42,8 +40,7 @@ namespace Aux {
   }
 
   double Normaldistribution::operator()(double standard_deviation) {
-    std::normal_distribution<>::param_type parameters(0, standard_deviation);
-    return dist(generator, parameters);
+    return (*this)(0, standard_deviation);
   }
 
 } // namespace Aux

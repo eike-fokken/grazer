@@ -7,5 +7,5 @@ add_library(mathfunctions STATIC
 target_link_libraries(mathfunctions PRIVATE exception)
 
 target_include_directories(mathfunctions PUBLIC include)
-target_include_directories(mathfunctions SYSTEM PUBLIC system)
+target_include_directories(mathfunctions SYSTEM PRIVATE system)
 # target_include_directories(mathfunctions PUBLIC system)

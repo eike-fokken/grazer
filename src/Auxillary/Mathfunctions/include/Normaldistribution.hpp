@@ -1,4 +1,3 @@
-#include <chrono>
 #include <pcg_random.hpp>
 #include <random>
 
@@ -8,7 +7,7 @@ namespace Aux {
 
   class Normaldistribution final {
   public:
-    Normaldistribution();
+    Normaldistribution() = default;
 
     double operator()(double mean, double standard_deviation);
     double operator()(double standard_deviation);

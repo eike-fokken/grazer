@@ -90,6 +90,18 @@ add_library(testheader INTERFACE)
 target_link_libraries(testheader INTERFACE  matrixhandler problemlayer gtest gtest_main gmock)
 target_include_directories(testheader INTERFACE include)
 
+
+
+add_executable(normaldistribution_test NormaldistributionTest.cpp)
+
+target_link_libraries(normaldistribution_test PUBLIC mathfunctions)
+target_link_libraries(normaldistribution_test PUBLIC gtest gtest_main gmock)
+
+
+
+
+
+
 add_test(
     NAME net_test
     COMMAND net_test
@@ -156,3 +168,5 @@ add_test(
   NAME input_output_test
   COMMAND input_output_test
 )
+
+
