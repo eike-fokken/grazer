@@ -30,6 +30,7 @@ TEST(Input_output, prepare_output_dir) {
   std::string temp_dirname("temporary_dir");
   std::filesystem::path temp_dirpath(temp_dirname);
   std::filesystem::path absolute_dirpath(std::filesystem::absolute(temp_dirpath));
+
   if (not std::filesystem::exists(temp_dirpath)) {
     std::filesystem::create_directory(temp_dirname);
   } else {
@@ -46,15 +47,14 @@ TEST(Input_output, prepare_output_dir) {
   EXPECT_THROW(Aux_executable::prepare_output_dir(dirpath_false.string()).string(), std::runtime_error);
 
   // Testing if the output directory has a new, unique name
-  // auto general_temp_dirname = std::filesystem::path(temp_dirname  + "_*");
 
   EXPECT_EQ(Aux_executable::prepare_output_dir(temp_dirname), temp_dirname);
   EXPECT_TRUE(std::filesystem::exists(temp_dirpath));
-  // EXPECT_TRUE(std::filesystem::exists(general_temp_dirname));
 
   // Removing temporary directory after rename
   std::filesystem::remove(temp_dirpath);
-  // std::filesystem::remove(general_temp_dirname);
+  // Unique directory has to be removed
+  // std::filesystem::remove();
 
   // Testing a path that does not point to a directory but to a file
   std::string temp_filename("temporary_file");
@@ -115,8 +115,8 @@ TEST(Input_output, extract_input_data){
             Aux_executable::extract_input_data(vector_empty));
 
   // Removing the regular file if it did not exist before the test
-  // if (created_file_for_the_test){
-  // std::filesystem::remove(regular_json_path);
-  // }
+  if (created_file_for_the_test){
+  std::filesystem::remove(regular_json_path);
+  }
 
 }
