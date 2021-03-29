@@ -3,7 +3,12 @@
 #include <fstream>
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
+#include <ostream>
 #include <stdexcept>
+
+#include <iostream>
+#include <string>
+#include <vector>
 
 TEST(Input_output, absolute_file_path_in_root) {
 
@@ -38,10 +43,18 @@ TEST(Input_output, prepare_output_dir) {
   std::filesystem::path dirpath_false;
   dirpath_false = std::filesystem::path("..") / temp_dirpath;
 
-  EXPECT_THROW(Aux_executable::prepare_output_dir(dirpath_false.string()), std::runtime_error);
+  EXPECT_THROW(Aux_executable::prepare_output_dir(dirpath_false.string()).string(), std::runtime_error);
 
-  // Removing temporary directory
+  // Testing if the output directory has a new, unique name
+  // auto general_temp_dirname = std::filesystem::path(temp_dirname  + "_*");
+
+  EXPECT_EQ(Aux_executable::prepare_output_dir(temp_dirname), temp_dirname);
+  EXPECT_TRUE(std::filesystem::exists(temp_dirpath));
+  // EXPECT_TRUE(std::filesystem::exists(general_temp_dirname));
+
+  // Removing temporary directory after rename
   std::filesystem::remove(temp_dirpath);
+  // std::filesystem::remove(general_temp_dirname);
 
   // Testing a path that does not point to a directory but to a file
   std::string temp_filename("temporary_file");
@@ -63,3 +76,47 @@ TEST(Input_output, prepare_output_dir) {
   std::filesystem::remove(temp_filepath);
 }
 
+TEST(Input_output, extract_input_data){
+
+  std::vector<std::string> vector_too_large;
+  std::vector<std::string> vector_empty;
+  std::vector<std::string> vector_size_one;
+  nlohmann::json regular_json;
+  std::string regular_json_name("problem_data.json");
+  std::filesystem::path regular_json_path(regular_json_name);
+  bool created_file_for_the_test(false);
+
+  // Testing vector containing too many (>1) command arguments
+  vector_too_large = {"str1", "str2"};
+  EXPECT_THROW(Aux_executable::extract_input_data(vector_too_large), std::runtime_error);
+
+  // Testing a vector containing a string that points to a regular file
+  regular_json = {{"id", "M000"}, {"data", {1.0, 2.0}}};
+
+  // Creating a temporary json file
+  // absolute_path = std::filesystem::absolute(regular_json_path);
+  if (not std::filesystem::exists(regular_json_path)) {
+    std::ofstream file(regular_json_path);
+    file << regular_json;
+    created_file_for_the_test = true;
+
+  } else if (!std::filesystem::is_regular_file(regular_json_path)) {
+    std::cout << "There is already a file named " << regular_json_name
+              << ", but it is not a regular file. Cannot execute the test." << std::endl;
+    FAIL();
+  }
+
+  vector_size_one = {regular_json_name};
+  EXPECT_EQ(std::filesystem::path("problem_data.json"), Aux_executable::extract_input_data(vector_size_one));
+
+  // Testing empty vector
+  vector_empty = {};
+  EXPECT_EQ(std::filesystem::path("problem_data.json"),
+            Aux_executable::extract_input_data(vector_empty));
+
+  // Removing the regular file if it did not exist before the test
+  // if (created_file_for_the_test){
+  // std::filesystem::remove(regular_json_path);
+  // }
+
+}
