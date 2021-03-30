@@ -1,4 +1,5 @@
 #include "Powernode.hpp"
+#include <random>
 
 namespace Model::Networkproblem::Power {
 
@@ -20,5 +21,8 @@ namespace Model::Networkproblem::Power {
 
     void
     save_values(double time, Eigen::Ref<Eigen::VectorXd const> state) override;
+
+  private:
+    std::normal_distribution<> dist;
   };
 } // namespace Model::Networkproblem::Power

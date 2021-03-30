@@ -94,7 +94,7 @@ target_include_directories(testheader INTERFACE include)
 
 add_executable(normaldistribution_test NormaldistributionTest.cpp)
 
-target_link_libraries(normaldistribution_test PUBLIC mathfunctions)
+target_link_libraries(normaldistribution_test PUBLIC stochastics)
 target_link_libraries(normaldistribution_test PUBLIC gtest gtest_main gmock)
 
 
@@ -168,5 +168,9 @@ add_test(
   NAME input_output_test
   COMMAND input_output_test
 )
+add_test(
+  NAME normaldistribution_test
+  COMMAND normaldistribution_test
+  )
 
 

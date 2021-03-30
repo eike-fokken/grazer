@@ -17,6 +17,5 @@
 	shallow = true
 [submodule "pcg-cpp"]
 	path = pcg-cpp
-	url = git@github.com:imneme/pcg-cpp.git
-[submodule "pcg-cpp."]
+	url = https://github.com/imneme/pcg-cpp
 	shallow = true

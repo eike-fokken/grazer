@@ -7,7 +7,7 @@ TEST(Normaldistribution, operator1) {
 
   // Careful: this is a probabilistic test and might fail from time to time...
 
-  int number_of_samples = 1e5;
+  int number_of_samples = 100000;
   Aux::Normaldistribution n;
 
   double mean = 599.0;
