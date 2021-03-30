@@ -88,19 +88,20 @@
  *       http://www.pcg-random.org/posts/ease-of-use-without-loss-of-power.html
  */
 
+#include <algorithm>
+#include <array>
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
-#include <random>
-#include <array>
-#include <functional>  // for std::hash
+#include <functional> // for std::hash
 #include <initializer_list>
-#include <utility>
-#include <type_traits>
+#include <ios>
 #include <iterator>
-#include <chrono>
+#include <random>
 #include <thread>
-#include <algorithm>
+#include <type_traits>
+#include <utility>
 
 // Ugly platform-specific code for auto_seeded
 
@@ -467,9 +468,11 @@ class auto_seeded : public SeedSeq {
         auto heap  = hash(malloc_addr);
         auto stack = hash(&malloc_addr);
 
-        // Every call, we increment our random int.  We don't care about race
-        // conditons.  The more, the merrier.
-        random_int += 0xedf19156;
+        // Unfortunately the following is undefined behaviour in multithreaded execution:
+
+        // // Every call, we increment our random int.  We don't care about race
+        // // conditons.  The more, the merrier.
+        // random_int += 0xedf19156;
 
         // Classic seed, the time.  It ought to change, especially since
         // this is (hopefully) nanosecond resolution time.
@@ -483,16 +486,24 @@ class auto_seeded : public SeedSeq {
         // unless we compile with -fPIC -pic.
         auto self_data = hash(this);
 
-        // The address of the time function.  It should hopefully be in
-        // a system library that hopefully isn't always in the same place
-        // (might not change until system is rebooted though)
-        auto time_func = hash(&std::chrono::high_resolution_clock::now);
+        /*
+         * The following is never used, so it's left out. Nevertheless it is now
+         * an addressable function, so hopefully no undefined behaviour.
+         */
+
+        // // The address of the time function.  It should hopefully be in
+        // // a system library that hopefully isn't always in the same place
+        // // (might not change until system is rebooted though)
+        // auto boolalpha_func = hash(&std::boolalpha);
+
+        /*
+         * The following uses now an addressable function, so hopefully no undefined behaviour.
+         */
 
         // The address of the exit function.  It should hopefully be in
         // a system library that hopefully isn't always in the same place
-        // (might not change until system is rebooted though).  Hopefully
-        // it's in a different library from time_func.
-        auto exit_func = hash(&_Exit);
+        // (might not change until system is rebooted though).
+        auto noboolalpha_func = hash(&std::noboolalpha);
 
         // The address of a local function.  That may be in a totally
         // different part of memory.  On OS X it'll vary from run to run thanks
@@ -520,7 +531,7 @@ class auto_seeded : public SeedSeq {
         auto cpu = crushto32(RANDUTILS_CPU_ENTROPY);
 
         return {{random_int, crushto32(hitime), stack, heap, self_data,
-                 self_func, exit_func, thread_id, type_id, pid, cpu}};
+                 self_func, noboolalpha_func, thread_id, type_id, pid, cpu}};
     }
 
 
