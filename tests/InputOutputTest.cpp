@@ -26,6 +26,9 @@ TEST(Input_output, absolute_file_path_in_root) {
 TEST(Input_output, prepare_output_dir) {
 
   std::filesystem::path main_test_dir_path("main_test_dir");
+  std::filesystem::path temp_dirpath("temporary_dir");
+  std::filesystem::path temp_filepath("temporary_file");
+  std::filesystem::path dirpath_false;
 
   // Creating a main test directory and changing into it automatically
   if (not std::filesystem::exists(main_test_dir_path)) {
@@ -42,11 +45,9 @@ TEST(Input_output, prepare_output_dir) {
   }
 
   // Creating a temporary directory within the new, empty directory
-  std::filesystem::path temp_dirpath("temporary_dir");
   std::filesystem::create_directory(temp_dirpath.string());
 
   // Testing a path that is not below the current working directory
-  std::filesystem::path dirpath_false;
   dirpath_false = std::filesystem::path("..") / temp_dirpath;
   EXPECT_THROW(Aux_executable::prepare_output_dir(dirpath_false.string()).string(), std::runtime_error);
 
@@ -58,7 +59,6 @@ TEST(Input_output, prepare_output_dir) {
   std::filesystem::remove(temp_dirpath);
 
   // Testing a path that does not point to a directory but to a file
-  std::filesystem::path temp_filepath("temporary_file");
   std::ofstream file(temp_filepath.string());
   EXPECT_THROW(Aux_executable::prepare_output_dir(temp_filepath.string()), std::runtime_error);
 
@@ -71,11 +71,11 @@ TEST(Input_output, prepare_output_dir) {
 TEST(Input_output, extract_input_data){
 
   std::filesystem::path main_test_dir_path("main_test_dir");
+  nlohmann::json regular_json;
+  std::filesystem::path regular_json_path("problem_data.json");
   std::vector<std::string> vector_too_large;
   std::vector<std::string> vector_empty;
   std::vector<std::string> vector_size_one;
-  nlohmann::json regular_json;
-  std::filesystem::path regular_json_path("problem_data.json");
 
   // Creating a main test directory and changing into it automatically
   if (not std::filesystem::exists(main_test_dir_path)) {
