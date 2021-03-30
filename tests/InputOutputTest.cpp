@@ -25,66 +25,71 @@ TEST(Input_output, absolute_file_path_in_root) {
 
 TEST(Input_output, prepare_output_dir) {
 
+  std::filesystem::path main_test_dir_path("main_test_dir");
 
-  // Creating a temporary directory
-  std::string temp_dirname("temporary_dir");
-  std::filesystem::path temp_dirpath(temp_dirname);
-  std::filesystem::path absolute_dirpath(std::filesystem::absolute(temp_dirpath));
-
-  if (not std::filesystem::exists(temp_dirpath)) {
-    std::filesystem::create_directory(temp_dirname);
+  // Creating a main test directory and changing into it automatically
+  if (not std::filesystem::exists(main_test_dir_path)) {
+    std::filesystem::create_directory(main_test_dir_path.string());
+    std::filesystem::current_path(
+        std::filesystem::absolute(main_test_dir_path));
   } else {
-    std::cout << "There is already a directory named " << temp_dirpath.string()
+    std::cout << "There is already a directory named "
+              << main_test_dir_path.string()
               << ", cannot execute the test. Please remove the directory at\n"
-              << absolute_dirpath.string() << std::endl;
+              << std::filesystem::absolute(main_test_dir_path).string()
+              << std::endl;
     FAIL();
   }
+
+  // Creating a temporary directory within the new, empty directory
+  std::filesystem::path temp_dirpath("temporary_dir");
+  std::filesystem::create_directory(temp_dirpath.string());
 
   // Testing a path that is not below the current working directory
   std::filesystem::path dirpath_false;
   dirpath_false = std::filesystem::path("..") / temp_dirpath;
-
   EXPECT_THROW(Aux_executable::prepare_output_dir(dirpath_false.string()).string(), std::runtime_error);
 
   // Testing if the output directory has a new, unique name
-
-  EXPECT_EQ(Aux_executable::prepare_output_dir(temp_dirname), temp_dirname);
+  EXPECT_EQ(Aux_executable::prepare_output_dir(temp_dirpath.string()), temp_dirpath.string());
   EXPECT_TRUE(std::filesystem::exists(temp_dirpath));
 
   // Removing temporary directory after rename
   std::filesystem::remove(temp_dirpath);
-  // Unique directory has to be removed
-  // std::filesystem::remove();
 
   // Testing a path that does not point to a directory but to a file
-  std::string temp_filename("temporary_file");
-  std::filesystem::path temp_filepath(temp_filename);
-  std::filesystem::path absolute_filepath(
-      std::filesystem::absolute(temp_filepath));
-  if (not std::filesystem::exists(temp_filepath)) {
-    std::ofstream file(temp_filename);
-  } else {
-    std::cout << "There is already a file named " << temp_filepath.string()
-              << ", cannot execute the test. Please remove the file at\n"
-              << absolute_filepath.string() << std::endl;
-    FAIL();
-  }
+  std::filesystem::path temp_filepath("temporary_file");
+  std::ofstream file(temp_filepath.string());
+  EXPECT_THROW(Aux_executable::prepare_output_dir(temp_filepath.string()), std::runtime_error);
 
-  EXPECT_THROW(Aux_executable::prepare_output_dir(temp_filename), std::runtime_error);
-
-  // Removing temporary file
-  std::filesystem::remove(temp_filepath);
+  // Removing all files/folders in main test directory
+  std::filesystem::current_path(std::filesystem::path(".."));
+  std::filesystem::remove_all(main_test_dir_path);
+  std::filesystem::remove(main_test_dir_path);
 }
 
 TEST(Input_output, extract_input_data){
 
+  std::filesystem::path main_test_dir_path("main_test_dir");
   std::vector<std::string> vector_too_large;
   std::vector<std::string> vector_empty;
   std::vector<std::string> vector_size_one;
   nlohmann::json regular_json;
-  std::string regular_json_name("problem_data.json");
-  std::filesystem::path regular_json_path(regular_json_name);
-  bool created_file_for_the_test(false);
+  std::filesystem::path regular_json_path("problem_data.json");
+
+  // Creating a main test directory and changing into it automatically
+  if (not std::filesystem::exists(main_test_dir_path)) {
+    std::filesystem::create_directory(main_test_dir_path.string());
+    std::filesystem::current_path(
+        std::filesystem::absolute(main_test_dir_path));
+  } else {
+    std::cout << "There is already a directory named "
+              << main_test_dir_path.string()
+              << ", cannot execute the test. Please remove the directory at\n"
+              << std::filesystem::absolute(main_test_dir_path).string()
+              << std::endl;
+    FAIL();
+  }
 
   // Testing vector containing too many (>1) command arguments
   vector_too_large = {"str1", "str2"};
@@ -92,21 +97,9 @@ TEST(Input_output, extract_input_data){
 
   // Testing a vector containing a string that points to a regular file
   regular_json = {{"id", "M000"}, {"data", {1.0, 2.0}}};
-
-  // Creating a temporary json file
-  // absolute_path = std::filesystem::absolute(regular_json_path);
-  if (not std::filesystem::exists(regular_json_path)) {
-    std::ofstream file(regular_json_path);
-    file << regular_json;
-    created_file_for_the_test = true;
-
-  } else if (!std::filesystem::is_regular_file(regular_json_path)) {
-    std::cout << "There is already a file named " << regular_json_name
-              << ", but it is not a regular file. Cannot execute the test." << std::endl;
-    FAIL();
-  }
-
-  vector_size_one = {regular_json_name};
+  std::ofstream file(regular_json_path);
+  file << regular_json;
+  vector_size_one = {regular_json_path.string()};
   EXPECT_EQ(std::filesystem::path("problem_data.json"), Aux_executable::extract_input_data(vector_size_one));
 
   // Testing empty vector
@@ -114,9 +107,8 @@ TEST(Input_output, extract_input_data){
   EXPECT_EQ(std::filesystem::path("problem_data.json"),
             Aux_executable::extract_input_data(vector_empty));
 
-  // Removing the regular file if it did not exist before the test
-  if (created_file_for_the_test){
-  std::filesystem::remove(regular_json_path);
-  }
-
+  // Removing 'main_test_dir'
+  std::filesystem::current_path(std::filesystem::path(".."));
+  std::filesystem::remove_all(main_test_dir_path);
+  std::filesystem::remove(main_test_dir_path);
 }
