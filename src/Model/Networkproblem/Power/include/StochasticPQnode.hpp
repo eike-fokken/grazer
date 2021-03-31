@@ -1,5 +1,11 @@
+#include "Normaldistribution.hpp"
 #include "Powernode.hpp"
-#include <random>
+#include <cmath>
+
+static_assert(
+    std::numeric_limits<double>::has_infinity,
+    "Works only if double has infinities. Possible workaround is to replace "
+    "the infinity by a huge value, like 1e15.");
 
 namespace Model::Networkproblem::Power {
 
@@ -19,10 +25,25 @@ namespace Model::Networkproblem::Power {
         Eigen::Ref<Eigen::VectorXd const>,
         Eigen::Ref<Eigen::VectorXd const> new_state) const override;
 
+    void precompute(
+        double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> last_state);
+
     void
     save_values(double time, Eigen::Ref<Eigen::VectorXd const> state) override;
 
   private:
-    std::normal_distribution<> dist;
+    Aux::Normaldistribution distribution;
+
+    double last_sampled_time{-std::numeric_limits<double>::infinity()};
+
+    double sigma_P;
+    double theta_P;
+
+    double sigma_Q;
+    double theta_Q;
+
+    double current_P;
+    double current_Q;
   };
 } // namespace Model::Networkproblem::Power

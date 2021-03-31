@@ -5,6 +5,11 @@ namespace Aux {
 
   pcg64 setup_random_number_generator();
 
+  /// \brief provides a normal distribution sample on invocation.
+  ///
+  /// CAREFUL: This class is probably not thread safe, because pcg64 is not.
+  /// At the time of writing this we create a random number generator per
+  /// object, so this should be fine.
   class Normaldistribution final {
   public:
     Normaldistribution() = default;

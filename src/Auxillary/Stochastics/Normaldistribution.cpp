@@ -13,20 +13,6 @@ namespace Aux {
 
   pcg64 setup_random_number_generator() {
 
-    // std::random_device ro;
-
-    // auto args
-    //     = {static_cast<uint32_t>(std::chrono::high_resolution_clock::now()
-    //                                  .time_since_epoch()
-    //                                  .count()),
-    //        static_cast<uint32_t>(ro()),
-    //        static_cast<uint32_t>(ro()),
-    //        static_cast<uint32_t>(ro()),
-    //        static_cast<uint32_t>(ro()),
-    //        static_cast<uint32_t>(ro()),
-    //        static_cast<uint32_t>(ro()),
-    //        static_cast<uint32_t>(ro())};
-    // randutils::auto_seed_256 seed_source(args);
     randutils::auto_seed_256 seed_source;
     pcg64 rng(seed_source);
     std::cout << std::endl;
