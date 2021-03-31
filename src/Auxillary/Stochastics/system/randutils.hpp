@@ -1,3 +1,4 @@
+#pragma once
 /*
  * Random-Number Utilities (randutil)
  *     Addresses common issues with C++11 random number generation.

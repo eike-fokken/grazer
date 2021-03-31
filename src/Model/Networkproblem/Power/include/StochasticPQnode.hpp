@@ -1,3 +1,4 @@
+#pragma once
 #include "Normaldistribution.hpp"
 #include "Powernode.hpp"
 #include <cmath>

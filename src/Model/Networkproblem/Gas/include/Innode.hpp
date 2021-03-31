@@ -1,3 +1,4 @@
+#pragma once
 #include <Gasnode.hpp>
 
 namespace Model::Networkproblem::Gas {

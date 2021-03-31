@@ -1,3 +1,4 @@
+#pragma once
 #include "Newtonsolver.hpp"
 #include <Eigen/Sparse>
 #include <memory>

@@ -1,3 +1,4 @@
+#pragma once
 #include "Subproblem.hpp"
 #include <memory>
 #include <nlohmann/json.hpp>
