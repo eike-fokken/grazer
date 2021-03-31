@@ -7,9 +7,10 @@ namespace Aux {
 
   /// \brief provides a normal distribution sample on invocation.
   ///
-  /// CAREFUL: This class is probably not thread safe, because pcg64 is not.
-  /// At the time of writing this we create a random number generator per
-  /// object, so this should be fine.
+  /// CAREFUL: This class is probably not thread safe, because pcg64 may not be
+  /// thread safe. Also randutils is DEFINITELY not thread safe! At the time of
+  /// writing this we create a random number generator per object, so this
+  /// should be fine.
   class Normaldistribution final {
   public:
     Normaldistribution() = default;

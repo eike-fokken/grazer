@@ -446,12 +446,12 @@ namespace randutils {
 
       /*
        *  Unfortunately the following is undefined behaviour in multithreaded
-       * execution:
+       * execution!
        */
 
-      // // Every call, we increment our random int.  We don't care about race
-      // // conditons.  The more, the merrier.
-      // random_int += 0xedf19156;
+      // Every call, we increment our random int.  We don't care about race
+      // conditons.  The more, the merrier.
+      random_int += 0xedf19156;
 
       // Classic seed, the time.  It ought to change, especially since
       // this is (hopefully) nanosecond resolution time.
