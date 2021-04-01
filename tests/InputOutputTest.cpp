@@ -1,4 +1,5 @@
 #include "Input_output.hpp"
+#include <array>
 #include <filesystem>
 #include <fstream>
 #include <gtest/gtest.h>
@@ -20,6 +21,19 @@ TEST(Input_output, absolute_file_path_in_root) {
       problem_root_path, filepath_true));
   EXPECT_FALSE(Aux_executable::absolute_file_path_in_root(
       problem_root_path, filepath_false));
+
+}
+
+TEST(Input_output, make_cmd_argument_vector) {
+
+  const char *const_argv[] = {"grazer","arg1","arg2", nullptr};
+  int argc = 3;
+  char ** argv = const_cast<char **>(const_argv);
+
+  std::vector<std::string> vec;
+  vec = {"arg1", "arg2"};
+
+  EXPECT_EQ(Aux_executable::make_cmd_argument_vector(argc,argv), vec);
 
 }
 
