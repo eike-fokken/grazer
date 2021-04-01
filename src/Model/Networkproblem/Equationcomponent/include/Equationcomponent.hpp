@@ -38,14 +38,28 @@ namespace Model::Networkproblem {
         double new_time, Eigen::Ref<Eigen::VectorXd const> last_state,
         Eigen::Ref<Eigen::VectorXd const> new_state) const = 0;
 
-    /// \brief derivative of Equationcomponent::evaluate.
+    /// \brief Carries out steps that need to be taken before the Newton method
+    /// for a time step can start.
     ///
-    /// evaluates the derivative of Equationcomponent::evaluate and hands the
-    /// result to jacobianhandler, which will fill the Jacobi matrix.
-    /// @param jacobianhandler A helper object, that fills a sparse matrix in an
-    /// efficient way.
+    /// For most components does nothing.
     /// @param last_time time point of the last time step. Usually important for
     /// PDEs
+    /// @param new_time time point of the current time step.
+    /// @param last_state value of the state at last time step.
+    /// @param new_state value of the state at current time step.
+    virtual void prepare_timestep(
+        double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> last_state,
+        Eigen::Ref<Eigen::VectorXd const> new_state);
+
+    /// \brief derivative of Equationcomponent::evaluate.
+    ///
+    /// evaluates the derivative of Equationcomponent::evaluate and hands
+    /// the result to jacobianhandler, which will fill the Jacobi matrix.
+    /// @param jacobianhandler A helper object, that fills a sparse matrix
+    /// in an efficient way.
+    /// @param last_time time point of the last time step. Usually important
+    /// for PDEs
     /// @param new_time time point of the current time step.
     /// @param last_state value of the state at last time step.
     /// @param new_state value of the state at current time step.

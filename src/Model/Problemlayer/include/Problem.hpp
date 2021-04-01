@@ -20,8 +20,6 @@ namespace Model {
   class Problem {
 
   public:
-    /// The constructor needs to declare Delta_t
-    ///
     Problem(
         nlohmann::json subproblem_data,
         std::filesystem::path const &_output_directory);
@@ -36,6 +34,11 @@ namespace Model {
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> last_state,
         Eigen::Ref<Eigen::VectorXd const> new_state) const;
+
+    void prepare_timestep(
+        double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> last_state,
+        Eigen::Ref<Eigen::VectorXd const> new_state);
 
     void evaluate_state_derivative(
         Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,

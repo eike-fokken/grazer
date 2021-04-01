@@ -50,6 +50,15 @@ namespace Model {
     }
   }
 
+  void Problem::prepare_timestep(
+      double last_time, double new_time,
+      Eigen::Ref<Eigen::VectorXd const> last_state,
+      Eigen::Ref<Eigen::VectorXd const> new_state) {
+    for (auto &subproblem : subproblems) {
+      subproblem->prepare_timestep(last_time, new_time, last_state, new_state);
+    }
+  }
+
   void Problem::evaluate_state_derivative(
       Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> last_state,

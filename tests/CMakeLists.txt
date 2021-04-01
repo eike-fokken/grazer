@@ -12,6 +12,7 @@ add_executable(model_test ModelTest.cpp)
 
 target_link_libraries(model_test PUBLIC problemlayer subproblem)
 target_link_libraries(model_test PUBLIC gtest gtest_main gmock)
+target_include_directories(model_test PUBLIC include)
 
 add_executable(boundary_test BoundaryTest.cpp)
 
