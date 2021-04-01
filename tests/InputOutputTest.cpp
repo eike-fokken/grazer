@@ -26,6 +26,7 @@ TEST(Input_output, absolute_file_path_in_root) {
 
 TEST(Input_output, make_cmd_argument_vector) {
 
+  // The c++ standard requires that argv[argc]==nullptr.
   const char *const_argv[] = {"grazer", "arg1", "arg2", nullptr};
   int argc = 3;
   char **argv = const_cast<char **>(const_argv);
@@ -45,7 +46,7 @@ TEST(Input_output, prepare_output_dir) {
 
   // Creating a main test directory and changing into it automatically
   if (not std::filesystem::exists(main_test_dir_path)) {
-    std::filesystem::create_directory(main_test_dir_path.string());
+    std::filesystem::create_directory(main_test_dir_path);
     std::filesystem::current_path(
         std::filesystem::absolute(main_test_dir_path));
   } else {
@@ -58,7 +59,7 @@ TEST(Input_output, prepare_output_dir) {
   }
 
   // Creating a temporary directory within the new, empty directory
-  std::filesystem::create_directory(temp_dirpath.string());
+  std::filesystem::create_directory(temp_dirpath);
 
   // Testing a path that is not below the current working directory
   dirpath_false = std::filesystem::path("..") / temp_dirpath;
@@ -67,6 +68,7 @@ TEST(Input_output, prepare_output_dir) {
       std::runtime_error);
 
   // Testing if the output directory has a new, unique name
+  //
   // If all goes well we catch the outputs to std::cout.
   std::string output;
   {
@@ -110,7 +112,7 @@ TEST(Input_output, extract_input_data) {
 
   // Creating a main test directory and changing into it automatically
   if (not std::filesystem::exists(main_test_dir_path)) {
-    std::filesystem::create_directory(main_test_dir_path.string());
+    std::filesystem::create_directory(main_test_dir_path);
     std::filesystem::current_path(
         std::filesystem::absolute(main_test_dir_path));
   } else {
