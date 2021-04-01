@@ -1,3 +1,4 @@
+#include "Catch_cout.hpp"
 #include "Input_output.hpp"
 #include <array>
 #include <filesystem>
@@ -21,20 +22,18 @@ TEST(Input_output, absolute_file_path_in_root) {
       problem_root_path, filepath_true));
   EXPECT_FALSE(Aux_executable::absolute_file_path_in_root(
       problem_root_path, filepath_false));
-
 }
 
 TEST(Input_output, make_cmd_argument_vector) {
 
-  const char *const_argv[] = {"grazer","arg1","arg2", nullptr};
+  const char *const_argv[] = {"grazer", "arg1", "arg2", nullptr};
   int argc = 3;
-  char ** argv = const_cast<char **>(const_argv);
+  char **argv = const_cast<char **>(const_argv);
 
   std::vector<std::string> vec;
   vec = {"arg1", "arg2"};
 
-  EXPECT_EQ(Aux_executable::make_cmd_argument_vector(argc,argv), vec);
-
+  EXPECT_EQ(Aux_executable::make_cmd_argument_vector(argc, argv), vec);
 }
 
 TEST(Input_output, prepare_output_dir) {
@@ -63,18 +62,36 @@ TEST(Input_output, prepare_output_dir) {
 
   // Testing a path that is not below the current working directory
   dirpath_false = std::filesystem::path("..") / temp_dirpath;
-  EXPECT_THROW(Aux_executable::prepare_output_dir(dirpath_false.string()).string(), std::runtime_error);
+  EXPECT_THROW(
+      Aux_executable::prepare_output_dir(dirpath_false.string()).string(),
+      std::runtime_error);
 
   // Testing if the output directory has a new, unique name
-  EXPECT_EQ(Aux_executable::prepare_output_dir(temp_dirpath.string()), temp_dirpath.string());
-  EXPECT_TRUE(std::filesystem::exists(temp_dirpath));
-
+  // If all goes well we catch the outputs to std::cout.
+  std::string output;
+  {
+    std::stringstream buffer;
+    Catch_cout catcher(buffer.rdbuf());
+    EXPECT_EQ(
+        Aux_executable::prepare_output_dir(temp_dirpath.string()),
+        temp_dirpath.string());
+    EXPECT_TRUE(std::filesystem::exists(temp_dirpath));
+    output = buffer.str();
+  }
+  // If the test failed, we present the output of the test.
+  if (HasFailure()) {
+    std::cout << "The test failed. It wrote the following to standard out:\n\n"
+              << std::flush;
+    std::cout << output << std::endl;
+  }
   // Removing temporary directory after rename
   std::filesystem::remove(temp_dirpath);
 
   // Testing a path that does not point to a directory but to a file
   std::ofstream file(temp_filepath.string());
-  EXPECT_THROW(Aux_executable::prepare_output_dir(temp_filepath.string()), std::runtime_error);
+  EXPECT_THROW(
+      Aux_executable::prepare_output_dir(temp_filepath.string()),
+      std::runtime_error);
 
   // Removing all files/folders in main test directory
   std::filesystem::current_path(std::filesystem::path(".."));
@@ -82,7 +99,7 @@ TEST(Input_output, prepare_output_dir) {
   std::filesystem::remove(main_test_dir_path);
 }
 
-TEST(Input_output, extract_input_data){
+TEST(Input_output, extract_input_data) {
 
   std::filesystem::path main_test_dir_path("main_test_dir");
   nlohmann::json regular_json;
@@ -107,19 +124,23 @@ TEST(Input_output, extract_input_data){
 
   // Testing vector containing too many (>1) command arguments
   vector_too_large = {"str1", "str2"};
-  EXPECT_THROW(Aux_executable::extract_input_data(vector_too_large), std::runtime_error);
+  EXPECT_THROW(
+      Aux_executable::extract_input_data(vector_too_large), std::runtime_error);
 
   // Testing a vector containing a string that points to a regular file
   regular_json = {{"id", "M000"}, {"data", {1.0, 2.0}}};
   std::ofstream file(regular_json_path);
   file << regular_json;
   vector_size_one = {regular_json_path.string()};
-  EXPECT_EQ(std::filesystem::path("problem_data.json"), Aux_executable::extract_input_data(vector_size_one));
+  EXPECT_EQ(
+      std::filesystem::path("problem_data.json"),
+      Aux_executable::extract_input_data(vector_size_one));
 
   // Testing empty vector
   vector_empty = {};
-  EXPECT_EQ(std::filesystem::path("problem_data.json"),
-            Aux_executable::extract_input_data(vector_empty));
+  EXPECT_EQ(
+      std::filesystem::path("problem_data.json"),
+      Aux_executable::extract_input_data(vector_empty));
 
   // Removing 'main_test_dir'
   std::filesystem::current_path(std::filesystem::path(".."));
