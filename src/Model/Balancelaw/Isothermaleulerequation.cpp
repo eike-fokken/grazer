@@ -29,8 +29,8 @@ namespace Model::Balancelaw {
     return coeff_helper_matrix.lu().solve(spline_constraints);
   }
 
-  Eigen::Vector2d
-  Isothermaleulerequation::flux(Eigen::Vector2d const &state, double diameter) {
+  Eigen::Vector2d Isothermaleulerequation::flux(
+      Eigen::Ref<Eigen::Vector2d const> state, double diameter) {
 
     double rho = state[0];
     double q = state[1];
@@ -44,7 +44,7 @@ namespace Model::Balancelaw {
   }
 
   Eigen::Matrix2d Isothermaleulerequation::dflux_dstate(
-      Eigen::Vector2d const &state, double diameter) {
+      Eigen::Ref<Eigen::Vector2d const> state, double diameter) {
 
     double rho = state[0];
     double q = state[1];
@@ -60,7 +60,8 @@ namespace Model::Balancelaw {
   }
 
   Eigen::Vector2d Isothermaleulerequation::source(
-      Eigen::Vector2d const &state, double diameter, double roughness) {
+      Eigen::Ref<Eigen::Vector2d const> state, double diameter,
+      double roughness) {
 
     double rho = state[0];
     double q = state[1];
@@ -81,7 +82,8 @@ namespace Model::Balancelaw {
   }
 
   Eigen::Matrix2d Isothermaleulerequation::dsource_dstate(
-      Eigen::Vector2d const &state, double diameter, double roughness) {
+      Eigen::Ref<Eigen::Vector2d const> state, double diameter,
+      double roughness) {
     double rho = state[0];
     double q = state[1];
 
@@ -114,7 +116,7 @@ namespace Model::Balancelaw {
   }
 
   Eigen::Vector2d
-  Isothermaleulerequation::p_qvol(Eigen::Vector2d const &state) {
+  Isothermaleulerequation::p_qvol(Eigen::Ref<Eigen::Vector2d const> state) {
     double rho = state[0];
     double q = state[1];
 
@@ -126,8 +128,8 @@ namespace Model::Balancelaw {
     return p_qvol;
   }
 
-  Eigen::Matrix2d
-  Isothermaleulerequation::dp_qvol_dstate(Eigen::Vector2d const &state) {
+  Eigen::Matrix2d Isothermaleulerequation::dp_qvol_dstate(
+      Eigen::Ref<Eigen::Vector2d const> state) {
     double rho = state[0];
 
     Eigen::Matrix2d dp_qvol;
@@ -139,7 +141,7 @@ namespace Model::Balancelaw {
   }
 
   Eigen::Vector2d
-  Isothermaleulerequation::state(Eigen::Vector2d const &p_qvol) {
+  Isothermaleulerequation::state(Eigen::Ref<Eigen::Vector2d const> p_qvol) {
 
     double p = p_qvol[0];
     double q = p_qvol[1];
@@ -150,7 +152,7 @@ namespace Model::Balancelaw {
   }
 
   Eigen::Vector2d Isothermaleulerequation::p_qvol_from_p_qvol_bar(
-      Eigen::Vector2d const &p_qvol_bar) {
+      Eigen::Ref<Eigen::Vector2d const> p_qvol_bar) {
     double p_bar = p_qvol_bar[0];
     double q = p_qvol_bar[1];
     Eigen::Vector2d p_qvol;
@@ -172,7 +174,7 @@ namespace Model::Balancelaw {
   }
 
   Eigen::Vector2d Isothermaleulerequation::p_qvol_bar_from_p_qvol(
-      Eigen::Vector2d const &p_qvol) {
+      Eigen::Ref<Eigen::Vector2d const> p_qvol) {
     double p = p_qvol[0];
     double q = p_qvol[1];
     Eigen::Vector2d p_qvol_bar;
@@ -182,7 +184,7 @@ namespace Model::Balancelaw {
   }
 
   Eigen::Matrix2d Isothermaleulerequation::dp_qvol_bar_from_p_qvold_p_qvol(
-      Eigen::Vector2d const &p_qvol) {
+      Eigen::Ref<Eigen::Vector2d const> p_qvol) {
     double p_pascal = p_qvol[0];
     Eigen::Matrix2d dp_qvol;
     dp_qvol(0, 0) = dp_bar_from_p_pascal_dp_pascal(p_pascal);
