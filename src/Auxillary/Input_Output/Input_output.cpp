@@ -83,8 +83,9 @@ namespace Aux_executable {
     }
     if (!std::filesystem::is_regular_file(problem_data_file)) {
       gthrow(
-          {"The given path ", problem_data_file.string(),
-           " does not point to a regular file.  Maybe the name is "
+          {"The given path\n\n",
+           std::filesystem::absolute(problem_data_file).string(),
+           "\n\ndoes not point to a regular file.  Maybe the name is "
            "misspelled."});
     }
     return problem_data_file;

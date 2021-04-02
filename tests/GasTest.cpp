@@ -1,3 +1,4 @@
+#include "Catch_cout.hpp"
 #include "Equationcomponent_test_helpers.hpp"
 #include "Flowboundarynode.hpp"
 #include "Gas_factory.hpp"
