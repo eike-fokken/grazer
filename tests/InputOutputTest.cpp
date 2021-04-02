@@ -45,38 +45,38 @@ TEST(make_cmd_argument_vectorTEST, two_arguments) {
 
 TEST(prepare_output_dirTEST, path_not_below_current_dir) {
 
-    std::filesystem::path main_test_dir_path("main_test_dir");
-    std::filesystem::path temp_dirpath("temporary_dir");
-    std::filesystem::path dirpath_false;
+  std::filesystem::path main_test_dir_path("main_test_dir");
+  std::filesystem::path temp_dirpath("temporary_dir");
+  std::filesystem::path dirpath_false;
 
-    // Creating a main test directory and changing into it automatically
-    if (std::filesystem::exists(main_test_dir_path)) {
-      std::cout << "There is already a directory named "
-                << main_test_dir_path.string()
-                << ", cannot execute the test. Please remove the directory at\n"
-                << std::filesystem::absolute(main_test_dir_path).string()
-                << std::endl;
-      FAIL();
-    } else {
-      std::filesystem::create_directory(main_test_dir_path);
-      std::filesystem::current_path(
-          std::filesystem::absolute(main_test_dir_path));
-    }
-
-    // Creating a temporary directory within the new, empty directory
-    std::filesystem::create_directory(temp_dirpath);
-
-    // Testing a path that is not below the current working directory
-    dirpath_false = std::filesystem::path("..") / temp_dirpath;
-    EXPECT_THROW(
-        Aux_executable::prepare_output_dir(dirpath_false.string()).string(),
-        std::runtime_error);
-
-    // Removing all files/folders in main test directory
-    std::filesystem::current_path(std::filesystem::path(".."));
-    std::filesystem::remove_all(main_test_dir_path);
-    std::filesystem::remove(main_test_dir_path);
+  // Creating a main test directory and changing into it automatically
+  if (std::filesystem::exists(main_test_dir_path)) {
+    std::cout << "There is already a directory named "
+              << main_test_dir_path.string()
+              << ", cannot execute the test. Please remove the directory at\n"
+              << std::filesystem::absolute(main_test_dir_path).string()
+              << std::endl;
+    FAIL();
+  } else {
+    std::filesystem::create_directory(main_test_dir_path);
+    std::filesystem::current_path(
+        std::filesystem::absolute(main_test_dir_path));
   }
+
+  // Creating a temporary directory within the new, empty directory
+  std::filesystem::create_directory(temp_dirpath);
+
+  // Testing a path that is not below the current working directory
+  dirpath_false = std::filesystem::path("..") / temp_dirpath;
+  EXPECT_THROW(
+      Aux_executable::prepare_output_dir(dirpath_false.string()).string(),
+      std::runtime_error);
+
+  // Removing all files/folders in main test directory
+  std::filesystem::current_path(std::filesystem::path(".."));
+  std::filesystem::remove_all(main_test_dir_path);
+  std::filesystem::remove(main_test_dir_path);
+}
 
 TEST(prepare_output_dirTEST, directory_has_new_unique_name) {
 
@@ -171,14 +171,13 @@ TEST(extract_input_dataTEST, input_vector_too_large) {
   std::filesystem::current_path(std::filesystem::path(".."));
   std::filesystem::remove_all(main_test_dir_path);
   std::filesystem::remove(main_test_dir_path);
-
 }
 
 TEST(extract_input_dataTEST, input_vector_works) {
 
   std::filesystem::path main_test_dir_path("main_test_dir");
   nlohmann::json regular_json;
-  std::filesystem::path regular_json_path("problem_data.json");
+  std::filesystem::path regular_json_path("test_pathname.json");
   std::vector<std::string> vector_size_one;
 
   // Creating a main test directory and changing into it automatically
@@ -191,7 +190,8 @@ TEST(extract_input_dataTEST, input_vector_works) {
     FAIL();
   } else {
     std::filesystem::create_directory(main_test_dir_path);
-    std::filesystem::current_path(std::filesystem::absolute(main_test_dir_path));
+    std::filesystem::current_path(
+        std::filesystem::absolute(main_test_dir_path));
   }
 
   // Testing a vector containing a string that points to a regular file
@@ -200,7 +200,7 @@ TEST(extract_input_dataTEST, input_vector_works) {
   file << regular_json;
   vector_size_one = {regular_json_path.string()};
   EXPECT_EQ(
-      std::filesystem::path("problem_data.json"),
+      std::filesystem::path("test_pathname.json"),
       Aux_executable::extract_input_data(vector_size_one));
 
   // Removing 'main_test_dir'
@@ -228,7 +228,8 @@ TEST(extract_input_dataTEST, input_vector_empty) {
     FAIL();
   } else {
     std::filesystem::create_directory(main_test_dir_path);
-    std::filesystem::current_path(std::filesystem::absolute(main_test_dir_path));
+    std::filesystem::current_path(
+        std::filesystem::absolute(main_test_dir_path));
   }
 
   // Creating json file
@@ -239,8 +240,7 @@ TEST(extract_input_dataTEST, input_vector_empty) {
   // Testing empty vector
   vector_empty = {};
   EXPECT_EQ(
-      regular_json_path,
-      Aux_executable::extract_input_data(vector_empty));
+      regular_json_path, Aux_executable::extract_input_data(vector_empty));
 
   // Removing 'main_test_dir'
   std::filesystem::current_path(std::filesystem::path(".."));
