@@ -124,13 +124,13 @@ namespace Model::Networkproblem::Power {
     Equationcomponent::push_to_values(time, value_vector);
   }
 
-  double Powernode::P(Eigen::Ref<Eigen::VectorXd const> new_state) const {
+  double Powernode::P(Eigen::Ref<Eigen::VectorXd const> state) const {
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
     double G_i = get_G();
 
-    double V_i = new_state[V_index];
-    double phi_i = new_state[phi_index];
+    double V_i = state[V_index];
+    double phi_i = state[phi_index];
 
     double P = 0.0;
     P += G_i * V_i * V_i;
@@ -140,21 +140,21 @@ namespace Model::Networkproblem::Power {
       Powernode *othernode = std::get<2>(triple);
       int V_index_k = othernode->get_start_state_index();
       int phi_index_k = V_index_k + 1;
-      double V_k = new_state[V_index_k];
-      double phi_k = new_state[phi_index_k];
+      double V_k = state[V_index_k];
+      double phi_k = state[phi_index_k];
       double phi_ik = phi_i - phi_k;
       P += V_i * V_k * (G_ik * cos(phi_ik) + B_ik * sin(phi_ik));
     }
     return P;
   }
 
-  double Powernode::Q(Eigen::Ref<Eigen::VectorXd const> new_state) const {
+  double Powernode::Q(Eigen::Ref<Eigen::VectorXd const> state) const {
 
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
     double B_i = get_B();
-    double V_i = new_state[V_index];
-    double phi_i = new_state[phi_index];
+    double V_i = state[V_index];
+    double phi_i = state[phi_index];
 
     double Q = 0.0;
     Q -= B_i * V_i * V_i;
@@ -165,8 +165,8 @@ namespace Model::Networkproblem::Power {
       Powernode *othernode = std::get<2>(triple);
       int V_index_k = othernode->get_start_state_index();
       int phi_index_k = V_index_k + 1;
-      double V_k = new_state[V_index_k];
-      double phi_k = new_state[phi_index_k];
+      double V_k = state[V_index_k];
+      double phi_k = state[phi_index_k];
       double phi_ik = phi_i - phi_k;
       Q += V_i * V_k * (G_ik * sin(phi_ik) - B_ik * cos(phi_ik));
     }

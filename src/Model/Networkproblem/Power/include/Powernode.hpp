@@ -29,8 +29,8 @@ namespace Model::Networkproblem::Power {
         Eigen::Ref<Eigen::VectorXd> new_state,
         nlohmann::ordered_json initial_json) final;
 
-    double P(Eigen::Ref<Eigen::VectorXd const> new_state) const;
-    double Q(Eigen::Ref<Eigen::VectorXd const> new_state) const;
+    double P(Eigen::Ref<Eigen::VectorXd const> state) const;
+    double Q(Eigen::Ref<Eigen::VectorXd const> state) const;
     void evaluate_P_derivative(
         int equationindex, Aux::Matrixhandler *jacobianhandler,
         Eigen::Ref<Eigen::VectorXd const> new_state) const;
