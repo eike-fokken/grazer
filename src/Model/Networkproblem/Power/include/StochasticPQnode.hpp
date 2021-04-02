@@ -1,12 +1,7 @@
 #pragma once
 #include "Normaldistribution.hpp"
 #include "Powernode.hpp"
-#include <cmath>
-
-static_assert(
-    std::numeric_limits<double>::has_infinity,
-    "Works only if double has infinities. Possible workaround is to replace "
-    "the infinity by a huge value, like 1e15.");
+#include <memory>
 
 namespace Model::Networkproblem::Power {
 
@@ -26,17 +21,17 @@ namespace Model::Networkproblem::Power {
         Eigen::Ref<Eigen::VectorXd const>,
         Eigen::Ref<Eigen::VectorXd const> new_state) const override;
 
-    void precompute(
+    void prepare_timestep(
         double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> last_state);
+        Eigen::Ref<Eigen::VectorXd const> last_state,
+        Eigen::Ref<Eigen::VectorXd const> new_state) override;
 
     void
     save_values(double time, Eigen::Ref<Eigen::VectorXd const> state) override;
 
   private:
-    Aux::Normaldistribution distribution;
-
-    double last_sampled_time{-std::numeric_limits<double>::infinity()};
+    std::unique_ptr<Aux::Normaldistribution> distribution{
+        std::make_unique<Aux::Normaldistribution>()};
 
     double sigma_P;
     double theta_P;
