@@ -214,9 +214,7 @@ TEST(extract_input_dataTEST, input_vector_empty) {
   std::filesystem::path main_test_dir_path("main_test_dir");
   nlohmann::json regular_json;
   std::filesystem::path regular_json_path("problem_data.json");
-  std::vector<std::string> vector_too_large;
   std::vector<std::string> vector_empty;
-  std::vector<std::string> vector_size_one;
 
   // Creating a main test directory and changing into it automatically
   if (std::filesystem::exists(main_test_dir_path)) {
