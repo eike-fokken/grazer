@@ -59,8 +59,7 @@ TEST(prepare_output_dirTEST, path_not_below_current_dir) {
     FAIL();
   }
   std::filesystem::create_directory(main_test_dir_path);
-  std::filesystem::current_path(
-       std::filesystem::absolute(main_test_dir_path));
+  std::filesystem::current_path(std::filesystem::absolute(main_test_dir_path));
 
   // Creating a temporary directory within the new, empty directory
   std::filesystem::create_directory(temp_dirpath);
@@ -93,9 +92,8 @@ TEST(prepare_output_dirTEST, directory_has_new_unique_name) {
     FAIL();
   }
   std::filesystem::create_directory(main_test_dir_path);
-  std::filesystem::current_path(
-       std::filesystem::absolute(main_test_dir_path));
-  
+  std::filesystem::current_path(std::filesystem::absolute(main_test_dir_path));
+
   // Creating a temporary directory within the new, empty directory
   std::filesystem::create_directory(temp_dirpath);
 
@@ -139,20 +137,18 @@ TEST(prepare_output_dirTEST, path_points_to_file) {
     FAIL();
   }
   std::filesystem::create_directory(main_test_dir_path);
-  std::filesystem::current_path(
-       std::filesystem::absolute(main_test_dir_path));
+  std::filesystem::current_path(std::filesystem::absolute(main_test_dir_path));
 
-    // Testing a path that does not point to a directory but to a file
-    std::ofstream file(temp_filepath.string());
-    EXPECT_THROW(
-        [[maybe_unused]] auto result
-        = Aux_executable::prepare_output_dir(temp_filepath.string()),
-        std::runtime_error);
+  // Testing a path that does not point to a directory but to a file
+  std::ofstream file(temp_filepath.string());
+  EXPECT_THROW(
+      [[maybe_unused]] auto result
+      = Aux_executable::prepare_output_dir(temp_filepath.string()),
+      std::runtime_error);
 
-    // Removing all files/folders in main test directory
-    std::filesystem::current_path(std::filesystem::path(".."));
-    std::filesystem::remove_all(main_test_dir_path);
-  }
+  // Removing all files/folders in main test directory
+  std::filesystem::current_path(std::filesystem::path(".."));
+  std::filesystem::remove_all(main_test_dir_path);
 }
 
 TEST(extract_input_dataTEST, input_vector_too_large) {
@@ -189,8 +185,7 @@ TEST(extract_input_dataTEST, input_vector_works) {
     FAIL();
   }
   std::filesystem::create_directory(main_test_dir_path);
-  std::filesystem::current_path(
-       std::filesystem::absolute(main_test_dir_path));
+  std::filesystem::current_path(std::filesystem::absolute(main_test_dir_path));
 
   // Testing a vector containing a string that points to a regular file
   regular_json = {{"id", "M000"}, {"data", {1.0, 2.0}}};
@@ -223,8 +218,7 @@ TEST(extract_input_dataTEST, input_vector_empty) {
     FAIL();
   }
   std::filesystem::create_directory(main_test_dir_path);
-  std::filesystem::current_path(
-       std::filesystem::absolute(main_test_dir_path));
+  std::filesystem::current_path(std::filesystem::absolute(main_test_dir_path));
 
   // Creating json file
   regular_json = {{"id", "M000"}, {"data", {1.0, 2.0}}};
