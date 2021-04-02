@@ -8,8 +8,9 @@ namespace Model::Networkproblem::Power {
   class StochasticPQnode final : public Powernode {
   public:
     static std::string get_type();
+    static nlohmann::json get_schema();
 
-    using Powernode::Powernode;
+    StochasticPQnode(nlohmann::json const &topology);
 
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
@@ -33,11 +34,11 @@ namespace Model::Networkproblem::Power {
     std::unique_ptr<Aux::Normaldistribution> distribution{
         std::make_unique<Aux::Normaldistribution>()};
 
-    double sigma_P;
-    double theta_P;
+    double const sigma_P;
+    double const theta_P;
 
-    double sigma_Q;
-    double theta_Q;
+    double const sigma_Q;
+    double const theta_Q;
 
     double current_P;
     double current_Q;
