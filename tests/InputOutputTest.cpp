@@ -68,8 +68,10 @@ TEST(prepare_output_dirTEST, path_not_below_current_dir) {
 
   // Testing a path that is not below the current working directory
   dirpath_false = std::filesystem::path("..") / temp_dirpath;
+  // Tue maybe unused
   EXPECT_THROW(
-      Aux_executable::prepare_output_dir(dirpath_false.string()).string(),
+      [[maybe_unused]] auto result
+      = Aux_executable::prepare_output_dir(dirpath_false.string()),
       std::runtime_error);
 
   // Removing all files/folders in main test directory
@@ -148,7 +150,8 @@ TEST(prepare_output_dirTEST, path_points_to_file) {
   // Testing a path that does not point to a directory but to a file
   std::ofstream file(temp_filepath.string());
   EXPECT_THROW(
-      Aux_executable::prepare_output_dir(temp_filepath.string()),
+      [[maybe_unused]] auto result
+      = Aux_executable::prepare_output_dir(temp_filepath.string()),
       std::runtime_error);
 
   // Removing all files/folders in main test directory
@@ -165,7 +168,9 @@ TEST(extract_input_dataTEST, input_vector_too_large) {
   // Testing vector containing too many (>1) command arguments
   vector_too_large = {"str1", "str2"};
   EXPECT_THROW(
-      Aux_executable::extract_input_data(vector_too_large), std::runtime_error);
+      [[maybe_unused]] auto result
+      = Aux_executable::extract_input_data(vector_too_large),
+      std::runtime_error);
 
   // Removing 'main_test_dir'
   std::filesystem::current_path(std::filesystem::path(".."));
