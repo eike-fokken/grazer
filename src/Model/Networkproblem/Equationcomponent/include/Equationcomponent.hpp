@@ -124,7 +124,7 @@ namespace Model::Networkproblem {
     /// @param initial_json Json object that contains the initial values.
     virtual void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,
-        nlohmann::json const & initial_json)
+        nlohmann::json const &initial_json)
         = 0;
 
   protected:

@@ -37,7 +37,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,
-        nlohmann::json const & initial_json) override;
+        nlohmann::json const &initial_json) override;
 
     Eigen::Vector2d get_boundary_p_qvol_bar(
         int direction, Eigen::Ref<Eigen::VectorXd const> state) const override;

@@ -26,7 +26,7 @@ namespace Model::Networkproblem::Power {
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,
-        nlohmann::json const & initial_json) final;
+        nlohmann::json const &initial_json) final;
 
     double P(Eigen::Ref<Eigen::VectorXd const> state) const;
     double Q(Eigen::Ref<Eigen::VectorXd const> state) const;

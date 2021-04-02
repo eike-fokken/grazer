@@ -27,7 +27,7 @@ namespace Model::Networkproblem::Gas {
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,
-        nlohmann::json const & initial_json) override;
+        nlohmann::json const &initial_json) override;
 
     void print_to_files(std::filesystem::path const &output_directory) override;
 
