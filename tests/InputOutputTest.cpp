@@ -77,12 +77,12 @@ TEST(prepare_output_dirTEST, path_not_below_current_dir) {
   // Removing all files/folders in main test directory
   std::filesystem::current_path(std::filesystem::path(".."));
   std::filesystem::remove_all(main_test_dir_path);
-  std::filesystem::remove(main_test_dir_path);
 }
 
 TEST(prepare_output_dirTEST, directory_has_new_unique_name) {
 
-  std::filesystem::path main_test_dir_path("directory_has_new_unique_name_TEST");
+  std::filesystem::path main_test_dir_path(
+      "directory_has_new_unique_name_TEST");
   std::filesystem::path temp_dirpath("temporary_dir");
 
   // Creating a main test directory and changing into it automatically
@@ -125,7 +125,6 @@ TEST(prepare_output_dirTEST, directory_has_new_unique_name) {
   // Removing all files/folders in main test directory
   std::filesystem::current_path(std::filesystem::path(".."));
   std::filesystem::remove_all(main_test_dir_path);
-  std::filesystem::remove(main_test_dir_path);
 }
 
 TEST(prepare_output_dirTEST, path_points_to_file) {
@@ -145,19 +144,18 @@ TEST(prepare_output_dirTEST, path_points_to_file) {
     std::filesystem::create_directory(main_test_dir_path);
     std::filesystem::current_path(
         std::filesystem::absolute(main_test_dir_path));
+
+    // Testing a path that does not point to a directory but to a file
+    std::ofstream file(temp_filepath.string());
+    EXPECT_THROW(
+        [[maybe_unused]] auto result
+        = Aux_executable::prepare_output_dir(temp_filepath.string()),
+        std::runtime_error);
+
+    // Removing all files/folders in main test directory
+    std::filesystem::current_path(std::filesystem::path(".."));
+    std::filesystem::remove_all(main_test_dir_path);
   }
-
-  // Testing a path that does not point to a directory but to a file
-  std::ofstream file(temp_filepath.string());
-  EXPECT_THROW(
-      [[maybe_unused]] auto result
-      = Aux_executable::prepare_output_dir(temp_filepath.string()),
-      std::runtime_error);
-
-  // Removing all files/folders in main test directory
-  std::filesystem::current_path(std::filesystem::path(".."));
-  std::filesystem::remove_all(main_test_dir_path);
-  std::filesystem::remove(main_test_dir_path);
 }
 
 TEST(extract_input_dataTEST, input_vector_too_large) {
@@ -175,7 +173,6 @@ TEST(extract_input_dataTEST, input_vector_too_large) {
   // Removing 'main_test_dir'
   std::filesystem::current_path(std::filesystem::path(".."));
   std::filesystem::remove_all(main_test_dir_path);
-  std::filesystem::remove(main_test_dir_path);
 }
 
 TEST(extract_input_dataTEST, input_vector_works) {
@@ -211,7 +208,6 @@ TEST(extract_input_dataTEST, input_vector_works) {
   // Removing 'main_test_dir'
   std::filesystem::current_path(std::filesystem::path(".."));
   std::filesystem::remove_all(main_test_dir_path);
-  std::filesystem::remove(main_test_dir_path);
 }
 
 TEST(extract_input_dataTEST, input_vector_empty) {
@@ -248,5 +244,4 @@ TEST(extract_input_dataTEST, input_vector_empty) {
   // Removing 'main_test_dir'
   std::filesystem::current_path(std::filesystem::path(".."));
   std::filesystem::remove_all(main_test_dir_path);
-  std::filesystem::remove(main_test_dir_path);
 }
