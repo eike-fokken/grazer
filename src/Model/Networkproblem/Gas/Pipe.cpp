@@ -172,7 +172,7 @@ namespace Model::Networkproblem::Gas {
 
   void Pipe::set_initial_values(
       Eigen::Ref<Eigen::VectorXd> new_state,
-      nlohmann::ordered_json initial_json) {
+      nlohmann::json const & initial_json) {
     Initialvalue<2> initialvalues(initial_json);
     for (int i = 0; i != number_of_points; ++i) {
       try {

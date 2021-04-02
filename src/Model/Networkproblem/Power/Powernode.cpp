@@ -31,7 +31,7 @@ namespace Model::Networkproblem::Power {
 
   void Powernode::set_initial_values(
       Eigen::Ref<Eigen::VectorXd> new_state,
-      nlohmann::ordered_json initial_json) {
+      nlohmann::json const & initial_json) {
 
     if (get_start_state_index() == -1) {
       gthrow(

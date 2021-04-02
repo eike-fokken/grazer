@@ -22,7 +22,7 @@ namespace Model::Networkproblem::Gas {
     void save_values(double, Eigen::Ref<Eigen::VectorXd const>) final{};
 
     void set_initial_values(
-        Eigen::Ref<Eigen::VectorXd>, nlohmann::ordered_json) final{};
+        Eigen::Ref<Eigen::VectorXd>, nlohmann::json const &) final{};
 
   protected:
     void evaluate_flow_node_balance(

@@ -124,7 +124,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
 
   void Gaspowerconnection::set_initial_values(
       Eigen::Ref<Eigen::VectorXd> new_state,
-      nlohmann::ordered_json initial_json) {
+      nlohmann::json const & initial_json) {
     if (get_start_state_index() == -1 or get_after_state_index() == -1) {
       gthrow(
           {"This function may only be called if set_indices  has been "

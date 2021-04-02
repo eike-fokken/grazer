@@ -19,7 +19,7 @@ namespace Model::Networkproblem::Gas {
 
     void initial_values_helper(
         Eigen::Ref<Eigen::VectorXd> new_state,
-        nlohmann::ordered_json initial_json);
+        nlohmann::json const &initial_json);
 
     /// Shortcomponents just use pressure and volumetric flow as their
     /// variables, so that this function simply returns the corresponding
