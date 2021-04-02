@@ -14,9 +14,9 @@
 #include <string>
 #include <vector>
 
-class prepare_output_dirTEST : public ::testing::Test {
+class directory_manipulationTEST : public ::testing::Test {
 public:
-  prepare_output_dirTEST() :
+  directory_manipulationTEST() :
       main_test_dir_path(std::filesystem::absolute("mainTestDirectoryName")),
       starting_cwd(std::filesystem::current_path()){};
 
@@ -47,6 +47,9 @@ private:
   std::filesystem::path const main_test_dir_path;
   std::filesystem::path const starting_cwd;
 };
+
+class prepare_output_dirTEST : public directory_manipulationTEST {};
+class extract_input_dataTEST : public directory_manipulationTEST {};
 
 TEST(absolute_file_path_in_rootTEST, wrong_path) {
 
@@ -135,9 +138,8 @@ TEST_F(prepare_output_dirTEST, path_points_to_file) {
       std::runtime_error);
 }
 
-TEST(extract_input_dataTEST, input_vector_too_large) {
+TEST_F(extract_input_dataTEST, input_vector_too_large) {
 
-  std::filesystem::path main_test_dir_path("too_large_TEST");
   std::vector<std::string> vector_too_large;
 
   // Testing vector containing too many (>1) command arguments
@@ -146,30 +148,13 @@ TEST(extract_input_dataTEST, input_vector_too_large) {
       [[maybe_unused]] auto result
       = Aux_executable::extract_input_data(vector_too_large),
       std::runtime_error);
-
-  // Removing 'main_test_dir'
-  std::filesystem::current_path(std::filesystem::path(".."));
-  std::filesystem::remove_all(main_test_dir_path);
 }
 
-TEST(extract_input_dataTEST, input_vector_works) {
+TEST_F(extract_input_dataTEST, input_vector_works) {
 
-  std::filesystem::path main_test_dir_path("works_TEST");
   nlohmann::json regular_json;
   std::filesystem::path regular_json_path("test_pathname.json");
   std::vector<std::string> vector_size_one;
-
-  // Creating a main test directory and changing into it automatically
-  if (std::filesystem::exists(main_test_dir_path)) {
-    std::cout << "There is already a directory named "
-              << main_test_dir_path.string()
-              << ", cannot execute the test. Please remove the directory at\n"
-              << std::filesystem::absolute(main_test_dir_path).string()
-              << std::endl;
-    FAIL();
-  }
-  std::filesystem::create_directory(main_test_dir_path);
-  std::filesystem::current_path(std::filesystem::absolute(main_test_dir_path));
 
   // Testing a vector containing a string that points to a regular file
   regular_json = {{"id", "M000"}, {"data", {1.0, 2.0}}};
@@ -179,30 +164,13 @@ TEST(extract_input_dataTEST, input_vector_works) {
   EXPECT_EQ(
       std::filesystem::path("test_pathname.json"),
       Aux_executable::extract_input_data(vector_size_one));
-
-  // Removing 'main_test_dir'
-  std::filesystem::current_path(std::filesystem::path(".."));
-  std::filesystem::remove_all(main_test_dir_path);
 }
 
-TEST(extract_input_dataTEST, input_vector_empty) {
+TEST_F(extract_input_dataTEST, input_vector_empty) {
 
-  std::filesystem::path main_test_dir_path("empty_TEST");
   nlohmann::json regular_json;
   std::filesystem::path regular_json_path("problem_data.json");
   std::vector<std::string> vector_empty;
-
-  // Creating a main test directory and changing into it automatically
-  if (std::filesystem::exists(main_test_dir_path)) {
-    std::cout << "There is already a directory named "
-              << main_test_dir_path.string()
-              << ", cannot execute the test. Please remove the directory at\n"
-              << std::filesystem::absolute(main_test_dir_path).string()
-              << std::endl;
-    FAIL();
-  }
-  std::filesystem::create_directory(main_test_dir_path);
-  std::filesystem::current_path(std::filesystem::absolute(main_test_dir_path));
 
   // Creating json file
   regular_json = {{"id", "M000"}, {"data", {1.0, 2.0}}};
@@ -213,8 +181,4 @@ TEST(extract_input_dataTEST, input_vector_empty) {
   vector_empty = {};
   EXPECT_EQ(
       regular_json_path, Aux_executable::extract_input_data(vector_empty));
-
-  // Removing 'main_test_dir'
-  std::filesystem::current_path(std::filesystem::path(".."));
-  std::filesystem::remove_all(main_test_dir_path);
 }
