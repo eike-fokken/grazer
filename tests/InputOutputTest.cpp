@@ -20,7 +20,15 @@ public:
       main_test_dir_path(create_testdir("Grazer_testdir")) {}
 
   ~create_test_directoryTEST() override {
-    std::filesystem::remove_all(main_test_dir_path);
+    try {
+      std::filesystem::remove_all(main_test_dir_path);
+    } catch (...) {
+      std::cout << "Couldn't remove " << main_test_dir_path.string() << ".\n\n"
+                << "###############################################\n"
+                << "Please remove it yourself!\n"
+                << "###############################################\n\n"
+                << std::flush;
+    }
   }
 
 protected:
@@ -47,7 +55,14 @@ public:
   change_to_test_directoryTEST() : old_current_directory(change_to_testdir()) {}
 
   ~change_to_test_directoryTEST() {
-    std::filesystem::current_path(old_current_directory);
+    try {
+      std::filesystem::current_path(old_current_directory);
+    } catch (...) {
+      std::cout << "Couldn't change back to the old directory!\n"
+                << "Swallowing the exception\n"
+                << "to make sure the test directory is removed, if possible."
+                << std::endl;
+    }
   }
 
 private:
