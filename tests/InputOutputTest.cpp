@@ -14,42 +14,54 @@
 #include <string>
 #include <vector>
 
-class directory_manipulationTEST : public ::testing::Test {
+class create_test_directoryTEST : public ::testing::Test {
 public:
-  directory_manipulationTEST() :
-      main_test_dir_path(std::filesystem::absolute("mainTestDirectoryName")),
-      starting_cwd(std::filesystem::current_path()){};
+  create_test_directoryTEST() :
+      main_test_dir_path(create_testdir("Grazer_testdir")) {}
 
-  void SetUp() override {
-    if (std::filesystem::exists(main_test_dir_path)) {
-      std::cout << "There is already a directory named "
-                << main_test_dir_path.string()
-                << ", cannot execute the test. Please remove the directory at\n"
-                << std::filesystem::absolute(main_test_dir_path).string()
-                << std::endl;
-      FAIL();
-    }
-    std::filesystem::create_directory(main_test_dir_path);
-    creation_succeeded = true;
-    std::filesystem::current_path(main_test_dir_path);
+  ~create_test_directoryTEST() override {
+    std::filesystem::remove_all(main_test_dir_path);
   }
 
-  void TearDown() override {
-    std::filesystem::current_path(starting_cwd);
-    if (creation_succeeded) {
-      std::filesystem::remove_all(main_test_dir_path);
-    }
-  }
-
-  bool creation_succeeded{false};
+protected:
+  std::filesystem::path const main_test_dir_path;
 
 private:
-  std::filesystem::path const main_test_dir_path;
-  std::filesystem::path const starting_cwd;
+  static std::filesystem::path create_testdir(std::string directory_name) {
+    auto full_path = std::filesystem::temp_directory_path()
+                     / std::filesystem::path(directory_name);
+    auto new_dir = std::filesystem::create_directory(full_path);
+    if (not new_dir) {
+      std::ostringstream o;
+      o << "There is already a directory named " << full_path.string()
+        << ", cannot execute the test. Please remove the directory at\n"
+        << full_path.string() << std::endl;
+      throw std::runtime_error(o.str());
+    }
+    return full_path;
+  }
 };
 
-class prepare_output_dirTEST : public directory_manipulationTEST {};
-class extract_input_dataTEST : public directory_manipulationTEST {};
+class change_to_test_directoryTEST : public create_test_directoryTEST {
+public:
+  change_to_test_directoryTEST() : old_current_directory(change_to_testdir()) {}
+
+  ~change_to_test_directoryTEST() {
+    std::filesystem::current_path(old_current_directory);
+  }
+
+private:
+  std::filesystem::path change_to_testdir() {
+    auto curr_dir = std::filesystem::current_path();
+    std::filesystem::current_path(main_test_dir_path);
+    return curr_dir;
+  }
+
+  std::filesystem::path const old_current_directory;
+};
+
+class prepare_output_dirTEST : public change_to_test_directoryTEST {};
+class extract_input_dataTEST : public change_to_test_directoryTEST {};
 
 TEST(absolute_file_path_in_rootTEST, wrong_path) {
 
