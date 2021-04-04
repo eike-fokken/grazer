@@ -14,12 +14,12 @@
 #include <string>
 #include <vector>
 
-class create_test_directoryTEST : public ::testing::Test {
+class Directory_creator {
 public:
-  create_test_directoryTEST() :
-      main_test_dir_path(create_testdir("Grazer_testdir")) {}
+  Directory_creator(std::string testdirname) :
+      main_test_dir_path(create_testdir(testdirname)) {}
 
-  ~create_test_directoryTEST() override {
+  ~Directory_creator() {
     try {
       std::filesystem::remove_all(main_test_dir_path);
     } catch (...) {
@@ -31,10 +31,10 @@ public:
     }
   }
 
-protected:
-  std::filesystem::path const main_test_dir_path;
+  std::filesystem::path const &get_path() const { return main_test_dir_path; }
 
 private:
+  std::filesystem::path const main_test_dir_path;
   static std::filesystem::path create_testdir(std::string directory_name) {
     auto full_path = std::filesystem::temp_directory_path()
                      / std::filesystem::path(directory_name);
@@ -50,11 +50,12 @@ private:
   }
 };
 
-class change_to_test_directoryTEST : public create_test_directoryTEST {
+class Path_changer {
 public:
-  change_to_test_directoryTEST() : old_current_directory(change_to_testdir()) {}
+  Path_changer(std::filesystem::path testdir) :
+      old_current_directory(change_to_testdir(testdir)) {}
 
-  ~change_to_test_directoryTEST() {
+  ~Path_changer() {
     try {
       std::filesystem::current_path(old_current_directory);
     } catch (...) {
@@ -66,17 +67,36 @@ public:
   }
 
 private:
-  std::filesystem::path change_to_testdir() {
+  std::filesystem::path change_to_testdir(std::filesystem::path testdir) {
     auto curr_dir = std::filesystem::current_path();
-    std::filesystem::current_path(main_test_dir_path);
+    std::filesystem::current_path(testdir);
     return curr_dir;
   }
 
   std::filesystem::path const old_current_directory;
 };
 
-class prepare_output_dirTEST : public change_to_test_directoryTEST {};
-class extract_input_dataTEST : public change_to_test_directoryTEST {};
+class prepare_output_dirTEST : public ::testing::Test {
+public:
+  prepare_output_dirTEST() :
+      directory_creator("Grazer_testdir"),
+      path_changer(directory_creator.get_path()) {}
+
+private:
+  Directory_creator const directory_creator;
+  Path_changer const path_changer;
+};
+
+class extract_input_dataTEST : public ::testing::Test {
+public:
+  extract_input_dataTEST() :
+      directory_creator("Grazer_testdir"),
+      path_changer(directory_creator.get_path()) {}
+
+private:
+  Directory_creator const directory_creator;
+  Path_changer const path_changer;
+};
 
 TEST(absolute_file_path_in_rootTEST, wrong_path) {
 
