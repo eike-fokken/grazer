@@ -1,4 +1,5 @@
 #include "Gaspowerconnection.hpp"
+#include "Catch_cout.hpp"
 #include "Equationcomponent_test_helpers.hpp"
 #include "Full_factory.hpp"
 #include "Innode.hpp"

@@ -1,18 +1,7 @@
 #pragma once
 #include <Eigen/Dense>
-#include <iostream>
 #include <nlohmann/json.hpp>
-#include <streambuf>
 #include <string>
-
-struct Catch_cout {
-  Catch_cout(std::streambuf *new_buffer) : old(std::cout.rdbuf(new_buffer)) {}
-
-  ~Catch_cout() { std::cout.rdbuf(old); }
-
-private:
-  std::streambuf *old;
-};
 
 namespace Eigen {
   template <typename Derived>

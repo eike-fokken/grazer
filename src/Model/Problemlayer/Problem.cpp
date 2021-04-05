@@ -5,6 +5,7 @@
 #include <Problem.hpp>
 #include <Subproblem.hpp>
 #include <Subproblemchooser.hpp>
+#include <exception>
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -26,7 +27,17 @@ namespace Model {
     }
   }
 
-  Problem::~Problem() { print_to_files(); }
+  Problem::~Problem() {
+    try {
+      print_to_files();
+    } catch (std::exception &e) {
+      std::cout << "Printing to files failed with error message:"
+                << "\n###############################################\n"
+                << e.what()
+                << "\n###############################################\n\n"
+                << std::flush;
+    }
+  }
 
   void Problem::add_subproblem(std::unique_ptr<Subproblem> subproblem_ptr) {
     subproblems.push_back(std::move(subproblem_ptr));
