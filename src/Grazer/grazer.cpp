@@ -53,7 +53,9 @@ int main(int argc, char **argv) {
         timedata, problem, number_of_states, initial_value_json);
   } catch (std::exception const &ex) {
     std::cout << "An exception was thrown!\n"
-              << "All available data has been printed to output files.\n"
+              << "All available data has been printed to output files\n"
+              << "(unless printing failed, if so this is indicated above this "
+                 "message.)\n"
               << "\nUse with caution!\n"
               << std::endl;
     std::cout << "The error message was: \n\n"
