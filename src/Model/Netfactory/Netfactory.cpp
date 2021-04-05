@@ -240,7 +240,7 @@ namespace Model::Networkproblem {
           continue;
         }
         for (auto &pipe : network_json["topology_json"]["connections"][type]) {
-          if (!pipe.contains("desired_delta_x")) {
+          if (not pipe.contains("desired_delta_x")) {
             pipe["desired_delta_x"] = network_json["desired_delta_x"];
           } else {
             std::cout << "Object with id " << pipe["id"]
@@ -249,8 +249,28 @@ namespace Model::Networkproblem {
         }
       }
     }
+    // assign stochastic variables to StochasticPQnodes.
+    if (network_json["topology_json"]["nodes"].contains("StochasticPQnode")) {
+      if (network_json.contains("StochasticPQnode_data")) {
+        for (auto &stochpq_node :
+             network_json["topology_json"]["nodes"]["StochasticPQnode"]) {
+          if (not(stochpq_node.contains("theta_P")
+                  and stochpq_node.contains("sigma_P")
+                  and stochpq_node.contains("theta_Q")
+                  and stochpq_node.contains("sigma_Q"))) {
+            stochpq_node["theta_P"]
+                = network_json["StochasticPQnode_data"]["theta_P"];
+            stochpq_node["sigma_P"]
+                = network_json["StochasticPQnode_data"]["sigma_P"];
+            stochpq_node["theta_Q"]
+                = network_json["StochasticPQnode_data"]["theta_Q"];
+            stochpq_node["sigma_Q"]
+                = network_json["StochasticPQnode_data"]["sigma_Q"];
+          }
+        }
+      }
+    }
   }
-
   std::unique_ptr<Network::Net> build_net(
       nlohmann::json &networkproblem_json,
       Componentfactory::Componentfactory const &factory) {
