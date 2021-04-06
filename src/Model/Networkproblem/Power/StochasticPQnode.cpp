@@ -20,7 +20,13 @@ namespace Model::Networkproblem::Power {
       Powernode(topology),
       stochasticdata(std::make_unique<StochasticData>(
           topology["sigma_P"], topology["theta_P"], topology["sigma_Q"],
-          topology["theta_Q"], topology["number_of_stochastic_steps"])) {}
+          topology["theta_Q"], topology["number_of_stochastic_steps"])) {
+    // std::cout << stochasticdata->number_of_stochastic_steps << std::endl;
+    // std::cout << stochasticdata->theta_P << std::endl;
+    // std::cout << stochasticdata->sigma_P << std::endl;
+    // std::cout << stochasticdata->theta_Q << std::endl;
+    // std::cout << stochasticdata->sigma_Q << std::endl;
+  }
 
   void StochasticPQnode::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double // last_time
@@ -42,17 +48,18 @@ namespace Model::Networkproblem::Power {
       Eigen::Ref<Eigen::VectorXd const> // new_state
   ) {
     auto last_P = P(last_state);
-    current_P = Aux::euler_maruyama_step(
+    current_P = Aux::euler_maruyama(
         last_P, stochasticdata->theta_P, boundaryvalue(new_time)[0],
         new_time - last_time, stochasticdata->sigma_P,
         stochasticdata->distribution,
         stochasticdata->number_of_stochastic_steps);
     auto last_Q = Q(last_state);
-    current_Q = Aux::euler_maruyama_step(
+    current_Q = Aux::euler_maruyama(
         last_Q, stochasticdata->theta_Q, boundaryvalue(new_time)[1],
         new_time - last_time, stochasticdata->sigma_Q,
         stochasticdata->distribution,
         stochasticdata->number_of_stochastic_steps);
+    // std::cout << current_P << std::endl;
   }
 
   void StochasticPQnode::evaluate_state_derivative(

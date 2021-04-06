@@ -257,7 +257,8 @@ namespace Model::Networkproblem {
           if (not(stochpq_node.contains("theta_P")
                   and stochpq_node.contains("sigma_P")
                   and stochpq_node.contains("theta_Q")
-                  and stochpq_node.contains("sigma_Q"))) {
+                  and stochpq_node.contains("sigma_Q")
+                  and stochpq_node.contains("number_of_stochastic_steps"))) {
             stochpq_node["theta_P"]
                 = network_json["StochasticPQnode_data"]["theta_P"];
             stochpq_node["sigma_P"]
@@ -266,6 +267,9 @@ namespace Model::Networkproblem {
                 = network_json["StochasticPQnode_data"]["theta_Q"];
             stochpq_node["sigma_Q"]
                 = network_json["StochasticPQnode_data"]["sigma_Q"];
+            stochpq_node["number_of_stochastic_steps"]
+                = network_json["StochasticPQnode_data"]
+                              ["number_of_stochastic_steps"];
           }
         }
       }
