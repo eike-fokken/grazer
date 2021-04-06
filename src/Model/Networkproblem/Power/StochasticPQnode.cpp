@@ -49,13 +49,13 @@ namespace Model::Networkproblem::Power {
       Eigen::Ref<Eigen::VectorXd const> // new_state
   ) {
     auto last_P = P(last_state);
-    current_P = Aux::euler_maruyama(
+    current_P = Aux::euler_maruyama_oup(
         last_P, stochasticdata->theta_P, boundaryvalue(new_time)[0],
         new_time - last_time, stochasticdata->sigma_P,
         stochasticdata->distribution,
         stochasticdata->number_of_stochastic_steps);
     auto last_Q = Q(last_state);
-    current_Q = Aux::euler_maruyama(
+    current_Q = Aux::euler_maruyama_oup(
         last_Q, stochasticdata->theta_Q, boundaryvalue(new_time)[1],
         new_time - last_time, stochasticdata->sigma_Q,
         stochasticdata->distribution,

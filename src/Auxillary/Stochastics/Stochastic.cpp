@@ -2,7 +2,7 @@
 #include "Normaldistribution.hpp"
 
 namespace Aux {
-  double euler_maruyama(
+  double euler_maruyama_oup(
       double last_value, double theta, double mu, double delta_t, double sigma,
       Normaldistribution &distribution, int number_of_stochastic_steps) {
     double stochastic_stepsize = delta_t / number_of_stochastic_steps;
