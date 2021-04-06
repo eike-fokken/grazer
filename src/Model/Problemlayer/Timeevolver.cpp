@@ -42,7 +42,10 @@ namespace Model {
     Eigen::VectorXd last_state(number_of_states);
 
     problem.set_initial_values(last_state, problem_initial_json);
+
+    // This initializes P and Q-values of P-Q-nodes.
     problem.prepare_timestep(last_time, last_time, last_state, last_state);
+    // save the initial values.
     problem.save_values(last_time, last_state);
 
     double new_time = last_time + timedata.get_delta_t();

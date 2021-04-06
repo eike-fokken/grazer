@@ -35,6 +35,8 @@ namespace Model::Networkproblem::Power {
     void
     save_values(double time, Eigen::Ref<Eigen::VectorXd const> state) override;
 
+    void print_to_files(std::filesystem::path const &output_directory) override;
+
   private:
     struct StochasticData {
       StochasticData(

@@ -22,7 +22,7 @@ namespace Model::Networkproblem::Power {
     double get_G() const;
     double get_B() const;
 
-    void print_to_files(std::filesystem::path const &output_directory) final;
+    void print_to_files(std::filesystem::path const &output_directory) override;
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,

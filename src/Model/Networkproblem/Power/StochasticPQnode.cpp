@@ -2,6 +2,7 @@
 #include "Powernode.hpp"
 #include "Stochastic.hpp"
 #include "make_schema.hpp"
+#include <fstream>
 
 namespace Model::Networkproblem::Power {
 
@@ -78,9 +79,48 @@ namespace Model::Networkproblem::Power {
 
   void StochasticPQnode::save_values(
       double time, Eigen::Ref<Eigen::VectorXd const> state) {
+
     auto P_val = current_P;
     auto Q_val = current_Q;
-    save_power_values(time, state, P_val, Q_val);
+    auto P_deviation = P_val - boundaryvalue(time)[0];
+    auto Q_deviation = Q_val - boundaryvalue(time)[1];
+    std::map<double, double> Pmap;
+    std::map<double, double> Qmap;
+    std::map<double, double> Vmap;
+    std::map<double, double> phimap;
+    std::map<double, double> P_deviation_map;
+    std::map<double, double> Q_deviation_map;
+
+    std::vector<std::map<double, double>> value_vector;
+    Pmap = {{0.0, P_val}};
+    Qmap = {{0.0, Q_val}};
+    Vmap = {{0.0, state[get_start_state_index()]}};
+    phimap = {{0.0, state[get_start_state_index() + 1]}};
+    P_deviation_map = {{0.0, P_deviation}};
+    Q_deviation_map = {{0.0, Q_deviation}};
+    value_vector = {Pmap, Qmap, Vmap, phimap, P_deviation_map, Q_deviation_map};
+    Equationcomponent::push_to_values(time, value_vector);
+  }
+
+  void StochasticPQnode::print_to_files(
+      std::filesystem::path const &output_directory) {
+    std::filesystem::path node_output_directory(
+        output_directory / (get_id_copy().insert(0, "Power_")));
+
+    std::ofstream output(node_output_directory);
+
+    output
+        << "time,    P,    Q,    V,    phi,    P_deviation,    Q_deviation\n";
+    auto values = get_values();
+    output.precision(9);
+    auto times = get_times();
+
+    for (unsigned long i = 0; i != times.size(); ++i) {
+      output << times[i];
+      for (auto const &var : values[i]) { output << ",    " << var.at(0.0); }
+      output << "\n";
+    }
+    output << "\n";
   }
 
 } // namespace Model::Networkproblem::Power
