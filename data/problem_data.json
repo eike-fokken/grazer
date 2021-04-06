@@ -21,10 +21,11 @@
             "Network_problem":
             {
                 "StochasticPQnode_data": {
-                    "theta_P": 100,
-                    "sigma_P": 0,
-                    "theta_Q": 100,
-                    "sigma_Q": 0
+                    "number_of_stochastic_steps": 100,
+                    "theta_P": 1,
+                    "sigma_P": 0.5,
+                    "theta_Q": 1,
+                    "sigma_Q": 0.5
                 },
                 "desired_delta_x": 10000,
                 "topology_json":"topology.json",

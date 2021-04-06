@@ -1,7 +1,12 @@
 #pragma once
 #include "Normaldistribution.hpp"
 #include "Powernode.hpp"
-#include <memory>
+#include <limits>
+
+static_assert(
+    std::numeric_limits<double>::has_signaling_NaN == true,
+    "StochasticPQnode uses signaling_NaN. If you don't have that, replace the "
+    "initialization by something else.");
 
 namespace Model::Networkproblem::Power {
 
@@ -31,16 +36,26 @@ namespace Model::Networkproblem::Power {
     save_values(double time, Eigen::Ref<Eigen::VectorXd const> state) override;
 
   private:
-    std::unique_ptr<Aux::Normaldistribution> distribution{
-        std::make_unique<Aux::Normaldistribution>()};
+    struct StochasticData {
+      StochasticData(
+          double _sigma_P, double _theta_P, double _sigma_Q, double _theta_Q,
+          int _number_of_stochastic_steps) :
+          sigma_P(_sigma_P),
+          theta_P(_theta_P),
+          sigma_Q(_sigma_Q),
+          theta_Q(_theta_Q),
+          number_of_stochastic_steps(_number_of_stochastic_steps) {}
 
-    double const sigma_P;
-    double const theta_P;
+      Aux::Normaldistribution distribution;
+      double const sigma_P;
+      double const theta_P;
+      double const sigma_Q;
+      double const theta_Q;
 
-    double const sigma_Q;
-    double const theta_Q;
-
-    double current_P;
-    double current_Q;
+      int const number_of_stochastic_steps;
+    };
+    double current_P{std::numeric_limits<double>::signaling_NaN()};
+    double current_Q{std::numeric_limits<double>::signaling_NaN()};
+    std::unique_ptr<StochasticData> stochasticdata;
   };
 } // namespace Model::Networkproblem::Power
