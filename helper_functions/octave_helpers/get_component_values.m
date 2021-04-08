@@ -1,7 +1,7 @@
-function m = get_power_values(id,directory,variablename)
+function m = get_component_values(directory,subtype,id,variablename)
   pkg load io;
     
-  filename = strcat("Power_",id);
+  filename = strcat(subtype,"_",id);
   full_filename= fullfile(directory,filename);
 
   filecontents=csv2cell(full_filename,",");
