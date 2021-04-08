@@ -24,6 +24,12 @@ namespace Model::Networkproblem::Gas {
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd>, nlohmann::json const &) final{};
 
+    /// \brief overloads the Equationcomponent static method. Returns false for
+    /// gas nodes.
+    ///
+    /// returns false
+    static bool needs_output_file();
+
   protected:
     void evaluate_flow_node_balance(
         Eigen::Ref<Eigen::VectorXd> rootvalues,

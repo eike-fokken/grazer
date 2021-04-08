@@ -127,6 +127,13 @@ namespace Model::Networkproblem {
         nlohmann::json const &initial_json)
         = 0;
 
+    /// \brief Returns true, if the concrete equation components wants to print
+    /// to output files.
+    ///
+    /// Defaults to true, but specific components can overload this function.
+    /// @returns bool, is true, if the component wants to write to files.
+    static bool needs_output_file();
+
   protected:
     /// \brief helper function for save_values() that deals with the data
     /// structure of #values_ptr

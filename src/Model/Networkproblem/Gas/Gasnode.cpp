@@ -160,4 +160,6 @@ namespace Model::Networkproblem::Gas {
     return number_of_state_variables;
   }
 
+  bool Gasnode::needs_output_file() { return false; }
+
 } // namespace Model::Networkproblem::Gas

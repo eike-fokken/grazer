@@ -81,6 +81,9 @@ namespace Model::Networkproblem {
 
     for (auto const &[nodetypename, nodetype] : nodetypemap) {
       if (node_topology.contains(nodetypename)) {
+        if (nodetype->needs_output_file()) {
+          std::cout << nodetypename << " needs a file" << std::endl;
+        }
 
         for (auto node : node_topology[nodetypename]) {
           auto current_node = nodetype->make_instance(node);
@@ -125,7 +128,9 @@ namespace Model::Networkproblem {
 
     for (auto const &[edgetypename, edgetype] : edgetypemap) {
       if (edge_topology.contains(edgetypename)) {
-
+        if (edgetype->needs_output_file()) {
+          std::cout << edgetypename << " needs a file" << std::endl;
+        }
         for (auto edge : edge_topology[edgetypename]) {
           auto current_edge = edgetype->make_instance(edge, nodes);
           edges.push_back(std::move(current_edge));

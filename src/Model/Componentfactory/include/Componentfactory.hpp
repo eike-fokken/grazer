@@ -4,6 +4,10 @@
 #include <map>
 #include <memory>
 
+namespace Model::Networkproblem {
+  class Equationcomponent;
+}
+
 namespace Model::Componentfactory {
 
 // this macro collection is ugly but hopefully makes for clearer compiler
@@ -28,6 +32,13 @@ namespace Model::Componentfactory {
      * @return nlohmann::json
      */
     virtual nlohmann::json get_schema() const = 0;
+
+    /**
+     * @brief Returns true if a directory for output files needs to be
+     * generated.
+     * @return true if a directory for output files needs to be generated.
+     */
+    virtual bool needs_output_file() const = 0;
   };
 
   struct AbstractNodeType : public AbstractComponentType {
@@ -72,6 +83,16 @@ namespace Model::Componentfactory {
     nlohmann::json get_schema() const override {
       return ConcreteNode::get_schema();
     };
+
+    bool needs_output_file() const override {
+      if constexpr (not std::is_base_of_v<
+                        Networkproblem::Equationcomponent, ConcreteNode>) {
+        return false;
+      } else {
+        return ConcreteNode::needs_output_file();
+      }
+    };
+
     std::unique_ptr<Network::Node>
     make_instance(nlohmann::json const &topology) const override {
       return std::make_unique<ConcreteNode>(topology);
@@ -95,6 +116,15 @@ namespace Model::Componentfactory {
         nlohmann::json const &topology,
         std::vector<std::unique_ptr<Network::Node>> &nodes) const override {
       return std::make_unique<ConcreteEdge>(topology, nodes);
+    };
+
+    bool needs_output_file() const override {
+      if constexpr (not std::is_base_of_v<
+                        Networkproblem::Equationcomponent, ConcreteEdge>) {
+        return false;
+      } else {
+        return ConcreteEdge::needs_output_file();
+      }
     };
   };
 

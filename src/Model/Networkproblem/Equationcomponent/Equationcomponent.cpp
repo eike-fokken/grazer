@@ -6,6 +6,8 @@
 
 namespace Model::Networkproblem {
 
+  bool Equationcomponent::needs_output_file() { return true; }
+
   void Equationcomponent::prepare_timestep(
       double // last_time
       ,
