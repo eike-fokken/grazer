@@ -13,7 +13,7 @@ namespace Model::Networkproblem::Power {
 
     Powernode(nlohmann::json const &topology);
 
-    virtual ~Powernode(){};
+    ~Powernode() override{};
 
     void setup() override;
 

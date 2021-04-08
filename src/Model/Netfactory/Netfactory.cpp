@@ -80,7 +80,7 @@ namespace Model::Networkproblem {
     std::vector<std::unique_ptr<Network::Node>> nodes;
 
     for (auto const &[nodetypename, nodetype] : nodetypemap) {
-      if (node_topology.find(nodetypename) != node_topology.end()) {
+      if (node_topology.contains(nodetypename)) {
 
         for (auto node : node_topology[nodetypename]) {
           auto current_node = nodetype->make_instance(node);
@@ -124,7 +124,7 @@ namespace Model::Networkproblem {
     std::vector<std::unique_ptr<Network::Edge>> edges;
 
     for (auto const &[edgetypename, edgetype] : edgetypemap) {
-      if (edge_topology.find(edgetypename) != edge_topology.end()) {
+      if (edge_topology.contains(edgetypename)) {
 
         for (auto edge : edge_topology[edgetypename]) {
           auto current_edge = edgetype->make_instance(edge, nodes);

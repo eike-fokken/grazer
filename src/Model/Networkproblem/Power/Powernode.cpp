@@ -47,7 +47,6 @@ namespace Model::Networkproblem::Power {
   }
 
   void Powernode::setup() {
-
     attached_component_data.clear();
 
     for (auto &start_edge : get_starting_edges()) {
@@ -89,10 +88,10 @@ namespace Model::Networkproblem::Power {
 
   void
   Powernode::print_to_files(std::filesystem::path const &output_directory) {
-    std::filesystem::path node_output_directory(
+    std::filesystem::path node_output_file(
         output_directory / (get_id_copy().insert(0, "Power_")));
 
-    std::ofstream output(node_output_directory);
+    std::ofstream output(node_output_file);
 
     output << "time,    P,    Q,    V,    phi\n";
     auto values = get_values();
