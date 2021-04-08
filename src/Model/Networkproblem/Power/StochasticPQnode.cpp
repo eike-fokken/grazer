@@ -120,7 +120,6 @@ namespace Model::Networkproblem::Power {
       for (auto const &var : values[i]) { output << ",    " << var.at(0.0); }
       output << "\n";
     }
-    output << "\n";
   }
 
 } // namespace Model::Networkproblem::Power

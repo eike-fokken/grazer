@@ -104,7 +104,6 @@ namespace Model::Networkproblem::Power {
       for (auto const &var : values[i]) { output << ",    " << var.at(0.0); }
       output << "\n";
     }
-    output << "\n";
   }
 
   void Powernode::save_power_values(
