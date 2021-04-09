@@ -21,8 +21,8 @@ namespace Model {
     for (auto &[subproblem_type, subproblem_json] : subproblem_map) {
       subproblem_json["GRAZER_file_directory"]
           = problem_data["GRAZER_file_directory"];
-      std::unique_ptr<Subproblem> subproblem_ptr
-          = build_subproblem(subproblem_type, subproblem_json);
+      std::unique_ptr<Subproblem> subproblem_ptr = build_subproblem(
+          subproblem_type, subproblem_json, output_directory);
       add_subproblem(std::move(subproblem_ptr));
     }
   }

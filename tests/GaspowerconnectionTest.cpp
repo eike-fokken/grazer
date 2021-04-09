@@ -1,5 +1,4 @@
 #include "Gaspowerconnection.hpp"
-#include "Catch_cout.hpp"
 #include "Equationcomponent_test_helpers.hpp"
 #include "Full_factory.hpp"
 #include "Innode.hpp"
@@ -8,13 +7,18 @@
 #include "Netfactory.hpp"
 #include "Networkproblem.hpp"
 #include "Vphinode.hpp"
+#include "test_io_helper.hpp"
 #include <Eigen/src/Core/Matrix.h>
+#include <filesystem>
 #include <gtest/gtest.h>
 #include <stdexcept>
 
 class GaspowerconnectionTEST : public ::testing::Test {
 public:
   std::string output;
+
+  Directory_creator d;
+  Path_changer p{d.get_path()};
 
   std::unique_ptr<Model::Networkproblem::Networkproblem>
   get_Networkproblem(nlohmann::json &netproblem) {
@@ -23,7 +27,8 @@ public:
       std::stringstream buffer;
       Catch_cout catcher(buffer.rdbuf());
       Model::Componentfactory::Full_factory factory;
-      auto net_ptr = Model::Networkproblem::build_net(netproblem, factory);
+      auto net_ptr = Model::Networkproblem::build_net(
+          netproblem, factory, std::filesystem::current_path());
       netprob = std::make_unique<Model::Networkproblem::Networkproblem>(
           std::move(net_ptr));
       output = buffer.str();
