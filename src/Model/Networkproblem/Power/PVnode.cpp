@@ -6,6 +6,7 @@
 namespace Model::Networkproblem::Power {
 
   std::string PVnode::get_type() { return "PVnode"; }
+  std::string PVnode::get_power_type() { return get_type(); }
 
   void PVnode::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,

@@ -11,16 +11,18 @@ namespace Model::Networkproblem::Gas {
       std::filesystem::path const &output_directory, std::string const &type) {
 
     std::string prestring = "Gas_" + type + "_";
-    std::string pressure_file_name
-        = (get_id_copy().insert(0, prestring)) + "_p";
-    std::string flow_file_name = (get_id_copy().insert(0, prestring)) + "_q";
-    std::filesystem::path shortcomponent_output_pressure(
-        output_directory / pressure_file_name);
-    std::filesystem::path shortcomponent_output_flow(
-        output_directory / flow_file_name);
+    std::string pressure_file_name = get_id_copy() + "_p";
+    std::string flow_file_name = get_id_copy() + "_q";
 
-    std::ofstream outputpressure(shortcomponent_output_pressure);
-    std::ofstream outputflow(shortcomponent_output_flow);
+    std::filesystem::path outputfile_pressure
+        = output_directory / std::filesystem::path(type)
+          / std::filesystem::path(pressure_file_name);
+    std::filesystem::path outputfile_flow
+        = output_directory / std::filesystem::path(type)
+          / std::filesystem::path(flow_file_name);
+
+    std::ofstream outputpressure(outputfile_pressure);
+    std::ofstream outputflow(outputfile_flow);
 
     outputpressure.precision(9);
     outputflow.precision(9);

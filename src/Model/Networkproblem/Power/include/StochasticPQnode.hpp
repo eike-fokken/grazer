@@ -13,6 +13,7 @@ namespace Model::Networkproblem::Power {
   class StochasticPQnode final : public Powernode {
   public:
     static std::string get_type();
+    std::string get_power_type() override;
     static nlohmann::json get_schema();
 
     StochasticPQnode(nlohmann::json const &topology);

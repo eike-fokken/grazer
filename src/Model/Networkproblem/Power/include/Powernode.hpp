@@ -9,6 +9,7 @@ namespace Model::Networkproblem::Power {
   class Powernode : public Equationcomponent, public Network::Node {
 
   public:
+    virtual std::string get_power_type() = 0;
     static nlohmann::json get_schema();
 
     Powernode(nlohmann::json const &topology);

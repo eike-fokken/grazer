@@ -88,8 +88,10 @@ namespace Model::Networkproblem::Power {
 
   void
   Powernode::print_to_files(std::filesystem::path const &output_directory) {
-    std::filesystem::path node_output_file(
-        output_directory / (get_id_copy().insert(0, "Power_")));
+
+    auto node_output_file = output_directory
+                            / std::filesystem::path(get_power_type())
+                            / std::filesystem::path(get_id_copy());
 
     std::ofstream output(node_output_file);
 

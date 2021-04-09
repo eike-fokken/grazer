@@ -7,7 +7,7 @@ namespace Model::Networkproblem::Power {
 
   public:
     static std::string get_type();
-
+    std::string get_power_type() override;
     using Powernode::Powernode;
 
     /// In this node  evaluate the equation

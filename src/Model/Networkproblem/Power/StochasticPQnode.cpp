@@ -7,6 +7,8 @@
 namespace Model::Networkproblem::Power {
 
   std::string StochasticPQnode::get_type() { return "StochasticPQnode"; }
+  std::string StochasticPQnode::get_power_type() { return get_type(); }
+
   nlohmann::json StochasticPQnode::get_schema() {
     nlohmann::json schema = Powernode::get_schema();
     Aux::schema::add_required(schema, "sigma_P", Aux::schema::type::number());
@@ -104,10 +106,11 @@ namespace Model::Networkproblem::Power {
 
   void StochasticPQnode::print_to_files(
       std::filesystem::path const &output_directory) {
-    std::filesystem::path node_output_directory(
-        output_directory / (get_id_copy().insert(0, "Power_")));
+    auto node_output_file = output_directory
+                            / std::filesystem::path(get_power_type())
+                            / std::filesystem::path(get_id_copy());
 
-    std::ofstream output(node_output_directory);
+    std::ofstream output(node_output_file);
 
     output
         << "time,    P,    Q,    V,    phi,    P_deviation,    Q_deviation\n";
