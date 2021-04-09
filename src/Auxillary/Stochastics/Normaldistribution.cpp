@@ -15,7 +15,6 @@ namespace Aux {
 
     randutils::auto_seed_256 seed_source;
     pcg64 rng(seed_source);
-    std::cout << std::endl;
     return rng;
   }
 
