@@ -6,7 +6,7 @@
 namespace Model::Networkproblem::Power {
 
   std::string PVnode::get_type() { return "PVnode"; }
-  std::string PVnode::get_power_type() { return get_type(); }
+  std::string PVnode::get_power_type() const { return get_type(); }
 
   void PVnode::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
@@ -38,6 +38,14 @@ namespace Model::Networkproblem::Power {
     auto P_val = boundaryvalue(time)[0];
     auto Q_val = Q(state);
     save_power_values(time, state, P_val, Q_val);
+  }
+
+  void PVnode::json_save(
+      nlohmann::json &output, double time,
+      Eigen::Ref<Eigen::VectorXd const> state) const {
+    auto P_val = boundaryvalue(time)[0];
+    auto Q_val = Q(state);
+    json_save_power(output, time, state, P_val, Q_val);
   }
 
 } // namespace Model::Networkproblem::Power

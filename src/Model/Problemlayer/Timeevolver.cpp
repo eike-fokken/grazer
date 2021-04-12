@@ -1,5 +1,7 @@
 #include "Timeevolver.hpp"
 #include "Problem.hpp"
+#include <filesystem>
+#include <fstream>
 #include <iostream>
 #include <nlohmann/json.hpp>
 
@@ -35,6 +37,13 @@ namespace Model {
   Timeevolver::Timeevolver(double tolerance, int maximal_number_of_iterations) :
       solver(tolerance, maximal_number_of_iterations) {}
 
+  Timeevolver::~Timeevolver() {
+    auto cwd = std::filesystem::current_path();
+    auto outputfile = std::filesystem::current_path()
+                      / std::filesystem::path("output.json");
+    std::ofstream o(outputfile);
+    o << output.dump(4);
+  }
   void Timeevolver::simulate(
       Timedata timedata, Model::Problem &problem, int number_of_states,
       nlohmann::json &problem_initial_json) {
@@ -47,6 +56,7 @@ namespace Model {
     problem.prepare_timestep(last_time, last_time, last_state, last_state);
     // save the initial values.
     problem.save_values(last_time, last_state);
+    problem.json_save(output, last_time, last_state);
 
     double new_time = last_time + timedata.get_delta_t();
 
@@ -66,6 +76,7 @@ namespace Model {
       auto solstruct = solver.solve(
           new_state, problem, true, last_time, new_time, last_state);
       problem.save_values(new_time, new_state);
+      problem.json_save(output, new_time, new_state);
 
       std::cout << new_time << ": ";
       std::cout << solstruct.residual << ", ";
@@ -74,4 +85,6 @@ namespace Model {
       last_time = new_time;
     }
   }
+
+  nlohmann::json &Timeevolver::get_output() { return output; }
 } // namespace Model

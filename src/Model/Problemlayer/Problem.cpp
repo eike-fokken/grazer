@@ -14,7 +14,8 @@ namespace Model {
 
   Problem::Problem(
       nlohmann::json problem_data,
-      std::filesystem::path const &_output_directory) :
+      std::filesystem::path const &_output_directory,
+      nlohmann::json &output_json) :
       output_directory(_output_directory) {
     auto subproblem_map = problem_data["subproblems"]
                               .get<std::map<std::string, nlohmann::json>>();
@@ -22,7 +23,7 @@ namespace Model {
       subproblem_json["GRAZER_file_directory"]
           = problem_data["GRAZER_file_directory"];
       std::unique_ptr<Subproblem> subproblem_ptr = build_subproblem(
-          subproblem_type, subproblem_json, output_directory);
+          subproblem_type, subproblem_json, output_directory, output_json);
       add_subproblem(std::move(subproblem_ptr));
     }
   }
@@ -84,6 +85,14 @@ namespace Model {
   Problem::save_values(double time, Eigen::Ref<Eigen::VectorXd> new_state) {
     for (auto &subproblem : subproblems) {
       subproblem->save_values(time, new_state);
+    }
+  }
+
+  void Problem::json_save(
+      nlohmann::json &output, double time,
+      Eigen::Ref<Eigen::VectorXd const> state) const {
+    for (auto &subproblem : subproblems) {
+      subproblem->json_save(output, time, state);
     }
   }
 

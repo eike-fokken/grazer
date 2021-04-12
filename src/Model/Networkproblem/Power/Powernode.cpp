@@ -10,6 +10,7 @@
 #include <map>
 #include <nlohmann/json.hpp>
 #include <tuple>
+#include <utility>
 
 namespace Model::Networkproblem::Power {
 
@@ -122,6 +123,42 @@ namespace Model::Networkproblem::Power {
     phimap = {{0.0, state[get_start_state_index() + 1]}};
     value_vector = {Pmap, Qmap, Vmap, phimap};
     Equationcomponent::push_to_values(time, value_vector);
+  }
+
+  void Powernode::json_save_power(
+      nlohmann::json &output, double time,
+      Eigen::Ref<Eigen::VectorXd const> state, double P_val,
+      double Q_val) const {
+
+    nlohmann::json &current_component_vector = output[get_power_type()];
+
+    auto id = get_id_copy();
+    auto id_is = [id](nlohmann::json const &a) -> bool {
+      return a["id"].get<std::string>() == id;
+    };
+    auto it = std::find_if(
+        current_component_vector.begin(), current_component_vector.end(),
+        id_is);
+
+    if (it == current_component_vector.end()) {
+      // std::cout << "Not found!" << std::endl;
+      nlohmann::json newoutput;
+      newoutput["id"] = get_id_copy();
+      newoutput["time"].push_back(time);
+      newoutput["P"].push_back(P_val);
+      newoutput["Q"].push_back(Q_val);
+      newoutput["V"].push_back(state[get_start_state_index()]);
+      newoutput["phi"].push_back(state[get_start_state_index() + 1]);
+      current_component_vector.push_back(newoutput);
+    } else {
+      // std::cout << "found!" << std::endl;
+      nlohmann::json &outputjson = (*it);
+      outputjson["time"].push_back(time);
+      outputjson["P"].push_back(P_val);
+      outputjson["Q"].push_back(Q_val);
+      outputjson["V"].push_back(state[get_start_state_index()]);
+      outputjson["phi"].push_back(state[get_start_state_index() + 1]);
+    }
   }
 
   double Powernode::P(Eigen::Ref<Eigen::VectorXd const> state) const {

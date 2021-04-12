@@ -7,7 +7,7 @@
 namespace Model::Networkproblem::Power {
 
   std::string StochasticPQnode::get_type() { return "StochasticPQnode"; }
-  std::string StochasticPQnode::get_power_type() { return get_type(); }
+  std::string StochasticPQnode::get_power_type() const { return get_type(); }
 
   nlohmann::json StochasticPQnode::get_schema() {
     nlohmann::json schema = Powernode::get_schema();
@@ -102,6 +102,35 @@ namespace Model::Networkproblem::Power {
     Q_deviation_map = {{0.0, Q_deviation}};
     value_vector = {Pmap, Qmap, Vmap, phimap, P_deviation_map, Q_deviation_map};
     Equationcomponent::push_to_values(time, value_vector);
+  }
+
+  void StochasticPQnode::json_save(
+      nlohmann::json &output, double time,
+      Eigen::Ref<Eigen::VectorXd const> state) const {
+    auto P_val = current_P;
+    auto Q_val = current_Q;
+    auto P_deviation = P_val - boundaryvalue(time)[0];
+    auto Q_deviation = Q_val - boundaryvalue(time)[1];
+
+    nlohmann::json &current_component_vector = output[get_power_type()];
+    auto id = get_id_copy();
+    auto id_is = [id](nlohmann::json const &a) -> bool {
+      return a["id"].get<std::string>() == id;
+    };
+
+    auto it = std::find_if(
+        current_component_vector.begin(), current_component_vector.end(),
+        id_is);
+
+    auto &outputjson = *it;
+
+    outputjson["time"].push_back(time);
+    outputjson["P"].push_back(P_val);
+    outputjson["Q"].push_back(Q_val);
+    outputjson["V"].push_back(state[get_start_state_index()]);
+    outputjson["phi"].push_back(state[get_start_state_index() + 1]);
+    outputjson["P_deviation"].push_back(P_deviation);
+    outputjson["Q_deviation"].push_back(Q_deviation);
   }
 
   void StochasticPQnode::print_to_files(

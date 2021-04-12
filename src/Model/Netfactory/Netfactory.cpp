@@ -10,6 +10,7 @@
 #include <filesystem>
 #include <iostream>
 #include <memory>
+#include <nlohmann/json.hpp>
 
 namespace Model::Networkproblem {
 
@@ -58,7 +59,7 @@ namespace Model::Networkproblem {
           std::string,
           std::unique_ptr<Componentfactory::AbstractNodeType>> const
           &nodetypemap,
-      std::filesystem::path const &output_dir) {
+      std::filesystem::path const &output_dir, nlohmann::json &output_json) {
 
     // Here we check, whether all nodetypes defined in the topology file were
     // built. It will throw an exception, if a node type is encountered that is
@@ -87,6 +88,7 @@ namespace Model::Networkproblem {
           auto component_output_path
               = output_dir / std::filesystem::path(nodetype->get_name());
           std::filesystem::create_directory(component_output_path);
+          output_json[nodetype->get_name()] = nlohmann::json::array();
         }
 
         for (auto node : node_topology[nodetypename]) {
@@ -109,7 +111,7 @@ namespace Model::Networkproblem {
           std::string,
           std::unique_ptr<Componentfactory::AbstractEdgeType>> const
           &edgetypemap,
-      std::filesystem::path const &output_dir) {
+      std::filesystem::path const &output_dir, nlohmann::json &output_json) {
 
     // Here we check, whether all edgetypes defined in the topology file were
     // built. It will throw an exception, if a edge type is encountered that
@@ -137,8 +139,7 @@ namespace Model::Networkproblem {
           auto component_output_path
               = output_dir / std::filesystem::path(edgetype->get_name());
           std::filesystem::create_directory(component_output_path);
-
-          std::cout << edgetypename << " needs a file" << std::endl;
+          output_json[edgetype->get_name()] = nlohmann::json::array();
         }
         for (auto edge : edge_topology[edgetypename]) {
           auto current_edge = edgetype->make_instance(edge, nodes);
@@ -292,14 +293,15 @@ namespace Model::Networkproblem {
   std::unique_ptr<Network::Net> build_net(
       nlohmann::json &networkproblem_json,
       Componentfactory::Componentfactory const &factory,
-      std::filesystem::path const &output_dir) {
+      std::filesystem::path const &output_dir, nlohmann::json &output_json) {
     auto topology = build_full_networkproblem_json(networkproblem_json);
     auto nodes = build_node_vector(
-        topology["nodes"], factory.node_type_map, output_dir);
+        topology["nodes"], factory.node_type_map, output_dir, output_json);
 
     // build the edge vector.
     auto edges = build_edge_vector(
-        topology["connections"], nodes, factory.edge_type_map, output_dir);
+        topology["connections"], nodes, factory.edge_type_map, output_dir,
+        output_json);
     auto network
         = std::make_unique<Network::Net>(std::move(nodes), std::move(edges));
 

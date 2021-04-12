@@ -37,6 +37,9 @@ namespace Model::Networkproblem::Gas {
         Eigen::RowVector2d function_derivative, int rootvalues_index,
         Eigen::Ref<Eigen::VectorXd const> state) const = 0;
 
+    void json_save(nlohmann::json &, double, Eigen::Ref<Eigen::VectorXd const>)
+        const override{};
+
   private:
     Eigen::Vector2d
     get_starting_state(Eigen::Ref<Eigen::VectorXd const> state) const;

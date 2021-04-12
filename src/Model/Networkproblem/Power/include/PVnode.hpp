@@ -7,7 +7,7 @@ namespace Model::Networkproblem::Power {
 
   public:
     static std::string get_type();
-    std::string get_power_type() override;
+    std::string get_power_type() const override;
     using Powernode::Powernode;
 
     /// In this node we set V to its boundary value and evaluate the equation
@@ -24,6 +24,10 @@ namespace Model::Networkproblem::Power {
 
     void
     save_values(double time, Eigen::Ref<Eigen::VectorXd const> state) override;
+
+    void json_save(
+        nlohmann::json &output, double time,
+        Eigen::Ref<Eigen::VectorXd const> state) const override;
   };
 
 } // namespace Model::Networkproblem::Power

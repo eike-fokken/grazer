@@ -8,7 +8,7 @@
 namespace Model::Networkproblem::Power {
 
   std::string PQnode::get_type() { return "PQnode"; }
-  std::string PQnode::get_power_type() { return get_type(); }
+  std::string PQnode::get_power_type() const { return get_type(); }
   void PQnode::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
       Eigen::Ref<Eigen::VectorXd const>,
@@ -38,6 +38,14 @@ namespace Model::Networkproblem::Power {
     auto P_val = boundaryvalue(time)[0];
     auto Q_val = boundaryvalue(time)[1];
     save_power_values(time, state, P_val, Q_val);
+  }
+
+  void PQnode::json_save(
+      nlohmann::json &output, double time,
+      Eigen::Ref<Eigen::VectorXd const> state) const {
+    auto P_val = boundaryvalue(time)[0];
+    auto Q_val = boundaryvalue(time)[1];
+    json_save_power(output, time, state, P_val, Q_val);
   }
 
 } // namespace Model::Networkproblem::Power
