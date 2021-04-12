@@ -7,8 +7,7 @@ namespace Model::Networkproblem::Power {
 
   public:
     static std::string get_type();
-    static bool needs_boundary_values();
-
+    std::string get_power_type() override;
     using Powernode::Powernode;
 
     /// In this node we set V to its boundary value and evaluate the equation

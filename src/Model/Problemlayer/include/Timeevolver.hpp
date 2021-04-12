@@ -5,12 +5,9 @@
 #include <nlohmann/json.hpp>
 #include <utility>
 
-// Forward declarations:
 namespace Model {
-  class Problem;
-}
 
-namespace Model {
+  class Problem;
 
   struct Timedata {
 
@@ -47,7 +44,7 @@ namespace Model {
         nlohmann::json &problem_initial_json);
 
   private:
-    Solver::Newtonsolver solver;
+    Solver::Newtonsolver<Problem> solver;
   };
 
 } // namespace Model

@@ -42,6 +42,10 @@ namespace Model {
     Eigen::VectorXd last_state(number_of_states);
 
     problem.set_initial_values(last_state, problem_initial_json);
+
+    // This initializes P and Q-values of P-Q-nodes.
+    problem.prepare_timestep(last_time, last_time, last_state, last_state);
+    // save the initial values.
     problem.save_values(last_time, last_state);
 
     double new_time = last_time + timedata.get_delta_t();
@@ -58,7 +62,7 @@ namespace Model {
     for (int i = 0; i != timedata.get_number_of_steps(); ++i) {
       last_state = new_state;
       new_time = last_time + timedata.get_delta_t();
-
+      problem.prepare_timestep(last_time, new_time, last_state, new_state);
       auto solstruct = solver.solve(
           new_state, problem, true, last_time, new_time, last_state);
       problem.save_values(new_time, new_state);

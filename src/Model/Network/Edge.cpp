@@ -65,13 +65,13 @@ namespace Network {
         gthrow(
             {"The starting node ", nodeid, ", given by transmission line ",
              edge_json["id"],
-             ",\n is not defined in the node vector supplied to the Edge "
+             ",\n is not defined in the node vector supplied to the Edge ",
              "constructor!"});
       } else {
         gthrow(
             {"The ending node ", nodeid, ", given by transmission line ",
              edge_json["id"],
-             ",\n is not defined in the node vector supplied to the Edge "
+             ",\n is not defined in the node vector supplied to the Edge ",
              "constructor!"});
       }
     } else {

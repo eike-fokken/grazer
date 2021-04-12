@@ -18,7 +18,7 @@ namespace Model {
     /// \brief returns the type of an instance
     ///
     /// @returns the string that is the corresponding json key in the
-    /// problem_data_file.json This function is expensive but called only once.
+    /// problem_data_file.json.
     virtual std::string get_type() const = 0;
 
     virtual ~Subproblem(){};
@@ -28,6 +28,13 @@ namespace Model {
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> last_state,
         Eigen::Ref<Eigen::VectorXd const> new_state) const = 0;
+
+    virtual void prepare_timestep(
+        double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> last_state,
+        Eigen::Ref<Eigen::VectorXd const> new_state)
+        = 0;
+
     virtual void evaluate_state_derivative(
         Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const>,

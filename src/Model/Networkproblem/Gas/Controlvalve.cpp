@@ -52,7 +52,7 @@ namespace Model::Networkproblem::Gas {
 
   void Controlvalve::set_initial_values(
       Eigen::Ref<Eigen::VectorXd> new_state,
-      nlohmann::ordered_json initial_json) {
+      nlohmann::json const &initial_json) {
     initial_values_helper(new_state, initial_json);
   }
 

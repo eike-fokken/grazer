@@ -17,8 +17,6 @@ namespace Model::Networkproblem::Power {
 
   std::string Transmissionline::get_type() { return "Transmissionline"; }
 
-  bool Transmissionline::needs_boundary_values() { return false; }
-
   Transmissionline::Transmissionline(
       nlohmann::json const &topology,
       std::vector<std::unique_ptr<Network::Node>> &nodes) :

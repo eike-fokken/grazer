@@ -21,8 +21,8 @@ namespace Model {
     for (auto &[subproblem_type, subproblem_json] : subproblem_map) {
       subproblem_json["GRAZER_file_directory"]
           = problem_data["GRAZER_file_directory"];
-      std::unique_ptr<Subproblem> subproblem_ptr
-          = build_subproblem(subproblem_type, subproblem_json);
+      std::unique_ptr<Subproblem> subproblem_ptr = build_subproblem(
+          subproblem_type, subproblem_json, output_directory);
       add_subproblem(std::move(subproblem_ptr));
     }
   }
@@ -58,6 +58,15 @@ namespace Model {
     for (auto &subproblem : subproblems) {
       subproblem->evaluate(
           rootvalues, last_time, new_time, last_state, new_state);
+    }
+  }
+
+  void Problem::prepare_timestep(
+      double last_time, double new_time,
+      Eigen::Ref<Eigen::VectorXd const> last_state,
+      Eigen::Ref<Eigen::VectorXd const> new_state) {
+    for (auto &subproblem : subproblems) {
+      subproblem->prepare_timestep(last_time, new_time, last_state, new_state);
     }
   }
 

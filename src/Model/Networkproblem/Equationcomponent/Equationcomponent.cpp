@@ -6,6 +6,18 @@
 
 namespace Model::Networkproblem {
 
+  bool Equationcomponent::needs_output_file() { return true; }
+
+  void Equationcomponent::prepare_timestep(
+      double // last_time
+      ,
+      double // new_time
+      ,
+      Eigen::Ref<Eigen::VectorXd const> // last_state
+      ,
+      Eigen::Ref<Eigen::VectorXd const> // new_state
+  ) {}
+
   void Equationcomponent::setup() {}
 
   int Equationcomponent::set_indices(int const next_free_index) {

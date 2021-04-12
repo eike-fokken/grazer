@@ -1,108 +1,127 @@
-#pragma once
-#include <Eigen/Sparse>
-#include <Eigen/SparseLU>
-#include <Eigen/SparseQR>
+#include "Exception.hpp"
+#include "Matrixhandler.hpp"
+#include "Newtonsolver_declaration.hpp"
 
-namespace GrazerTest {
-  class TestProblem;
-}
-
-namespace Model {
-  class Problem;
-} // namespace Model
-
-/// \brief This namespace holds tools for solving numerical problems, e.g.
-/// finding the root of a non-linear function.
 namespace Solver {
 
-  /// \brief This struct holds info on the solution of a solve-execution.
-  ///
-  /// @param success is true, if solve found a solution.
-  /// @param residual is the absolute value of f(new_state) after solve.
-  /// #param the number of Newton steps need.
-  struct Solutionstruct {
-    bool success{false};
-    double residual{1000000.0};
-    int used_iterations{0};
-  };
+  template <typename Problemtype>
+  Newtonsolver<Problemtype>::Newtonsolver(
+      double _tolerance, int _maximal_iterations) :
+      tolerance(_tolerance), maximal_iterations(_maximal_iterations) {}
 
-  /// \brief Manages solving non-linear systems and (to be implemented)
-  ///        computing derivatives with respect to controls.
-  ///
-  /// This class holds a SparseMatrix and a corresponding Sparse-matrix solver,
-  /// so it can compute the solution of a non-linear problem.
-  template <typename Problemtype> class Newtonsolver_temp {
-  public:
-    Newtonsolver_temp(double _tolerance, int _maximal_iterations);
+  template <typename Problemtype>
+  void Newtonsolver<Problemtype>::evaluate_state_derivative_triplets(
+      Problemtype &problem, double last_time, double new_time,
+      Eigen::Ref<Eigen::VectorXd const> last_state,
+      Eigen::Ref<Eigen::VectorXd> new_state) {
 
-    /// \brief Reanalyzes the sparsity pattern of the jacobian the objective
-    /// function and computes it.
-    ///
-    /// The jacobian is saved into the data member named "jacobian".
+    {
+      jacobian.resize(new_state.size(), new_state.size());
+      Aux::Triplethandler handler(&jacobian);
 
-    void evaluate_state_derivative_triplets(
-        Problemtype &problem, double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> last_state,
-        Eigen::Ref<Eigen::VectorXd> new_state);
+      Aux::Triplethandler *const handler_ptr = &handler;
+      problem.evaluate_state_derivative(
+          handler_ptr, last_time, new_time, last_state, new_state);
+      handler.set_matrix();
+    }
+    lusolver.analyzePattern(jacobian);
+  }
 
-    /// \brief Computes the jacobian with the assumption that the sparsity
-    /// pattern has not changed.
-    ///
-    /// The jacobian is saved into the data member named "jacobian".
-    /// Only call this version if you are sure that the sparsity pattern is
-    /// unchanged.
+  template <typename Problemtype>
+  void Newtonsolver<Problemtype>::evaluate_state_derivative_coeffref(
+      Problemtype &problem, double last_time, double new_time,
+      Eigen::Ref<Eigen::VectorXd const> last_state,
+      Eigen::Ref<Eigen::VectorXd const> new_state) {
+    Aux::Coeffrefhandler handler(&jacobian);
+    Aux::Coeffrefhandler *const handler_ptr = &handler;
+    problem.evaluate_state_derivative(
+        handler_ptr, last_time, new_time, last_state, new_state);
+  }
 
-    void evaluate_state_derivative_coeffref(
-        Problemtype &problem, double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> last_state,
-        Eigen::Ref<Eigen::VectorXd const> new_state);
+  template <typename Problemtype>
+  Eigen::Index Newtonsolver<Problemtype>::get_number_non_zeros_jacobian() {
+    return jacobian.nonZeros();
+  }
 
-    /// \brief Returns the number of structurally non-zero indices of the
-    /// jacobian.
-    Eigen::Index get_number_non_zeros_jacobian();
+  template <typename Problemtype>
+  Solutionstruct Newtonsolver<Problemtype>::solve(
+      Eigen::Ref<Eigen::VectorXd> new_state, Problemtype &problem, bool newjac,
+      double last_time, double new_time,
+      Eigen::Ref<Eigen::VectorXd const> last_state) {
+    Solutionstruct solstruct;
 
-    /// \brief This method computes a solution to f(new_state) == 0.
-    ///
-    /// It uses
-    /// an affine-invariant Newton method described in chapter 4.2 in
-    /// "Deuflhard and Hohmann: Numerical Analysis in Modern Scientific
-    /// Computing". Afterwards there should hold f(new_state) == 0 (up to
-    /// tolerance).
-    Solutionstruct solve(
-        Eigen::Ref<Eigen::VectorXd> new_state, Problemtype &problem,
-        bool newjac, double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> last_state);
+    Eigen::VectorXd rootvalues(new_state.size());
 
-  private:
-    /// Holds an instance of the actual solver, to save computation time it
-    /// is kept from previous time steps because usually the sparsity
-    /// pattern will not change.
-    Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>>
-        lusolver;
+    // compute f(x_k);
+    problem.evaluate(rootvalues, last_time, new_time, last_state, new_state);
 
-    // Later on we will include qr decomposition for badly conditioned
-    // jacobians. Eigen::SparseQR<Eigen::SparseMatrix<double>,
-    // Eigen::COLAMDOrdering<int>> qrsolver;
+    // check if already there:
+    if (rootvalues.norm() <= tolerance) {
+      solstruct.success = true;
+      solstruct.residual = rootvalues.norm();
+      solstruct.used_iterations = 0;
+      return solstruct;
+    }
 
-    /// This will be the jacobian matrix.  We hold it here so its sparsity
-    /// pattern is preserved.
-    Eigen::SparseMatrix<double> jacobian;
+    // compute f'(x_k) and write it to the jacobian.
+    if (newjac) {
+      evaluate_state_derivative_triplets(
+          problem, last_time, new_time, last_state, new_state);
+    } else {
+      evaluate_state_derivative_coeffref(
+          problem, last_time, new_time, last_state, new_state);
+    }
+    while (rootvalues.norm() > tolerance
+           && solstruct.used_iterations < maximal_iterations) {
+      lusolver.factorize(jacobian);
+      if (lusolver.info() != Eigen::Success) {
+        gthrow(
+            {"Couldn't decompose a Jacobian, it may be non-invertible.\n "
+             "time: ",
+             std::to_string(new_time),
+             "\n Note, that only LU decomposition is implemented."})
+      }
+      // compute Dx_k:
+      Eigen::VectorXd step = -lusolver.solve(rootvalues);
 
-    /// Tolerance under which equality is accepted.
-    double tolerance;
+      double lambda = 1.0;
+      // candidate for x_{k+1}
+      Eigen::VectorXd candidate_vector = new_state + lambda * step;
 
-    /// highest number of iterations after which to give up.
-    int maximal_iterations;
+      // f(x_{k+1}
+      Eigen::VectorXd candidate_values(new_state.size());
+      problem.evaluate(
+          candidate_values, last_time, new_time, last_state, candidate_vector);
 
-    /// technical constant of the solve algorithm.
-    constexpr static double const decrease_value{1e-3};
-    /// The minimal stepsize of a Newton step.
-    constexpr static double const minimal_stepsize{1e-12};
-  };
+      // Delta^bar x_k+1
+      Eigen::VectorXd delta_x_bar = -lusolver.solve(candidate_values);
 
-  extern template class Newtonsolver_temp<Model::Problem>;
-  extern template class Newtonsolver_temp<GrazerTest::TestProblem>;
+      double current_norm = delta_x_bar.norm();
 
-  typedef Newtonsolver_temp<Model::Problem> Newtonsolver;
-  typedef Newtonsolver_temp<GrazerTest::TestProblem> Newtonsolver_test;
+      double testnorm = step.norm();
+      while (current_norm > (1 - 0.5 * lambda) * testnorm) {
+        if (current_norm < minimal_stepsize) {
+          gthrow({" Minimal stepsize reached!"});
+        }
+        lambda *= 0.5;
+        candidate_vector = new_state + lambda * step;
+        problem.evaluate(
+            candidate_values, last_time, new_time, last_state,
+            candidate_vector);
+        current_norm = (-lusolver.solve(candidate_values)).norm();
+      }
+      new_state = candidate_vector;
+      rootvalues = candidate_values;
+      ++solstruct.used_iterations;
+      solstruct.residual = rootvalues.norm();
+    }
+    if (solstruct.used_iterations == maximal_iterations) {
+      solstruct.success = false;
+    } else {
+      solstruct.success = true;
+    }
+
+    return solstruct;
+  }
+
 } // namespace Solver

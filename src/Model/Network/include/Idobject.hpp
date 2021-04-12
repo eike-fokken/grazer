@@ -1,7 +1,6 @@
 #pragma once
 #include <memory>
 #include <nlohmann/json.hpp>
-#include <string>
 
 namespace Network {
   /// \brief Provides a unified "name" to inheriting classes.

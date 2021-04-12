@@ -111,16 +111,18 @@ namespace Model::Networkproblem::Gas {
 
   void Pipe::print_to_files(std::filesystem::path const &output_directory) {
 
-    std::string pressure_file_name
-        = (get_id_copy().insert(0, "Gas_Pipe_")) + "_p";
-    std::string flow_file_name = (get_id_copy().insert(0, "Gas_Pipe_")) + "_q";
-    std::filesystem::path shortpipe_output_pressure(
-        output_directory / pressure_file_name);
-    std::filesystem::path shortpipe_output_flow(
-        output_directory / flow_file_name);
+    std::string pressure_file_name = get_id_copy() + "_p";
+    std::string flow_file_name = get_id_copy() + "_q";
 
-    std::ofstream outputpressure(shortpipe_output_pressure);
-    std::ofstream outputflow(shortpipe_output_flow);
+    std::filesystem::path outputfile_pressure
+        = output_directory / std::filesystem::path(get_type())
+          / std::filesystem::path(pressure_file_name);
+    std::filesystem::path outputfile_flow
+        = output_directory / std::filesystem::path(get_type())
+          / std::filesystem::path(flow_file_name);
+
+    std::ofstream outputpressure(outputfile_pressure);
+    std::ofstream outputflow(outputfile_flow);
 
     auto times = get_times();
     auto values = get_values();
@@ -172,7 +174,7 @@ namespace Model::Networkproblem::Gas {
 
   void Pipe::set_initial_values(
       Eigen::Ref<Eigen::VectorXd> new_state,
-      nlohmann::ordered_json initial_json) {
+      nlohmann::json const &initial_json) {
     Initialvalue<2> initialvalues(initial_json);
     for (int i = 0; i != number_of_points; ++i) {
       try {

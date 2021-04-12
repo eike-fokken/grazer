@@ -1,10 +1,12 @@
 #pragma once
+#include <Eigen/Dense>
 #include <Eigen/Sparse>
-#include <Matrixhandler.hpp>
-#include <Subproblem.hpp>
 #include <memory>
 #include <vector>
 
+namespace Aux {
+  class Matrixhandler;
+}
 /*! \namespace Model
  *  This namespace holds all data for setting up model equations and for taking
  * derivatives thereof.
@@ -20,29 +22,17 @@ namespace GrazerTest {
   public:
     /// The constructor needs to declare Delta_t
     ///
-    TestProblem(rootfunction _f, Derivative _df) : f(_f), df(_df){};
+    TestProblem(rootfunction _f, Derivative _df);
 
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double, double,
         Eigen::Ref<Eigen::VectorXd const>,
-        Eigen::Ref<Eigen::VectorXd const> new_state) const {
-
-      rootvalues = f(new_state);
-    };
+        Eigen::Ref<Eigen::VectorXd const> new_state) const;
 
     void evaluate_state_derivative(
         Aux::Matrixhandler *jacobianhandler, double, double,
         Eigen::Ref<Eigen::VectorXd const>,
-        Eigen::Ref<Eigen::VectorXd const> new_state) const {
-
-      Eigen::SparseMatrix<double> mat = df(new_state);
-      for (int k = 0; k < mat.outerSize(); ++k)
-        for (Eigen::SparseMatrix<double>::InnerIterator it(mat, k); it; ++it) {
-          jacobianhandler->set_coefficient(
-              static_cast<int>(it.row()), static_cast<int>(it.col()),
-              it.value());
-        }
-    };
+        Eigen::Ref<Eigen::VectorXd const> new_state) const;
 
     rootfunction *f;
     Derivative *df;

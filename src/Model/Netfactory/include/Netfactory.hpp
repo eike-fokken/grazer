@@ -1,6 +1,7 @@
 #pragma once
 #include "Componentfactory.hpp"
 #include "Net.hpp"
+#include <filesystem>
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <string>
@@ -47,7 +48,8 @@ namespace Model::Networkproblem {
       std::map<
           std::string,
           std::unique_ptr<Componentfactory::AbstractNodeType>> const
-          &nodetypemap);
+          &nodetypemap,
+      std::filesystem::path const &output_dir);
 
   /// \brief construct Edges of types given by the json input and put their
   /// pointers in a vector
@@ -61,7 +63,8 @@ namespace Model::Networkproblem {
       std::map<
           std::string,
           std::unique_ptr<Componentfactory::AbstractEdgeType>> const
-          &edgetypemap);
+          &edgetypemap,
+      std::filesystem::path const &output_dir);
 
   /// \brief Enters entries from a second json object into the topology json.
   ///
@@ -89,6 +92,7 @@ namespace Model::Networkproblem {
 
   std::unique_ptr<Network::Net> build_net(
       nlohmann::json &networkproblem_json,
-      Componentfactory::Componentfactory const &factory);
+      Componentfactory::Componentfactory const &factory,
+      std::filesystem::path const &output_dir);
 
 } // namespace Model::Networkproblem

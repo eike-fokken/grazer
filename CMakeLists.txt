@@ -3,6 +3,13 @@ cmake_minimum_required (VERSION 3.12...3.18)
 project(Grazer C CXX)
 include(CheckIPOSupported)
 
+
+#for multiple compiler compatibility:
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+#for development:
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -37,11 +44,6 @@ else()
 endif()
 
 
-#for multiple compiler compatibility:
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-#for development:
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # An option to exclude IPO from the release type to make better use of a compiler cache (like ccache) for development:
 
@@ -67,7 +69,8 @@ endif()
 
 
 
-set(my_debug_options -O0 -Werror -Wconversion -pedantic-errors -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wstrict-overflow=5 -Wswitch-default -Wundef -Wunused -Wno-error=unused-parameter -Wno-error=unused -Wno-error=unused-variable -Wno-error=unused-value -Wdelete-non-virtual-dtor)
+set(my_debug_options -O0 -Werror -Wconversion -pedantic-errors -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wundef
+  -Wdisabled-optimization -Wformat=2 -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wstrict-overflow=5 -Wswitch-default -Wunused -Wno-error=unused-parameter -Wno-error=unused -Wno-error=unused-variable -Wno-error=unused-value -Wdelete-non-virtual-dtor -Wno-error=undef)
 set(debug_clang_options "-fcolor-diagnostics;-Wno-error=unused-private-field;-Wmissing-prototypes")
 
 set(debug_gcc_options "-fdiagnostics-color;-Wno-error=strict-overflow;-Wno-error=unused-but-set-variable")
@@ -129,6 +132,10 @@ include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/eigen/")
 # include(...) for pulling in other CMake projects anyways.
 
 include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/nlohmann_json/single_include/")
+
+
+# This includes the pcg random number generator suite.
+include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp/include/")
 
 
 

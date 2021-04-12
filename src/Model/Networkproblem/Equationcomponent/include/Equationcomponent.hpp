@@ -38,14 +38,28 @@ namespace Model::Networkproblem {
         double new_time, Eigen::Ref<Eigen::VectorXd const> last_state,
         Eigen::Ref<Eigen::VectorXd const> new_state) const = 0;
 
-    /// \brief derivative of Equationcomponent::evaluate.
+    /// \brief Carries out steps that need to be taken before the Newton method
+    /// for a time step can start.
     ///
-    /// evaluates the derivative of Equationcomponent::evaluate and hands the
-    /// result to jacobianhandler, which will fill the Jacobi matrix.
-    /// @param jacobianhandler A helper object, that fills a sparse matrix in an
-    /// efficient way.
+    /// For most components does nothing.
     /// @param last_time time point of the last time step. Usually important for
     /// PDEs
+    /// @param new_time time point of the current time step.
+    /// @param last_state value of the state at last time step.
+    /// @param new_state value of the state at current time step.
+    virtual void prepare_timestep(
+        double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> last_state,
+        Eigen::Ref<Eigen::VectorXd const> new_state);
+
+    /// \brief derivative of Equationcomponent::evaluate.
+    ///
+    /// evaluates the derivative of Equationcomponent::evaluate and hands
+    /// the result to jacobianhandler, which will fill the Jacobi matrix.
+    /// @param jacobianhandler A helper object, that fills a sparse matrix
+    /// in an efficient way.
+    /// @param last_time time point of the last time step. Usually important
+    /// for PDEs
     /// @param new_time time point of the current time step.
     /// @param last_state value of the state at last time step.
     /// @param new_state value of the state at current time step.
@@ -110,8 +124,15 @@ namespace Model::Networkproblem {
     /// @param initial_json Json object that contains the initial values.
     virtual void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,
-        nlohmann::ordered_json initial_json)
+        nlohmann::json const &initial_json)
         = 0;
+
+    /// \brief Returns true, if the concrete equation components wants to print
+    /// to output files.
+    ///
+    /// Defaults to true, but specific components can overload this function.
+    /// @returns bool, is true, if the component wants to write to files.
+    static bool needs_output_file();
 
   protected:
     /// \brief helper function for save_values() that deals with the data

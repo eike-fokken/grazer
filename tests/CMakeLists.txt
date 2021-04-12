@@ -1,6 +1,7 @@
+add_subdirectory(Testproblem)
+
 add_library(eqcomp_helpers STATIC Equationcomponent_test_helpers.cpp)
 target_include_directories(eqcomp_helpers PUBLIC include)
-
 
 
 add_executable(net_test NetTest.cpp)
@@ -12,6 +13,7 @@ add_executable(model_test ModelTest.cpp)
 
 target_link_libraries(model_test PUBLIC problemlayer subproblem)
 target_link_libraries(model_test PUBLIC gtest gtest_main gmock)
+target_include_directories(model_test PUBLIC include)
 
 add_executable(boundary_test BoundaryTest.cpp)
 
@@ -35,7 +37,7 @@ target_link_libraries(power_test PUBLIC gtest gtest_main gmock)
 
 add_executable(newton_test NewtonsolverTest.cpp)
 
-target_link_libraries(newton_test PUBLIC network exception newton matrixhandler problemlayer )
+target_link_libraries(newton_test PUBLIC newton testproblem)
 target_link_libraries(newton_test PUBLIC gtest gtest_main gmock)
 target_include_directories(newton_test PUBLIC include)
 
@@ -89,6 +91,18 @@ target_include_directories(input_output_test PUBLIC include)
 add_library(testheader INTERFACE)
 target_link_libraries(testheader INTERFACE  matrixhandler problemlayer gtest gtest_main gmock)
 target_include_directories(testheader INTERFACE include)
+
+
+
+add_executable(normaldistribution_test NormaldistributionTest.cpp)
+
+target_link_libraries(normaldistribution_test PUBLIC stochastics)
+target_link_libraries(normaldistribution_test PUBLIC gtest gtest_main gmock)
+
+
+
+
+
 
 add_test(
     NAME net_test
@@ -156,3 +170,9 @@ add_test(
   NAME input_output_test
   COMMAND input_output_test
 )
+add_test(
+  NAME normaldistribution_test
+  COMMAND normaldistribution_test
+  )
+
+
