@@ -121,16 +121,28 @@ namespace Model::Networkproblem::Power {
     auto it = std::find_if(
         current_component_vector.begin(), current_component_vector.end(),
         id_is);
-
-    auto &outputjson = *it;
-
-    outputjson["time"].push_back(time);
-    outputjson["P"].push_back(P_val);
-    outputjson["Q"].push_back(Q_val);
-    outputjson["V"].push_back(state[get_start_state_index()]);
-    outputjson["phi"].push_back(state[get_start_state_index() + 1]);
-    outputjson["P_deviation"].push_back(P_deviation);
-    outputjson["Q_deviation"].push_back(Q_deviation);
+    if (it == current_component_vector.end()) {
+      // std::cout << "Not found!" << std::endl;
+      nlohmann::json newoutput;
+      newoutput["id"] = get_id_copy();
+      newoutput["time"].push_back(time);
+      newoutput["P"].push_back(P_val);
+      newoutput["Q"].push_back(Q_val);
+      newoutput["V"].push_back(state[get_start_state_index()]);
+      newoutput["phi"].push_back(state[get_start_state_index() + 1]);
+      newoutput["P_deviation"].push_back(P_deviation);
+      newoutput["Q_deviation"].push_back(Q_deviation);
+      current_component_vector.push_back(newoutput);
+    } else {
+      nlohmann::json &outputjson = (*it);
+      outputjson["time"].push_back(time);
+      outputjson["P"].push_back(P_val);
+      outputjson["Q"].push_back(Q_val);
+      outputjson["V"].push_back(state[get_start_state_index()]);
+      outputjson["phi"].push_back(state[get_start_state_index() + 1]);
+      outputjson["P_deviation"].push_back(P_deviation);
+      outputjson["Q_deviation"].push_back(Q_deviation);
+    }
   }
 
   void StochasticPQnode::print_to_files(
