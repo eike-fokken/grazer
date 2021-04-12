@@ -1,12 +1,13 @@
 #pragma once
 #include "Newtonsolver.hpp"
-#include "Problem.hpp"
 #include <Eigen/Sparse>
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <utility>
 
 namespace Model {
+
+  class Problem;
 
   struct Timedata {
 

@@ -1,6 +1,7 @@
+add_subdirectory(Testproblem)
+
 add_library(eqcomp_helpers STATIC Equationcomponent_test_helpers.cpp)
 target_include_directories(eqcomp_helpers PUBLIC include)
-
 
 
 add_executable(net_test NetTest.cpp)
@@ -36,7 +37,7 @@ target_link_libraries(power_test PUBLIC gtest gtest_main gmock)
 
 add_executable(newton_test NewtonsolverTest.cpp)
 
-target_link_libraries(newton_test PUBLIC network exception newton matrixhandler)
+target_link_libraries(newton_test PUBLIC newton testproblem)
 target_link_libraries(newton_test PUBLIC gtest gtest_main gmock)
 target_include_directories(newton_test PUBLIC include)
 
