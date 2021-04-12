@@ -1,8 +1,6 @@
 #include "Newtonsolver.hpp"
 #include "Exception.hpp"
 #include "Matrixhandler.hpp"
-#include "Problem.hpp"
-#include "TestProblem.hpp"
 
 namespace Solver {
   template <typename Problemtype>
@@ -124,8 +122,5 @@ namespace Solver {
 
     return solstruct;
   }
-
-  template class Newtonsolver_temp<Model::Problem>;
-  template class Newtonsolver_temp<GrazerTest::TestProblem>;
 
 } // namespace Solver

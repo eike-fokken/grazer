@@ -1,14 +1,10 @@
 #pragma once
 #include "Newtonsolver.hpp"
+#include "Problem.hpp"
 #include <Eigen/Sparse>
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <utility>
-
-// Forward declarations:
-namespace Model {
-  class Problem;
-}
 
 namespace Model {
 
@@ -47,7 +43,7 @@ namespace Model {
         nlohmann::json &problem_initial_json);
 
   private:
-    Solver::Newtonsolver solver;
+    Solver::Newtonsolver<Problem> solver;
   };
 
 } // namespace Model

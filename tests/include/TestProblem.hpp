@@ -1,7 +1,6 @@
 #pragma once
 #include <Eigen/Sparse>
 #include <Matrixhandler.hpp>
-#include <Subproblem.hpp>
 #include <memory>
 #include <vector>
 

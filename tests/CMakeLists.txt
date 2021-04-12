@@ -36,7 +36,7 @@ target_link_libraries(power_test PUBLIC gtest gtest_main gmock)
 
 add_executable(newton_test NewtonsolverTest.cpp)
 
-target_link_libraries(newton_test PUBLIC network exception newton matrixhandler problemlayer )
+target_link_libraries(newton_test PUBLIC network exception newton matrixhandler)
 target_link_libraries(newton_test PUBLIC gtest gtest_main gmock)
 target_include_directories(newton_test PUBLIC include)
 
