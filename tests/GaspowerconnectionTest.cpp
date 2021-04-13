@@ -27,8 +27,9 @@ public:
       std::stringstream buffer;
       Catch_cout catcher(buffer.rdbuf());
       Model::Componentfactory::Full_factory factory;
+      nlohmann::json outputjson;
       auto net_ptr = Model::Networkproblem::build_net(
-          netproblem, factory, std::filesystem::current_path());
+          netproblem, factory, std::filesystem::current_path(), outputjson);
       netprob = std::make_unique<Model::Networkproblem::Networkproblem>(
           std::move(net_ptr));
       output = buffer.str();
