@@ -42,7 +42,7 @@ namespace Model {
     auto outputfile = std::filesystem::current_path()
                       / std::filesystem::path("output.json");
     std::ofstream o(outputfile);
-    o << output.dump(4);
+    o << output.dump();
   }
   void Timeevolver::simulate(
       Timedata timedata, Model::Problem &problem, int number_of_states,

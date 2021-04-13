@@ -8,6 +8,7 @@ namespace Model::Networkproblem::Gas {
   class Gasedge : public Equationcomponent {
 
   public:
+    virtual std::string get_gas_type() const = 0;
     int give_away_boundary_index(int direction) const;
 
     int get_boundary_state_index(int direction) const;
@@ -36,9 +37,6 @@ namespace Model::Networkproblem::Gas {
         int direction, Aux::Matrixhandler *jacobianhandler,
         Eigen::RowVector2d function_derivative, int rootvalues_index,
         Eigen::Ref<Eigen::VectorXd const> state) const = 0;
-
-    void json_save(nlohmann::json &, double, Eigen::Ref<Eigen::VectorXd const>)
-        const override{};
 
   private:
     Eigen::Vector2d

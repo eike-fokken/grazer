@@ -9,7 +9,7 @@ namespace Model::Networkproblem::Gas {
   class Pipe final : public Gasedge, public Network::Edge {
   public:
     static std::string get_type();
-
+    std::string get_gas_type() const override;
     static nlohmann::json get_schema();
 
     Pipe(
@@ -31,6 +31,10 @@ namespace Model::Networkproblem::Gas {
 
     void
     save_values(double time, Eigen::Ref<Eigen::VectorXd const> state) override;
+
+    void json_save(
+        nlohmann::json &output, double time,
+        Eigen::Ref<const Eigen::VectorXd> state) const override;
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,

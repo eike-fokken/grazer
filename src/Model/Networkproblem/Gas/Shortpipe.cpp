@@ -7,6 +7,7 @@
 namespace Model::Networkproblem::Gas {
 
   std::string Shortpipe::get_type() { return "Shortpipe"; }
+  std::string Shortpipe::get_gas_type() const { return get_type(); }
 
   void Shortpipe::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double,

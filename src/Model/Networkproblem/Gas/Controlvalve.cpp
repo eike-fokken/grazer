@@ -8,6 +8,7 @@
 
 namespace Model::Networkproblem::Gas {
   std::string Controlvalve::get_type() { return "Controlvalve"; }
+  std::string Controlvalve::get_gas_type() const { return get_type(); }
 
   nlohmann::json Controlvalve::get_schema() {
     nlohmann::json schema = Shortcomponent::get_schema();

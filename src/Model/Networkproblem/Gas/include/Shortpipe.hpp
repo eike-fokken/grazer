@@ -7,7 +7,7 @@ namespace Model::Networkproblem::Gas {
 
   public:
     static std::string get_type();
-
+    std::string get_gas_type() const override;
     using Shortcomponent::Shortcomponent;
 
     void evaluate(
