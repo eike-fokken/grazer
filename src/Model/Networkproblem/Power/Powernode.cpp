@@ -133,8 +133,14 @@ namespace Model::Networkproblem::Power {
 
     nlohmann::json &current_component_vector = output[get_power_type()];
 
-    auto id = get_id_copy();
+    nlohmann::json current_value;
+    current_value["time"] = time;
+    current_value["P"] = P_val;
+    current_value["Q"] = Q_val;
+    current_value["V"] = state[get_start_state_index()];
+    current_value["phi"] = state[get_start_state_index() + 1];
 
+    auto id = get_id_copy();
     // define a < function as a lambda:
     auto id_compare_less
         = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
@@ -154,11 +160,8 @@ namespace Model::Networkproblem::Power {
       // std::cout << "Not found!" << std::endl;
       nlohmann::json newoutput;
       newoutput["id"] = get_id_copy();
-      newoutput["time"].push_back(time);
-      newoutput["P"].push_back(P_val);
-      newoutput["Q"].push_back(Q_val);
-      newoutput["V"].push_back(state[get_start_state_index()]);
-      newoutput["phi"].push_back(state[get_start_state_index() + 1]);
+      newoutput["data"] = nlohmann::json::array();
+      newoutput["data"].push_back(current_value);
       current_component_vector.push_back(newoutput);
     } else {
       if ((*it)["id"] != id) {
@@ -169,11 +172,7 @@ namespace Model::Networkproblem::Power {
       }
       // std::cout << "found!" << std::endl;
       nlohmann::json &outputjson = (*it);
-      outputjson["time"].push_back(time);
-      outputjson["P"].push_back(P_val);
-      outputjson["Q"].push_back(Q_val);
-      outputjson["V"].push_back(state[get_start_state_index()]);
-      outputjson["phi"].push_back(state[get_start_state_index() + 1]);
+      outputjson["data"].push_back(current_value);
     }
   }
 
