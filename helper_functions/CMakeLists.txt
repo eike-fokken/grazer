@@ -10,3 +10,5 @@ add_executable(transform_initial transform_initial.cpp)
 add_executable(full_factory_schema create_topology_schema.cpp)
 target_link_libraries(full_factory_schema componentfactory full_factory)
 
+
+add_executable(get_mean_sigma get_mean_sigma.cpp)
