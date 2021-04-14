@@ -113,6 +113,16 @@ namespace Model::Networkproblem::Power {
     auto Q_deviation = Q_val - boundaryvalue(time)[1];
 
     nlohmann::json &current_component_vector = output[get_power_type()];
+
+    nlohmann::json current_value;
+    current_value["time"] = time;
+    current_value["P"] = P_val;
+    current_value["Q"] = Q_val;
+    current_value["V"] = state[get_start_state_index()];
+    current_value["phi"] = state[get_start_state_index() + 1];
+    current_value["P_deviation"] = P_deviation;
+    current_value["Q_deviation"] = Q_deviation;
+
     auto id = get_id_copy();
 
     // define a < function as a lambda:
@@ -134,13 +144,8 @@ namespace Model::Networkproblem::Power {
       // std::cout << "Not found!" << std::endl;
       nlohmann::json newoutput;
       newoutput["id"] = get_id_copy();
-      newoutput["time"].push_back(time);
-      newoutput["P"].push_back(P_val);
-      newoutput["Q"].push_back(Q_val);
-      newoutput["V"].push_back(state[get_start_state_index()]);
-      newoutput["phi"].push_back(state[get_start_state_index() + 1]);
-      newoutput["P_deviation"].push_back(P_deviation);
-      newoutput["Q_deviation"].push_back(Q_deviation);
+      newoutput["data"] = nlohmann::json::array();
+      newoutput["data"].push_back(current_value);
       current_component_vector.push_back(newoutput);
     } else {
       if ((*it)["id"] != id) {
@@ -149,15 +154,8 @@ namespace Model::Networkproblem::Power {
              "\n has an id different from the current object, whose id is ", id,
              "\n This is a bug. Please report it!"});
       }
-
       nlohmann::json &outputjson = (*it);
-      outputjson["time"].push_back(time);
-      outputjson["P"].push_back(P_val);
-      outputjson["Q"].push_back(Q_val);
-      outputjson["V"].push_back(state[get_start_state_index()]);
-      outputjson["phi"].push_back(state[get_start_state_index() + 1]);
-      outputjson["P_deviation"].push_back(P_deviation);
-      outputjson["Q_deviation"].push_back(Q_deviation);
+      outputjson["data"].push_back(current_value);
     }
   }
 
