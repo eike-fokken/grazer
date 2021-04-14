@@ -84,14 +84,28 @@ namespace Model::Networkproblem {
 
     for (auto const &[nodetypename, nodetype] : nodetypemap) {
       if (node_topology.contains(nodetypename)) {
+
         if (nodetype->needs_output_file()) {
           auto component_output_path
               = output_dir / std::filesystem::path(nodetype->get_name());
           std::filesystem::create_directory(component_output_path);
+
           output_json[nodetype->get_name()] = nlohmann::json::array();
         }
 
-        for (auto node : node_topology[nodetypename]) {
+        auto sorted_node_json = node_topology[nodetypename];
+        // define a < function as a lambda:
+        auto id_compare_less
+            = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
+          return a["id"].get<std::string>() < b["id"].get<std::string>();
+        };
+
+        std::sort(
+            sorted_node_json.begin(), sorted_node_json.end(), id_compare_less);
+
+        // The sorting makes sure that nodes of a given type are ordered by
+        // their id.
+        for (auto node : sorted_node_json) {
           auto current_node = nodetype->make_instance(node);
           nodes.push_back(std::move(current_node));
         }
@@ -141,7 +155,20 @@ namespace Model::Networkproblem {
           std::filesystem::create_directory(component_output_path);
           output_json[edgetype->get_name()] = nlohmann::json::array();
         }
-        for (auto edge : edge_topology[edgetypename]) {
+
+        auto sorted_edge_json = edge_topology[edgetypename];
+        // define a < function as a lambda:
+        auto id_compare_less
+            = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
+          return a["id"].get<std::string>() < b["id"].get<std::string>();
+        };
+
+        std::sort(
+            sorted_edge_json.begin(), sorted_edge_json.end(), id_compare_less);
+
+        // The sorting makes sure that edges of a given type are ordered by
+        // their id.
+        for (auto edge : sorted_edge_json) {
           auto current_edge = edgetype->make_instance(edge, nodes);
           edges.push_back(std::move(current_edge));
         }

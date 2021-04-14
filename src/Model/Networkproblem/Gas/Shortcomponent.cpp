@@ -78,12 +78,21 @@ namespace Model::Networkproblem::Gas {
     nlohmann::json &current_component_vector = output[get_gas_type()];
 
     auto id = get_id_copy();
-    auto id_is = [id](nlohmann::json const &a) -> bool {
-      return a["id"].get<std::string>() == id;
+
+    // define a < function as a lambda:
+    auto id_compare_less
+        = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
+      return a["id"].get<std::string>() < b["id"].get<std::string>();
     };
-    auto it = std::find_if(
+
+    // auto id_is = [id](nlohmann::json const &a) -> bool {
+    //   return a["id"].get<std::string>() == id;
+    // };
+    nlohmann::json this_id;
+    this_id["id"] = id;
+    auto it = std::lower_bound(
         current_component_vector.begin(), current_component_vector.end(),
-        id_is);
+        this_id, id_compare_less);
 
     nlohmann::json current_value;
     current_value["time"] = time;
@@ -117,6 +126,13 @@ namespace Model::Networkproblem::Gas {
       newoutput["data"].push_back(current_value);
       current_component_vector.push_back(newoutput);
     } else {
+      if ((*it)["id"] != id) {
+        gthrow(
+            {"The json value\n", (*it).dump(4),
+             "\n has an id different from the current object, whose id is ", id,
+             "\n This is a bug. Please report it!"});
+      }
+
       // std::cout << "found!" << std::endl;
       nlohmann::json &outputjson = (*it);
       outputjson["data"].push_back(current_value);
