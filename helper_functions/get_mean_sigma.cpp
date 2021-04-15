@@ -6,11 +6,49 @@
 using json = nlohmann::json;
 namespace fs = std::filesystem;
 
-void add_json_data(nlohmann::json const &input, nlohmann::json &output);
-void add_json_data(nlohmann::json const &input, nlohmann::json &output) {
+void add_json_data(
+    nlohmann::json const &input, nlohmann::json &output,
+    std::vector<std::string> types);
+void add_json_data(
+    nlohmann::json const &input, nlohmann::json &output,
+    std::vector<std::string> types) {
 
-  for (auto &componenttype : input) {
-    for (auto &component : componenttype) {}
+  for (auto &type : types) {
+    for (auto &component : input[type]) {
+      auto id = component["id"];
+      auto id_compare_less
+          = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
+        return a["id"].get<std::string>() < b["id"].get<std::string>();
+      };
+
+      // auto id_is = [id](nlohmann::json const &a) -> bool {
+      //   return a["id"].get<std::string>() == id;
+      // };
+      nlohmann::json this_id;
+      this_id["id"] = id;
+      auto it = std::lower_bound(
+          output[type].begin(), output[type].end(), this_id, id_compare_less);
+      if (it == output[type].end()) {
+
+        nlohmann::json newoutput;
+        newoutput["id"] = id;
+        newoutput["data"] = component["data"];
+        output[type].push_back(newoutput);
+      } else {
+        auto &data = (*it)["data"];
+        auto oldit = data.begin();
+        for (auto &step : data) {
+          for (auto varit = step.begin(); varit != step.end(); ++varit) {
+            if (varit.key() == "time") {
+              continue;
+            }
+            (*oldit)[varit.key()] = (*oldit)[varit.key()].get<double>()
+                                    + varit.value().get<double>();
+          }
+          ++oldit;
+        }
+      }
+    }
   }
 }
 
@@ -34,6 +72,9 @@ int main(int argc, char **argv) {
 
   json output;
 
+  std::vector<std::string> types{
+      "PQnode", "PVnode", "Vphinode", "StochasticPQnode"};
+
   for (auto &pit : fs::directory_iterator(fs::current_path())) {
     // check only directories:
     if (not fs::is_directory(pit.path())) {
@@ -53,9 +94,12 @@ int main(int argc, char **argv) {
         std::ifstream inputstream(currpath);
         inputstream >> input;
       }
-      add_json_data(input, output);
+      add_json_data(input, output, types);
     }
   }
+
+  std::ofstream outstream(computed_output);
+  outstream << output;
 
   // {
   //   std::ofstream outputstream(outputfile);
