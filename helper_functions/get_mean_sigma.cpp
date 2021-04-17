@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -7,12 +8,16 @@
 using json = nlohmann::json;
 namespace fs = std::filesystem;
 
-void add_json_data(
+double new_mean(double old_mean, double new_value, double n);
+double new_sigma(double old_sigma, double old_mean, double new_value, double n);
+void add_power_json_data(
+    nlohmann::json const &input, nlohmann::json &output,
+    std::vector<std::string> types, int number_of_runs);
+void add_gas_json_data(
     nlohmann::json const &input, nlohmann::json &output,
     std::vector<std::string> types, int number_of_runs);
 
 int main(int argc, char **argv) {
-
   std::string output_dir_trunk;
   if (argc >= 2) {
     output_dir_trunk = argv[1];
@@ -31,8 +36,9 @@ int main(int argc, char **argv) {
 
   json output;
 
-  std::vector<std::string> types{
+  std::vector<std::string> powertypes{
       "PQnode", "PVnode", "Vphinode", "StochasticPQnode"};
+  std::vector<std::string> gastypes{"Pipe"};
 
   int number_of_runs = 0;
   for (auto &pit : fs::directory_iterator(fs::current_path())) {
@@ -54,7 +60,8 @@ int main(int argc, char **argv) {
         std::ifstream inputstream(currpath);
         inputstream >> input;
       }
-      add_json_data(input, output, types, number_of_runs);
+      add_power_json_data(input, output, powertypes, number_of_runs);
+      add_gas_json_data(input, output, gastypes, number_of_runs);
       ++number_of_runs;
     }
   }
@@ -62,7 +69,7 @@ int main(int argc, char **argv) {
   outstream << output.dump(1);
 }
 
-void add_json_data(
+void add_power_json_data(
     nlohmann::json const &input, nlohmann::json &output,
     std::vector<std::string> types, int number_of_runs) {
 
@@ -122,15 +129,9 @@ void add_json_data(
             double new_value = varit.value().get<double>();
             double old_mean = (*oldit)[meankey].get<double>();
             double old_sigma = (*oldit)[sigmakey].get<double>();
-            double new_mean = n / (n + 1.0) * old_mean
-                              + 1.0 / (number_of_runs + 1) * new_value;
-            double new_sigma = sqrt(
-                (n - 1.0) / n * old_sigma * old_sigma
-                + 1.0 / (n + 1.0) * (new_value - old_mean)
-                      * (new_value - old_mean));
 
-            (*oldit)[meankey] = new_mean;
-            (*oldit)[sigmakey] = new_sigma;
+            (*oldit)[meankey] = new_mean(old_mean, new_value, n);
+            (*oldit)[sigmakey] = new_sigma(old_sigma, old_mean, new_value, n);
           }
           // also make a time step through the already saved values:
           ++oldit;
@@ -138,4 +139,112 @@ void add_json_data(
       }
     }
   }
+}
+void add_gas_json_data(
+    nlohmann::json const &input, nlohmann::json &output,
+    std::vector<std::string> types, int number_of_runs) {
+  for (auto &type : types) {
+    for (auto &component : input[type]) {
+      auto id = component["id"];
+      auto id_compare_less
+          = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
+        return a["id"].get<std::string>() < b["id"].get<std::string>();
+      };
+
+      nlohmann::json this_id;
+      this_id["id"] = id;
+      auto it = std::lower_bound(
+          output[type].begin(), output[type].end(), this_id, id_compare_less);
+
+      if (it == output[type].end()) {
+        nlohmann::json newoutput;
+        newoutput["id"] = id;
+        auto &data_to_save = newoutput["data"];
+        auto &data_to_add = component["data"];
+        for (auto &step : data_to_add) {
+          json time_step_to_save;
+          for (auto varit = step.begin(); varit != step.end(); ++varit) {
+            if (varit.key() == "time") {
+              time_step_to_save["time"] = varit.value();
+              continue;
+            }
+            auto meankey = varit.key() + "_mean";
+            time_step_to_save[meankey] = varit.value();
+            auto sigmakey = varit.key() + "_sigma";
+            for (auto &value_pair_to_add : varit.value()) {
+              json value_pair_to_save;
+              value_pair_to_save["x"] = value_pair_to_add["x"];
+              value_pair_to_save["value"] = 0.0;
+              time_step_to_save[sigmakey].push_back(value_pair_to_save);
+            }
+          }
+          data_to_save.push_back(time_step_to_save);
+        }
+        output[type].push_back(newoutput);
+
+      } else {
+        if ((*it)["id"] != id) {
+          throw std::runtime_error(
+              "input wasn't sorted. Is this really an output file of Grazer? "
+              "If yes, file a bug!");
+        }
+        auto &data_to_save = (*it)["data"];
+        auto &data_to_add = component["data"];
+        auto data_to_save_it = data_to_save.begin();
+        for (auto &step : data_to_add) {
+          for (auto varit = step.begin(); varit != step.end(); ++varit) {
+            if (varit.key() == "time") {
+              continue;
+            }
+            auto meankey = varit.key() + "_mean";
+            auto sigmakey = varit.key() + "_sigma";
+            for (auto &value_pair : varit.value()) {
+              auto x = value_pair["x"];
+              auto compare_for_x = [](json const &a, json const &b) -> bool {
+                return a["x"].get<double>() < b["x"].get<double>();
+              };
+              auto current_mean_pair_it = std::lower_bound(
+                  (*data_to_save_it)[meankey].begin(),
+                  (*data_to_save_it)[meankey].end(), value_pair, compare_for_x);
+              auto current_sigma_pair_it = std::lower_bound(
+                  (*data_to_save_it)[sigmakey].begin(),
+                  (*data_to_save_it)[sigmakey].end(), value_pair,
+                  compare_for_x);
+              if ((*current_mean_pair_it)["x"] != x) {
+                throw std::runtime_error(
+                    "The data wasn't sorted by x in component with id"
+                    + id.get<std::string>());
+              }
+              if ((*current_sigma_pair_it)["x"] != x) {
+                throw std::runtime_error(
+                    "The data wasn't sorted by x in component with id"
+                    + id.get<std::string>());
+              }
+
+              double n = number_of_runs;
+              double new_value = value_pair["value"];
+              double old_mean = (*current_mean_pair_it)["value"].get<double>();
+              double old_sigma
+                  = (*current_sigma_pair_it)["value"].get<double>();
+              (*current_mean_pair_it)["value"]
+                  = new_mean(old_mean, new_value, n);
+              (*current_sigma_pair_it)["value"]
+                  = new_sigma(old_sigma, old_mean, new_value, n);
+            }
+          }
+          // also make a time step through the already saved values:
+          ++data_to_save_it;
+        }
+      }
+    }
+  }
+}
+double new_mean(double old_mean, double new_value, double n) {
+  return n / (n + 1.0) * old_mean + 1.0 / (n + 1.0) * new_value;
+}
+double
+new_sigma(double old_sigma, double old_mean, double new_value, double n) {
+  return sqrt(
+      (n - 1.0) / n * old_sigma * old_sigma
+      + 1.0 / (n + 1.0) * (new_value - old_mean) * (new_value - old_mean));
 }
