@@ -35,9 +35,10 @@ void add_json_data(
         newoutput["data"] = component["data"];
         output[type].push_back(newoutput);
       } else {
-        auto &data = (*it)["data"];
-        auto oldit = data.begin();
-        for (auto &step : data) {
+        auto &olddata = (*it)["data"];
+        auto &newdata = component["data"];
+        auto oldit = olddata.begin();
+        for (auto &step : newdata) {
           for (auto varit = step.begin(); varit != step.end(); ++varit) {
             if (varit.key() == "time") {
               continue;
@@ -45,6 +46,7 @@ void add_json_data(
             (*oldit)[varit.key()] = (*oldit)[varit.key()].get<double>()
                                     + varit.value().get<double>();
           }
+          // also make a time step through the already saved values:
           ++oldit;
         }
       }
@@ -99,7 +101,7 @@ int main(int argc, char **argv) {
   }
 
   std::ofstream outstream(computed_output);
-  outstream << output;
+  outstream << output.dump(1);
 
   // {
   //   std::ofstream outputstream(outputfile);
