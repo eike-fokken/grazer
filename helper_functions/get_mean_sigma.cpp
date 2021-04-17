@@ -118,10 +118,23 @@ void add_json_data(
             if (varit.key() == "time") {
               continue;
             }
-            (*oldit)[varit.key() + "_mean"]
-                = static_cast<double>(number_of_runs) / (number_of_runs + 1)
-                      * (*oldit)[varit.key() + "_mean"].get<double>()
-                  + 1.0 / (number_of_runs + 1) * varit.value().get<double>();
+            auto meankey = varit.key() + "_mean";
+            auto sigmakey = varit.key() + "_sigma";
+
+            double new_value = varit.value().get<double>();
+            double old_mean = (*oldit)[meankey].get<double>();
+            double old_sigma = (*oldit)[sigmakey].get<double>();
+            double new_mean = static_cast<double>(number_of_runs)
+                                  / (number_of_runs + 1) * old_mean
+                              + 1.0 / (number_of_runs + 1) * new_value;
+            double new_sigma = sqrt(
+                static_cast<double>(number_of_runs - 1) / number_of_runs
+                    * old_sigma * old_sigma
+                + 1.0 / (number_of_runs + 1) * (new_value - old_mean)
+                      * (new_value - old_mean));
+
+            (*oldit)[meankey] = new_mean;
+            (*oldit)[sigmakey] = new_sigma;
           }
           // also make a time step through the already saved values:
           ++oldit;
