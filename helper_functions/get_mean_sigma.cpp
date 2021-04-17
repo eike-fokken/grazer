@@ -9,7 +9,7 @@ namespace fs = std::filesystem;
 
 void add_json_data(
     nlohmann::json const &input, nlohmann::json &output,
-    std::vector<std::string> types);
+    std::vector<std::string> types, int number_of_runs);
 // void compute_mean(
 //     nlohmann::json &output, int number_of_runs, std::vector<std::string>
 //     types);
@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
         std::ifstream inputstream(currpath);
         inputstream >> input;
       }
-      add_json_data(input, output, types);
+      add_json_data(input, output, types, number_of_runs);
       ++number_of_runs;
     }
   }
@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
 
 void add_json_data(
     nlohmann::json const &input, nlohmann::json &output,
-    std::vector<std::string> types) {
+    std::vector<std::string> types, int number_of_runs) {
 
   for (auto &type : types) {
     for (auto &component : input[type]) {
@@ -95,10 +95,10 @@ void add_json_data(
               time_step_to_save[varit.key()] = varit.value();
               continue;
             }
-            auto meanname = varit.key() + "_mean";
-            auto sigmaname = varit.key() + "_sigma";
-            time_step_to_save[meanname] = varit.value();
-            time_step_to_save[sigmaname] = 0;
+            auto meankey = varit.key() + "_mean";
+            auto sigmakey = varit.key() + "_sigma";
+            time_step_to_save[meankey] = varit.value();
+            time_step_to_save[sigmakey] = 0;
           }
           data_to_save.push_back(time_step_to_save);
         }
@@ -119,8 +119,9 @@ void add_json_data(
               continue;
             }
             (*oldit)[varit.key() + "_mean"]
-                = (*oldit)[varit.key() + "_mean"].get<double>()
-                  + varit.value().get<double>();
+                = static_cast<double>(number_of_runs) / (number_of_runs + 1)
+                      * (*oldit)[varit.key() + "_mean"].get<double>()
+                  + 1.0 / (number_of_runs + 1) * varit.value().get<double>();
           }
           // also make a time step through the already saved values:
           ++oldit;
