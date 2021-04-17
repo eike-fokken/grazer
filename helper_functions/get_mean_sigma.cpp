@@ -10,9 +10,6 @@ namespace fs = std::filesystem;
 void add_json_data(
     nlohmann::json const &input, nlohmann::json &output,
     std::vector<std::string> types, int number_of_runs);
-// void compute_mean(
-//     nlohmann::json &output, int number_of_runs, std::vector<std::string>
-//     types);
 
 int main(int argc, char **argv) {
 
@@ -121,16 +118,15 @@ void add_json_data(
             auto meankey = varit.key() + "_mean";
             auto sigmakey = varit.key() + "_sigma";
 
+            double n = number_of_runs;
             double new_value = varit.value().get<double>();
             double old_mean = (*oldit)[meankey].get<double>();
             double old_sigma = (*oldit)[sigmakey].get<double>();
-            double new_mean = static_cast<double>(number_of_runs)
-                                  / (number_of_runs + 1) * old_mean
+            double new_mean = n / (n + 1.0) * old_mean
                               + 1.0 / (number_of_runs + 1) * new_value;
             double new_sigma = sqrt(
-                static_cast<double>(number_of_runs - 1) / number_of_runs
-                    * old_sigma * old_sigma
-                + 1.0 / (number_of_runs + 1) * (new_value - old_mean)
+                (n - 1.0) / n * old_sigma * old_sigma
+                + 1.0 / (n + 1.0) * (new_value - old_mean)
                       * (new_value - old_mean));
 
             (*oldit)[meankey] = new_mean;
@@ -143,20 +139,3 @@ void add_json_data(
     }
   }
 }
-
-// void compute_mean(
-//     nlohmann::json &output, int number_of_runs,
-//     std::vector<std::string> types) {
-//   for (auto &type : types) {
-//     for (auto &component : output[type]) {
-//       for (auto &step : component["data"]) {
-//         for (auto varit = step.begin(); varit != step.end(); ++varit) {
-//           if (varit.key() == "time") {
-//             continue;
-//           }
-//           varit.value() = varit.value().get<double>() / number_of_runs;
-//         }
-//       }
-//     }
-//   }
-// }
