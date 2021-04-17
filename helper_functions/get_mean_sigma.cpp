@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <nlohmann/json.hpp>
+#include <stdexcept>
 
 using json = nlohmann::json;
 namespace fs = std::filesystem;
@@ -9,8 +10,9 @@ namespace fs = std::filesystem;
 void add_json_data(
     nlohmann::json const &input, nlohmann::json &output,
     std::vector<std::string> types);
-void compute_mean(
-    nlohmann::json &output, int number_of_runs, std::vector<std::string> types);
+// void compute_mean(
+//     nlohmann::json &output, int number_of_runs, std::vector<std::string>
+//     types);
 
 int main(int argc, char **argv) {
 
@@ -59,17 +61,8 @@ int main(int argc, char **argv) {
       ++number_of_runs;
     }
   }
-  compute_mean(output, number_of_runs, types);
-  std::cout << "Number of processed output files: " << number_of_runs
-            << std::endl;
   std::ofstream outstream(computed_output);
   outstream << output.dump(1);
-
-  // {
-  //   std::ofstream outputstream(outputfile);
-  //   outputstream << input;
-  // }
-  // std::cout << "first part worked" << std::endl;
 }
 
 void add_json_data(
@@ -84,9 +77,6 @@ void add_json_data(
         return a["id"].get<std::string>() < b["id"].get<std::string>();
       };
 
-      // auto id_is = [id](nlohmann::json const &a) -> bool {
-      //   return a["id"].get<std::string>() == id;
-      // };
       nlohmann::json this_id;
       this_id["id"] = id;
       auto it = std::lower_bound(
@@ -95,9 +85,31 @@ void add_json_data(
 
         nlohmann::json newoutput;
         newoutput["id"] = id;
-        newoutput["data"] = component["data"];
+
+        auto &data_to_save = newoutput["data"];
+        auto &newdata = component["data"];
+        for (auto &step : newdata) {
+          json time_step_to_save;
+          for (auto varit = step.begin(); varit != step.end(); ++varit) {
+            if (varit.key() == "time") {
+              time_step_to_save[varit.key()] = varit.value();
+              continue;
+            }
+            auto meanname = varit.key() + "_mean";
+            auto sigmaname = varit.key() + "_sigma";
+            time_step_to_save[meanname] = varit.value();
+            time_step_to_save[sigmaname] = 0;
+          }
+          data_to_save.push_back(time_step_to_save);
+        }
         output[type].push_back(newoutput);
+
       } else {
+        if ((*it)["id"] != id) {
+          throw std::runtime_error(
+              "input wasn't sorted. is this really an output file of Grazer? "
+              "If yes, file a bug!");
+        }
         auto &olddata = (*it)["data"];
         auto &newdata = component["data"];
         auto oldit = olddata.begin();
@@ -106,8 +118,9 @@ void add_json_data(
             if (varit.key() == "time") {
               continue;
             }
-            (*oldit)[varit.key()] = (*oldit)[varit.key()].get<double>()
-                                    + varit.value().get<double>();
+            (*oldit)[varit.key() + "_mean"]
+                = (*oldit)[varit.key() + "_mean"].get<double>()
+                  + varit.value().get<double>();
           }
           // also make a time step through the already saved values:
           ++oldit;
@@ -117,19 +130,19 @@ void add_json_data(
   }
 }
 
-void compute_mean(
-    nlohmann::json &output, int number_of_runs,
-    std::vector<std::string> types) {
-  for (auto &type : types) {
-    for (auto &component : output[type]) {
-      for (auto &step : component["data"]) {
-        for (auto varit = step.begin(); varit != step.end(); ++varit) {
-          if (varit.key() == "time") {
-            continue;
-          }
-          varit.value() = varit.value().get<double>() / number_of_runs;
-        }
-      }
-    }
-  }
-}
+// void compute_mean(
+//     nlohmann::json &output, int number_of_runs,
+//     std::vector<std::string> types) {
+//   for (auto &type : types) {
+//     for (auto &component : output[type]) {
+//       for (auto &step : component["data"]) {
+//         for (auto varit = step.begin(); varit != step.end(); ++varit) {
+//           if (varit.key() == "time") {
+//             continue;
+//           }
+//           varit.value() = varit.value().get<double>() / number_of_runs;
+//         }
+//       }
+//     }
+//   }
+// }
