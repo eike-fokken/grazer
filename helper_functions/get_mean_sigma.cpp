@@ -74,6 +74,9 @@ void add_power_json_data(
     std::vector<std::string> types, int number_of_runs) {
 
   for (auto &type : types) {
+    if (not input.contains(type)) {
+      continue;
+    }
     for (auto &component : input[type]) {
       auto id = component["id"];
       auto id_compare_less
@@ -144,6 +147,9 @@ void add_gas_json_data(
     nlohmann::json const &input, nlohmann::json &output,
     std::vector<std::string> types, int number_of_runs) {
   for (auto &type : types) {
+    if (not input.contains(type)) {
+      continue;
+    }
     for (auto &component : input[type]) {
       auto id = component["id"];
       auto id_compare_less
