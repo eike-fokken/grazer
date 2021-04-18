@@ -8,18 +8,19 @@ using json = nlohmann::json;
 namespace fs = std::filesystem;
 
 int main(int argc, char **argv) {
-  std::string datafile = "mean_and_sigma.json";
+  std::string datafile = argv[1];
+
   std::cout << "input file is: " << datafile << std::endl;
 
-  if (argc <= 2) {
+  if (argc <= 3) {
     std::cout << "\nYou must provide an id and quantities to include!\n"
               << std::endl;
     return 1;
   }
-  std::string id = argv[1];
+  std::string id = argv[2];
 
   std::vector<std::string> quantities;
-  for (auto iargs = 2; iargs != argc; ++iargs) {
+  for (auto iargs = 3; iargs != argc; ++iargs) {
     quantities.push_back(argv[iargs]);
   }
 
