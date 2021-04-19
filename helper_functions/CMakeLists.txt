@@ -12,7 +12,6 @@ target_link_libraries(full_factory_schema componentfactory full_factory)
 
 
 add_executable(get_mean_sigma get_mean_sigma.cpp)
-add_executable(generate_gas_csv generate_gas_csv.cpp)
 
-add_executable(generate_power_csv generate_power_csv.cpp)
-target_link_libraries(generate_power_csv PRIVATE input_output)
+add_executable(generate_printing_csv generate_printing_csv.cpp)
+target_link_libraries(generate_printing_csv PRIVATE input_output)
