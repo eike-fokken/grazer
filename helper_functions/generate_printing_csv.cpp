@@ -13,6 +13,23 @@ namespace fs = std::filesystem;
 void write_gas_csv(std::string id, json object);
 void write_power_csv(std::string id, json object);
 
+/** \brief Outputs data from the output.json of grazer to a csv file.
+ *
+ * This is especially useful for printing with LaTeX.
+ * Takes two arguments: First the json file and second a component id, whose
+ * values should be written to the csv file.
+ * For power nodes a single file name <id>.csv is created. If the file is
+ * already there it is silently overwritten.
+ * For gas edges multiple files are created, one for each quantity, named
+ * <id>_<quantity>.csv.
+ * For example, if "N1" is a powernode id in output.json
+ * generate_printing_csv output.json N1
+ * will write all data of N1 to N1.csv.
+ * If "pipeline1" is a Pipe id,
+ * generate_printing_csv output.json pipeline1
+ * will create files pipeline1_pressure.csv and pipeline1_flow.csv.
+ */
+
 int main(int argc, char **argv) {
 
   if (argc != 3) {
