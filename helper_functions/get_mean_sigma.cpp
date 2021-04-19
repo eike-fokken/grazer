@@ -1,3 +1,5 @@
+/** @file */
+
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
@@ -16,6 +18,21 @@ void add_power_json_data(
 void add_gas_json_data(
     nlohmann::json const &input, nlohmann::json &output,
     std::vector<std::string> types, int number_of_runs);
+
+/** \brief Computes mean and standard deviation of a collection of grazer
+ * outputs.
+ *
+ * This only makes sense if grazer was called on stochastic inputs (like
+ * StochasticPQnode). For the output to be meaningful, it is also important,
+ * that the same problem was solved with grazer for each of the outputs.
+ *
+ * All arguments are optional. If one or more arguments is given, it is given as
+ * the common substring with which all output directories start. If two
+ * arguments are given, the second argument is the filename of the json file,
+ * get_mean_sigma should create to output its computations.
+ * The default value of the substring is "output".
+ * The default value of the filename is "mean_and_sigma.json".
+ */
 
 int main(int argc, char **argv) {
   std::string output_dir_trunk;

@@ -1,3 +1,4 @@
+#include "Input_output.hpp"
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
@@ -8,21 +9,17 @@ using json = nlohmann::json;
 namespace fs = std::filesystem;
 
 int main(int argc, char **argv) {
-  std::string datafile = argv[1];
 
-  std::cout << "input file is: " << datafile << std::endl;
-
-  if (argc <= 3) {
-    std::cout << "\nYou must provide an id and quantities to include!\n"
+  if (argc != 3) {
+    std::cout << "You must provide a json file and the id of a powernode."
               << std::endl;
     return 1;
   }
-  std::string id = argv[2];
+  std::string datafile = argv[1];
 
-  std::vector<std::string> quantities;
-  for (auto iargs = 3; iargs != argc; ++iargs) {
-    quantities.push_back(argv[iargs]);
-  }
+  std::cout << "input file is: " << datafile << std::endl;
+  std::string id = argv[2];
+  std::cout << "Powernode id: " << id << std::endl;
 
   json input;
   {
@@ -55,33 +52,40 @@ int main(int argc, char **argv) {
     return 1;
   }
 
-  for (auto quantity_it = quantities.begin();
-       quantity_it != quantities.end();) {
-    if (not object["data"][0].contains(*quantity_it)) {
-      std::cout << "Object with id " << id
-                << " doesn't contain a quantity named\n"
-                << (*quantity_it) << "\nskipping..." << std::endl;
-      quantities.erase(quantity_it);
-    } else {
-      ++quantity_it;
-    }
-  }
-  if (quantities.empty()) {
-    std::cout << "No quantities, that are present in object with id " << id
-              << " were requested.\n";
-    return 1;
-  }
-
   fs::path outpath(id + ".csv");
+  if (not Aux_executable::absolute_file_path_in_root(
+          fs::current_path(), outpath)) {
+    std::cout << "the path " << outpath.string()
+              << " is not in the current working directory!\n"
+              << "Probably the id is wrong."
+              << "Aborting...";
+    return 2;
+  }
   std::ofstream outstream(outpath);
-  outstream << "t,   ";
-  for (auto quantity : quantities) { outstream << quantity << ",   "; }
+  outstream << "time";
+  for (auto q_it = object["data"][0].begin(); q_it != object["data"][0].end();
+       ++q_it) {
+    if (q_it.key() == "time") {
+      continue;
+    }
+    outstream << ",   " << q_it.key();
+  }
   outstream << "\n";
 
   for (auto &timestep : object["data"]) {
-    outstream << timestep["time"] << ",   ";
-    for (auto &quantity : quantities) {
-      outstream << timestep[quantity] << ",   ";
+    outstream << timestep["time"];
+    for (auto q_it = timestep.begin(); q_it != timestep.end(); ++q_it) {
+      if (q_it.key() == "time") {
+        continue;
+      }
+      if (not q_it.value().is_number()) {
+        std::cout << "This seems to be no powernode, as the value of "
+                  << q_it.key() << " is not just a number.\n Aborting..."
+                  << std::endl;
+        fs::remove(outpath);
+        return 1;
+      }
+      outstream << ",   " << q_it.value();
     }
     outstream << "\n";
   }

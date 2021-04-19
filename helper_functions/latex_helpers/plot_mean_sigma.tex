@@ -1,0 +1,33 @@
+\documentclass{standalone}
+
+%\providecommand{\datapath}{.}
+
+\usepackage{tikz}
+\usepackage{pgfplotstable}
+\usepackage{siunitx}
+\pgfplotsset{compat=1.13}
+\usetikzlibrary{plotmarks,calc,math,shapes}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{axis}[
+    x filter/.code={\pgfmathparse{#1/3600}\pgfmathresult},
+    y filter/.code={\pgfmathparse{#1*(-1)}\pgfmathresult},
+    xlabel={\large t(\si{\hour})},
+    ylabel={\large P(\SI{100}{\mega \watt})},
+    table/col sep=comma,
+    legend pos=north east,legend cell align=left]
+
+    \pgfplotstableread{./N1.csv}\data
+    \pgfplotstablecreatecol[expr={\thisrow{P_mean}-\thisrow{P_sigma}}]{lowerbound}{\data}
+    \pgfplotstablecreatecol[expr={\thisrow{P_mean}+\thisrow{P_sigma}}]{upperbound}{\data}
+    \addplot[color=cyan,solid,line width=1pt] table[x index =0,y=P_mean] {\data};
+    \addplot[color=blue,solid,line width=1pt] table[x index =0,y=lowerbound] {\data};
+    \addplot[color=blue,solid,line width=1pt] table[x index =0,y=upperbound] {\data};
+    \addlegendentry{\tiny Mean Power draw}
+    
+  \end{axis}
+\end{tikzpicture}
+\end{document}
+
+
