@@ -10,6 +10,8 @@ namespace Model::Networkproblem::Gas {
   class Controlvalve final : public Shortcomponent {
   public:
     static std::string get_type();
+    std::string get_gas_type() const override;
+
     static nlohmann::json get_schema();
 
     Controlvalve(

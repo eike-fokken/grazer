@@ -5,11 +5,13 @@
 #include "Matrixhandler.hpp"
 #include "Transmissionline.hpp"
 #include "make_schema.hpp"
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <map>
 #include <nlohmann/json.hpp>
 #include <tuple>
+#include <utility>
 
 namespace Model::Networkproblem::Power {
 
@@ -122,6 +124,56 @@ namespace Model::Networkproblem::Power {
     phimap = {{0.0, state[get_start_state_index() + 1]}};
     value_vector = {Pmap, Qmap, Vmap, phimap};
     Equationcomponent::push_to_values(time, value_vector);
+  }
+
+  void Powernode::json_save_power(
+      nlohmann::json &output, double time,
+      Eigen::Ref<Eigen::VectorXd const> state, double P_val,
+      double Q_val) const {
+
+    nlohmann::json &current_component_vector = output[get_power_type()];
+
+    nlohmann::json current_value;
+    current_value["time"] = time;
+    current_value["P"] = P_val;
+    current_value["Q"] = Q_val;
+    current_value["V"] = state[get_start_state_index()];
+    current_value["phi"] = state[get_start_state_index() + 1];
+
+    auto id = get_id_copy();
+    // define a < function as a lambda:
+    auto id_compare_less
+        = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
+      return a["id"].get<std::string>() < b["id"].get<std::string>();
+    };
+
+    // auto id_is = [id](nlohmann::json const &a) -> bool {
+    //   return a["id"].get<std::string>() == id;
+    // };
+    nlohmann::json this_id;
+    this_id["id"] = id;
+    auto it = std::lower_bound(
+        current_component_vector.begin(), current_component_vector.end(),
+        this_id, id_compare_less);
+
+    if (it == current_component_vector.end()) {
+      // std::cout << "Not found!" << std::endl;
+      nlohmann::json newoutput;
+      newoutput["id"] = get_id_copy();
+      newoutput["data"] = nlohmann::json::array();
+      newoutput["data"].push_back(current_value);
+      current_component_vector.push_back(newoutput);
+    } else {
+      if ((*it)["id"] != id) {
+        gthrow(
+            {"The json value\n", (*it).dump(4),
+             "\n has an id different from the current object, whose id is ", id,
+             "\n This is a bug. Please report it!"});
+      }
+      // std::cout << "found!" << std::endl;
+      nlohmann::json &outputjson = (*it);
+      outputjson["data"].push_back(current_value);
+    }
   }
 
   double Powernode::P(Eigen::Ref<Eigen::VectorXd const> state) const {

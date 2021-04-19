@@ -43,6 +43,10 @@ namespace Model {
     virtual void save_values(double time, Eigen::Ref<Eigen::VectorXd> new_state)
         = 0;
 
+    virtual void json_save(
+        nlohmann::json &output, double time,
+        Eigen::Ref<Eigen::VectorXd const> state) const = 0;
+
     virtual void print_to_files(std::filesystem::path const &output_directory)
         = 0;
 

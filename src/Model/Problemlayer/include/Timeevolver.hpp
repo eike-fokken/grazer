@@ -38,13 +38,18 @@ namespace Model {
   public:
     Timeevolver() = delete;
     Timeevolver(double tolerance, int maximal_number_of_iterations);
+    ~Timeevolver();
 
     void simulate(
         Timedata timedata, Model::Problem &problem, int number_of_states,
         nlohmann::json &problem_initial_json);
 
+    nlohmann::json &get_output();
+
   private:
     Solver::Newtonsolver<Problem> solver;
+
+    nlohmann::json output;
   };
 
 } // namespace Model

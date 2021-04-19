@@ -18,6 +18,7 @@
 namespace Model::Networkproblem::Gas {
 
   std::string Pipe::get_type() { return "Pipe"; }
+  std::string Pipe::get_gas_type() const { return get_type(); }
 
   nlohmann::json Pipe::get_schema() {
     nlohmann::json schema = Network::Edge::get_schema();
@@ -172,6 +173,67 @@ namespace Model::Networkproblem::Gas {
     Equationcomponent::push_to_values(time, value_vector);
   }
 
+  void Pipe::json_save(
+      nlohmann::json &output, double time,
+      Eigen::Ref<const Eigen::VectorXd> state) const {
+    nlohmann::json &current_component_vector = output[get_gas_type()];
+
+    auto id = get_id_copy();
+    // define a < function as a lambda:
+    auto id_compare_less
+        = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
+      return a["id"].get<std::string>() < b["id"].get<std::string>();
+    };
+
+    // auto id_is = [id](nlohmann::json const &a) -> bool {
+    //   return a["id"].get<std::string>() == id;
+    // };
+    nlohmann::json this_id;
+    this_id["id"] = id;
+    auto it = std::lower_bound(
+        current_component_vector.begin(), current_component_vector.end(),
+        this_id, id_compare_less);
+
+    nlohmann::json current_value;
+    current_value["time"] = time;
+    for (int i = 0; i != number_of_points; ++i) {
+      Eigen::Vector2d current_state
+          = state.segment<2>(get_start_state_index() + 2 * i);
+      double current_rho = current_state[0];
+      double current_p_bar = bl.p_bar_from_p_pascal(bl.p(current_rho));
+      double current_q = current_state[1];
+      double x = i * Delta_x;
+      nlohmann::json pressure_json;
+      nlohmann::json flow_json;
+      pressure_json["x"] = x;
+      pressure_json["value"] = current_p_bar;
+      current_value["pressure"].push_back(pressure_json);
+
+      flow_json["x"] = x;
+      flow_json["value"] = current_q;
+      current_value["flow"].push_back(flow_json);
+    }
+
+    if (it == current_component_vector.end()) {
+      // std::cout << "Not found!" << std::endl;
+      nlohmann::json newoutput;
+      newoutput["id"] = get_id_copy();
+      newoutput["data"] = nlohmann::json::array();
+      newoutput["data"].push_back(current_value);
+      current_component_vector.push_back(newoutput);
+    } else {
+      if ((*it)["id"] != id) {
+        gthrow(
+            {"The json value\n", (*it).dump(4),
+             "\n has an id different from the current object, whose id is ", id,
+             "\n This is a bug. Please report it!"});
+      }
+
+      // std::cout << "found!" << std::endl;
+      nlohmann::json &outputjson = (*it);
+      outputjson["data"].push_back(current_value);
+    }
+  }
   void Pipe::set_initial_values(
       Eigen::Ref<Eigen::VectorXd> new_state,
       nlohmann::json const &initial_json) {

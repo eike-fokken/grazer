@@ -10,6 +10,7 @@
 #include <filesystem>
 #include <iostream>
 #include <memory>
+#include <nlohmann/json.hpp>
 
 namespace Model::Networkproblem {
 
@@ -58,7 +59,7 @@ namespace Model::Networkproblem {
           std::string,
           std::unique_ptr<Componentfactory::AbstractNodeType>> const
           &nodetypemap,
-      std::filesystem::path const &output_dir) {
+      std::filesystem::path const &output_dir, nlohmann::json &output_json) {
 
     // Here we check, whether all nodetypes defined in the topology file were
     // built. It will throw an exception, if a node type is encountered that is
@@ -83,13 +84,28 @@ namespace Model::Networkproblem {
 
     for (auto const &[nodetypename, nodetype] : nodetypemap) {
       if (node_topology.contains(nodetypename)) {
+
         if (nodetype->needs_output_file()) {
           auto component_output_path
               = output_dir / std::filesystem::path(nodetype->get_name());
           std::filesystem::create_directory(component_output_path);
+
+          output_json[nodetype->get_name()] = nlohmann::json::array();
         }
 
-        for (auto node : node_topology[nodetypename]) {
+        auto sorted_node_json = node_topology[nodetypename];
+        // define a < function as a lambda:
+        auto id_compare_less
+            = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
+          return a["id"].get<std::string>() < b["id"].get<std::string>();
+        };
+
+        std::sort(
+            sorted_node_json.begin(), sorted_node_json.end(), id_compare_less);
+
+        // The sorting makes sure that nodes of a given type are ordered by
+        // their id.
+        for (auto node : sorted_node_json) {
           auto current_node = nodetype->make_instance(node);
           nodes.push_back(std::move(current_node));
         }
@@ -109,7 +125,7 @@ namespace Model::Networkproblem {
           std::string,
           std::unique_ptr<Componentfactory::AbstractEdgeType>> const
           &edgetypemap,
-      std::filesystem::path const &output_dir) {
+      std::filesystem::path const &output_dir, nlohmann::json &output_json) {
 
     // Here we check, whether all edgetypes defined in the topology file were
     // built. It will throw an exception, if a edge type is encountered that
@@ -137,10 +153,22 @@ namespace Model::Networkproblem {
           auto component_output_path
               = output_dir / std::filesystem::path(edgetype->get_name());
           std::filesystem::create_directory(component_output_path);
-
-          std::cout << edgetypename << " needs a file" << std::endl;
+          output_json[edgetype->get_name()] = nlohmann::json::array();
         }
-        for (auto edge : edge_topology[edgetypename]) {
+
+        auto sorted_edge_json = edge_topology[edgetypename];
+        // define a < function as a lambda:
+        auto id_compare_less
+            = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
+          return a["id"].get<std::string>() < b["id"].get<std::string>();
+        };
+
+        std::sort(
+            sorted_edge_json.begin(), sorted_edge_json.end(), id_compare_less);
+
+        // The sorting makes sure that edges of a given type are ordered by
+        // their id.
+        for (auto edge : sorted_edge_json) {
           auto current_edge = edgetype->make_instance(edge, nodes);
           edges.push_back(std::move(current_edge));
         }
@@ -292,14 +320,15 @@ namespace Model::Networkproblem {
   std::unique_ptr<Network::Net> build_net(
       nlohmann::json &networkproblem_json,
       Componentfactory::Componentfactory const &factory,
-      std::filesystem::path const &output_dir) {
+      std::filesystem::path const &output_dir, nlohmann::json &output_json) {
     auto topology = build_full_networkproblem_json(networkproblem_json);
     auto nodes = build_node_vector(
-        topology["nodes"], factory.node_type_map, output_dir);
+        topology["nodes"], factory.node_type_map, output_dir, output_json);
 
     // build the edge vector.
     auto edges = build_edge_vector(
-        topology["connections"], nodes, factory.edge_type_map, output_dir);
+        topology["connections"], nodes, factory.edge_type_map, output_dir,
+        output_json);
     auto network
         = std::make_unique<Network::Net>(std::move(nodes), std::move(edges));
 

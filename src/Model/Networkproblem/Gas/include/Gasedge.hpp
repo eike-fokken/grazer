@@ -8,6 +8,7 @@ namespace Model::Networkproblem::Gas {
   class Gasedge : public Equationcomponent {
 
   public:
+    virtual std::string get_gas_type() const = 0;
     int give_away_boundary_index(int direction) const;
 
     int get_boundary_state_index(int direction) const;

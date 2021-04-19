@@ -49,7 +49,7 @@ namespace Model::Networkproblem {
           std::string,
           std::unique_ptr<Componentfactory::AbstractNodeType>> const
           &nodetypemap,
-      std::filesystem::path const &output_dir);
+      std::filesystem::path const &output_dir, nlohmann::json &output_json);
 
   /// \brief construct Edges of types given by the json input and put their
   /// pointers in a vector
@@ -64,7 +64,7 @@ namespace Model::Networkproblem {
           std::string,
           std::unique_ptr<Componentfactory::AbstractEdgeType>> const
           &edgetypemap,
-      std::filesystem::path const &output_dir);
+      std::filesystem::path const &output_dir, nlohmann::json &output_json);
 
   /// \brief Enters entries from a second json object into the topology json.
   ///
@@ -93,6 +93,6 @@ namespace Model::Networkproblem {
   std::unique_ptr<Network::Net> build_net(
       nlohmann::json &networkproblem_json,
       Componentfactory::Componentfactory const &factory,
-      std::filesystem::path const &output_dir);
+      std::filesystem::path const &output_dir, nlohmann::json &output_json);
 
 } // namespace Model::Networkproblem

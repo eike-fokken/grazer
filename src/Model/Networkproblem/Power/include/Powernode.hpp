@@ -9,7 +9,7 @@ namespace Model::Networkproblem::Power {
   class Powernode : public Equationcomponent, public Network::Node {
 
   public:
-    virtual std::string get_power_type() = 0;
+    virtual std::string get_power_type() const = 0;
     static nlohmann::json get_schema();
 
     Powernode(nlohmann::json const &topology);
@@ -47,6 +47,11 @@ namespace Model::Networkproblem::Power {
     void save_power_values(
         double time, Eigen::Ref<Eigen::VectorXd const> state, double P_val,
         double Q_val);
+
+    void json_save_power(
+        nlohmann::json &output, double time,
+        Eigen::Ref<Eigen::VectorXd const> state, double P_val,
+        double Q_val) const;
 
     Boundaryvalue<2> const boundaryvalue;
     /// Real part of the admittance of this node

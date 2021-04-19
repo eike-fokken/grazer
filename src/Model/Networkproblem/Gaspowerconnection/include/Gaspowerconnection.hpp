@@ -11,6 +11,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
   class Gaspowerconnection final : public Network::Edge, public Gas::Gasedge {
   public:
     static std::string get_type();
+    std::string get_gas_type() const override;
     static nlohmann::json get_schema();
 
     Gaspowerconnection(
@@ -34,6 +35,10 @@ namespace Model::Networkproblem::Gaspowerconnection {
 
     void
     save_values(double time, Eigen::Ref<Eigen::VectorXd const> state) override;
+
+    void json_save(
+        nlohmann::json &output, double time,
+        Eigen::Ref<const Eigen::VectorXd> state) const override;
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,

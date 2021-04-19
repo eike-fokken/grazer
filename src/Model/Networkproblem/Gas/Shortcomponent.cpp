@@ -72,6 +72,73 @@ namespace Model::Networkproblem::Gas {
     Equationcomponent::push_to_values(time, value_vector);
   }
 
+  void Shortcomponent::json_save(
+      nlohmann::json &output, double time,
+      Eigen::Ref<Eigen::VectorXd const> state) const {
+    nlohmann::json &current_component_vector = output[get_gas_type()];
+
+    auto id = get_id_copy();
+
+    // define a < function as a lambda:
+    auto id_compare_less
+        = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
+      return a["id"].get<std::string>() < b["id"].get<std::string>();
+    };
+
+    // auto id_is = [id](nlohmann::json const &a) -> bool {
+    //   return a["id"].get<std::string>() == id;
+    // };
+    nlohmann::json this_id;
+    this_id["id"] = id;
+    auto it = std::lower_bound(
+        current_component_vector.begin(), current_component_vector.end(),
+        this_id, id_compare_less);
+
+    nlohmann::json current_value;
+    current_value["time"] = time;
+    current_value["pressure"] = nlohmann::json::array();
+    auto start_state = get_boundary_state(1, state);
+    auto end_state = get_boundary_state(-1, state);
+    nlohmann::json pressure0_json;
+    pressure0_json["x"] = 0.0;
+    pressure0_json["value"] = start_state[0];
+    current_value["pressure"].push_back(pressure0_json);
+
+    nlohmann::json pressure1_json;
+    pressure1_json["x"] = 1.0;
+    pressure1_json["value"] = end_state[0];
+    current_value["pressure"].push_back(pressure1_json);
+    nlohmann::json flow0_json;
+    flow0_json["x"] = 0.0;
+    flow0_json["value"] = start_state[1];
+    current_value["flow"].push_back(flow0_json);
+
+    nlohmann::json flow1_json;
+    flow1_json["x"] = 1.0;
+    flow1_json["value"] = end_state[1];
+    current_value["flow"].push_back(flow1_json);
+
+    if (it == current_component_vector.end()) {
+      // std::cout << "Not found!" << std::endl;
+      nlohmann::json newoutput;
+      newoutput["id"] = get_id_copy();
+      newoutput["data"] = nlohmann::json::array();
+      newoutput["data"].push_back(current_value);
+      current_component_vector.push_back(newoutput);
+    } else {
+      if ((*it)["id"] != id) {
+        gthrow(
+            {"The json value\n", (*it).dump(4),
+             "\n has an id different from the current object, whose id is ", id,
+             "\n This is a bug. Please report it!"});
+      }
+
+      // std::cout << "found!" << std::endl;
+      nlohmann::json &outputjson = (*it);
+      outputjson["data"].push_back(current_value);
+    }
+  }
+
   void Shortcomponent::initial_values_helper(
       Eigen::Ref<Eigen::VectorXd> new_state,
       nlohmann::json const &initial_json) {

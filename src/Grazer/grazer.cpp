@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
 
     // This try block makes sure, the destructor of problem is called in order
     // to print out all data, we have already.
-    Model::Problem problem(problem_json, output_dir);
+    Model::Problem problem(problem_json, output_dir, timeevolver.get_output());
     int number_of_states = problem.set_indices();
     std::cout << "data read" << std::endl;
 

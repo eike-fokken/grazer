@@ -95,6 +95,15 @@ namespace Model::Networkproblem {
     }
   }
 
+  void Networkproblem::json_save(
+      nlohmann::json &output, double time,
+      Eigen::Ref<Eigen::VectorXd const> state) const {
+    for (Model::Networkproblem::Equationcomponent *eqcomponent :
+         equationcomponents) {
+      eqcomponent->json_save(output, time, state);
+    }
+  }
+
   void Networkproblem::print_to_files(
       std::filesystem::path const &output_directory) {
     for (Model::Networkproblem::Equationcomponent *eqcomponent :

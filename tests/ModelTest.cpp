@@ -15,7 +15,8 @@ TEST(modelSubproblem, Model_evaluate) {
 
   auto problem_json = R"( {"subproblems": {}} )"_json;
   auto output_dir = std::filesystem::path("");
-  Model::Problem problem(problem_json, output_dir);
+  nlohmann::json output;
+  Model::Problem problem(problem_json, output_dir, output);
 
   // make unique pointer of mocksub1 and mocksub2
   auto mock1_ptr = std::make_unique<GrazerTest::MockSubproblem>();
