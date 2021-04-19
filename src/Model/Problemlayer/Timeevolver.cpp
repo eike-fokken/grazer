@@ -34,15 +34,16 @@ namespace Model {
     return get_timeinterval() / Number_of_timesteps;
   }
 
-  Timeevolver::Timeevolver(double tolerance, int maximal_number_of_iterations) :
-      solver(tolerance, maximal_number_of_iterations) {}
+  Timeevolver::Timeevolver(
+      double tolerance, int maximal_number_of_iterations,
+      std::filesystem::path const &_output_dir) :
+      solver(tolerance, maximal_number_of_iterations),
+      output_dir(_output_dir) {}
 
   Timeevolver::~Timeevolver() {
-    auto cwd = std::filesystem::current_path();
-    auto outputfile = std::filesystem::current_path()
-                      / std::filesystem::path("output.json");
+    auto outputfile = output_dir / std::filesystem::path("output.json");
     std::ofstream o(outputfile);
-    o << output.dump();
+    o << output.dump(1);
   }
   void Timeevolver::simulate(
       Timedata timedata, Model::Problem &problem, int number_of_states,
@@ -86,5 +87,8 @@ namespace Model {
     }
   }
 
-  nlohmann::json &Timeevolver::get_output() { return output; }
+  nlohmann::json &Timeevolver::get_output_json() { return output; }
+  std::filesystem::path const &Timeevolver::get_output_dir() {
+    return output_dir;
+  }
 } // namespace Model

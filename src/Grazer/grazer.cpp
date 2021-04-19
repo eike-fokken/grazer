@@ -41,11 +41,13 @@ int main(int argc, char **argv) {
     double tolerance = 1e-8;
     int maximal_number_of_newton_iterations = 50;
     Model::Timeevolver timeevolver(
-        tolerance, maximal_number_of_newton_iterations);
+        tolerance, maximal_number_of_newton_iterations, output_dir);
 
     // This try block makes sure, the destructor of problem is called in order
     // to print out all data, we have already.
-    Model::Problem problem(problem_json, output_dir, timeevolver.get_output());
+    Model::Problem problem(
+        problem_json, timeevolver.get_output_dir(),
+        timeevolver.get_output_json());
     int number_of_states = problem.set_indices();
     std::cout << "data read" << std::endl;
 

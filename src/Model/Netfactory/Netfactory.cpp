@@ -28,8 +28,11 @@ namespace Model::Networkproblem {
         networkproblem_json, control_key);
 
     nlohmann::json &topology = networkproblem_json[topology_key];
+    // sort topology here
     nlohmann::json &boundary = networkproblem_json[boundary_key];
+    // sort boundaries here
     nlohmann::json &control = networkproblem_json[control_key];
+    // sort controls here
 
     // build the node vector.
     insert_second_json_in_topology_json(topology, boundary, "boundary_values");
@@ -186,7 +189,7 @@ namespace Model::Networkproblem {
       std::string const &name_of_inserted_json) {
     for (auto const &component : {"nodes", "connections"}) {
       // only fire if the json contains entries of this component.
-      if (!second_json.contains(component)) {
+      if (not second_json.contains(component)) {
         continue;
       }
       for (auto it = second_json[component].begin();
