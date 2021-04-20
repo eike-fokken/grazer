@@ -29,6 +29,11 @@ namespace Model::Networkproblem {
 
     nlohmann::json &topology = networkproblem_json[topology_key];
     // sort topology here
+
+    // for (auto component_itr = topology.begin();
+    //      topology.end(); ++component_itr) {
+    // }
+
     nlohmann::json &boundary = networkproblem_json[boundary_key];
     // sort boundaries here
     nlohmann::json &control = networkproblem_json[control_key];
