@@ -1,6 +1,7 @@
 #pragma once
+#include "Boundaryvalue.hpp"
 #include "Control.hpp"
-#include <Powernode.hpp>
+#include "Powernode.hpp"
 
 namespace Model::Networkproblem::Power {
 
@@ -9,6 +10,7 @@ namespace Model::Networkproblem::Power {
   public:
     static std::string get_type();
     std::string get_power_type() const override;
+    static nlohmann::json get_schema();
 
     SwitchedPowerplant(nlohmann::json const &topology);
 
@@ -32,6 +34,7 @@ namespace Model::Networkproblem::Power {
   private:
     // Problem: We also need to switch out the boundary values!
     Control<1> control;
+    Boundaryvalue<2> PVboundaryvalues;
   };
 
 } // namespace Model::Networkproblem::Power
