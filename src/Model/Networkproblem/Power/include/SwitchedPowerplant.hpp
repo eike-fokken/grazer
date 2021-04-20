@@ -1,0 +1,37 @@
+#pragma once
+#include "Control.hpp"
+#include <Powernode.hpp>
+
+namespace Model::Networkproblem::Power {
+
+  class SwitchedPowerplant final : public Powernode {
+
+  public:
+    static std::string get_type();
+    std::string get_power_type() const override;
+
+    SwitchedPowerplant(nlohmann::json const &topology);
+
+    void evaluate(
+        Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
+        double new_time, Eigen::Ref<Eigen::VectorXd const> last_state,
+        Eigen::Ref<Eigen::VectorXd const> new_state) const override;
+
+    void evaluate_state_derivative(
+        Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const>,
+        Eigen::Ref<Eigen::VectorXd const> new_state) const override;
+
+    void
+    save_values(double time, Eigen::Ref<Eigen::VectorXd const> state) override;
+
+    void json_save(
+        nlohmann::json &output, double time,
+        Eigen::Ref<Eigen::VectorXd const> state) const override;
+
+  private:
+    // Problem: We also need to switch out the boundary values!
+    Control<1> control;
+  };
+
+} // namespace Model::Networkproblem::Power
