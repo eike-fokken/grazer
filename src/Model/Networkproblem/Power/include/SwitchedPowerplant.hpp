@@ -33,8 +33,10 @@ namespace Model::Networkproblem::Power {
 
   private:
     // Problem: We also need to switch out the boundary values!
-    Control<1> control;
-    Boundaryvalue<2> PVboundaryvalues;
+    // Carful: We always need to introduce 2 times to make sure that the value
+    // is actually 0!
+    Control<1> is_PV_node;
+    Boundaryvalue<2> boundary_values_pv;
   };
 
 } // namespace Model::Networkproblem::Power
