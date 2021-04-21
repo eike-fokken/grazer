@@ -1,4 +1,6 @@
 #pragma once
+#include "Boundaryvalue.hpp"
+#include "Control.hpp"
 #include "Edge.hpp"
 #include <Gasedge.hpp>
 
@@ -60,8 +62,12 @@ namespace Model::Networkproblem::Gaspowerconnection {
 
     static constexpr double kappa{60};
 
+    bool is_gas_driven(double time) const;
+
   private:
-    Model::Networkproblem::Power::Powernode *powerendnode{nullptr};
+    Control<1> control;
+    Boundaryvalue<1> boundaryvalue;
+    Power::Powernode *powerendnode{nullptr};
 
     double const gas2power_q_coefficient;
     double const power2gas_q_coefficient;

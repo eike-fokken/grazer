@@ -1,4 +1,5 @@
 #include "Full_factory.hpp"
+#include "ExternalPowerplant.hpp"
 #include "Gas_factory.hpp"
 #include "Power_factory.hpp"
 
@@ -23,6 +24,9 @@ namespace Model::Componentfactory {
     factory.add_edge_type(
         std::make_unique<EdgeType<
             Networkproblem::Gaspowerconnection::Gaspowerconnection>>());
+    factory.add_node_type(
+        std::make_unique<NodeType<
+            Networkproblem::Gaspowerconnection::ExternalPowerplant>>());
   }
 
   Full_factory::Full_factory() { add_all_components(*this); }

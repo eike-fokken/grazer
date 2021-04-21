@@ -1,18 +1,18 @@
 #pragma once
-#include "Boundaryvalue.hpp"
-#include "Control.hpp"
 #include "Powernode.hpp"
 
-namespace Model::Networkproblem::Power {
+namespace Model::Networkproblem::Gaspowerconnection {
+  class Gaspowerconnection;
 
-  class SwitchedPowerplant final : public Powernode {
+  class ExternalPowerplant final : public Power::Powernode {
 
   public:
     static std::string get_type();
     std::string get_power_type() const override;
-    static nlohmann::json get_schema();
 
-    SwitchedPowerplant(nlohmann::json const &topology);
+    using Powernode::Powernode;
+
+    void setup() override;
 
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
@@ -32,11 +32,6 @@ namespace Model::Networkproblem::Power {
         Eigen::Ref<Eigen::VectorXd const> state) const override;
 
   private:
-    // Problem: We also need to switch out the boundary values!
-    // Carful: We always need to introduce 2 times to make sure that the value
-    // is actually 0!
-    Control<1> is_PV_node;
-    Boundaryvalue<2> boundary_values_pv;
+    Gaspowerconnection *connection{nullptr};
   };
-
-} // namespace Model::Networkproblem::Power
+} // namespace Model::Networkproblem::Gaspowerconnection
