@@ -42,7 +42,6 @@ namespace Model::Networkproblem {
     for (auto component_itr = topology.begin();
          component_itr != topology.end(); ++component_itr) {
       std::string topology_typename = component_itr.key();
-      // auto sorted_topology = topology[topology_typename];
       std::sort(
           topology[topology_typename].begin(),
           topology[topology_typename].end(), id_compare_less);
@@ -63,7 +62,6 @@ namespace Model::Networkproblem {
     for (auto component_itr = boundary.begin(); component_itr != boundary.end();
          ++component_itr) {
       std::string boundary_typename = component_itr.key();
-      // auto sorted_topology = topology[topology_typename];
       std::sort(
           topology[boundary_typename].begin(),
           topology[boundary_typename].end(), id_compare_less);
