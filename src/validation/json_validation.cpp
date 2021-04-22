@@ -55,7 +55,7 @@ void validation::validate_json(json const &data, json const &schema) {
     validator.validate(data);
   } catch (const std::exception &e) {
     std::ostringstream o;
-    o << "Validation failed, here is why: " << e.what() << "\n";
+    o << "Validation failed: \n" << e.what() << "\n";
     throw std::runtime_error(o.str());
   }
 

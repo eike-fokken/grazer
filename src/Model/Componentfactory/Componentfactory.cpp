@@ -3,6 +3,29 @@
 
 namespace Model::Componentfactory {
 
+  void validate_component_json(
+      nlohmann::json const &topology, nlohmann::json const &schema) {
+    try {
+      validation::validate_json(topology, schema);
+    } catch (std::exception &e) {
+
+      std::string helper;
+      if (topology.contains("id")) {
+        helper = "The json of object with id "
+                 + topology["id"].get<std::string>()
+                 + " doesn't conform to its schema!\n";
+      } else {
+        helper
+            = "The current object json does not conform to its schema.\n"
+              "It also doesn't have an entry named 'id'.\n"
+              "Its json is given by: "
+              + topology.dump(1) + "\n";
+      }
+      std::ostringstream o;
+      o << helper << e.what() << "\n";
+      throw std::runtime_error(o.str());
+    }
+  }
   // std::map<std::string, std::unique_ptr<AbstractNodeType>>
   // Componentfactory::get_node_type_map() {
   //   return node_type_map;
