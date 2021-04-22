@@ -50,9 +50,10 @@ int main(int argc, char **argv) {
   }
 
   std::vector<std::string> gastypes
-      = {"Pipe", "Controlvalve", "Compressorstation", "Shortpipe"};
-  std::vector<std::string> powertypes
-      = {"Vphinode", "PQnode", "PVnode", "StochasticPQnode"};
+      = {"Pipe", "Controlvalve", "Compressorstation", "Shortpipe",
+         "Gaspowerconnection"};
+  std::vector<std::string> powertypes = {
+      "Vphinode", "PQnode", "PVnode", "StochasticPQnode", "ExternalPowerplant"};
   json id_object;
   id_object["id"] = id;
   auto id_compare_less
