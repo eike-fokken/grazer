@@ -18,8 +18,7 @@ namespace Model::Componentfactory {
         helper
             = "The current object json does not conform to its schema.\n"
               "It also doesn't have an entry named 'id'.\n"
-              "Its json is given by: "
-              + topology.dump(1) + "\n";
+              "But you can find all its data in the following dump:\n";
       }
       std::ostringstream o;
       o << helper << e.what() << "\n";
