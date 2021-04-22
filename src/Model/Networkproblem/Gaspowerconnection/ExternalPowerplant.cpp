@@ -39,7 +39,6 @@ namespace Model::Networkproblem::Gaspowerconnection {
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
 
-    // using doubles as bools is a little dirty...
     if (connection->is_gas_driven(new_time)) {
       // If the gas drives the power output, this node has only one equations.
       rootvalues[phi_index] = new_state[V_index] - boundaryvalue(new_time)[0];

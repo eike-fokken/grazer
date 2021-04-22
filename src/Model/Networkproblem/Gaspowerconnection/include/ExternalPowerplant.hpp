@@ -4,6 +4,10 @@
 namespace Model::Networkproblem::Gaspowerconnection {
   class Gaspowerconnection;
 
+  /** \brief A Powernode to be connected to an edge that leads out of the power
+   * network.
+   *
+   */
   class ExternalPowerplant final : public Power::Powernode {
 
   public:
