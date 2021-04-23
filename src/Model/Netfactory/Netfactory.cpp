@@ -37,62 +37,74 @@ namespace Model::Networkproblem {
     };
 
     nlohmann::json &topology = networkproblem_json[topology_key];
-    // sort topology here
 
-    for (auto component_itr = topology.begin();
-         component_itr != topology.end(); ++component_itr) {
-      std::string topology_typename = component_itr.key();
-      std::sort(
-          topology[topology_typename].begin(),
-          topology[topology_typename].end(), id_compare_less);
+    for (auto const &component_types : {"nodes", "connections"}) {
+      if (not topology.contains(component_types)){
+        continue;
+      }
+      for (auto component_itr = topology[component_types].begin();
+           component_itr != topology[component_types].end(); ++component_itr) {
+        auto &second_json_vector_json = topology[component_types][component_itr.key()];
+        std::sort(
+          second_json_vector_json.begin(),
+          second_json_vector_json.end(), id_compare_less);
 
-      auto first_eq_pair = std::adjacent_find(
-          topology[topology_typename].begin(), topology[topology_typename].end(),
+        auto first_eq_pair = std::adjacent_find(
+          second_json_vector_json.begin(), second_json_vector_json.end(),
           id_equals);
-      if (first_eq_pair != topology[topology_typename].end()) {
-        gthrow(
+        if (first_eq_pair != second_json_vector_json.end()) {
+          gthrow(
             {"The id ", (*first_eq_pair)["id"].get<std::string>(),
              " appears twice in topology."});
+        }
       }
     }
 
     nlohmann::json &boundary = networkproblem_json[boundary_key];
-    // sort boundaries here
 
-    for (auto component_itr = boundary.begin(); component_itr != boundary.end();
-         ++component_itr) {
-      std::string boundary_typename = component_itr.key();
-      std::sort(
-          topology[boundary_typename].begin(),
-          topology[boundary_typename].end(), id_compare_less);
+    for (auto const &component_types : {"nodes", "connections"}) {
+      if (not boundary.contains(component_types)) {
+        continue;
+      }
+      for (auto component_itr = boundary[component_types].begin();
+           component_itr != boundary[component_types].end(); ++component_itr) {
+        auto &second_json_vector_json = boundary[component_types][component_itr.key()];
+        std::sort(
+            second_json_vector_json.begin(), second_json_vector_json.end(),
+            id_compare_less);
 
-      auto first_eq_pair = std::adjacent_find(
-          topology[boundary_typename].begin(),
-          topology[boundary_typename].end(), id_equals);
-      if (first_eq_pair != topology[boundary_typename].end()) {
-        gthrow(
-            {"The id ", (*first_eq_pair)["id"].get<std::string>(),
-             " appears twice in boundary."});
+        auto first_eq_pair = std::adjacent_find(
+            second_json_vector_json.begin(), second_json_vector_json.end(),
+            id_equals);
+        if (first_eq_pair != second_json_vector_json.end()) {
+          gthrow(
+              {"The id ", (*first_eq_pair)["id"].get<std::string>(),
+               " appears twice in boundary."});
+        }
       }
     }
 
     nlohmann::json &control = networkproblem_json[control_key];
-    // sort controls here
 
-    for (auto component_itr = control.begin(); component_itr != control.end();
-         ++component_itr) {
-      std::string control_typename = component_itr.key();
-      std::sort(
-          topology[control_typename].begin(),
-          topology[control_typename].end(), id_compare_less);
+    for (auto const &component_types : {"nodes", "connections"}) {
+      if (not control.contains(component_types)) {
+        continue;
+      }
+      for (auto component_itr = control[component_types].begin();
+           component_itr != control[component_types].end(); ++component_itr) {
+        auto &second_json_vector_json = control[component_types][component_itr.key()];
+        std::sort(
+            second_json_vector_json.begin(), second_json_vector_json.end(),
+            id_compare_less);
 
-      auto first_eq_pair = std::adjacent_find(
-          topology[control_typename].begin(),
-          topology[control_typename].end(), id_equals);
-      if (first_eq_pair != topology[control_typename].end()) {
-        gthrow(
-            {"The id ", (*first_eq_pair)["id"].get<std::string>(),
-             " appears twice in control."});
+        auto first_eq_pair = std::adjacent_find(
+            second_json_vector_json.begin(), second_json_vector_json.end(),
+            id_equals);
+        if (first_eq_pair != second_json_vector_json.end()) {
+          gthrow(
+              {"The id ", (*first_eq_pair)["id"].get<std::string>(),
+               " appears twice in control."});
+        }
       }
     }
 
