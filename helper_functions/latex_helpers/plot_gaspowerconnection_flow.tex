@@ -1,0 +1,33 @@
+\documentclass{standalone}
+
+%\providecommand{\datapath}{.}
+
+\usepackage{tikz}
+\usepackage{pgfplotstable}
+\usepackage{siunitx}
+\pgfplotsset{compat=1.13}
+\usetikzlibrary{plotmarks,calc,math,shapes}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{axis}[
+    x filter/.code={\pgfmathparse{#1/3600}\pgfmathresult},
+    xlabel={\large t(\si{\hour})},
+    ylabel={\large flux(\si{\meter \cubed \per \second})},
+    table/col sep=comma,
+    legend pos=north east,legend cell align=left]
+
+    % Note that the first output at t=0 is skipped as this is just the initial condition.
+    % It may be physically unsound.
+    \pgfplotstableread[skip first n =2]{../../g2p_ld24_N221_flow.csv}\flow
+    \addplot[color=cyan,solid,line width=1pt] table[ x index =0,y index=1] {\flow};
+    \pgfplotstableread[skip first n =2]{../../g2p_ld6_N7057_flow.csv}\flow
+    \addplot[color=green,solid,line width=1pt] table[ x index =0,y index=1] {\flow};
+
+    \addlegendentry{\tiny Flux g2p\textunderscore ld24\textunderscore N221}
+    \addlegendentry{\tiny Flux g2p\textunderscore ld6\textunderscore N7057}
+  \end{axis}
+\end{tikzpicture}
+\end{document}
+
+

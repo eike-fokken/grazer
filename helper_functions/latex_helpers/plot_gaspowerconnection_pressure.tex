@@ -19,13 +19,14 @@
 
     % Note that the first output at t=0 is skipped as this is just the initial condition.
     % It may be physically unsound.
-    \pgfplotstableread[skip first n =2]{../../g2p_ld29_N7061_flow.csv}\flow
-    \pgfplotstableread[skip first n =2]{../../g2p_ld29_N7061_pressure.csv}\pressure
-    \addplot[color=cyan,solid,line width=1pt] table[ x index =0,y index=1] {\flow};
+    \pgfplotstableread[skip first n =2]{../../g2p_ld24_N221_pressure.csv}\pressure
     \addplot[color=red,solid,line width=1pt] table[x index =0,y index=1] {\pressure};
-    \addlegendentry{\tiny Flux}
-    \addlegendentry{\tiny Pressure}
-      \end{axis}
+    \pgfplotstableread[skip first n =2]{../../g2p_ld6_N7057_pressure.csv}\pressure
+    \addplot[color=brown,solid,line width=1pt] table[x index =0,y index=1] {\pressure};
+
+    \addlegendentry{\tiny Pressure g2p\textunderscore ld24\textunderscore N221}
+    \addlegendentry{\tiny Pressure g2p\textunderscore ld6\textunderscore N7057}
+  \end{axis}
 \end{tikzpicture}
 \end{document}
 
