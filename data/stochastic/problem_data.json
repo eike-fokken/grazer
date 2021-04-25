@@ -10,7 +10,7 @@
         {
             "Network_problem":
             {
-                "initial_json":"stochastic_initial.json"
+                "initial_json":"initial.json"
             }
         }
     },
@@ -28,8 +28,8 @@
                     "sigma_Q": 0.07
                 },
                 "desired_delta_x": 10000,
-                "topology_json":"stochastic_topology.json",
-                "boundary_json":"stochastic_boundary.json",
+                "topology_json":"topology.json",
+                "boundary_json":"boundary.json",
                 "control_json":"control.json"
             }
         }
