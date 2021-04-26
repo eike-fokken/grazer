@@ -55,7 +55,9 @@ int main(int argc, char **argv) {
 
   std::vector<std::string> powertypes{
       "PQnode", "PVnode", "Vphinode", "StochasticPQnode"};
-  std::vector<std::string> gastypes{"Pipe"};
+  std::vector<std::string> gastypes{
+      "Pipe", "Shortpipe", "Gaspowerconnection", "Compressorstation",
+      "Controlvalve"};
 
   int number_of_runs = 0;
   for (auto &pit : fs::directory_iterator(fs::current_path())) {
