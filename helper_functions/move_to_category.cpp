@@ -49,11 +49,11 @@ int main(int argc, char **argv) {
     }
     if (not found) {
       std::cout << "No object with id " << id << " in category "
-                << from_category << " in file" << file << std::endl;
+                << from_category << " in file " << file << std::endl;
     } else {
       {
         std::ofstream outputstream((fs::path(file)));
-        outputstream << input.dump(1);
+        outputstream << input.dump(4);
       }
     }
   }
