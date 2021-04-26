@@ -1315,7 +1315,7 @@
                 ]
             }
         ],
-        "StochasticPQnode":[
+        "StochasticPQnode": [
             {
                 "id": "N1",
                 "data": [
@@ -1855,10 +1855,9 @@
                         ]
                     }
                 ]
-            }            
+            }
         ],
         "PQnode": [
-
             {
                 "id": "N3",
                 "data": [
@@ -43721,8 +43720,8 @@
             }
         ]
     },
-    "connections":{
-                "Gaspowerconnection": [
+    "connections": {
+        "Gaspowerconnection": [
             {
                 "id": "g2p_ld10_N7071",
                 "data": [
