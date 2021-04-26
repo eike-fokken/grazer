@@ -15,3 +15,5 @@ add_executable(get_mean_sigma get_mean_sigma.cpp)
 
 add_executable(generate_printing_csv generate_printing_csv.cpp)
 target_link_libraries(generate_printing_csv PRIVATE input_output)
+
+add_executable(move_to_category move_to_category.cpp)
