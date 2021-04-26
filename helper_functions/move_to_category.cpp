@@ -1,16 +1,16 @@
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <nlohmann/json.hpp>
 #include <vector>
 
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 namespace fs = std::filesystem;
 
-#include <iostream>
 int main(int argc, char **argv) {
-  if (argc != 3) {
-    std::cout << "You must provide a json file and the id of a component."
+  if (argc != 4) {
+    std::cout << "You must provide a from category, a to category and an id."
               << std::endl;
     return 1;
   }
@@ -21,11 +21,14 @@ int main(int argc, char **argv) {
   std::vector<std::string> files
       = {"topology.json", "boundary.json", "initial.json", "control.json"};
 
-  for (auto const &file : files) {
-    json input;
-    std::fstream filestream((fs::path(file)));
-    filestream >> input;
+  for (std::string const &file : files) {
 
+    json input;
+    {
+      std::ifstream inputstream((fs::path(file)));
+      inputstream >> input;
+    }
+    bool found = false;
     for (auto &comptype : input) { // nodes and connections
       if (not comptype.contains(from_category)) {
         continue;
@@ -41,6 +44,16 @@ int main(int argc, char **argv) {
       } else {
         comptype[to_category].push_back(*it);
         currcat.erase(it);
+        found = true;
+      }
+    }
+    if (not found) {
+      std::cout << "No object with id " << id << " in category "
+                << from_category << " in file" << file << std::endl;
+    } else {
+      {
+        std::ofstream outputstream((fs::path(file)));
+        outputstream << input.dump(1);
       }
     }
   }
