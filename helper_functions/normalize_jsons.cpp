@@ -21,7 +21,7 @@ int main() {
     }
     {
       std::ofstream outputstream((fs::path(file)));
-      outputstream << input.dump(1);
+      outputstream << input.dump(4);
     }
   }
 }
