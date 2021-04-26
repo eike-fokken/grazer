@@ -8,15 +8,24 @@
 using json = nlohmann::ordered_json;
 namespace fs = std::filesystem;
 
+/** @brief A helper function to move a component from one type to another
+ *
+ * The parameters are space-separated strings given as commandline options in
+ * the following order.
+ * @param from The exact name of the type the component is currently in
+ * @param to The exact name of the type the component is to be moved to.
+ * @param id the id of the component to be moved.
+ */
+
 int main(int argc, char **argv) {
   if (argc != 4) {
     std::cout << "You must provide a from category, a to category and an id."
               << std::endl;
     return 1;
   }
-  std::string id = argv[3];
   std::string from_category = argv[1];
   std::string to_category = argv[2];
+  std::string id = argv[3];
 
   std::vector<std::string> files
       = {"topology.json", "boundary.json", "initial.json", "control.json"};

@@ -10,8 +10,8 @@
 using json = nlohmann::json;
 namespace fs = std::filesystem;
 
-void write_gas_csv(std::string id, json object);
-void write_power_csv(std::string id, json object);
+static void write_gas_csv(std::string id, json object);
+static void write_power_csv(std::string id, json object);
 
 /** \brief Outputs data from the output.json of grazer to a csv file.
  *
