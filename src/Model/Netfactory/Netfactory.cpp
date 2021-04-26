@@ -14,7 +14,7 @@
 
 namespace Model::Networkproblem {
 
-  static nlohmann::json sort_json_vectors_by_id(nlohmann::json &components) {
+  static void sort_json_vectors_by_id(nlohmann::json &components) {
 
     auto id_compare_less
         = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
@@ -47,7 +47,6 @@ namespace Model::Networkproblem {
         }
       }
     }
-    return components;
   }
 
   nlohmann::json
