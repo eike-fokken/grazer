@@ -1,0 +1,37 @@
+{
+    "time_evolution_data":
+    {
+        "start_time": 0,
+        "end_time": 86400,
+        "desired_delta_t": 1800
+    },
+    "initial_values":{
+        "subproblems":
+        {
+            "Network_problem":
+            {
+                "initial_json":"initial.json"
+            }
+        }
+    },
+    "problem_data":
+    {
+        "subproblems":
+        {
+            "Network_problem":
+            {
+                "StochasticPQnode_data": {
+                    "number_of_stochastic_steps": 100,
+                    "theta_P": 0.1,
+                    "sigma_P": 0.03,
+                    "theta_Q": 0.1,
+                    "sigma_Q": 0.03
+                },
+                "desired_delta_x": 10000,
+                "topology_json":"topology.json",
+                "boundary_json":"boundary.json",
+                "control_json":"control.json"
+            }
+        }
+    }
+}
