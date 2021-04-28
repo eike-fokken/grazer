@@ -15,7 +15,7 @@
 
 namespace Model::Networkproblem {
 
-  static void sort_json_vectors_by_id(nlohmann::json &components, std::string key) {
+  void sort_json_vectors_by_id(nlohmann::json &components, std::string key) {
 
     for (auto const &component_types : {"nodes", "connections"}) {
       if (not components.contains(component_types)) {
