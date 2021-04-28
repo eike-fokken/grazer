@@ -88,6 +88,12 @@ target_link_libraries(input_output_test PUBLIC input_output)
 target_link_libraries(input_output_test PUBLIC gtest gtest_main gmock)
 target_include_directories(input_output_test PUBLIC include)
 
+add_executable(netfactory_test NetfactoryTest.cpp)
+
+target_link_libraries(netfactory_test PUBLIC netfactory)
+target_link_libraries(netfactory_test PUBLIC gtest gtest_main gmock)
+target_include_directories(netfactory_test PUBLIC include)
+
 add_library(testheader INTERFACE)
 target_link_libraries(testheader INTERFACE  matrixhandler problemlayer gtest gtest_main gmock)
 target_include_directories(testheader INTERFACE include)
@@ -170,6 +176,12 @@ add_test(
   NAME input_output_test
   COMMAND input_output_test
 )
+
+add_test(
+  NAME netfactory_test
+  COMMAND netfactory_test
+)
+
 add_test(
   NAME normaldistribution_test
   COMMAND normaldistribution_test
