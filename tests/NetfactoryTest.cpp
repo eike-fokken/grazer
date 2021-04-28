@@ -5,7 +5,7 @@
 #include <nlohmann/json.hpp>
 #include <stdexcept>
 
-TEST(Initialvalue, Operator) {
+TEST(Netfactory, sort_by_id) {
 
   nlohmann::json topology_json;
 
