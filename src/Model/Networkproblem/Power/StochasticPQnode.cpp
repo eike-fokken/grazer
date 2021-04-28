@@ -65,6 +65,30 @@ namespace Model::Networkproblem::Power {
     // std::cout << current_P << std::endl;
   }
 
+  // // Version for deterministic power factor:
+  // void StochasticPQnode::prepare_timestep(
+  //     double last_time, double new_time,
+  //     Eigen::Ref<Eigen::VectorXd const> last_state,
+  //     Eigen::Ref<Eigen::VectorXd const> // new_state
+  // ) {
+  //   auto P_deterministic = boundaryvalue(new_time)[0];
+  //   auto Q_deterministic = boundaryvalue(new_time)[1];
+
+  //   auto last_P = P(last_state);
+  //   auto last_Q = Q(last_state);
+  //   current_P = Aux::euler_maruyama_oup(
+  //       last_P, stochasticdata->theta_P, P_deterministic, new_time -
+  //       last_time, stochasticdata->sigma_P, stochasticdata->distribution,
+  //       stochasticdata->number_of_stochastic_steps);
+
+  //   // power factor equal to deterministic power factor:
+  //   if (P_deterministic != 0) {
+  //     current_Q = current_P * Q_deterministic / P_deterministic;
+  //   } else {
+  //     current_Q = last_Q + current_P;
+  //   }
+  // }
+
   void StochasticPQnode::evaluate_state_derivative(
       Aux::Matrixhandler *jacobianhandler,
       double // last_time
