@@ -19,7 +19,7 @@ static std::string colorchooser(std::string const &type);
  */
 
 int main(int argc, char **argv) {
-  if (argc != 3) {
+  if (argc != 3 and argc != 4) {
     std::cout
         << "You must provide a topology file and a latex filename for printout!"
         << std::endl;
@@ -27,6 +27,13 @@ int main(int argc, char **argv) {
   }
   std::string topfile = argv[1];
   std::string texfile = argv[2];
+
+  double divideby = 1.0;
+  if (argc == 3) {
+    divideby = 10;
+  } else {
+    divideby = std::stod(argv[3]);
+  }
 
   json topology;
   {
@@ -44,8 +51,15 @@ int main(int argc, char **argv) {
             << "\\usepackage{tikz}\n"
             << "\\begin{document}\n"
             << "\\begin{tikzpicture}[every node"
-            << "/.style={scale=0.7,transform shape,circle}]\n";
+            << "/.style={scale=3,transform shape}]\n";
 
+  struct Node {
+    std::string color;
+    std::string id;
+    double x;
+    double y;
+  };
+  std::vector<Node> nodes;
   for (auto const &type : nodetypes) {
     if (not topology["nodes"].contains(type)) {
       continue;
@@ -53,15 +67,29 @@ int main(int argc, char **argv) {
     auto color = colorchooser(type);
     for (auto const &node : topology["nodes"][type]) {
       std::string id = node["id"];
-      auto label_id
-          = std::regex_replace(id, std::regex("_"), "\\textunderscore ");
-      double x = node["x"];
-      x = x / 3;
-      double y = node["y"];
-      y = y / 3;
-      outstream << "\\node[draw=" << color << "](" << id << ") at(" << x << ", "
-                << y << "){" << label_id << "};\n";
+      double x = node["x"].get<double>();
+      double y = node["y"].get<double>();
+      nodes.push_back(Node{color, id, x, y});
     }
+  }
+
+  double xmean = 0;
+  double ymean = 0;
+
+  for (auto &node : nodes) {
+    xmean += node.x;
+    ymean += node.y;
+  }
+  xmean = xmean / static_cast<int>(nodes.size());
+  ymean = ymean / static_cast<int>(nodes.size());
+
+  for (auto &node : nodes) {
+    auto label_id
+        = std::regex_replace(node.id, std::regex("_"), "\\textunderscore ");
+    double out_x = (node.x - xmean) / divideby;
+    double out_y = (node.y - ymean) / divideby;
+    outstream << "\\node[draw=" << node.color << "](" << node.id << ") at("
+              << out_x << ", " << out_y << "){" << label_id << "};\n";
   }
 
   for (auto const &type : edgetypes) {
@@ -116,7 +144,7 @@ std::string colorchooser(std::string const &type) {
   } else if (type == "Sink") {
     return "red";
   } else if (type == "Innode") {
-    return "blue";
+    return "black";
   } else {
     throw std::runtime_error(
         "Unknown node type! Did you extend this program without extending the "
