@@ -7,6 +7,7 @@
 #include "Matrixhandler.hpp"
 #include "Netfactory.hpp"
 #include "Networkproblem.hpp"
+#include "Powernode.hpp"
 #include "test_io_helper.hpp"
 #include <Eigen/src/Core/Matrix.h>
 #include <filesystem>
@@ -323,17 +324,17 @@ TEST_F(GaspowerconnectionTEST, evaluate) {
     FAIL();
   }
 
-  auto extpowerplant = dynamic_cast<
-      Model::Networkproblem::Gaspowerconnection::ExternalPowerplant const *>(
-      nodes.front());
-  if (not extpowerplant) {
-    FAIL();
-  }
-
   auto gp = dynamic_cast<
       Model::Networkproblem::Gaspowerconnection::Gaspowerconnection const *>(
       edges.front());
   if (not gp) {
+    FAIL();
+  }
+
+  auto endpowernode
+      = dynamic_cast<Model::Networkproblem::Power::Powernode const *>(
+          gp->get_ending_node());
+  if (not endpowernode) {
     FAIL();
   }
 
@@ -342,7 +343,7 @@ TEST_F(GaspowerconnectionTEST, evaluate) {
     netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
     EXPECT_DOUBLE_EQ(
         rootvalues[3],
-        extpowerplant->P(new_state) - gp->generated_power(new_state[3]));
+        endpowernode->P(new_state) - gp->generated_power(new_state[3]));
   }
 }
 
@@ -387,12 +388,6 @@ TEST_F(GaspowerconnectionTEST, evaluate_state_derivative) {
 
   auto nodes = netprob->get_network().get_nodes();
   if (nodes.size() != 2) {
-    FAIL();
-  }
-  auto extpowerplant = dynamic_cast<
-      Model::Networkproblem::Gaspowerconnection::ExternalPowerplant const *>(
-      nodes.front());
-  if (not extpowerplant) {
     FAIL();
   }
 
