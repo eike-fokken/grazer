@@ -1,12 +1,12 @@
 #include "Gaspowerconnection.hpp"
 #include "Equationcomponent_test_helpers.hpp"
+#include "ExternalPowerplant.hpp"
 #include "Full_factory.hpp"
 #include "Innode.hpp"
 #include "Mathfunctions.hpp"
 #include "Matrixhandler.hpp"
 #include "Netfactory.hpp"
 #include "Networkproblem.hpp"
-#include "Vphinode.hpp"
 #include "test_io_helper.hpp"
 #include <Eigen/src/Core/Matrix.h>
 #include <filesystem>
@@ -43,7 +43,7 @@ nlohmann::json gaspowerconnection_json(
     std::string id, nlohmann::json startnode, nlohmann::json endnode,
     double gas2power_q_coefficient, double power2gas_q_coefficient);
 
-nlohmann::json vphinode_json(
+nlohmann::json externalpowerplant_json(
     std::string id, double G, double B, Eigen::Vector2d cond0,
     Eigen::Vector2d cond1);
 
@@ -56,39 +56,53 @@ nlohmann::json gaspowerconnection_json(
   gp_topology["to"] = endnode["id"];
   gp_topology["gas2power_q_coeff"] = gas2power_q_coefficient;
   gp_topology["power2gas_q_coeff"] = power2gas_q_coefficient;
+  Eigen::Matrix<double, 1, 1> cond0;
+  cond0 << 1.0;
+  Eigen::Matrix<double, 1, 1> cond1;
+  cond1 << 1.0;
+  auto bound = make_value_json(id, "time", cond0, cond1);
+  gp_topology["boundary_values"] = bound;
+  Eigen::Matrix<double, 1, 1> control0;
+  control0 << 1.0;
+  Eigen::Matrix<double, 1, 1> control1;
+  control1 << 1.0;
+  auto control = make_value_json(id, "time", control0, control1);
+  gp_topology["control_values"] = control;
+
   return gp_topology;
 }
 
-nlohmann::json vphinode_json(
+nlohmann::json externalpowerplant_json(
     std::string id, double G, double B, Eigen::Vector2d cond0,
     Eigen::Vector2d cond1) {
-  nlohmann::json vphi_topology;
-  vphi_topology["id"] = id;
-  vphi_topology["G"] = G;
-  vphi_topology["B"] = B;
+  nlohmann::json extpowerplant_topology;
+  extpowerplant_topology["id"] = id;
+  extpowerplant_topology["G"] = G;
+  extpowerplant_topology["B"] = B;
   auto bound = make_value_json(id, "time", cond0, cond1);
-  vphi_topology["boundary_values"] = bound;
-  return vphi_topology;
+  extpowerplant_topology["boundary_values"] = bound;
+  return extpowerplant_topology;
 }
 
 TEST_F(GaspowerconnectionTEST, smoothing_polynomial) {
   nlohmann::json innode_json;
-  innode_json["id"] = "innode";
+  innode_json["id"] = "ainnode";
   double G = 4;
   double B = 123;
   Eigen::Vector2d cond0(345, 333);
   Eigen::Vector2d cond1(341, 3331);
-  auto vphi_json = vphinode_json("vphi", G, B, cond0, cond1);
+  auto extpowerplant_json
+      = externalpowerplant_json("bextpowerplant", G, B, cond0, cond1);
 
   double gas2power_q_coefficient = 34;
   double power2gas_q_coefficient = 55;
 
   auto gp_json = gaspowerconnection_json(
-      "gp", innode_json, vphi_json, gas2power_q_coefficient,
+      "gp", innode_json, extpowerplant_json, gas2power_q_coefficient,
       power2gas_q_coefficient);
 
   auto netprob_json = make_full_json(
-      {{"Innode", {innode_json}}, {"Vphinode", {vphi_json}}},
+      {{"Innode", {innode_json}}, {"ExternalPowerplant", {extpowerplant_json}}},
       {{"Gaspowerconnection", {gp_json}}});
   auto netprob = get_Networkproblem(netprob_json);
 
@@ -115,22 +129,23 @@ TEST_F(GaspowerconnectionTEST, smoothing_polynomial) {
 
 TEST_F(GaspowerconnectionTEST, dsmoothing_polynomial) {
   nlohmann::json innode_json;
-  innode_json["id"] = "innode";
+  innode_json["id"] = "ainnode";
   double G = 4;
   double B = 123;
   Eigen::Vector2d cond0(345, 333);
   Eigen::Vector2d cond1(341, 3331);
-  auto vphi_json = vphinode_json("vphi", G, B, cond0, cond1);
+  auto extpowerplant_json
+      = externalpowerplant_json("bextpowerplant", G, B, cond0, cond1);
 
   double gas2power_q_coefficient = 34;
   double power2gas_q_coefficient = 55;
 
   auto gp_json = gaspowerconnection_json(
-      "gp", innode_json, vphi_json, gas2power_q_coefficient,
+      "gp", innode_json, extpowerplant_json, gas2power_q_coefficient,
       power2gas_q_coefficient);
 
   auto netprob_json = make_full_json(
-      {{"Innode", {innode_json}}, {"Vphinode", {vphi_json}}},
+      {{"Innode", {innode_json}}, {"ExternalPowerplant", {extpowerplant_json}}},
       {{"Gaspowerconnection", {gp_json}}});
   auto netprob = get_Networkproblem(netprob_json);
 
@@ -171,22 +186,23 @@ TEST_F(GaspowerconnectionTEST, dsmoothing_polynomial) {
 
 TEST_F(GaspowerconnectionTEST, generated_power) {
   nlohmann::json innode_json;
-  innode_json["id"] = "innode";
+  innode_json["id"] = "ainnode";
   double G = 4;
   double B = 123;
   Eigen::Vector2d cond0(345, 333);
   Eigen::Vector2d cond1(341, 3331);
-  auto vphi_json = vphinode_json("vphi", G, B, cond0, cond1);
+  auto extpowerplant_json
+      = externalpowerplant_json("bextpowerplant", G, B, cond0, cond1);
 
   double gas2power_q_coefficient = 34;
   double power2gas_q_coefficient = 55;
 
   auto gp_json = gaspowerconnection_json(
-      "gp", innode_json, vphi_json, gas2power_q_coefficient,
+      "gp", innode_json, extpowerplant_json, gas2power_q_coefficient,
       power2gas_q_coefficient);
 
   auto netprob_json = make_full_json(
-      {{"Innode", {innode_json}}, {"Vphinode", {vphi_json}}},
+      {{"Innode", {innode_json}}, {"ExternalPowerplant", {extpowerplant_json}}},
       {{"Gaspowerconnection", {gp_json}}});
   auto netprob = get_Networkproblem(netprob_json);
 
@@ -219,22 +235,23 @@ TEST_F(GaspowerconnectionTEST, generated_power) {
 
 TEST_F(GaspowerconnectionTEST, dgenerated_power_dq) {
   nlohmann::json innode_json;
-  innode_json["id"] = "innode";
+  innode_json["id"] = "ainnode";
   double G = 4;
   double B = 123;
   Eigen::Vector2d cond0(345, 333);
   Eigen::Vector2d cond1(341, 3331);
-  auto vphi_json = vphinode_json("vphi", G, B, cond0, cond1);
+  auto extpowerplant_json
+      = externalpowerplant_json("bextpowerplant", G, B, cond0, cond1);
 
   double gas2power_q_coefficient = 34;
   double power2gas_q_coefficient = 55;
 
   auto gp_json = gaspowerconnection_json(
-      "gp", innode_json, vphi_json, gas2power_q_coefficient,
+      "gp", innode_json, extpowerplant_json, gas2power_q_coefficient,
       power2gas_q_coefficient);
 
   auto netprob_json = make_full_json(
-      {{"Innode", {innode_json}}, {"Vphinode", {vphi_json}}},
+      {{"Innode", {innode_json}}, {"ExternalPowerplant", {extpowerplant_json}}},
       {{"Gaspowerconnection", {gp_json}}});
   auto netprob = get_Networkproblem(netprob_json);
 
@@ -265,22 +282,23 @@ TEST_F(GaspowerconnectionTEST, dgenerated_power_dq) {
 TEST_F(GaspowerconnectionTEST, evaluate) {
 
   nlohmann::json innode_json;
-  innode_json["id"] = "innode";
+  innode_json["id"] = "ainnode";
   double G = 10;
   double B = 20;
   Eigen::Vector2d cond0(100, 200);
   Eigen::Vector2d cond1(100, 200);
-  auto vphi_json = vphinode_json("vphi", G, B, cond0, cond1);
+  auto extpowerplant_json
+      = externalpowerplant_json("bextpowerplant", G, B, cond0, cond1);
 
   double gas2power_q_coefficient = 34;
   double power2gas_q_coefficient = 554;
 
   auto gp_json = gaspowerconnection_json(
-      "gp", innode_json, vphi_json, gas2power_q_coefficient,
+      "gp", innode_json, extpowerplant_json, gas2power_q_coefficient,
       power2gas_q_coefficient);
 
   auto netprob_json = make_full_json(
-      {{"Innode", {innode_json}}, {"Vphinode", {vphi_json}}},
+      {{"Innode", {innode_json}}, {"ExternalPowerplant", {extpowerplant_json}}},
       {{"Gaspowerconnection", {gp_json}}});
   auto netprob = get_Networkproblem(netprob_json);
   auto number_of_variables = netprob->set_indices(0);
@@ -304,9 +322,11 @@ TEST_F(GaspowerconnectionTEST, evaluate) {
   if (nodes.size() != 2) {
     FAIL();
   }
-  auto vphi = dynamic_cast<Model::Networkproblem::Power::Vphinode const *>(
-      nodes.back());
-  if (not vphi) {
+
+  auto extpowerplant = dynamic_cast<
+      Model::Networkproblem::Gaspowerconnection::ExternalPowerplant const *>(
+      nodes.front());
+  if (not extpowerplant) {
     FAIL();
   }
 
@@ -321,29 +341,31 @@ TEST_F(GaspowerconnectionTEST, evaluate) {
     new_state.setRandom();
     netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
     EXPECT_DOUBLE_EQ(
-        rootvalues[3], vphi->P(new_state) - gp->generated_power(new_state[3]));
+        rootvalues[3],
+        extpowerplant->P(new_state) - gp->generated_power(new_state[3]));
   }
 }
 
 TEST_F(GaspowerconnectionTEST, evaluate_state_derivative) {
 
   nlohmann::json innode_json;
-  innode_json["id"] = "innode";
+  innode_json["id"] = "ainnode";
   double G = 10;
   double B = 20;
   Eigen::Vector2d cond0(100, 200);
   Eigen::Vector2d cond1(100, 200);
-  auto vphi_json = vphinode_json("vphi", G, B, cond0, cond1);
+  auto extpowerplant_json
+      = externalpowerplant_json("bextpowerplant", G, B, cond0, cond1);
 
   double gas2power_q_coefficient = 34;
   double power2gas_q_coefficient = 554;
 
   auto gp_json = gaspowerconnection_json(
-      "gp", innode_json, vphi_json, gas2power_q_coefficient,
+      "gp", innode_json, extpowerplant_json, gas2power_q_coefficient,
       power2gas_q_coefficient);
 
   auto netprob_json = make_full_json(
-      {{"Innode", {innode_json}}, {"Vphinode", {vphi_json}}},
+      {{"Innode", {innode_json}}, {"ExternalPowerplant", {extpowerplant_json}}},
       {{"Gaspowerconnection", {gp_json}}});
   auto netprob = get_Networkproblem(netprob_json);
   auto number_of_variables = netprob->set_indices(0);
@@ -367,9 +389,10 @@ TEST_F(GaspowerconnectionTEST, evaluate_state_derivative) {
   if (nodes.size() != 2) {
     FAIL();
   }
-  auto vphi = dynamic_cast<Model::Networkproblem::Power::Vphinode const *>(
-      nodes.back());
-  if (not vphi) {
+  auto extpowerplant = dynamic_cast<
+      Model::Networkproblem::Gaspowerconnection::ExternalPowerplant const *>(
+      nodes.front());
+  if (not extpowerplant) {
     FAIL();
   }
 

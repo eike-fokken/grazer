@@ -1,0 +1,9 @@
+
+# add_library(testheader INTERFACE)
+# target_link_libraries(testheader INTERFACE  matrixhandler problemlayer gtest gtest_main gmock)
+# target_include_directories(testheader INTERFACE include)
+
+
+
+
+
