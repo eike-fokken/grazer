@@ -19,6 +19,6 @@ namespace Aux {
     // std::cout << "mean: " << mu << "\n";
     // std::cout << "computed: " << current_value << "\n";
     return current_value;
-  };
+  }
 
 } // namespace Aux
