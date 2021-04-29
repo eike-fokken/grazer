@@ -15,7 +15,7 @@ TEST(Normaldistribution, operator1) {
 
   std::map<int, int> occurcences;
   for (int number = 0; number < number_of_samples; ++number) {
-    auto current = n(mean, standard_deviation);
+    auto current = n.get_sample(mean, standard_deviation);
     int index
         = static_cast<int>(std::floor((current - mean) / standard_deviation));
     ++occurcences[index];

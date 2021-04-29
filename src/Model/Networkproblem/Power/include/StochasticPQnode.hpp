@@ -53,7 +53,7 @@ namespace Model::Networkproblem::Power {
           theta_Q(_theta_Q),
           number_of_stochastic_steps(_number_of_stochastic_steps) {}
 
-      Aux::Normaldistribution distribution;
+      Aux::Truncatednormaldist distribution;
       double const sigma_P;
       double const theta_P;
       double const sigma_Q;
