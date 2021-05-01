@@ -1,3 +1,4 @@
+#include "Componentfactory.hpp"
 #include "Equationcomponent_test_helpers.hpp"
 #include "Flowboundarynode.hpp"
 #include "Gas_factory.hpp"
@@ -9,7 +10,6 @@
 #include "Networkproblem.hpp"
 #include "Pipe.hpp"
 #include "Shortpipe.hpp"
-#include "test_io_helper.hpp"
 #include <filesystem>
 #include <gtest/gtest.h>
 #include <memory>
@@ -18,32 +18,6 @@
 #include <string>
 #include <type_traits>
 #include <vector>
-
-class GasTEST : public ::testing::Test {
-public:
-  std::string output;
-
-  Directory_creator d;
-  Path_changer p{d.get_path()};
-
-  std::unique_ptr<Model::Networkproblem::Networkproblem>
-  get_Networkproblem(nlohmann::json &netproblem) {
-    std::unique_ptr<Model::Networkproblem::Networkproblem> netprob;
-    {
-      std::stringstream buffer;
-      Catch_cout catcher(buffer.rdbuf());
-      Model::Componentfactory::Gas_factory factory;
-      nlohmann::json outputjson;
-      auto net_ptr = Model::Networkproblem::build_net(
-          netproblem, factory, std::filesystem::current_path(), outputjson);
-      netprob = std::make_unique<Model::Networkproblem::Networkproblem>(
-          std::move(net_ptr));
-      output = buffer.str();
-    }
-
-    return netprob;
-  }
-};
 
 nlohmann::json source_json(std::string id, double flowstart, double flowend);
 
@@ -58,6 +32,17 @@ nlohmann::json pipe_json(
     nlohmann::json const &endnode, double length, std::string length_unit,
     double diameter, std::string diameter_unit, double roughness,
     std::string roughness_unit, double desired_delta_x);
+
+class GasTEST : public EqcomponentTEST {
+
+  Model::Componentfactory::Gas_factory factory;
+
+public:
+  std::unique_ptr<Model::Networkproblem::Networkproblem>
+  make_Networkproblem(nlohmann::json &netproblem) {
+    return EqcomponentTEST::make_Networkproblem(netproblem, factory);
+  }
+};
 
 TEST_F(GasTEST, Shortpipe_evaluate) {
 
@@ -75,7 +60,7 @@ TEST_F(GasTEST, Shortpipe_evaluate) {
       {{"Source", {node0_topology, node1_topology}}},
       {{"Shortpipe", {shortpipe_topology}}});
 
-  auto netprob = get_Networkproblem(np_json);
+  auto netprob = make_Networkproblem(np_json);
   int number_of_variables = netprob->set_indices(0);
 
   double last_time = 0.0;
@@ -96,7 +81,6 @@ TEST_F(GasTEST, Shortpipe_evaluate) {
 
   nlohmann::json np_initialjson
       = make_initial_json({}, {{"Shortpipe", {initial_json}}});
-  ;
 
   netprob->set_initial_values(last_state, np_initialjson);
   Eigen::VectorXd new_state = last_state;
@@ -122,7 +106,7 @@ TEST_F(GasTEST, Shortpipe_evaluate_state_derivative) {
       {{"Source", {node0_topology, node1_topology}}},
       {{"Shortpipe", {shortpipe_topology}}});
 
-  auto netprob = get_Networkproblem(np_json);
+  auto netprob = make_Networkproblem(np_json);
 
   int number_of_variables = netprob->set_indices(0);
 
@@ -193,7 +177,7 @@ TEST_F(GasTEST, Source_evaluate) {
       {{"Source", {node0_json, node1_json, node2_json}}},
       {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
 
-  auto netprob = get_Networkproblem(np_json);
+  auto netprob = make_Networkproblem(np_json);
   int number_of_variables = netprob->set_indices(0);
 
   double sp01_pressure_start = 810;
@@ -267,7 +251,7 @@ TEST_F(GasTEST, Source_evaluate_state_derivative) {
       {{"Source", {node0_json, node1_json, node2_json}}},
       {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
 
-  auto netprob = get_Networkproblem(np_json);
+  auto netprob = make_Networkproblem(np_json);
   int number_of_variables = netprob->set_indices(0);
 
   double sp01_pressure_start = 810;
@@ -373,7 +357,7 @@ TEST_F(GasTEST, Sink_evaluate) {
       {{"Sink", {node0_json, node1_json, node2_json}}},
       {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
 
-  auto netprob = get_Networkproblem(np_json);
+  auto netprob = make_Networkproblem(np_json);
   int number_of_variables = netprob->set_indices(0);
 
   double sp01_pressure_start = 810;
@@ -447,7 +431,7 @@ TEST_F(GasTEST, Sink_evaluate_state_derivative) {
       {{"Sink", {node0_json, node1_json, node2_json}}},
       {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
 
-  auto netprob = get_Networkproblem(np_json);
+  auto netprob = make_Networkproblem(np_json);
   int number_of_variables = netprob->set_indices(0);
 
   double sp01_pressure_start = 810;
@@ -547,7 +531,7 @@ TEST_F(GasTEST, Innode_evaluate) {
       {{"Innode", {node0_json, node1_json, node2_json}}},
       {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
 
-  auto netprob = get_Networkproblem(np_json);
+  auto netprob = make_Networkproblem(np_json);
   int number_of_variables = netprob->set_indices(0);
 
   double sp01_pressure_start = 8102;
@@ -614,7 +598,7 @@ TEST_F(GasTEST, Innode_evaluate_state_derivative) {
       {{"Innode", {node0_json, node1_json, node2_json}}},
       {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
 
-  auto netprob = get_Networkproblem(np_json);
+  auto netprob = make_Networkproblem(np_json);
   int number_of_variables = netprob->set_indices(0);
 
   double sp01_pressure_start = 81000;
@@ -732,7 +716,7 @@ TEST_F(GasTEST, Pipe_evaluate) {
   auto netprop_json = make_full_json(
       {{"Innode", {node0, node1}}}, {{"Pipe", {pipe_topology}}});
 
-  auto netprob = get_Networkproblem(netprop_json);
+  auto netprob = make_Networkproblem(netprop_json);
 
   int number_of_variables = netprob->set_indices(0);
 
@@ -801,7 +785,7 @@ TEST_F(GasTEST, Pipe_evaluate_state_derivative) {
   auto netprop_json = make_full_json(
       {{"Innode", {node0, node1}}}, {{"Pipe", {pipe_topology}}});
 
-  auto netprob = get_Networkproblem(netprop_json);
+  auto netprob = make_Networkproblem(netprop_json);
 
   int number_of_variables = netprob->set_indices(0);
 

@@ -37,3 +37,22 @@ nlohmann::json make_full_json(
   }
   return full_json;
 }
+
+std::unique_ptr<Model::Networkproblem::Networkproblem>
+EqcomponentTEST::make_Networkproblem(
+    nlohmann::json &netproblem,
+    Model::Componentfactory::Componentfactory const &factory) {
+  std::unique_ptr<Model::Networkproblem::Networkproblem> netprob;
+  {
+    std::stringstream buffer;
+    Catch_cout catcher(buffer.rdbuf());
+    nlohmann::json outputjson;
+    auto net_ptr = Model::Networkproblem::build_net(
+        netproblem, factory, std::filesystem::current_path(), outputjson);
+    netprob = std::make_unique<Model::Networkproblem::Networkproblem>(
+        std::move(net_ptr));
+    output = buffer.str();
+  }
+
+  return netprob;
+}

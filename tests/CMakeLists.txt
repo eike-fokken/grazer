@@ -4,7 +4,11 @@ add_subdirectory(Auxillary)
 add_subdirectory(validation)
 
 
-add_library(test_helpers STATIC Equationcomponent_test_helpers.cpp)
+add_library(test_helpers STATIC Equationcomponent_test_helpers.cpp test_io_helper.cpp)
+
+target_link_libraries(test_helpers PUBLIC netfactory networkproblem)
+target_link_libraries(test_helpers PUBLIC gtest gtest_main gmock)
+
 target_include_directories(test_helpers PUBLIC include)
 
 

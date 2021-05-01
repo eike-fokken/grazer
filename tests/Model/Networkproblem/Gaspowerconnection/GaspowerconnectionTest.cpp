@@ -8,35 +8,19 @@
 #include "Netfactory.hpp"
 #include "Networkproblem.hpp"
 #include "Powernode.hpp"
-#include "test_io_helper.hpp"
 #include <Eigen/src/Core/Matrix.h>
 #include <filesystem>
 #include <gtest/gtest.h>
 #include <stdexcept>
 
-class GaspowerconnectionTEST : public ::testing::Test {
+class GaspowerconnectionTEST : public EqcomponentTEST {
 public:
-  std::string output;
+  Model::Componentfactory::Full_factory factory;
 
-  Directory_creator d;
-  Path_changer p{d.get_path()};
-
+public:
   std::unique_ptr<Model::Networkproblem::Networkproblem>
-  get_Networkproblem(nlohmann::json &netproblem) {
-    std::unique_ptr<Model::Networkproblem::Networkproblem> netprob;
-    {
-      std::stringstream buffer;
-      Catch_cout catcher(buffer.rdbuf());
-      Model::Componentfactory::Full_factory factory;
-      nlohmann::json outputjson;
-      auto net_ptr = Model::Networkproblem::build_net(
-          netproblem, factory, std::filesystem::current_path(), outputjson);
-      netprob = std::make_unique<Model::Networkproblem::Networkproblem>(
-          std::move(net_ptr));
-      output = buffer.str();
-    }
-
-    return netprob;
+  make_Networkproblem(nlohmann::json &netproblem) {
+    return EqcomponentTEST::make_Networkproblem(netproblem, factory);
   }
 };
 
@@ -105,7 +89,7 @@ TEST_F(GaspowerconnectionTEST, smoothing_polynomial) {
   auto netprob_json = make_full_json(
       {{"Innode", {innode_json}}, {"ExternalPowerplant", {extpowerplant_json}}},
       {{"Gaspowerconnection", {gp_json}}});
-  auto netprob = get_Networkproblem(netprob_json);
+  auto netprob = make_Networkproblem(netprob_json);
 
   auto edges = netprob->get_network().get_edges();
   if (edges.size() != 1) {
@@ -148,7 +132,7 @@ TEST_F(GaspowerconnectionTEST, dsmoothing_polynomial) {
   auto netprob_json = make_full_json(
       {{"Innode", {innode_json}}, {"ExternalPowerplant", {extpowerplant_json}}},
       {{"Gaspowerconnection", {gp_json}}});
-  auto netprob = get_Networkproblem(netprob_json);
+  auto netprob = make_Networkproblem(netprob_json);
 
   auto edges = netprob->get_network().get_edges();
   if (edges.size() != 1) {
@@ -205,7 +189,7 @@ TEST_F(GaspowerconnectionTEST, generated_power) {
   auto netprob_json = make_full_json(
       {{"Innode", {innode_json}}, {"ExternalPowerplant", {extpowerplant_json}}},
       {{"Gaspowerconnection", {gp_json}}});
-  auto netprob = get_Networkproblem(netprob_json);
+  auto netprob = make_Networkproblem(netprob_json);
 
   auto edges = netprob->get_network().get_edges();
   if (edges.size() != 1) {
@@ -254,7 +238,7 @@ TEST_F(GaspowerconnectionTEST, dgenerated_power_dq) {
   auto netprob_json = make_full_json(
       {{"Innode", {innode_json}}, {"ExternalPowerplant", {extpowerplant_json}}},
       {{"Gaspowerconnection", {gp_json}}});
-  auto netprob = get_Networkproblem(netprob_json);
+  auto netprob = make_Networkproblem(netprob_json);
 
   auto edges = netprob->get_network().get_edges();
   if (edges.size() != 1) {
@@ -301,7 +285,7 @@ TEST_F(GaspowerconnectionTEST, evaluate) {
   auto netprob_json = make_full_json(
       {{"Innode", {innode_json}}, {"ExternalPowerplant", {extpowerplant_json}}},
       {{"Gaspowerconnection", {gp_json}}});
-  auto netprob = get_Networkproblem(netprob_json);
+  auto netprob = make_Networkproblem(netprob_json);
   auto number_of_variables = netprob->set_indices(0);
 
   double last_time = 0.0;
@@ -368,7 +352,7 @@ TEST_F(GaspowerconnectionTEST, evaluate_state_derivative) {
   auto netprob_json = make_full_json(
       {{"Innode", {innode_json}}, {"ExternalPowerplant", {extpowerplant_json}}},
       {{"Gaspowerconnection", {gp_json}}});
-  auto netprob = get_Networkproblem(netprob_json);
+  auto netprob = make_Networkproblem(netprob_json);
   auto number_of_variables = netprob->set_indices(0);
 
   double last_time = 0.0;
