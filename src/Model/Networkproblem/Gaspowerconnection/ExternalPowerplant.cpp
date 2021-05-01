@@ -29,6 +29,9 @@ namespace Model::Networkproblem::Gaspowerconnection {
       connection = line;
       return;
     }
+    gthrow(
+        {"ExternalPowerplant with id ", get_id(),
+         " is not connected to a Gaspowerconnection!\n"});
   }
 
   void ExternalPowerplant::evaluate(

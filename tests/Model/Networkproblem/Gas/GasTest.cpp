@@ -50,13 +50,14 @@ nlohmann::json source_json(std::string id, double flowstart, double flowend);
 nlohmann::json sink_json(std::string id, double flowstart, double flowend);
 
 nlohmann::json shortpipe_json(
-    std::string id, nlohmann::json startnode, nlohmann::json endnode);
+    std::string id, nlohmann::json const &startnode,
+    nlohmann::json const &endnode);
 
 nlohmann::json pipe_json(
-    std::string id, nlohmann::json startnode, nlohmann::json endnode,
-    double length, std::string length_unit, double diameter,
-    std::string diameter_unit, double roughness, std::string roughness_unit,
-    double desired_delta_x);
+    std::string id, nlohmann::json const &startnode,
+    nlohmann::json const &endnode, double length, std::string length_unit,
+    double diameter, std::string diameter_unit, double roughness,
+    std::string roughness_unit, double desired_delta_x);
 
 TEST_F(GasTEST, Shortpipe_evaluate) {
 
@@ -860,7 +861,8 @@ nlohmann::json sink_json(std::string id, double flowstart, double flowend) {
   return source_json(id, flowstart, flowend);
 }
 nlohmann::json shortpipe_json(
-    std::string id, nlohmann::json startnode, nlohmann::json endnode) {
+    std::string id, nlohmann::json const &startnode,
+    nlohmann::json const &endnode) {
 
   nlohmann::json shortpipe_topology;
   shortpipe_topology["id"] = id;
@@ -871,10 +873,10 @@ nlohmann::json shortpipe_json(
 }
 
 nlohmann::json pipe_json(
-    std::string id, nlohmann::json startnode, nlohmann::json endnode,
-    double length, std::string length_unit, double diameter,
-    std::string diameter_unit, double roughness, std::string roughness_unit,
-    double desired_delta_x) {
+    std::string id, nlohmann::json const &startnode,
+    nlohmann::json const &endnode, double length, std::string length_unit,
+    double diameter, std::string diameter_unit, double roughness,
+    std::string roughness_unit, double desired_delta_x) {
   nlohmann::json pipe_topology;
   pipe_topology["id"] = id;
   pipe_topology["from"] = startnode["id"];
