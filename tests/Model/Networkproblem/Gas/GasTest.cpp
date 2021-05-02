@@ -692,7 +692,7 @@ TEST_F(GasTEST, Pipe_evaluate) {
   std::string id = "pipe";
   double length = 15250;
   double diameter = 0.9144;
-  double roughness = 8e-6;
+  double roughness = 8;
   double desired_delta_x = 20000;
 
   nlohmann::json pipe_topology = pipe_json(
