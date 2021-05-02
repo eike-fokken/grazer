@@ -13,7 +13,6 @@
 #include "Vphinode.hpp"
 
 #include <Eigen/Sparse>
-#include <bits/stdint-intn.h>
 #include <cmath>
 #include <gtest/gtest.h>
 #include <iostream>
