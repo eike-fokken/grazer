@@ -1,4 +1,5 @@
 #include "Gaspowerconnection.hpp"
+#include "Equationcomponent.hpp"
 #include "Equationcomponent_test_helpers.hpp"
 #include "ExternalPowerplant.hpp"
 #include "Full_factory.hpp"
@@ -26,48 +27,11 @@ public:
 
 nlohmann::json gaspowerconnection_json(
     std::string id, nlohmann::json startnode, nlohmann::json endnode,
-    double gas2power_q_coefficient, double power2gas_q_coefficient);
-
+    double gas2power_q_coefficient, double power2gas_q_coefficient,
+    double bdcond0, double bdcond1, double control0, double control1);
 nlohmann::json externalpowerplant_json(
     std::string id, double G, double B, Eigen::Vector2d cond0,
     Eigen::Vector2d cond1);
-
-nlohmann::json gaspowerconnection_json(
-    std::string id, nlohmann::json startnode, nlohmann::json endnode,
-    double gas2power_q_coefficient, double power2gas_q_coefficient) {
-  nlohmann::json gp_topology;
-  gp_topology["id"] = id;
-  gp_topology["from"] = startnode["id"];
-  gp_topology["to"] = endnode["id"];
-  gp_topology["gas2power_q_coeff"] = gas2power_q_coefficient;
-  gp_topology["power2gas_q_coeff"] = power2gas_q_coefficient;
-  Eigen::Matrix<double, 1, 1> cond0;
-  cond0 << 1.0;
-  Eigen::Matrix<double, 1, 1> cond1;
-  cond1 << 1.0;
-  auto bound = make_value_json(id, "time", cond0, cond1);
-  gp_topology["boundary_values"] = bound;
-  Eigen::Matrix<double, 1, 1> control0;
-  control0 << 1.0;
-  Eigen::Matrix<double, 1, 1> control1;
-  control1 << 1.0;
-  auto control = make_value_json(id, "time", control0, control1);
-  gp_topology["control_values"] = control;
-
-  return gp_topology;
-}
-
-nlohmann::json externalpowerplant_json(
-    std::string id, double G, double B, Eigen::Vector2d cond0,
-    Eigen::Vector2d cond1) {
-  nlohmann::json extpowerplant_topology;
-  extpowerplant_topology["id"] = id;
-  extpowerplant_topology["G"] = G;
-  extpowerplant_topology["B"] = B;
-  auto bound = make_value_json(id, "time", cond0, cond1);
-  extpowerplant_topology["boundary_values"] = bound;
-  return extpowerplant_topology;
-}
 
 TEST_F(GaspowerconnectionTEST, smoothing_polynomial) {
   nlohmann::json innode_json;
@@ -84,7 +48,7 @@ TEST_F(GaspowerconnectionTEST, smoothing_polynomial) {
 
   auto gp_json = gaspowerconnection_json(
       "gp", innode_json, extpowerplant_json, gas2power_q_coefficient,
-      power2gas_q_coefficient);
+      power2gas_q_coefficient, 1, 1, 0, 0);
 
   auto netprob_json = make_full_json(
       {{"Innode", {innode_json}}, {"ExternalPowerplant", {extpowerplant_json}}},
@@ -127,7 +91,7 @@ TEST_F(GaspowerconnectionTEST, dsmoothing_polynomial) {
 
   auto gp_json = gaspowerconnection_json(
       "gp", innode_json, extpowerplant_json, gas2power_q_coefficient,
-      power2gas_q_coefficient);
+      power2gas_q_coefficient, 1, 1, 0, 0);
 
   auto netprob_json = make_full_json(
       {{"Innode", {innode_json}}, {"ExternalPowerplant", {extpowerplant_json}}},
@@ -184,7 +148,7 @@ TEST_F(GaspowerconnectionTEST, generated_power) {
 
   auto gp_json = gaspowerconnection_json(
       "gp", innode_json, extpowerplant_json, gas2power_q_coefficient,
-      power2gas_q_coefficient);
+      power2gas_q_coefficient, 1, 1, 0, 0);
 
   auto netprob_json = make_full_json(
       {{"Innode", {innode_json}}, {"ExternalPowerplant", {extpowerplant_json}}},
@@ -233,7 +197,7 @@ TEST_F(GaspowerconnectionTEST, dgenerated_power_dq) {
 
   auto gp_json = gaspowerconnection_json(
       "gp", innode_json, extpowerplant_json, gas2power_q_coefficient,
-      power2gas_q_coefficient);
+      power2gas_q_coefficient, 1, 1, 0, 0);
 
   auto netprob_json = make_full_json(
       {{"Innode", {innode_json}}, {"ExternalPowerplant", {extpowerplant_json}}},
@@ -264,14 +228,14 @@ TEST_F(GaspowerconnectionTEST, dgenerated_power_dq) {
       gp->dgenerated_power_dq(-gp->kappa - 1), power2gas_q_coefficient);
 }
 
-TEST_F(GaspowerconnectionTEST, evaluate) {
+TEST_F(GaspowerconnectionTEST, evaluate_power_controlled) {
 
   nlohmann::json innode_json;
   innode_json["id"] = "ainnode";
   double G = 10;
   double B = 20;
   Eigen::Vector2d cond0(100, 200);
-  Eigen::Vector2d cond1(100, 200);
+  Eigen::Vector2d cond1(150, 250);
   auto extpowerplant_json
       = externalpowerplant_json("bextpowerplant", G, B, cond0, cond1);
 
@@ -280,7 +244,7 @@ TEST_F(GaspowerconnectionTEST, evaluate) {
 
   auto gp_json = gaspowerconnection_json(
       "gp", innode_json, extpowerplant_json, gas2power_q_coefficient,
-      power2gas_q_coefficient);
+      power2gas_q_coefficient, 1, 1, 0, 0);
 
   auto netprob_json = make_full_json(
       {{"Innode", {innode_json}}, {"ExternalPowerplant", {extpowerplant_json}}},
@@ -326,28 +290,40 @@ TEST_F(GaspowerconnectionTEST, evaluate) {
     new_state.setRandom();
     netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
     EXPECT_DOUBLE_EQ(
-        rootvalues[3],
-        endpowernode->P(new_state) - gp->generated_power(new_state[3]));
+        rootvalues[gp->get_start_state_index() + 1],
+        endpowernode->P(new_state)
+            - gp->generated_power(new_state[gp->get_start_state_index() + 1]));
+
+    // The following checks that the equations of the powernode are indeed
+    // those of a Vphi-node. This must be true in Power-controlled mode of the
+    // Gaspowerconnection.
+    EXPECT_DOUBLE_EQ(
+        rootvalues[endpowernode->get_start_state_index()],
+        new_state[endpowernode->get_start_state_index()] - cond1(0));
+    EXPECT_DOUBLE_EQ(
+        rootvalues[endpowernode->get_start_state_index() + 1],
+        new_state[endpowernode->get_start_state_index() + 1] - cond1(1));
   }
 }
 
-TEST_F(GaspowerconnectionTEST, evaluate_state_derivative) {
+TEST_F(GaspowerconnectionTEST, evaluate_gas_controlled) {
 
   nlohmann::json innode_json;
   innode_json["id"] = "ainnode";
   double G = 10;
   double B = 20;
   Eigen::Vector2d cond0(100, 200);
-  Eigen::Vector2d cond1(100, 200);
+  Eigen::Vector2d cond1(150, 250);
   auto extpowerplant_json
       = externalpowerplant_json("bextpowerplant", G, B, cond0, cond1);
 
   double gas2power_q_coefficient = 34;
   double power2gas_q_coefficient = 554;
-
+  double pressure0 = 144.;
+  double pressure1 = 19.;
   auto gp_json = gaspowerconnection_json(
       "gp", innode_json, extpowerplant_json, gas2power_q_coefficient,
-      power2gas_q_coefficient);
+      power2gas_q_coefficient, pressure0, pressure1, 1, 1);
 
   auto netprob_json = make_full_json(
       {{"Innode", {innode_json}}, {"ExternalPowerplant", {extpowerplant_json}}},
@@ -382,6 +358,91 @@ TEST_F(GaspowerconnectionTEST, evaluate_state_derivative) {
     FAIL();
   }
 
+  auto endpowernode
+      = dynamic_cast<Model::Networkproblem::Power::Powernode const *>(
+          gp->get_ending_node());
+  if (not endpowernode) {
+    FAIL();
+  }
+
+  for (int i = 0; i != 10; ++i) {
+    new_state.setRandom();
+    netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+    EXPECT_DOUBLE_EQ(
+        rootvalues[gp->get_start_state_index() + 1],
+        endpowernode->P(new_state)
+            - gp->generated_power(new_state[gp->get_start_state_index() + 1]));
+
+    // The following makes sure that the the equations of the endpowernode set
+    // the pressure to the connection boundary condition and the voltage to the
+    // voltage boundary condition.
+    EXPECT_DOUBLE_EQ(
+        rootvalues[endpowernode->get_start_state_index()],
+        new_state[gp->get_start_state_index()] - pressure1);
+    EXPECT_DOUBLE_EQ(
+        rootvalues[endpowernode->get_start_state_index() + 1],
+        new_state[endpowernode->get_start_state_index()] - cond1(0));
+  }
+}
+
+TEST_F(GaspowerconnectionTEST, evaluate_state_derivative_power_driven) {
+
+  nlohmann::json innode_json;
+  innode_json["id"] = "ainnode";
+  double G = 10;
+  double B = 20;
+  Eigen::Vector2d cond0(100, 200);
+  Eigen::Vector2d cond1(100, 200);
+  auto extpowerplant_json
+      = externalpowerplant_json("bextpowerplant", G, B, cond0, cond1);
+
+  double gas2power_q_coefficient = 34;
+  double power2gas_q_coefficient = 554;
+
+  auto gp_json = gaspowerconnection_json(
+      "gp", innode_json, extpowerplant_json, gas2power_q_coefficient,
+      power2gas_q_coefficient, 1, 1, 0, 0);
+
+  auto netprob_json = make_full_json(
+      {{"Innode", {innode_json}}, {"ExternalPowerplant", {extpowerplant_json}}},
+      {{"Gaspowerconnection", {gp_json}}});
+  auto netprob = make_Networkproblem(netprob_json);
+  auto number_of_variables = netprob->set_indices(0);
+
+  double last_time = 0.0;
+  double new_time = 1.0;
+  Eigen::VectorXd rootvalues(number_of_variables);
+  rootvalues.setZero();
+  Eigen::VectorXd last_state(number_of_variables);
+  Eigen::VectorXd new_state(number_of_variables);
+  last_state.setOnes();
+
+  for (int i = 0; i != number_of_variables; ++i) { new_state[i] = i; }
+  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  auto edges = netprob->get_network().get_edges();
+  if (edges.size() != 1) {
+    FAIL();
+  }
+
+  auto nodes = netprob->get_network().get_nodes();
+  if (nodes.size() != 2) {
+    FAIL();
+  }
+
+  auto gp = dynamic_cast<
+      Model::Networkproblem::Gaspowerconnection::Gaspowerconnection const *>(
+      edges.front());
+  if (not gp) {
+    FAIL();
+  }
+
+  auto endpowernode
+      = dynamic_cast<Model::Networkproblem::Power::Powernode const *>(
+          gp->get_ending_node());
+  if (not endpowernode) {
+    FAIL();
+  }
+
   for (int i = 0; i != 10; ++i) {
     Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
     Aux::Triplethandler handler(&J);
@@ -392,9 +453,174 @@ TEST_F(GaspowerconnectionTEST, evaluate_state_derivative) {
         &handler, last_time, new_time, last_state, new_state);
     handler.set_matrix();
     DenseJ = J;
-    EXPECT_DOUBLE_EQ(DenseJ(3, 0), 2 * G * new_state[0]);
-    EXPECT_DOUBLE_EQ(DenseJ(3, 1), 0);
-    EXPECT_DOUBLE_EQ(DenseJ(3, 2), 0);
-    EXPECT_DOUBLE_EQ(DenseJ(3, 3), -gp->dgenerated_power_dq(new_state[3]));
+    EXPECT_DOUBLE_EQ(
+        DenseJ(
+            gp->get_start_state_index() + 1,
+            endpowernode->get_start_state_index()),
+        2 * G * new_state[0]);
+    EXPECT_DOUBLE_EQ(
+        DenseJ(
+            gp->get_start_state_index() + 1,
+            endpowernode->get_start_state_index() + 1),
+        0);
+    EXPECT_DOUBLE_EQ(
+        DenseJ(gp->get_start_state_index() + 1, gp->get_start_state_index()),
+        0);
+    EXPECT_DOUBLE_EQ(
+        DenseJ(
+            gp->get_start_state_index() + 1, gp->get_start_state_index() + 1),
+        -gp->dgenerated_power_dq(new_state[gp->get_start_state_index() + 1]));
+
+    EXPECT_DOUBLE_EQ(
+        DenseJ(
+            endpowernode->get_start_state_index(),
+            endpowernode->get_start_state_index()),
+        1.0);
+    for (int index = 0; index != 4; ++index) {
+      if (index == endpowernode->get_start_state_index()) {
+        continue;
+      }
+      EXPECT_DOUBLE_EQ(
+          DenseJ(endpowernode->get_start_state_index(), index), 0.0);
+    }
   }
+}
+
+TEST_F(GaspowerconnectionTEST, evaluate_state_derivative_gas_driven) {
+
+  nlohmann::json innode_json;
+  innode_json["id"] = "ainnode";
+  double G = 10;
+  double B = 20;
+  Eigen::Vector2d cond0(100, 200);
+  Eigen::Vector2d cond1(100, 200);
+  auto extpowerplant_json
+      = externalpowerplant_json("bextpowerplant", G, B, cond0, cond1);
+
+  double gas2power_q_coefficient = 34;
+  double power2gas_q_coefficient = 554;
+  double pressure0 = 144.;
+  double pressure1 = 19.;
+  auto gp_json = gaspowerconnection_json(
+      "gp", innode_json, extpowerplant_json, gas2power_q_coefficient,
+      power2gas_q_coefficient, pressure0, pressure1, 1, 1);
+
+  auto netprob_json = make_full_json(
+      {{"Innode", {innode_json}}, {"ExternalPowerplant", {extpowerplant_json}}},
+      {{"Gaspowerconnection", {gp_json}}});
+  auto netprob = make_Networkproblem(netprob_json);
+  auto number_of_variables = netprob->set_indices(0);
+
+  double last_time = 0.0;
+  double new_time = 1.0;
+  Eigen::VectorXd rootvalues(number_of_variables);
+  rootvalues.setZero();
+  Eigen::VectorXd last_state(number_of_variables);
+  Eigen::VectorXd new_state(number_of_variables);
+  last_state.setOnes();
+
+  for (int i = 0; i != number_of_variables; ++i) { new_state[i] = i; }
+  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  auto edges = netprob->get_network().get_edges();
+  if (edges.size() != 1) {
+    FAIL();
+  }
+
+  auto nodes = netprob->get_network().get_nodes();
+  if (nodes.size() != 2) {
+    FAIL();
+  }
+
+  auto gp = dynamic_cast<
+      Model::Networkproblem::Gaspowerconnection::Gaspowerconnection const *>(
+      edges.front());
+  if (not gp) {
+    FAIL();
+  }
+
+  auto endpowernode
+      = dynamic_cast<Model::Networkproblem::Power::Powernode const *>(
+          gp->get_ending_node());
+  if (not endpowernode) {
+    FAIL();
+  }
+
+  for (int i = 0; i != 10; ++i) {
+    Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
+    Aux::Triplethandler handler(&J);
+
+    Eigen::Matrix4d DenseJ;
+    new_state.setRandom();
+    netprob->evaluate_state_derivative(
+        &handler, last_time, new_time, last_state, new_state);
+    handler.set_matrix();
+    DenseJ = J;
+    EXPECT_DOUBLE_EQ(
+        DenseJ(
+            gp->get_start_state_index() + 1,
+            endpowernode->get_start_state_index()),
+        2 * G * new_state[0]);
+    EXPECT_DOUBLE_EQ(
+        DenseJ(
+            gp->get_start_state_index() + 1,
+            endpowernode->get_start_state_index() + 1),
+        0);
+    EXPECT_DOUBLE_EQ(
+        DenseJ(gp->get_start_state_index() + 1, gp->get_start_state_index()),
+        0);
+    EXPECT_DOUBLE_EQ(
+        DenseJ(
+            gp->get_start_state_index() + 1, gp->get_start_state_index() + 1),
+        -gp->dgenerated_power_dq(new_state[gp->get_start_state_index() + 1]));
+
+    EXPECT_DOUBLE_EQ(
+        DenseJ(
+            endpowernode->get_start_state_index(), gp->get_start_state_index()),
+        1.0);
+    for (int index = 0; index != 4; ++index) {
+      if (index == gp->get_start_state_index()) {
+        continue;
+      }
+      EXPECT_DOUBLE_EQ(
+          DenseJ(endpowernode->get_start_state_index(), index), 0.0);
+    }
+  }
+}
+
+nlohmann::json gaspowerconnection_json(
+    std::string id, nlohmann::json startnode, nlohmann::json endnode,
+    double gas2power_q_coefficient, double power2gas_q_coefficient,
+    double bdcond0, double bdcond1, double control0, double control1) {
+  nlohmann::json gp_topology;
+  gp_topology["id"] = id;
+  gp_topology["from"] = startnode["id"];
+  gp_topology["to"] = endnode["id"];
+  gp_topology["gas2power_q_coeff"] = gas2power_q_coefficient;
+  gp_topology["power2gas_q_coeff"] = power2gas_q_coefficient;
+  Eigen::Matrix<double, 1, 1> cond0;
+  cond0 << bdcond0;
+  Eigen::Matrix<double, 1, 1> cond1;
+  cond1 << bdcond1;
+  auto bound = make_value_json(id, "time", cond0, cond1);
+  gp_topology["boundary_values"] = bound;
+  Eigen::Matrix<double, 1, 1> control_vector0;
+  control_vector0 << control0;
+  Eigen::Matrix<double, 1, 1> control_vector1;
+  control_vector1 << control1;
+  auto control = make_value_json(id, "time", control_vector0, control_vector1);
+  gp_topology["control_values"] = control;
+
+  return gp_topology;
+}
+
+nlohmann::json externalpowerplant_json(
+    std::string id, double G, double B, Eigen::Vector2d cond0,
+    Eigen::Vector2d cond1) {
+  nlohmann::json extpowerplant_topology;
+  extpowerplant_topology["id"] = id;
+  extpowerplant_topology["G"] = G;
+  extpowerplant_topology["B"] = B;
+  auto bound = make_value_json(id, "time", cond0, cond1);
+  extpowerplant_topology["boundary_values"] = bound;
+  return extpowerplant_topology;
 }
