@@ -13,7 +13,8 @@ namespace Model::Componentfactory {
       if (topology.contains("id")) {
         helper = "The json of object with id "
                  + topology["id"].get<std::string>()
-                 + " doesn't conform to its schema!\n";
+                 + " doesn't conform to its schema!\n\n\n" + topology.dump(4)
+                 + "\n";
       } else {
         helper
             = "The current object json does not conform to its schema.\n"
