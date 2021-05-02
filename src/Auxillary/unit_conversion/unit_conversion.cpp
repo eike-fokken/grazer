@@ -21,14 +21,14 @@ namespace Aux::unit {
     type_schema["properties"]["unit"]["type"] = "string";
     json pattern1;
     pattern1["pattern"]
-        = u8"^(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(m|ft|"
+        = "^(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|n|p|f|a|z|y)?(m|ft|"
           "in|"
           "yd|mi)$";
     type_schema["properties"]["unit"]["oneOf"].push_back(pattern1);
     json pattern2;
     pattern2["pattern"]
-        = u8"^([0-9]*(\\.[0-9]+)? "
-          ")(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|"
+        = "^([0-9]*(\\.[0-9]+)? "
+          ")(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu||n|"
           "p|f|a|z|y)?(m|ft|in|yd|mi)$";
     type_schema["properties"]["unit"]["oneOf"].push_back(pattern2);
     type_schema["properties"]["value"]["type"] = "number";
@@ -42,7 +42,6 @@ namespace Aux::unit {
       {"m^3", 1.0},
       {"L", 1e-3},
       {"l", 1e-3},
-      {u8"\u2113", 1e-3},
   };
 
   const std::map<std::string, double> pressure_units{
@@ -66,27 +65,15 @@ namespace Aux::unit {
       {"K", [](double x) { return x; }},
       {"C", [](double x) { return x + 273.15; }},
       {"Celsius", [](double x) { return x + 273.15; }},
-      {u8"\u2103",
-       [](double x) { return x + 273.15; }}, // degree celcius symbol
-      {u8"\u00B0C",
-       [](double x) { return x + 273.15; }}, // degree symbol plus C
-      {u8"F", [](double x) { return x * 5.0 / 9.0 + 459.67 * 5.0 / 9.0; }},
-      {u8"\u2109",
-       [](double x) {
-         return x * 5.0 / 9.0 + 459.67 * 5.0 / 9.0;
-       }}, // degree fahrenheit symbol
-      {u8"\u00B0F",
-       [](double x) { return x * 5.0 / 9.0 + 459.67 * 5.0 / 9.0; }}};
+      {"F", [](double x) { return x * 5.0 / 9.0 + 459.67 * 5.0 / 9.0; }}};
 
   // https://en.wikipedia.org/wiki/Metric_prefix#List_of_SI_prefixes
   const std::map<std::string, double> si_prefixes{
-      {"Y", 1e24},        {"Z", 1e21},  {"E", 1e18},  {"P", 1e15},
-      {"T", 1e12},        {"G", 1e9},   {"M", 1e6},   {"k", 1e3},
-      {"h", 100},         {"da", 10},   {"", 1},      {"d", 0.1},
-      {"c", 1e-2},        {"m", 1e-3},  {"mu", 1e-6}, {u8"\u00B5", 1e-6},
-      {u8"\u03BC", 1e-6}, // unicode micro and mu
-      {"n", 1e-9},        {"p", 1e-12}, {"f", 1e-15}, {"a", 1e-18},
-      {"z", 1e-21},       {"y", 1e-24}};
+      {"Y", 1e24}, {"Z", 1e21},  {"E", 1e18},  {"P", 1e15},  {"T", 1e12},
+      {"G", 1e9},  {"M", 1e6},   {"k", 1e3},   {"h", 100},   {"da", 10},
+      {"", 1},     {"d", 0.1},   {"c", 1e-2},  {"m", 1e-3},  {"mu", 1e-6},
+      {"n", 1e-9}, {"p", 1e-12}, {"f", 1e-15}, {"a", 1e-18}, {"z", 1e-21},
+      {"y", 1e-24}};
 
   double unit_conversion(double value, double unit) { return value * unit; }
 
