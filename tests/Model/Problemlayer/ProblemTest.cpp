@@ -1,5 +1,5 @@
-#include "MockSubproblem.hpp"
 #include "Problem.hpp"
+#include "MockSubproblem.hpp"
 #include <gtest/gtest.h>
 
 TEST(modelTest, get_number_of_states) {
