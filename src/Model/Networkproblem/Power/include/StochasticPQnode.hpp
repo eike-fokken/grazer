@@ -6,7 +6,7 @@
 static_assert(
     std::numeric_limits<double>::has_signaling_NaN == true,
     "StochasticPQnode uses signaling_NaN. If you don't have that, replace the "
-    "initialization by something else.");
+    "initialization of current_P and current_Q by something else.");
 
 namespace Model::Networkproblem::Power {
 
@@ -41,6 +41,10 @@ namespace Model::Networkproblem::Power {
         Eigen::Ref<Eigen::VectorXd const> state) const override;
 
     void print_to_files(std::filesystem::path const &output_directory) override;
+
+    // For testing purposes:
+    double get_current_P() const;
+    double get_current_Q() const;
 
   private:
     struct StochasticData {

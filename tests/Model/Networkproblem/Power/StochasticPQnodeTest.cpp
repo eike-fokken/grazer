@@ -1,7 +1,9 @@
+#include "StochasticPQnode.hpp"
 #include "Equationcomponent_test_helpers.hpp"
 #include "powertest_helpers.hpp"
 
 #include "Matrixhandler.hpp"
+#include "Net.hpp"
 #include "Netfactory.hpp"
 #include "Networkproblem.hpp"
 #include "PQnode.hpp"
@@ -11,6 +13,7 @@
 #include "Vphinode.hpp"
 
 #include <Eigen/Sparse>
+#include <bits/stdint-intn.h>
 #include <cmath>
 #include <gtest/gtest.h>
 #include <iostream>
@@ -21,7 +24,12 @@
 #include <utility>
 #include <vector>
 
-class PowerTEST : public EqcomponentTEST {
+nlohmann::json stochpq_json(
+    std::string id, double G, double B, Eigen::Vector2d bd0,
+    Eigen::Vector2d bd1, int number_of_stochastic_steps, double theta_P,
+    double sigma_P, double theta_Q, double sigma_Q);
+
+class stochasticPQnodeTEST : public EqcomponentTEST {
   Model::Componentfactory::Power_factory factory;
 
 public:
@@ -32,12 +40,17 @@ public:
   double G1 = 3.0;
   double B1 = -5.0;
 
-  // values for the PQnode:
-  std::string id2 = "pq";
+  // values for the StochasticPQnode:
+  std::string id2 = "stochpq";
   double P2_bd = 3.0;
   double Q2_bd = 7.0;
   double G2 = 2.0;
   double B2 = 2.0;
+  int number_of_stochastic_steps{100};
+  double theta_P = 0.1;
+  double sigma_P = 0.05;
+  double theta_Q = 0.1;
+  double sigma_Q = 0.05;
 
   // values for the PVnode:
   std::string id3 = "pv";
@@ -73,104 +86,50 @@ public:
   default_setup();
 };
 
-TEST_F(PowerTEST, evaluate_Vphi) {
+TEST_F(stochasticPQnodeTEST, evaluate) {
 
-  // std::unique_ptr<Model::Networkproblem::Networkproblem> netprob;
-  // double last_time;
-  // double new_time;
-  // Eigen::VectorXd last_state;
-  // Eigen::VectorXd new_state;
-  // Eigen::VectorXd rootvalues;
   auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
       = default_setup();
-
+  netprob->prepare_timestep(last_time, new_time, last_state, new_state);
   netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
 
-  auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
-      netprob->get_network().get_node_by_id("vphi"));
-
-  if (not vphi) {
+  auto *stoch_pq
+      = dynamic_cast<Model::Networkproblem::Power::StochasticPQnode *>(
+          netprob->get_network().get_node_by_id("stochpq"));
+  if (not stoch_pq) {
     FAIL();
   }
-
-  EXPECT_DOUBLE_EQ(
-      rootvalues[vphi->get_start_state_index()],
-      new_state[vphi->get_start_state_index()] - V1_bd);
-  EXPECT_DOUBLE_EQ(
-      rootvalues[vphi->get_start_state_index() + 1],
-      new_state[vphi->get_start_state_index() + 1] - phi1_bd);
-}
-
-TEST_F(PowerTEST, evaluate_state_derivative_Vphi) {
-
-  auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
-      = default_setup();
-
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
 
   auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
   if (not vphi) {
     FAIL();
   }
-
-  Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-  Aux::Triplethandler handler(&J);
-
-  netprob->evaluate_state_derivative(
-      &handler, last_time, new_time, last_state, new_state);
-  handler.set_matrix();
-
-  Eigen::Matrix<double, 6, 6> DenseJ = J;
-  auto index0 = vphi->get_start_state_index();
-
-  // derivatives of index 0, that is, V in the Vphi node:
-  EXPECT_DOUBLE_EQ(DenseJ(index0, index0), 1.0);
-  for (int index = 1; index != 6; ++index) {
-    if (index == index0) {
-      continue;
-    }
-    EXPECT_DOUBLE_EQ(DenseJ(index0, index), 0.0);
-  }
-
-  // derivatives of index 1, that is, phi in the Vphi node:
-  auto index1 = vphi->get_start_state_index() + 1;
-  EXPECT_DOUBLE_EQ(DenseJ(index1, index1), 1.0);
-  for (int index = 1; index != 6; ++index) {
-    if (index == index1) {
-      continue;
-    }
-    EXPECT_DOUBLE_EQ(DenseJ(index1, index), 0.0);
-  }
-}
-
-TEST_F(PowerTEST, evaluate_PQ) {
-
-  auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
-      = default_setup();
-
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
-
-  auto *pq = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
-      netprob->get_network().get_node_by_id("pq"));
-
-  if (not pq) {
+  auto *pv = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+      netprob->get_network().get_node_by_id("pv"));
+  if (not pv) {
     FAIL();
   }
 
-  EXPECT_DOUBLE_EQ(
-      rootvalues[pq->get_start_state_index()],
-      -P2_bd + G2 * V2 * V2
+  // Here we seem to run into floating point problems, maybe because of the many
+  // digits of the random numbers. Expecting only to be equal up to 1e-13 seems
+  // to work well and is hopefully sufficient to catch regressions.
+
+  EXPECT_NEAR(
+      rootvalues[stoch_pq->get_start_state_index()],
+      -stoch_pq->get_current_P() + G2 * V2 * V2
           + V2 * V1 * (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 - phi1))
-          + V2 * V3 * (Gt2 * cos(phi2 - phi3) + Bt2 * sin(phi2 - phi3)));
-  EXPECT_DOUBLE_EQ(
-      rootvalues[pq->get_start_state_index() + 1],
-      -Q2_bd - B2 * V2 * V2
+          + V2 * V3 * (Gt2 * cos(phi2 - phi3) + Bt2 * sin(phi2 - phi3)),
+      1e-13);
+  EXPECT_NEAR(
+      rootvalues[stoch_pq->get_start_state_index() + 1],
+      -stoch_pq->get_current_Q() - B2 * V2 * V2
           + V2 * V1 * (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 - phi1))
-          + V2 * V3 * (Gt2 * sin(phi2 - phi3) - Bt2 * cos(phi2 - phi3)));
+          + V2 * V3 * (Gt2 * sin(phi2 - phi3) - Bt2 * cos(phi2 - phi3)),
+      1e-13);
 }
 
-TEST_F(PowerTEST, evaluate_state_derivative_PQ) {
+TEST_F(stochasticPQnodeTEST, evaluate_state_derivative) {
 
   auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
       = default_setup();
@@ -183,7 +142,7 @@ TEST_F(PowerTEST, evaluate_state_derivative_PQ) {
     FAIL();
   }
   auto *pq = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
-      netprob->get_network().get_node_by_id("pq"));
+      netprob->get_network().get_node_by_id("stochpq"));
   if (not pq) {
     FAIL();
   }
@@ -253,122 +212,60 @@ TEST_F(PowerTEST, evaluate_state_derivative_PQ) {
       V2 * V3 * (-Gt2 * cos(phi2 - phi3) - Bt2 * sin(phi2 - phi3)));
 }
 
-TEST_F(PowerTEST, evaluate_PV) {
+/**/ //////////////////////////////////////////////////////
+/**/ // Here come the definitions of the fixture methods:
+/**/ /////////////////////////////////////////////////////
 
-  auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
-      = default_setup();
+nlohmann::json stochpq_json(
+    std::string id, double G, double B, Eigen::Vector2d bd0,
+    Eigen::Vector2d bd1, int number_of_stochastic_steps, double theta_P,
+    double sigma_P, double theta_Q, double sigma_Q) {
 
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  nlohmann::json stochpq_json;
+  stochpq_json["id"] = id;
+  stochpq_json["G"] = G;
+  stochpq_json["B"] = B;
+  stochpq_json["number_of_stochastic_steps"] = number_of_stochastic_steps;
+  stochpq_json["theta_P"] = theta_P;
+  stochpq_json["sigma_P"] = sigma_P;
+  stochpq_json["theta_Q"] = theta_Q;
+  stochpq_json["sigma_Q"] = sigma_Q;
 
-  auto *pv = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
-      netprob->get_network().get_node_by_id("pv"));
-
-  if (not pv) {
-    FAIL();
-  }
-
-  EXPECT_DOUBLE_EQ(
-      rootvalues[pv->get_start_state_index()],
-      -P3_bd + G3 * V3 * V3
-          + V3 * V2 * (Gt2 * cos(phi3 - phi2) + Bt2 * sin(phi3 - phi2)));
-  EXPECT_DOUBLE_EQ(
-      rootvalues[pv->get_start_state_index() + 1],
-      new_state[pv->get_start_state_index()] - V3_bd);
+  auto b0 = make_value_json(id, "time", bd0, bd1);
+  stochpq_json["boundary_values"] = b0;
+  return stochpq_json;
 }
-
-TEST_F(PowerTEST, evaluate_state_derivative_PV) {
-
-  auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
-      = default_setup();
-
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
-
-  auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
-      netprob->get_network().get_node_by_id("vphi"));
-  if (not vphi) {
-    FAIL();
-  }
-  auto *pq = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
-      netprob->get_network().get_node_by_id("pq"));
-  if (not pq) {
-    FAIL();
-  }
-  auto *pv = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
-      netprob->get_network().get_node_by_id("pv"));
-
-  if (not pv) {
-    FAIL();
-  }
-
-  Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-  Aux::Triplethandler handler(&J);
-  netprob->evaluate_state_derivative(
-      &handler, last_time, new_time, last_state, new_state);
-  handler.set_matrix();
-
-  Eigen::Matrix<double, 6, 6> DenseJ = J;
-  auto index0_vphi = vphi->get_start_state_index();
-  auto index1_vphi = vphi->get_start_state_index() + 1;
-  auto index0_pq = pq->get_start_state_index();
-  auto index1_pq = pq->get_start_state_index() + 1;
-  auto index0_pv = pv->get_start_state_index();
-  auto index1_pv = pv->get_start_state_index() + 1;
-
-  // derivatives of index 4, that is, P in the PV node:
-  EXPECT_DOUBLE_EQ(DenseJ(index0_pv, index0_vphi), 0.0);
-  EXPECT_DOUBLE_EQ(DenseJ(index0_pv, index1_vphi), 0.0);
-  EXPECT_DOUBLE_EQ(
-      DenseJ(index0_pv, index0_pq),
-      V3 * (Gt2 * cos(phi3 - phi2) + Bt2 * sin(phi3 - phi2)));
-  EXPECT_DOUBLE_EQ(
-      DenseJ(index0_pv, index1_pq),
-      V2 * V3 * (Gt2 * sin(phi3 - phi2) - Bt2 * cos(phi3 - phi2)));
-
-  EXPECT_DOUBLE_EQ(
-      DenseJ(index0_pv, index0_pv),
-      2 * G3 * V3 + V2 * (Gt2 * cos(phi3 - phi2) + Bt2 * sin(phi3 - phi2)));
-  EXPECT_DOUBLE_EQ(
-      DenseJ(index0_pv, index1_pv),
-      V3 * V2 * (-Gt2 * sin(phi3 - phi2) + Bt2 * cos(phi3 - phi2)));
-
-  // derivatives of index 5, that is, V in the PV node:
-  EXPECT_DOUBLE_EQ(DenseJ(index1_pv, index0_pv), 1.0);
-  for (int index = 1; index != 6; ++index) {
-    if (index == index0_pv) {
-      continue;
-    }
-    EXPECT_DOUBLE_EQ(DenseJ(index1_pv, index), 0.0);
-  }
-}
-
-//////////////////////////////////////////////////////
-// Here come the definitions of the fixture methods:
-/////////////////////////////////////////////////////
 
 std::unique_ptr<Model::Networkproblem::Networkproblem>
-PowerTEST::make_Networkproblem(nlohmann::json &netproblem) {
+stochasticPQnodeTEST::make_Networkproblem(nlohmann::json &netproblem) {
   return EqcomponentTEST::make_Networkproblem(netproblem, factory);
 }
 
 std::tuple<
     std::unique_ptr<Model::Networkproblem::Networkproblem>, double, double,
     Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd>
-PowerTEST::default_setup() {
+stochasticPQnodeTEST::default_setup() {
 
   Eigen::Vector2d bdcond1{V1_bd, phi1_bd};
   auto vphi_json = powernode_json(id1, G1, B1, bdcond1, bdcond1);
 
   Eigen::Vector2d bdcond2{P2_bd, Q2_bd};
-  auto pq_json = powernode_json(id2, G2, B2, bdcond2, bdcond2);
+  auto stochasticpq_json = stochpq_json(
+      id2, G2, B2, bdcond2, bdcond2, number_of_stochastic_steps, theta_P,
+      sigma_P, theta_Q, sigma_Q);
 
   Eigen::Vector2d bdcond3{P3_bd, V3_bd};
   auto pv_json = powernode_json(id3, G3, B3, bdcond3, bdcond3);
 
-  auto tl1_json = transmissionline_json(idt1, Gt1, Bt1, vphi_json, pq_json);
-  auto tl2_json = transmissionline_json(idt2, Gt2, Bt2, pq_json, pv_json);
+  auto tl1_json
+      = transmissionline_json(idt1, Gt1, Bt1, vphi_json, stochasticpq_json);
+  auto tl2_json
+      = transmissionline_json(idt2, Gt2, Bt2, stochasticpq_json, pv_json);
 
   auto np_json = make_full_json(
-      {{"Vphinode", {vphi_json}}, {"PQnode", {pq_json}}, {"PVnode", {pv_json}}},
+      {{"Vphinode", {vphi_json}},
+       {"StochasticPQnode", {stochasticpq_json}},
+       {"PVnode", {pv_json}}},
       {{"Transmissionline", {tl1_json, tl2_json}}});
 
   auto netprob = make_Networkproblem(np_json);
@@ -393,11 +290,11 @@ PowerTEST::default_setup() {
 
   nlohmann::json np_initialjson = make_initial_json(
       {}, {{"Vphinode", {initial_json1}},
-           {"PQnode", {initial_json2}},
+           {"StochasticPQnode", {initial_json2}},
            {"PVnode", {initial_json3}}});
 
   double last_time = 0.0;
-  double new_time = 0.0;
+  double new_time = 1.0;
   Eigen::VectorXd rootvalues(number_of_variables);
   rootvalues.setZero();
   Eigen::VectorXd last_state(number_of_variables);

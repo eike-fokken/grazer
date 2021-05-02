@@ -198,4 +198,7 @@ namespace Model::Networkproblem::Power {
     }
   }
 
+  double StochasticPQnode::get_current_P() const { return current_P; }
+  double StochasticPQnode::get_current_Q() const { return current_Q; }
+
 } // namespace Model::Networkproblem::Power
