@@ -23,13 +23,7 @@ namespace Model::Networkproblem::Power {
       Powernode(topology),
       stochasticdata(std::make_unique<StochasticData>(
           topology["sigma_P"], topology["theta_P"], topology["sigma_Q"],
-          topology["theta_Q"], topology["number_of_stochastic_steps"])) {
-    // std::cout << stochasticdata->number_of_stochastic_steps << std::endl;
-    // std::cout << stochasticdata->theta_P << std::endl;
-    // std::cout << stochasticdata->sigma_P << std::endl;
-    // std::cout << stochasticdata->theta_Q << std::endl;
-    // std::cout << stochasticdata->sigma_Q << std::endl;
-  }
+          topology["theta_Q"], topology["number_of_stochastic_steps"])) {}
 
   void StochasticPQnode::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double // last_time

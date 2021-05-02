@@ -20,7 +20,7 @@ namespace Model::Networkproblem::Power {
     Aux::schema::add_required(schema, "B", Aux::schema::type::number());
     Aux::schema::add_required(schema, "G", Aux::schema::type::number());
 
-    Aux::schema::add_property(
+    Aux::schema::add_required(
         schema, "boundary_values", Aux::schema::make_boundary_schema(2));
     return schema;
   }

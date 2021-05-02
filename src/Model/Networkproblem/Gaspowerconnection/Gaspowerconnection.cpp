@@ -22,9 +22,9 @@ namespace Model::Networkproblem::Gaspowerconnection {
     Aux::schema::add_required(
         schema, "power2gas_q_coeff", Aux::schema::type::number());
 
-    Aux::schema::add_property(
+    Aux::schema::add_required(
         schema, "control_values", Aux::schema::make_boundary_schema(1));
-    Aux::schema::add_property(
+    Aux::schema::add_required(
         schema, "boundary_values", Aux::schema::make_boundary_schema(1));
 
     return schema;

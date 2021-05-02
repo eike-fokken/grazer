@@ -12,7 +12,7 @@ namespace Model::Networkproblem::Gas {
 
   nlohmann::json Controlvalve::get_schema() {
     nlohmann::json schema = Shortcomponent::get_schema();
-    Aux::schema::add_property(
+    Aux::schema::add_required(
         schema, "control_values", Aux::schema::make_boundary_schema(1));
     return schema;
   }

@@ -59,14 +59,22 @@ namespace Model::Componentfactory {
 
     auto &node_schemas = topology_schema["properties"]["nodes"]["properties"];
     for (auto const &[name, component] : this->node_type_map) {
-      node_schemas[name]
-          = Aux::schema::make_list_schema_of(component->get_schema());
+      auto component_schema = Aux::schema::relax_schema(
+          component->get_schema(),
+          {"boundary_values", "control_values", "desired_delta_x",
+           "number_of_stochastic_steps", "theta_P", "sigma_P", "theta_Q",
+           "sigma_Q"});
+      node_schemas[name] = Aux::schema::make_list_schema_of(component_schema);
     }
     auto &edge_schemas
         = topology_schema["properties"]["connections"]["properties"];
     for (auto const &[name, component] : this->edge_type_map) {
-      edge_schemas[name]
-          = Aux::schema::make_list_schema_of(component->get_schema());
+      auto component_schema = Aux::schema::relax_schema(
+          component->get_schema(),
+          {"boundary_values", "control_values", "desired_delta_x",
+           "number_of_stochastic_steps", "theta_P", "sigma_P", "theta_Q",
+           "sigma_Q"});
+      edge_schemas[name] = Aux::schema::make_list_schema_of(component_schema);
     }
 
     return topology_schema;
