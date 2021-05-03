@@ -10,8 +10,8 @@
 using json = nlohmann::json;
 namespace fs = std::filesystem;
 
-void write_gas_csv(std::string id, json object);
-void write_power_csv(std::string id, json object);
+static void write_gas_csv(std::string id, json object);
+static void write_power_csv(std::string id, json object);
 
 /** \brief Outputs data from the output.json of grazer to a csv file.
  *
@@ -50,9 +50,10 @@ int main(int argc, char **argv) {
   }
 
   std::vector<std::string> gastypes
-      = {"Pipe", "Controlvalve", "Compressorstation", "Shortpipe"};
-  std::vector<std::string> powertypes
-      = {"Vphinode", "PQnode", "PVnode", "StochasticPQnode"};
+      = {"Pipe", "Controlvalve", "Compressorstation", "Shortpipe",
+         "Gaspowerconnection"};
+  std::vector<std::string> powertypes = {
+      "Vphinode", "PQnode", "PVnode", "StochasticPQnode", "ExternalPowerplant"};
   json id_object;
   id_object["id"] = id;
   auto id_compare_less

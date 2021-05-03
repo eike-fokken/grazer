@@ -5,5 +5,5 @@ add_subdirectory(Power_factory)
 add_library(componentfactory STATIC Componentfactory.cpp)
 
 # This is needed in order to construct the specific components in Aux.cpp in construct_node
-target_link_libraries(componentfactory PUBLIC network aux_make_schema)
+target_link_libraries(componentfactory PUBLIC network aux_make_schema json_validation)
 target_include_directories(componentfactory PUBLIC include)

@@ -9,101 +9,9 @@
 
 using json = nlohmann::ordered_json;
 
-// declarations to circumvent the warning: no prior declaration.
-std::string getnodetype(json node);
-json get_node_type_json(json boundarydata);
-std::string getlintype(json node);
-
-std::string getnodetype(json node) {
-
-  std::vector<std::string> current_var = node["var"];
-
-  std::vector<std::string> pressurevar = {"pressure"};
-  std::vector<std::string> flowvar = {"flow"};
-  std::vector<std::string> negflowvar = {"negflow"};
-  std::vector<std::string> PQvar = {"P", "Q"};
-  std::sort(PQvar.begin(), PQvar.end());
-  std::vector<std::string> PVvar = {"P", "V"};
-  std::sort(PVvar.begin(), PVvar.end());
-  std::vector<std::string> Vphivar = {"V", "phi"};
-  std::sort(Vphivar.begin(), Vphivar.end());
-
-  if (current_var == pressurevar) {
-    return "pressure";
-  } else if (current_var == flowvar) {
-    return "flow";
-  } else if (current_var == negflowvar) {
-    return "negflow";
-  } else if (current_var == PQvar) {
-    return "PQ";
-  } else if (current_var == PVvar) {
-    return "PV";
-  } else if (current_var == Vphivar) {
-    return "Vphi";
-  } else {
-    return "unkown";
-  }
-}
-
-std::string getlintype(json node) {
-  auto current_lin = node["lin"].get<std::vector<int>>();
-  std::vector<int> pressurelin = {1, 0};
-  std::vector<int> flowlin = {0, 1};
-  std::vector<int> negflowlin = {0, -1};
-  std::vector<int> Plin = {1, 0, 0, 0};
-  std::vector<int> Qlin = {0, 1, 0, 0};
-  std::vector<int> Vlin = {0, 0, 1, 0};
-  std::vector<int> philin = {0, 0, 0, 1};
-
-  if (current_lin == pressurelin) {
-    return "pressure";
-  } else if (current_lin == flowlin) {
-    return "flow";
-  } else if (current_lin == negflowlin) {
-    return "negflow";
-  } else if (current_lin == Plin) {
-    return "P";
-  } else if (current_lin == Qlin) {
-    return "Q";
-  } else if (current_lin == Vlin) {
-    return "V";
-  } else if (current_lin == philin) {
-    return "phi";
-  } else {
-    return "unkown";
-  }
-}
-
-json get_node_type_json(json boundarydata) {
-  json newnetdata;
-
-  std::map<std::string, std::vector<int>> lin;
-
-  json conditions
-      = boundarydata["boundaryConditions"]["linearBoundaryCondition"];
-
-  json nodes;
-  for (auto itr = conditions.begin(); itr != conditions.end(); ++itr) {
-
-    auto res = std::find_if(nodes.begin(), nodes.end(), [itr](const json &x) {
-      auto it = x.find("id");
-      return it != x.end() and it.value() == (*itr)["id"];
-    });
-    std::string var = getlintype(*itr);
-    if (res == nodes.end()) {
-      json node;
-      node["id"] = (*itr)["id"];
-      node["var"].push_back(var);
-      nodes.push_back(node);
-    } else {
-      (*res)["var"].push_back(var);
-    }
-  }
-
-  newnetdata["boundarycondition"] = nodes;
-
-  return newnetdata;
-}
+static std::string getnodetype(json node);
+static json get_node_type_json(json boundarydata);
+static std::string getlintype(json node);
 
 int main(int argc, char *argv[]) {
 
@@ -362,29 +270,93 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
-// for(auto & source: nodes["source"])
-//   {
-//     auto res = std::find_if(bdcond.begin(), bdcond.end(), [source](const
-//     json& x) {
-//                                                             auto it =
-//                                                             x.find("id");
-//                                                             return it !=
-//                                                             x.end() and
-//                                                             it.value() ==
-//                                                             source["id"];
-//                                                           });
-//     source["type"] = (*res)["type"];
-//   }
-// for(auto & sink: nodes["sink"])
-//   {
-//     auto res = std::find_if(bdcond.begin(), bdcond.end(), [sink](const
-//     json& x) {
-//                                                             auto it =
-//                                                             x.find("id");
-//                                                             return it !=
-//                                                             x.end() and
-//                                                             it.value() ==
-//                                                             sink["id"];
-//                                                           });
-//     sink["type"] = (*res)["type"];
-//   }
+std::string getnodetype(json node) {
+
+  std::vector<std::string> current_var = node["var"];
+
+  std::vector<std::string> pressurevar = {"pressure"};
+  std::vector<std::string> flowvar = {"flow"};
+  std::vector<std::string> negflowvar = {"negflow"};
+  std::vector<std::string> PQvar = {"P", "Q"};
+  std::sort(PQvar.begin(), PQvar.end());
+  std::vector<std::string> PVvar = {"P", "V"};
+  std::sort(PVvar.begin(), PVvar.end());
+  std::vector<std::string> Vphivar = {"V", "phi"};
+  std::sort(Vphivar.begin(), Vphivar.end());
+
+  if (current_var == pressurevar) {
+    return "pressure";
+  } else if (current_var == flowvar) {
+    return "flow";
+  } else if (current_var == negflowvar) {
+    return "negflow";
+  } else if (current_var == PQvar) {
+    return "PQ";
+  } else if (current_var == PVvar) {
+    return "PV";
+  } else if (current_var == Vphivar) {
+    return "Vphi";
+  } else {
+    return "unkown";
+  }
+}
+
+std::string getlintype(json node) {
+  auto current_lin = node["lin"].get<std::vector<int>>();
+  std::vector<int> pressurelin = {1, 0};
+  std::vector<int> flowlin = {0, 1};
+  std::vector<int> negflowlin = {0, -1};
+  std::vector<int> Plin = {1, 0, 0, 0};
+  std::vector<int> Qlin = {0, 1, 0, 0};
+  std::vector<int> Vlin = {0, 0, 1, 0};
+  std::vector<int> philin = {0, 0, 0, 1};
+
+  if (current_lin == pressurelin) {
+    return "pressure";
+  } else if (current_lin == flowlin) {
+    return "flow";
+  } else if (current_lin == negflowlin) {
+    return "negflow";
+  } else if (current_lin == Plin) {
+    return "P";
+  } else if (current_lin == Qlin) {
+    return "Q";
+  } else if (current_lin == Vlin) {
+    return "V";
+  } else if (current_lin == philin) {
+    return "phi";
+  } else {
+    return "unkown";
+  }
+}
+
+json get_node_type_json(json boundarydata) {
+  json newnetdata;
+
+  std::map<std::string, std::vector<int>> lin;
+
+  json conditions
+      = boundarydata["boundaryConditions"]["linearBoundaryCondition"];
+
+  json nodes;
+  for (auto itr = conditions.begin(); itr != conditions.end(); ++itr) {
+
+    auto res = std::find_if(nodes.begin(), nodes.end(), [itr](const json &x) {
+      auto it = x.find("id");
+      return it != x.end() and it.value() == (*itr)["id"];
+    });
+    std::string var = getlintype(*itr);
+    if (res == nodes.end()) {
+      json node;
+      node["id"] = (*itr)["id"];
+      node["var"].push_back(var);
+      nodes.push_back(node);
+    } else {
+      (*res)["var"].push_back(var);
+    }
+  }
+
+  newnetdata["boundarycondition"] = nodes;
+
+  return newnetdata;
+}

@@ -1,5 +1,10 @@
 #pragma once
+#include "Componentfactory.hpp"
+#include "Netfactory.hpp"
+#include "Networkproblem.hpp"
+#include "test_io_helper.hpp"
 #include <Eigen/Dense>
+#include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 #include <string>
 
@@ -11,7 +16,7 @@ namespace Eigen {
 // this is for T = double or T = Eigen::Vector...
 template <typename T>
 nlohmann::json
-make_value_json(std::string id, std::string key, T &condition0, T &condition1);
+make_value_json(std::string id, std::string key, T condition0, T condition1);
 
 // this is for T = double or T = Eigen::Vector...
 template <typename T>
@@ -39,14 +44,14 @@ void Eigen::to_json(nlohmann::json &j, const MatrixBase<Derived> &eig) {
 
 template <typename T>
 nlohmann::json
-make_value_json(std::string id, std::string key, T &condition0, T &condition1) {
+make_value_json(std::string id, std::string key, T condition0, T condition1) {
   nlohmann::json bound;
   bound["id"] = id;
   bound["data"] = nlohmann::json::array();
   nlohmann::json b0;
   nlohmann::json b1;
-  b1[key] = 1;
   b0[key] = 0;
+  b1[key] = 1;
   if constexpr (std::is_same_v<T, double>) {
     b0["values"].push_back(condition0);
     b1["values"].push_back(condition1);
@@ -82,3 +87,15 @@ nlohmann::json make_value_json(
   }
   return bound;
 }
+
+class EqcomponentTEST : public ::testing::Test {
+public:
+  std::string output;
+
+  Directory_creator d;
+  Path_changer p{d.get_path()};
+
+  std::unique_ptr<Model::Networkproblem::Networkproblem> make_Networkproblem(
+      nlohmann::json &netproblem,
+      Model::Componentfactory::Componentfactory const &factory);
+};

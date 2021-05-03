@@ -32,4 +32,5 @@ namespace Aux::schema {
       json &schema, std::string const &property_name, json const &property_def);
   void add_property(
       json &schema, std::string const &property_name, json const &property_def);
+  json relax_schema(json component_schema, std::vector<std::string> keys);
 } // namespace Aux::schema

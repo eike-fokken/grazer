@@ -7,11 +7,15 @@ target_link_libraries(stringify_values PRIVATE misc)
 
 add_executable(transform_initial transform_initial.cpp)
 
-add_executable(full_factory_schema create_topology_schema.cpp)
-target_link_libraries(full_factory_schema componentfactory full_factory)
+add_executable(create_topology_schema create_topology_schema.cpp)
+target_link_libraries(create_topology_schema componentfactory full_factory)
 
 
 add_executable(get_mean_sigma get_mean_sigma.cpp)
 
 add_executable(generate_printing_csv generate_printing_csv.cpp)
 target_link_libraries(generate_printing_csv PRIVATE input_output)
+
+add_executable(move_to_category move_to_category.cpp)
+add_executable(normalize_jsons normalize_jsons.cpp)
+add_executable(draw_gaslib_graph draw_gaslib_graph.cpp)

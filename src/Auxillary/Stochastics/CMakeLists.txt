@@ -1,8 +1,5 @@
 
-
-
 add_library(stochastics STATIC
-  Stochastic.cpp
   Normaldistribution.cpp
   )
 

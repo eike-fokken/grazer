@@ -61,7 +61,7 @@ namespace Model {
 
     double new_time = last_time + timedata.get_delta_t();
 
-    Eigen::VectorXd new_state(last_state);
+    Eigen::VectorXd new_state = last_state;
 
     solver.evaluate_state_derivative_triplets(
         problem, last_time, new_time, last_state, new_state);
@@ -70,19 +70,33 @@ namespace Model {
     std::cout << "number of non-zeros in jacobian: "
               << solver.get_number_non_zeros_jacobian() << std::endl;
 
+    int retry = 0;
+
     for (int i = 0; i != timedata.get_number_of_steps(); ++i) {
-      last_state = new_state;
       new_time = last_time + timedata.get_delta_t();
       problem.prepare_timestep(last_time, new_time, last_state, new_state);
       auto solstruct = solver.solve(
           new_state, problem, true, last_time, new_time, last_state);
-      problem.save_values(new_time, new_state);
-      problem.json_save(output, new_time, new_state);
-
       std::cout << new_time << ": ";
       std::cout << solstruct.residual << ", ";
       std::cout << solstruct.used_iterations << std::endl;
-
+      if (solstruct.success) {
+        problem.save_values(new_time, new_state);
+        problem.json_save(output, new_time, new_state);
+        retry = 0;
+      } else {
+        if (retry < 2) {
+          --i;
+          ++retry;
+          std::cout << "\nretrying timestep " << new_time << "\n" << std::endl;
+          continue;
+        } else {
+          std::cout << "Failed timestep irrevocably!" << new_time << std::endl;
+          problem.save_values(new_time, new_state);
+          problem.json_save(output, new_time, new_state);
+        }
+      }
+      last_state = new_state;
       last_time = new_time;
     }
   }

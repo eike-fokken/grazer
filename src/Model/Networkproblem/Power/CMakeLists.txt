@@ -4,7 +4,8 @@ add_library(power STATIC
   PQnode.cpp
   PVnode.cpp
   Transmissionline.cpp
-  StochasticPQnode.cpp)
+  StochasticPQnode.cpp
+  )
 
 target_include_directories(power PUBLIC
   include)

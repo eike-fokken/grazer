@@ -68,10 +68,7 @@ namespace Model::Networkproblem {
     // built. It will throw an exception, if a node type is encountered that is
     // not known.
 
-    for (auto nodetype_itr = node_topology.begin();
-         nodetype_itr != node_topology.end(); ++nodetype_itr) {
-
-      std::string nodetypename = nodetype_itr.key();
+    for (auto const &[nodetypename, ignored] : node_topology.items()) {
 
       auto type_itr = nodetypemap.find(nodetypename);
       if (type_itr == nodetypemap.end()) {
@@ -134,10 +131,7 @@ namespace Model::Networkproblem {
     // built. It will throw an exception, if a edge type is encountered that
     // is not known.
 
-    for (auto edgetype_itr = edge_topology.begin();
-         edgetype_itr != edge_topology.end(); ++edgetype_itr) {
-
-      std::string edgetypename = edgetype_itr.key();
+    for (auto const &[edgetypename, ignored] : edge_topology.items()) {
 
       auto type_itr = edgetypemap.find(edgetypename);
       if (type_itr == edgetypemap.end()) {
@@ -192,17 +186,16 @@ namespace Model::Networkproblem {
       if (not second_json.contains(component)) {
         continue;
       }
-      for (auto it = second_json[component].begin();
-           it != second_json[component].end(); ++it) {
-        if (not topology[component].contains(it.key())) {
+      for (auto &[key, ignored] : second_json[component].items()) {
+        if (not topology[component].contains(key)) {
           std::cout << "Note: Topology json does not contain " << component
-                    << " of type " << it.key() << ", but the "
+                    << " of type " << key << ", but the "
                     << name_of_inserted_json << " json does contain such "
                     << component << "." << std::endl;
           continue;
         }
-        auto &second_json_vector_json = second_json[component][it.key()];
-        auto &topology_vector_json = topology[component][it.key()];
+        auto &second_json_vector_json = second_json[component][key];
+        auto &topology_vector_json = topology[component][key];
 
         // define a < function as a lambda:
         auto id_compare_less
@@ -250,7 +243,6 @@ namespace Model::Networkproblem {
         // assign the additional values to the topology json.
         while (secjson_it != second_json_vector_json.end()
                and top_it != topology_vector_json.end()) {
-
           if (id_compare_less(*secjson_it, *top_it)) {
             std::cout << "The component with id "
                       << (*secjson_it)["id"].get<std::string>() << '\n'

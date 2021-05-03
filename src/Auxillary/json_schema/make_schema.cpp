@@ -1,5 +1,6 @@
 #include "make_schema.hpp"
 #include "unit_conversion.hpp"
+#include <stdexcept>
 
 namespace Aux::schema {
 
@@ -96,4 +97,16 @@ namespace Aux::schema {
       json const &property_def) {
     schema["properties"][property_name] = property_def;
   }
+
+  json relax_schema(json schema, std::vector<std::string> keys) {
+    for (auto const &key : keys) {
+      auto it = std::find(
+          schema["required"].begin(), schema["required"].end(), key);
+      if (it != schema["required"].end()) {
+        schema["required"].erase(it);
+      }
+    }
+    return schema;
+  }
+
 } // namespace Aux::schema

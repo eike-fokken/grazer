@@ -27,7 +27,7 @@ namespace Model::Networkproblem::Gas {
     Aux::schema::add_required(schema, "diameter", Aux::schema::type::length());
     Aux::schema::add_required(schema, "roughness", Aux::schema::type::length());
 
-    Aux::schema::add_property(
+    Aux::schema::add_required(
         schema, "desired_delta_x", Aux::schema::type::number());
 
     return schema;

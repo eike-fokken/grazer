@@ -11,5 +11,6 @@ set(DOXYGEN_RECURSIVE YES)
 set(DOXYGEN_GENERATE_TREEVIEW YES)
 
 
-doxygen_add_docs(docs WORKING_DIRECTORY  "${PROJECT_SOURCE_DIR}/src")
+
+doxygen_add_docs(docs "${PROJECT_SOURCE_DIR}/src" "${PROJECT_SOURCE_DIR}/helper_functions" WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}" )
 
