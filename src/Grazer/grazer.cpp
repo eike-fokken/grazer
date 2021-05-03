@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
 
     // give the path information of the file:
     auto directory_path
-        = std::filesystem::absolute(problem_data_file.parent_path());
+        = std::filesystem::absolute(problem_data_file).parent_path();
     problem_json["GRAZER_file_directory"] = directory_path.string();
 
     auto initial_value_json = all_json["initial_values"];
