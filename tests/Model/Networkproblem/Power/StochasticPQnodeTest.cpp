@@ -45,11 +45,11 @@ public:
   double Q2_bd = 7.0;
   double G2 = 2.0;
   double B2 = 2.0;
-  int number_of_stochastic_steps{100};
-  double theta_P = 0.1;
-  double sigma_P = 0.05;
-  double theta_Q = 0.1;
-  double sigma_Q = 0.05;
+  int number_of_stochastic_steps{1000};
+  double theta_P = 2.0;
+  double sigma_P = 0.5;
+  double theta_Q = 3.0;
+  double sigma_Q = 0.3;
 
   // values for the PVnode:
   std::string id3 = "pv";
@@ -111,7 +111,7 @@ TEST_F(stochasticPQnodeTEST, evaluate) {
   }
 
   // Here we seem to run into floating point problems, maybe because of the many
-  // digits of the random numbers. Expecting only to be equal up to 1e-13 seems
+  // digits of the random numbers. Expecting only to be equal up to 1e-12 seems
   // to work well and is hopefully sufficient to catch regressions.
 
   EXPECT_NEAR(
@@ -119,13 +119,14 @@ TEST_F(stochasticPQnodeTEST, evaluate) {
       -stoch_pq->get_current_P() + G2 * V2 * V2
           + V2 * V1 * (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 - phi1))
           + V2 * V3 * (Gt2 * cos(phi2 - phi3) + Bt2 * sin(phi2 - phi3)),
-      1e-13);
+      1e-12);
+
   EXPECT_NEAR(
       rootvalues[stoch_pq->get_start_state_index() + 1],
       -stoch_pq->get_current_Q() - B2 * V2 * V2
           + V2 * V1 * (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 - phi1))
           + V2 * V3 * (Gt2 * sin(phi2 - phi3) - Bt2 * cos(phi2 - phi3)),
-      1e-13);
+      1e-12);
 }
 
 TEST_F(stochasticPQnodeTEST, evaluate_state_derivative) {
