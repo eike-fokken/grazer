@@ -1,29 +1,23 @@
 ## Grazer
 
 Grazer is a program that shall simulate the time evolution of dynamical systems.
-It does so by a 'First-discretize-then-optimize' approach.
 Input data is handed to grazer by json files.
 
-This software is in alpha-phase and not yet suited for use.
-Feel free though to dig into it.
-It will mature over the course of 2021.
+This software is up to now only tested by one person, so expect some rough edges.
+Yet feel free to dig into it.  Any feedback in github issues or to the mail address below is welcome.
+
 
 
 ## Installation
-
 Before you can use grazer, you must build it.
-Supported compilers are clang-9 and gcc-9 and higher.
-Note that also gcc-mingw can be used but you have to ship the dlls by hand.
-Later on there will be a guide for this.
+Supported compilers are clang-9, gcc-9 and Microsofts Visual Studio 2019 as well as later version.
+Other compilers may work and probably do as we strive for full standard compliance to C++17.
 
-As we strive for full standard compliance, a port to other compilers is hopefully easy.
+To build grazer, clone this git repository, change into it and run
 
+```git submodule update --init --recursive --depth=1```
 
-To do so, clone this git repository, change into it and run
-
-```git submodule update --init eigen googletest nlohmann_json```
-
-to fetch dependencies.
+to fetch dependencies (`--depth=1` is not needed but cuts done the size tremendously.)
 
 Then run
 
@@ -41,28 +35,17 @@ will appear in `release/src/Grazer/`.
 
 ## Usage
 
-Up to now only Power networks are supported.
-You can pass network data, initial conditions and boundary conditions in three json files.
-Example files (that also contain gas data, which is not yet read) are in `data/`.
+Up to now only Power and Gas networks are supported.
+You can pass a simulation problem in form of a json file.
+A few of these files can be found in the `data` subdirectory.
 
 Invoking grazer can be done like this:
 
-```grazer topology.json initial.json boundary.json delta_t delta_x T```
-
-Here the topology file declares the graph structure and nature of the edges and nodes.
-See `data/topology_pretty.json` for an example.
-`boundary.json` declares boundary conditions and `initial.json` provides initial conditions for
-time `t = -delta_t`. For power-only problems one still has to provide initial values as they are also
-used for an initial guess in the Newton method.
-
-`delta_t` is the desired time step, `T` the last time point.
-If `T/delta_t` is not an integer, the next smaller time step is used.
-`delta_x` is the desired spatial step size. In a similar fashion to the time step the next smaller step size is used
-such that the length of each element is an integer multiple of the step size.
+```grazer my_problem_data.json```
 
 Calling grazer without arguments is equivalent to calling:
 
-``` grazer topology_pretty.json initial_pretty.json boundary_pretty.json 1800 10000 86400```
+``` grazer problem_data.json```
 
 
 
