@@ -35,9 +35,19 @@ namespace Model::Componentfactory {
     /**
      * @brief Get the json schema describing the necessary properties of a
      * component
+     *
+     * @param include_boundary a toggle the inclusion of the boundary schema
+     * into the topology schema
      * @return nlohmann::json
      */
-    virtual nlohmann::json get_schema() const = 0;
+    virtual nlohmann::json get_schema(bool include_boundary) const = 0;
+
+    /**
+     * @brief Get the boundary schema
+     *
+     * @return nlohmann::json
+     */
+    virtual nlohmann::json get_boundary_schema() const = 0;
 
     /**
      * @brief Returns true if a directory for output files needs to be
@@ -86,7 +96,18 @@ namespace Model::Componentfactory {
                  "whether an edge was added to the Nodechooser.");
 
     std::string get_name() const override { return ConcreteNode::get_type(); };
-    nlohmann::json get_schema() const override {
+
+    nlohmann::json get_schema(bool include_boundary) const override {
+      return ConcreteNode::get_boundary_schema();
+    };
+
+    nlohmann::json get_schema(bool include_boundary) const override {
+      if (include_boundary) {
+        auto schema = ConcreteNode::get_schema();
+        Aux::schema::add_required(
+            schema, "boundary_values", ConcreteNode::get_boundary_schema());
+        return schema;
+      }
       return ConcreteNode::get_schema();
     };
 
@@ -116,7 +137,18 @@ namespace Model::Componentfactory {
                  "whether a node was added to the Edgechooser.");
 
     std::string get_name() const override { return ConcreteEdge::get_type(); };
-    nlohmann::json get_schema() const override {
+
+    nlohmann::json get_schema(bool include_boundary) const override {
+      return ConcreteEdge::get_boundary_schema();
+    };
+
+    nlohmann::json get_schema(bool include_boundary) const override {
+      if (include_boundary) {
+        auto schema = ConcreteEdge::get_schema();
+        Aux::schema::add_required(
+            schema, "boundary_values", ConcreteEdge::get_boundary_schema());
+        return schema;
+      }
       return ConcreteEdge::get_schema();
     };
 
