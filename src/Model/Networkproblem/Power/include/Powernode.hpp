@@ -25,6 +25,8 @@ namespace Model::Networkproblem::Power {
 
     void print_to_files(std::filesystem::path const &output_directory) override;
 
+    void new_print_to_files(nlohmann::json &new_output) override;
+
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,
         nlohmann::json const &initial_json) final;

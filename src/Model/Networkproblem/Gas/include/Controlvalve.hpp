@@ -33,6 +33,8 @@ namespace Model::Networkproblem::Gas {
 
     void print_to_files(std::filesystem::path const &output_directory) override;
 
+    void new_print_to_files(nlohmann::json &new_output) final;
+
   private:
     Control<1> const control_values;
   };

@@ -1,5 +1,6 @@
 #include "Shortpipe.hpp"
 #include "Exception.hpp"
+#include "Get_base_component.hpp"
 #include "Matrixhandler.hpp"
 #include <fstream>
 #include <iostream>
@@ -39,6 +40,11 @@ namespace Model::Networkproblem::Gas {
   void
   Shortpipe::print_to_files(std::filesystem::path const &output_directory) {
     print_helper(output_directory, get_type());
+  }
+
+  void Shortpipe::new_print_to_files(nlohmann::json &new_output) {
+    std::string comp_type = Aux::component_class(*this);
+    new_print_helper(new_output, comp_type, get_type());
   }
 
   void Shortpipe::set_initial_values(

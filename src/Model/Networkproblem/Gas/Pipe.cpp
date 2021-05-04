@@ -110,11 +110,7 @@ namespace Model::Networkproblem::Gas {
     }
   }
 
-  void Pipe::setup() {
-    auto &output_json = get_output_json_ref();
-    output_json["id"] = get_id_copy();
-    output_json["data"] = nlohmann::json::array();
-  }
+  void Pipe::setup() { setup_helper(get_id()); }
 
   int Pipe::get_number_of_states() const { return 2 * number_of_points; }
 

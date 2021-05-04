@@ -85,6 +85,8 @@ namespace Model::Networkproblem {
     /// claim indices from their attached gas edges.
     virtual void setup();
 
+    void setup_helper(std::string const &id);
+
     /// \brief This function sets the indices #start_state_index and
     /// #after_state_index AND calls setup()
     ///

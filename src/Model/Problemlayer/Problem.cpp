@@ -31,7 +31,7 @@ namespace Model {
 
   Problem::~Problem() {
     try {
-      print_to_files();
+      // print_to_files();
       new_print_to_files();
     } catch (std::exception &e) {
       std::cout << "Printing to files failed with error message:"
@@ -121,7 +121,7 @@ namespace Model {
     std::filesystem::path new_output_file(
         output_directory / std::filesystem::path("new_output.json"));
     std::ofstream o(new_output_file);
-    o << new_output.dump(4);
+    o << new_output.dump(1);
   }
 
   void Problem::set_initial_values(

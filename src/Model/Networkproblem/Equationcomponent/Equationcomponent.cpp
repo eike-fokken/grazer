@@ -20,6 +20,12 @@ namespace Model::Networkproblem {
 
   void Equationcomponent::setup() {}
 
+  void Equationcomponent::setup_helper(std::string const &id) {
+    auto &output_json = get_output_json_ref();
+    output_json["id"] = id;
+    output_json["data"] = nlohmann::json::array();
+  }
+
   int Equationcomponent::set_indices(int const next_free_index) {
     start_state_index = next_free_index;
     int number_of_states = get_number_of_states();
