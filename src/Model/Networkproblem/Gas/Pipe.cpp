@@ -1,6 +1,7 @@
 #include "Pipe.hpp"
 #include "Coloroutput.hpp"
 #include "Edge.hpp"
+#include "Get_base_component.hpp"
 #include "Implicitboxscheme.hpp"
 #include "Initialvalue.hpp"
 #include "Isothermaleulerequation.hpp"
@@ -161,24 +162,9 @@ namespace Model::Networkproblem::Gas {
   }
 
   void Pipe::new_print_to_files(nlohmann::json &new_output) {
-
     auto &this_output_json = get_output_json_ref();
-
-    bool constexpr is_node
-        = (std::is_base_of_v<
-            Network::Node, std::remove_reference<decltype(*this)>::type>);
-    bool constexpr is_edge
-        = (std::is_base_of_v<
-            Network::Edge, std::remove_reference<decltype(*this)>::type>);
-    static_assert(is_node or is_edge, "Component is neither node, nor edge!");
-
-    if constexpr (is_node) {
-      new_output["nodes"][get_gas_type()].push_back(
-          std::move(this_output_json));
-    } else {
-      new_output["connections"][get_gas_type()].push_back(
-          std::move(this_output_json));
-    }
+    std::string comp_type = Aux::component_class(*this);
+    new_output[comp_type][get_type()].push_back(std::move(this_output_json));
   }
 
   void Pipe::save_values(double time, Eigen::Ref<Eigen::VectorXd const> state) {
