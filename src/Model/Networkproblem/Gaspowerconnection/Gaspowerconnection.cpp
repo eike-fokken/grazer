@@ -30,6 +30,15 @@ namespace Model::Networkproblem::Gaspowerconnection {
     return schema;
   }
 
+  nlohmann::json Gaspowerconnection::get_initial_schema() {
+    std::vector<nlohmann::json> contains_x
+        = {R"({"minimum": 0, "maximum": 0})"_json};
+    int interpol_points = 1;
+    return Aux::schema::make_initial_schema(
+        interpol_points, Gaspowerconnection::get_dimension_of_pde(),
+        contains_x);
+  }
+
   Gaspowerconnection::Gaspowerconnection(
       nlohmann::json const &topology,
       std::vector<std::unique_ptr<Network::Node>> &nodes) :
