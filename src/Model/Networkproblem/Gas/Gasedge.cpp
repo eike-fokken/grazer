@@ -1,8 +1,20 @@
 #include "Idobject.hpp"
 #include <Exception.hpp>
 #include <Gasedge.hpp>
+#include <make_schema.hpp>
 
 namespace Model::Networkproblem::Gas {
+
+  int Gasedge::get_dimension_of_pde() { return 2; }
+
+  nlohmann::json Gasedge::get_initial_schema() {
+    int interpol_points = 2;
+    std::vector<nlohmann::json> contains_x
+        = {R"({"minimum": 0, "maximum": 0})"_json,
+           R"({"minimum": 1, "maximum": 1})"_json};
+    return Aux::schema::make_initial_schema(
+        interpol_points, Gasedge::get_dimension_of_pde(), contains_x);
+  }
 
   int Gasedge::give_away_start_index() const {
     if (get_start_state_index() < 0 or get_after_state_index() < 0) {
