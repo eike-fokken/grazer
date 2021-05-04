@@ -1,20 +1,75 @@
 {
-  "$id": "https://raw.githubusercontent.com/eike-fokken/grazer/blob/master/json_schemas/initial_schema.json",
-  "$schema": "http://json-schema.org/draft-07/schema",
-  "title": "Initial Data",
-  "description": "Situation at the starting time",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "required": ["initialvalues"],
+  "description": "Initial Values",
   "properties": {
-    "initialvalues":{
+    "nodes": {
+      "type": "object",
+      "description": "Nodes",
+      "properties": {
+        "ExternalPowerplant": {
+            "$ref": "#/definitions/component"
+        }
+      }
+    },
+    "connections": {
+      "type": "object",
+      "description": "connections",
+      "properties": {
+        "Gaspowerconnection": {
+            "$ref": "#/definitions/component"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "component": {
       "type": "array",
-      "items":{
-        "id": {"type": "string"},
-        "data":{
-          "type": "array",
-          "items": {
-            "x": {"type": "numeric"},
-            "values": {"type": "array", "items": {"type": "numeric"}}
+      "unique": true,
+      "items": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "component id"
+          },
+          "data": {
+            "description": "Array of Interpolation Points with Initial Values",
+            "type": "array",
+            "allOf": [
+              {
+                "contains": {
+                  "properties": {
+                    "x": {
+                      "minimum": 1,
+                      "maximum": 1
+                    }
+                  }
+                }
+              }
+            ],
+            "items": {
+              "type": "object",
+              "required": [
+                "x",
+                "values"
+              ],
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "description": "Interpolation Point"
+                },
+                "values": {
+                  "type": "array",
+                  "description": "Initial Values at interpolation point x",
+                  "length": 2,
+                  "items": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
           }
         }
       }

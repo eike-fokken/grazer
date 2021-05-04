@@ -6,6 +6,18 @@
 
 namespace Model::Networkproblem {
 
+  int Equationcomponent::get_dimension_of_pde(){
+    gthrow(
+        {"This static method must be implemented in the class inheriting "
+         "from Equationcomponent!"});
+  }
+
+  nlohmann::json Equationcomponent::get_initial_schema() {
+    gthrow(
+        {"This static method must be implemented in the class inheriting "
+         "from Equationcomponent!"});
+  }
+
   bool Equationcomponent::needs_output_file() { return true; }
 
   void Equationcomponent::prepare_timestep(

@@ -48,22 +48,73 @@ namespace Aux::schema {
   json type::length() { return Aux::unit::get_length_schema(); }
 
   nlohmann::json make_list_schema_of(nlohmann::json const &element_schema) {
-    return make_list_schema_of(element_schema, 0, 0);
+    return make_list_schema_of(element_schema, R"({})"_json);
   }
+
   nlohmann::json make_list_schema_of(
-      nlohmann::json const &element_schema, int min_items, int max_items) {
+      nlohmann::json const &element_schema,
+      nlohmann::json const &array_params) {
     nlohmann::json list_schema;
     list_schema["type"] = "array";
     list_schema["items"] = element_schema;
-
-    if (min_items > 0) {
-      list_schema["minItems"] = min_items;
+    if (element_schema.contains("description")) {
+      std::ostringstream stream;
+      stream << "Array of " << element_schema["description"];
+      list_schema["description"] = stream.str();
     }
-    if (max_items > 0) {
-      list_schema["maxItems"] = max_items;
-    }
-
+    list_schema.update(array_params);
     return list_schema;
+  }
+
+  nlohmann::json make_initial_schema(
+      int num_interpolations, int num_values,
+      std::vector<nlohmann::json> contains_prop_x_schemas) {
+    nlohmann::json initial_schema = R"(
+      {
+        "type": "object",
+        "required": ["id", "data"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "component id"
+          },
+          "data": {}
+        }
+      }
+      )"_json;
+
+    nlohmann::json interpolation_point = R"(
+      {
+        "type": "object",
+        "description": "Interpolation Point with Initial Values"
+      }
+      )"_json;
+
+    add_required(interpolation_point, "x", type::number("Interpolation Point"));
+    add_required(
+        interpolation_point, "values",
+        make_list_schema_of(
+            type::number(),
+            {{"description", "Initial Values at Interpolation Point x"},
+             {"minItems", num_values},
+             {"maxItems", num_values}}));
+
+    nlohmann::json data = make_list_schema_of(
+        interpolation_point,
+        {{"description", "Array of Interpolation Points with Initial Values"},
+         {"minItems", num_interpolations},
+         {"maxItems", num_interpolations}});
+    data["allOf"] = R"([])"_json;
+
+    for (auto const &x_schema : contains_prop_x_schemas) {
+      nlohmann::json all_of_elmt;
+      all_of_elmt["contains"]["properties"]["x"] = x_schema;
+      data["allOf"].push_back(all_of_elmt);
+    }
+
+    initial_schema["properties"]["data"] = data;
+
+    return initial_schema;
   }
 
   nlohmann::json make_boundary_schema(int num_values) {
@@ -78,8 +129,8 @@ namespace Aux::schema {
 
     nlohmann::json data_element;
     data_element["time"] = type::number();
-    data_element["values"]
-        = make_list_schema_of(type::number(), num_values, num_values);
+    data_element["values"] = make_list_schema_of(
+        type::number(), {{"minItems", num_values}, {"maxItems", num_values}});
 
     schema["properties"]["data"] = make_list_schema_of(data_element);
     return schema;

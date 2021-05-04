@@ -74,7 +74,6 @@ namespace Model::Networkproblem {
     /// int like 2. But for PDES its value is only known after construction.
     ///
     /// @returns number of state variables needed by this component
-
     virtual int get_number_of_states() const = 0;
 
     /// \brief Utility for setup of things that cannot be done during
@@ -138,6 +137,9 @@ namespace Model::Networkproblem {
     /// Defaults to true, but specific components can overload this function.
     /// @returns bool, is true, if the component wants to write to files.
     static bool needs_output_file();
+
+    static int get_dimension_of_pde();
+    static nlohmann::json get_initial_schema();
 
   protected:
     /// \brief helper function for save_values() that deals with the data

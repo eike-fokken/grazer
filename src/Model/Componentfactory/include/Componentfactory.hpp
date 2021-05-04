@@ -6,6 +6,7 @@
 #include <map>
 #include <memory>
 #include <sstream>
+#include <make_schema.hpp>
 
 namespace Model::Networkproblem {
   class Equationcomponent;
@@ -97,11 +98,11 @@ namespace Model::Componentfactory {
 
     std::string get_name() const override { return ConcreteNode::get_type(); };
 
-    nlohmann::json get_schema(bool include_boundary) const override {
+    nlohmann::json get_boundary_schema() const override {
       return ConcreteNode::get_boundary_schema();
     };
 
-    nlohmann::json get_schema(bool include_boundary) const override {
+    nlohmann::json get_schema(const bool include_boundary) const override {
       if (include_boundary) {
         auto schema = ConcreteNode::get_schema();
         Aux::schema::add_required(
@@ -138,7 +139,7 @@ namespace Model::Componentfactory {
 
     std::string get_name() const override { return ConcreteEdge::get_type(); };
 
-    nlohmann::json get_schema(bool include_boundary) const override {
+    nlohmann::json get_boundary_schema() const override {
       return ConcreteEdge::get_boundary_schema();
     };
 

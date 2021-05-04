@@ -15,6 +15,7 @@ namespace Network {
   public:
     static std::string get_type();
     static nlohmann::json get_schema();
+    static nlohmann::json get_boundary_schema();
 
     // The edge holds a shared pointer to its start and end nodes.
     // Creating an edge without also providing its start and
