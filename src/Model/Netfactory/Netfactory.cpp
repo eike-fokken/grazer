@@ -19,21 +19,20 @@ namespace Model::Networkproblem {
   void check_for_duplicates(nlohmann::json &components, std::string key) {
 
     std::vector<std::string> component_vector;
-    for (auto const &component_types : {"nodes", "connections"}) {
-      if (not components.contains(component_types)) {
+    for (auto const &component_class : {"nodes", "connections"}) {
+      if (not components.contains(component_class)) {
         continue;
       }
-      for (auto & [key,sub_json] : components[component_types].items()) {
-        for (auto & component : sub_json){
+      for (auto &[component_type, sub_json] :
+           components[component_class].items()) {
+        for (auto &component : sub_json) {
           component_vector.push_back(component["id"].get<std::string>());
         }
       }
     }
-    std::sort(
-        component_vector.begin(), component_vector.end());
+    std::sort(component_vector.begin(), component_vector.end());
     auto first_eq_id
-      = std::adjacent_find(component_vector.begin(),
-                           component_vector.end());
+        = std::adjacent_find(component_vector.begin(), component_vector.end());
     if (first_eq_id != component_vector.end()) {
       gthrow({"The id ", (*first_eq_id), " appears twice in ", key, " ."});
     }
@@ -43,15 +42,14 @@ namespace Model::Networkproblem {
 
     check_for_duplicates(components, key);
 
-    for (auto const &component_types : {"nodes", "connections"}) {
-      if (not components.contains(component_types)) {
+    for (auto const &component_class : {"nodes", "connections"}) {
+      if (not components.contains(component_class)) {
         continue;
       }
-      for (auto component_itr = components[component_types].begin();
-           component_itr != components[component_types].end();
-           ++component_itr) {
+      for (auto &[component_type, sub_json] :
+           components[component_class].items()) {
         auto &second_json_vector_json
-            = components[component_types][component_itr.key()];
+            = components[component_class][component_type];
         // Define < function
         auto id_compare_less
             = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
@@ -60,19 +58,6 @@ namespace Model::Networkproblem {
         std::sort(
             second_json_vector_json.begin(), second_json_vector_json.end(),
             id_compare_less);
-        // Define equals function
-        // auto id_equals
-        //     = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
-        //   return a["id"].get<std::string>() == b["id"].get<std::string>();
-        // };
-        // auto first_eq_pair = std::adjacent_find(
-        //     second_json_vector_json.begin(), second_json_vector_json.end(),
-        //     id_equals);
-        // if (first_eq_pair != second_json_vector_json.end()) {
-        //   gthrow(
-        //       {"The id ", (*first_eq_pair)["id"].get<std::string>(),
-        //        " appears twice in ", key, " ."});
-        // }
       }
     }
   }
