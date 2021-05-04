@@ -3,10 +3,10 @@
 #include "Node.hpp"
 #include "json_validation.hpp"
 #include <exception>
+#include <make_schema.hpp>
 #include <map>
 #include <memory>
 #include <sstream>
-#include <make_schema.hpp>
 
 namespace Model::Networkproblem {
   class Equationcomponent;

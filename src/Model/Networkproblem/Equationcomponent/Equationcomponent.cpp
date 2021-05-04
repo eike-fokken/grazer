@@ -6,7 +6,7 @@
 
 namespace Model::Networkproblem {
 
-  int Equationcomponent::get_dimension_of_pde(){
+  int Equationcomponent::get_dimension_of_pde() {
     gthrow(
         {"This static method must be implemented in the class inheriting "
          "from Equationcomponent!"});

@@ -25,9 +25,7 @@ namespace Model::Networkproblem::Power {
     return schema;
   }
 
-  int Powernode::get_dimension_of_pde(){
-    return 4;
-  }
+  int Powernode::get_dimension_of_pde() { return 4; }
 
   nlohmann::json Powernode::get_initial_schema() {
     int interpol_points = 1;

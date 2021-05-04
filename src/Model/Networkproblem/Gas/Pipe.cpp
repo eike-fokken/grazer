@@ -20,9 +20,7 @@ namespace Model::Networkproblem::Gas {
   std::string Pipe::get_type() { return "Pipe"; }
   std::string Pipe::get_gas_type() const { return get_type(); }
 
-  int Pipe::get_dimension_of_pde() {
-    return 2;
-  }
+  int Pipe::get_dimension_of_pde() { return 2; }
 
   nlohmann::json Pipe::get_schema() {
     nlohmann::json schema = Network::Edge::get_schema();
