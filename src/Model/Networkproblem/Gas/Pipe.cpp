@@ -202,8 +202,7 @@ namespace Model::Networkproblem::Gas {
   }
 
   void Pipe::json_save(
-      nlohmann::json &output, double time,
-      Eigen::Ref<const Eigen::VectorXd> state) {
+      nlohmann::json &, double time, Eigen::Ref<const Eigen::VectorXd> state) {
 
     nlohmann::json current_value;
     current_value["time"] = time;
@@ -225,7 +224,7 @@ namespace Model::Networkproblem::Gas {
       current_value["flow"].push_back(flow_json);
     }
     auto &output_json = get_output_json_ref();
-    output_json["data"].push_back(current_value);
+    output_json["data"].push_back(std::move(current_value));
   }
   void Pipe::set_initial_values(
       Eigen::Ref<Eigen::VectorXd> new_state,
