@@ -67,8 +67,8 @@ namespace Aux::schema {
   }
 
   nlohmann::json make_initial_schema(
-      int num_interpolations, int num_values,
-      std::vector<nlohmann::json> contains_prop_x_schemas) {
+      int num_interpol_points, int num_values,
+      std::vector<nlohmann::json> contains_interpol_point_schemas) {
     nlohmann::json initial_schema = R"(
       {
         "type": "object",
@@ -99,14 +99,18 @@ namespace Aux::schema {
              {"minItems", num_values},
              {"maxItems", num_values}}));
 
-    nlohmann::json data = make_list_schema_of(
-        interpolation_point,
-        {{"description", "Array of Interpolation Points with Initial Values"},
-         {"minItems", num_interpolations},
-         {"maxItems", num_interpolations}});
+    nlohmann::json interpol_point_array_params;
+    interpol_point_array_params["description"]
+        = "Array of Interpolation Points with Initial Values";
+    if (num_interpol_points > 0) {
+      interpol_point_array_params["minItems"] = num_interpol_points;
+      interpol_point_array_params["maxItems"] = num_interpol_points;
+    }
+    nlohmann::json data
+        = make_list_schema_of(interpolation_point, interpol_point_array_params);
     data["allOf"] = R"([])"_json;
 
-    for (auto const &x_schema : contains_prop_x_schemas) {
+    for (auto const &x_schema : contains_interpol_point_schemas) {
       nlohmann::json all_of_elmt;
       all_of_elmt["contains"]["properties"]["x"] = x_schema;
       data["allOf"].push_back(all_of_elmt);

@@ -28,9 +28,22 @@ namespace Aux::schema {
    */
   json make_boundary_schema(int num_values);
 
+  /**
+   * @brief Helper to create an initial value configuration json schema for
+   * a component (this is then assembled into a larger initial value json)
+   *
+   * @param num_interpol_points The number of interpolation points (minimum &
+   * maximum) if this number is <=0, this is interpreted as no restriction
+   * @param num_values The number of values at one interpolation point
+   * @param contains_interpol_point_schemas Json schemas describing properties
+   * of interpolation points which at least one of the interpolation points
+   * have to satisfy. (e.g. {"minimum": 0} means that at least one of the
+   * interpolation points has to be larger 0)
+   * @return json
+   */
   json make_initial_schema(
-      int num_interpolations, int num_values,
-      std::vector<nlohmann::json> contains_prop_x_schemas);
+      int num_interpol_points, int num_values,
+      std::vector<nlohmann::json> contains_interpol_point_schemas);
 
   void add_required(
       json &schema, std::string const &property_name, json const &property_def);
