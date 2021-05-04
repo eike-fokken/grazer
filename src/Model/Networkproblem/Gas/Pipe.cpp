@@ -20,6 +20,10 @@ namespace Model::Networkproblem::Gas {
   std::string Pipe::get_type() { return "Pipe"; }
   std::string Pipe::get_gas_type() const { return get_type(); }
 
+  int Pipe::get_dimension_of_pde() {
+    return 2;
+  }
+
   nlohmann::json Pipe::get_schema() {
     nlohmann::json schema = Network::Edge::get_schema();
 
@@ -31,6 +35,14 @@ namespace Model::Networkproblem::Gas {
         schema, "desired_delta_x", Aux::schema::type::number());
 
     return schema;
+  }
+
+  nlohmann::json Pipe::get_initial_schema() {
+    int interpol_points = 0; // unlimited
+    std::vector<nlohmann::json> contains_x
+        = {R"({"maximum": 0})"_json}; // there is a point <= 0
+    return Aux::schema::make_initial_schema(
+        interpol_points, Pipe::get_dimension_of_pde(), contains_x);
   }
 
   Pipe::Pipe(
