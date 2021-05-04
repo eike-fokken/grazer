@@ -27,7 +27,7 @@ namespace Model::Networkproblem::Power {
 
     void json_save(
         nlohmann::json &output, double time,
-        Eigen::Ref<Eigen::VectorXd const> state) const override;
+        Eigen::Ref<Eigen::VectorXd const> state) override;
   };
 
 } // namespace Model::Networkproblem::Power

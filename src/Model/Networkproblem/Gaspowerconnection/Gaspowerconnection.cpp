@@ -143,7 +143,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
 
   void Gaspowerconnection::json_save(
       nlohmann::json &output, double time,
-      Eigen::Ref<const Eigen::VectorXd> state) const {
+      Eigen::Ref<const Eigen::VectorXd> state) {
     nlohmann::json &current_component_vector = output[get_gas_type()];
 
     auto id = get_id_copy();

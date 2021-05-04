@@ -50,7 +50,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
 
     void json_save(
         nlohmann::json &output, double time,
-        Eigen::Ref<const Eigen::VectorXd> state) const override;
+        Eigen::Ref<const Eigen::VectorXd> state) override;
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,

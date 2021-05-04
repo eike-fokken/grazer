@@ -124,7 +124,7 @@ namespace Model::Networkproblem::Power {
 
   void StochasticPQnode::json_save(
       nlohmann::json &output, double time,
-      Eigen::Ref<Eigen::VectorXd const> state) const {
+      Eigen::Ref<Eigen::VectorXd const> state) {
     auto P_val = current_P;
     auto Q_val = current_Q;
     auto P_deviation = P_val - boundaryvalue(time)[0];

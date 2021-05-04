@@ -6,6 +6,7 @@
 #include <Subproblem.hpp>
 #include <Subproblemchooser.hpp>
 #include <exception>
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -31,6 +32,7 @@ namespace Model {
   Problem::~Problem() {
     try {
       print_to_files();
+      new_print_to_files();
     } catch (std::exception &e) {
       std::cout << "Printing to files failed with error message:"
                 << "\n###############################################\n"
@@ -90,7 +92,7 @@ namespace Model {
 
   void Problem::json_save(
       nlohmann::json &output, double time,
-      Eigen::Ref<Eigen::VectorXd const> state) const {
+      Eigen::Ref<Eigen::VectorXd const> state) {
     for (auto &subproblem : subproblems) {
       subproblem->json_save(output, time, state);
     }
@@ -110,6 +112,16 @@ namespace Model {
         subproblem->print_to_files(output_directory);
       }
     }
+  }
+
+  void Problem::new_print_to_files() {
+    for (auto &subproblem : subproblems) {
+      subproblem->new_print_to_files(new_output);
+    }
+    std::filesystem::path new_output_file(
+        output_directory / std::filesystem::path("new_output.json"));
+    std::ofstream o(new_output_file);
+    o << new_output.dump(4);
   }
 
   void Problem::set_initial_values(

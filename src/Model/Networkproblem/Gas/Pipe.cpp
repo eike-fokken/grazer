@@ -14,6 +14,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <type_traits>
 
 namespace Model::Networkproblem::Gas {
 
@@ -108,6 +109,12 @@ namespace Model::Networkproblem::Gas {
     }
   }
 
+  void Pipe::setup() {
+    auto &output_json = get_output_json_ref();
+    output_json["id"] = get_id_copy();
+    output_json["data"] = nlohmann::json::array();
+  }
+
   int Pipe::get_number_of_states() const { return 2 * number_of_points; }
 
   void Pipe::print_to_files(std::filesystem::path const &output_directory) {
@@ -153,6 +160,27 @@ namespace Model::Networkproblem::Gas {
     }
   }
 
+  void Pipe::new_print_to_files(nlohmann::json &new_output) {
+
+    auto &this_output_json = get_output_json_ref();
+
+    bool constexpr is_node
+        = (std::is_base_of_v<
+            Network::Node, std::remove_reference<decltype(*this)>::type>);
+    bool constexpr is_edge
+        = (std::is_base_of_v<
+            Network::Edge, std::remove_reference<decltype(*this)>::type>);
+    static_assert(is_node or is_edge, "Component is neither node, nor edge!");
+
+    if constexpr (is_node) {
+      new_output["nodes"][get_gas_type()].push_back(
+          std::move(this_output_json));
+    } else {
+      new_output["connections"][get_gas_type()].push_back(
+          std::move(this_output_json));
+    }
+  }
+
   void Pipe::save_values(double time, Eigen::Ref<Eigen::VectorXd const> state) {
     std::map<double, double> pressure_map;
     std::map<double, double> flow_map;
@@ -175,24 +203,7 @@ namespace Model::Networkproblem::Gas {
 
   void Pipe::json_save(
       nlohmann::json &output, double time,
-      Eigen::Ref<const Eigen::VectorXd> state) const {
-    nlohmann::json &current_component_vector = output[get_gas_type()];
-
-    auto id = get_id_copy();
-    // define a < function as a lambda:
-    auto id_compare_less
-        = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
-      return a["id"].get<std::string>() < b["id"].get<std::string>();
-    };
-
-    // auto id_is = [id](nlohmann::json const &a) -> bool {
-    //   return a["id"].get<std::string>() == id;
-    // };
-    nlohmann::json this_id;
-    this_id["id"] = id;
-    auto it = std::lower_bound(
-        current_component_vector.begin(), current_component_vector.end(),
-        this_id, id_compare_less);
+      Eigen::Ref<const Eigen::VectorXd> state) {
 
     nlohmann::json current_value;
     current_value["time"] = time;
@@ -213,26 +224,8 @@ namespace Model::Networkproblem::Gas {
       flow_json["value"] = current_q;
       current_value["flow"].push_back(flow_json);
     }
-
-    if (it == current_component_vector.end()) {
-      // std::cout << "Not found!" << std::endl;
-      nlohmann::json newoutput;
-      newoutput["id"] = get_id_copy();
-      newoutput["data"] = nlohmann::json::array();
-      newoutput["data"].push_back(current_value);
-      current_component_vector.push_back(newoutput);
-    } else {
-      if ((*it)["id"] != id) {
-        gthrow(
-            {"The json value\n", (*it).dump(4),
-             "\n has an id different from the current object, whose id is ", id,
-             "\n This is a bug. Please report it!"});
-      }
-
-      // std::cout << "found!" << std::endl;
-      nlohmann::json &outputjson = (*it);
-      outputjson["data"].push_back(current_value);
-    }
+    auto &output_json = get_output_json_ref();
+    output_json["data"].push_back(current_value);
   }
   void Pipe::set_initial_values(
       Eigen::Ref<Eigen::VectorXd> new_state,

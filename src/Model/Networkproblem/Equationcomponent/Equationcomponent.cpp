@@ -49,4 +49,8 @@ namespace Model::Networkproblem {
     return values_ptr->values;
   }
 
+  nlohmann::json &Equationcomponent::get_output_json_ref() {
+    return values_ptr->component_output;
+  }
+
 } // namespace Model::Networkproblem

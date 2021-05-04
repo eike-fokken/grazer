@@ -104,6 +104,7 @@ namespace Model::Networkproblem {
     virtual void print_to_files(std::filesystem::path const &output_directory)
         = 0;
 
+    virtual void new_print_to_files(nlohmann::json &){};
     /// \brief Saves values at the owned indices of this component into
     /// #values_ptr.
     ///
@@ -117,7 +118,7 @@ namespace Model::Networkproblem {
     /// \brief Stores computed values in an output json.
     virtual void json_save(
         nlohmann::json &output, double time,
-        Eigen::Ref<Eigen::VectorXd const> state) const = 0;
+        Eigen::Ref<Eigen::VectorXd const> state) = 0;
 
     /// \brief Fills the indices owned by this component with initial values
     /// from a json.
@@ -156,11 +157,14 @@ namespace Model::Networkproblem {
     std::vector<std::vector<std::map<double, double>>> const &
     get_values() const;
 
+    nlohmann::json &get_output_json_ref();
+
   private:
     /// \brief a container class to group the times and values together for
     /// later access for printout. As this may change we don't expose it
     /// publicly.
     struct Valuecontainer {
+      nlohmann::json component_output;
       std::vector<double> times;
       std::vector<std::vector<std::map<double, double>>> values;
     };

@@ -129,7 +129,7 @@ namespace Model::Networkproblem::Power {
   void Powernode::json_save_power(
       nlohmann::json &output, double time,
       Eigen::Ref<Eigen::VectorXd const> state, double P_val,
-      double Q_val) const {
+      double Q_val) {
 
     nlohmann::json &current_component_vector = output[get_power_type()];
 

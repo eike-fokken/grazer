@@ -45,7 +45,7 @@ namespace Model::Networkproblem::Power {
 
   void Vphinode::json_save(
       nlohmann::json &output, double time,
-      Eigen::Ref<Eigen::VectorXd const> state) const {
+      Eigen::Ref<Eigen::VectorXd const> state) {
     auto P_val = P(state);
     auto Q_val = Q(state);
     json_save_power(output, time, state, P_val, Q_val);

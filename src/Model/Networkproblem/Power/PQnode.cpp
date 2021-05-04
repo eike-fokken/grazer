@@ -42,7 +42,7 @@ namespace Model::Networkproblem::Power {
 
   void PQnode::json_save(
       nlohmann::json &output, double time,
-      Eigen::Ref<Eigen::VectorXd const> state) const {
+      Eigen::Ref<Eigen::VectorXd const> state) {
     auto P_val = boundaryvalue(time)[0];
     auto Q_val = boundaryvalue(time)[1];
     json_save_power(output, time, state, P_val, Q_val);

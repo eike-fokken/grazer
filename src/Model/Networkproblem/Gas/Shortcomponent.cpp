@@ -74,7 +74,7 @@ namespace Model::Networkproblem::Gas {
 
   void Shortcomponent::json_save(
       nlohmann::json &output, double time,
-      Eigen::Ref<Eigen::VectorXd const> state) const {
+      Eigen::Ref<Eigen::VectorXd const> state) {
     nlohmann::json &current_component_vector = output[get_gas_type()];
 
     auto id = get_id_copy();
