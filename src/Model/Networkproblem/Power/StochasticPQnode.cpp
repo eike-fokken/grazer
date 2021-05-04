@@ -123,14 +123,11 @@ namespace Model::Networkproblem::Power {
   }
 
   void StochasticPQnode::json_save(
-      nlohmann::json &output, double time,
-      Eigen::Ref<Eigen::VectorXd const> state) {
+      nlohmann::json &, double time, Eigen::Ref<Eigen::VectorXd const> state) {
     auto P_val = current_P;
     auto Q_val = current_Q;
     auto P_deviation = P_val - boundaryvalue(time)[0];
     auto Q_deviation = Q_val - boundaryvalue(time)[1];
-
-    nlohmann::json &current_component_vector = output[get_power_type()];
 
     nlohmann::json current_value;
     current_value["time"] = time;
@@ -141,40 +138,8 @@ namespace Model::Networkproblem::Power {
     current_value["P_deviation"] = P_deviation;
     current_value["Q_deviation"] = Q_deviation;
 
-    auto id = get_id_copy();
-
-    // define a < function as a lambda:
-    auto id_compare_less
-        = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
-      return a["id"].get<std::string>() < b["id"].get<std::string>();
-    };
-
-    // auto id_is = [id](nlohmann::json const &a) -> bool {
-    //   return a["id"].get<std::string>() == id;
-    // };
-    nlohmann::json this_id;
-    this_id["id"] = id;
-    auto it = std::lower_bound(
-        current_component_vector.begin(), current_component_vector.end(),
-        this_id, id_compare_less);
-
-    if (it == current_component_vector.end()) {
-      // std::cout << "Not found!" << std::endl;
-      nlohmann::json newoutput;
-      newoutput["id"] = get_id_copy();
-      newoutput["data"] = nlohmann::json::array();
-      newoutput["data"].push_back(current_value);
-      current_component_vector.push_back(newoutput);
-    } else {
-      if ((*it)["id"] != id) {
-        gthrow(
-            {"The json value\n", (*it).dump(4),
-             "\n has an id different from the current object, whose id is ", id,
-             "\n This is a bug. Please report it!"});
-      }
-      nlohmann::json &outputjson = (*it);
-      outputjson["data"].push_back(current_value);
-    }
+    auto &output_json = get_output_json_ref();
+    output_json["data"].push_back(std::move(current_value));
   }
 
   void StochasticPQnode::print_to_files(

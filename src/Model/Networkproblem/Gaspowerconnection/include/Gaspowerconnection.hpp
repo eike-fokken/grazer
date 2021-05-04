@@ -45,6 +45,8 @@ namespace Model::Networkproblem::Gaspowerconnection {
 
     void print_to_files(std::filesystem::path const &output_directory) override;
 
+    void new_print_to_files(nlohmann::json &new_output) override;
+
     void
     save_values(double time, Eigen::Ref<Eigen::VectorXd const> state) override;
 

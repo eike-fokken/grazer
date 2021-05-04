@@ -1,5 +1,6 @@
 #include "Gaspowerconnection.hpp"
 #include "Exception.hpp"
+#include "Get_base_component.hpp"
 #include "Initialvalue.hpp"
 #include "Mathfunctions.hpp"
 #include "Matrixhandler.hpp"
@@ -70,6 +71,9 @@ namespace Model::Networkproblem::Gaspowerconnection {
   }
 
   void Gaspowerconnection::setup() {
+
+    setup_helper(get_id());
+
     if (powerendnode != nullptr) {
       std::cout << "You are calling setup a second time!" << std::endl;
     }
@@ -127,6 +131,12 @@ namespace Model::Networkproblem::Gaspowerconnection {
     }
   }
 
+  void Gaspowerconnection::new_print_to_files(nlohmann::json &new_output) {
+    auto &this_output_json = get_output_json_ref();
+    std::string comp_type = Aux::component_class(*this);
+    new_output[comp_type][get_type()].push_back(std::move(this_output_json));
+  }
+
   void Gaspowerconnection::save_values(
       double time, Eigen::Ref<Eigen::VectorXd const> state) {
     std::map<double, double> pressure_map;
@@ -144,21 +154,6 @@ namespace Model::Networkproblem::Gaspowerconnection {
   void Gaspowerconnection::json_save(
       nlohmann::json &output, double time,
       Eigen::Ref<const Eigen::VectorXd> state) {
-    nlohmann::json &current_component_vector = output[get_gas_type()];
-
-    auto id = get_id_copy();
-
-    // define a < function as a lambda:
-    auto id_compare_less
-        = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
-      return a["id"].get<std::string>() < b["id"].get<std::string>();
-    };
-
-    nlohmann::json this_id;
-    this_id["id"] = id;
-    auto it = std::lower_bound(
-        current_component_vector.begin(), current_component_vector.end(),
-        this_id, id_compare_less);
 
     nlohmann::json current_value;
     current_value["time"] = time;
@@ -174,24 +169,8 @@ namespace Model::Networkproblem::Gaspowerconnection {
     flow0_json["value"] = start_state[1];
     current_value["flow"].push_back(flow0_json);
 
-    if (it == current_component_vector.end()) {
-      // std::cout << "Not found!" << std::endl;
-      nlohmann::json newoutput;
-      newoutput["id"] = get_id_copy();
-      newoutput["data"] = nlohmann::json::array();
-      newoutput["data"].push_back(current_value);
-      current_component_vector.push_back(newoutput);
-    } else {
-      if ((*it)["id"] != id) {
-        gthrow(
-            {"The json value\n", (*it).dump(4),
-             "\n has an id different from the current object, whose id is ", id,
-             "\n This is a bug. Please report it!"});
-      }
-      // std::cout << "found!" << std::endl;
-      nlohmann::json &outputjson = (*it);
-      outputjson["data"].push_back(current_value);
-    }
+    auto &output_json = get_output_json_ref();
+    output_json["data"].push_back(std::move(current_value));
   }
 
   void Gaspowerconnection::set_initial_values(
