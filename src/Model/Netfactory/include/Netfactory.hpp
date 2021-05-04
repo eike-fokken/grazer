@@ -35,6 +35,7 @@ namespace Model::Networkproblem {
   /// @returns the topology json enriched with control and boundary data.
 
   void sort_json_vectors_by_id(nlohmann::json &components, std::string key);
+  void check_for_duplicates(nlohmann::json &components, std::string key);
 
   nlohmann::json
   build_full_networkproblem_json(nlohmann::json &networkproblem_json);
