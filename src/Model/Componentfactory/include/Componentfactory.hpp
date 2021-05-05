@@ -218,18 +218,25 @@ namespace Model::Componentfactory {
     void add_edge_type(std::unique_ptr<AbstractEdgeType> edgeType);
 
     /**
-     * @brief Return the Full JSON Schema Describing the Topplogy Configuration
+     * @brief Return the Full JSON Schema for the Topplogy Description
      *
      * @return nlohmann::json
      */
     nlohmann::json get_topology_schema();
+
     /**
-     * @brief Return the Full JSON Schema Describing the Boundary Behaviour
-     * Configuration
+     * @brief Return the Full JSON Schema for the Boundary Behaviour Description
      *
      * @return nlohmann::json
      */
     nlohmann::json get_boundary_schema();
+
+    /**
+     * @brief Return the Full JSON Schema for the Initial Data Description
+     *
+     * @return nlohmann::json
+     */
+    nlohmann::json get_initial_schema();
   };
 
 } // namespace Model::Componentfactory
