@@ -9,6 +9,8 @@ add_executable(transform_initial transform_initial.cpp)
 
 add_executable(create_topology_schema create_topology_schema.cpp)
 target_link_libraries(create_topology_schema componentfactory full_factory)
+add_executable(create_boundary_schema create_boundary_schema.cpp)
+target_link_libraries(create_boundary_schema componentfactory full_factory)
 
 
 add_executable(get_mean_sigma get_mean_sigma.cpp)
