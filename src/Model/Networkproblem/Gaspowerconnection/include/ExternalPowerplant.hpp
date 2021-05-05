@@ -31,9 +31,8 @@ namespace Model::Networkproblem::Gaspowerconnection {
     void
     save_values(double time, Eigen::Ref<Eigen::VectorXd const> state) override;
 
-    void json_save(
-        nlohmann::json &output, double time,
-        Eigen::Ref<Eigen::VectorXd const> state) override;
+    void
+    json_save(double time, Eigen::Ref<Eigen::VectorXd const> state) override;
 
   private:
     Gaspowerconnection *connection{nullptr};

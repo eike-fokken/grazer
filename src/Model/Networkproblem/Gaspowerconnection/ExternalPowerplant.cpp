@@ -77,11 +77,10 @@ namespace Model::Networkproblem::Gaspowerconnection {
   }
 
   void ExternalPowerplant::json_save(
-      nlohmann::json &output, double time,
-      Eigen::Ref<Eigen::VectorXd const> state) {
+      double time, Eigen::Ref<Eigen::VectorXd const> state) {
     double P_val = P(state);
     double Q_val = Q(state);
-    json_save_power(output, time, state, P_val, Q_val);
+    json_save_power(time, state, P_val, Q_val);
   }
 
 } // namespace Model::Networkproblem::Gaspowerconnection

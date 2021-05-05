@@ -138,8 +138,8 @@ namespace Model::Networkproblem::Power {
   }
 
   void Powernode::json_save_power(
-      nlohmann::json &, double time, Eigen::Ref<Eigen::VectorXd const> state,
-      double P_val, double Q_val) {
+      double time, Eigen::Ref<Eigen::VectorXd const> state, double P_val,
+      double Q_val) {
 
     nlohmann::json current_value;
     current_value["time"] = time;

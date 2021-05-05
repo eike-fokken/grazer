@@ -81,7 +81,7 @@ namespace Model::Networkproblem::Gas {
   }
 
   void Shortcomponent::json_save(
-      nlohmann::json &, double time, Eigen::Ref<Eigen::VectorXd const> state) {
+      double time, Eigen::Ref<Eigen::VectorXd const> state) {
 
     nlohmann::json current_value;
     current_value["time"] = time;

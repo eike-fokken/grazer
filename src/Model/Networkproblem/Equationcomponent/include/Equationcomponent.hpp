@@ -118,9 +118,7 @@ namespace Model::Networkproblem {
         = 0;
 
     /// \brief Stores computed values in an output json.
-    virtual void json_save(
-        nlohmann::json &output, double time,
-        Eigen::Ref<Eigen::VectorXd const> state)
+    virtual void json_save(double time, Eigen::Ref<Eigen::VectorXd const> state)
         = 0;
 
     /// \brief Fills the indices owned by this component with initial values

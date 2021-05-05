@@ -48,9 +48,7 @@ namespace Model {
 
     void save_values(double time, Eigen::Ref<Eigen::VectorXd> new_state);
 
-    void json_save(
-        nlohmann::json &output, double time,
-        Eigen::Ref<Eigen::VectorXd const> state);
+    void json_save(double time, Eigen::Ref<Eigen::VectorXd const> state);
 
     /// As we have unique pointers, we can only give back a pointer to our
     /// subproblems.

@@ -183,8 +183,7 @@ namespace Model::Networkproblem::Gas {
     Equationcomponent::push_to_values(time, value_vector);
   }
 
-  void Pipe::json_save(
-      nlohmann::json &, double time, Eigen::Ref<const Eigen::VectorXd> state) {
+  void Pipe::json_save(double time, Eigen::Ref<const Eigen::VectorXd> state) {
 
     nlohmann::json current_value;
     current_value["time"] = time;

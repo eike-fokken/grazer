@@ -51,8 +51,8 @@ namespace Model::Networkproblem::Power {
         double Q_val);
 
     void json_save_power(
-        nlohmann::json &output, double time,
-        Eigen::Ref<Eigen::VectorXd const> state, double P_val, double Q_val);
+        double time, Eigen::Ref<Eigen::VectorXd const> state, double P_val,
+        double Q_val);
 
     Boundaryvalue<2> const boundaryvalue;
     /// Real part of the admittance of this node

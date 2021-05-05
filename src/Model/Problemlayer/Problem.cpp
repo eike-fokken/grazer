@@ -90,12 +90,9 @@ namespace Model {
     }
   }
 
-  void Problem::json_save(
-      nlohmann::json &output, double time,
-      Eigen::Ref<Eigen::VectorXd const> state) {
-    for (auto &subproblem : subproblems) {
-      subproblem->json_save(output, time, state);
-    }
+  void
+  Problem::json_save(double time, Eigen::Ref<Eigen::VectorXd const> state) {
+    for (auto &subproblem : subproblems) { subproblem->json_save(time, state); }
   }
 
   std::vector<Subproblem *> Problem::get_subproblems() const {

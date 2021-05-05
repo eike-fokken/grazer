@@ -40,12 +40,10 @@ namespace Model::Networkproblem::Power {
     save_power_values(time, state, P_val, Q_val);
   }
 
-  void PVnode::json_save(
-      nlohmann::json &output, double time,
-      Eigen::Ref<Eigen::VectorXd const> state) {
+  void PVnode::json_save(double time, Eigen::Ref<Eigen::VectorXd const> state) {
     auto P_val = boundaryvalue(time)[0];
     auto Q_val = Q(state);
-    json_save_power(output, time, state, P_val, Q_val);
+    json_save_power(time, state, P_val, Q_val);
   }
 
 } // namespace Model::Networkproblem::Power

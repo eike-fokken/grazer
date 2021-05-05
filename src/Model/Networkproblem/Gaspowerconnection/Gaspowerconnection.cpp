@@ -152,8 +152,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
   }
 
   void Gaspowerconnection::json_save(
-      nlohmann::json &output, double time,
-      Eigen::Ref<const Eigen::VectorXd> state) {
+      double time, Eigen::Ref<const Eigen::VectorXd> state) {
 
     nlohmann::json current_value;
     current_value["time"] = time;

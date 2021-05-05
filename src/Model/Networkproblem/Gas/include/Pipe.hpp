@@ -36,9 +36,8 @@ namespace Model::Networkproblem::Gas {
     void
     save_values(double time, Eigen::Ref<Eigen::VectorXd const> state) override;
 
-    void json_save(
-        nlohmann::json &output, double time,
-        Eigen::Ref<const Eigen::VectorXd> state) override;
+    void
+    json_save(double time, Eigen::Ref<const Eigen::VectorXd> state) override;
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,
