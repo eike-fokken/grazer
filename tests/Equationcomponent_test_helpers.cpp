@@ -47,8 +47,7 @@ EqcomponentTEST::make_Networkproblem(
     std::stringstream buffer;
     Catch_cout catcher(buffer.rdbuf());
     nlohmann::json outputjson;
-    auto net_ptr = Model::Networkproblem::build_net(
-        netproblem, factory, std::filesystem::current_path(), outputjson);
+    auto net_ptr = Model::Networkproblem::build_net(netproblem, factory);
     netprob = std::make_unique<Model::Networkproblem::Networkproblem>(
         std::move(net_ptr));
     output = buffer.str();
