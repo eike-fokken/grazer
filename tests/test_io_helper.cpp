@@ -13,12 +13,17 @@ static std::string create_random_name() {
   randutils::auto_seed_256 seed_source;
   pcg64 rng(seed_source);
 
-  std::uniform_int_distribution<> dist(0, 9);
+  std::string ascii
+      = "0123456789"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz";
+  int length = static_cast<int>(ascii.length() - 1);
+  std::uniform_int_distribution<> dist(0, length);
   std::string randstring;
   for (unsigned int i = 0; i != 20; ++i) {
-    auto a = dist(rng);
 
-    randstring += std::to_string(a);
+    auto a = static_cast<unsigned int>(dist(rng));
+    randstring += ascii[a];
   }
   return randstring;
 }
@@ -33,9 +38,7 @@ Directory_creator::Directory_creator(std::string testdirname) :
 
 Directory_creator::Directory_creator() :
     main_test_dir_path(
-        create_testdir("Grazer_testdir_" + create_random_name())) {
-  std::cout << main_test_dir_path.string();
-}
+        create_testdir("Grazer_testdir_" + create_random_name())) {}
 
 Directory_creator::~Directory_creator() {
   try {
