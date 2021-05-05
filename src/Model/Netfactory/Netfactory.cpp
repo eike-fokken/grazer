@@ -85,14 +85,6 @@ namespace Model::Networkproblem {
     for (auto const &[nodetypename, nodetype] : nodetypemap) {
       if (node_topology.contains(nodetypename)) {
 
-        if (nodetype->needs_output_file()) {
-          auto component_output_path
-              = output_dir / std::filesystem::path(nodetype->get_name());
-          std::filesystem::create_directory(component_output_path);
-
-          output_json[nodetype->get_name()] = nlohmann::json::array();
-        }
-
         auto sorted_node_json = node_topology[nodetypename];
         // define a < function as a lambda:
         auto id_compare_less
@@ -146,13 +138,6 @@ namespace Model::Networkproblem {
 
     for (auto const &[edgetypename, edgetype] : edgetypemap) {
       if (edge_topology.contains(edgetypename)) {
-        if (edgetype->needs_output_file()) {
-          auto component_output_path
-              = output_dir / std::filesystem::path(edgetype->get_name());
-          std::filesystem::create_directory(component_output_path);
-          output_json[edgetype->get_name()] = nlohmann::json::array();
-        }
-
         auto sorted_edge_json = edge_topology[edgetypename];
         // define a < function as a lambda:
         auto id_compare_less
