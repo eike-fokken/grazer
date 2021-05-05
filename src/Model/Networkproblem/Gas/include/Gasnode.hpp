@@ -5,7 +5,7 @@
 
 namespace Model::Networkproblem::Gas {
 
-  class Gasnode : public Network::Node, public Equationcomponent {
+  class Gasnode : public Equationcomponent, public Network::Node {
 
   public:
     using Node::Node;

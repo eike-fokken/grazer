@@ -20,7 +20,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
    * In power-controlled mode, it doesn't enforce the pressure. In this case an
    * additional equation must be set in the powernode at the connections end.
    */
-  class Gaspowerconnection final : public Network::Edge, public Gas::Gasedge {
+  class Gaspowerconnection final : public Gas::Gasedge, public Network::Edge {
   public:
     static std::string get_type();
     std::string get_gas_type() const override;
