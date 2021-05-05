@@ -11,9 +11,7 @@
 
 class prepare_output_dirTEST : public ::testing::Test {
 public:
-  prepare_output_dirTEST() :
-      directory_creator("Grazer_testdir"),
-      path_changer(directory_creator.get_path()) {}
+  prepare_output_dirTEST() : path_changer(directory_creator.get_path()) {}
 
 private:
   Directory_creator const directory_creator;
@@ -22,9 +20,7 @@ private:
 
 class extract_input_dataTEST : public ::testing::Test {
 public:
-  extract_input_dataTEST() :
-      directory_creator("Grazer_testdir"),
-      path_changer(directory_creator.get_path()) {}
+  extract_input_dataTEST() : path_changer(directory_creator.get_path()) {}
 
 private:
   Directory_creator const directory_creator;
