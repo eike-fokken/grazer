@@ -39,9 +39,9 @@
 /output*
 build/**
 debug/**
-Debug/**
+Debug
 release/**
-Release/**
+Release
 mingw/**
 noteworthy_results/**
 

@@ -44,6 +44,35 @@ namespace Model::Componentfactory {
     this->edge_type_map.insert({edgeType->get_name(), std::move(edgeType)});
   }
 
+  nlohmann::json Componentfactory::get_boundary_schema() {
+    nlohmann::json boundary_schema = R"(
+    {
+      "$schema": "http://json-schema.org/draft-07/schema",
+      "title": "Boundary",
+      "description": "Description of the Networks Boundary Behaviour",
+      "required": ["nodes", "connections"],
+      "properties": {
+        "nodes": {"type": "object", "additionalProperties": false, "properties": {}},
+        "connections": {"type": "object", "additionalProperties": false, "properties": {}}
+      }
+    }
+    )"_json;
+
+    auto &node_schemas = boundary_schema["properties"]["nodes"]["properties"];
+    for (auto const &[name, component] : this->node_type_map) {
+      node_schemas[name]
+          = Aux::schema::make_list_schema_of(component->get_boundary_schema());
+    }
+    auto &edge_schemas
+        = boundary_schema["properties"]["connections"]["properties"];
+    for (auto const &[name, component] : this->edge_type_map) {
+      edge_schemas[name]
+          = Aux::schema::make_list_schema_of(component->get_boundary_schema());
+    }
+
+    return boundary_schema;
+  }
+
   nlohmann::json Componentfactory::get_topology_schema() {
     nlohmann::json topology_schema = R"(
     {
