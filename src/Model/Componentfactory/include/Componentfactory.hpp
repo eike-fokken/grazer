@@ -7,6 +7,7 @@
 #include <map>
 #include <memory>
 #include <sstream>
+#include <Equationcomponent.hpp>
 
 namespace Model::Networkproblem {
   class Equationcomponent;
@@ -49,6 +50,8 @@ namespace Model::Componentfactory {
      * @return nlohmann::json
      */
     virtual nlohmann::json get_boundary_schema() const = 0;
+
+    virtual std::optional<nlohmann::json> get_initial_schema() const = 0;
 
     /**
      * @brief Returns true if a directory for output files needs to be
@@ -112,6 +115,17 @@ namespace Model::Componentfactory {
       return ConcreteNode::get_schema();
     };
 
+    std::optional<nlohmann::json> get_initial_schema() const override {
+      // should really be `requires` (cf.
+      // https://stackoverflow.com/a/22014784/6662425) but that would require
+      // C++20
+      if constexpr (std::is_base_of<Networkproblem::Equationcomponent, ConcreteNode>::value) {
+        std::optional<nlohmann::json>(ConcreteNode::get_initial_schema());
+      } else {
+        return std::nullopt;
+      }
+    }
+
     bool needs_output_file() const override {
       if constexpr (not std::is_base_of_v<
                         Networkproblem::Equationcomponent, ConcreteNode>) {
@@ -152,6 +166,17 @@ namespace Model::Componentfactory {
       }
       return ConcreteEdge::get_schema();
     };
+
+    std::optional<nlohmann::json> get_initial_schema() const override {
+      // should really be `requires` (cf.
+      // https://stackoverflow.com/a/22014784/6662425) but that would require
+      // C++20
+      if constexpr (std::is_base_of<Networkproblem::Equationcomponent, ConcreteEdge>::value) {
+        std::optional<nlohmann::json>(ConcreteEdge::get_initial_schema());
+      } else {
+        return std::nullopt;
+      }
+    }
 
     std::unique_ptr<Network::Edge> make_instance(
         nlohmann::json const &topology,
