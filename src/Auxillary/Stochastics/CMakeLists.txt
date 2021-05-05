@@ -9,10 +9,10 @@ endif()
 
 
 
-target_link_libraries(stochastics PRIVATE exception)
+target_link_libraries(stochastics PRIVATE exception randutils)
 
 target_include_directories(stochastics PUBLIC include)
-# target_include_directories(stochastics SYSTEM PRIVATE system)
-target_include_directories(stochastics SYSTEM PRIVATE system)
+
+
 
  
