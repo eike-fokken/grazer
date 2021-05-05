@@ -69,13 +69,6 @@ namespace Model::Networkproblem::Gaspowerconnection {
     }
   }
 
-  void ExternalPowerplant::save_values(
-      double time, Eigen::Ref<Eigen::VectorXd const> state) {
-    double P_val = P(state);
-    double Q_val = Q(state);
-    save_power_values(time, state, P_val, Q_val);
-  }
-
   void ExternalPowerplant::json_save(
       double time, Eigen::Ref<Eigen::VectorXd const> state) {
     double P_val = P(state);

@@ -84,13 +84,6 @@ namespace Model {
   }
 
   void
-  Problem::save_values(double time, Eigen::Ref<Eigen::VectorXd> new_state) {
-    for (auto &subproblem : subproblems) {
-      subproblem->save_values(time, new_state);
-    }
-  }
-
-  void
   Problem::json_save(double time, Eigen::Ref<Eigen::VectorXd const> state) {
     for (auto &subproblem : subproblems) { subproblem->json_save(time, state); }
   }
@@ -101,14 +94,6 @@ namespace Model {
       pointer_vector.push_back(subproblem.get());
     }
     return pointer_vector;
-  }
-
-  void Problem::print_to_files() {
-    if (not output_directory.empty()) {
-      for (auto &subproblem : subproblems) {
-        subproblem->print_to_files(output_directory);
-      }
-    }
   }
 
   void Problem::new_print_to_files() {

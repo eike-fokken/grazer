@@ -46,8 +46,6 @@ namespace Model {
         Eigen::Ref<Eigen::VectorXd const> last_state,
         Eigen::Ref<Eigen::VectorXd const> new_state) const;
 
-    void save_values(double time, Eigen::Ref<Eigen::VectorXd> new_state);
-
     void json_save(double time, Eigen::Ref<Eigen::VectorXd const> state);
 
     /// As we have unique pointers, we can only give back a pointer to our
@@ -57,7 +55,6 @@ namespace Model {
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state, nlohmann::json &initialjson);
 
-    void print_to_files();
     void new_print_to_files();
 
     std::filesystem::path const &get_output_directory() const;

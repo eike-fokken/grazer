@@ -33,13 +33,6 @@ namespace Model::Networkproblem::Power {
     jacobianhandler->set_coefficient(phi_index, V_index, 1.0);
   }
 
-  void
-  PVnode::save_values(double time, Eigen::Ref<Eigen::VectorXd const> state) {
-    auto P_val = boundaryvalue(time)[0];
-    auto Q_val = Q(state);
-    save_power_values(time, state, P_val, Q_val);
-  }
-
   void PVnode::json_save(double time, Eigen::Ref<Eigen::VectorXd const> state) {
     auto P_val = boundaryvalue(time)[0];
     auto Q_val = Q(state);

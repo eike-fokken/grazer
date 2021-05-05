@@ -40,13 +40,7 @@ namespace Model {
         Eigen::Ref<Eigen::VectorXd const>,
         Eigen::Ref<Eigen::VectorXd const> new_state) const = 0;
 
-    virtual void save_values(double time, Eigen::Ref<Eigen::VectorXd> new_state)
-        = 0;
-
     virtual void json_save(double time, Eigen::Ref<Eigen::VectorXd const> state)
-        = 0;
-
-    virtual void print_to_files(std::filesystem::path const &output_directory)
         = 0;
 
     virtual void new_print_to_files(nlohmann::json &new_output) = 0;

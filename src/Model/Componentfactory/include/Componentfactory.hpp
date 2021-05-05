@@ -38,13 +38,6 @@ namespace Model::Componentfactory {
      * @return nlohmann::json
      */
     virtual nlohmann::json get_schema() const = 0;
-
-    // /**
-    //  * @brief Returns true if a directory for output files needs to be
-    //  * generated.
-    //  * @return true if a directory for output files needs to be generated.
-    //  */
-    // virtual bool needs_output_file() const = 0;
   };
 
   struct AbstractNodeType : public AbstractComponentType {
@@ -89,15 +82,6 @@ namespace Model::Componentfactory {
     nlohmann::json get_schema() const override {
       return ConcreteNode::get_schema();
     };
-
-    // bool needs_output_file() const override {
-    //   if constexpr (not std::is_base_of_v<
-    //                     Networkproblem::Statecomponent, ConcreteNode>) {
-    //     return false;
-    //   } else {
-    //     return ConcreteNode::needs_output_file();
-    //   }
-    // };
 
     std::unique_ptr<Network::Node>
     make_instance(nlohmann::json const &topology) const override {

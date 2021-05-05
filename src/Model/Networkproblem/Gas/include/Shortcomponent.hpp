@@ -13,15 +13,9 @@ namespace Model::Networkproblem::Gas {
 
     void setup() override;
 
-    void print_helper(
-        std::filesystem::path const &output_directory, std::string const &type);
-
     void new_print_helper(
         nlohmann::json &new_output, std::string const &component_type,
         std::string const &type);
-
-    void
-    save_values(double time, Eigen::Ref<Eigen::VectorXd const> state) final;
 
     void json_save(double, Eigen::Ref<Eigen::VectorXd const>) override;
 

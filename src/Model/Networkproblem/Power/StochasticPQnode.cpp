@@ -97,31 +97,6 @@ namespace Model::Networkproblem::Power {
     evaluate_Q_derivative(second_equation_index, jacobianhandler, new_state);
   }
 
-  void StochasticPQnode::save_values(
-      double time, Eigen::Ref<Eigen::VectorXd const> state) {
-
-    auto P_val = current_P;
-    auto Q_val = current_Q;
-    auto P_deviation = P_val - boundaryvalue(time)[0];
-    auto Q_deviation = Q_val - boundaryvalue(time)[1];
-    std::map<double, double> Pmap;
-    std::map<double, double> Qmap;
-    std::map<double, double> Vmap;
-    std::map<double, double> phimap;
-    std::map<double, double> P_deviation_map;
-    std::map<double, double> Q_deviation_map;
-
-    std::vector<std::map<double, double>> value_vector;
-    Pmap = {{0.0, P_val}};
-    Qmap = {{0.0, Q_val}};
-    Vmap = {{0.0, state[get_start_state_index()]}};
-    phimap = {{0.0, state[get_start_state_index() + 1]}};
-    P_deviation_map = {{0.0, P_deviation}};
-    Q_deviation_map = {{0.0, Q_deviation}};
-    value_vector = {Pmap, Qmap, Vmap, phimap, P_deviation_map, Q_deviation_map};
-    Statecomponent::push_to_values(time, value_vector);
-  }
-
   void StochasticPQnode::json_save(
       double time, Eigen::Ref<Eigen::VectorXd const> state) {
     auto P_val = current_P;
@@ -140,27 +115,6 @@ namespace Model::Networkproblem::Power {
 
     auto &output_json = get_output_json_ref();
     output_json["data"].push_back(std::move(current_value));
-  }
-
-  void StochasticPQnode::print_to_files(
-      std::filesystem::path const &output_directory) {
-    auto node_output_file = output_directory
-                            / std::filesystem::path(get_power_type())
-                            / std::filesystem::path(get_id_copy());
-
-    std::ofstream output(node_output_file);
-
-    output
-        << "time,    P,    Q,    V,    phi,    P_deviation,    Q_deviation\n";
-    auto values = get_values();
-    output.precision(9);
-    auto times = get_times();
-
-    for (unsigned long i = 0; i != times.size(); ++i) {
-      output << times[i];
-      for (auto const &var : values[i]) { output << ",    " << var.at(0.0); }
-      output << "\n";
-    }
   }
 
   double StochasticPQnode::get_current_P() const { return current_P; }

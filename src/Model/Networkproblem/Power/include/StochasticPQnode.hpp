@@ -34,12 +34,7 @@ namespace Model::Networkproblem::Power {
         Eigen::Ref<Eigen::VectorXd const> new_state) override;
 
     void
-    save_values(double time, Eigen::Ref<Eigen::VectorXd const> state) override;
-
-    void
     json_save(double time, Eigen::Ref<Eigen::VectorXd const> state) override;
-
-    void print_to_files(std::filesystem::path const &output_directory) override;
 
     // For testing purposes:
     double get_current_P() const;

@@ -92,49 +92,11 @@ namespace Model::Networkproblem::Power {
 
   double Powernode::get_B() const { return B; }
 
-  void
-  Powernode::print_to_files(std::filesystem::path const &output_directory) {
-
-    auto node_output_file = output_directory
-                            / std::filesystem::path(get_power_type())
-                            / std::filesystem::path(get_id_copy());
-
-    std::ofstream output(node_output_file);
-
-    output << "time,    P,    Q,    V,    phi\n";
-    auto values = get_values();
-    output.precision(9);
-    auto times = get_times();
-
-    for (unsigned long i = 0; i != times.size(); ++i) {
-      output << times[i];
-      for (auto const &var : values[i]) { output << ",    " << var.at(0.0); }
-      output << "\n";
-    }
-  }
-
   void Powernode::new_print_to_files(nlohmann::json &new_output) {
     auto &this_output_json = get_output_json_ref();
     std::string comp_type = Aux::component_class(*this);
     new_output[comp_type][get_power_type()].push_back(
         std::move(this_output_json));
-  }
-
-  void Powernode::save_power_values(
-      double time, Eigen::Ref<Eigen::VectorXd const> state, double P_val,
-      double Q_val) {
-
-    std::map<double, double> Pmap;
-    std::map<double, double> Qmap;
-    std::map<double, double> Vmap;
-    std::map<double, double> phimap;
-    std::vector<std::map<double, double>> value_vector;
-    Pmap = {{0.0, P_val}};
-    Qmap = {{0.0, Q_val}};
-    Vmap = {{0.0, state[get_start_state_index()]}};
-    phimap = {{0.0, state[get_start_state_index() + 1]}};
-    value_vector = {Pmap, Qmap, Vmap, phimap};
-    Statecomponent::push_to_values(time, value_vector);
   }
 
   void Powernode::json_save_power(

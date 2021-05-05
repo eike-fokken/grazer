@@ -33,13 +33,6 @@ namespace Model::Networkproblem::Power {
     evaluate_Q_derivative(second_equation_index, jacobianhandler, new_state);
   }
 
-  void
-  PQnode::save_values(double time, Eigen::Ref<Eigen::VectorXd const> state) {
-    auto P_val = boundaryvalue(time)[0];
-    auto Q_val = boundaryvalue(time)[1];
-    save_power_values(time, state, P_val, Q_val);
-  }
-
   void PQnode::json_save(double time, Eigen::Ref<Eigen::VectorXd const> state) {
     auto P_val = boundaryvalue(time)[0];
     auto Q_val = boundaryvalue(time)[1];

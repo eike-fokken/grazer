@@ -31,8 +31,6 @@ namespace Model::Networkproblem::Gas {
         Eigen::Ref<Eigen::VectorXd> new_state,
         nlohmann::json const &initial_json) override;
 
-    void print_to_files(std::filesystem::path const &output_directory) override;
-
     void new_print_to_files(nlohmann::json &new_output) final;
 
   private:

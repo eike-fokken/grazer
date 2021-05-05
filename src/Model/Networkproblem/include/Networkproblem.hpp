@@ -41,11 +41,7 @@ namespace Model::Networkproblem {
         Eigen::Ref<Eigen::VectorXd const> last_state,
         Eigen::Ref<Eigen::VectorXd const> new_state) const override;
 
-    void save_values(double time, Eigen::Ref<Eigen::VectorXd> new_state) final;
-
     void json_save(double time, Eigen::Ref<Eigen::VectorXd const> state) final;
-
-    void print_to_files(std::filesystem::path const &output_directory) final;
 
     void new_print_to_files(nlohmann::json &new_output) final;
 

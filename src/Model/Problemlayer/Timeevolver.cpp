@@ -51,7 +51,6 @@ namespace Model {
     // This initializes P and Q-values of P-Q-nodes.
     problem.prepare_timestep(last_time, last_time, last_state, last_state);
     // save the initial values.
-    // problem.save_values(last_time, last_state);
     problem.json_save(last_time, last_state);
 
     double new_time = last_time + timedata.get_delta_t();
@@ -76,7 +75,6 @@ namespace Model {
       std::cout << solstruct.residual << ", ";
       std::cout << solstruct.used_iterations << std::endl;
       if (solstruct.success) {
-        // problem.save_values(new_time, new_state);
         problem.json_save(new_time, new_state);
         retry = 0;
       } else {
@@ -87,7 +85,6 @@ namespace Model {
           continue;
         } else {
           std::cout << "Failed timestep irrevocably!" << new_time << std::endl;
-          // problem.save_values(new_time, new_state);
           problem.json_save(new_time, new_state);
         }
       }

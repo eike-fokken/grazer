@@ -94,27 +94,11 @@ namespace Model::Networkproblem {
     }
   }
 
-  void Networkproblem::save_values(
-      double time, Eigen::Ref<Eigen::VectorXd> new_state) {
-    for (Model::Networkproblem::Statecomponent *statecomponent :
-         statecomponents) {
-      statecomponent->save_values(time, new_state);
-    }
-  }
-
   void Networkproblem::json_save(
       double time, Eigen::Ref<Eigen::VectorXd const> state) {
     for (Model::Networkproblem::Statecomponent *statecomponent :
          statecomponents) {
       statecomponent->json_save(time, state);
-    }
-  }
-
-  void Networkproblem::print_to_files(
-      std::filesystem::path const &output_directory) {
-    for (Model::Networkproblem::Statecomponent *statecomponent :
-         statecomponents) {
-      statecomponent->print_to_files(output_directory);
     }
   }
 
