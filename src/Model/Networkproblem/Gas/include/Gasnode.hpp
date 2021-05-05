@@ -2,10 +2,11 @@
 #include "Equationcomponent.hpp"
 #include "Gasedge.hpp"
 #include "Node.hpp"
+#include "Statecomponent.hpp"
 
 namespace Model::Networkproblem::Gas {
 
-  class Gasnode : public Equationcomponent, public Network::Node {
+  class Gasnode : public Statecomponent, public Network::Node {
 
   public:
     using Node::Node;

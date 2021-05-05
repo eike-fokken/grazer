@@ -77,7 +77,7 @@ namespace Model::Networkproblem::Gas {
 
     std::vector<std::map<double, double>> value_vector(
         {pressure_map, flow_map});
-    Equationcomponent::push_to_values(time, value_vector);
+    Statecomponent::push_to_values(time, value_vector);
   }
 
   void Shortcomponent::json_save(

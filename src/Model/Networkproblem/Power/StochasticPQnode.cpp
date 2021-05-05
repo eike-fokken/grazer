@@ -119,7 +119,7 @@ namespace Model::Networkproblem::Power {
     P_deviation_map = {{0.0, P_deviation}};
     Q_deviation_map = {{0.0, Q_deviation}};
     value_vector = {Pmap, Qmap, Vmap, phimap, P_deviation_map, Q_deviation_map};
-    Equationcomponent::push_to_values(time, value_vector);
+    Statecomponent::push_to_values(time, value_vector);
   }
 
   void StochasticPQnode::json_save(

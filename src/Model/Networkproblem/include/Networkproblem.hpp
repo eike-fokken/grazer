@@ -12,7 +12,7 @@ namespace Network {
 // equations from a network from the namespace Network.
 namespace Model::Networkproblem {
 
-  class Equationcomponent;
+  class Statecomponent;
 
   // This class implements a Subproblem, that builds the model equations from a
   // network.
@@ -56,7 +56,7 @@ namespace Model::Networkproblem {
 
   private:
     std::unique_ptr<Network::Net> network;
-    std::vector<Equationcomponent *> equationcomponents;
+    std::vector<Statecomponent *> equationcomponents;
 
     int reserve_indices(int const next_free_index) final;
   };

@@ -134,7 +134,7 @@ namespace Model::Networkproblem::Power {
     Vmap = {{0.0, state[get_start_state_index()]}};
     phimap = {{0.0, state[get_start_state_index() + 1]}};
     value_vector = {Pmap, Qmap, Vmap, phimap};
-    Equationcomponent::push_to_values(time, value_vector);
+    Statecomponent::push_to_values(time, value_vector);
   }
 
   void Powernode::json_save_power(

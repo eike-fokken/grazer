@@ -126,7 +126,6 @@ namespace Model {
 
     for (auto &subproblem : subproblems) {
       auto type = subproblem->get_type();
-
       auto initial_json_iterator = initial_json["subproblems"].find(type);
       if (initial_json_iterator == initial_json["subproblems"].end()) {
         gthrow(

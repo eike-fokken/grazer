@@ -180,7 +180,7 @@ namespace Model::Networkproblem::Gas {
 
     std::vector<std::map<double, double>> value_vector(
         {pressure_map, flow_map});
-    Equationcomponent::push_to_values(time, value_vector);
+    Statecomponent::push_to_values(time, value_vector);
   }
 
   void Pipe::json_save(double time, Eigen::Ref<const Eigen::VectorXd> state) {
