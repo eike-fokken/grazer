@@ -1,6 +1,6 @@
 #pragma once
+#include "Subproblem.hpp"
 #include <Eigen/Sparse>
-#include <Subproblem.hpp>
 #include <memory>
 #include <vector>
 
@@ -12,6 +12,7 @@ namespace Network {
 // equations from a network from the namespace Network.
 namespace Model::Networkproblem {
 
+  class Equationcomponent;
   class Statecomponent;
 
   // This class implements a Subproblem, that builds the model equations from a
@@ -56,7 +57,8 @@ namespace Model::Networkproblem {
 
   private:
     std::unique_ptr<Network::Net> network;
-    std::vector<Statecomponent *> equationcomponents;
+    std::vector<Equationcomponent *> equationcomponents;
+    std::vector<Statecomponent *> statecomponents;
 
     int reserve_indices(int const next_free_index) final;
   };

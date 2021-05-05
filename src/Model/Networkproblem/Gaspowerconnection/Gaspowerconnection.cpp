@@ -72,7 +72,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
 
   void Gaspowerconnection::setup() {
 
-    setup_helper(get_id());
+    setup_output_json_helper(get_id());
 
     if (powerendnode != nullptr) {
       std::cout << "You are calling setup a second time!" << std::endl;

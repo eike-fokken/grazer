@@ -1,5 +1,6 @@
 #include "Networkproblem.hpp"
 #include "Edge.hpp"
+#include "Equationcomponent.hpp"
 #include "Exception.hpp"
 #include "Idobject.hpp"
 #include "Net.hpp"
@@ -25,14 +26,20 @@ namespace Model::Networkproblem {
   Networkproblem::Networkproblem(std::unique_ptr<Network::Net> _network) :
       network(std::move(_network)) {
     for (Network::Node *node : network->get_nodes()) {
-      if (auto equationcomponent = dynamic_cast<Statecomponent *>(node)) {
+      if (auto equationcomponent = dynamic_cast<Equationcomponent *>(node)) {
         equationcomponents.push_back(equationcomponent);
+      }
+      if (auto statecomponent = dynamic_cast<Statecomponent *>(node)) {
+        statecomponents.push_back(statecomponent);
       }
     }
 
     for (Network::Edge *edge : network->get_edges()) {
-      if (auto equationcomponent = dynamic_cast<Statecomponent *>(edge)) {
+      if (auto equationcomponent = dynamic_cast<Equationcomponent *>(edge)) {
         equationcomponents.push_back(equationcomponent);
+      }
+      if (auto statecomponent = dynamic_cast<Statecomponent *>(edge)) {
+        statecomponents.push_back(statecomponent);
       }
     }
   }
@@ -50,7 +57,7 @@ namespace Model::Networkproblem {
     //                       new_state);
     // }
     // );
-    for (Model::Networkproblem::Statecomponent *eqcomponent :
+    for (Model::Networkproblem::Equationcomponent *eqcomponent :
          equationcomponents) {
       eqcomponent->evaluate(
           rootvalues, last_time, new_time, last_state, new_state);
@@ -61,7 +68,7 @@ namespace Model::Networkproblem {
       double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> last_state,
       Eigen::Ref<Eigen::VectorXd const> new_state) {
-    for (Model::Networkproblem::Statecomponent *eqcomponent :
+    for (Model::Networkproblem::Equationcomponent *eqcomponent :
          equationcomponents) {
       eqcomponent->prepare_timestep(last_time, new_time, last_state, new_state);
     }
@@ -80,7 +87,7 @@ namespace Model::Networkproblem {
     //                     new_state);
     //               });
 
-    for (Model::Networkproblem::Statecomponent *eqcomponent :
+    for (Model::Networkproblem::Equationcomponent *eqcomponent :
          equationcomponents) {
       eqcomponent->evaluate_state_derivative(
           jacobianhandler, last_time, new_time, last_state, new_state);
@@ -89,32 +96,32 @@ namespace Model::Networkproblem {
 
   void Networkproblem::save_values(
       double time, Eigen::Ref<Eigen::VectorXd> new_state) {
-    for (Model::Networkproblem::Statecomponent *eqcomponent :
-         equationcomponents) {
-      eqcomponent->save_values(time, new_state);
+    for (Model::Networkproblem::Statecomponent *statecomponent :
+         statecomponents) {
+      statecomponent->save_values(time, new_state);
     }
   }
 
   void Networkproblem::json_save(
       double time, Eigen::Ref<Eigen::VectorXd const> state) {
-    for (Model::Networkproblem::Statecomponent *eqcomponent :
-         equationcomponents) {
-      eqcomponent->json_save(time, state);
+    for (Model::Networkproblem::Statecomponent *statecomponent :
+         statecomponents) {
+      statecomponent->json_save(time, state);
     }
   }
 
   void Networkproblem::print_to_files(
       std::filesystem::path const &output_directory) {
-    for (Model::Networkproblem::Statecomponent *eqcomponent :
-         equationcomponents) {
-      eqcomponent->print_to_files(output_directory);
+    for (Model::Networkproblem::Statecomponent *statecomponent :
+         statecomponents) {
+      statecomponent->print_to_files(output_directory);
     }
   }
 
   void Networkproblem::new_print_to_files(nlohmann::json &new_output) {
-    for (Model::Networkproblem::Statecomponent *eqcomponent :
-         equationcomponents) {
-      eqcomponent->new_print_to_files(new_output);
+    for (Model::Networkproblem::Statecomponent *statecomponent :
+         statecomponents) {
+      statecomponent->new_print_to_files(new_output);
     }
   }
 
@@ -122,13 +129,13 @@ namespace Model::Networkproblem {
       Eigen::Ref<Eigen::VectorXd> new_state, nlohmann::json initial_json) {
 
     std::vector<Network::Idobject *> idcomponents;
-    idcomponents.reserve(equationcomponents.size());
+    idcomponents.reserve(statecomponents.size());
 
-    for (Statecomponent *eqcomponent : equationcomponents) {
-      auto idcomponent = dynamic_cast<Network::Idobject *>(eqcomponent);
+    for (Statecomponent *statecomponent : statecomponents) {
+      auto idcomponent = dynamic_cast<Network::Idobject *>(statecomponent);
       if (idcomponent == nullptr) {
         gthrow(
-            {"An equation component is not of type Idobject, which should "
+            {"A state component is not of type Idobject, which should "
              "never happen."});
       }
       idcomponents.push_back(idcomponent);
@@ -145,7 +152,7 @@ namespace Model::Networkproblem {
               = std::find_if(idcomponents.begin(), idcomponents.end(), find_id);
           if (iterator != idcomponents.end()) {
             auto index = iterator - idcomponents.begin();
-            equationcomponents[static_cast<unsigned long>(index)]
+            statecomponents[static_cast<unsigned long>(index)]
                 ->set_initial_values(new_state, componentjson);
           } else {
             std::cout
@@ -162,11 +169,11 @@ namespace Model::Networkproblem {
 
   int Networkproblem::reserve_indices(int const next_free_index) {
     int free_index = next_free_index;
-    for (Statecomponent *eqcomponent : equationcomponents) {
-      free_index = eqcomponent->set_indices(free_index);
+    for (Statecomponent *statecomponent : statecomponents) {
+      free_index = statecomponent->set_indices(free_index);
     }
-    for (Statecomponent *eqcomponent : equationcomponents) {
-      eqcomponent->setup();
+    for (Equationcomponent *equationcomponent : equationcomponents) {
+      equationcomponent->setup();
     }
 
     return free_index;

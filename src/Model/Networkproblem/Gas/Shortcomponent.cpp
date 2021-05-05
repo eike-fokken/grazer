@@ -58,7 +58,7 @@ namespace Model::Networkproblem::Gas {
     new_output[component_type][type].push_back(std::move(this_output_json));
   }
 
-  void Shortcomponent::setup() { setup_helper(get_id()); }
+  void Shortcomponent::setup() { setup_output_json_helper(get_id()); }
 
   int Shortcomponent::get_number_of_states() const {
     return number_of_state_variables;

@@ -2,7 +2,7 @@
 
 namespace Model::Networkproblem {
 
-  void Statecomponent::setup_helper(std::string const &id) {
+  void Statecomponent::setup_output_json_helper(std::string const &id) {
     auto &output_json = get_output_json_ref();
     output_json["id"] = id;
     output_json["data"] = nlohmann::json::array();
@@ -40,7 +40,5 @@ namespace Model::Networkproblem {
   nlohmann::json &Statecomponent::get_output_json_ref() {
     return component_output;
   }
-
-  bool Statecomponent::needs_output_file() { return true; }
 
 } // namespace Model::Networkproblem
