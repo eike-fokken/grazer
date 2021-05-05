@@ -120,7 +120,7 @@ namespace Model::Componentfactory {
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
       if constexpr (std::is_base_of<Networkproblem::Equationcomponent, ConcreteNode>::value) {
-        std::optional<nlohmann::json>(ConcreteNode::get_initial_schema());
+        return std::optional<nlohmann::json>(ConcreteNode::get_initial_schema());
       } else {
         return std::nullopt;
       }
@@ -172,7 +172,7 @@ namespace Model::Componentfactory {
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
       if constexpr (std::is_base_of<Networkproblem::Equationcomponent, ConcreteEdge>::value) {
-        std::optional<nlohmann::json>(ConcreteEdge::get_initial_schema());
+        return std::optional<nlohmann::json>(ConcreteEdge::get_initial_schema());
       } else {
         return std::nullopt;
       }
