@@ -43,7 +43,7 @@ namespace Model {
     virtual void json_save(double time, Eigen::Ref<Eigen::VectorXd const> state)
         = 0;
 
-    virtual void new_print_to_files(nlohmann::json &new_output) = 0;
+    virtual void print_to_files(nlohmann::json &new_output) = 0;
 
     // Reserves indices from the state vector
     // @param int next_free_index the first non-reserved index of the state

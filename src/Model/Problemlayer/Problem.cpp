@@ -15,16 +15,15 @@ namespace Model {
 
   Problem::Problem(
       nlohmann::json problem_data,
-      std::filesystem::path const &_output_directory,
-      nlohmann::json &output_json) :
+      std::filesystem::path const &_output_directory) :
       output_directory(_output_directory) {
     auto subproblem_map = problem_data["subproblems"]
                               .get<std::map<std::string, nlohmann::json>>();
     for (auto &[subproblem_type, subproblem_json] : subproblem_map) {
       subproblem_json["GRAZER_file_directory"]
           = problem_data["GRAZER_file_directory"];
-      std::unique_ptr<Subproblem> subproblem_ptr = build_subproblem(
-          subproblem_type, subproblem_json, output_directory, output_json);
+      std::unique_ptr<Subproblem> subproblem_ptr
+          = build_subproblem(subproblem_type, subproblem_json);
       add_subproblem(std::move(subproblem_ptr));
     }
   }
@@ -32,7 +31,7 @@ namespace Model {
   Problem::~Problem() {
     try {
       // print_to_files();
-      new_print_to_files();
+      print_to_files();
     } catch (std::exception &e) {
       std::cout << "Printing to files failed with error message:"
                 << "\n###############################################\n"
@@ -96,14 +95,14 @@ namespace Model {
     return pointer_vector;
   }
 
-  void Problem::new_print_to_files() {
+  void Problem::print_to_files() {
     for (auto &subproblem : subproblems) {
-      subproblem->new_print_to_files(new_output);
+      subproblem->print_to_files(json_output);
     }
     std::filesystem::path new_output_file(
-        output_directory / std::filesystem::path("new_output.json"));
+        output_directory / std::filesystem::path("output.json"));
     std::ofstream o(new_output_file);
-    o << new_output.dump(1);
+    o << json_output.dump(1);
   }
 
   void Problem::set_initial_values(

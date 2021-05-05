@@ -92,7 +92,7 @@ namespace Model::Networkproblem::Power {
 
   double Powernode::get_B() const { return B; }
 
-  void Powernode::new_print_to_files(nlohmann::json &new_output) {
+  void Powernode::print_to_files(nlohmann::json &new_output) {
     auto &this_output_json = get_output_json_ref();
     std::string comp_type = Aux::component_class(*this);
     new_output[comp_type][get_power_type()].push_back(

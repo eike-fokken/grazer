@@ -37,7 +37,7 @@ namespace Model::Networkproblem::Gas {
     jacobianhandler->set_coefficient(end_equation_index, end_q_index, -1.0);
   }
 
-  void Shortpipe::new_print_to_files(nlohmann::json &new_output) {
+  void Shortpipe::print_to_files(nlohmann::json &new_output) {
     std::string comp_type = Aux::component_class(*this);
     new_print_helper(new_output, comp_type, get_type());
   }

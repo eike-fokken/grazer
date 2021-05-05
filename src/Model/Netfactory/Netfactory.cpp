@@ -61,8 +61,7 @@ namespace Model::Networkproblem {
       std::map<
           std::string,
           std::unique_ptr<Componentfactory::AbstractNodeType>> const
-          &nodetypemap,
-      std::filesystem::path const &output_dir, nlohmann::json &output_json) {
+          &nodetypemap) {
 
     // Here we check, whether all nodetypes defined in the topology file were
     // built. It will throw an exception, if a node type is encountered that is
@@ -116,8 +115,7 @@ namespace Model::Networkproblem {
       std::map<
           std::string,
           std::unique_ptr<Componentfactory::AbstractEdgeType>> const
-          &edgetypemap,
-      std::filesystem::path const &output_dir, nlohmann::json &output_json) {
+          &edgetypemap) {
 
     // Here we check, whether all edgetypes defined in the topology file were
     // built. It will throw an exception, if a edge type is encountered that
@@ -299,16 +297,13 @@ namespace Model::Networkproblem {
   }
   std::unique_ptr<Network::Net> build_net(
       nlohmann::json &networkproblem_json,
-      Componentfactory::Componentfactory const &factory,
-      std::filesystem::path const &output_dir, nlohmann::json &output_json) {
+      Componentfactory::Componentfactory const &factory) {
     auto topology = build_full_networkproblem_json(networkproblem_json);
-    auto nodes = build_node_vector(
-        topology["nodes"], factory.node_type_map, output_dir, output_json);
+    auto nodes = build_node_vector(topology["nodes"], factory.node_type_map);
 
     // build the edge vector.
     auto edges = build_edge_vector(
-        topology["connections"], nodes, factory.edge_type_map, output_dir,
-        output_json);
+        topology["connections"], nodes, factory.edge_type_map);
     auto network
         = std::make_unique<Network::Net>(std::move(nodes), std::move(edges));
 

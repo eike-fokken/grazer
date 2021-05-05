@@ -24,6 +24,6 @@ namespace Model::Networkproblem::Gas {
         Eigen::Ref<Eigen::VectorXd> new_state,
         nlohmann::json const &initial_json) final;
 
-    void new_print_to_files(nlohmann::json &new_output) override;
+    void print_to_files(nlohmann::json &new_output) override;
   };
 } // namespace Model::Networkproblem::Gas

@@ -14,7 +14,7 @@ namespace Model::Networkproblem::Gas {
     return schema;
   }
 
-  void Compressorstation::new_print_to_files(nlohmann::json &new_output) {
+  void Compressorstation::print_to_files(nlohmann::json &new_output) {
     std::string comp_type = Aux::component_class(*this);
     new_print_helper(new_output, comp_type, get_type());
   }

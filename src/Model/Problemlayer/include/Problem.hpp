@@ -22,8 +22,7 @@ namespace Model {
   public:
     Problem(
         nlohmann::json subproblem_data,
-        std::filesystem::path const &_output_directory,
-        nlohmann::json &output_json);
+        std::filesystem::path const &_output_directory);
 
     ~Problem();
 
@@ -55,7 +54,7 @@ namespace Model {
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state, nlohmann::json &initialjson);
 
-    void new_print_to_files();
+    void print_to_files();
 
     std::filesystem::path const &get_output_directory() const;
 
@@ -64,7 +63,7 @@ namespace Model {
     std::vector<std::unique_ptr<Subproblem>> subproblems;
 
     std::filesystem::path const output_directory;
-    nlohmann::json new_output;
+    nlohmann::json json_output;
   };
 
 } // namespace Model
