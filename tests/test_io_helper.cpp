@@ -1,7 +1,32 @@
 #include "test_io_helper.hpp"
 #include <iostream>
+#include <pcg_extras.hpp>
+#include <pcg_random.hpp>
+#include <random>
+#include <randutils.hpp>
 #include <sstream>
 #include <streambuf>
+#include <string>
+
+static std::string create_random_name() {
+
+  randutils::auto_seed_256 seed_source;
+  pcg64 rng(seed_source);
+
+  std::string ascii
+      = "0123456789"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz";
+  int length = static_cast<int>(ascii.length() - 1);
+  std::uniform_int_distribution<> dist(0, length);
+  std::string randstring;
+  for (unsigned int i = 0; i != 20; ++i) {
+
+    auto a = static_cast<unsigned int>(dist(rng));
+    randstring += ascii[a];
+  }
+  return randstring;
+}
 
 Catch_cout::Catch_cout(std::streambuf *new_buffer) :
     old(std::cout.rdbuf(new_buffer)) {}
@@ -10,6 +35,10 @@ Catch_cout::~Catch_cout() { std::cout.rdbuf(old); }
 
 Directory_creator::Directory_creator(std::string testdirname) :
     main_test_dir_path(create_testdir(testdirname)) {}
+
+Directory_creator::Directory_creator() :
+    main_test_dir_path(
+        create_testdir("Grazer_testdir_" + create_random_name())) {}
 
 Directory_creator::~Directory_creator() {
   try {

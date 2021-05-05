@@ -12,7 +12,8 @@ private:
 
 class Directory_creator {
 public:
-  Directory_creator(std::string testdirname = "Grazer_testdir");
+  Directory_creator(std::string testdirname);
+  Directory_creator();
 
   ~Directory_creator();
 
