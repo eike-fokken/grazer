@@ -3,10 +3,45 @@
 #include <sstream>
 
 namespace Aux::unit {
-  using nlohmann::json;
-  extern const std::map<std::string, double> length_units;
-  json get_length_schema();
 
+  class Conversion { // should really be a concept "Conversion"
+  public:
+    virtual double operator()(double value) = 0;
+  };
+
+  class Multiplicator : Conversion {
+    const double multiplicator;
+  public:
+    double operator()(double value);
+    Multiplicator(double multiplicator);
+  };
+
+  class FunctionConversion : Conversion {
+    const std::function<double(double)> conversion;
+  public:
+    double operator()(double value);
+    FunctionConversion(std::function<double(double)> conversion);
+  };
+
+  class Measure {
+  public:
+    const std::string name;
+    const std::map<std::string, Conversion> conversion_map;
+    Measure(std::string, std::map<std::string,Conversion>);
+  };
+
+  extern const Measure length;
+  extern const Measure area;
+  extern const Measure volume;
+  extern const Measure pressure;
+  extern const Measure frequency;
+  extern const Measure force;
+  extern const Measure power;
+  extern const Measure mass;
+  extern const Measure volume_flux;
+  extern const Measure temperature;
+
+  extern const std::map<std::string, double> length_units;
   extern const std::map<std::string, double> area_units;
   extern const std::map<std::string, double> volume_units;
   extern const std::map<std::string, double> pressure_units;
@@ -21,6 +56,9 @@ namespace Aux::unit {
 
   // conversion instructions for temperature
   extern const std::map<std::string, conversion> temperature_units;
+
+  using nlohmann::json;
+  json get_schema(Measure measure);
 
   /**
    * @brief In contrast to multiplicative conversions (e.g. feet to meter)
