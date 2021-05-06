@@ -11,8 +11,56 @@
 #include <iostream>
 #include <memory>
 #include <nlohmann/json.hpp>
+#include <string>
+#include <vector>
 
 namespace Model::Networkproblem {
+
+  void check_for_duplicates(nlohmann::json &components, std::string key) {
+
+    std::vector<std::string> component_vector;
+    for (auto const &component_class : {"nodes", "connections"}) {
+      if (not components.contains(component_class)) {
+        continue;
+      }
+      for (auto &[component_type, sub_json] :
+           components[component_class].items()) {
+        for (auto &component : sub_json) {
+          component_vector.push_back(component["id"].get<std::string>());
+        }
+      }
+    }
+    std::sort(component_vector.begin(), component_vector.end());
+    auto first_eq_id
+        = std::adjacent_find(component_vector.begin(), component_vector.end());
+    if (first_eq_id != component_vector.end()) {
+      gthrow({"The id ", (*first_eq_id), " appears twice in ", key, " ."});
+    }
+  }
+
+  void sort_json_vectors_by_id(nlohmann::json &components, std::string key) {
+
+    check_for_duplicates(components, key);
+
+    for (auto const &component_class : {"nodes", "connections"}) {
+      if (not components.contains(component_class)) {
+        continue;
+      }
+      for (auto &[component_type, sub_json] :
+           components[component_class].items()) {
+        auto &second_json_vector_json
+            = components[component_class][component_type];
+        // Define < function
+        auto id_compare_less
+            = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
+          return a["id"].get<std::string>() < b["id"].get<std::string>();
+        };
+        std::sort(
+            second_json_vector_json.begin(), second_json_vector_json.end(),
+            id_compare_less);
+      }
+    }
+  }
 
   nlohmann::json
   build_full_networkproblem_json(nlohmann::json &networkproblem_json) {
@@ -27,12 +75,15 @@ namespace Model::Networkproblem {
     aux_json::replace_entry_with_json_from_file(
         networkproblem_json, control_key);
 
+    // Sorting the component vectors by ID
     nlohmann::json &topology = networkproblem_json[topology_key];
-    // sort topology here
+    sort_json_vectors_by_id(topology, topology_key);
+
     nlohmann::json &boundary = networkproblem_json[boundary_key];
-    // sort boundaries here
+    sort_json_vectors_by_id(boundary, boundary_key);
+
     nlohmann::json &control = networkproblem_json[control_key];
-    // sort controls here
+    sort_json_vectors_by_id(control, control_key);
 
     // build the node vector.
     insert_second_json_in_topology_json(topology, boundary, "boundary_values");
@@ -83,20 +134,7 @@ namespace Model::Networkproblem {
 
     for (auto const &[nodetypename, nodetype] : nodetypemap) {
       if (node_topology.contains(nodetypename)) {
-
-        auto sorted_node_json = node_topology[nodetypename];
-        // define a < function as a lambda:
-        auto id_compare_less
-            = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
-          return a["id"].get<std::string>() < b["id"].get<std::string>();
-        };
-
-        std::sort(
-            sorted_node_json.begin(), sorted_node_json.end(), id_compare_less);
-
-        // The sorting makes sure that nodes of a given type are ordered by
-        // their id.
-        for (auto node : sorted_node_json) {
+        for (auto node : node_topology[nodetypename]) {
           auto current_node = nodetype->make_instance(node);
           nodes.push_back(std::move(current_node));
         }
@@ -136,19 +174,7 @@ namespace Model::Networkproblem {
 
     for (auto const &[edgetypename, edgetype] : edgetypemap) {
       if (edge_topology.contains(edgetypename)) {
-        auto sorted_edge_json = edge_topology[edgetypename];
-        // define a < function as a lambda:
-        auto id_compare_less
-            = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
-          return a["id"].get<std::string>() < b["id"].get<std::string>();
-        };
-
-        std::sort(
-            sorted_edge_json.begin(), sorted_edge_json.end(), id_compare_less);
-
-        // The sorting makes sure that edges of a given type are ordered by
-        // their id.
-        for (auto edge : sorted_edge_json) {
+        for (auto edge : edge_topology[edgetypename]) {
           auto current_edge = edgetype->make_instance(edge, nodes);
           edges.push_back(std::move(current_edge));
         }
@@ -180,52 +206,17 @@ namespace Model::Networkproblem {
         auto &second_json_vector_json = second_json[component][key];
         auto &topology_vector_json = topology[component][key];
 
-        // define a < function as a lambda:
-        auto id_compare_less
-            = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
-          return a["id"].get<std::string>() < b["id"].get<std::string>();
-        };
-
-        // Sorts the data in both topology and boundary json for easier
-        // insertion afterwards.
-        std::sort(
-            second_json_vector_json.begin(), second_json_vector_json.end(),
-            id_compare_less);
-        std::sort(
-            topology_vector_json.begin(), topology_vector_json.end(),
-            id_compare_less);
-
         auto secjson_it = second_json_vector_json.begin();
         auto top_it = topology_vector_json.begin();
-
-        // define an equals function as a lambda
-        auto id_equals
-            = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
-          return a["id"].get<std::string>() == b["id"].get<std::string>();
-        };
-
-        // Check for duplicate ids:
-        auto bnd_first_pair = std::adjacent_find(
-            second_json_vector_json.begin(), second_json_vector_json.end(),
-            id_equals);
-        if (bnd_first_pair != second_json_vector_json.end()) {
-          gthrow(
-              {"The id ", (*bnd_first_pair)["id"].get<std::string>(),
-               " appears twice in the", name_of_inserted_json, " json."});
-        }
-
-        auto top_first_pair = std::adjacent_find(
-            topology_vector_json.begin(), topology_vector_json.end(),
-            id_equals);
-        if (top_first_pair != topology_vector_json.end()) {
-          gthrow(
-              {"The id ", (*top_first_pair)["id"].get<std::string>(),
-               " appears twice in the topology json."});
-        }
 
         // assign the additional values to the topology json.
         while (secjson_it != second_json_vector_json.end()
                and top_it != topology_vector_json.end()) {
+          auto id_compare_less
+              = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
+            return a["id"].get<std::string>() < b["id"].get<std::string>();
+          };
+
           if (id_compare_less(*secjson_it, *top_it)) {
             std::cout << "The component with id "
                       << (*secjson_it)["id"].get<std::string>() << '\n'
