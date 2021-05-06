@@ -263,7 +263,7 @@ namespace Model::Componentfactory {
 
     /**
      * @brief Return the Full JSON Schema for the Topplogy Description
-     * 
+     *
      * @param include_external Include schemas for data provided from other
      * files
      *
