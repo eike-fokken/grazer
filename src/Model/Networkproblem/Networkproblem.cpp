@@ -5,6 +5,7 @@
 #include "Idobject.hpp"
 #include "Net.hpp"
 #include "Node.hpp"
+#include "Statecomponent.hpp"
 #include <Eigen/Sparse>
 #include <iostream>
 #include <iterator>
@@ -28,11 +29,17 @@ namespace Model::Networkproblem {
       if (auto equationcomponent = dynamic_cast<Equationcomponent *>(node)) {
         equationcomponents.push_back(equationcomponent);
       }
+      if (auto statecomponent = dynamic_cast<Statecomponent *>(node)) {
+        statecomponents.push_back(statecomponent);
+      }
     }
 
     for (Network::Edge *edge : network->get_edges()) {
       if (auto equationcomponent = dynamic_cast<Equationcomponent *>(edge)) {
         equationcomponents.push_back(equationcomponent);
+      }
+      if (auto statecomponent = dynamic_cast<Statecomponent *>(edge)) {
+        statecomponents.push_back(statecomponent);
       }
     }
   }
@@ -87,28 +94,18 @@ namespace Model::Networkproblem {
     }
   }
 
-  void Networkproblem::save_values(
-      double time, Eigen::Ref<Eigen::VectorXd> new_state) {
-    for (Model::Networkproblem::Equationcomponent *eqcomponent :
-         equationcomponents) {
-      eqcomponent->save_values(time, new_state);
-    }
-  }
-
   void Networkproblem::json_save(
-      nlohmann::json &output, double time,
-      Eigen::Ref<Eigen::VectorXd const> state) const {
-    for (Model::Networkproblem::Equationcomponent *eqcomponent :
-         equationcomponents) {
-      eqcomponent->json_save(output, time, state);
+      double time, Eigen::Ref<Eigen::VectorXd const> state) {
+    for (Model::Networkproblem::Statecomponent *statecomponent :
+         statecomponents) {
+      statecomponent->json_save(time, state);
     }
   }
 
-  void Networkproblem::print_to_files(
-      std::filesystem::path const &output_directory) {
-    for (Model::Networkproblem::Equationcomponent *eqcomponent :
-         equationcomponents) {
-      eqcomponent->print_to_files(output_directory);
+  void Networkproblem::print_to_files(nlohmann::json &new_output) {
+    for (Model::Networkproblem::Statecomponent *statecomponent :
+         statecomponents) {
+      statecomponent->print_to_files(new_output);
     }
   }
 
@@ -116,13 +113,13 @@ namespace Model::Networkproblem {
       Eigen::Ref<Eigen::VectorXd> new_state, nlohmann::json initial_json) {
 
     std::vector<Network::Idobject *> idcomponents;
-    idcomponents.reserve(equationcomponents.size());
+    idcomponents.reserve(statecomponents.size());
 
-    for (Equationcomponent *eqcomponent : equationcomponents) {
-      auto idcomponent = dynamic_cast<Network::Idobject *>(eqcomponent);
+    for (Statecomponent *statecomponent : statecomponents) {
+      auto idcomponent = dynamic_cast<Network::Idobject *>(statecomponent);
       if (idcomponent == nullptr) {
         gthrow(
-            {"An equation component is not of type Idobject, which should "
+            {"A state component is not of type Idobject, which should "
              "never happen."});
       }
       idcomponents.push_back(idcomponent);
@@ -139,7 +136,7 @@ namespace Model::Networkproblem {
               = std::find_if(idcomponents.begin(), idcomponents.end(), find_id);
           if (iterator != idcomponents.end()) {
             auto index = iterator - idcomponents.begin();
-            equationcomponents[static_cast<unsigned long>(index)]
+            statecomponents[static_cast<unsigned long>(index)]
                 ->set_initial_values(new_state, componentjson);
           } else {
             std::cout
@@ -156,11 +153,11 @@ namespace Model::Networkproblem {
 
   int Networkproblem::reserve_indices(int const next_free_index) {
     int free_index = next_free_index;
-    for (Equationcomponent *eqcomponent : equationcomponents) {
-      free_index = eqcomponent->set_indices(free_index);
+    for (Statecomponent *statecomponent : statecomponents) {
+      free_index = statecomponent->set_indices(free_index);
     }
-    for (Equationcomponent *eqcomponent : equationcomponents) {
-      eqcomponent->setup();
+    for (Equationcomponent *equationcomponent : equationcomponents) {
+      equationcomponent->setup();
     }
 
     return free_index;

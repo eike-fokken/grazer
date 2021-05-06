@@ -26,14 +26,6 @@ namespace Model::Componentfactory {
       throw std::runtime_error(o.str());
     }
   }
-  // std::map<std::string, std::unique_ptr<AbstractNodeType>>
-  // Componentfactory::get_node_type_map() {
-  //   return node_type_map;
-  // }
-  // std::map<std::string, std::unique_ptr<AbstractEdgeType>>
-  // Componentfactory::get_edge_type_map() {
-  //   return edge_type_map;
-  // }
 
   void
   Componentfactory::add_node_type(std::unique_ptr<AbstractNodeType> nodeType) {

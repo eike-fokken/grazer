@@ -7,92 +7,21 @@
 
 namespace Model::Networkproblem::Gas {
 
-  void Shortcomponent::print_helper(
-      std::filesystem::path const &output_directory, std::string const &type) {
-
-    std::string prestring = "Gas_" + type + "_";
-    std::string pressure_file_name = get_id_copy() + "_p";
-    std::string flow_file_name = get_id_copy() + "_q";
-
-    std::filesystem::path outputfile_pressure
-        = output_directory / std::filesystem::path(type)
-          / std::filesystem::path(pressure_file_name);
-    std::filesystem::path outputfile_flow
-        = output_directory / std::filesystem::path(type)
-          / std::filesystem::path(flow_file_name);
-
-    std::ofstream outputpressure(outputfile_pressure);
-    std::ofstream outputflow(outputfile_flow);
-
-    outputpressure.precision(9);
-    outputflow.precision(9);
-
-    outputpressure << "t-x,    0.0,    1.0\n";
-    outputflow << "t-x,    0.0,    1.0\n";
-    auto times = get_times();
-    auto values = get_values();
-
-    for (unsigned i = 0; i != times.size(); ++i) {
-      {
-        // write out pressures:
-        auto var = values[i][0];
-        outputpressure << times[i];
-        outputpressure << ",    " << var.at(0.0);
-        outputpressure << ",    " << var.at(1.0);
-        outputpressure << "\n";
-      }
-      {
-        // write out flows:
-        outputflow << times[i];
-        auto var = values[i][1];
-        outputflow << ",    " << var.at(0.0);
-        outputflow << ",    " << var.at(1.0);
-        outputflow << "\n";
-      }
-    }
+  void Shortcomponent::new_print_helper(
+      nlohmann::json &new_output, std::string const &component_type,
+      std::string const &type) {
+    auto &this_output_json = get_output_json_ref();
+    new_output[component_type][type].push_back(std::move(this_output_json));
   }
+
+  void Shortcomponent::setup() { setup_output_json_helper(get_id()); }
 
   int Shortcomponent::get_number_of_states() const {
     return number_of_state_variables;
   }
 
-  void Shortcomponent::save_values(
-      double time, Eigen::Ref<Eigen::VectorXd const> state) {
-    std::map<double, double> pressure_map;
-    std::map<double, double> flow_map;
-
-    auto start_state = get_boundary_state(1, state);
-    auto end_state = get_boundary_state(-1, state);
-
-    pressure_map = {{0.0, start_state[0]}, {1.0, end_state[0]}};
-    flow_map = {{0.0, start_state[1]}, {1.0, end_state[1]}};
-
-    std::vector<std::map<double, double>> value_vector(
-        {pressure_map, flow_map});
-    Equationcomponent::push_to_values(time, value_vector);
-  }
-
   void Shortcomponent::json_save(
-      nlohmann::json &output, double time,
-      Eigen::Ref<Eigen::VectorXd const> state) const {
-    nlohmann::json &current_component_vector = output[get_gas_type()];
-
-    auto id = get_id_copy();
-
-    // define a < function as a lambda:
-    auto id_compare_less
-        = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
-      return a["id"].get<std::string>() < b["id"].get<std::string>();
-    };
-
-    // auto id_is = [id](nlohmann::json const &a) -> bool {
-    //   return a["id"].get<std::string>() == id;
-    // };
-    nlohmann::json this_id;
-    this_id["id"] = id;
-    auto it = std::lower_bound(
-        current_component_vector.begin(), current_component_vector.end(),
-        this_id, id_compare_less);
+      double time, Eigen::Ref<Eigen::VectorXd const> state) {
 
     nlohmann::json current_value;
     current_value["time"] = time;
@@ -118,25 +47,8 @@ namespace Model::Networkproblem::Gas {
     flow1_json["value"] = end_state[1];
     current_value["flow"].push_back(flow1_json);
 
-    if (it == current_component_vector.end()) {
-      // std::cout << "Not found!" << std::endl;
-      nlohmann::json newoutput;
-      newoutput["id"] = get_id_copy();
-      newoutput["data"] = nlohmann::json::array();
-      newoutput["data"].push_back(current_value);
-      current_component_vector.push_back(newoutput);
-    } else {
-      if ((*it)["id"] != id) {
-        gthrow(
-            {"The json value\n", (*it).dump(4),
-             "\n has an id different from the current object, whose id is ", id,
-             "\n This is a bug. Please report it!"});
-      }
-
-      // std::cout << "found!" << std::endl;
-      nlohmann::json &outputjson = (*it);
-      outputjson["data"].push_back(current_value);
-    }
+    auto &output_json = get_output_json_ref();
+    output_json["data"].push_back(std::move(current_value));
   }
 
   void Shortcomponent::initial_values_helper(

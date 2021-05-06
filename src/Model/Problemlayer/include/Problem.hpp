@@ -22,8 +22,7 @@ namespace Model {
   public:
     Problem(
         nlohmann::json subproblem_data,
-        std::filesystem::path const &_output_directory,
-        nlohmann::json &output_json);
+        std::filesystem::path const &_output_directory);
 
     ~Problem();
 
@@ -46,11 +45,7 @@ namespace Model {
         Eigen::Ref<Eigen::VectorXd const> last_state,
         Eigen::Ref<Eigen::VectorXd const> new_state) const;
 
-    void save_values(double time, Eigen::Ref<Eigen::VectorXd> new_state);
-
-    void json_save(
-        nlohmann::json &output, double time,
-        Eigen::Ref<Eigen::VectorXd const> state) const;
+    void json_save(double time, Eigen::Ref<Eigen::VectorXd const> state);
 
     /// As we have unique pointers, we can only give back a pointer to our
     /// subproblems.
@@ -68,6 +63,7 @@ namespace Model {
     std::vector<std::unique_ptr<Subproblem>> subproblems;
 
     std::filesystem::path const output_directory;
+    nlohmann::json json_output;
   };
 
 } // namespace Model

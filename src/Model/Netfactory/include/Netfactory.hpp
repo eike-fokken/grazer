@@ -34,6 +34,9 @@ namespace Model::Networkproblem {
   /// paths to the respective json files.
   /// @returns the topology json enriched with control and boundary data.
 
+  void sort_json_vectors_by_id(nlohmann::json &components, std::string key);
+  void check_for_duplicates(nlohmann::json &components, std::string key);
+
   nlohmann::json
   build_full_networkproblem_json(nlohmann::json &networkproblem_json);
 
@@ -48,8 +51,7 @@ namespace Model::Networkproblem {
       std::map<
           std::string,
           std::unique_ptr<Componentfactory::AbstractNodeType>> const
-          &nodetypemap,
-      std::filesystem::path const &output_dir, nlohmann::json &output_json);
+          &nodetypemap);
 
   /// \brief construct Edges of types given by the json input and put their
   /// pointers in a vector
@@ -63,8 +65,7 @@ namespace Model::Networkproblem {
       std::map<
           std::string,
           std::unique_ptr<Componentfactory::AbstractEdgeType>> const
-          &edgetypemap,
-      std::filesystem::path const &output_dir, nlohmann::json &output_json);
+          &edgetypemap);
 
   /// \brief Enters entries from a second json object into the topology json.
   ///
@@ -92,7 +93,6 @@ namespace Model::Networkproblem {
 
   std::unique_ptr<Network::Net> build_net(
       nlohmann::json &networkproblem_json,
-      Componentfactory::Componentfactory const &factory,
-      std::filesystem::path const &output_dir, nlohmann::json &output_json);
+      Componentfactory::Componentfactory const &factory);
 
 } // namespace Model::Networkproblem

@@ -1,6 +1,6 @@
 #pragma once
+#include "Subproblem.hpp"
 #include <Eigen/Sparse>
-#include <Subproblem.hpp>
 #include <memory>
 #include <vector>
 
@@ -13,6 +13,7 @@ namespace Network {
 namespace Model::Networkproblem {
 
   class Equationcomponent;
+  class Statecomponent;
 
   // This class implements a Subproblem, that builds the model equations from a
   // network.
@@ -40,13 +41,9 @@ namespace Model::Networkproblem {
         Eigen::Ref<Eigen::VectorXd const> last_state,
         Eigen::Ref<Eigen::VectorXd const> new_state) const override;
 
-    void save_values(double time, Eigen::Ref<Eigen::VectorXd> new_state) final;
+    void json_save(double time, Eigen::Ref<Eigen::VectorXd const> state) final;
 
-    void json_save(
-        nlohmann::json &output, double time,
-        Eigen::Ref<Eigen::VectorXd const> state) const final;
-
-    void print_to_files(std::filesystem::path const &output_directory) final;
+    void print_to_files(nlohmann::json &new_output) final;
 
     virtual void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,
@@ -57,6 +54,7 @@ namespace Model::Networkproblem {
   private:
     std::unique_ptr<Network::Net> network;
     std::vector<Equationcomponent *> equationcomponents;
+    std::vector<Statecomponent *> statecomponents;
 
     int reserve_indices(int const next_free_index) final;
   };

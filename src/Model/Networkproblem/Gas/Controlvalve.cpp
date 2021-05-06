@@ -1,5 +1,6 @@
 #include "Controlvalve.hpp"
 #include "Gasedge.hpp"
+#include "Get_base_component.hpp"
 #include "Matrixhandler.hpp"
 #include "Shortcomponent.hpp"
 #include "make_schema.hpp"
@@ -57,9 +58,9 @@ namespace Model::Networkproblem::Gas {
     initial_values_helper(new_state, initial_json);
   }
 
-  void
-  Controlvalve::print_to_files(std::filesystem::path const &output_directory) {
-    print_helper(output_directory, get_type());
+  void Controlvalve::print_to_files(nlohmann::json &new_output) {
+    std::string comp_type = Aux::component_class(*this);
+    new_print_helper(new_output, comp_type, get_type());
   }
 
 } // namespace Model::Networkproblem::Gas

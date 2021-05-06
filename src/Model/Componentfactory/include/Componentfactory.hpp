@@ -7,10 +7,10 @@
 #include <map>
 #include <memory>
 #include <sstream>
-#include <Equationcomponent.hpp>
+#include <Statecomponent.hpp>
 
 namespace Model::Networkproblem {
-  class Equationcomponent;
+  class Statecomponent;
 }
 
 namespace Model::Componentfactory {
@@ -119,21 +119,12 @@ namespace Model::Componentfactory {
       // should really be `requires` (cf.
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
-      if constexpr (std::is_base_of<Networkproblem::Equationcomponent, ConcreteNode>::value) {
+      if constexpr (std::is_base_of<Networkproblem::Statecomponent, ConcreteNode>::value) {
         return std::optional<nlohmann::json>(ConcreteNode::get_initial_schema());
       } else {
         return std::nullopt;
       }
     }
-
-    bool needs_output_file() const override {
-      if constexpr (not std::is_base_of_v<
-                        Networkproblem::Equationcomponent, ConcreteNode>) {
-        return false;
-      } else {
-        return ConcreteNode::needs_output_file();
-      }
-    };
 
     std::unique_ptr<Network::Node>
     make_instance(nlohmann::json const &topology) const override {
@@ -183,15 +174,6 @@ namespace Model::Componentfactory {
         std::vector<std::unique_ptr<Network::Node>> &nodes) const override {
       validate_component_json(topology, ConcreteEdge::get_schema());
       return std::make_unique<ConcreteEdge>(topology, nodes);
-    };
-
-    bool needs_output_file() const override {
-      if constexpr (not std::is_base_of_v<
-                        Networkproblem::Equationcomponent, ConcreteEdge>) {
-        return false;
-      } else {
-        return ConcreteEdge::needs_output_file();
-      }
     };
   };
 

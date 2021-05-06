@@ -6,6 +6,7 @@
 #include <Subproblem.hpp>
 #include <Subproblemchooser.hpp>
 #include <exception>
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -14,22 +15,22 @@ namespace Model {
 
   Problem::Problem(
       nlohmann::json problem_data,
-      std::filesystem::path const &_output_directory,
-      nlohmann::json &output_json) :
+      std::filesystem::path const &_output_directory) :
       output_directory(_output_directory) {
     auto subproblem_map = problem_data["subproblems"]
                               .get<std::map<std::string, nlohmann::json>>();
     for (auto &[subproblem_type, subproblem_json] : subproblem_map) {
       subproblem_json["GRAZER_file_directory"]
           = problem_data["GRAZER_file_directory"];
-      std::unique_ptr<Subproblem> subproblem_ptr = build_subproblem(
-          subproblem_type, subproblem_json, output_directory, output_json);
+      std::unique_ptr<Subproblem> subproblem_ptr
+          = build_subproblem(subproblem_type, subproblem_json);
       add_subproblem(std::move(subproblem_ptr));
     }
   }
 
   Problem::~Problem() {
     try {
+      // print_to_files();
       print_to_files();
     } catch (std::exception &e) {
       std::cout << "Printing to files failed with error message:"
@@ -82,18 +83,8 @@ namespace Model {
   }
 
   void
-  Problem::save_values(double time, Eigen::Ref<Eigen::VectorXd> new_state) {
-    for (auto &subproblem : subproblems) {
-      subproblem->save_values(time, new_state);
-    }
-  }
-
-  void Problem::json_save(
-      nlohmann::json &output, double time,
-      Eigen::Ref<Eigen::VectorXd const> state) const {
-    for (auto &subproblem : subproblems) {
-      subproblem->json_save(output, time, state);
-    }
+  Problem::json_save(double time, Eigen::Ref<Eigen::VectorXd const> state) {
+    for (auto &subproblem : subproblems) { subproblem->json_save(time, state); }
   }
 
   std::vector<Subproblem *> Problem::get_subproblems() const {
@@ -105,11 +96,13 @@ namespace Model {
   }
 
   void Problem::print_to_files() {
-    if (not output_directory.empty()) {
-      for (auto &subproblem : subproblems) {
-        subproblem->print_to_files(output_directory);
-      }
+    for (auto &subproblem : subproblems) {
+      subproblem->print_to_files(json_output);
     }
+    std::filesystem::path new_output_file(
+        output_directory / std::filesystem::path("output.json"));
+    std::ofstream o(new_output_file);
+    o << json_output.dump(1);
   }
 
   void Problem::set_initial_values(
@@ -117,7 +110,6 @@ namespace Model {
 
     for (auto &subproblem : subproblems) {
       auto type = subproblem->get_type();
-
       auto initial_json_iterator = initial_json["subproblems"].find(type);
       if (initial_json_iterator == initial_json["subproblems"].end()) {
         gthrow(
