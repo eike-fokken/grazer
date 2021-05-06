@@ -13,9 +13,6 @@ namespace Model::Networkproblem {
 
 namespace Model::Componentfactory {
 
-  void validate_component_json(
-      nlohmann::json const &topology, nlohmann::json const &schema);
-
 // this macro collection is ugly but hopefully makes for clearer compiler
 // errors:
 #define STRINGIFY(nonstring) STRINGIFYII(nonstring)
@@ -137,7 +134,7 @@ namespace Model::Componentfactory {
     std::unique_ptr<Network::Node>
     make_instance(nlohmann::json const &topology) const override {
 
-      validate::validate_json(topology, this->get_schema());
+      validation::validate_json(topology, this->get_schema());
       return std::make_unique<ConcreteNode>(topology);
     };
   };
@@ -174,7 +171,7 @@ namespace Model::Componentfactory {
     std::unique_ptr<Network::Edge> make_instance(
         nlohmann::json const &topology,
         std::vector<std::unique_ptr<Network::Node>> &nodes) const override {
-      validate::validate_json(topology, this->get_schema());
+      validation::validate_json(topology, this->get_schema());
       return std::make_unique<ConcreteEdge>(topology, nodes);
     };
   };
