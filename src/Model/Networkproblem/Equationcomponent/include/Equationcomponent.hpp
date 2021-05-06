@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <memory>
 #include <nlohmann/json.hpp>
+#include <optional>
 
 namespace Aux {
 
