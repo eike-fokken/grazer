@@ -263,10 +263,13 @@ namespace Model::Componentfactory {
 
     /**
      * @brief Return the Full JSON Schema for the Topplogy Description
+     * 
+     * @param include_external Include schemas for data provided from other
+     * files
      *
      * @return nlohmann::json
      */
-    nlohmann::json get_topology_schema();
+    nlohmann::json get_topology_schema(bool const include_external);
 
     /**
      * @brief Return the Full JSON Schema for the Boundary Behaviour Description
