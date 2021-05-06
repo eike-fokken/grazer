@@ -12,12 +12,6 @@ namespace Network {
          "from edge!"});
   }
 
-  nlohmann::json Edge::get_boundary_schema() {
-    gthrow(
-        {"This static method must be implemented in the class inheriting "
-         "from edge!"});
-  }
-
   nlohmann::json Edge::get_schema() {
     nlohmann::json schema = Idobject::get_schema();
 

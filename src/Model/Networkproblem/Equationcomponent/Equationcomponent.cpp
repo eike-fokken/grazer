@@ -18,4 +18,8 @@ namespace Model::Networkproblem {
 
   void Equationcomponent::setup() {}
 
+  std::optional<nlohmann::json> Equationcomponent::get_boundary_schema() {
+    return std::nullopt;
+  }
+
 } // namespace Model::Networkproblem

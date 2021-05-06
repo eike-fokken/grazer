@@ -87,14 +87,20 @@ namespace Model::Componentfactory {
 
     auto &node_schemas = boundary_schema["properties"]["nodes"]["properties"];
     for (auto const &[name, component] : this->node_type_map) {
-      node_schemas[name]
-          = Aux::schema::make_list_schema_of(component->get_boundary_schema());
+      auto optional_schema = component->get_boundary_schema();
+      if (optional_schema.has_value()) {
+        node_schemas[name]
+            = Aux::schema::make_list_schema_of(optional_schema.value());
+      }
     }
     auto &edge_schemas
         = boundary_schema["properties"]["connections"]["properties"];
     for (auto const &[name, component] : this->edge_type_map) {
-      edge_schemas[name]
-          = Aux::schema::make_list_schema_of(component->get_boundary_schema());
+      auto optional_schema = component->get_boundary_schema();
+      if (optional_schema.has_value()) {
+        edge_schemas[name]
+            = Aux::schema::make_list_schema_of(optional_schema.value());
+      }
     }
 
     return boundary_schema;

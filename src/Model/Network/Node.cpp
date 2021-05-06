@@ -11,11 +11,6 @@ namespace Network {
         {"This static method must be implemented in the class inheriting "
          "from node!"});
   }
-  nlohmann::json Node::get_boundary_schema() {
-    gthrow(
-        {"This static method must be implemented in the class inheriting "
-         "from node!"});
-  }
 
   Node::Node(nlohmann::json const &data) :
       Idobject(data["id"].get<std::string>()) {}

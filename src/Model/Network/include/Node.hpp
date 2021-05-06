@@ -16,7 +16,6 @@ namespace Network {
 
   public:
     static std::string get_type();
-    static nlohmann::json get_boundary_schema();
 
     Node() = delete;
 

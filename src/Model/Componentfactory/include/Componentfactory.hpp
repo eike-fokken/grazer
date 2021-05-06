@@ -49,10 +49,9 @@ namespace Model::Componentfactory {
      *
      * @return nlohmann::json
      */
-    virtual nlohmann::json get_boundary_schema() const = 0;
+    virtual std::optional<nlohmann::json> get_boundary_schema() const = 0;
 
     virtual std::optional<nlohmann::json> get_initial_schema() const = 0;
-
   };
 
   struct AbstractNodeType : public AbstractComponentType {
@@ -95,18 +94,30 @@ namespace Model::Componentfactory {
 
     std::string get_name() const override { return ConcreteNode::get_type(); };
 
-    nlohmann::json get_boundary_schema() const override {
-      return ConcreteNode::get_boundary_schema();
+    nlohmann::json get_schema(const bool include_boundary) const override {
+      auto schema = ConcreteNode::get_schema();
+      if (include_boundary) {
+        auto optional_boundary = get_boundary_schema();
+        if (optional_boundary.has_value()) {
+          Aux::schema::add_required(
+              schema, "boundary_values", optional_boundary.value());
+        }
+      }
+      return schema;
     };
 
-    nlohmann::json get_schema(const bool include_boundary) const override {
-      if (include_boundary) {
-        auto schema = ConcreteNode::get_schema();
-        Aux::schema::add_required(
-            schema, "boundary_values", ConcreteNode::get_boundary_schema());
-        return schema;
+    std::optional<nlohmann::json> get_boundary_schema() const override {
+      // should really be `requires` (cf.
+      // https://stackoverflow.com/a/22014784/6662425) but that would require
+      // C++20
+      if constexpr (std::is_base_of<
+                        Networkproblem::Equationcomponent,
+                        ConcreteNode>::value) {
+        return std::optional<nlohmann::json>(
+            ConcreteNode::get_boundary_schema());
+      } else {
+        return std::nullopt;
       }
-      return ConcreteNode::get_schema();
     };
 
     std::optional<nlohmann::json> get_initial_schema() const override {
@@ -140,18 +151,30 @@ namespace Model::Componentfactory {
 
     std::string get_name() const override { return ConcreteEdge::get_type(); };
 
-    nlohmann::json get_boundary_schema() const override {
-      return ConcreteEdge::get_boundary_schema();
+    nlohmann::json get_schema(const bool include_boundary) const override {
+      auto schema = ConcreteEdge::get_schema();
+      if (include_boundary) {
+        auto optional_boundary = get_boundary_schema();
+        if (optional_boundary.has_value()) {
+          Aux::schema::add_required(
+              schema, "boundary_values", optional_boundary.value());
+        }
+      }
+      return schema;
     };
 
-    nlohmann::json get_schema(bool include_boundary) const override {
-      if (include_boundary) {
-        auto schema = ConcreteEdge::get_schema();
-        Aux::schema::add_required(
-            schema, "boundary_values", ConcreteEdge::get_boundary_schema());
-        return schema;
+    std::optional<nlohmann::json> get_boundary_schema() const override {
+      // should really be `requires` (cf.
+      // https://stackoverflow.com/a/22014784/6662425) but that would require
+      // C++20
+      if constexpr (std::is_base_of<
+                        Networkproblem::Equationcomponent,
+                        ConcreteEdge>::value) {
+        return std::optional<nlohmann::json>(
+            ConcreteEdge::get_boundary_schema());
+      } else {
+        return std::nullopt;
       }
-      return ConcreteEdge::get_schema();
     };
 
     std::optional<nlohmann::json> get_initial_schema() const override {

@@ -1,78 +1,620 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "type": "object",
-  "description": "Initial Values",
-  "properties": {
-    "nodes": {
-      "type": "object",
-      "description": "Nodes",
-      "properties": {
-        "ExternalPowerplant": {
-            "$ref": "#/definitions/component"
-        }
-      }
-    },
-    "connections": {
-      "type": "object",
-      "description": "connections",
-      "properties": {
-        "Gaspowerconnection": {
-            "$ref": "#/definitions/component"
-        }
-      }
-    }
-  },
-  "definitions": {
-    "component": {
-      "type": "array",
-      "unique": true,
-      "items": {
-        "type": "object",
-        "required": [],
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "component id"
-          },
-          "data": {
-            "description": "Array of Interpolation Points with Initial Values",
-            "type": "array",
-            "allOf": [
-              {
-                "contains": {
-                  "properties": {
-                    "x": {
-                      "minimum": 1,
-                      "maximum": 1
-                    }
-                  }
-                }
-              }
-            ],
-            "items": {
-              "type": "object",
-              "required": [
-                "x",
-                "values"
-              ],
-              "properties": {
-                "x": {
-                  "type": "number",
-                  "description": "Interpolation Point"
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "description": "Description of the Networks Initial Data",
+    "properties": {
+        "connections": {
+            "additionalProperties": false,
+            "properties": {
+                "Compressorstation": {
+                    "items": {
+                        "properties": {
+                            "data": {
+                                "allOf": [
+                                    {
+                                        "contains": {
+                                            "properties": {
+                                                "x": {
+                                                    "maximum": 0,
+                                                    "minimum": 0
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "contains": {
+                                            "properties": {
+                                                "x": {
+                                                    "maximum": 1,
+                                                    "minimum": 1
+                                                }
+                                            }
+                                        }
+                                    }
+                                ],
+                                "description": "Array of Interpolation Points with Initial Values",
+                                "items": {
+                                    "description": "Interpolation Point with Initial Values",
+                                    "properties": {
+                                        "values": {
+                                            "description": "Initial Values at Interpolation Point x",
+                                            "items": {
+                                                "type": "number"
+                                            },
+                                            "maxItems": 2,
+                                            "minItems": 2,
+                                            "type": "array"
+                                        },
+                                        "x": {
+                                            "description": "Interpolation Point",
+                                            "type": "number"
+                                        }
+                                    },
+                                    "required": [
+                                        "x",
+                                        "values"
+                                    ],
+                                    "type": "object"
+                                },
+                                "maxItems": 2,
+                                "minItems": 2,
+                                "type": "array"
+                            },
+                            "id": {
+                                "description": "component id",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "data"
+                        ],
+                        "type": "object"
+                    },
+                    "type": "array"
                 },
-                "values": {
-                  "type": "array",
-                  "description": "Initial Values at interpolation point x",
-                  "length": 2,
-                  "items": {
-                    "type": "number"
-                  }
+                "Controlvalve": {
+                    "items": {
+                        "properties": {
+                            "data": {
+                                "allOf": [
+                                    {
+                                        "contains": {
+                                            "properties": {
+                                                "x": {
+                                                    "maximum": 0,
+                                                    "minimum": 0
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "contains": {
+                                            "properties": {
+                                                "x": {
+                                                    "maximum": 1,
+                                                    "minimum": 1
+                                                }
+                                            }
+                                        }
+                                    }
+                                ],
+                                "description": "Array of Interpolation Points with Initial Values",
+                                "items": {
+                                    "description": "Interpolation Point with Initial Values",
+                                    "properties": {
+                                        "values": {
+                                            "description": "Initial Values at Interpolation Point x",
+                                            "items": {
+                                                "type": "number"
+                                            },
+                                            "maxItems": 2,
+                                            "minItems": 2,
+                                            "type": "array"
+                                        },
+                                        "x": {
+                                            "description": "Interpolation Point",
+                                            "type": "number"
+                                        }
+                                    },
+                                    "required": [
+                                        "x",
+                                        "values"
+                                    ],
+                                    "type": "object"
+                                },
+                                "maxItems": 2,
+                                "minItems": 2,
+                                "type": "array"
+                            },
+                            "id": {
+                                "description": "component id",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "data"
+                        ],
+                        "type": "object"
+                    },
+                    "type": "array"
+                },
+                "Gaspowerconnection": {
+                    "items": {
+                        "properties": {
+                            "data": {
+                                "allOf": [
+                                    {
+                                        "contains": {
+                                            "properties": {
+                                                "x": {
+                                                    "maximum": 0,
+                                                    "minimum": 0
+                                                }
+                                            }
+                                        }
+                                    }
+                                ],
+                                "description": "Array of Interpolation Points with Initial Values",
+                                "items": {
+                                    "description": "Interpolation Point with Initial Values",
+                                    "properties": {
+                                        "values": {
+                                            "description": "Initial Values at Interpolation Point x",
+                                            "items": {
+                                                "type": "number"
+                                            },
+                                            "maxItems": 2,
+                                            "minItems": 2,
+                                            "type": "array"
+                                        },
+                                        "x": {
+                                            "description": "Interpolation Point",
+                                            "type": "number"
+                                        }
+                                    },
+                                    "required": [
+                                        "x",
+                                        "values"
+                                    ],
+                                    "type": "object"
+                                },
+                                "maxItems": 1,
+                                "minItems": 1,
+                                "type": "array"
+                            },
+                            "id": {
+                                "description": "component id",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "data"
+                        ],
+                        "type": "object"
+                    },
+                    "type": "array"
+                },
+                "Pipe": {
+                    "items": {
+                        "properties": {
+                            "data": {
+                                "allOf": [
+                                    {
+                                        "contains": {
+                                            "properties": {
+                                                "x": {
+                                                    "maximum": 0
+                                                }
+                                            }
+                                        }
+                                    }
+                                ],
+                                "description": "Array of Interpolation Points with Initial Values",
+                                "items": {
+                                    "description": "Interpolation Point with Initial Values",
+                                    "properties": {
+                                        "values": {
+                                            "description": "Initial Values at Interpolation Point x",
+                                            "items": {
+                                                "type": "number"
+                                            },
+                                            "maxItems": 2,
+                                            "minItems": 2,
+                                            "type": "array"
+                                        },
+                                        "x": {
+                                            "description": "Interpolation Point",
+                                            "type": "number"
+                                        }
+                                    },
+                                    "required": [
+                                        "x",
+                                        "values"
+                                    ],
+                                    "type": "object"
+                                },
+                                "type": "array"
+                            },
+                            "id": {
+                                "description": "component id",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "data"
+                        ],
+                        "type": "object"
+                    },
+                    "type": "array"
+                },
+                "Shortpipe": {
+                    "items": {
+                        "properties": {
+                            "data": {
+                                "allOf": [
+                                    {
+                                        "contains": {
+                                            "properties": {
+                                                "x": {
+                                                    "maximum": 0,
+                                                    "minimum": 0
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "contains": {
+                                            "properties": {
+                                                "x": {
+                                                    "maximum": 1,
+                                                    "minimum": 1
+                                                }
+                                            }
+                                        }
+                                    }
+                                ],
+                                "description": "Array of Interpolation Points with Initial Values",
+                                "items": {
+                                    "description": "Interpolation Point with Initial Values",
+                                    "properties": {
+                                        "values": {
+                                            "description": "Initial Values at Interpolation Point x",
+                                            "items": {
+                                                "type": "number"
+                                            },
+                                            "maxItems": 2,
+                                            "minItems": 2,
+                                            "type": "array"
+                                        },
+                                        "x": {
+                                            "description": "Interpolation Point",
+                                            "type": "number"
+                                        }
+                                    },
+                                    "required": [
+                                        "x",
+                                        "values"
+                                    ],
+                                    "type": "object"
+                                },
+                                "maxItems": 2,
+                                "minItems": 2,
+                                "type": "array"
+                            },
+                            "id": {
+                                "description": "component id",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "data"
+                        ],
+                        "type": "object"
+                    },
+                    "type": "array"
                 }
-              }
-            }
-          }
+            },
+            "type": "object"
+        },
+        "nodes": {
+            "additionalProperties": false,
+            "properties": {
+                "ExternalPowerplant": {
+                    "items": {
+                        "properties": {
+                            "data": {
+                                "allOf": [
+                                    {
+                                        "contains": {
+                                            "properties": {
+                                                "x": {
+                                                    "maximum": 0,
+                                                    "minimum": 0
+                                                }
+                                            }
+                                        }
+                                    }
+                                ],
+                                "description": "Array of Interpolation Points with Initial Values",
+                                "items": {
+                                    "description": "Interpolation Point with Initial Values",
+                                    "properties": {
+                                        "values": {
+                                            "description": "Initial Values at Interpolation Point x",
+                                            "items": {
+                                                "type": "number"
+                                            },
+                                            "maxItems": 4,
+                                            "minItems": 4,
+                                            "type": "array"
+                                        },
+                                        "x": {
+                                            "description": "Interpolation Point",
+                                            "type": "number"
+                                        }
+                                    },
+                                    "required": [
+                                        "x",
+                                        "values"
+                                    ],
+                                    "type": "object"
+                                },
+                                "maxItems": 1,
+                                "minItems": 1,
+                                "type": "array"
+                            },
+                            "id": {
+                                "description": "component id",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "data"
+                        ],
+                        "type": "object"
+                    },
+                    "type": "array"
+                },
+                "PQnode": {
+                    "items": {
+                        "properties": {
+                            "data": {
+                                "allOf": [
+                                    {
+                                        "contains": {
+                                            "properties": {
+                                                "x": {
+                                                    "maximum": 0,
+                                                    "minimum": 0
+                                                }
+                                            }
+                                        }
+                                    }
+                                ],
+                                "description": "Array of Interpolation Points with Initial Values",
+                                "items": {
+                                    "description": "Interpolation Point with Initial Values",
+                                    "properties": {
+                                        "values": {
+                                            "description": "Initial Values at Interpolation Point x",
+                                            "items": {
+                                                "type": "number"
+                                            },
+                                            "maxItems": 4,
+                                            "minItems": 4,
+                                            "type": "array"
+                                        },
+                                        "x": {
+                                            "description": "Interpolation Point",
+                                            "type": "number"
+                                        }
+                                    },
+                                    "required": [
+                                        "x",
+                                        "values"
+                                    ],
+                                    "type": "object"
+                                },
+                                "maxItems": 1,
+                                "minItems": 1,
+                                "type": "array"
+                            },
+                            "id": {
+                                "description": "component id",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "data"
+                        ],
+                        "type": "object"
+                    },
+                    "type": "array"
+                },
+                "PVnode": {
+                    "items": {
+                        "properties": {
+                            "data": {
+                                "allOf": [
+                                    {
+                                        "contains": {
+                                            "properties": {
+                                                "x": {
+                                                    "maximum": 0,
+                                                    "minimum": 0
+                                                }
+                                            }
+                                        }
+                                    }
+                                ],
+                                "description": "Array of Interpolation Points with Initial Values",
+                                "items": {
+                                    "description": "Interpolation Point with Initial Values",
+                                    "properties": {
+                                        "values": {
+                                            "description": "Initial Values at Interpolation Point x",
+                                            "items": {
+                                                "type": "number"
+                                            },
+                                            "maxItems": 4,
+                                            "minItems": 4,
+                                            "type": "array"
+                                        },
+                                        "x": {
+                                            "description": "Interpolation Point",
+                                            "type": "number"
+                                        }
+                                    },
+                                    "required": [
+                                        "x",
+                                        "values"
+                                    ],
+                                    "type": "object"
+                                },
+                                "maxItems": 1,
+                                "minItems": 1,
+                                "type": "array"
+                            },
+                            "id": {
+                                "description": "component id",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "data"
+                        ],
+                        "type": "object"
+                    },
+                    "type": "array"
+                },
+                "StochasticPQnode": {
+                    "items": {
+                        "properties": {
+                            "data": {
+                                "allOf": [
+                                    {
+                                        "contains": {
+                                            "properties": {
+                                                "x": {
+                                                    "maximum": 0,
+                                                    "minimum": 0
+                                                }
+                                            }
+                                        }
+                                    }
+                                ],
+                                "description": "Array of Interpolation Points with Initial Values",
+                                "items": {
+                                    "description": "Interpolation Point with Initial Values",
+                                    "properties": {
+                                        "values": {
+                                            "description": "Initial Values at Interpolation Point x",
+                                            "items": {
+                                                "type": "number"
+                                            },
+                                            "maxItems": 4,
+                                            "minItems": 4,
+                                            "type": "array"
+                                        },
+                                        "x": {
+                                            "description": "Interpolation Point",
+                                            "type": "number"
+                                        }
+                                    },
+                                    "required": [
+                                        "x",
+                                        "values"
+                                    ],
+                                    "type": "object"
+                                },
+                                "maxItems": 1,
+                                "minItems": 1,
+                                "type": "array"
+                            },
+                            "id": {
+                                "description": "component id",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "data"
+                        ],
+                        "type": "object"
+                    },
+                    "type": "array"
+                },
+                "Vphinode": {
+                    "items": {
+                        "properties": {
+                            "data": {
+                                "allOf": [
+                                    {
+                                        "contains": {
+                                            "properties": {
+                                                "x": {
+                                                    "maximum": 0,
+                                                    "minimum": 0
+                                                }
+                                            }
+                                        }
+                                    }
+                                ],
+                                "description": "Array of Interpolation Points with Initial Values",
+                                "items": {
+                                    "description": "Interpolation Point with Initial Values",
+                                    "properties": {
+                                        "values": {
+                                            "description": "Initial Values at Interpolation Point x",
+                                            "items": {
+                                                "type": "number"
+                                            },
+                                            "maxItems": 4,
+                                            "minItems": 4,
+                                            "type": "array"
+                                        },
+                                        "x": {
+                                            "description": "Interpolation Point",
+                                            "type": "number"
+                                        }
+                                    },
+                                    "required": [
+                                        "x",
+                                        "values"
+                                    ],
+                                    "type": "object"
+                                },
+                                "maxItems": 1,
+                                "minItems": 1,
+                                "type": "array"
+                            },
+                            "id": {
+                                "description": "component id",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "data"
+                        ],
+                        "type": "object"
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
         }
-      }
-    }
-  }
+    },
+    "required": [
+        "nodes",
+        "connections"
+    ],
+    "title": "Initial Data"
 }
