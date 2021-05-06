@@ -2,12 +2,12 @@
 #include "Edge.hpp"
 #include "Node.hpp"
 #include "json_validation.hpp"
+#include <Statecomponent.hpp>
 #include <exception>
 #include <make_schema.hpp>
 #include <map>
 #include <memory>
 #include <sstream>
-#include <Statecomponent.hpp>
 
 namespace Model::Networkproblem {
   class Statecomponent;
@@ -119,8 +119,10 @@ namespace Model::Componentfactory {
       // should really be `requires` (cf.
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
-      if constexpr (std::is_base_of<Networkproblem::Statecomponent, ConcreteNode>::value) {
-        return std::optional<nlohmann::json>(ConcreteNode::get_initial_schema());
+      if constexpr (std::is_base_of<
+                        Networkproblem::Statecomponent, ConcreteNode>::value) {
+        return std::optional<nlohmann::json>(
+            ConcreteNode::get_initial_schema());
       } else {
         return std::nullopt;
       }
@@ -162,8 +164,11 @@ namespace Model::Componentfactory {
       // should really be `requires` (cf.
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
-      if constexpr (std::is_base_of<Networkproblem::Equationcomponent, ConcreteEdge>::value) {
-        return std::optional<nlohmann::json>(ConcreteEdge::get_initial_schema());
+      if constexpr (std::is_base_of<
+                        Networkproblem::Equationcomponent,
+                        ConcreteEdge>::value) {
+        return std::optional<nlohmann::json>(
+            ConcreteEdge::get_initial_schema());
       } else {
         return std::nullopt;
       }

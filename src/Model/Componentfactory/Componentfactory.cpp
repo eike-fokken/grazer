@@ -53,18 +53,18 @@ namespace Model::Componentfactory {
     auto &node_schemas = initial_schema["properties"]["nodes"]["properties"];
     for (auto const &[name, component] : this->node_type_map) {
       auto optional_schema = component->get_initial_schema();
-      if (optional_schema.has_value()){
-      node_schemas[name]
-          = Aux::schema::make_list_schema_of(optional_schema.value());
+      if (optional_schema.has_value()) {
+        node_schemas[name]
+            = Aux::schema::make_list_schema_of(optional_schema.value());
       }
     }
     auto &edge_schemas
         = initial_schema["properties"]["connections"]["properties"];
     for (auto const &[name, component] : this->edge_type_map) {
       auto optional_schema = component->get_initial_schema();
-      if (optional_schema.has_value()){
-      edge_schemas[name]
-          = Aux::schema::make_list_schema_of(optional_schema.value());
+      if (optional_schema.has_value()) {
+        edge_schemas[name]
+            = Aux::schema::make_list_schema_of(optional_schema.value());
       }
     }
 
