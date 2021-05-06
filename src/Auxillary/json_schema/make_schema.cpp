@@ -45,7 +45,7 @@ namespace Aux::schema {
     return type::simple("string", title, description);
   }
 
-  json type::length() { return Aux::unit::get_schema(Aux::unit::length_units); }
+  json type::length() { return Aux::unit::length.get_schema(); }
 
   nlohmann::json make_list_schema_of(nlohmann::json const &element_schema) {
     return make_list_schema_of(element_schema, 0, 0);
