@@ -1,6 +1,7 @@
 #include "Powernode.hpp"
 #include "Boundaryvalue.hpp"
 #include "Exception.hpp"
+#include "Get_base_component.hpp"
 #include "Initialvalue.hpp"
 #include "Matrixhandler.hpp"
 #include "Transmissionline.hpp"
@@ -49,6 +50,9 @@ namespace Model::Networkproblem::Power {
   }
 
   void Powernode::setup() {
+
+    setup_output_json_helper(get_id());
+
     attached_component_data.clear();
 
     for (auto &start_edge : get_starting_edges()) {
@@ -88,50 +92,16 @@ namespace Model::Networkproblem::Power {
 
   double Powernode::get_B() const { return B; }
 
-  void
-  Powernode::print_to_files(std::filesystem::path const &output_directory) {
-
-    auto node_output_file = output_directory
-                            / std::filesystem::path(get_power_type())
-                            / std::filesystem::path(get_id_copy());
-
-    std::ofstream output(node_output_file);
-
-    output << "time,    P,    Q,    V,    phi\n";
-    auto values = get_values();
-    output.precision(9);
-    auto times = get_times();
-
-    for (unsigned long i = 0; i != times.size(); ++i) {
-      output << times[i];
-      for (auto const &var : values[i]) { output << ",    " << var.at(0.0); }
-      output << "\n";
-    }
-  }
-
-  void Powernode::save_power_values(
-      double time, Eigen::Ref<Eigen::VectorXd const> state, double P_val,
-      double Q_val) {
-
-    std::map<double, double> Pmap;
-    std::map<double, double> Qmap;
-    std::map<double, double> Vmap;
-    std::map<double, double> phimap;
-    std::vector<std::map<double, double>> value_vector;
-    Pmap = {{0.0, P_val}};
-    Qmap = {{0.0, Q_val}};
-    Vmap = {{0.0, state[get_start_state_index()]}};
-    phimap = {{0.0, state[get_start_state_index() + 1]}};
-    value_vector = {Pmap, Qmap, Vmap, phimap};
-    Equationcomponent::push_to_values(time, value_vector);
+  void Powernode::print_to_files(nlohmann::json &new_output) {
+    auto &this_output_json = get_output_json_ref();
+    std::string comp_type = Aux::component_class(*this);
+    new_output[comp_type][get_power_type()].push_back(
+        std::move(this_output_json));
   }
 
   void Powernode::json_save_power(
-      nlohmann::json &output, double time,
-      Eigen::Ref<Eigen::VectorXd const> state, double P_val,
-      double Q_val) const {
-
-    nlohmann::json &current_component_vector = output[get_power_type()];
+      double time, Eigen::Ref<Eigen::VectorXd const> state, double P_val,
+      double Q_val) {
 
     nlohmann::json current_value;
     current_value["time"] = time;
@@ -140,40 +110,8 @@ namespace Model::Networkproblem::Power {
     current_value["V"] = state[get_start_state_index()];
     current_value["phi"] = state[get_start_state_index() + 1];
 
-    auto id = get_id_copy();
-    // define a < function as a lambda:
-    auto id_compare_less
-        = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
-      return a["id"].get<std::string>() < b["id"].get<std::string>();
-    };
-
-    // auto id_is = [id](nlohmann::json const &a) -> bool {
-    //   return a["id"].get<std::string>() == id;
-    // };
-    nlohmann::json this_id;
-    this_id["id"] = id;
-    auto it = std::lower_bound(
-        current_component_vector.begin(), current_component_vector.end(),
-        this_id, id_compare_less);
-
-    if (it == current_component_vector.end()) {
-      // std::cout << "Not found!" << std::endl;
-      nlohmann::json newoutput;
-      newoutput["id"] = get_id_copy();
-      newoutput["data"] = nlohmann::json::array();
-      newoutput["data"].push_back(current_value);
-      current_component_vector.push_back(newoutput);
-    } else {
-      if ((*it)["id"] != id) {
-        gthrow(
-            {"The json value\n", (*it).dump(4),
-             "\n has an id different from the current object, whose id is ", id,
-             "\n This is a bug. Please report it!"});
-      }
-      // std::cout << "found!" << std::endl;
-      nlohmann::json &outputjson = (*it);
-      outputjson["data"].push_back(current_value);
-    }
+    auto &output_json = get_output_json_ref();
+    output_json["data"].push_back(std::move(current_value));
   }
 
   double Powernode::P(Eigen::Ref<Eigen::VectorXd const> state) const {

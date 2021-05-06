@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
 
     // give the path information of the file:
     auto directory_path
-        = std::filesystem::absolute(problem_data_file.parent_path());
+        = std::filesystem::absolute(problem_data_file).parent_path();
     problem_json["GRAZER_file_directory"] = directory_path.string();
 
     auto initial_value_json = all_json["initial_values"];
@@ -43,11 +43,7 @@ int main(int argc, char **argv) {
     Model::Timeevolver timeevolver(
         tolerance, maximal_number_of_newton_iterations, output_dir);
 
-    // This try block makes sure, the destructor of problem is called in order
-    // to print out all data, we have already.
-    Model::Problem problem(
-        problem_json, timeevolver.get_output_dir(),
-        timeevolver.get_output_json());
+    Model::Problem problem(problem_json, timeevolver.get_output_dir());
     int number_of_states = problem.set_indices();
     std::cout << "data read" << std::endl;
 

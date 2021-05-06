@@ -1,4 +1,4 @@
-add_library(equationcomponent STATIC Equationcomponent.cpp Valuemap.cpp)
+add_library(equationcomponent STATIC Equationcomponent.cpp Valuemap.cpp Statecomponent.cpp)
 
 target_link_libraries(equationcomponent PUBLIC mathfunctions exception)
 

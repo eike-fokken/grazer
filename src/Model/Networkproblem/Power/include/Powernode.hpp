@@ -1,12 +1,12 @@
 #pragma once
-#include <Boundaryvalue.hpp>
+#include "Boundaryvalue.hpp"
+#include "Node.hpp"
+#include "Statecomponent.hpp"
 #include <Eigen/Sparse>
-#include <Equationcomponent.hpp>
-#include <Node.hpp>
 
 namespace Model::Networkproblem::Power {
 
-  class Powernode : public Equationcomponent, public Network::Node {
+  class Powernode : public Statecomponent, public Network::Node {
 
   public:
     virtual std::string get_power_type() const = 0;
@@ -23,7 +23,7 @@ namespace Model::Networkproblem::Power {
     double get_G() const;
     double get_B() const;
 
-    void print_to_files(std::filesystem::path const &output_directory) override;
+    void print_to_files(nlohmann::json &new_output) override;
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,
@@ -39,19 +39,9 @@ namespace Model::Networkproblem::Power {
         Eigen::Ref<Eigen::VectorXd const> new_state) const;
 
   protected:
-    /// \brief saves the values of a power node for later printout into files.
-    ///
-    /// As the method for obtaining P_val and Q_val depend on the actual type,
-    /// this is just a helper function that is called from the respective
-    /// Powernode.
-    void save_power_values(
+    void json_save_power(
         double time, Eigen::Ref<Eigen::VectorXd const> state, double P_val,
         double Q_val);
-
-    void json_save_power(
-        nlohmann::json &output, double time,
-        Eigen::Ref<Eigen::VectorXd const> state, double P_val,
-        double Q_val) const;
 
     Boundaryvalue<2> const boundaryvalue;
     /// Real part of the admittance of this node

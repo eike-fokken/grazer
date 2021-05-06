@@ -11,14 +11,13 @@ namespace Model::Networkproblem::Gas {
 
     int get_number_of_states() const final;
 
-    void print_helper(
-        std::filesystem::path const &output_directory, std::string const &type);
+    void setup() override;
 
-    void
-    save_values(double time, Eigen::Ref<Eigen::VectorXd const> state) final;
+    void new_print_helper(
+        nlohmann::json &new_output, std::string const &component_type,
+        std::string const &type);
 
-    void json_save(nlohmann::json &, double, Eigen::Ref<Eigen::VectorXd const>)
-        const override;
+    void json_save(double, Eigen::Ref<Eigen::VectorXd const>) override;
 
     void initial_values_helper(
         Eigen::Ref<Eigen::VectorXd> new_state,

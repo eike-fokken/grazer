@@ -37,18 +37,10 @@ namespace Model::Networkproblem::Power {
   }
 
   void
-  Vphinode::save_values(double time, Eigen::Ref<Eigen::VectorXd const> state) {
+  Vphinode::json_save(double time, Eigen::Ref<Eigen::VectorXd const> state) {
     auto P_val = P(state);
     auto Q_val = Q(state);
-    save_power_values(time, state, P_val, Q_val);
-  }
-
-  void Vphinode::json_save(
-      nlohmann::json &output, double time,
-      Eigen::Ref<Eigen::VectorXd const> state) const {
-    auto P_val = P(state);
-    auto Q_val = Q(state);
-    json_save_power(output, time, state, P_val, Q_val);
+    json_save_power(time, state, P_val, Q_val);
   }
 
 } // namespace Model::Networkproblem::Power

@@ -11,4 +11,3 @@ target_link_libraries(test_helpers PUBLIC gtest gtest_main gmock)
 
 target_include_directories(test_helpers PUBLIC include)
 
-

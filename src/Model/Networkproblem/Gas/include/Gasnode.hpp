@@ -5,33 +5,13 @@
 
 namespace Model::Networkproblem::Gas {
 
-  class Gasnode : public Network::Node, public Equationcomponent {
+  class Gasnode : public Equationcomponent, public Network::Node {
 
   public:
     using Node::Node;
 
     /// Claims outer indices of attached edges.
     void setup() override;
-
-    /// Returns zero, because the indices are owned by the attached edges, see
-    /// setup().
-    int get_number_of_states() const final;
-
-    void print_to_files(std::filesystem::path const &) final{};
-
-    void save_values(double, Eigen::Ref<Eigen::VectorXd const>) final{};
-
-    void json_save(nlohmann::json &, double, Eigen::Ref<Eigen::VectorXd const>)
-        const override{};
-
-    void set_initial_values(
-        Eigen::Ref<Eigen::VectorXd>, nlohmann::json const &) final{};
-
-    /// \brief overloads the Equationcomponent static method. Returns false for
-    /// gas nodes.
-    ///
-    /// returns false
-    static bool needs_output_file();
 
   protected:
     void evaluate_flow_node_balance(

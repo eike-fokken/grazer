@@ -156,10 +156,4 @@ namespace Model::Networkproblem::Gas {
     }
   }
 
-  int Gasnode::get_number_of_states() const {
-    return number_of_state_variables;
-  }
-
-  bool Gasnode::needs_output_file() { return false; }
-
 } // namespace Model::Networkproblem::Gas

@@ -1,11 +1,11 @@
 #pragma once
-#include "Equationcomponent.hpp"
+#include "Statecomponent.hpp"
 #include <Eigen/Sparse>
 
 namespace Model::Networkproblem::Gas {
 
   /// @brief This class is a base class for all Gas edges with a 2x2 balance law
-  class Gasedge : public Equationcomponent {
+  class Gasedge : public Statecomponent {
 
   public:
     virtual std::string get_gas_type() const = 0;

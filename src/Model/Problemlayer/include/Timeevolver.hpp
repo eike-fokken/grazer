@@ -41,19 +41,15 @@ namespace Model {
     Timeevolver(
         double tolerance, int maximal_number_of_iterations,
         std::filesystem::path const &output_dir);
-    ~Timeevolver();
 
     void simulate(
         Timedata timedata, Model::Problem &problem, int number_of_states,
         nlohmann::json &problem_initial_json);
 
-    nlohmann::json &get_output_json();
     std::filesystem::path const &get_output_dir();
 
   private:
     Solver::Newtonsolver<Problem> solver;
-
-    nlohmann::json output;
     std::filesystem::path const output_dir;
   };
 

@@ -2,7 +2,7 @@
 #include "Boundaryvalue.hpp"
 #include "Control.hpp"
 #include "Edge.hpp"
-#include <Gasedge.hpp>
+#include "Gasedge.hpp"
 
 namespace Model::Networkproblem::Power {
   class Powernode;
@@ -20,7 +20,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
    * In power-controlled mode, it doesn't enforce the pressure. In this case an
    * additional equation must be set in the powernode at the connections end.
    */
-  class Gaspowerconnection final : public Network::Edge, public Gas::Gasedge {
+  class Gaspowerconnection final : public Gas::Gasedge, public Network::Edge {
   public:
     static std::string get_type();
     std::string get_gas_type() const override;
@@ -43,14 +43,10 @@ namespace Model::Networkproblem::Gaspowerconnection {
 
     int get_number_of_states() const override;
 
-    void print_to_files(std::filesystem::path const &output_directory) override;
+    void print_to_files(nlohmann::json &new_output) override;
 
     void
-    save_values(double time, Eigen::Ref<Eigen::VectorXd const> state) override;
-
-    void json_save(
-        nlohmann::json &output, double time,
-        Eigen::Ref<const Eigen::VectorXd> state) const override;
+    json_save(double time, Eigen::Ref<const Eigen::VectorXd> state) override;
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,

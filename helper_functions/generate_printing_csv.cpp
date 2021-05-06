@@ -64,38 +64,44 @@ int main(int argc, char **argv) {
   json object;
   bool is_gas = false;
   bool is_power = false;
-  for (auto type_it = input.begin(); type_it != input.end(); ++type_it) {
-    auto it = std::lower_bound(
-        type_it.value().begin(), type_it.value().end(), id_object,
-        id_compare_less);
-    if (it != type_it.value().end()) {
-      if ((*it)["id"] != id) {
-        continue;
-      } else {
-        object = (*it);
-        auto gas_type
-            = std::find(gastypes.begin(), gastypes.end(), type_it.key());
-        auto power_type
-            = std::find(powertypes.begin(), powertypes.end(), type_it.key());
-
-        if (gas_type != gastypes.end()) {
-          is_gas = true;
-        } else if (power_type != powertypes.end()) {
-          is_power = true;
+  std::vector componentclass{"nodes", "connections"};
+  for (auto const &compclass : componentclass) {
+    if (not input.contains(compclass)) {
+      continue;
+    }
+    for (auto &[component_type, component_array] : input[compclass].items()) {
+      auto it = std::lower_bound(
+          component_array.begin(), component_array.end(), id_object,
+          id_compare_less);
+      if (it != component_array.end()) {
+        if ((*it)["id"] != id) {
+          continue;
         } else {
-          std::cout << __FILE__ << ":" << __LINE__ << ":\n"
-                    << "The required id is not a gas type and "
-                       "not a power type.\n"
-                    << "Probably Grazer incorporates more types and this "
-                       "helper function should be fixed to incorporate the new "
-                       "types\n.  Aborting now...";
-          return 1;
+          object = (*it);
+          auto gas_type
+              = std::find(gastypes.begin(), gastypes.end(), component_type);
+          auto power_type
+              = std::find(powertypes.begin(), powertypes.end(), component_type);
+
+          if (gas_type != gastypes.end()) {
+            is_gas = true;
+          } else if (power_type != powertypes.end()) {
+            is_power = true;
+          } else {
+            std::cout
+                << __FILE__ << ":" << __LINE__ << ":\n"
+                << "The required id is not a gas type and "
+                   "not a power type.\n"
+                << "Probably Grazer incorporates more types and this "
+                   "helper function should be fixed to incorporate the new "
+                   "types\n.  Aborting now...";
+            return 1;
+          }
+          break;
         }
-        break;
       }
     }
   }
-
   if (object.empty()) {
     std::cout << "Didn't find object with id: " << id << std::endl;
     return 1;
