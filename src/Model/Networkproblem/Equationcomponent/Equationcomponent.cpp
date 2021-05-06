@@ -22,4 +22,8 @@ namespace Model::Networkproblem {
     return std::nullopt;
   }
 
+  std::optional<nlohmann::json> Equationcomponent::get_control_schema() {
+    return std::nullopt;
+  }
+
 } // namespace Model::Networkproblem

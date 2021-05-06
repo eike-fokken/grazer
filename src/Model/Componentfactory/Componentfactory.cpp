@@ -71,6 +71,41 @@ namespace Model::Componentfactory {
     return initial_schema;
   }
 
+  nlohmann::json Componentfactory::get_control_schema() {
+    nlohmann::json control_schema = R"(
+    {
+      "$schema": "http://json-schema.org/draft-07/schema",
+      "title": "Control",
+      "description": "Description of the Controls of a Component",
+      "required": ["nodes", "connections"],
+      "properties": {
+        "nodes": {"type": "object", "additionalProperties": false, "properties": {}},
+        "connections": {"type": "object", "additionalProperties": false, "properties": {}}
+      }
+    }
+    )"_json;
+
+    auto &node_schemas = control_schema["properties"]["nodes"]["properties"];
+    for (auto const &[name, component] : this->node_type_map) {
+      auto optional_schema = component->get_control_schema();
+      if (optional_schema.has_value()) {
+        node_schemas[name]
+            = Aux::schema::make_list_schema_of(optional_schema.value());
+      }
+    }
+    auto &edge_schemas
+        = control_schema["properties"]["connections"]["properties"];
+    for (auto const &[name, component] : this->edge_type_map) {
+      auto optional_schema = component->get_control_schema();
+      if (optional_schema.has_value()) {
+        edge_schemas[name]
+            = Aux::schema::make_list_schema_of(optional_schema.value());
+      }
+    }
+
+    return control_schema;
+  }
+
   nlohmann::json Componentfactory::get_boundary_schema() {
     nlohmann::json boundary_schema = R"(
     {

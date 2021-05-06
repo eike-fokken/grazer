@@ -26,6 +26,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
     std::string get_gas_type() const override;
     static nlohmann::json get_schema();
     static std::optional<nlohmann::json> get_boundary_schema();
+    static std::optional<nlohmann::json> get_control_schema();
     static nlohmann::json get_initial_schema();
 
     Gaspowerconnection(

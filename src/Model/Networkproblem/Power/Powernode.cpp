@@ -21,9 +21,11 @@ namespace Model::Networkproblem::Power {
     Aux::schema::add_required(schema, "B", Aux::schema::type::number());
     Aux::schema::add_required(schema, "G", Aux::schema::type::number());
 
-    Aux::schema::add_required(
-        schema, "boundary_values", Aux::schema::make_boundary_schema(2));
     return schema;
+  }
+
+  std::optional<nlohmann::json> Powernode::get_boundary_schema() {
+    return Aux::schema::make_boundary_schema(2);
   }
 
   int Powernode::get_dimension_of_pde() { return 4; }

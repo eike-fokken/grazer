@@ -77,6 +77,7 @@ namespace Model::Networkproblem {
     virtual void setup();
 
     static std::optional<nlohmann::json> get_boundary_schema();
+    static std::optional<nlohmann::json> get_control_schema();
   };
 
 } // namespace Model::Networkproblem

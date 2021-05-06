@@ -7,7 +7,7 @@
 namespace Model::Networkproblem::Gas {
 
   std::optional<nlohmann::json> Flowboundarynode::get_boundary_schema() {
-    return std::optional<nlohmann::json>(Aux::schema::make_boundary_schema(1));
+    return Aux::schema::make_boundary_schema(1);
   }
 
   Flowboundarynode::Flowboundarynode(nlohmann::json const &data) :

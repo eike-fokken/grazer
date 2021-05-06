@@ -23,14 +23,14 @@ namespace Model::Networkproblem::Gaspowerconnection {
     Aux::schema::add_required(
         schema, "power2gas_q_coeff", Aux::schema::type::number());
 
-    Aux::schema::add_required(
-        schema, "control_values", Aux::schema::make_boundary_schema(1));
-
     return schema;
   }
 
+  std::optional<nlohmann::json> Gaspowerconnection::get_control_schema() {
+    return Aux::schema::make_boundary_schema(1);
+  }
   std::optional<nlohmann::json> Gaspowerconnection::get_boundary_schema() {
-    return std::optional<nlohmann::json>(Aux::schema::make_boundary_schema(1));
+    return Aux::schema::make_boundary_schema(1);
   }
 
   nlohmann::json Gaspowerconnection::get_initial_schema() {
