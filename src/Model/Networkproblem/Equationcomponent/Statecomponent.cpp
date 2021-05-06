@@ -1,5 +1,5 @@
-#include "Exception.hpp"
 #include "Statecomponent.hpp"
+#include "Exception.hpp"
 
 namespace Model::Networkproblem {
 

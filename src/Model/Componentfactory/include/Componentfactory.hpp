@@ -53,12 +53,6 @@ namespace Model::Componentfactory {
 
     virtual std::optional<nlohmann::json> get_initial_schema() const = 0;
 
-    /**
-     * @brief Returns true if a directory for output files needs to be
-     * generated.
-     * @return true if a directory for output files needs to be generated.
-     */
-    virtual bool needs_output_file() const = 0;
   };
 
   struct AbstractNodeType : public AbstractComponentType {
