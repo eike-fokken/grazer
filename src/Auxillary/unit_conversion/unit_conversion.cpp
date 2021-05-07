@@ -2,6 +2,7 @@
 
 #include <map>
 #include <sstream>
+#include <json_validation.hpp>
 
 namespace Aux::unit {
   const Measure length{
@@ -110,11 +111,12 @@ namespace Aux::unit {
       const std::map<std::string, Conversion> conv_map) :
       name(provided_name), conversion_map(conv_map) {}
 
-  double Measure::parse_to_si(json const unit_json) const {
-    std::string unit = unit_json["unit"].get<std::string>();
+  double Measure::parse_to_si(json const measurement) const {
+    validation::validate_json(measurement, this->get_schema());
+    std::string unit = measurement["unit"].get<std::string>();
 
     auto [prefix, conv] = parse_unit(unit, this->conversion_map);
-    return conv(unit_json["value"].get<double>() * parse_prefix_si(prefix));
+    return conv(measurement["value"].get<double>() * parse_prefix_si(prefix));
   }
 
   const std::tuple<std::string, Conversion> parse_unit(
