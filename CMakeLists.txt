@@ -27,7 +27,7 @@ enable_testing()
 
 # https://github.com/google/googletest/blob/master/googletest/README.md#visual-studio-dynamic-vs-static-runtimes
 # https://stackoverflow.com/a/12546288/6662425 "how to activate that flag" 
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+set(gtest_force_shared_crt ON CACHE BOOL "Stop Windows from fiddling with the static/dynamic library include settings" FORCE)
 add_subdirectory(googletest)
 
 
