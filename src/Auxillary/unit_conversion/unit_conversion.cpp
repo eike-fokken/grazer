@@ -153,7 +153,7 @@ namespace Aux::unit {
     json pattern1;
     pattern1["pattern"] = "^" + simple_pattern;
     json pattern2;
-    pattern2["pattern"] = "^([0-9]*(\\.[0-9]+)? )" + simple_pattern;
+    pattern2["pattern"] = "^([0-9]*(\\.[0-9]+)?(e-?[0-9]+)? )" + simple_pattern;
     type_schema["properties"]["unit"]["oneOf"].push_back(pattern1);
     type_schema["properties"]["unit"]["oneOf"].push_back(pattern2);
     return type_schema;
