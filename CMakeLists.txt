@@ -24,6 +24,9 @@ if (BUILD_WITH_LIBCPP AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   message(STATUS "Will compile with libc++.")
 endif()
 enable_testing()
+
+# https://github.com/google/googletest/blob/master/googletest/README.md#visual-studio-dynamic-vs-static-runtimes
+set(gtest_force_shared_crt ON)
 add_subdirectory(googletest)
 
 
