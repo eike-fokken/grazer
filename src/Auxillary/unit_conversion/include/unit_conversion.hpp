@@ -29,7 +29,7 @@ namespace Aux::unit {
     const double offset;
 
   public:
-    Conversion(double multiplicator, double offset=0);
+    Conversion(double multiplicator, double offset = 0);
     double operator()(double value);
   };
 
