@@ -39,18 +39,15 @@ namespace Model::Networkproblem::Gas {
       nlohmann::json const &topology,
       std::vector<std::unique_ptr<Network::Node>> &nodes) :
       Network::Edge(topology, nodes),
-      diameter(Aux::unit::parse_to_si(
-          topology["diameter"], Aux::unit::length_units)),
-      roughness(Aux::unit::parse_to_si(
-          topology["roughness"], Aux::unit::length_units)),
+      diameter(Aux::unit::length.parse_to_si(topology["diameter"])),
+      roughness(Aux::unit::length.parse_to_si(topology["roughness"])),
       number_of_points(
           static_cast<int>(std::ceil(
-              Aux::unit::parse_to_si(
-                  topology["length"], Aux::unit::length_units)
+              Aux::unit::length.parse_to_si(topology["length"])
               / topology["desired_delta_x"].get<double>()))
           + 1),
       Delta_x(
-          Aux::unit::parse_to_si(topology["length"], Aux::unit::length_units)
+          Aux::unit::length.parse_to_si(topology["length"])
           / (number_of_points - 1)) {}
 
   void Pipe::evaluate(
