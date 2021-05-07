@@ -96,14 +96,11 @@ namespace Aux::unit {
     return parse_prefix(prefix, si_prefixes);
   }
 
-  Conversion::Conversion(double multiplicator) :
-      conversion([multiplicator](double x) { return x * multiplicator; }) {}
-
-  Conversion::Conversion(std::function<double(double)> conv) :
-      conversion(conv) {}
+  Conversion::Conversion(double _multiplicator, double _offset) :
+      multiplicator(_multiplicator), offset(_offset) {}
 
   double Conversion::operator()(double value) {
-    return this->conversion(value);
+    return multiplicator * value + offset;
   }
 
   Measure::Measure(

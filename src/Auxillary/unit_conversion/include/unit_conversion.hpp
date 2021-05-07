@@ -25,11 +25,11 @@ namespace Aux::unit {
    *
    */
   class Conversion {
-    const std::function<double(double)> conversion;
+    const double multiplicator;
+    const double offset;
 
   public:
-    Conversion(double multiplicator);
-    Conversion(std::function<double(double)> conversion);
+    Conversion(double multiplicator, double offset=0);
     double operator()(double value);
   };
 
