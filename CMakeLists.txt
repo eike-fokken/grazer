@@ -26,7 +26,8 @@ endif()
 enable_testing()
 
 # https://github.com/google/googletest/blob/master/googletest/README.md#visual-studio-dynamic-vs-static-runtimes
-set(gtest_force_shared_crt ON)
+# https://stackoverflow.com/a/12546288/6662425 "how to activate that flag" 
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 add_subdirectory(googletest)
 
 
