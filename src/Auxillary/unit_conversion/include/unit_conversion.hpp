@@ -58,9 +58,9 @@ namespace Aux::unit {
      */
     json get_schema() const;
     /**
-     * @brief Converts a json measurement (described by the get_schema json schema)
-     * to si units
-     * 
+     * @brief Converts a json measurement (described by the get_schema json
+     * schema) to si units
+     *
      * @param  json_measurement e.g. {"value": 123, "unit": "mm"}
      * @return double (value in si units) e.g. 0.123
      */
