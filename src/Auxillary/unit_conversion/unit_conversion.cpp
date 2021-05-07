@@ -45,12 +45,10 @@ namespace Aux::unit {
 
   const Measure temperature{
       "temperature",
-      {{"K", Conversion([](double x) { return x; })},
-       {"C", Conversion([](double x) { return x + 273.15; })},
-       {"Celsius", Conversion([](double x) { return x + 273.15; })},
-       {"F", Conversion([](double x) {
-          return x * 5.0 / 9.0 + 459.67 * 5.0 / 9.0;
-        })}}};
+      {{"K", Conversion(1)},
+       {"C", Conversion(1, 273.15)},
+       {"Celsius", Conversion(1, 273.15)},
+       {"F", Conversion(5.0 / 9.0, 459.67 * 5.0 / 9.0)}}};
 
   // https://en.wikipedia.org/wiki/Metric_prefix#List_of_SI_prefixes
   const std::map<std::string, Conversion> si_prefixes{
