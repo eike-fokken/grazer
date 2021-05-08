@@ -97,7 +97,7 @@ namespace Aux::unit {
   Conversion::Conversion(double _multiplicator, double _offset) :
       multiplicator(_multiplicator), offset(_offset) {}
 
-  double Conversion::operator()(double value) {
+  double Conversion::operator()(double value) const {
     return multiplicator * value + offset;
   }
 

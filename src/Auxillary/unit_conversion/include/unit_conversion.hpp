@@ -30,7 +30,7 @@ namespace Aux::unit {
 
   public:
     Conversion(double multiplicator, double offset = 0);
-    double operator()(double value);
+    double operator()(double value) const;
   };
 
   /**
