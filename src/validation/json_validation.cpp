@@ -46,7 +46,8 @@ void validation::validate_json(json const &data, json const &schema) {
     validator.set_root_schema(schema);
   } catch (const std::exception &e) {
     std::ostringstream o;
-    o << "Validation of schema failed, here is why: " << e.what() << "\n";
+    o << "Couldn't validate the data, because the schema itself if faulty: "
+      << e.what() << "\n";
     throw std::runtime_error(o.str());
   }
 
@@ -55,7 +56,7 @@ void validation::validate_json(json const &data, json const &schema) {
     validator.validate(data);
   } catch (const std::exception &e) {
     std::ostringstream o;
-    o << "Validation failed: \n" << e.what() << "\n";
+    o << "The data does not conform to the schema: \n" << e.what() << "\n";
     throw std::runtime_error(o.str());
   }
 
