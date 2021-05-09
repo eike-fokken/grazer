@@ -70,7 +70,7 @@ namespace Model {
       new_time = last_time + timedata.get_delta_t();
       problem.prepare_timestep(last_time, new_time, last_state, new_state);
       auto solstruct = solver.solve(
-          new_state, problem, true, last_time, new_time, last_state);
+          new_state, problem, false, last_time, new_time, last_state);
       std::cout << new_time << ": ";
       std::cout << solstruct.residual << ", ";
       std::cout << solstruct.used_iterations << std::endl;
