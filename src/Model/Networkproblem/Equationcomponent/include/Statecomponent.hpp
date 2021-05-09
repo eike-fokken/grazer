@@ -2,6 +2,12 @@
 #include "Equationcomponent.hpp"
 
 namespace Model::Networkproblem {
+
+  /// A State component owns a number of indices, namely between
+  /// #start_state_index (inclusive) and #after_state_index (exclusive), which
+  /// will be filled with results of the model equations of the component.
+  /// It is implicitely taken for granted that the set of owned indices of all
+  /// objects starts at 0 and is consecutive.
   class Statecomponent : public Equationcomponent {
   public:
     /// \brief Returns number of state variables needed by this component.
