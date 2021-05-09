@@ -82,3 +82,75 @@ TEST(unitParser, mostUsedUnits) {
       1.0 // Hz
   );
 }
+
+/**
+ * @brief Tests Validation in json parsing and asserts that the json validation
+ * error provides certain hints
+ *
+ * @param malformed_data json data to be parsed but malformed causing a json
+ * validation error
+ * @param required_hint string with the required error hints
+ *
+ */
+void test_validation_in_parsing(json malformed_data, std::string required_hit);
+
+/**
+ * @brief finds required_hint in error_message and returns true if found
+ *
+ * @param error_message
+ * @param required_hint
+ * @return true
+ * @return false
+ */
+bool error_msg_includes(std::string error_message, std::string required_hint);
+
+TEST(unitParser, jsonValidation) {
+  json wrong_name = R"({
+    "not_value": 10,
+    "unit": "m"
+  })"_json;
+  EXPECT_THROW(
+      test_validation_in_parsing(
+          wrong_name, "required property 'value' not found in object"),
+      std::runtime_error);
+  json wrong_type = R"({
+    "value": "string",
+    "unit": "m"
+  })"_json;
+  EXPECT_THROW(
+      test_validation_in_parsing(wrong_type, "unexpected instance type"),
+      std::runtime_error);
+  json additional_property = R"({
+    "value": "10",
+    "unit": "m",
+    "additionalProperty": "notAllowed"
+  })"_json;
+  EXPECT_THROW(
+      test_validation_in_parsing(additional_property, "additional property"),
+      std::runtime_error);
+  json unknown_unit = R"({
+    "value": "10",
+    "unit": "l"
+  })"_json;
+  EXPECT_THROW(
+      test_validation_in_parsing(unknown_unit, "no subschema has succeeded"),
+      std::runtime_error);
+}
+
+void test_validation_in_parsing(
+    json malformed_data, std::string required_hint) {
+  try {
+    unit::length.parse_to_si(malformed_data);
+  } catch (const std::runtime_error &e) {
+    std::string error_msg = e.what();
+    EXPECT_PRED2(
+        error_msg_includes, error_msg,
+        "The data does not conform to the schema");
+    EXPECT_PRED2(error_msg_includes, error_msg, required_hint);
+    throw;
+  }
+}
+
+bool error_msg_includes(std::string error_message, std::string required_hint) {
+  return error_message.find(required_hint) != std::string::npos;
+}
