@@ -25,6 +25,13 @@ if (BUILD_WITH_LIBCPP AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   message(STATUS "Will compile with libc++.")
 endif()
 enable_testing()
+
+
+# https://github.com/google/googletest/blob/master/googletest/README.md#visual-studio-dynamic-vs-static-runtimes
+# https://stackoverflow.com/a/12546288/6662425 "how to activate that flag"
+if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  set(gtest_force_shared_crt ON CACHE BOOL "Make gtest compile the C standard libraries as DLLs, because MSVE requires that." FORCE)
+endif()
 add_subdirectory(googletest)
 
 
