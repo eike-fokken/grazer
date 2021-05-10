@@ -3,60 +3,79 @@
 #include <sstream>
 
 namespace Aux::unit {
+
   using nlohmann::json;
-  extern const std::map<std::string, double> length_units;
-  json get_length_schema();
-
-  extern const std::map<std::string, double> area_units;
-  extern const std::map<std::string, double> volume_units;
-  extern const std::map<std::string, double> pressure_units;
-  extern const std::map<std::string, double> frequency_units;
-  extern const std::map<std::string, double> force_units;
-  extern const std::map<std::string, double> power_units;
-  extern const std::map<std::string, double> mass_units;
-  extern const std::map<std::string, double> volume_flux_units;
-
-  // arbitrary lambda conversions
-  typedef std::function<double(double)> conversion;
-
-  // conversion instructions for temperature
-  extern const std::map<std::string, conversion> temperature_units;
 
   /**
-   * @brief In contrast to multiplicative conversions (e.g. feet to meter)
-   * temperature conversion is more complicated. To allow simple multiplication
-   * tables unit_conversion is overloaded to accept either a double or a lambda
-   * function.
+   * @brief Represents a Conversion of a value with one unit to the same value
+   * with a different unit
    *
-   * unit_conversion behaves like value*conv if conv is a double which covers
-   * most unit conversions.
+   * @details Examples: a conversion might be the conversion from kilometres to
+   * metres this is achieved by taking x->1000*x. Applying this conversion conv
+   * = Conversion(1000) to a number x thus results in conv(x) = 1000*x
    *
-   * unit_conversion behaves like conv(value) if conv is a lambda which allows
-   * for arbitarily complicated conversion.
+   * Conversions can constructed from multiplicators (which are interpreted as
+   * multiplicators as above) but also from multiplicator+offsets. For the
+   * conversion from fahrenheit to celcius for example one would need to supply
+   * both a multiplicator and an offset.
    *
-   * @param value of the current unit
-   * @param conv multiplicator to get to the si-unit
-   * @return double si-unit
+   * So the Conversion class allows the grouping of different conversion
+   * methods only differening by the constructor they use.
+   *
    */
-  double unit_conversion(double value, double conv);
+  class Conversion {
+    const double multiplicator;
+    const double offset;
+
+  public:
+    Conversion(double multiplicator, double offset = 0);
+    double operator()(double value) const;
+  };
 
   /**
-   * @brief In contrast to multiplicative conversions (e.g. feet to meter)
-   * temperature conversion is more complicated. To allow simple multiplication
-   * tables unit_conversion is overloaded to accept either a double or a lambda
-   * function.
+   * @brief Represents a measue (e.g. length). One can access its name, parse
+   * json measurements to si units and get the json schema for such json
+   * measurements.
    *
-   * unit_conversion behaves like value*conv if conv is a double which covers
-   * most unit conversions.
-   *
-   * unit_conversion behaves like conv(value) if conv is a lambda which allows
-   * for arbitarily complicated conversion.
-   *
-   * @param value value which might have an arbitrary unit
-   * @param conv lambda function which returns the si-unit
-   * @return double si-unit
    */
-  double unit_conversion(double value, conversion conv);
+  class Measure {
+  public:
+    const std::string name;
+
+  private:
+    const std::map<std::string, Conversion> conversion_map;
+
+  public:
+    Measure(
+        const std::string name,
+        const std::map<std::string, Conversion> conversion_map);
+    /**
+     * @brief Get the schema for a Json describing this Measurement
+     *
+     * @return json similar to {"value": {"type": "number"}, "unit": {"type":
+     * "string", "pattern": <some_regex>}}
+     */
+    json get_schema() const;
+    /**
+     * @brief Converts a json measurement (described by the get_schema json
+     * schema) to si units
+     *
+     * @param  json_measurement e.g. {"value": 123, "unit": "mm"}
+     * @return double (value in si units) e.g. 0.123
+     */
+    double parse_to_si(json const json_measurement) const;
+  };
+
+  extern const Measure length;
+  extern const Measure area;
+  extern const Measure volume;
+  extern const Measure pressure;
+  extern const Measure frequency;
+  extern const Measure force;
+  extern const Measure power;
+  extern const Measure mass;
+  extern const Measure volume_flux;
+  extern const Measure temperature;
 
   /**
    * @brief parses a string which is the prefix of a unit (e.g. "500 k" of "500
@@ -70,7 +89,7 @@ namespace Aux::unit {
    */
   double parse_prefix(
       std::string const &prefix,
-      std::map<std::string, double> const &prefix_map);
+      std::map<std::string, Conversion> const &prefix_map);
 
   /**
    * @brief parses a string which is the prefix of a unit (e.g. "500 k" of "500
@@ -82,38 +101,9 @@ namespace Aux::unit {
    */
   double parse_prefix_si(std::string const &prefix);
 
-  template <typename T>
-  const std::tuple<std::string, T> parse_unit(
-      std::string const &unit, std::map<std::string, T> const &unit_map) {
-    auto unit_size = unit.size();
-    for (auto const &[str_unit, val] : unit_map) {
-      auto symb_size = str_unit.size();
-      if (unit_size >= symb_size
-          and unit.compare(unit_size - symb_size, symb_size, str_unit)
-                  == 0) { // match
-        return std::tuple<std::string, T>(
-            unit.substr(0, unit.size() - symb_size), val);
-      }
-    }
-    std::ostringstream o;
-    o << "Could not find the unit of " << unit << " in the unit_map "
-      << "\n";
-    throw std::runtime_error(o.str());
-  }
+  const std::tuple<std::string, Conversion> parse_unit(
+      std::string const &unit,
+      std::map<std::string, Conversion> const &unit_map);
 
-  template <typename T>
-  double
-  parse_to_si(json const &unit_json, std::map<std::string, T> const &unit_map) {
-    std::string unit = unit_json["unit"].get<std::string>();
-
-    auto [prefix, conv] = parse_unit<T>(unit, unit_map);
-    return unit_conversion(
-        unit_json["value"].get<double>() * parse_prefix_si(prefix), conv);
-  }
-
-  extern template double parse_to_si<conversion>(
-      json const &unit_json, std::map<std::string, conversion> const &unit_map);
-
-  extern template double parse_to_si<double>(
-      json const &unit_json, std::map<std::string, double> const &unit_map);
+  std::string re_capture_from_map(std::map<std::string, Conversion> map);
 } // namespace Aux::unit
