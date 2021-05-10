@@ -1,8 +1,7 @@
 #pragma once
 #include "Edge.hpp"
-#include <Gasedge.hpp>
-#include <Implicitboxscheme.hpp>
-#include <Isothermaleulerequation.hpp>
+#include "Gasedge.hpp"
+#include "Implicitboxscheme.hpp"
 
 namespace Balancelaw {
   class Pipe_Balancelaw;
@@ -19,6 +18,8 @@ namespace Model::Networkproblem::Gas {
     Pipe(
         nlohmann::json const &topology,
         std::vector<std::unique_ptr<Network::Node>> &nodes);
+
+    ~Pipe() override;
 
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,

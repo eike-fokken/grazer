@@ -8,7 +8,6 @@
 #include "Isothermaleulerequation.hpp"
 #include "Mathfunctions.hpp"
 #include "Matrixhandler.hpp"
-#include "Pipe_Balancelaw.hpp"
 #include "make_schema.hpp"
 #include "unit_conversion.hpp"
 #include <Eigen/Dense>
@@ -56,6 +55,8 @@ namespace Model::Networkproblem::Gas {
           unit::length.parse_to_si(topology["length"])
           / (number_of_points - 1)),
       bl{Balancelaw::make_pipe_balancelaw(topology["balancelaw"])} {}
+
+  Pipe::~Pipe() {}
 
   void Pipe::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time, double new_time,
