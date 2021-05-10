@@ -22,12 +22,14 @@ namespace Model::Networkproblem::Gas {
   std::string Pipe::get_type() { return "Pipe"; }
   std::string Pipe::get_gas_type() const { return get_type(); }
 
+  namespace unit = Aux::unit;
+
   nlohmann::json Pipe::get_schema() {
     nlohmann::json schema = Network::Edge::get_schema();
 
-    Aux::schema::add_required(schema, "length", Aux::schema::type::length());
-    Aux::schema::add_required(schema, "diameter", Aux::schema::type::length());
-    Aux::schema::add_required(schema, "roughness", Aux::schema::type::length());
+    Aux::schema::add_required(schema, "length", unit::length.get_schema());
+    Aux::schema::add_required(schema, "diameter", unit::length.get_schema());
+    Aux::schema::add_required(schema, "roughness", unit::length.get_schema());
 
     Aux::schema::add_required(
         schema, "desired_delta_x", Aux::schema::type::number());
@@ -39,18 +41,15 @@ namespace Model::Networkproblem::Gas {
       nlohmann::json const &topology,
       std::vector<std::unique_ptr<Network::Node>> &nodes) :
       Network::Edge(topology, nodes),
-      diameter(Aux::unit::parse_to_si(
-          topology["diameter"], Aux::unit::length_units)),
-      roughness(Aux::unit::parse_to_si(
-          topology["roughness"], Aux::unit::length_units)),
+      diameter(unit::length.parse_to_si(topology["diameter"])),
+      roughness(unit::length.parse_to_si(topology["roughness"])),
       number_of_points(
           static_cast<int>(std::ceil(
-              Aux::unit::parse_to_si(
-                  topology["length"], Aux::unit::length_units)
+              unit::length.parse_to_si(topology["length"])
               / topology["desired_delta_x"].get<double>()))
           + 1),
       Delta_x(
-          Aux::unit::parse_to_si(topology["length"], Aux::unit::length_units)
+          unit::length.parse_to_si(topology["length"])
           / (number_of_points - 1)) {}
 
   void Pipe::evaluate(
