@@ -4,6 +4,10 @@
 #include <Implicitboxscheme.hpp>
 #include <Isothermaleulerequation.hpp>
 
+namespace Balancelaw {
+  class Pipe_Balancelaw;
+}
+
 namespace Model::Networkproblem::Gas {
 
   class Pipe final : public Gasedge, public Network::Edge {
@@ -53,7 +57,7 @@ namespace Model::Networkproblem::Gas {
     int const number_of_points;
     double const Delta_x;
 
-    Balancelaw::Isothermaleulerequation const bl;
+    std::unique_ptr<Balancelaw::Pipe_Balancelaw const> bl;
     Model::Scheme::Implicitboxscheme const scheme;
   };
 

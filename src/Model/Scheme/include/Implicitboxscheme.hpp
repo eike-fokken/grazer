@@ -2,8 +2,8 @@
 #include <Eigen/Sparse>
 
 namespace Model::Balancelaw {
-  class Isothermaleulerequation;
-}
+  class Pipe_Balancelaw;
+} // namespace Model::Balancelaw
 
 namespace Model::Scheme {
 
@@ -18,7 +18,7 @@ namespace Model::Scheme {
         Eigen::Ref<Eigen::Vector2d const> last_right,
         Eigen::Ref<Eigen::Vector2d const> new_left,
         Eigen::Ref<Eigen::Vector2d const> new_right,
-        Model::Balancelaw::Isothermaleulerequation const &bl, double diameter,
+        Model::Balancelaw::Pipe_Balancelaw const &bl, double diameter,
         double roughness);
 
     /// The derivative with respect to \code{.cpp}last_left\endcode
@@ -28,7 +28,7 @@ namespace Model::Scheme {
         Eigen::Ref<Eigen::Vector2d const> last_right,
         Eigen::Ref<Eigen::Vector2d const> new_left,
         Eigen::Ref<Eigen::Vector2d const> new_right,
-        Model::Balancelaw::Isothermaleulerequation const &bl, double diameter,
+        Model::Balancelaw::Pipe_Balancelaw const &bl, double diameter,
         double roughness);
 
     /// \brief The derivative with respect to \code{.cpp}last_right\endcode
@@ -38,7 +38,7 @@ namespace Model::Scheme {
         Eigen::Ref<Eigen::Vector2d const> last_right,
         Eigen::Ref<Eigen::Vector2d const> new_left,
         Eigen::Ref<Eigen::Vector2d const> new_right,
-        Model::Balancelaw::Isothermaleulerequation const &bl, double diameter,
+        Model::Balancelaw::Pipe_Balancelaw const &bl, double diameter,
         double roughness);
   };
 } // namespace Model::Scheme

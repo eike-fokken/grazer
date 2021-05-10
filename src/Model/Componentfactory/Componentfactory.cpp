@@ -54,7 +54,7 @@ namespace Model::Componentfactory {
     for (auto const &[name, component] : this->node_type_map) {
       auto component_schema = Aux::schema::relax_schema(
           component->get_schema(),
-          {"boundary_values", "control_values", "desired_delta_x",
+          {"boundary_values", "control_values", "desired_delta_x", "balancelaw",
            "number_of_stochastic_steps", "theta_P", "sigma_P", "theta_Q",
            "sigma_Q"});
       node_schemas[name] = Aux::schema::make_list_schema_of(component_schema);

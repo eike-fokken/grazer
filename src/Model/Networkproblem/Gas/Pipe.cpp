@@ -1,4 +1,5 @@
 #include "Pipe.hpp"
+#include "Balancelaw_factory.hpp"
 #include "Coloroutput.hpp"
 #include "Edge.hpp"
 #include "Get_base_component.hpp"
@@ -7,13 +8,14 @@
 #include "Isothermaleulerequation.hpp"
 #include "Mathfunctions.hpp"
 #include "Matrixhandler.hpp"
+#include "Pipe_Balancelaw.hpp"
 #include "make_schema.hpp"
 #include "unit_conversion.hpp"
-
 #include <Eigen/Dense>
 #include <cmath>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <type_traits>
 
@@ -33,6 +35,8 @@ namespace Model::Networkproblem::Gas {
 
     Aux::schema::add_required(
         schema, "desired_delta_x", Aux::schema::type::number());
+    Aux::schema::add_required(
+        schema, "balancelaw", Aux::schema::type::string());
 
     return schema;
   }
@@ -50,7 +54,8 @@ namespace Model::Networkproblem::Gas {
           + 1),
       Delta_x(
           unit::length.parse_to_si(topology["length"])
-          / (number_of_points - 1)) {}
+          / (number_of_points - 1)),
+      bl{Balancelaw::make_pipe_balancelaw(topology["balancelaw"])} {}
 
   void Pipe::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time, double new_time,
@@ -68,7 +73,7 @@ namespace Model::Networkproblem::Gas {
 
       scheme.evaluate_point(
           rootvalue_segment, last_time, new_time, Delta_x, last_left,
-          last_right, new_left, new_right, bl, diameter, roughness);
+          last_right, new_left, new_right, *bl, diameter, roughness);
     }
   }
 
@@ -86,7 +91,7 @@ namespace Model::Networkproblem::Gas {
 
       Eigen::Matrix2d current_derivative_left = scheme.devaluate_point_dleft(
           last_time, new_time, Delta_x, last_left, last_right, new_left,
-          new_right, bl, diameter, roughness);
+          new_right, *bl, diameter, roughness);
 
       jacobianhandler->set_coefficient(i, i - 1, current_derivative_left(0, 0));
       jacobianhandler->set_coefficient(i, i, current_derivative_left(0, 1));
@@ -96,7 +101,7 @@ namespace Model::Networkproblem::Gas {
 
       Eigen::Matrix2d current_derivative_right = scheme.devaluate_point_dright(
           last_time, new_time, Delta_x, last_left, last_right, new_left,
-          new_right, bl, diameter, roughness);
+          new_right, *bl, diameter, roughness);
 
       jacobianhandler->set_coefficient(
           i, i + 1, current_derivative_right(0, 0));
@@ -127,7 +132,7 @@ namespace Model::Networkproblem::Gas {
       Eigen::Vector2d current_state
           = state.segment<2>(get_start_state_index() + 2 * i);
       double current_rho = current_state[0];
-      double current_p_bar = bl.p_bar_from_p_pascal(bl.p(current_rho));
+      double current_p_bar = bl->p_bar_from_p_pascal(bl->p(current_rho));
       double current_q = current_state[1];
       double x = i * Delta_x;
       nlohmann::json pressure_json;
@@ -150,7 +155,7 @@ namespace Model::Networkproblem::Gas {
     for (int i = 0; i != number_of_points; ++i) {
       try {
         new_state.segment<2>(get_start_state_index() + 2 * i)
-            = bl.state(bl.p_qvol_from_p_qvol_bar(initialvalues(i * Delta_x)));
+            = bl->state(bl->p_qvol_from_p_qvol_bar(initialvalues(i * Delta_x)));
       } catch (...) {
         std::cout << "could not set initial value of pipe " << get_id() << ".\n"
                   << "Requested point was " << i * Delta_x << ". \n"
@@ -165,8 +170,8 @@ namespace Model::Networkproblem::Gas {
   Eigen::Vector2d Pipe::get_boundary_p_qvol_bar(
       int direction, Eigen::Ref<Eigen::VectorXd const> state) const {
     Eigen::Vector2d b_state = get_boundary_state(direction, state);
-    Eigen::Vector2d p_qvol = bl.p_qvol(b_state);
-    return bl.p_qvol_bar_from_p_qvol(p_qvol);
+    Eigen::Vector2d p_qvol = bl->p_qvol(b_state);
+    return bl->p_qvol_bar_from_p_qvol(p_qvol);
   }
 
   void Pipe::dboundary_p_qvol_dstate(
@@ -175,11 +180,11 @@ namespace Model::Networkproblem::Gas {
       Eigen::Ref<Eigen::VectorXd const> state) const {
     Eigen::Vector2d boundary_state = get_boundary_state(direction, state);
 
-    Eigen::Vector2d p_qvol = bl.p_qvol(boundary_state);
+    Eigen::Vector2d p_qvol = bl->p_qvol(boundary_state);
 
-    Eigen::Matrix2d dp_qvol_dstate = bl.dp_qvol_dstate(boundary_state);
+    Eigen::Matrix2d dp_qvol_dstate = bl->dp_qvol_dstate(boundary_state);
     Eigen::Matrix2d dpqvolbar_dpqvol
-        = bl.dp_qvol_bar_from_p_qvold_p_qvol(p_qvol);
+        = bl->dp_qvol_bar_from_p_qvold_p_qvol(p_qvol);
 
     Eigen::Matrix2d dpqvol_bar_dstate = dpqvolbar_dpqvol * dp_qvol_dstate;
 

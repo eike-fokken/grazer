@@ -30,7 +30,7 @@ namespace Model::Balancelaw {
   }
 
   Eigen::Vector2d Isothermaleulerequation::flux(
-      Eigen::Ref<Eigen::Vector2d const> state, double diameter) {
+      Eigen::Ref<Eigen::Vector2d const> state, double diameter) const {
 
     double rho = state[0];
     double q = state[1];
@@ -44,7 +44,7 @@ namespace Model::Balancelaw {
   }
 
   Eigen::Matrix2d Isothermaleulerequation::dflux_dstate(
-      Eigen::Ref<Eigen::Vector2d const> state, double diameter) {
+      Eigen::Ref<Eigen::Vector2d const> state, double diameter) const {
 
     double rho = state[0];
     double q = state[1];
@@ -61,7 +61,7 @@ namespace Model::Balancelaw {
 
   Eigen::Vector2d Isothermaleulerequation::source(
       Eigen::Ref<Eigen::Vector2d const> state, double diameter,
-      double roughness) {
+      double roughness) const {
 
     double rho = state[0];
     double q = state[1];
@@ -83,7 +83,7 @@ namespace Model::Balancelaw {
 
   Eigen::Matrix2d Isothermaleulerequation::dsource_dstate(
       Eigen::Ref<Eigen::Vector2d const> state, double diameter,
-      double roughness) {
+      double roughness) const {
     double rho = state[0];
     double q = state[1];
 
@@ -115,8 +115,8 @@ namespace Model::Balancelaw {
     return dsource;
   }
 
-  Eigen::Vector2d
-  Isothermaleulerequation::p_qvol(Eigen::Ref<Eigen::Vector2d const> state) {
+  Eigen::Vector2d Isothermaleulerequation::p_qvol(
+      Eigen::Ref<Eigen::Vector2d const> state) const {
     double rho = state[0];
     double q = state[1];
 
@@ -129,7 +129,7 @@ namespace Model::Balancelaw {
   }
 
   Eigen::Matrix2d Isothermaleulerequation::dp_qvol_dstate(
-      Eigen::Ref<Eigen::Vector2d const> state) {
+      Eigen::Ref<Eigen::Vector2d const> state) const {
     double rho = state[0];
 
     Eigen::Matrix2d dp_qvol;
@@ -140,8 +140,8 @@ namespace Model::Balancelaw {
     return dp_qvol;
   }
 
-  Eigen::Vector2d
-  Isothermaleulerequation::state(Eigen::Ref<Eigen::Vector2d const> p_qvol) {
+  Eigen::Vector2d Isothermaleulerequation::state(
+      Eigen::Ref<Eigen::Vector2d const> p_qvol) const {
 
     double p = p_qvol[0];
     double q = p_qvol[1];
@@ -152,7 +152,7 @@ namespace Model::Balancelaw {
   }
 
   Eigen::Vector2d Isothermaleulerequation::p_qvol_from_p_qvol_bar(
-      Eigen::Ref<Eigen::Vector2d const> p_qvol_bar) {
+      Eigen::Ref<Eigen::Vector2d const> p_qvol_bar) const {
     double p_bar = p_qvol_bar[0];
     double q = p_qvol_bar[1];
     Eigen::Vector2d p_qvol;
@@ -161,20 +161,20 @@ namespace Model::Balancelaw {
     return p_qvol;
   }
 
-  double Isothermaleulerequation::p_pascal_from_p_bar(double p) {
+  double Isothermaleulerequation::p_pascal_from_p_bar(double p) const {
     return p * bar;
   }
 
-  double Isothermaleulerequation::p_bar_from_p_pascal(double p) {
+  double Isothermaleulerequation::p_bar_from_p_pascal(double p) const {
     return p / bar;
   }
 
-  double Isothermaleulerequation::dp_bar_from_p_pascal_dp_pascal(double) {
+  double Isothermaleulerequation::dp_bar_from_p_pascal_dp_pascal(double) const {
     return 1.0 / bar;
   }
 
   Eigen::Vector2d Isothermaleulerequation::p_qvol_bar_from_p_qvol(
-      Eigen::Ref<Eigen::Vector2d const> p_qvol) {
+      Eigen::Ref<Eigen::Vector2d const> p_qvol) const {
     double p = p_qvol[0];
     double q = p_qvol[1];
     Eigen::Vector2d p_qvol_bar;
@@ -184,7 +184,7 @@ namespace Model::Balancelaw {
   }
 
   Eigen::Matrix2d Isothermaleulerequation::dp_qvol_bar_from_p_qvold_p_qvol(
-      Eigen::Ref<Eigen::Vector2d const> p_qvol) {
+      Eigen::Ref<Eigen::Vector2d const> p_qvol) const {
     double p_pascal = p_qvol[0];
     Eigen::Matrix2d dp_qvol;
     dp_qvol(0, 0) = dp_bar_from_p_pascal_dp_pascal(p_pascal);
@@ -194,19 +194,19 @@ namespace Model::Balancelaw {
     return dp_qvol;
   }
 
-  double Isothermaleulerequation::p(double rho) {
+  double Isothermaleulerequation::p(double rho) const {
     double p;
     p = c_vac_squared * rho / (1 - alpha * c_vac_squared * rho);
     return p;
   }
-  double Isothermaleulerequation::dp_drho(double rho) {
+  double Isothermaleulerequation::dp_drho(double rho) const {
     double dp;
     double D = (1 - alpha * c_vac_squared * rho);
     dp = c_vac_squared / (D * D);
     return dp;
   }
 
-  double Isothermaleulerequation::rho(double p) {
+  double Isothermaleulerequation::rho(double p) const {
     double rho;
     rho = p / (c_vac_squared * (1 + alpha * p));
     return rho;

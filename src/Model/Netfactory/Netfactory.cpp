@@ -245,21 +245,25 @@ namespace Model::Networkproblem {
 
     // This list way well become longer!
     auto pde_components = {"Pipe"};
-    if (network_json.contains("desired_delta_x")) {
-      for (auto const &type : pde_components) {
-        if (not network_json["topology_json"]["connections"].contains(type)) {
-          continue;
-        }
-        for (auto &pipe : network_json["topology_json"]["connections"][type]) {
-          if (not pipe.contains("desired_delta_x")) {
-            pipe["desired_delta_x"] = network_json["desired_delta_x"];
-          } else {
-            std::cout << "Object with id " << pipe["id"]
-                      << " has its own value of desired_delta_x." << std::endl;
+    for (auto key : {"desired_delta_x", "balancelaw"}) {
+      if (network_json.contains(key)) {
+        for (auto const &type : pde_components) {
+          if (not network_json["topology_json"]["connections"].contains(type)) {
+            continue;
+          }
+          for (auto &pipe :
+               network_json["topology_json"]["connections"][type]) {
+            if (not pipe.contains(key)) {
+              pipe[key] = network_json[key];
+            } else {
+              std::cout << "Object with id " << pipe["id"]
+                        << " has its own value of " << key << std::endl;
+            }
           }
         }
       }
     }
+
     // assign stochastic variables to StochasticPQnodes.
     if (network_json["topology_json"]["nodes"].contains("StochasticPQnode")) {
       if (network_json.contains("StochasticPQnode_data")) {

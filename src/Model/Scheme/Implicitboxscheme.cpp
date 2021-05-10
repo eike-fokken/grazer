@@ -1,3 +1,4 @@
+#include "Pipe_Balancelaw.hpp"
 #include <Implicitboxscheme.hpp>
 #include <Isothermaleulerequation.hpp>
 
@@ -10,7 +11,7 @@ namespace Model::Scheme {
       Eigen::Ref<Eigen::Vector2d const> last_right,
       Eigen::Ref<Eigen::Vector2d const> new_left,
       Eigen::Ref<Eigen::Vector2d const> new_right,
-      Model::Balancelaw::Isothermaleulerequation const &bl, double diameter,
+      Model::Balancelaw::Pipe_Balancelaw const &bl, double diameter,
       double roughness) {
 
     double Delta_t = new_time - last_time;
@@ -29,7 +30,7 @@ namespace Model::Scheme {
       Eigen::Ref<Eigen::Vector2d const>, Eigen::Ref<Eigen::Vector2d const>,
       Eigen::Ref<Eigen::Vector2d const> new_left,
       Eigen::Ref<Eigen::Vector2d const>,
-      Model::Balancelaw::Isothermaleulerequation const &bl, double diameter,
+      Model::Balancelaw::Pipe_Balancelaw const &bl, double diameter,
       double roughness) {
     double Delta_t = new_time - last_time;
     Eigen::Matrix2d jac;
@@ -46,7 +47,7 @@ namespace Model::Scheme {
       Eigen::Ref<Eigen::Vector2d const>, Eigen::Ref<Eigen::Vector2d const>,
       Eigen::Ref<Eigen::Vector2d const>,
       Eigen::Ref<Eigen::Vector2d const> new_right,
-      Model::Balancelaw::Isothermaleulerequation const &bl, double diameter,
+      Model::Balancelaw::Pipe_Balancelaw const &bl, double diameter,
       double roughness) {
     double Delta_t = new_time - last_time;
     Eigen::Matrix2d jac;
