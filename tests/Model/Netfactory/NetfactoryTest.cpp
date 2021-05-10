@@ -113,39 +113,70 @@ TEST(build_node_vectorTEST, node_type_not_known) {
   auto &nodetypemap = power_factory.node_type_map;
 
 
-  nlohmann::json node_topology2;
-
-  node_topology2 = {
-      {"Vphinode",
-       {{{"id", "node_3"},
-         {"x", 10.000000}},
-        {{"id", "node_1"},
-         {"x", 13.000000}}}},
-      {"PVnode",
-       {{{"id", "node_6"},
-         {"x", 10.000000}},
-        {{"id", "node_7"},
-         {"x", 13.000000}}}},
-      {"PQnode",
-       {{{"id", "node_6"},
-         {"x", 10.000000}},
-        {{"id", "node_7"},
-         {"x", 13.000000}}}},
-      {"StochasticPQnode",
-       {{{"id", "node_6"},
-         {"x", 10.000000}},
-        {{"id", "node_7"},
-         {"x", 13.000000}}}}
-  };
-
   nlohmann::json node_topology;
-  node_topology
-    = {{"Vphinode","ignored"},
-       {"PVnode","ignored"},
-       {"PQnode","ignored"},
-       {"StochasticPQnode","ignored"}
-  };
 
-  // EXPECT_THROW(Model::Networkproblem::build_node_vector(node_topology, nodetypemap),std::runtime_error);
-  Model::Networkproblem::build_node_vector(node_topology2, nodetypemap);
+  node_topology
+      = {{"Vphinode",
+          {{{"B", -25.2023789002},
+            {"G", 1.7238407171},
+            {"id", "N201"},
+            {"boundary_values",
+             {{"id","N201"},
+              {"data",{{{"time",0},{"values",{1.01,-0.203}}},{{"time",0},{"values",{1.01,-0.203}}}}}}}},
+           {{"B", -28.2023789002},
+            {"G", 1.7238407171},
+            {"id", "N202"},
+            {"boundary_values",
+             {{"id","N202"},
+              {"data",{{{"time",0},{"values",{1.01,-0.203}}},{{"time",0},{"values",{1.01,-0.203}}}}}}}}}},
+         {"PVnode",
+          {{{"B", -29.2023789002},
+            {"G", 1.7238407171},
+            {"id", "N203"},
+            {"boundary_values",
+             {{"id","N203"},
+              {"data",{{{"time",0},{"values",{1.01,-0.203}}},{{"time",0},{"values",{1.01,-0.203}}}}}}}},
+           {{"B", -26.2023789002},
+            {"G", 1.7238407171},
+            {"id", "N204"},
+            {"boundary_values",
+             {{"id","N204"},
+              {"data",{{{"time",0},{"values",{1.01,-0.203}}},{{"time",0},{"values",{1.01,-0.203}}}}}}}}}},
+         {"PQnode",
+          {{{"B", -16.2023789002},
+            {"G", 1.7238407171},
+            {"id", "N205"},
+            {"boundary_values",
+             {{"id","N205"},
+              {"data",{{{"time",0},{"values",{1.01,-0.203}}},{{"time",0},{"values",{1.01,-0.203}}}}}}}},
+           {{"B", -17.2023789002},
+            {"G", 1.7238407171},
+            {"id", "N206"},
+            {"boundary_values",
+             {{"id","N206"},
+              {"data",{{{"time",0},{"values",{1.01,-0.203}}},{{"time",0},{"values",{1.01,-0.203}}}}}}}}}},
+         {"StochasticPQnode",
+          {{{"B", -26.2023789002},
+            {"G", 1.7238407171},
+            {"id", "N207"},
+            {"sigma_P",0.5},
+            {"sigma_Q",0.5},
+            {"theta_P",0.5},
+            {"theta_Q",0.5},
+            {"boundary_values",
+             {{"id","N207"},
+              {"data",{{{"time",0},{"values",{1.01,-0.203}}},{{"time",0},{"values",{1.01,-0.203}}}}}}}},
+           {{"B", -26.2023789002},
+            {"G", 1.7238407171},
+            {"id", "N208"},
+            {"sigma_P",0.5},
+            {"sigma_Q",0.5},
+            {"theta_P",0.5},
+            {"theta_Q",0.5},
+            {"boundary_values",
+             {{"id","N208"},
+              {"data",{{{"time",0},{"values",{1.01,-0.203}}},{{"time",0},{"values",{1.01,-0.203}}}}}}}}}}};
+
+  EXPECT_THROW(Model::Networkproblem::build_node_vector(node_topology, nodetypemap),std::runtime_error);
+  Model::Networkproblem::build_node_vector(node_topology, nodetypemap);
 }
