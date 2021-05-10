@@ -265,31 +265,26 @@ namespace Model::Networkproblem {
     }
 
     // assign stochastic variables to StochasticPQnodes.
-    if (network_json["topology_json"]["nodes"].contains("StochasticPQnode")) {
-      if (network_json.contains("StochasticPQnode_data")) {
-        for (auto &stochpq_node :
-             network_json["topology_json"]["nodes"]["StochasticPQnode"]) {
-          if (not(stochpq_node.contains("theta_P")
-                  and stochpq_node.contains("sigma_P")
-                  and stochpq_node.contains("theta_Q")
-                  and stochpq_node.contains("sigma_Q")
-                  and stochpq_node.contains("number_of_stochastic_steps"))) {
-            stochpq_node["theta_P"]
-                = network_json["StochasticPQnode_data"]["theta_P"];
-            stochpq_node["sigma_P"]
-                = network_json["StochasticPQnode_data"]["sigma_P"];
-            stochpq_node["theta_Q"]
-                = network_json["StochasticPQnode_data"]["theta_Q"];
-            stochpq_node["sigma_Q"]
-                = network_json["StochasticPQnode_data"]["sigma_Q"];
-            stochpq_node["number_of_stochastic_steps"]
-                = network_json["StochasticPQnode_data"]
-                              ["number_of_stochastic_steps"];
+    if (network_json["topology_json"]["nodes"].contains("StochasticPQnode")
+        and network_json.contains("StochasticPQnode_data")) {
+      for (auto &stochpq_node :
+           network_json["topology_json"]["nodes"]["StochasticPQnode"]) {
+        if (not(stochpq_node.contains("theta_P")
+                and stochpq_node.contains("sigma_P")
+                and stochpq_node.contains("theta_Q")
+                and stochpq_node.contains("sigma_Q")
+                and stochpq_node.contains("number_of_stochastic_steps"))) {
+          std::array values{
+              "theta_P", "sigma_P", "theta_Q", "sigma_Q",
+              "number_of_stocastic_steps"};
+          for (auto const &value : values) {
+            stochpq_node[value] = network_json["StochasticPQnode_data"][value];
           }
         }
       }
     }
   }
+
   std::unique_ptr<Network::Net> build_net(
       nlohmann::json &networkproblem_json,
       Componentfactory::Componentfactory const &factory) {
