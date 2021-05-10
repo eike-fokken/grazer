@@ -67,6 +67,9 @@ namespace Model::Networkproblem::Gaspowerconnection {
     if (is_gas_driven(new_time)) {
       jacobianhandler->set_coefficient(
           powerendnode->get_start_state_index(), p_index, 1.0);
+    } else {
+      jacobianhandler->set_coefficient(
+          powerendnode->get_start_state_index(), p_index, 0.0);
     }
   }
 
