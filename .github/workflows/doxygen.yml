@@ -41,7 +41,7 @@ jobs:
       run: cmake --build . --config $BUILD_TYPE --target docs --parallel 10
     
     - name: Upload Doku to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@4.1.0
+      uses: JamesIves/github-pages-deploy-action@4.1.2
       with:
         branch: gh-pages
         folder: build/docs/html
