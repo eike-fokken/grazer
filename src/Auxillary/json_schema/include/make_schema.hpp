@@ -38,7 +38,7 @@ namespace Aux::schema {
    * @param contains_interpol_point_schemas Json schemas describing properties
    * of interpolation points which at least one of the interpolation points
    * have to satisfy. (e.g. {"minimum": 0} means that at least one of the
-   * interpolation points has to be larger 0)
+   * interpolation points has to be non-negative)
    * @return json
    */
   json make_initial_schema(
