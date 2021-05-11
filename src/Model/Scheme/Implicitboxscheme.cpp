@@ -11,17 +11,12 @@ namespace Model::Scheme {
       Eigen::Ref<Eigen::Vector2d const> last_right,
       Eigen::Ref<Eigen::Vector2d const> new_left,
       Eigen::Ref<Eigen::Vector2d const> new_right,
-      Model::Balancelaw::Pipe_Balancelaw const &bl, double diameter,
-      double roughness) {
+      Model::Balancelaw::Pipe_Balancelaw const &bl) {
 
     double Delta_t = new_time - last_time;
-    result
-        = 0.5 * (new_left + new_right) - 0.5 * (last_left + last_right)
-          - Delta_t / Delta_x
-                * (bl.flux(new_left, diameter) - bl.flux(new_right, diameter))
-          - 0.5 * Delta_t
-                * (bl.source(new_right, diameter, roughness)
-                   + bl.source(new_left, diameter, roughness));
+    result = 0.5 * (new_left + new_right) - 0.5 * (last_left + last_right)
+             - Delta_t / Delta_x * (bl.flux(new_left) - bl.flux(new_right))
+             - 0.5 * Delta_t * (bl.source(new_right) + bl.source(new_left));
   }
 
   /// The derivative with respect to \code{.cpp}last_left\endcode
@@ -30,14 +25,13 @@ namespace Model::Scheme {
       Eigen::Ref<Eigen::Vector2d const>, Eigen::Ref<Eigen::Vector2d const>,
       Eigen::Ref<Eigen::Vector2d const> new_left,
       Eigen::Ref<Eigen::Vector2d const>,
-      Model::Balancelaw::Pipe_Balancelaw const &bl, double diameter,
-      double roughness) {
+      Model::Balancelaw::Pipe_Balancelaw const &bl) {
     double Delta_t = new_time - last_time;
     Eigen::Matrix2d jac;
     Eigen::Matrix2d id;
     id.setIdentity();
-    jac = 0.5 * id - Delta_t / Delta_x * bl.dflux_dstate(new_left, diameter)
-          - 0.5 * Delta_t * bl.dsource_dstate(new_left, diameter, roughness);
+    jac = 0.5 * id - Delta_t / Delta_x * bl.dflux_dstate(new_left)
+          - 0.5 * Delta_t * bl.dsource_dstate(new_left);
     return jac;
   }
 
@@ -47,14 +41,13 @@ namespace Model::Scheme {
       Eigen::Ref<Eigen::Vector2d const>, Eigen::Ref<Eigen::Vector2d const>,
       Eigen::Ref<Eigen::Vector2d const>,
       Eigen::Ref<Eigen::Vector2d const> new_right,
-      Model::Balancelaw::Pipe_Balancelaw const &bl, double diameter,
-      double roughness) {
+      Model::Balancelaw::Pipe_Balancelaw const &bl) {
     double Delta_t = new_time - last_time;
     Eigen::Matrix2d jac;
     Eigen::Matrix2d id;
     id.setIdentity();
-    jac = 0.5 * id + Delta_t / Delta_x * bl.dflux_dstate(new_right, diameter)
-          - 0.5 * Delta_t * bl.dsource_dstate(new_right, diameter, roughness);
+    jac = 0.5 * id + Delta_t / Delta_x * bl.dflux_dstate(new_right)
+          - 0.5 * Delta_t * bl.dsource_dstate(new_right);
     return jac;
   }
 

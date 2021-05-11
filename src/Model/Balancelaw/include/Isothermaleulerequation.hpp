@@ -1,27 +1,24 @@
 #pragma once
 #include "Pipe_Balancelaw.hpp"
 #include <Eigen/Dense>
+#include <nlohmann/json.hpp>
 
 namespace Model::Balancelaw {
 
   class Isothermaleulerequation : public Pipe_Balancelaw {
 
   public:
-    Isothermaleulerequation(){};
+    Isothermaleulerequation(nlohmann::json const &json);
 
-    Eigen::Vector2d flux(
-        Eigen::Ref<Eigen::Vector2d const> state,
-        double diameter) const override;
-    Eigen::Matrix2d dflux_dstate(
-        Eigen::Ref<Eigen::Vector2d const> state,
-        double diameter) const override;
+    Eigen::Vector2d
+    flux(Eigen::Ref<Eigen::Vector2d const> state) const override;
+    Eigen::Matrix2d
+    dflux_dstate(Eigen::Ref<Eigen::Vector2d const> state) const override;
 
-    Eigen::Vector2d source(
-        Eigen::Ref<Eigen::Vector2d const> state, double diameter,
-        double roughness) const override;
-    Eigen::Matrix2d dsource_dstate(
-        Eigen::Ref<Eigen::Vector2d const> state, double diameter,
-        double roughness) const override;
+    Eigen::Vector2d
+    source(Eigen::Ref<Eigen::Vector2d const> state) const override;
+    Eigen::Matrix2d
+    dsource_dstate(Eigen::Ref<Eigen::Vector2d const> state) const override;
 
     Eigen::Vector2d
     p_qvol(Eigen::Ref<Eigen::Vector2d const> state) const override;
@@ -79,6 +76,9 @@ namespace Model::Balancelaw {
     static constexpr double c_vac_squared{p_0 * T / (z_0 * T_0 * rho_0)};
 
   private:
+    double const diameter;
+    double const roughness;
+
     static Eigen::Vector4d get_coefficients(double diameter, double roughness);
 
     static constexpr double laminar_border{2000.0};

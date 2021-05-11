@@ -18,8 +18,7 @@ namespace Model::Scheme {
         Eigen::Ref<Eigen::Vector2d const> last_right,
         Eigen::Ref<Eigen::Vector2d const> new_left,
         Eigen::Ref<Eigen::Vector2d const> new_right,
-        Model::Balancelaw::Pipe_Balancelaw const &bl, double diameter,
-        double roughness);
+        Model::Balancelaw::Pipe_Balancelaw const &bl);
 
     /// The derivative with respect to \code{.cpp}last_left\endcode
     static Eigen::Matrix2d devaluate_point_dleft(
@@ -28,8 +27,7 @@ namespace Model::Scheme {
         Eigen::Ref<Eigen::Vector2d const> last_right,
         Eigen::Ref<Eigen::Vector2d const> new_left,
         Eigen::Ref<Eigen::Vector2d const> new_right,
-        Model::Balancelaw::Pipe_Balancelaw const &bl, double diameter,
-        double roughness);
+        Model::Balancelaw::Pipe_Balancelaw const &bl);
 
     /// \brief The derivative with respect to \code{.cpp}last_right\endcode
     static Eigen::Matrix2d devaluate_point_dright(
@@ -38,7 +36,6 @@ namespace Model::Scheme {
         Eigen::Ref<Eigen::Vector2d const> last_right,
         Eigen::Ref<Eigen::Vector2d const> new_left,
         Eigen::Ref<Eigen::Vector2d const> new_right,
-        Model::Balancelaw::Pipe_Balancelaw const &bl, double diameter,
-        double roughness);
+        Model::Balancelaw::Pipe_Balancelaw const &bl);
   };
 } // namespace Model::Scheme

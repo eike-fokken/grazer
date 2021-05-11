@@ -5,7 +5,9 @@ add_library(balancelaw STATIC
 
 target_link_libraries(balancelaw PRIVATE
 exception
-mathfunctions)
+mathfunctions
+aux_unit_conversion
+)
 
 target_include_directories(balancelaw PUBLIC
 include)

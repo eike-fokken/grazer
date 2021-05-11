@@ -44,8 +44,6 @@ namespace Model::Networkproblem::Gas {
       nlohmann::json const &topology,
       std::vector<std::unique_ptr<Network::Node>> &nodes) :
       Network::Edge(topology, nodes),
-      diameter(unit::length.parse_to_si(topology["diameter"])),
-      roughness(unit::length.parse_to_si(topology["roughness"])),
       number_of_points(
           static_cast<int>(std::ceil(
               unit::length.parse_to_si(topology["length"])
@@ -54,7 +52,7 @@ namespace Model::Networkproblem::Gas {
       Delta_x(
           unit::length.parse_to_si(topology["length"])
           / (number_of_points - 1)),
-      bl{Balancelaw::make_pipe_balancelaw(topology["balancelaw"])} {}
+      bl{Balancelaw::make_pipe_balancelaw(topology)} {}
 
   Pipe::~Pipe() {}
 
@@ -74,7 +72,7 @@ namespace Model::Networkproblem::Gas {
 
       scheme.evaluate_point(
           rootvalue_segment, last_time, new_time, Delta_x, last_left,
-          last_right, new_left, new_right, *bl, diameter, roughness);
+          last_right, new_left, new_right, *bl);
     }
   }
 
@@ -92,7 +90,7 @@ namespace Model::Networkproblem::Gas {
 
       Eigen::Matrix2d current_derivative_left = scheme.devaluate_point_dleft(
           last_time, new_time, Delta_x, last_left, last_right, new_left,
-          new_right, *bl, diameter, roughness);
+          new_right, *bl);
 
       jacobianhandler->set_coefficient(i, i - 1, current_derivative_left(0, 0));
       jacobianhandler->set_coefficient(i, i, current_derivative_left(0, 1));
@@ -102,7 +100,7 @@ namespace Model::Networkproblem::Gas {
 
       Eigen::Matrix2d current_derivative_right = scheme.devaluate_point_dright(
           last_time, new_time, Delta_x, last_left, last_right, new_left,
-          new_right, *bl, diameter, roughness);
+          new_right, *bl);
 
       jacobianhandler->set_coefficient(
           i, i + 1, current_derivative_right(0, 0));

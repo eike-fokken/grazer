@@ -6,9 +6,9 @@
 namespace Model::Balancelaw {
 
   std::unique_ptr<Pipe_Balancelaw>
-  make_pipe_balancelaw(std::string const &balancelaw) {
-    if (balancelaw == "Isothermaleulerequation") {
-      return std::make_unique<Isothermaleulerequation>();
+  make_pipe_balancelaw(nlohmann::json const &json) {
+    if (json["balancelaw"] == "Isothermaleulerequation") {
+      return std::make_unique<Isothermaleulerequation>(json);
     } else {
       gthrow({"Unknown type of Balancelaw!"});
     }

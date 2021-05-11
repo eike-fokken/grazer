@@ -10,16 +10,14 @@ namespace Model::Balancelaw {
 
     virtual ~Pipe_Balancelaw() {}
     virtual Eigen::Vector2d
-    flux(Eigen::Ref<Eigen::Vector2d const> state, double diameter) const = 0;
-    virtual Eigen::Matrix2d dflux_dstate(
-        Eigen::Ref<Eigen::Vector2d const> state, double diameter) const = 0;
+    flux(Eigen::Ref<Eigen::Vector2d const> state) const = 0;
+    virtual Eigen::Matrix2d
+    dflux_dstate(Eigen::Ref<Eigen::Vector2d const> state) const = 0;
 
-    virtual Eigen::Vector2d source(
-        Eigen::Ref<Eigen::Vector2d const> state, double diameter,
-        double roughness) const = 0;
-    virtual Eigen::Matrix2d dsource_dstate(
-        Eigen::Ref<Eigen::Vector2d const> state, double diameter,
-        double roughness) const = 0;
+    virtual Eigen::Vector2d
+    source(Eigen::Ref<Eigen::Vector2d const> state) const = 0;
+    virtual Eigen::Matrix2d
+    dsource_dstate(Eigen::Ref<Eigen::Vector2d const> state) const = 0;
 
     virtual Eigen::Vector2d
     p_qvol(Eigen::Ref<Eigen::Vector2d const> state) const = 0;

@@ -1,8 +1,13 @@
-#include <Exception.hpp>
-#include <Isothermaleulerequation.hpp>
-#include <Mathfunctions.hpp>
+#include "Isothermaleulerequation.hpp"
+#include "Exception.hpp"
+#include "Mathfunctions.hpp"
+#include "unit_conversion.hpp"
 
 namespace Model::Balancelaw {
+
+  Isothermaleulerequation::Isothermaleulerequation(nlohmann::json const &json) :
+      diameter(Aux::unit::length.parse_to_si(json["diameter"])),
+      roughness(Aux::unit::length.parse_to_si(json["roughness"])) {}
 
   Eigen::Matrix4d const Isothermaleulerequation::set_coeff_helper_matrix() {
     double a = laminar_border;
@@ -29,8 +34,8 @@ namespace Model::Balancelaw {
     return coeff_helper_matrix.lu().solve(spline_constraints);
   }
 
-  Eigen::Vector2d Isothermaleulerequation::flux(
-      Eigen::Ref<Eigen::Vector2d const> state, double diameter) const {
+  Eigen::Vector2d
+  Isothermaleulerequation::flux(Eigen::Ref<Eigen::Vector2d const> state) const {
 
     double rho = state[0];
     double q = state[1];
@@ -44,7 +49,7 @@ namespace Model::Balancelaw {
   }
 
   Eigen::Matrix2d Isothermaleulerequation::dflux_dstate(
-      Eigen::Ref<Eigen::Vector2d const> state, double diameter) const {
+      Eigen::Ref<Eigen::Vector2d const> state) const {
 
     double rho = state[0];
     double q = state[1];
@@ -60,8 +65,7 @@ namespace Model::Balancelaw {
   }
 
   Eigen::Vector2d Isothermaleulerequation::source(
-      Eigen::Ref<Eigen::Vector2d const> state, double diameter,
-      double roughness) const {
+      Eigen::Ref<Eigen::Vector2d const> state) const {
 
     double rho = state[0];
     double q = state[1];
@@ -82,8 +86,7 @@ namespace Model::Balancelaw {
   }
 
   Eigen::Matrix2d Isothermaleulerequation::dsource_dstate(
-      Eigen::Ref<Eigen::Vector2d const> state, double diameter,
-      double roughness) const {
+      Eigen::Ref<Eigen::Vector2d const> state) const {
     double rho = state[0];
     double q = state[1];
 
