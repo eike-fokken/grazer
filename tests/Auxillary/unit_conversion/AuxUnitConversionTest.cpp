@@ -145,7 +145,7 @@ void test_validation_in_parsing(
     std::string error_msg = e.what();
     EXPECT_PRED2(
         error_msg_includes, error_msg,
-        "The data does not conform to the schema");
+        "does not conform to its schema");
     EXPECT_PRED2(error_msg_includes, error_msg, required_hint);
     throw;
   }

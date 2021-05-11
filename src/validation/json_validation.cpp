@@ -59,7 +59,7 @@ void validation::validate_json(json const &data, json const &schema) {
     std::string helper;
     if (data.contains("id")) {
       o << "The json of object with id " << data["id"].get<std::string>()
-        << " doesn't conform to its schema!\n\n\n"
+        << " does not conform to its schema!\n\n\n"
         << data.dump(/*indent=*/4) << "\n";
     } else {
       o << "The current object json does not conform to its schema.\n"
