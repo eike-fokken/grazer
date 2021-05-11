@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 3.9)
 # 3.9 is needed for CheckIPOSupported and for doxygen_add_docs.
 
+include("cmake/HunterGate.cmake")
+
 project(Grazer C CXX)
 include(CheckIPOSupported)
 
