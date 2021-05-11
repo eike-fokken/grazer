@@ -5,7 +5,7 @@
 
 namespace Model::Networkproblem::Gas {
 
-  int Gasedge::get_dimension_of_pde() { return 2; }
+  int Gasedge::init_vals_per_interpol_point() { return 2; }
 
   nlohmann::json Gasedge::get_initial_schema() {
     int interpol_points = 2;
@@ -13,7 +13,7 @@ namespace Model::Networkproblem::Gas {
         = {R"({"minimum": 0, "maximum": 0})"_json,
            R"({"minimum": 1, "maximum": 1})"_json};
     return Aux::schema::make_initial_schema(
-        interpol_points, Gasedge::get_dimension_of_pde(), contains_x);
+        interpol_points, Gasedge::init_vals_per_interpol_point(), contains_x);
   }
 
   int Gasedge::give_away_start_index() const {

@@ -28,14 +28,14 @@ namespace Model::Networkproblem::Power {
     return Aux::schema::make_boundary_schema(2);
   }
 
-  int Powernode::get_dimension_of_pde() { return 4; }
+  int Powernode::init_vals_per_interpol_point() { return 4; }
 
   nlohmann::json Powernode::get_initial_schema() {
     int interpol_points = 1;
     std::vector<nlohmann::json> contains_x
         = {R"({"minimum": 0, "maximum": 0})"_json};
     return Aux::schema::make_initial_schema(
-        interpol_points, Powernode::get_dimension_of_pde(), contains_x);
+        interpol_points, Powernode::init_vals_per_interpol_point(), contains_x);
   }
 
   Powernode::Powernode(nlohmann::json const &topology) :

@@ -38,7 +38,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
         = {R"({"minimum": 0, "maximum": 0})"_json};
     int interpol_points = 1;
     return Aux::schema::make_initial_schema(
-        interpol_points, Gaspowerconnection::get_dimension_of_pde(),
+        interpol_points, Gaspowerconnection::init_vals_per_interpol_point(),
         contains_x);
   }
 

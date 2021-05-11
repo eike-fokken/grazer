@@ -22,7 +22,7 @@ namespace Model::Networkproblem::Gas {
   std::string Pipe::get_type() { return "Pipe"; }
   std::string Pipe::get_gas_type() const { return get_type(); }
 
-  int Pipe::get_dimension_of_pde() { return 2; }
+  int Pipe::init_vals_per_interpol_point() { return 2; }
 
   namespace unit = Aux::unit;
 
@@ -44,7 +44,7 @@ namespace Model::Networkproblem::Gas {
     std::vector<nlohmann::json> contains_x
         = {R"({"maximum": 0})"_json}; // there is a point <= 0
     return Aux::schema::make_initial_schema(
-        interpol_points, Pipe::get_dimension_of_pde(), contains_x);
+        interpol_points, Pipe::init_vals_per_interpol_point(), contains_x);
   }
 
   Pipe::Pipe(
