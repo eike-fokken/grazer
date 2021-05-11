@@ -27,5 +27,5 @@ namespace Model::Networkproblem {
     return component_output;
   }
 
-  void Statecomponent::print_to_files(nlohmann::json &){};
+  void Statecomponent::print_to_files(nlohmann::json &) {}
 } // namespace Model::Networkproblem
