@@ -11,7 +11,8 @@ namespace Model::Scheme {
       Eigen::Ref<Eigen::Vector2d const> last_right,
       Eigen::Ref<Eigen::Vector2d const> new_left,
       Eigen::Ref<Eigen::Vector2d const> new_right,
-      Model::Balancelaw::Pipe_Balancelaw const &bl) {
+      Model::Balancelaw::Pipe_Balancelaw const &bl) const {
+    ;
 
     double Delta_t = new_time - last_time;
     result = 0.5 * (new_left + new_right) - 0.5 * (last_left + last_right)
@@ -25,7 +26,8 @@ namespace Model::Scheme {
       Eigen::Ref<Eigen::Vector2d const>, Eigen::Ref<Eigen::Vector2d const>,
       Eigen::Ref<Eigen::Vector2d const> new_left,
       Eigen::Ref<Eigen::Vector2d const>,
-      Model::Balancelaw::Pipe_Balancelaw const &bl) {
+      Model::Balancelaw::Pipe_Balancelaw const &bl) const {
+    ;
     double Delta_t = new_time - last_time;
     Eigen::Matrix2d jac;
     Eigen::Matrix2d id;
@@ -41,7 +43,8 @@ namespace Model::Scheme {
       Eigen::Ref<Eigen::Vector2d const>, Eigen::Ref<Eigen::Vector2d const>,
       Eigen::Ref<Eigen::Vector2d const>,
       Eigen::Ref<Eigen::Vector2d const> new_right,
-      Model::Balancelaw::Pipe_Balancelaw const &bl) {
+      Model::Balancelaw::Pipe_Balancelaw const &bl) const {
+    ;
     double Delta_t = new_time - last_time;
     Eigen::Matrix2d jac;
     Eigen::Matrix2d id;

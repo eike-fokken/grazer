@@ -245,7 +245,7 @@ namespace Model::Networkproblem {
 
     // This list way well become longer!
     auto pde_components = {"Pipe"};
-    for (auto key : {"desired_delta_x", "balancelaw"}) {
+    for (auto key : {"desired_delta_x", "balancelaw", "scheme"}) {
       if (network_json.contains(key)) {
         for (auto const &type : pde_components) {
           if (not network_json["topology_json"]["connections"].contains(type)) {

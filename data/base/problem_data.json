@@ -28,6 +28,7 @@
                     "sigma_Q": 0.5
                 },
                 "balancelaw": "Isothermaleulerequation",
+                "scheme": "Implicitboxscheme",
                 "desired_delta_x": 10000,
                 "topology_json":"topology.json",
                 "boundary_json":"boundary.json",

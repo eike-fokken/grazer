@@ -1,10 +1,13 @@
 #pragma once
 #include "Edge.hpp"
 #include "Gasedge.hpp"
-#include "Implicitboxscheme.hpp"
 
-namespace Balancelaw {
+namespace Model::Balancelaw {
   class Pipe_Balancelaw;
+}
+
+namespace Model::Scheme {
+  class Threepointscheme;
 }
 
 namespace Model::Networkproblem::Gas {
@@ -57,7 +60,7 @@ namespace Model::Networkproblem::Gas {
     double const Delta_x;
 
     std::unique_ptr<Balancelaw::Pipe_Balancelaw const> bl;
-    Model::Scheme::Implicitboxscheme const scheme;
+    std::unique_ptr<Scheme::Threepointscheme const> scheme;
   };
 
 } // namespace Model::Networkproblem::Gas

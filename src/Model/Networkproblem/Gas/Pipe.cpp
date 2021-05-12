@@ -8,8 +8,12 @@
 #include "Isothermaleulerequation.hpp"
 #include "Mathfunctions.hpp"
 #include "Matrixhandler.hpp"
+#include "Pipe_Balancelaw.hpp"
+#include "Scheme_factory.hpp"
+#include "Threepointscheme.hpp"
 #include "make_schema.hpp"
 #include "unit_conversion.hpp"
+
 #include <Eigen/Dense>
 #include <cmath>
 #include <fstream>
@@ -36,6 +40,7 @@ namespace Model::Networkproblem::Gas {
         schema, "desired_delta_x", Aux::schema::type::number());
     Aux::schema::add_required(
         schema, "balancelaw", Aux::schema::type::string());
+    Aux::schema::add_required(schema, "scheme", Aux::schema::type::string());
 
     return schema;
   }
@@ -52,7 +57,8 @@ namespace Model::Networkproblem::Gas {
       Delta_x(
           unit::length.parse_to_si(topology["length"])
           / (number_of_points - 1)),
-      bl{Balancelaw::make_pipe_balancelaw(topology)} {}
+      bl(Balancelaw::make_pipe_balancelaw(topology)),
+      scheme{Scheme::make_threepointscheme(topology)} {}
 
   Pipe::~Pipe() {}
 
@@ -70,7 +76,7 @@ namespace Model::Networkproblem::Gas {
       auto new_left = new_state.segment<2>(i - 1);
       auto new_right = new_state.segment<2>(i + 1);
 
-      scheme.evaluate_point(
+      scheme->evaluate_point(
           rootvalue_segment, last_time, new_time, Delta_x, last_left,
           last_right, new_left, new_right, *bl);
     }
@@ -88,7 +94,7 @@ namespace Model::Networkproblem::Gas {
       auto new_left = new_state.segment<2>(i - 1);
       auto new_right = new_state.segment<2>(i + 1);
 
-      Eigen::Matrix2d current_derivative_left = scheme.devaluate_point_dleft(
+      Eigen::Matrix2d current_derivative_left = scheme->devaluate_point_dleft(
           last_time, new_time, Delta_x, last_left, last_right, new_left,
           new_right, *bl);
 
@@ -98,7 +104,7 @@ namespace Model::Networkproblem::Gas {
           i + 1, i - 1, current_derivative_left(1, 0));
       jacobianhandler->set_coefficient(i + 1, i, current_derivative_left(1, 1));
 
-      Eigen::Matrix2d current_derivative_right = scheme.devaluate_point_dright(
+      Eigen::Matrix2d current_derivative_right = scheme->devaluate_point_dright(
           last_time, new_time, Delta_x, last_left, last_right, new_left,
           new_right, *bl);
 
