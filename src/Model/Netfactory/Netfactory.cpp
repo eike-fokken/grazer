@@ -269,14 +269,16 @@ namespace Model::Networkproblem {
         and network_json.contains("StochasticPQnode_data")) {
       for (auto &stochpq_node :
            network_json["topology_json"]["nodes"]["StochasticPQnode"]) {
-        if (not(stochpq_node.contains("theta_P")
-                and stochpq_node.contains("sigma_P")
-                and stochpq_node.contains("theta_Q")
-                and stochpq_node.contains("sigma_Q")
-                and stochpq_node.contains("number_of_stochastic_steps"))) {
-          std::array values{
-              "theta_P", "sigma_P", "theta_Q", "sigma_Q",
-              "number_of_stocastic_steps"};
+        std::array values{
+            "theta_P", "sigma_P", "theta_Q", "sigma_Q",
+            "number_of_stochastic_steps"};
+
+        bool all_values_given = true;
+        for (auto &name : values) {
+          all_values_given &= stochpq_node.contains(name);
+        }
+
+        if (not all_values_given) {
           for (auto const &value : values) {
             stochpq_node[value] = network_json["StochasticPQnode_data"][value];
           }

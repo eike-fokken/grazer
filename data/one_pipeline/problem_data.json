@@ -20,6 +20,8 @@
         {
             "Network_problem":
             {
+                "balancelaw": "Isothermaleulerequation",
+                "scheme": "Implicitboxscheme",
                 "desired_delta_x": 1000,
                 "topology_json":"topology.json",
                 "boundary_json":"boundary.json",
