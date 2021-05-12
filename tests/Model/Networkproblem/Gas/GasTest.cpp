@@ -741,11 +741,11 @@ TEST_F(GasTEST, Pipe_evaluate) {
 
   double actual_Delta_x = length;
 
-  Model::Balancelaw::Isothermaleulerequation bl;
+  Model::Balancelaw::Isothermaleulerequation bl(pipe_topology);
   Model::Scheme::Implicitboxscheme scheme;
   scheme.evaluate_point(
       expected_result, last_time, new_time, actual_Delta_x, last_left,
-      last_right, new_left, new_right, bl, diameter, roughness);
+      last_right, new_left, new_right, bl);
 
   EXPECT_DOUBLE_EQ(expected_result[0], rootvalues.segment<2>(1)[0]);
   EXPECT_DOUBLE_EQ(expected_result[1], rootvalues.segment<2>(1)[1]);
@@ -808,7 +808,7 @@ TEST_F(GasTEST, Pipe_evaluate_state_derivative) {
 
   Eigen::Matrix4d DenseJ = J;
 
-  Model::Balancelaw::Isothermaleulerequation bl;
+  Model::Balancelaw::Isothermaleulerequation bl(pipe_topology);
   Model::Scheme::Implicitboxscheme scheme;
   double Delta_x = length;
   auto last_left = last_state.segment<2>(0);
@@ -818,10 +818,10 @@ TEST_F(GasTEST, Pipe_evaluate_state_derivative) {
 
   auto dleft = scheme.devaluate_point_dleft(
       last_time, new_time, Delta_x, last_left, last_right, new_left, new_right,
-      bl, diameter, roughness);
+      bl);
   auto dright = scheme.devaluate_point_dright(
       last_time, new_time, Delta_x, last_right, last_right, new_right,
-      new_right, bl, diameter, roughness);
+      new_right, bl);
 
   EXPECT_DOUBLE_EQ(DenseJ(1, 0), dleft(0, 0));
   EXPECT_DOUBLE_EQ(DenseJ(1, 1), dleft(0, 1));
