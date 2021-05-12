@@ -11,7 +11,7 @@ namespace Model::Networkproblem::Gas {
   class Flowboundarynode : public Gasnode {
 
   public:
-    static nlohmann::json get_schema();
+    static std::optional<nlohmann::json> get_boundary_schema();
 
     Flowboundarynode(nlohmann::json const &data);
 

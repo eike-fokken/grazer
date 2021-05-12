@@ -2,7 +2,9 @@
 #include "Edge.hpp"
 #include "Node.hpp"
 #include "json_validation.hpp"
+#include <Statecomponent.hpp>
 #include <exception>
+#include <make_schema.hpp>
 #include <map>
 #include <memory>
 #include <sstream>
@@ -13,15 +15,17 @@ namespace Model::Networkproblem {
 
 namespace Model::Componentfactory {
 
-  void validate_component_json(
-      nlohmann::json const &topology, nlohmann::json const &schema);
-
 // this macro collection is ugly but hopefully makes for clearer compiler
 // errors:
 #define STRINGIFY(nonstring) STRINGIFYII(nonstring)
 #define STRINGIFYII(nonstring) #nonstring
 #define LINE_NUMBER_STRING STRINGIFY(__LINE__)
 
+  /**
+   * @brief Common attributes of AbstractNodeTypes and AbstractEdgeTypes
+   * (read their documentation for further details)
+   *
+   */
   struct AbstractComponentType {
     virtual ~AbstractComponentType(){};
 
@@ -35,11 +39,39 @@ namespace Model::Componentfactory {
     /**
      * @brief Get the json schema describing the necessary properties of a
      * component
+     *
+     * @param include_external a toggle the inclusion of the boundary schema
+     * into the topology schema
      * @return nlohmann::json
      */
-    virtual nlohmann::json get_schema() const = 0;
+    virtual nlohmann::json get_schema(bool const include_external) const = 0;
+
+    /**
+     * @brief Get the boundary schema
+     *
+     * @return nlohmann::json
+     */
+    virtual std::optional<nlohmann::json> get_boundary_schema() const = 0;
+
+    virtual std::optional<nlohmann::json> get_control_schema() const = 0;
+
+    virtual std::optional<nlohmann::json> get_initial_schema() const = 0;
   };
 
+  /**
+   * @brief A NodeType is an instantiation of the class of a (concrete) node.
+   * It allows the passing and storage of NodeTypes which are all subclasses of
+   * AbstractNodeType. And the AbstractNodeType interface provides dynamic
+   * access to the static methods of (concrete) nodes.
+   *
+   * Their main use is for dynamic configuration of the Componentfactories
+   * by adding NodeTypes to their node_type_map. They also enable the creation
+   * of JSON Schemas describing the data needed for the instantiation of the
+   * (concrete) nodes.
+   *
+   * Preconfigured Componentfactories are found in Full_factory, Gas_factory
+   * and Power_factory
+   */
   struct AbstractNodeType : public AbstractComponentType {
     virtual ~AbstractNodeType(){};
 
@@ -54,6 +86,22 @@ namespace Model::Componentfactory {
     make_instance(nlohmann::json const &topology) const = 0;
   };
 
+  /**
+   * @brief A EdgeType is an instantiation of the class of a (concrete) edge.
+   * It allows the passing and storage of EdgeTypes which are all subclasses of
+   * AbstractEdgeType. And the AbstractEdgeType interface provides dynamic
+   * access to the static methods of (concrete) edges.
+   *
+   * Their main use is for dynamic configuration of the Componentfactories
+   * by adding EdgeTypes to their edge_type_map. They also enable the creation
+   * of JSON Schemas describing the data needed for the instantiation of the
+   * (concrete) edge.
+   *
+   * Preconfigured Componentfactories are found in Full_factory, Gas_factory
+   * and Power_factory
+   *
+   * @tparam ConcreteEdge
+   */
   struct AbstractEdgeType : public AbstractComponentType {
     virtual ~AbstractEdgeType(){};
 
@@ -70,6 +118,22 @@ namespace Model::Componentfactory {
         std::vector<std::unique_ptr<Network::Node>> &nodes) const = 0;
   };
 
+  /**
+   * @brief A NodeType is an instantiation of the class of a (concrete) node.
+   * It allows the passing and storage of NodeTypes which are all subclasses of
+   * AbstractNodeType. And the AbstractNodeType interface provides dynamic
+   * access to the static methods of (concrete) nodes.
+   *
+   * Their main use is for dynamic configuration of the Componentfactories
+   * by adding NodeTypes to their node_type_map. They also enable the creation
+   * of JSON Schemas describing the data needed for the instantiation of the
+   * (concrete) nodes.
+   *
+   * Preconfigured Componentfactories are found in Full_factory, Gas_factory
+   * and Power_factory
+   *
+   * @tparam ConcreteNode
+   */
   template <typename ConcreteNode>
   struct NodeType final : public AbstractNodeType {
     static_assert(
@@ -79,18 +143,89 @@ namespace Model::Componentfactory {
                  "whether an edge was added to the Nodechooser.");
 
     std::string get_name() const override { return ConcreteNode::get_type(); };
-    nlohmann::json get_schema() const override {
-      return ConcreteNode::get_schema();
+
+    nlohmann::json get_schema(const bool include_external) const override {
+      auto schema = ConcreteNode::get_schema();
+      if (include_external) {
+        auto optional_boundary = get_boundary_schema();
+        if (optional_boundary.has_value()) {
+          Aux::schema::add_required(
+              schema, "boundary_values", optional_boundary.value());
+        }
+        auto optional_control = get_control_schema();
+        if (optional_control.has_value()) {
+          Aux::schema::add_required(
+              schema, "control_values", optional_control.value());
+        }
+      }
+      return schema;
     };
+
+    std::optional<nlohmann::json> get_boundary_schema() const override {
+      // should really be `requires` (cf.
+      // https://stackoverflow.com/a/22014784/6662425) but that would require
+      // C++20
+      if constexpr (std::is_base_of<
+                        Networkproblem::Equationcomponent,
+                        ConcreteNode>::value) {
+        return std::optional<nlohmann::json>(
+            ConcreteNode::get_boundary_schema());
+      } else {
+        return std::nullopt;
+      }
+    };
+
+    std::optional<nlohmann::json> get_control_schema() const override {
+      // should really be `requires` (cf.
+      // https://stackoverflow.com/a/22014784/6662425) but that would require
+      // C++20
+      if constexpr (std::is_base_of<
+                        Networkproblem::Equationcomponent,
+                        ConcreteNode>::value) {
+        return std::optional<nlohmann::json>(
+            ConcreteNode::get_control_schema());
+      } else {
+        return std::nullopt;
+      }
+    };
+
+    std::optional<nlohmann::json> get_initial_schema() const override {
+      // should really be `requires` (cf.
+      // https://stackoverflow.com/a/22014784/6662425) but that would require
+      // C++20
+      if constexpr (std::is_base_of<
+                        Networkproblem::Statecomponent, ConcreteNode>::value) {
+        return std::optional<nlohmann::json>(
+            ConcreteNode::get_initial_schema());
+      } else {
+        return std::nullopt;
+      }
+    }
 
     std::unique_ptr<Network::Node>
     make_instance(nlohmann::json const &topology) const override {
 
-      validate_component_json(topology, ConcreteNode::get_schema());
+      validation::validate_json(topology, this->get_schema(true));
       return std::make_unique<ConcreteNode>(topology);
     };
   };
 
+  /**
+   * @brief A EdgeType is an instantiation of the class of a (concrete) edge.
+   * It allows the passing and storage of EdgeTypes which are all subclasses of
+   * AbstractEdgeType. And the AbstractEdgeType interface provides dynamic
+   * access to the static methods of (concrete) edges.
+   *
+   * Their main use is for dynamic configuration of the Componentfactories
+   * by adding EdgeTypes to their edge_type_map. They also enable the creation
+   * of JSON Schemas describing the data needed for the instantiation of the
+   * (concrete) edge.
+   *
+   * Preconfigured Componentfactories are found in Full_factory, Gas_factory
+   * and Power_factory
+   *
+   * @tparam ConcreteEdge
+   */
   template <typename ConcreteEdge>
   struct EdgeType final : public AbstractEdgeType {
     static_assert(
@@ -100,14 +235,70 @@ namespace Model::Componentfactory {
                  "whether a node was added to the Edgechooser.");
 
     std::string get_name() const override { return ConcreteEdge::get_type(); };
-    nlohmann::json get_schema() const override {
-      return ConcreteEdge::get_schema();
+
+    nlohmann::json get_schema(const bool include_external) const override {
+      auto schema = ConcreteEdge::get_schema();
+      if (include_external) {
+        auto optional_boundary = get_boundary_schema();
+        if (optional_boundary.has_value()) {
+          Aux::schema::add_required(
+              schema, "boundary_values", optional_boundary.value());
+        }
+        auto optional_control = get_control_schema();
+        if (optional_control.has_value()) {
+          Aux::schema::add_required(
+              schema, "control_values", optional_control.value());
+        }
+      }
+      return schema;
     };
+
+    std::optional<nlohmann::json> get_boundary_schema() const override {
+      // should really be `requires` (cf.
+      // https://stackoverflow.com/a/22014784/6662425) but that would require
+      // C++20
+      if constexpr (std::is_base_of<
+                        Networkproblem::Equationcomponent,
+                        ConcreteEdge>::value) {
+        return std::optional<nlohmann::json>(
+            ConcreteEdge::get_boundary_schema());
+      } else {
+        return std::nullopt;
+      }
+    };
+
+    std::optional<nlohmann::json> get_control_schema() const override {
+      // should really be `requires` (cf.
+      // https://stackoverflow.com/a/22014784/6662425) but that would require
+      // C++20
+      if constexpr (std::is_base_of<
+                        Networkproblem::Equationcomponent,
+                        ConcreteEdge>::value) {
+        return std::optional<nlohmann::json>(
+            ConcreteEdge::get_control_schema());
+      } else {
+        return std::nullopt;
+      }
+    };
+
+    std::optional<nlohmann::json> get_initial_schema() const override {
+      // should really be `requires` (cf.
+      // https://stackoverflow.com/a/22014784/6662425) but that would require
+      // C++20
+      if constexpr (std::is_base_of<
+                        Networkproblem::Equationcomponent,
+                        ConcreteEdge>::value) {
+        return std::optional<nlohmann::json>(
+            ConcreteEdge::get_initial_schema());
+      } else {
+        return std::nullopt;
+      }
+    }
 
     std::unique_ptr<Network::Edge> make_instance(
         nlohmann::json const &topology,
         std::vector<std::unique_ptr<Network::Node>> &nodes) const override {
-      validate_component_json(topology, ConcreteEdge::get_schema());
+      validation::validate_json(topology, this->get_schema(true));
       return std::make_unique<ConcreteEdge>(topology, nodes);
     };
   };
@@ -134,7 +325,31 @@ namespace Model::Componentfactory {
     void add_node_type(std::unique_ptr<AbstractNodeType> nodeType);
     void add_edge_type(std::unique_ptr<AbstractEdgeType> edgeType);
 
-    nlohmann::json get_topology_schema();
+    /**
+     * @brief Return the Full JSON Schema for the Topplogy Description
+     *
+     * @param include_external Include schemas for data provided from other
+     * files
+     *
+     * @return nlohmann::json
+     */
+    nlohmann::json get_topology_schema(bool const include_external);
+
+    /**
+     * @brief Return the Full JSON Schema for the Boundary Behaviour Description
+     *
+     * @return nlohmann::json
+     */
+    nlohmann::json get_boundary_schema();
+
+    nlohmann::json get_control_schema();
+
+    /**
+     * @brief Return the Full JSON Schema for the Initial Data Description
+     *
+     * @return nlohmann::json
+     */
+    nlohmann::json get_initial_schema();
   };
 
 } // namespace Model::Componentfactory
