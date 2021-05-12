@@ -31,7 +31,8 @@ nlohmann::json pipe_json(
     std::string id, nlohmann::json const &startnode,
     nlohmann::json const &endnode, double length, std::string length_unit,
     double diameter, std::string diameter_unit, double roughness,
-    std::string roughness_unit, double desired_delta_x, std::string balancelaw);
+    std::string roughness_unit, double desired_delta_x, std::string balancelaw,
+    std::string scheme);
 
 class GasTEST : public EqcomponentTEST {
 
@@ -697,7 +698,7 @@ TEST_F(GasTEST, Pipe_evaluate) {
 
   nlohmann::json pipe_topology = pipe_json(
       id, node0, node1, length, "m", diameter, "m", roughness, "m",
-      desired_delta_x, "Isothermaleulerequation");
+      desired_delta_x, "Isothermaleulerequation", "Implicitboxscheme");
 
   std::vector<std::pair<double, Eigen::Matrix<double, 2, 1>>> initialvalues;
   using E2d = Eigen::Matrix<double, 2, 1>;
@@ -765,7 +766,7 @@ TEST_F(GasTEST, Pipe_evaluate_state_derivative) {
 
   nlohmann::json pipe_topology = pipe_json(
       id, node0, node1, length, "m", diameter, "m", roughness, "m",
-      desired_delta_x, "Isothermaleulerequation");
+      desired_delta_x, "Isothermaleulerequation", "Implicitboxscheme");
 
   std::vector<std::pair<double, Eigen::Matrix<double, 2, 1>>> initialvalues;
   {
@@ -860,8 +861,8 @@ nlohmann::json pipe_json(
     std::string id, nlohmann::json const &startnode,
     nlohmann::json const &endnode, double length, std::string length_unit,
     double diameter, std::string diameter_unit, double roughness,
-    std::string roughness_unit, double desired_delta_x,
-    std::string balancelaw) {
+    std::string roughness_unit, double desired_delta_x, std::string balancelaw,
+    std::string scheme) {
   nlohmann::json pipe_topology;
   pipe_topology["id"] = id;
   pipe_topology["from"] = startnode["id"];
@@ -874,5 +875,6 @@ nlohmann::json pipe_json(
   pipe_topology["roughness"]["unit"] = roughness_unit;
   pipe_topology["desired_delta_x"] = desired_delta_x;
   pipe_topology["balancelaw"] = balancelaw;
+  pipe_topology["scheme"] = scheme;
   return pipe_topology;
 }
