@@ -144,8 +144,7 @@ void test_validation_in_parsing(
   } catch (const std::runtime_error &e) {
     std::string error_msg = e.what();
     EXPECT_PRED2(
-        error_msg_includes, error_msg,
-        "The data does not conform to the schema");
+        error_msg_includes, error_msg, "does not conform to its schema");
     EXPECT_PRED2(error_msg_includes, error_msg, required_hint);
     throw;
   }
