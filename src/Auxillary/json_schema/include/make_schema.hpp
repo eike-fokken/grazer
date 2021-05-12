@@ -33,8 +33,8 @@ namespace Aux::schema {
    * @brief Helper to create an initial value configuration json schema for
    * a component (this is then assembled into a larger initial value json)
    *
-   * @param num_interpol_points The number of interpolation points (minimum &
-   * maximum) (std::optional<int>)
+   * @param num_interpol_points The exact number of interpolation points, if
+   * known. If the optional is empty, no restriction on the number.
    * @param num_values The number of values at one interpolation point
    * @param contains_interpol_point_schemas Json schemas describing properties
    * of interpolation points which at least one of the interpolation points

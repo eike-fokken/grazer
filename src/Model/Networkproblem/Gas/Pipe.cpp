@@ -14,6 +14,7 @@
 #include <cmath>
 #include <fstream>
 #include <iostream>
+#include <optional>
 #include <string>
 #include <type_traits>
 
@@ -40,7 +41,7 @@ namespace Model::Networkproblem::Gas {
   }
 
   nlohmann::json Pipe::get_initial_schema() {
-    int interpol_points = 0; // unlimited
+    std::optional<int> interpol_points = std::nullopt;
     std::vector<nlohmann::json> contains_x
         = {R"({"maximum": 0})"_json}; // there is a point <= 0
     return Aux::schema::make_initial_schema(

@@ -1,4 +1,5 @@
 #include "make_schema.hpp"
+#include "Exception.hpp"
 #include "unit_conversion.hpp"
 #include <stdexcept>
 
@@ -101,6 +102,13 @@ namespace Aux::schema {
     interpol_point_array_params["description"]
         = "Array of Interpolation Points with Initial Values";
     if (num_interpol_points.has_value()) {
+      if (num_interpol_points <= 0) {
+        gthrow(
+            {"You can't demand a non-positive number of initial values.\n",
+             "The definition of get_initial_schema is wrong.\n",
+             "If you want to not force the number of initial values, return "
+             "std::nullopt."})
+      }
       interpol_point_array_params["minItems"] = num_interpol_points.value();
       interpol_point_array_params["maxItems"] = num_interpol_points.value();
     }
