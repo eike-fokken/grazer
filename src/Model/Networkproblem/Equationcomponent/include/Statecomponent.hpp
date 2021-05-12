@@ -12,6 +12,8 @@ namespace Model::Networkproblem {
     /// @returns number of state variables needed by this component
     virtual int get_number_of_states() const = 0;
 
+    static nlohmann::json get_initial_schema();
+
     /// \brief This function sets the indices #start_state_index and
     /// #after_state_index AND calls setup()
     ///

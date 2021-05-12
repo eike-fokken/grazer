@@ -19,6 +19,7 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <optional>
 #include <string>
 #include <type_traits>
 
@@ -26,6 +27,8 @@ namespace Model::Networkproblem::Gas {
 
   std::string Pipe::get_type() { return "Pipe"; }
   std::string Pipe::get_gas_type() const { return get_type(); }
+
+  int Pipe::init_vals_per_interpol_point() { return 2; }
 
   namespace unit = Aux::unit;
 
@@ -43,6 +46,14 @@ namespace Model::Networkproblem::Gas {
     Aux::schema::add_required(schema, "scheme", Aux::schema::type::string());
 
     return schema;
+  }
+
+  nlohmann::json Pipe::get_initial_schema() {
+    std::optional<int> interpol_points = std::nullopt;
+    std::vector<nlohmann::json> contains_x
+        = {R"({"maximum": 0, "minimum": 0})"_json}; // there is a point <= 0
+    return Aux::schema::make_initial_schema(
+        interpol_points, Pipe::init_vals_per_interpol_point(), contains_x);
   }
 
   Pipe::Pipe(

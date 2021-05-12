@@ -7,11 +7,9 @@ namespace Model::Networkproblem::Gas {
 
   std::string Compressorstation::get_type() { return "Compressorstation"; }
   std::string Compressorstation::get_gas_type() const { return get_type(); }
-  nlohmann::json Compressorstation::get_schema() {
-    nlohmann::json schema = Shortpipe::get_schema();
-    Aux::schema::add_required(
-        schema, "control_values", Aux::schema::make_boundary_schema(1));
-    return schema;
+
+  std::optional<nlohmann::json> Compressorstation::get_control_schema() {
+    return Aux::schema::make_boundary_schema(1);
   }
 
   void Compressorstation::print_to_files(nlohmann::json &new_output) {

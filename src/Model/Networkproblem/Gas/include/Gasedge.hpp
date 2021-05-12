@@ -8,6 +8,9 @@ namespace Model::Networkproblem::Gas {
   class Gasedge : public Statecomponent {
 
   public:
+    static int init_vals_per_interpol_point();
+    static nlohmann::json get_initial_schema();
+
     virtual std::string get_gas_type() const = 0;
     int give_away_boundary_index(int direction) const;
 
