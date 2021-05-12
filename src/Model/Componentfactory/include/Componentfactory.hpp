@@ -15,15 +15,17 @@ namespace Model::Networkproblem {
 
 namespace Model::Componentfactory {
 
-  void validate_component_json(
-      nlohmann::json const &topology, nlohmann::json const &schema);
-
 // this macro collection is ugly but hopefully makes for clearer compiler
 // errors:
 #define STRINGIFY(nonstring) STRINGIFYII(nonstring)
 #define STRINGIFYII(nonstring) #nonstring
 #define LINE_NUMBER_STRING STRINGIFY(__LINE__)
 
+  /**
+   * @brief Common attributes of AbstractNodeTypes and AbstractEdgeTypes
+   * (read their documentation for further details)
+   *
+   */
   struct AbstractComponentType {
     virtual ~AbstractComponentType(){};
 
@@ -56,6 +58,20 @@ namespace Model::Componentfactory {
     virtual std::optional<nlohmann::json> get_initial_schema() const = 0;
   };
 
+  /**
+   * @brief A NodeType is an instantiation of the class of a (concrete) node.
+   * It allows the passing and storage of NodeTypes which are all subclasses of
+   * AbstractNodeType. And the AbstractNodeType interface provides dynamic
+   * access to the static methods of (concrete) nodes.
+   *
+   * Their main use is for dynamic configuration of the Componentfactories
+   * by adding NodeTypes to their node_type_map. They also enable the creation
+   * of JSON Schemas describing the data needed for the instantiation of the
+   * (concrete) nodes.
+   *
+   * Preconfigured Componentfactories are found in Full_factory, Gas_factory
+   * and Power_factory
+   */
   struct AbstractNodeType : public AbstractComponentType {
     virtual ~AbstractNodeType(){};
 
@@ -70,6 +86,22 @@ namespace Model::Componentfactory {
     make_instance(nlohmann::json const &topology) const = 0;
   };
 
+  /**
+   * @brief A EdgeType is an instantiation of the class of a (concrete) edge.
+   * It allows the passing and storage of EdgeTypes which are all subclasses of
+   * AbstractEdgeType. And the AbstractEdgeType interface provides dynamic
+   * access to the static methods of (concrete) edges.
+   *
+   * Their main use is for dynamic configuration of the Componentfactories
+   * by adding EdgeTypes to their edge_type_map. They also enable the creation
+   * of JSON Schemas describing the data needed for the instantiation of the
+   * (concrete) edge.
+   *
+   * Preconfigured Componentfactories are found in Full_factory, Gas_factory
+   * and Power_factory
+   *
+   * @tparam ConcreteEdge
+   */
   struct AbstractEdgeType : public AbstractComponentType {
     virtual ~AbstractEdgeType(){};
 
@@ -86,6 +118,22 @@ namespace Model::Componentfactory {
         std::vector<std::unique_ptr<Network::Node>> &nodes) const = 0;
   };
 
+  /**
+   * @brief A NodeType is an instantiation of the class of a (concrete) node.
+   * It allows the passing and storage of NodeTypes which are all subclasses of
+   * AbstractNodeType. And the AbstractNodeType interface provides dynamic
+   * access to the static methods of (concrete) nodes.
+   *
+   * Their main use is for dynamic configuration of the Componentfactories
+   * by adding NodeTypes to their node_type_map. They also enable the creation
+   * of JSON Schemas describing the data needed for the instantiation of the
+   * (concrete) nodes.
+   *
+   * Preconfigured Componentfactories are found in Full_factory, Gas_factory
+   * and Power_factory
+   *
+   * @tparam ConcreteNode
+   */
   template <typename ConcreteNode>
   struct NodeType final : public AbstractNodeType {
     static_assert(
@@ -157,11 +205,27 @@ namespace Model::Componentfactory {
     std::unique_ptr<Network::Node>
     make_instance(nlohmann::json const &topology) const override {
 
-      validate_component_json(topology, ConcreteNode::get_schema());
+      validation::validate_json(topology, this->get_schema(true));
       return std::make_unique<ConcreteNode>(topology);
     };
   };
 
+  /**
+   * @brief A EdgeType is an instantiation of the class of a (concrete) edge.
+   * It allows the passing and storage of EdgeTypes which are all subclasses of
+   * AbstractEdgeType. And the AbstractEdgeType interface provides dynamic
+   * access to the static methods of (concrete) edges.
+   *
+   * Their main use is for dynamic configuration of the Componentfactories
+   * by adding EdgeTypes to their edge_type_map. They also enable the creation
+   * of JSON Schemas describing the data needed for the instantiation of the
+   * (concrete) edge.
+   *
+   * Preconfigured Componentfactories are found in Full_factory, Gas_factory
+   * and Power_factory
+   *
+   * @tparam ConcreteEdge
+   */
   template <typename ConcreteEdge>
   struct EdgeType final : public AbstractEdgeType {
     static_assert(
@@ -234,7 +298,7 @@ namespace Model::Componentfactory {
     std::unique_ptr<Network::Edge> make_instance(
         nlohmann::json const &topology,
         std::vector<std::unique_ptr<Network::Node>> &nodes) const override {
-      validate_component_json(topology, ConcreteEdge::get_schema());
+      validation::validate_json(topology, this->get_schema(true));
       return std::make_unique<ConcreteEdge>(topology, nodes);
     };
   };
