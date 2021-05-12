@@ -2,7 +2,9 @@
 #include "Edge.hpp"
 #include "Node.hpp"
 #include "json_validation.hpp"
+#include <Statecomponent.hpp>
 #include <exception>
+#include <make_schema.hpp>
 #include <map>
 #include <memory>
 #include <sstream>
@@ -35,9 +37,23 @@ namespace Model::Componentfactory {
     /**
      * @brief Get the json schema describing the necessary properties of a
      * component
+     *
+     * @param include_external a toggle the inclusion of the boundary schema
+     * into the topology schema
      * @return nlohmann::json
      */
-    virtual nlohmann::json get_schema() const = 0;
+    virtual nlohmann::json get_schema(bool const include_external) const = 0;
+
+    /**
+     * @brief Get the boundary schema
+     *
+     * @return nlohmann::json
+     */
+    virtual std::optional<nlohmann::json> get_boundary_schema() const = 0;
+
+    virtual std::optional<nlohmann::json> get_control_schema() const = 0;
+
+    virtual std::optional<nlohmann::json> get_initial_schema() const = 0;
   };
 
   struct AbstractNodeType : public AbstractComponentType {
@@ -79,9 +95,64 @@ namespace Model::Componentfactory {
                  "whether an edge was added to the Nodechooser.");
 
     std::string get_name() const override { return ConcreteNode::get_type(); };
-    nlohmann::json get_schema() const override {
-      return ConcreteNode::get_schema();
+
+    nlohmann::json get_schema(const bool include_external) const override {
+      auto schema = ConcreteNode::get_schema();
+      if (include_external) {
+        auto optional_boundary = get_boundary_schema();
+        if (optional_boundary.has_value()) {
+          Aux::schema::add_required(
+              schema, "boundary_values", optional_boundary.value());
+        }
+        auto optional_control = get_control_schema();
+        if (optional_control.has_value()) {
+          Aux::schema::add_required(
+              schema, "control_values", optional_control.value());
+        }
+      }
+      return schema;
     };
+
+    std::optional<nlohmann::json> get_boundary_schema() const override {
+      // should really be `requires` (cf.
+      // https://stackoverflow.com/a/22014784/6662425) but that would require
+      // C++20
+      if constexpr (std::is_base_of<
+                        Networkproblem::Equationcomponent,
+                        ConcreteNode>::value) {
+        return std::optional<nlohmann::json>(
+            ConcreteNode::get_boundary_schema());
+      } else {
+        return std::nullopt;
+      }
+    };
+
+    std::optional<nlohmann::json> get_control_schema() const override {
+      // should really be `requires` (cf.
+      // https://stackoverflow.com/a/22014784/6662425) but that would require
+      // C++20
+      if constexpr (std::is_base_of<
+                        Networkproblem::Equationcomponent,
+                        ConcreteNode>::value) {
+        return std::optional<nlohmann::json>(
+            ConcreteNode::get_control_schema());
+      } else {
+        return std::nullopt;
+      }
+    };
+
+    std::optional<nlohmann::json> get_initial_schema() const override {
+      // should really be `requires` (cf.
+      // https://stackoverflow.com/a/22014784/6662425) but that would require
+      // C++20
+      if constexpr (std::is_base_of<
+                        Networkproblem::Statecomponent, ConcreteNode>::value) {
+        return std::optional<nlohmann::json>(
+            ConcreteNode::get_initial_schema());
+      } else {
+        return std::nullopt;
+      }
+    }
 
     std::unique_ptr<Network::Node>
     make_instance(nlohmann::json const &topology) const override {
@@ -100,9 +171,65 @@ namespace Model::Componentfactory {
                  "whether a node was added to the Edgechooser.");
 
     std::string get_name() const override { return ConcreteEdge::get_type(); };
-    nlohmann::json get_schema() const override {
-      return ConcreteEdge::get_schema();
+
+    nlohmann::json get_schema(const bool include_external) const override {
+      auto schema = ConcreteEdge::get_schema();
+      if (include_external) {
+        auto optional_boundary = get_boundary_schema();
+        if (optional_boundary.has_value()) {
+          Aux::schema::add_required(
+              schema, "boundary_values", optional_boundary.value());
+        }
+        auto optional_control = get_control_schema();
+        if (optional_control.has_value()) {
+          Aux::schema::add_required(
+              schema, "control_values", optional_control.value());
+        }
+      }
+      return schema;
     };
+
+    std::optional<nlohmann::json> get_boundary_schema() const override {
+      // should really be `requires` (cf.
+      // https://stackoverflow.com/a/22014784/6662425) but that would require
+      // C++20
+      if constexpr (std::is_base_of<
+                        Networkproblem::Equationcomponent,
+                        ConcreteEdge>::value) {
+        return std::optional<nlohmann::json>(
+            ConcreteEdge::get_boundary_schema());
+      } else {
+        return std::nullopt;
+      }
+    };
+
+    std::optional<nlohmann::json> get_control_schema() const override {
+      // should really be `requires` (cf.
+      // https://stackoverflow.com/a/22014784/6662425) but that would require
+      // C++20
+      if constexpr (std::is_base_of<
+                        Networkproblem::Equationcomponent,
+                        ConcreteEdge>::value) {
+        return std::optional<nlohmann::json>(
+            ConcreteEdge::get_control_schema());
+      } else {
+        return std::nullopt;
+      }
+    };
+
+    std::optional<nlohmann::json> get_initial_schema() const override {
+      // should really be `requires` (cf.
+      // https://stackoverflow.com/a/22014784/6662425) but that would require
+      // C++20
+      if constexpr (std::is_base_of<
+                        Networkproblem::Equationcomponent,
+                        ConcreteEdge>::value) {
+        return std::optional<nlohmann::json>(
+            ConcreteEdge::get_initial_schema());
+      } else {
+        return std::nullopt;
+      }
+    }
 
     std::unique_ptr<Network::Edge> make_instance(
         nlohmann::json const &topology,
@@ -134,7 +261,31 @@ namespace Model::Componentfactory {
     void add_node_type(std::unique_ptr<AbstractNodeType> nodeType);
     void add_edge_type(std::unique_ptr<AbstractEdgeType> edgeType);
 
-    nlohmann::json get_topology_schema();
+    /**
+     * @brief Return the Full JSON Schema for the Topplogy Description
+     *
+     * @param include_external Include schemas for data provided from other
+     * files
+     *
+     * @return nlohmann::json
+     */
+    nlohmann::json get_topology_schema(bool const include_external);
+
+    /**
+     * @brief Return the Full JSON Schema for the Boundary Behaviour Description
+     *
+     * @return nlohmann::json
+     */
+    nlohmann::json get_boundary_schema();
+
+    nlohmann::json get_control_schema();
+
+    /**
+     * @brief Return the Full JSON Schema for the Initial Data Description
+     *
+     * @return nlohmann::json
+     */
+    nlohmann::json get_initial_schema();
   };
 
 } // namespace Model::Componentfactory
