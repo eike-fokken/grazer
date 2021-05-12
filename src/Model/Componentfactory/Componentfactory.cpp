@@ -138,7 +138,7 @@ namespace Model::Componentfactory {
       auto component_schema = Aux::schema::relax_schema(
           component->get_schema(include_external),
           {"desired_delta_x", "number_of_stochastic_steps", "theta_P",
-           "sigma_P", "theta_Q", "sigma_Q","balancelaw","scheme"});
+           "sigma_P", "theta_Q", "sigma_Q", "balancelaw", "scheme"});
       node_schemas[name] = Aux::schema::make_list_schema_of(component_schema);
     }
     auto &edge_schemas
@@ -147,7 +147,7 @@ namespace Model::Componentfactory {
       auto component_schema = Aux::schema::relax_schema(
           component->get_schema(include_external),
           {"desired_delta_x", "number_of_stochastic_steps", "theta_P",
-           "sigma_P", "theta_Q", "sigma_Q","balancelaw","scheme"});
+           "sigma_P", "theta_Q", "sigma_Q", "balancelaw", "scheme"});
       edge_schemas[name] = Aux::schema::make_list_schema_of(component_schema);
     }
 

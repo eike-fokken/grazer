@@ -6,5 +6,5 @@
 namespace Model::Balancelaw {
 
   std::unique_ptr<Pipe_Balancelaw>
-  make_pipe_balancelaw(nlohmann::json const & json);
+  make_pipe_balancelaw(nlohmann::json const &json);
 }
