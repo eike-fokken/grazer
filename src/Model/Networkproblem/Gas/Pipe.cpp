@@ -43,7 +43,7 @@ namespace Model::Networkproblem::Gas {
   nlohmann::json Pipe::get_initial_schema() {
     std::optional<int> interpol_points = std::nullopt;
     std::vector<nlohmann::json> contains_x
-        = {R"({"maximum": 0})"_json}; // there is a point <= 0
+        = {R"({"maximum": 0, "minimum": 0})"_json}; // there is a point <= 0
     return Aux::schema::make_initial_schema(
         interpol_points, Pipe::init_vals_per_interpol_point(), contains_x);
   }
