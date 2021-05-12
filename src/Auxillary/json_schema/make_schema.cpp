@@ -65,7 +65,7 @@ namespace Aux::schema {
   }
 
   nlohmann::json make_initial_schema(
-      int num_interpol_points, int num_values,
+      std::optional<int> num_interpol_points, int num_values,
       std::vector<nlohmann::json> contains_interpol_point_schemas) {
     nlohmann::json initial_schema = R"(
       {
@@ -100,9 +100,9 @@ namespace Aux::schema {
     nlohmann::json interpol_point_array_params;
     interpol_point_array_params["description"]
         = "Array of Interpolation Points with Initial Values";
-    if (num_interpol_points > 0) {
-      interpol_point_array_params["minItems"] = num_interpol_points;
-      interpol_point_array_params["maxItems"] = num_interpol_points;
+    if (num_interpol_points.has_value()) {
+      interpol_point_array_params["minItems"] = num_interpol_points.value();
+      interpol_point_array_params["maxItems"] = num_interpol_points.value();
     }
     nlohmann::json data
         = make_list_schema_of(interpolation_point, interpol_point_array_params);
