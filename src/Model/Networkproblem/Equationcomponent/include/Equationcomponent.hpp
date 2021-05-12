@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <memory>
 #include <nlohmann/json.hpp>
+#include <optional>
 
 namespace Aux {
 
@@ -75,6 +76,9 @@ namespace Model::Networkproblem {
     /// Usually does nothing, but for example gas nodes
     /// claim indices from their attached gas edges.
     virtual void setup();
+
+    static std::optional<nlohmann::json> get_boundary_schema();
+    static std::optional<nlohmann::json> get_control_schema();
   };
 
 } // namespace Model::Networkproblem
