@@ -29,12 +29,29 @@ namespace io {
     return std::deque<std::string>(argv + 1, argv + argc);
   }
 
+  typedef std::function<int(std::deque<string>)> program;
+
+  int help(std::map<string, program> programs) {
+    std::cout << "Commands: ";
+    for (auto const &[name, _] : programs) {
+      std::cout << name;
+    }
+    std::cout << std::endl;
+    return 0;
+  }
+
   int program_switchboard(
       std::deque<string> args,
       std::map<string, std::function<int(std::deque<string>)>> programs) {
-    auto program = programs[args[0]];
+    if (args.empty()) {
+      return help(programs);
+    }
+    auto search = programs.find(args[0]);
+    if (search == programs.end()) {
+      return help(programs);
+    }
     args.pop_front();
-    return program(args);
+    return search->second(args);
   }
 
   std::filesystem::path prepare_output_dir(string output_dir_string) {
