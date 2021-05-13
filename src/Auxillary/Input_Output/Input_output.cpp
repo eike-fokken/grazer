@@ -4,6 +4,7 @@
 #include <iostream>
 
 namespace io {
+  using std::string;
 
   bool absolute_file_path_in_root(
       const std::filesystem::path &problem_root_path,
@@ -24,8 +25,19 @@ namespace io {
   std::vector<std::string> args_as_vector(int argc, char **argv) {
     return std::vector<std::string>(argv + 1, argv + argc);
   }
+  std::deque<std::string> args_as_deque(int argc, char **argv) {
+    return std::deque<std::string>(argv + 1, argv + argc);
+  }
 
-  std::filesystem::path prepare_output_dir(std::string output_dir_string) {
+  int program_switchboard(
+      std::deque<string> args,
+      std::map<string, std::function<int(std::deque<string>)>> programs) {
+    auto program = programs[args[0]];
+    args.pop_front();
+    return program(args);
+  }
+
+  std::filesystem::path prepare_output_dir(string output_dir_string) {
 
     std::filesystem::path output_dir(output_dir_string);
 
@@ -62,7 +74,7 @@ namespace io {
   }
 
   std::filesystem::path
-  extract_input_data(std::vector<std::string> const &cmd_arguments) {
+  extract_input_data(std::deque<std::string> const &cmd_arguments) {
 
     std::string default_problem_data_filename = "problem_data.json";
     std::filesystem::path problem_data_file;

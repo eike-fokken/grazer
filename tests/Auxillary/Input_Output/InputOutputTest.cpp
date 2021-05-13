@@ -7,6 +7,7 @@
 #include <nlohmann/json.hpp>
 #include <stdexcept>
 #include <string>
+#include <deque>
 #include <vector>
 
 class prepare_output_dirTEST : public ::testing::Test {
@@ -114,12 +115,11 @@ TEST_F(prepare_output_dirTEST, path_points_to_file) {
 
 TEST_F(extract_input_dataTEST, input_vector_too_large) {
 
-  std::vector<std::string> vector_too_large;
-
   // Testing vector containing too many (>1) command arguments
-  vector_too_large = {"str1", "str2"};
+  std::deque<std::string> too_many_args = {"str1", "str2"};
+
   EXPECT_THROW(
-      [[maybe_unused]] auto result = io::extract_input_data(vector_too_large),
+      [[maybe_unused]] auto result = io::extract_input_data(too_many_args),
       std::runtime_error);
 }
 
@@ -127,7 +127,7 @@ TEST_F(extract_input_dataTEST, input_vector_works) {
 
   nlohmann::json regular_json;
   std::filesystem::path regular_json_path("test_pathname.json");
-  std::vector<std::string> vector_size_one;
+  std::deque<std::string> vector_size_one;
 
   // Testing a vector containing a string that points to a regular file
   regular_json = {{"id", "M000"}, {"data", {1.0, 2.0}}};
@@ -143,7 +143,6 @@ TEST_F(extract_input_dataTEST, input_vector_empty) {
 
   nlohmann::json regular_json;
   std::filesystem::path regular_json_path("problem_data.json");
-  std::vector<std::string> vector_empty;
 
   // Creating json file
   regular_json = {{"id", "M000"}, {"data", {1.0, 2.0}}};
@@ -151,6 +150,6 @@ TEST_F(extract_input_dataTEST, input_vector_empty) {
   file << regular_json;
 
   // Testing empty vector
-  vector_empty = {};
+  std::deque<std::string> vector_empty = {};
   EXPECT_EQ(regular_json_path, io::extract_input_data(vector_empty));
 }
