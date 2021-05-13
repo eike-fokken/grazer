@@ -3,7 +3,7 @@
 #include <filesystem>
 #include <iostream>
 
-namespace Aux_executable {
+namespace io {
 
   bool absolute_file_path_in_root(
       const std::filesystem::path &problem_root_path,
@@ -88,4 +88,4 @@ namespace Aux_executable {
     return problem_data_file;
   }
 
-} // namespace Aux_executable
+} // namespace io

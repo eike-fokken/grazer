@@ -4,7 +4,7 @@
 #include <tuple>
 #include <vector>
 
-namespace Aux_executable {
+namespace io {
 
   /// Makes a C++ vector of strings out of the C-style commandline arguments.
   std::vector<std::string> args_as_vector(int argc, char **argv);
@@ -28,4 +28,4 @@ namespace Aux_executable {
   std::filesystem::path
   extract_input_data(std::vector<std::string> const &cmd_arguments);
 
-} // namespace Aux_executable
+} // namespace io
