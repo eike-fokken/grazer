@@ -5,17 +5,27 @@
 #include <filesystem>
 
 using std::filesystem::path;
+namespace fs = std::filesystem;
 
 int main(int argc, char** argv) {
   auto arguments = io::args_as_vector(argc, argv);
-  if (arguments.size() == 1) {
-    arguments.push_back("schemas"); // default
-  } else if (not (arguments.size() == 2)) {
-    gthrow({"Unexpected number of arguments"});
+
+  path schema_dir;
+  switch (arguments.size()) {
+    case 0 :
+      schema_dir = path("schema"); // default
+      break;
+    case 1:
+      schema_dir = path(arguments[1]);
+      break;
+    default:
+      gthrow({"Unexpected number of arguments"});
   }
-  if (not std::filesystem::is_directory(path(arguments[1]))) {
+  if (not fs::exists(schema_dir)) {
+    fs::create_directory(schema_dir);
+  } else if (not fs::is_directory(schema_dir)) {
     gthrow({"Argument is not a directory"});
   }
   Model::Componentfactory::Full_factory full_factory;
-  Aux::schema::make_schemas(full_factory, arguments[1]);
+  Aux::schema::make_schemas(full_factory, schema_dir);
 }
