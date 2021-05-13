@@ -1,7 +1,7 @@
 #include <unit_conversion.hpp>
 
-#include <schema_validation.hpp>
 #include <map>
+#include <schema_validation.hpp>
 #include <sstream>
 
 namespace Aux::unit {

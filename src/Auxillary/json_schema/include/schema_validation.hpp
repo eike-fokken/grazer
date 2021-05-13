@@ -28,4 +28,4 @@ namespace Aux::schema {
    * @param schema json schema
    */
   void validate_json(nlohmann::json const &data, nlohmann::json const &schema);
-} // namespace validation
+} // namespace Aux::schema
