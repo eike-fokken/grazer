@@ -31,7 +31,8 @@ nlohmann::json pipe_json(
     std::string id, nlohmann::json const &startnode,
     nlohmann::json const &endnode, double length, std::string length_unit,
     double diameter, std::string diameter_unit, double roughness,
-    std::string roughness_unit, double desired_delta_x);
+    std::string roughness_unit, double desired_delta_x, std::string balancelaw,
+    std::string scheme);
 
 class GasTEST : public EqcomponentTEST {
 
@@ -697,7 +698,7 @@ TEST_F(GasTEST, Pipe_evaluate) {
 
   nlohmann::json pipe_topology = pipe_json(
       id, node0, node1, length, "m", diameter, "m", roughness, "m",
-      desired_delta_x);
+      desired_delta_x, "Isothermaleulerequation", "Implicitboxscheme");
 
   std::vector<std::pair<double, Eigen::Matrix<double, 2, 1>>> initialvalues;
   using E2d = Eigen::Matrix<double, 2, 1>;
@@ -741,11 +742,11 @@ TEST_F(GasTEST, Pipe_evaluate) {
 
   double actual_Delta_x = length;
 
-  Model::Balancelaw::Isothermaleulerequation bl;
+  Model::Balancelaw::Isothermaleulerequation bl(pipe_topology);
   Model::Scheme::Implicitboxscheme scheme;
   scheme.evaluate_point(
       expected_result, last_time, new_time, actual_Delta_x, last_left,
-      last_right, new_left, new_right, bl, diameter, roughness);
+      last_right, new_left, new_right, bl);
 
   EXPECT_DOUBLE_EQ(expected_result[0], rootvalues.segment<2>(1)[0]);
   EXPECT_DOUBLE_EQ(expected_result[1], rootvalues.segment<2>(1)[1]);
@@ -765,7 +766,7 @@ TEST_F(GasTEST, Pipe_evaluate_state_derivative) {
 
   nlohmann::json pipe_topology = pipe_json(
       id, node0, node1, length, "m", diameter, "m", roughness, "m",
-      desired_delta_x);
+      desired_delta_x, "Isothermaleulerequation", "Implicitboxscheme");
 
   std::vector<std::pair<double, Eigen::Matrix<double, 2, 1>>> initialvalues;
   {
@@ -808,7 +809,7 @@ TEST_F(GasTEST, Pipe_evaluate_state_derivative) {
 
   Eigen::Matrix4d DenseJ = J;
 
-  Model::Balancelaw::Isothermaleulerequation bl;
+  Model::Balancelaw::Isothermaleulerequation bl(pipe_topology);
   Model::Scheme::Implicitboxscheme scheme;
   double Delta_x = length;
   auto last_left = last_state.segment<2>(0);
@@ -818,10 +819,10 @@ TEST_F(GasTEST, Pipe_evaluate_state_derivative) {
 
   auto dleft = scheme.devaluate_point_dleft(
       last_time, new_time, Delta_x, last_left, last_right, new_left, new_right,
-      bl, diameter, roughness);
+      bl);
   auto dright = scheme.devaluate_point_dright(
       last_time, new_time, Delta_x, last_right, last_right, new_right,
-      new_right, bl, diameter, roughness);
+      new_right, bl);
 
   EXPECT_DOUBLE_EQ(DenseJ(1, 0), dleft(0, 0));
   EXPECT_DOUBLE_EQ(DenseJ(1, 1), dleft(0, 1));
@@ -860,7 +861,8 @@ nlohmann::json pipe_json(
     std::string id, nlohmann::json const &startnode,
     nlohmann::json const &endnode, double length, std::string length_unit,
     double diameter, std::string diameter_unit, double roughness,
-    std::string roughness_unit, double desired_delta_x) {
+    std::string roughness_unit, double desired_delta_x, std::string balancelaw,
+    std::string scheme) {
   nlohmann::json pipe_topology;
   pipe_topology["id"] = id;
   pipe_topology["from"] = startnode["id"];
@@ -872,5 +874,7 @@ nlohmann::json pipe_json(
   pipe_topology["roughness"]["value"] = roughness;
   pipe_topology["roughness"]["unit"] = roughness_unit;
   pipe_topology["desired_delta_x"] = desired_delta_x;
+  pipe_topology["balancelaw"] = balancelaw;
+  pipe_topology["scheme"] = scheme;
   return pipe_topology;
 }

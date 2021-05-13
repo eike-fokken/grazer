@@ -1,5 +1,4 @@
 #pragma once
-#include "Threepointscheme.hpp"
 #include <Eigen/Sparse>
 
 namespace Model::Balancelaw {
@@ -8,34 +7,36 @@ namespace Model::Balancelaw {
 
 namespace Model::Scheme {
 
-  class Implicitboxscheme : public Threepointscheme {
+  class Threepointscheme {
+
   public:
-    ~Implicitboxscheme() override {}
-    /// Computes the implicit box scheme at one point.
-    void evaluate_point(
+    virtual ~Threepointscheme() {}
+
+    /// Computes the scheme at one point.
+    virtual void evaluate_point(
         Eigen::Ref<Eigen::Vector2d> result, double last_time, double new_time,
         double Delta_x, Eigen::Ref<Eigen::Vector2d const> last_left,
         Eigen::Ref<Eigen::Vector2d const> last_right,
         Eigen::Ref<Eigen::Vector2d const> new_left,
         Eigen::Ref<Eigen::Vector2d const> new_right,
-        Model::Balancelaw::Pipe_Balancelaw const &bl) const override;
+        Model::Balancelaw::Pipe_Balancelaw const &bl) const = 0;
 
     /// The derivative with respect to \code{.cpp}last_left\endcode
-    Eigen::Matrix2d devaluate_point_dleft(
+    virtual Eigen::Matrix2d devaluate_point_dleft(
         double last_time, double new_time, double Delta_x,
         Eigen::Ref<Eigen::Vector2d const> last_left,
         Eigen::Ref<Eigen::Vector2d const> last_right,
         Eigen::Ref<Eigen::Vector2d const> new_left,
         Eigen::Ref<Eigen::Vector2d const> new_right,
-        Model::Balancelaw::Pipe_Balancelaw const &bl) const override;
+        Model::Balancelaw::Pipe_Balancelaw const &bl) const = 0;
 
     /// \brief The derivative with respect to \code{.cpp}last_right\endcode
-    Eigen::Matrix2d devaluate_point_dright(
+    virtual Eigen::Matrix2d devaluate_point_dright(
         double last_time, double new_time, double Delta_x,
         Eigen::Ref<Eigen::Vector2d const> last_left,
         Eigen::Ref<Eigen::Vector2d const> last_right,
         Eigen::Ref<Eigen::Vector2d const> new_left,
         Eigen::Ref<Eigen::Vector2d const> new_right,
-        Model::Balancelaw::Pipe_Balancelaw const &bl) const override;
+        Model::Balancelaw::Pipe_Balancelaw const &bl) const = 0;
   };
 } // namespace Model::Scheme
