@@ -5,8 +5,12 @@
 #include <ostream>
 #include <stdexcept>
 #include "Componentfactory.hpp"
+#include "PQnode.hpp"
+#include "PVnode.hpp"
 #include "Power_factory.hpp"
 #include "Node.hpp"
+#include "Powernode.hpp"
+#include "Vphinode.hpp"
 
 TEST(sort_json_vectors_by_idTEST, not_sorted) {
 
@@ -125,8 +129,9 @@ TEST(build_node_vectorTEST, node_type_not_known) {
              {{"id","N201"},
               {"data",
                {{{"time",0},{"values",{1.01,-0.203}}},
-                {{"time",0},{"values",{1.01,-0.203}}}}}}}},
-           {{"B", -28.2023789002},
+                {{"time",0},{"values",{1.01,-0.203}}}}}}}}}},
+         {"PVnode",
+          {{{"B", -29.2023789002},
             {"G", 1.7238407171},
             {"id", "N202"},
             {"boundary_values",
@@ -134,15 +139,16 @@ TEST(build_node_vectorTEST, node_type_not_known) {
               {"data",
                {{{"time",0},{"values",{1.01,-0.203}}},
                 {{"time",0},{"values",{1.01,-0.203}}}}}}}}}},
-         {"PVnode",
-          {{{"B", -29.2023789002},
+         {"PQnode",
+          {{{"B", -16.2023789002},
             {"G", 1.7238407171},
             {"id", "N203"},
             {"boundary_values",
              {{"id","N203"},
               {"data",
                {{{"time",0},{"values",{1.01,-0.203}}},
-                {{"time",0},{"values",{1.01,-0.203}}}}}}}},
+                {{"time",0},{"values",{1.01,-0.203}}}}}}}}}},
+         {"wrong_node_type_name",
            {{"B", -26.2023789002},
             {"G", 1.7238407171},
             {"id", "N204"},
@@ -150,43 +156,60 @@ TEST(build_node_vectorTEST, node_type_not_known) {
              {{"id","N204"},
               {"data",
                {{{"time",0},{"values",{1.01,-0.203}}},
+                {{"time",0},{"values",{1.01,-0.203}}}}}}}}}};
+
+  EXPECT_THROW(Model::Networkproblem::build_node_vector(node_topology, nodetypemap),std::runtime_error);
+}
+
+TEST(build_node_vectorTEST, evaluate) {
+
+  Model::Componentfactory::Power_factory power_factory;
+  auto &nodetypemap = power_factory.node_type_map;
+
+  nlohmann::json node_topology;
+  std::vector<std::unique_ptr<Network::Node>> nodes;
+
+ 
+  node_topology
+      = {{"Vphinode",
+          {{{"B", -25.2023789002},
+            {"G", 1.7238407171},
+            {"id", "N201"},
+            {"boundary_values",
+             {{"id","N201"},
+              {"data",
+               {{{"time",0},{"values",{1.01,-0.203}}},
+                {{"time",0},{"values",{1.01,-0.203}}}}}}}}}},
+         {"PVnode",
+          {{{"B", -29.2023789002},
+            {"G", 1.7238407171},
+            {"id", "N202"},
+            {"boundary_values",
+             {{"id","N202"},
+              {"data",
+               {{{"time",0},{"values",{1.01,-0.203}}},
                 {{"time",0},{"values",{1.01,-0.203}}}}}}}}}},
          {"PQnode",
           {{{"B", -16.2023789002},
             {"G", 1.7238407171},
-            {"id", "N205"},
+            {"id", "N203"},
             {"boundary_values",
-             {{"id","N205"},
-              {"data",
-               {{{"time",0},{"values",{1.01,-0.203}}},
-                {{"time",0},{"values",{1.01,-0.203}}}}}}}},
-           {{"B", -17.2023789002},
-            {"G", 1.7238407171},
-            {"id", "N206"},
-            {"boundary_values",
-             {{"id","N206"},
-              {"data",
-               {{{"time",0},{"values",{1.01,-0.203}}},
-                {{"time",0},{"values",{1.01,-0.203}}}}}}}}}},
-         {"wrong_node_type_name",
-          {{{"B", -26.2023789002},
-            {"G", 1.7238407171},
-            {"id", "N207"},
-            {"boundary_values",
-             {{"id","N207"},
-              {"data",
-               {{{"time",0},{"values",{1.01,-0.203}}},
-                {{"time",0},{"values",{1.01,-0.203}}}}}}}},
-           {{"B", -26.2023789002},
-            {"G", 1.7238407171},
-            {"id", "N208"},
-            {"boundary_values",
-             {{"id","N208"},
+             {{"id","N203"},
               {"data",
                {{{"time",0},{"values",{1.01,-0.203}}},
                 {{"time",0},{"values",{1.01,-0.203}}}}}}}}}}};
 
-  EXPECT_THROW(Model::Networkproblem::build_node_vector(node_topology, nodetypemap),std::runtime_error);
+  nodes = Model::Networkproblem::build_node_vector(node_topology, nodetypemap);
+
+  if (not dynamic_cast<Model::Networkproblem::Power::PQnode*>(nodes[0].get())) {
+    FAIL();
+  };
+  if (not dynamic_cast<Model::Networkproblem::Power::PVnode *>(nodes[1].get())) {
+    FAIL();
+  };
+  if (not dynamic_cast<Model::Networkproblem::Power::Vphinode *>(nodes[2].get())) {
+    FAIL();
+  };
 }
 
 TEST(build_edge_vectorTEST, edge_type_not_known) {
@@ -199,58 +222,35 @@ TEST(build_edge_vectorTEST, edge_type_not_known) {
   nlohmann::json node_topology;
   std::vector<std::unique_ptr<Network::Node>> nodes;
 
+ 
   node_topology
       = {{"Vphinode",
           {{{"B", -25.2023789002},
             {"G", 1.7238407171},
             {"id", "N201"},
             {"boundary_values",
-             {{"id", "N201"},
+             {{"id","N201"},
               {"data",
-               {{{"time", 0}, {"values", {1.01, -0.203}}},
-                {{"time", 0}, {"values", {1.01, -0.203}}}}}}}},
-           {{"B", -28.2023789002},
-            {"G", 1.7238407171},
-            {"id", "N202"},
-            {"boundary_values",
-             {{"id", "N202"},
-              {"data",
-               {{{"time", 0}, {"values", {1.01, -0.203}}},
-                {{"time", 0}, {"values", {1.01, -0.203}}}}}}}}}},
+               {{{"time",0},{"values",{1.01,-0.203}}},
+                {{"time",0},{"values",{1.01,-0.203}}}}}}}}}},
          {"PVnode",
           {{{"B", -29.2023789002},
             {"G", 1.7238407171},
-            {"id", "N203"},
+            {"id", "N202"},
             {"boundary_values",
-             {{"id", "N203"},
+             {{"id","N202"},
               {"data",
-               {{{"time", 0}, {"values", {1.01, -0.203}}},
-                {{"time", 0}, {"values", {1.01, -0.203}}}}}}}},
-           {{"B", -26.2023789002},
-            {"G", 1.7238407171},
-            {"id", "N204"},
-            {"boundary_values",
-             {{"id", "N204"},
-              {"data",
-               {{{"time", 0}, {"values", {1.01, -0.203}}},
-                {{"time", 0}, {"values", {1.01, -0.203}}}}}}}}}},
+               {{{"time",0},{"values",{1.01,-0.203}}},
+                {{"time",0},{"values",{1.01,-0.203}}}}}}}}}},
          {"PQnode",
           {{{"B", -16.2023789002},
             {"G", 1.7238407171},
-            {"id", "N205"},
+            {"id", "N203"},
             {"boundary_values",
-             {{"id", "N205"},
+             {{"id","N203"},
               {"data",
-               {{{"time", 0}, {"values", {1.01, -0.203}}},
-                {{"time", 0}, {"values", {1.01, -0.203}}}}}}}},
-           {{"B", -17.2023789002},
-            {"G", 1.7238407171},
-            {"id", "N206"},
-            {"boundary_values",
-             {{"id", "N206"},
-              {"data",
-               {{{"time", 0}, {"values", {1.01, -0.203}}},
-                {{"time", 0}, {"values", {1.01, -0.203}}}}}}}}}}};
+               {{{"time",0},{"values",{1.01,-0.203}}},
+                {{"time",0},{"values",{1.01,-0.203}}}}}}}}}}};
 
   nodes = Model::Networkproblem::build_node_vector(node_topology, nodetypemap);
 
@@ -258,21 +258,22 @@ TEST(build_edge_vectorTEST, edge_type_not_known) {
   nlohmann::json edge_topology;
 
   edge_topology
-    =  {{"wrong_edge_tape_name",
+    =  {{"wrong_edge_type_name",
           {{{"from", "N203"},
-            {"to", "N206"},
+            {"to", "N202"},
             {"B",1},
             {"G",1},
             {"id", "N201"},
             {"power2gas_q_coeff",1},
             {"gas2power_q_coeff",1}},
-           {{"from", "N204"},
-            {"to", "N205"},
+           {{"from", "N201"},
+            {"to", "N202"},
             {"B",2},
             {"G",2},
-            {"id", "N202"},
+            {"id", "N203"},
             {"power2gas_q_coeff",0.5},
             {"gas2power_q_coeff",0.5}}}}};
 
   EXPECT_THROW(Model::Networkproblem::build_edge_vector(edge_topology, nodes, edgetypemap),std::runtime_error);
 }
+
