@@ -27,18 +27,18 @@ json load_json_file(std::string const &location) {
   }
 }
 
-void validation::validate_json(json const &data) {
-  validation::validate_json(data, data["$schema"].get<std::string>());
+void Aux::schema::validate_json(json const &data) {
+  Aux::schema::validate_json(data, data["$schema"].get<std::string>());
   return;
 }
 
-void validation::validate_json(
+void Aux::schema::validate_json(
     json const &data, std::string const &schema_location) {
   json schema = load_json_file(schema_location);
-  validation::validate_json(data, schema);
+  Aux::schema::validate_json(data, schema);
 }
 
-void validation::validate_json(json const &data, json const &schema) {
+void Aux::schema::validate_json(json const &data, json const &schema) {
 
   // setup validator
   json_validator validator;

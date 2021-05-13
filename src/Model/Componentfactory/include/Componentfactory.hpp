@@ -205,7 +205,7 @@ namespace Model::Componentfactory {
     std::unique_ptr<Network::Node>
     make_instance(nlohmann::json const &topology) const override {
 
-      validation::validate_json(topology, this->get_schema(true));
+      Aux::schema::validate_json(topology, this->get_schema(true));
       return std::make_unique<ConcreteNode>(topology);
     };
   };
@@ -298,7 +298,7 @@ namespace Model::Componentfactory {
     std::unique_ptr<Network::Edge> make_instance(
         nlohmann::json const &topology,
         std::vector<std::unique_ptr<Network::Node>> &nodes) const override {
-      validation::validate_json(topology, this->get_schema(true));
+      Aux::schema::validate_json(topology, this->get_schema(true));
       return std::make_unique<ConcreteEdge>(topology, nodes);
     };
   };
