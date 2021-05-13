@@ -333,23 +333,23 @@ namespace Model::Componentfactory {
      *
      * @return nlohmann::json
      */
-    nlohmann::json get_topology_schema(bool const include_external);
+    nlohmann::json get_topology_schema(bool const include_external) const;
 
     /**
      * @brief Return the Full JSON Schema for the Boundary Behaviour Description
      *
      * @return nlohmann::json
      */
-    nlohmann::json get_boundary_schema();
+    nlohmann::json get_boundary_schema() const;
 
-    nlohmann::json get_control_schema();
+    nlohmann::json get_control_schema() const;
 
     /**
      * @brief Return the Full JSON Schema for the Initial Data Description
      *
      * @return nlohmann::json
      */
-    nlohmann::json get_initial_schema();
+    nlohmann::json get_initial_schema() const;
   };
 
 } // namespace Model::Componentfactory
