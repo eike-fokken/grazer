@@ -62,22 +62,6 @@ namespace Aux_executable {
   }
 
   std::tuple<
-      std::filesystem::path, std::filesystem::path, std::filesystem::path,
-      double, double, double>
-  extract_input_data(std::vector<std::string> cmd_arguments) {
-
-    std::filesystem::path topology("");
-    std::filesystem::path initial("");
-    std::filesystem::path boundary("");
-
-    double delta_t = 0.;
-    double delta_x = 0.;
-    double T = 0.;
-
-    return std::make_tuple(topology, initial, boundary, delta_t, delta_x, T);
-  }
-
-  std::tuple<
       std::filesystem::path, std::filesystem::path, std::filesystem::path>
   prepare_inputfiles(std::vector<std::string> input_filenames) {
     if (input_filenames.size() != 3) {
