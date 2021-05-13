@@ -15,6 +15,8 @@ add_executable(make_boundary_schema make_boundary_schema.cpp)
 target_link_libraries(make_boundary_schema componentfactory full_factory)
 add_executable(make_initial_schema make_initial_schema.cpp)
 target_link_libraries(make_initial_schema componentfactory full_factory)
+add_executable(make_schemas make_schemas.cpp)
+target_link_libraries(make_schemas full_factory aux_schema_generation input_output)
 
 
 add_executable(get_mean_sigma get_mean_sigma.cpp)
