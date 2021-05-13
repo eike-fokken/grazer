@@ -55,7 +55,7 @@ TEST(make_cmd_argument_vectorTEST, two_arguments) {
   std::vector<std::string> vec;
   vec = {"arg1", "arg2"};
 
-  EXPECT_EQ(Aux_executable::make_cmd_argument_vector(argc, argv), vec);
+  EXPECT_EQ(Aux_executable::args_as_vector(argc, argv), vec);
 }
 
 TEST_F(prepare_output_dirTEST, path_not_below_current_dir) {

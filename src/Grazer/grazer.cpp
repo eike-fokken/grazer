@@ -13,7 +13,7 @@
 int main(int argc, char **argv) {
   try {
     std::vector<std::string> cmd_arguments
-        = Aux_executable::make_cmd_argument_vector(argc, argv);
+        = Aux_executable::args_as_vector(argc, argv);
 
     std::filesystem::path problem_data_file
         = Aux_executable::extract_input_data(cmd_arguments);

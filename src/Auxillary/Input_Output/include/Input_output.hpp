@@ -7,7 +7,7 @@
 namespace Aux_executable {
 
   /// Makes a C++ vector of strings out of the C-style commandline arguments.
-  std::vector<std::string> make_cmd_argument_vector(int argc, char **argv);
+  std::vector<std::string> args_as_vector(int argc, char **argv);
 
   /// Checks whether the given path filepath is inside of problem_root_path.
   ///

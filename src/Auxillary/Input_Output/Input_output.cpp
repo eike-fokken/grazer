@@ -21,11 +21,8 @@ namespace Aux_executable {
     }
   }
 
-  std::vector<std::string> make_cmd_argument_vector(int argc, char **argv) {
-    char **cmd_argument_pointer = argv;
-    std::vector<std::string> cmd_arguments(
-        cmd_argument_pointer + 1, cmd_argument_pointer + argc);
-    return cmd_arguments;
+  std::vector<std::string> args_as_vector(int argc, char **argv) {
+    return std::vector<std::string>(argv + 1, argv + argc);
   }
 
   std::filesystem::path prepare_output_dir(std::string output_dir_string) {
