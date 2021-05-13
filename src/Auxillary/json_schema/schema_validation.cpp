@@ -6,7 +6,7 @@
 #include <nlohmann/json.hpp>
 #include <sstream>
 
-#include "json_validation.hpp"
+#include "schema_validation.hpp"
 
 using nlohmann::json;
 using nlohmann::json_schema::json_validator;

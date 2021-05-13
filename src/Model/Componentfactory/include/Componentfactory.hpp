@@ -1,7 +1,7 @@
 #pragma once
 #include "Edge.hpp"
 #include "Node.hpp"
-#include "json_validation.hpp"
+#include "schema_validation.hpp"
 #include <Statecomponent.hpp>
 #include <exception>
 #include <make_schema.hpp>

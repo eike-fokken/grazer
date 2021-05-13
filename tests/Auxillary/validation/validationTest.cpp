@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <json_validation.hpp>
+#include <schema_validation.hpp>
 #include <nlohmann/json.hpp>
 
 using nlohmann::json;
