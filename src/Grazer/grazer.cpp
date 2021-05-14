@@ -10,8 +10,9 @@
 #include <nlohmann/json.hpp>
 #include <string>
 
-
-int run(std::deque<std::string> cmd_arguments) {
+int run(
+    std::deque<std::string> cmd_arguments,
+    std::map<std::string, std::string> kwargs) {
   std::filesystem::path problem_data_file
       = io::extract_input_data(cmd_arguments);
 
@@ -43,17 +44,19 @@ int run(std::deque<std::string> cmd_arguments) {
   int number_of_states = problem.set_indices();
   std::cout << "data read" << std::endl;
 
-  timeevolver.simulate(
-      timedata, problem, number_of_states, initial_value_json);
+  timeevolver.simulate(timedata, problem, number_of_states, initial_value_json);
   return 0;
 }
 
+io::Command grazer(
+    {{run, /*options=*/std::vector<io::Option>(), /*name=*/"run",
+      /*description=*/"solve problem"}},
+    /*name=*/"grazer",
+    /*description=*/"PDE Solver");
+
 int main(int argc, char **argv) {
   try {
-    return io::program_switchboard(
-      io::args_as_deque(argc, argv), {
-      {"run", run}
-    });
+    return grazer.execute(io::args_as_deque(argc, argv));
   } catch (std::exception const &ex) {
     std::cout << "An exception was thrown!\n"
               << "All available data has been printed to output files\n"

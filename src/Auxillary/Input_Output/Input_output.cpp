@@ -49,7 +49,7 @@ namespace io {
         std::cout << "  " << command.name << "  " << command.description
                   << "\n";
       }
-      std::cout << "\n";
+      std::cout << std::endl;
     } else {
       gthrow({"Should not be reachable"});
     }
@@ -62,7 +62,8 @@ namespace io {
           if (not args.empty()) {
             for (auto const &command : subcommands) {
               if (command.name == args[0]) {
-                return command.execute(args);
+                args.pop_front();
+                return command.execute(args, kwargs["__name__"] + command.name);
               }
             }
           }
@@ -85,35 +86,13 @@ namespace io {
     return std::deque<std::string>(argv + 1, argv + argc);
   }
 
-  int Command::execute(std::deque<string> arguments) const {
+  int Command::execute(std::deque<string> arguments, string group_name) const {
     std::map<string, string> kwargs;
-    kwargs["__name__"] = arguments[0] + this->name;
-    arguments.pop_front();
+    kwargs["__name__"] = group_name + this->name;
     kwargs["__description__"] = this->description;
     // find command.options in arguments parse into kwargs, pop them
     std::deque<string> args = arguments;
     return this->program(args, kwargs);
-  }
-
-  int help(std::map<string, std::function<int(std::deque<string>)>> programs) {
-    std::cout << "Commands: ";
-    for (auto const &[name, _] : programs) { std::cout << name; }
-    std::cout << std::endl;
-    return 0;
-  }
-
-  int program_switchboard(
-      std::deque<string> args,
-      std::map<string, std::function<int(std::deque<string>)>> programs) {
-    if (args.empty()) {
-      return help(programs);
-    }
-    auto search = programs.find(args[0]);
-    if (search == programs.end()) {
-      return help(programs);
-    }
-    args.pop_front();
-    return search->second(args);
   }
 
   std::filesystem::path prepare_output_dir(string output_dir_string) {

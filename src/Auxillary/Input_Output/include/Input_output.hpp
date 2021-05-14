@@ -32,7 +32,7 @@ namespace io {
   public:
     string const name;
     string const description; // help text
-    int execute(std::deque<string> arguments) const;
+    int execute(std::deque<string> arguments, string group_name="") const;
 
     /**
      * @brief Create a Command Group
@@ -61,10 +61,6 @@ namespace io {
   void print_help(
       string program_name, string program_description,
       std::vector<Option> options, std::vector<Command> commands);
-
-  int program_switchboard(
-      std::deque<string> args,
-      std::map<string, std::function<int(std::deque<string>)>> programs);
 
   std::deque<std::string> args_as_deque(int argc, char **argv);
 
