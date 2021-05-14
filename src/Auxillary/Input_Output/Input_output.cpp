@@ -22,20 +22,82 @@ namespace io {
     }
   }
 
-  std::vector<std::string> args_as_vector(int argc, char **argv) {
-    return std::vector<std::string>(argv + 1, argv + argc);
+  Command::Command(
+      io::program const _program, std::vector<Option> const _options,
+      string const _name, string const _description) :
+      program(_program),
+      options(_options),
+      name(_name),
+      description(_description) {}
+
+  void print_help(
+      string program_name, string program_description,
+      std::vector<Option> options, std::vector<Command> commands) {
+    std::cout << "Usage: " << program_name << " "
+              << (options.empty() ? "" : "[OPTIONS]")
+              << (commands.empty() ? "" : "COMMAND") << "[ARGS]...\n";
+    std::cout << "  " << program_description << "\n";
+    if (not options.empty()) {
+      std::cout << "Options:\n";
+      for (auto const &option : options) {
+        std::cout << "  " << option.name << "  " << option.description << "\n";
+      }
+      std::cout << "\n";
+    } else if (not commands.empty()) {
+      std::cout << "Commands:\n";
+      for (auto const &command : commands) {
+        std::cout << "  " << command.name << "  " << command.description
+                  << "\n";
+      }
+      std::cout << "\n";
+    } else {
+      gthrow({"Should not be reachable"});
+    }
   }
+
+  io::program program_switchboard(std::vector<Command> subcommands) {
+    return
+        [subcommands](
+            std::deque<string> args, std::map<string, string> kwargs) -> int {
+          if (not args.empty()) {
+            for (auto const &command : subcommands) {
+              if (command.name == args[0]) {
+                return command.execute(args);
+              }
+            }
+          }
+          print_help(
+              kwargs["__name__"], kwargs["__description__"],
+              std::vector<Option>(), subcommands);
+          return 1;
+        };
+  }
+
+  Command::Command(
+      std::vector<Command> const subcommands, string const _name,
+      string const _description) :
+      program(program_switchboard(subcommands)),
+      options(std::vector<Option>()),
+      name(_name),
+      description(_description) {}
+
   std::deque<std::string> args_as_deque(int argc, char **argv) {
     return std::deque<std::string>(argv + 1, argv + argc);
   }
 
-  typedef std::function<int(std::deque<string>)> program;
+  int Command::execute(std::deque<string> arguments) const {
+    std::map<string, string> kwargs;
+    kwargs["__name__"] = arguments[0] + this->name;
+    arguments.pop_front();
+    kwargs["__description__"] = this->description;
+    // find command.options in arguments parse into kwargs, pop them
+    std::deque<string> args = arguments;
+    return this->program(args, kwargs);
+  }
 
-  int help(std::map<string, program> programs) {
+  int help(std::map<string, std::function<int(std::deque<string>)>> programs) {
     std::cout << "Commands: ";
-    for (auto const &[name, _] : programs) {
-      std::cout << name;
-    }
+    for (auto const &[name, _] : programs) { std::cout << name; }
     std::cout << std::endl;
     return 0;
   }

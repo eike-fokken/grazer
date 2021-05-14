@@ -8,7 +8,7 @@ using std::filesystem::path;
 namespace fs = std::filesystem;
 
 int main(int argc, char **argv) {
-  auto arguments = io::args_as_vector(argc, argv);
+  auto arguments = io::args_as_deque(argc, argv);
 
   path schema_dir;
   switch (arguments.size()) {

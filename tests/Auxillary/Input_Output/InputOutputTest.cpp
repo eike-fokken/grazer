@@ -52,10 +52,10 @@ TEST(make_cmd_argument_vectorTEST, two_arguments) {
   int argc = 3;
   char **argv = const_cast<char **>(const_argv);
 
-  std::vector<std::string> vec;
+  std::deque<std::string> vec;
   vec = {"arg1", "arg2"};
 
-  EXPECT_EQ(io::args_as_vector(argc, argv), vec);
+  EXPECT_EQ(io::args_as_deque(argc, argv), vec);
 }
 
 TEST_F(prepare_output_dirTEST, path_not_below_current_dir) {

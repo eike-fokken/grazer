@@ -1,8 +1,10 @@
 #pragma once
-#include <filesystem>
 #include <deque>
-#include <map>
+#include <filesystem>
 #include <functional>
+#include <variant>
+#include <map>
+#include <optional>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -10,13 +12,61 @@
 namespace io {
   using std::string;
 
-  /// Makes a C++ vector of strings out of the C-style commandline arguments.
-  std::vector<std::string> args_as_vector(int argc, char **argv);
-  std::deque<std::string> args_as_deque(int argc, char **argv);
+  class Option {
+    // no default means required
+    std::optional<string> default_value;
+  public:
+    string name;
+    string description; // help text
+    Option(
+        string name, std::optional<string> default_value,
+        string description = "");
+  };
+
+  using program
+      = std::function<int(std::deque<string>, std::map<string, string>)>;
+
+  class Command {
+    program const program;
+    std::vector<Option> const options;
+  public:
+    string const name;
+    string const description; // help text
+    int execute(std::deque<string> arguments) const;
+
+    /**
+     * @brief Create a Command Group
+     *
+     * @param subcommands
+     * @param name
+     * @param description
+     */
+    Command(
+        std::vector<Command> const subcommands, string const name,
+        string const description = "");
+
+    /**
+     *@brief Create a normal Command
+     *
+     * @param prgrm
+     * @param options
+     * @param name
+     * @param description
+     */
+    Command(
+        io::program const program, std::vector<Option> const options,
+        string const name, string const description);
+  };
+
+  void print_help(
+      string program_name, string program_description,
+      std::vector<Option> options, std::vector<Command> commands);
 
   int program_switchboard(
       std::deque<string> args,
       std::map<string, std::function<int(std::deque<string>)>> programs);
+
+  std::deque<std::string> args_as_deque(int argc, char **argv);
 
   /// Checks whether the given path filepath is inside of problem_root_path.
   ///
