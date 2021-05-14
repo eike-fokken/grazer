@@ -6,13 +6,13 @@ include(CheckIPOSupported)
 
 
 #for multiple compiler compatibility:
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 #for development:
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(BUILD_WITH_LIBCPP "Build with libc++ instead of libstdc++, if the compiler is clang." OFF)
 
@@ -26,6 +26,9 @@ if (BUILD_WITH_LIBCPP AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 endif()
 enable_testing()
 
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+  add_compile_definitions("$<$<CONFIG:DEBUG>:_GLIBCXX_DEBUG>")
+endif()
 
 # https://github.com/google/googletest/blob/master/googletest/README.md#visual-studio-dynamic-vs-static-runtimes
 # https://stackoverflow.com/a/12546288/6662425 "how to activate that flag"
