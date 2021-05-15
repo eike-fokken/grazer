@@ -9,10 +9,11 @@
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <string>
+#include <any>
 
 int run(
     std::deque<std::string> cmd_arguments,
-    std::map<std::string, std::string> kwargs) {
+    std::map<std::string, std::any> kwargs) {
   std::filesystem::path problem_data_file
       = io::extract_input_data(cmd_arguments);
 

@@ -2,6 +2,7 @@
 #include <Input_output.hpp>
 #include <filesystem>
 #include <iostream>
+#include <stdexcept>
 
 namespace io {
   using std::string;
@@ -22,63 +23,101 @@ namespace io {
     }
   }
 
+  template <typename Elt>
+  void print_vec(std::vector<Elt> elts_with_name_and_description) {
+    for (auto const &elt : elts_with_name_and_description) {
+      std::cout << "  " << elt.name << "  " << elt.description << "\n";
+    }
+    std::cout << "\n";
+  }
+
+  void Command::print_help() const {
+    // print first line
+    std::cout << "\nUsage: " << this->name << " "
+              << (this->options.empty() ? "" : "[OPTIONS] ");
+    bool command_group = std::holds_alternative<std::vector<Command>>(
+        this->args_or_subcommands);
+    if (command_group) {
+      std::cout << "COMMAND [ARGS]...\n";
+    } else {
+      auto arguments = std::get<std::vector<string>>(args_or_subcommands);
+      for (string arg : arguments) {
+        for (auto &c : arg) c = static_cast<char>(toupper(c));
+        std::cout << arg << "\n";
+      }
+    }
+    // print description
+    std::cout << (this->description == "" ? "" : "\n   " + description + "\n")
+              << "\n";
+    // print options
+    if (not this->options.empty()) {
+      std::cout << "Options:\n";
+      print_vec(this->options);
+    }
+    // print commands
+    if (command_group) {
+      auto commands = std::get<std::vector<Command>>(this->args_or_subcommands);
+      if (not commands.empty()) {
+        std::cout << "Commands:\n";
+        print_vec(commands);
+      }
+    }
+    std::cout << std::endl;
+  }
+
+  template <typename K, typename E>
+  void insert_new(std::map<K, E> map, K key, E element) {
+    const auto [it, success] = map.insert({key, element});
+    if (not success) {
+      gthrow({"The element to insert is not new!"});
+    }
+    return;
+  }
+
+  std::map<string, size_t> hash_map_from_vec(std::vector<Option> options) {
+    std::map<string, size_t> result;
+    for (size_t idx = 0; idx < options.size(); idx++) {
+      insert_new(result, options[idx].name, idx);
+      for (auto const &alias : options[idx].alias) {
+        insert_new(result, alias, idx);
+      }
+    }
+    return result;
+  }
+
+  io::program group(std::vector<Command> subcommands) {
+    return [subcommands](
+               std::deque<string> args,
+               std::map<string, std::any> kwargs) -> int {
+      if (not args.empty()) {
+        for (auto const &command : subcommands) {
+          if (command.name == args[0]) {
+            args.pop_front();
+            return command.execute(
+                args, std::any_cast<string>(kwargs["__name__"]) + command.name);
+          }
+        }
+        throw std::invalid_argument("No such command: " + args[0]);
+      }
+      throw std::invalid_argument("Missing Command");
+    };
+  }
+
   Command::Command(
       io::program const _program, std::vector<Option> const _options,
       string const _name, string const _description) :
       program(_program),
       options(_options),
+      opt_name_map(hash_map_from_vec(_options)),
       name(_name),
       description(_description) {}
-
-  void print_help(
-      string program_name, string program_description,
-      std::vector<Option> options, std::vector<Command> commands) {
-    std::cout << "Usage: " << program_name << " "
-              << (options.empty() ? "" : "[OPTIONS]")
-              << (commands.empty() ? "" : "COMMAND") << "[ARGS]...\n";
-    std::cout << "  " << program_description << "\n";
-    if (not options.empty()) {
-      std::cout << "Options:\n";
-      for (auto const &option : options) {
-        std::cout << "  " << option.name << "  " << option.description << "\n";
-      }
-      std::cout << "\n";
-    } else if (not commands.empty()) {
-      std::cout << "Commands:\n";
-      for (auto const &command : commands) {
-        std::cout << "  " << command.name << "  " << command.description
-                  << "\n";
-      }
-      std::cout << std::endl;
-    } else {
-      gthrow({"Should not be reachable"});
-    }
-  }
-
-  io::program program_switchboard(std::vector<Command> subcommands) {
-    return
-        [subcommands](
-            std::deque<string> args, std::map<string, string> kwargs) -> int {
-          if (not args.empty()) {
-            for (auto const &command : subcommands) {
-              if (command.name == args[0]) {
-                args.pop_front();
-                return command.execute(args, kwargs["__name__"] + command.name);
-              }
-            }
-          }
-          print_help(
-              kwargs["__name__"], kwargs["__description__"],
-              std::vector<Option>(), subcommands);
-          return 1;
-        };
-  }
 
   Command::Command(
       std::vector<Command> const subcommands, string const _name,
       string const _description) :
-      program(program_switchboard(subcommands)),
+      program(group(subcommands)),
       options(std::vector<Option>()),
+      opt_name_map(hash_map_from_vec(std::vector<Option>())),
       name(_name),
       description(_description) {}
 
@@ -86,13 +125,113 @@ namespace io {
     return std::deque<std::string>(argv + 1, argv + argc);
   }
 
-  int Command::execute(std::deque<string> arguments, string group_name) const {
-    std::map<string, string> kwargs;
-    kwargs["__name__"] = group_name + this->name;
-    kwargs["__description__"] = this->description;
-    // find command.options in arguments parse into kwargs, pop them
-    std::deque<string> args = arguments;
-    return this->program(args, kwargs);
+  int Command::execute(
+      std::deque<string> args, string group_name) const noexcept {
+    std::map<string, std::any> kwargs;
+    try {
+      this->parse_options(kwargs, args);
+      return this->program(args, kwargs);
+    } catch (std::invalid_argument const &ex) {
+      std::cout << "[Invalid Argument]: " << ex.what() << std::endl;
+      this->print_help();
+    } catch (std::exception const &ex) {
+      std::cout << "[Error]: " << ex.what() << std::endl;
+    } catch (...) {
+      std::cout << "An unkown type of exception was thrown.\n\n"
+                   "This is a bug and must be fixed!\n\n"
+                << std::endl;
+    }
+    return 1;
+  }
+
+  Option Command::get_option(string const &word) const {
+    auto search = this->opt_name_map.find(word);
+    if (search == opt_name_map.end()) {
+      throw std::invalid_argument(word);
+    }
+    // opt_name_map was only filled with valid indices this should *never* be
+    // out of range
+    return this->options[search->second];
+  }
+  Option Command::get_option(char const &character) const {
+    return get_option(std::string(character, 1));
+  }
+
+  void Command::parse_options(
+      std::map<string, std::any> kwargs, std::deque<string> args) const {
+    if (args.empty()) {
+      return;
+    }
+    string option_str = args.front();
+    if (option_str.rfind("-", /*pos=*/0) == string::npos) {
+      return; // no more options
+    }
+    if (option_str.size() < 2) {
+      throw std::invalid_argument("Single dash '-' as argument");
+      // not sure how to handle it
+    }
+    // definitely have an option: pop args
+    args.pop_front();
+    if (option_str[1] == '-') {
+      //--option
+      if (option_str.size() < 3) {
+        return; // -- indicates all following words are arguments not options
+      }
+      auto eq_pos = option_str.find("=");
+      Option option = this->get_option(option_str.substr(2, eq_pos));
+
+      std::vector<string> arguments;
+      if (eq_pos == string::npos) { // --option [value]
+        arguments.reserve(option.nargs);
+        for (int idx = 0; idx < option.nargs; idx++) {
+          arguments.push_back(args.front());
+          args.pop_front();
+        }
+      } else { // --option=value
+        if (not option.nargs == 1) {
+          throw std::invalid_argument(
+              "how is an --option=value with more/less values than 1 supposed "
+              "to look?");
+        }
+        arguments.push_back(option_str.substr(eq_pos + 1));
+      }
+      kwargs[option.name] = option(arguments);
+      return this->parse_options(kwargs, args);
+    }
+    // character options
+    if (option_str.size() > 2 and option_str[2] != '=') {
+      // concatenated flag options -oaf where o a and f are all options
+      for (char const c : option_str.substr(1)) {
+        Option option = this->get_option(c);
+        if (not option.nargs == 0) {
+          throw std::invalid_argument(
+              "concatenated option " + string(1, c) + " is not a flag");
+        }
+        kwargs[option.name] = option(std::vector<string>());
+      }
+      return this->parse_options(kwargs, args);
+    }
+    Option option = this->get_option(option_str[1]);
+    std::vector<string> arguments;
+
+    if (option_str.size() <= 2) {
+      arguments.reserve(option.nargs);
+      for (int idx = 0; idx < option.nargs; idx++) {
+        arguments.push_back(args.front());
+        args.pop_front();
+      }
+    } else if (option_str[2] == '=') {
+      if (not option.nargs == 1) {
+        throw std::invalid_argument(
+            "how is an --option=value with more/less values than 1 supposed "
+            "to look?");
+      }
+      arguments.push_back(option_str.substr(3));
+    } else {
+      throw std::logic_error("unreachable statement");
+    }
+    kwargs[option.name] = option(arguments);
+    return this->parse_options(kwargs, args);
   }
 
   std::filesystem::path prepare_output_dir(string output_dir_string) {

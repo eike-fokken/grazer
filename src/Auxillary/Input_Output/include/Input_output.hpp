@@ -1,12 +1,13 @@
 #pragma once
+#include <any>
 #include <deque>
 #include <filesystem>
 #include <functional>
-#include <variant>
 #include <map>
 #include <optional>
 #include <string>
 #include <tuple>
+#include <variant>
 #include <vector>
 
 namespace io {
@@ -15,24 +16,49 @@ namespace io {
   class Option {
     // no default means required
     std::optional<string> default_value;
+
   public:
     string name;
     string description; // help text
+    std::vector<string> alias;
+    uint16_t nargs;
+    std::any operator()(std::vector<string>);
     Option(
-        string name, std::optional<string> default_value,
-        string description = "");
+        std::optional<string> default_value, string name,
+        string description = "",
+        std::vector<string> alias = std::vector<string>());
   };
 
   using program
-      = std::function<int(std::deque<string>, std::map<string, string>)>;
+      = std::function<int(std::deque<string>, std::map<string, std::any>)>;
 
   class Command {
     program const program;
     std::vector<Option> const options;
+    std::map<string, size_t> const opt_name_map;
+    std::variant<std::vector<string>, std::vector<Command>> const
+        args_or_subcommands;
+
+
+    Option get_option(string const &word) const;
+    Option get_option(char const &character) const;
+
+    /**
+     * @brief reduce args until the first element is not an option
+     *
+     * @param kwargs
+     * @param args
+     */
+    void parse_options(
+        std::map<string, std::any> kwargs, std::deque<string> args) const;
+
+    void print_help() const;
+
   public:
     string const name;
     string const description; // help text
-    int execute(std::deque<string> arguments, string group_name="") const;
+    int execute(
+        std::deque<string> arguments, string group_name = "") const noexcept;
 
     /**
      * @brief Create a Command Group
@@ -57,10 +83,6 @@ namespace io {
         io::program const program, std::vector<Option> const options,
         string const name, string const description);
   };
-
-  void print_help(
-      string program_name, string program_description,
-      std::vector<Option> options, std::vector<Command> commands);
 
   std::deque<std::string> args_as_deque(int argc, char **argv);
 
