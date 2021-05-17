@@ -23,9 +23,42 @@ namespace io {
     }
   }
 
-  std::any Option::operator()(std::vector<string> const arguments) const {
-    return this->parser(arguments);
+  Option::Option(
+      string const _name, uint16_t const _nargs,
+      std::vector<string> const _alias, string const _description,
+      std::optional<std::any> const _default_value,
+      std::function<std::any(std::vector<string>)> const _parser,
+      std::optional<
+          std::function<int(Command const *, Option const *, std::any)>> const
+          _callback,
+      bool const _is_eager) :
+      name(_name),
+      nargs(_nargs),
+      alias(_alias),
+      description(_description),
+      default_value(_default_value),
+      parser(_parser),
+      callback(_callback),
+      is_eager(_is_eager) {}
+
+  std::vector<Option>
+  preprocess_options(Command *command, std::vector<Option> options) {
+    options.push_back(Option(
+        "help", 0, {"h"}, "display help", std::nullopt,
+        [](std::vector<string>) { return std::any(std::nullopt); },
+        [](Command const * command, Option const* option, std::any) {
+          command->print_help();
+          return 0;
+        }));
+    return options;
   }
+
+  const char *EagerOptionEncountered::what() const {
+    return "encountered eager option with return code: " + this->exit_code;
+  }
+
+  EagerOptionEncountered::EagerOptionEncountered(int _exit_code) :
+      exit_code(_exit_code) {}
 
   template <typename Elt>
   void print_vec(std::vector<Elt> elts_with_name_and_description) {
@@ -37,7 +70,11 @@ namespace io {
 
   void Command::print_help() const {
     // print first line
-    std::cout << "\nUsage: " << this->parent_command << " " << this->name << " "
+    std::cout << "\nUsage: "
+              << (this->parent_command.has_value()
+                      ? parent_command.value()->name + " "
+                      : "")
+              << this->name << " "
               << (this->options.empty() ? "" : "[OPTIONS] ");
     bool command_group = std::holds_alternative<std::vector<Command>>(
         this->args_or_subcommands);
@@ -89,30 +126,30 @@ namespace io {
     return result;
   }
 
-  io::program group(std::vector<Command> subcommands) {
-    return [subcommands](
-               std::deque<string> args,
-               std::map<string, std::any> kwargs) -> int {
-      if (not args.empty()) {
-        for (auto const &command : subcommands) {
-          if (command.name == args[0]) {
-            args.pop_front();
-            return command.execute(
-                args, std::any_cast<string>(kwargs["__name__"]) + command.name);
+  io::program group(Command *parent, std::vector<Command> subcommands) {
+    for (auto &subcommand : subcommands) { subcommand.parent_command = parent; }
+    return
+        [subcommands](
+            std::deque<string> args, std::map<string, std::any> kwargs) -> int {
+          if (not args.empty()) {
+            for (auto const &command : subcommands) {
+              if (command.name == args[0]) {
+                args.pop_front();
+                return command.execute(args);
+              }
+            }
+            throw std::invalid_argument("No such command: " + args[0]);
           }
-        }
-        throw std::invalid_argument("No such command: " + args[0]);
-      }
-      throw std::invalid_argument("Missing Command");
-    };
+          throw std::invalid_argument("Missing Command");
+        };
   }
 
   Command::Command(
-      io::program const _program, std::vector<Option> const _options,
+      io::program const _program, std::vector<Option> _options,
       std::vector<string> arguments, string const _name,
       string const _description) :
       program(_program),
-      options(_options),
+      options(preprocess_options(this, _options)),
       opt_name_map(hash_map_from_vec(options)),
       args_or_subcommands(arguments),
       name(_name),
@@ -121,8 +158,8 @@ namespace io {
   Command::Command(
       std::vector<Command> const subcommands, string const _name,
       string const _description) :
-      program(group(subcommands)),
-      options(std::vector<Option>()),
+      program(group(this, subcommands)),
+      options(preprocess_options(this, std::vector<Option>())),
       opt_name_map(hash_map_from_vec(options)),
       args_or_subcommands(subcommands),
       name(_name),
@@ -132,12 +169,13 @@ namespace io {
     return std::deque<std::string>(argv + 1, argv + argc);
   }
 
-  int Command::execute(
-      std::deque<string> args, string group_name) const noexcept {
+  int Command::execute(std::deque<string> args) const noexcept {
     std::map<string, std::any> kwargs;
     try {
       this->parse_options(kwargs, args);
       return this->program(args, kwargs);
+    } catch (EagerOptionEncountered const &ex) {
+      return ex.exit_code;
     } catch (std::invalid_argument const &ex) {
       std::cout << "[Invalid Argument]: " << ex.what() << std::endl;
       this->print_help();
@@ -203,7 +241,14 @@ namespace io {
         }
         arguments.push_back(option_str.substr(eq_pos + 1));
       }
-      kwargs[option.name] = option(arguments);
+      kwargs[option.name] = option.parser(arguments);
+      if (option.callback.has_value()) {
+        int exit_code
+            = option.callback.value()(this, &option, kwargs[option.name]);
+        if (option.is_eager) {
+          throw EagerOptionEncountered(exit_code);
+        }
+      }
       return this->parse_options(kwargs, args);
     }
     // character options
@@ -215,7 +260,14 @@ namespace io {
           throw std::invalid_argument(
               "concatenated option " + string(1, c) + " is not a flag");
         }
-        kwargs[option.name] = option(std::vector<string>());
+        kwargs[option.name] = option.parser(std::vector<string>());
+        if (option.callback.has_value()) {
+          int exit_code
+              = option.callback.value()(this, &option, kwargs[option.name]);
+          if (option.is_eager) {
+            throw EagerOptionEncountered(exit_code);
+          }
+        }
       }
       return this->parse_options(kwargs, args);
     }
@@ -238,7 +290,14 @@ namespace io {
     } else {
       throw std::logic_error("unreachable statement");
     }
-    kwargs[option.name] = option(arguments);
+    kwargs[option.name] = option.parser(arguments);
+    if (option.callback.has_value()) {
+      int exit_code
+          = option.callback.value()(this, &option, kwargs[option.name]);
+      if (option.is_eager) {
+        throw EagerOptionEncountered(exit_code);
+      }
+    }
     return this->parse_options(kwargs, args);
   }
 

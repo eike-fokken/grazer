@@ -13,25 +13,10 @@
 namespace io {
   using std::string;
 
-  class Option {
-    // no default means required
-    std::optional<std::any> const default_value;
-    std::function<std::any(std::vector<string>)> const parser;
-
-  public:
-    string const name;
-    string const description; // help text
-    std::vector<string> const alias;
-    uint16_t const nargs;
-    std::any operator()(std::vector<string> const arguments) const;
-    Option(
-        std::optional<string> default_value, string name,
-        string description = "",
-        std::vector<string> alias = std::vector<string>());
-  };
-
   using program
       = std::function<int(std::deque<string>, std::map<string, std::any>)>;
+
+  class Option;
 
   class Command {
     program const program;
@@ -52,14 +37,13 @@ namespace io {
     void parse_options(
         std::map<string, std::any> kwargs, std::deque<string> args) const;
 
+  public:
     void print_help() const;
 
-  public:
     string const name;
-    string parent_command = "";
+    std::optional<Command *> parent_command = std::nullopt;
     string const description; // help text
-    int execute(
-        std::deque<string> arguments, string group_name = "") const noexcept;
+    int execute(std::deque<string> arguments) const noexcept;
 
     /**
      * @brief Create a Command Group
@@ -81,9 +65,41 @@ namespace io {
      * @param description
      */
     Command(
-        io::program const program, std::vector<Option> const options,
+        io::program const program, std::vector<Option> options,
         std::vector<string> const arguments, string const name,
         string const description);
+  };
+  class Option {
+    std::optional<std::any> const default_value;
+
+  public:
+    string const name;
+    string const description; // help text
+    std::vector<string> const alias;
+    uint16_t const nargs;
+    bool const is_eager;
+    std::function<std::any(std::vector<string>)> const parser;
+    std::optional<std::function<int(
+        Command const *, Option const *, std::any)>> const callback;
+    Option(
+        string const name,
+        uint16_t const nargs,
+        std::vector<string> const alias = std::vector<string>(),
+        string const description = "",
+        std::optional<std::any> const default_value = std::nullopt,
+        std::function<std::any(std::vector<string>)> const parser
+        = [](std::vector<string> v) { return std::any(std::nullopt); },
+        std::optional<std::function<
+            int(Command const *, Option const *, std::any)>> const callback
+        = std::nullopt,
+        bool const is_eager = false);
+  };
+
+  class EagerOptionEncountered : public std::exception {
+  public:
+    int exit_code;
+    const char *what() const override;
+    EagerOptionEncountered(int exit_code);
   };
 
   std::deque<std::string> args_as_deque(int argc, char **argv);
