@@ -57,26 +57,5 @@ io::Command grazer(
     /*description=*/"PDE Solver");
 
 int main(int argc, char **argv) {
-  try {
-    return grazer.execute(io::args_as_deque(argc, argv));
-  } catch (std::exception const &ex) {
-    std::cout << "An exception was thrown!\n"
-              << "All available data has been printed to output files\n"
-              << "(unless printing failed, if so this is indicated above this "
-                 "message.)\n"
-              << "\nUse with caution!\n"
-              << std::endl;
-    std::cout << "The error message was: \n\n"
-              << "###############################################\n"
-              << ex.what()
-              << "\n###############################################\n\n"
-              << std::endl;
-    return 1;
-  } catch (...) {
-    std::cout << "An unknown type of exception was thrown.\n\n"
-                 "This is a bug and must be fixed!\n\n"
-                 "Please contact the maintainer of Grazer!"
-              << std::endl;
-    return 1;
-  }
+  return grazer.execute(io::args_as_deque(argc, argv));
 }
