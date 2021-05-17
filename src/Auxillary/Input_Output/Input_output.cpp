@@ -44,12 +44,13 @@ namespace io {
   std::vector<Option>
   preprocess_options(Command *command, std::vector<Option> options) {
     options.push_back(Option(
-        "help", 0, {"h"}, "display help", std::nullopt,
+        "help", 0, {"h"}, "display this help text", std::nullopt,
         [](std::vector<string>) { return std::any(std::nullopt); },
         [](Command const *command, Option const *option, std::any) {
           command->print_help();
           return 0;
-        }));
+        },
+        true));
     return options;
   }
 
@@ -143,7 +144,7 @@ namespace io {
   }
 
   template <typename K, typename E>
-  void insert_new(std::map<K, E> map, K key, E element) {
+  void insert_new(std::map<K, E> &map, K key, E element) {
     const auto [it, success] = map.insert({key, element});
     if (not success) {
       gthrow({"The element to insert is not new!"});
