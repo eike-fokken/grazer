@@ -3,13 +3,13 @@
 #include "Problem.hpp"
 #include "Timeevolver.hpp"
 #include <Eigen/Sparse>
+#include <any>
 #include <chrono>
 #include <filesystem>
 #include <iostream>
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <string>
-#include <any>
 
 int run(
     std::deque<std::string> cmd_arguments,
@@ -50,7 +50,8 @@ int run(
 }
 
 io::Command grazer(
-    {{run, /*options=*/std::vector<io::Option>(), /*name=*/"run",
+    {{run, /*options=*/std::vector<io::Option>(), /*arguments=*/{"directory"},
+      /*name=*/"run",
       /*description=*/"solve problem"}},
     /*name=*/"grazer",
     /*description=*/"PDE Solver");

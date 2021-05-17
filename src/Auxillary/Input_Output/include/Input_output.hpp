@@ -15,14 +15,15 @@ namespace io {
 
   class Option {
     // no default means required
-    std::optional<string> default_value;
+    std::optional<std::any> const default_value;
+    std::function<std::any(std::vector<string>)> const parser;
 
   public:
-    string name;
-    string description; // help text
-    std::vector<string> alias;
-    uint16_t nargs;
-    std::any operator()(std::vector<string>);
+    string const name;
+    string const description; // help text
+    std::vector<string> const alias;
+    uint16_t const nargs;
+    std::any operator()(std::vector<string> const arguments) const;
     Option(
         std::optional<string> default_value, string name,
         string description = "",
@@ -38,7 +39,6 @@ namespace io {
     std::map<string, size_t> const opt_name_map;
     std::variant<std::vector<string>, std::vector<Command>> const
         args_or_subcommands;
-
 
     Option get_option(string const &word) const;
     Option get_option(char const &character) const;
@@ -56,6 +56,7 @@ namespace io {
 
   public:
     string const name;
+    string parent_command = "";
     string const description; // help text
     int execute(
         std::deque<string> arguments, string group_name = "") const noexcept;
@@ -81,7 +82,8 @@ namespace io {
      */
     Command(
         io::program const program, std::vector<Option> const options,
-        string const name, string const description);
+        std::vector<string> const arguments, string const name,
+        string const description);
   };
 
   std::deque<std::string> args_as_deque(int argc, char **argv);

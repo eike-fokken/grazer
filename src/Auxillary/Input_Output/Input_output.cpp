@@ -23,6 +23,10 @@ namespace io {
     }
   }
 
+  std::any Option::operator()(std::vector<string> const arguments) const {
+    return this->parser(arguments);
+  }
+
   template <typename Elt>
   void print_vec(std::vector<Elt> elts_with_name_and_description) {
     for (auto const &elt : elts_with_name_and_description) {
@@ -33,7 +37,7 @@ namespace io {
 
   void Command::print_help() const {
     // print first line
-    std::cout << "\nUsage: " << this->name << " "
+    std::cout << "\nUsage: " << this->parent_command << " " << this->name << " "
               << (this->options.empty() ? "" : "[OPTIONS] ");
     bool command_group = std::holds_alternative<std::vector<Command>>(
         this->args_or_subcommands);
@@ -105,10 +109,12 @@ namespace io {
 
   Command::Command(
       io::program const _program, std::vector<Option> const _options,
-      string const _name, string const _description) :
+      std::vector<string> arguments, string const _name,
+      string const _description) :
       program(_program),
       options(_options),
-      opt_name_map(hash_map_from_vec(_options)),
+      opt_name_map(hash_map_from_vec(options)),
+      args_or_subcommands(arguments),
       name(_name),
       description(_description) {}
 
@@ -117,7 +123,8 @@ namespace io {
       string const _description) :
       program(group(subcommands)),
       options(std::vector<Option>()),
-      opt_name_map(hash_map_from_vec(std::vector<Option>())),
+      opt_name_map(hash_map_from_vec(options)),
+      args_or_subcommands(subcommands),
       name(_name),
       description(_description) {}
 
@@ -153,6 +160,7 @@ namespace io {
     // out of range
     return this->options[search->second];
   }
+
   Option Command::get_option(char const &character) const {
     return get_option(std::string(character, 1));
   }
