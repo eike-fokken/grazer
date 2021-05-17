@@ -46,7 +46,7 @@ namespace io {
     options.push_back(Option(
         "help", 0, {"h"}, "display help", std::nullopt,
         [](std::vector<string>) { return std::any(std::nullopt); },
-        [](Command const * command, Option const* option, std::any) {
+        [](Command const *command, Option const *option, std::any) {
           command->print_help();
           return 0;
         }));
@@ -60,12 +60,54 @@ namespace io {
   EagerOptionEncountered::EagerOptionEncountered(int _exit_code) :
       exit_code(_exit_code) {}
 
-  template <typename Elt>
-  void print_vec(std::vector<Elt> elts_with_name_and_description) {
-    for (auto const &elt : elts_with_name_and_description) {
-      std::cout << "  " << elt.name << "  " << elt.description << "\n";
+  void print_commands(std::vector<Command> commands) {
+    if (not commands.empty()) {
+      size_t max_name_size = 0;
+      for (auto const &cmd : commands) {
+        size_t cmd_size = cmd.name.size();
+        max_name_size = cmd_size > max_name_size ? cmd_size : max_name_size;
+      }
+      std::cout << "Commands:\n";
+      for (auto const &command : commands) {
+        size_t padding = max_name_size - command.name.size();
+        std::cout << "  " << command.name << "  " << string(padding, ' ')
+                  << command.description << "\n";
+      }
+      std::cout << "\n";
     }
-    std::cout << "\n";
+  }
+
+  std::optional<string> find_character_alias(Option option) {
+    for (auto const &alias : option.alias) {
+      if (alias.size() == 1) {
+        return alias;
+      }
+    }
+    return std::nullopt;
+  }
+
+  void print_options(std::vector<Option> options) {
+    if (not options.empty()) {
+      size_t max_name_size = 0;
+      for (auto const &option : options) {
+        size_t opt_size = option.name.size();
+        max_name_size = opt_size > max_name_size ? opt_size : max_name_size;
+      }
+      std::cout << "Options:\n";
+      for (auto const &option : options) {
+        auto char_alias = find_character_alias(option);
+        std::cout << "  ";
+        if (char_alias.has_value()) {
+          std::cout << "-" << char_alias.value() << ", ";
+        } else {
+          std::cout << "    "; // 4 (1. dash, 2. letter, 3. comma, 4. space)
+        }
+        size_t padding = max_name_size - option.name.size();
+        std::cout << "--" << option.name << "  " << string(padding, ' ')
+                  << option.description << "\n";
+      }
+      std::cout << "\n";
+    }
   }
 
   void Command::print_help() const {
@@ -91,17 +133,11 @@ namespace io {
     std::cout << (this->description == "" ? "" : "\n   " + description + "\n")
               << "\n";
     // print options
-    if (not this->options.empty()) {
-      std::cout << "Options:\n";
-      print_vec(this->options);
-    }
+    print_options(this->options);
     // print commands
     if (command_group) {
       auto commands = std::get<std::vector<Command>>(this->args_or_subcommands);
-      if (not commands.empty()) {
-        std::cout << "Commands:\n";
-        print_vec(commands);
-      }
+      print_commands(commands);
     }
     std::cout << std::endl;
   }
@@ -200,7 +236,7 @@ namespace io {
   }
 
   Option Command::get_option(char const &character) const {
-    return get_option(std::string(character, 1));
+    return get_option(string(1, character));
   }
 
   void Command::parse_options(
