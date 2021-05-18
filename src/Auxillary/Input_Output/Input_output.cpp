@@ -342,9 +342,7 @@ namespace io {
     return this->parse_options(kwargs, args);
   }
 
-  std::filesystem::path prepare_output_dir(string output_dir_string) {
-
-    std::filesystem::path output_dir(output_dir_string);
+  std::filesystem::path prepare_output_dir(std::filesystem::path output_dir) {
 
     if (!absolute_file_path_in_root(
             std::filesystem::current_path(), output_dir)) {
@@ -358,7 +356,7 @@ namespace io {
     if (std::filesystem::exists(output_dir)) {
       if (!std::filesystem::is_directory(output_dir)) {
         gthrow(
-            {"The output directory, \"", output_dir_string,
+            {"The output directory, \"", output_dir.string(),
              "\" is present, but not a directory, I will abort now."});
       }
       auto ms_since_epoch
@@ -381,28 +379,20 @@ namespace io {
   std::filesystem::path
   extract_input_data(std::deque<std::string> const &cmd_arguments) {
 
-    std::string default_problem_data_filename = "problem_data.json";
-    std::filesystem::path problem_data_file;
-    if (cmd_arguments.size() > 1) {
+    if (cmd_arguments.size() != 1) {
       gthrow(
-          {"Grazer needs 0 or 1 argument: The problem data file.\n"
-           " If you provide no argument, the filename ",
-           default_problem_data_filename,
-           " in the directory, where Grazer was started, is assumed.\n"
+          {"Grazer needs 1 argument: The problem directory.\n"
            "Aborting now."})
-    } else if (cmd_arguments.size() == 0) {
-      problem_data_file = default_problem_data_filename;
-    } else {
-      problem_data_file = cmd_arguments[0];
     }
-    if (!std::filesystem::is_regular_file(problem_data_file)) {
+    std::filesystem::path problem_directory = cmd_arguments[0];
+    if (!std::filesystem::is_directory(problem_directory)) {
       gthrow(
           {"The given path\n\n",
-           std::filesystem::absolute(problem_data_file).string(),
-           "\n\ndoes not point to a regular file.  Maybe the name is "
+           std::filesystem::absolute(problem_directory).string(),
+           "\n\ndoes not point to a valid directory.  Maybe the name is "
            "misspelled."});
     }
-    return problem_data_file;
+    return problem_directory;
   }
 
 } // namespace io

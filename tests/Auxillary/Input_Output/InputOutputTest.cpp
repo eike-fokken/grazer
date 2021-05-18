@@ -124,32 +124,17 @@ TEST_F(extract_input_dataTEST, input_vector_too_large) {
 }
 
 TEST_F(extract_input_dataTEST, input_vector_works) {
-
-  nlohmann::json regular_json;
-  std::filesystem::path regular_json_path("test_pathname.json");
-  std::deque<std::string> vector_size_one;
-
-  // Testing a vector containing a string that points to a regular file
-  regular_json = {{"id", "M000"}, {"data", {1.0, 2.0}}};
-  std::ofstream file(regular_json_path);
-  file << regular_json;
-  vector_size_one = {regular_json_path.string()};
+  std::filesystem::path dir_path = "test_pathname";
+  std::filesystem::create_directory(dir_path);
   EXPECT_EQ(
-      std::filesystem::path("test_pathname.json"),
-      io::extract_input_data(vector_size_one));
+      dir_path,
+      io::extract_input_data({dir_path.string()}));
 }
 
 TEST_F(extract_input_dataTEST, input_vector_empty) {
-
-  nlohmann::json regular_json;
-  std::filesystem::path regular_json_path("problem_data.json");
-
-  // Creating json file
-  regular_json = {{"id", "M000"}, {"data", {1.0, 2.0}}};
-  std::ofstream file(regular_json_path);
-  file << regular_json;
-
   // Testing empty vector
   std::deque<std::string> vector_empty = {};
-  EXPECT_EQ(regular_json_path, io::extract_input_data(vector_empty));
+  EXPECT_THROW(
+      [[maybe_unused]] auto result = io::extract_input_data(vector_empty),
+      std::runtime_error);
 }

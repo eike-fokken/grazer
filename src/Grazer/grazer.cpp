@@ -13,30 +13,28 @@
 
 int run(
     std::deque<std::string> cmd_arguments,
-    std::map<std::string, std::any> kwargs);
+    std::map<std::string, std::any> /*kwargs*/);
 int run(
     std::deque<std::string> cmd_arguments,
     std::map<std::string, std::any> /*kwargs*/) {
-  std::filesystem::path problem_data_file
-      = io::extract_input_data(cmd_arguments);
+  std::filesystem::path directory_path = io::extract_input_data(cmd_arguments);
 
-  std::filesystem::path output_dir = io::prepare_output_dir("output");
+  auto problem_directory = directory_path / "problem";
+  auto problem_data_file = problem_directory / "problem_data.json";
+  auto output_dir = io::prepare_output_dir(directory_path / "output");
 
   // This must be wrapped in exception handling code!
 
   auto all_json = aux_json::get_json_from_file_path(problem_data_file);
 
   auto time_evolution_json = all_json["time_evolution_data"];
-
   auto problem_json = all_json["problem_data"];
 
   // give the path information of the file:
-  auto directory_path
-      = std::filesystem::absolute(problem_data_file).parent_path();
-  problem_json["GRAZER_file_directory"] = directory_path.string();
+  problem_json["GRAZER_file_directory"] = problem_directory.string();
 
   auto initial_value_json = all_json["initial_values"];
-  initial_value_json["GRAZER_file_directory"] = directory_path.string();
+  initial_value_json["GRAZER_file_directory"] = problem_directory.string();
   Model::Timedata timedata(time_evolution_json);
 
   double tolerance = 1e-8;
@@ -53,9 +51,30 @@ int run(
 }
 
 io::Command grazer(
-    {{run, /*options=*/std::vector<io::Option>(), /*arguments=*/{"directory"},
-      /*name=*/"run",
-      /*description=*/"solve problem"}},
+    {io::Command(
+         run,
+         /*options=*/std::vector<io::Option>(),
+         /*arguments=*/{"directory"},
+         /*name=*/"run",
+         /*description=*/
+         "Solves the Problem specified in the `problem` folder inside the "
+         "provided directory and saves the result to the output folder in the "
+         "same "
+         "directory. It is recommended to validate the problem data first (see "
+         "grazer schema --help)"),
+     io::Command(
+         {
+             {run,
+              /*options=*/std::vector<io::Option>(),
+              /*arguments=*/{"directory"},
+              /*name=*/"make",
+              /*description=*/
+              "creates json schemas to validate the problem data and places "
+              "them in the schema folder inside the provided directory"},
+
+         },
+         /*name=*/"schema",
+         /*description=*/"Utilities for JSON Schemas to validate input data.")},
     /*name=*/"grazer",
     /*description=*/"PDE Solver");
 
