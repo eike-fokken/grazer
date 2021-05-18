@@ -19,13 +19,15 @@ namespace Aux::schema {
       path directory, std::map<std::string, json> schemas);
   ///////////////////////////////////////////////////////////////////////////
 
-  int make_full_factory_schemas(std::deque<std::string> args, std::map<std::string, std::any> /*kwargs*/) {
+  int make_full_factory_schemas(
+      std::deque<std::string> args,
+      std::map<std::string, std::any> /*kwargs*/) {
     if (args.size() != 1) {
       gthrow({"Need exactly one argument, the grazer directory"});
-    } 
+    }
     std::filesystem::path grazer_dir(args.front());
     Model::Componentfactory::Full_factory full_factory;
-    make_schemas(full_factory, grazer_dir/"schemas");
+    make_schemas(full_factory, grazer_dir / "schemas");
     return 0;
   }
 
@@ -36,13 +38,12 @@ namespace Aux::schema {
         {"initial", factory.get_initial_schema()},
         {"boundary", factory.get_boundary_schema()},
         {"control", factory.get_control_schema()}};
-    
-    if (std::filesystem::exists(schema_dir)){
+
+    if (std::filesystem::exists(schema_dir)) {
       assert_only_known_schemas(schema_dir, schemas);
     } else {
       std::filesystem::create_directory(schema_dir);
     }
-
 
     for (auto const &[name, schema] : schemas) {
       path file = schema_dir / path(name + "_schema.json");

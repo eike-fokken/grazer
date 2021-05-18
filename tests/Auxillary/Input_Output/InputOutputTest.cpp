@@ -126,9 +126,7 @@ TEST_F(extract_input_dataTEST, input_vector_too_large) {
 TEST_F(extract_input_dataTEST, input_vector_works) {
   std::filesystem::path dir_path = "test_pathname";
   std::filesystem::create_directory(dir_path);
-  EXPECT_EQ(
-      dir_path,
-      io::extract_input_data({dir_path.string()}));
+  EXPECT_EQ(dir_path, io::extract_input_data({dir_path.string()}));
 }
 
 TEST_F(extract_input_dataTEST, input_vector_empty) {
