@@ -55,7 +55,9 @@ namespace io {
   }
 
   const char *EagerOptionEncountered::what() const noexcept {
-    return "encountered eager option with return code: " + this->exit_code;
+    return ("encountered eager option with return code: "
+            + std::to_string(this->exit_code))
+        .c_str();
   }
 
   EagerOptionEncountered::EagerOptionEncountered(int _exit_code) :
@@ -297,7 +299,7 @@ namespace io {
       // concatenated flag options -oaf where o a and f are all options
       for (char const c : option_str.substr(1)) {
         Option option = this->get_option(c);
-        if (not option.nargs == 0) {
+        if (option.nargs != 0) {
           throw std::invalid_argument(
               "concatenated option " + string(1, c) + " is not a flag");
         }
