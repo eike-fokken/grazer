@@ -5,11 +5,13 @@
 #include <ostream>
 #include <stdexcept>
 #include "Componentfactory.hpp"
+#include "Edge.hpp"
 #include "PQnode.hpp"
 #include "PVnode.hpp"
 #include "Power_factory.hpp"
 #include "Node.hpp"
 #include "Powernode.hpp"
+#include "Transmissionline.hpp"
 #include "Vphinode.hpp"
 
 TEST(sort_json_vectors_by_idTEST, not_sorted) {
@@ -167,8 +169,6 @@ TEST(build_node_vectorTEST, evaluate) {
   auto &nodetypemap = power_factory.node_type_map;
 
   nlohmann::json node_topology;
-  std::vector<std::unique_ptr<Network::Node>> nodes;
-
  
   node_topology
       = {{"Vphinode",
@@ -199,17 +199,12 @@ TEST(build_node_vectorTEST, evaluate) {
                {{{"time",0},{"values",{1.01,-0.203}}},
                 {{"time",0},{"values",{1.01,-0.203}}}}}}}}}}};
 
+  std::vector<std::unique_ptr<Network::Node>> nodes;
   nodes = Model::Networkproblem::build_node_vector(node_topology, nodetypemap);
 
-  if (not dynamic_cast<Model::Networkproblem::Power::PQnode*>(nodes[0].get())) {
-    FAIL();
-  };
-  if (not dynamic_cast<Model::Networkproblem::Power::PVnode *>(nodes[1].get())) {
-    FAIL();
-  };
-  if (not dynamic_cast<Model::Networkproblem::Power::Vphinode *>(nodes[2].get())) {
-    FAIL();
-  };
+  EXPECT_TRUE(dynamic_cast<Model::Networkproblem::Power::PQnode *>(nodes[0].get()));
+  EXPECT_TRUE(dynamic_cast<Model::Networkproblem::Power::PVnode *>(nodes[1].get()));
+  EXPECT_TRUE(dynamic_cast<Model::Networkproblem::Power::Vphinode *>(nodes[2].get()));
 }
 
 TEST(build_edge_vectorTEST, edge_type_not_known) {
@@ -220,9 +215,7 @@ TEST(build_edge_vectorTEST, edge_type_not_known) {
   auto &nodetypemap = power_factory.node_type_map;
 
   nlohmann::json node_topology;
-  std::vector<std::unique_ptr<Network::Node>> nodes;
 
- 
   node_topology
       = {{"Vphinode",
           {{{"B", -25.2023789002},
@@ -252,6 +245,7 @@ TEST(build_edge_vectorTEST, edge_type_not_known) {
                {{{"time",0},{"values",{1.01,-0.203}}},
                 {{"time",0},{"values",{1.01,-0.203}}}}}}}}}}};
 
+  std::vector<std::unique_ptr<Network::Node>> nodes;
   nodes = Model::Networkproblem::build_node_vector(node_topology, nodetypemap);
 
   auto &edgetypemap = power_factory.edge_type_map;
@@ -277,3 +271,67 @@ TEST(build_edge_vectorTEST, edge_type_not_known) {
   EXPECT_THROW(Model::Networkproblem::build_edge_vector(edge_topology, nodes, edgetypemap),std::runtime_error);
 }
 
+TEST(build_edge_vectorTEST, evaluate) {
+
+  Model::Componentfactory::Power_factory power_factory;
+  auto &nodetypemap = power_factory.node_type_map;
+
+  nlohmann::json node_topology;
+
+  node_topology
+      = {{"Vphinode",
+          {{{"B", -25.2023789002},
+            {"G", 1.7238407171},
+            {"id", "N201"},
+            {"boundary_values",
+             {{"id","N201"},
+              {"data",
+               {{{"time",0},{"values",{1.01,-0.203}}},
+                {{"time",0},{"values",{1.01,-0.203}}}}}}}}}},
+         {"PVnode",
+          {{{"B", -29.2023789002},
+            {"G", 1.7238407171},
+            {"id", "N202"},
+            {"boundary_values",
+             {{"id","N202"},
+              {"data",
+               {{{"time",0},{"values",{1.01,-0.203}}},
+                {{"time",0},{"values",{1.01,-0.203}}}}}}}}}},
+         {"PQnode",
+          {{{"B", -16.2023789002},
+            {"G", 1.7238407171},
+            {"id", "N203"},
+            {"boundary_values",
+             {{"id","N203"},
+              {"data",
+               {{{"time",0},{"values",{1.01,-0.203}}},
+                {{"time",0},{"values",{1.01,-0.203}}}}}}}}}}};
+
+  std::vector<std::unique_ptr<Network::Node>> nodes;
+  nodes = Model::Networkproblem::build_node_vector(node_topology, nodetypemap);
+
+  auto &edgetypemap = power_factory.edge_type_map;
+  nlohmann::json edge_topology;
+
+  edge_topology
+    =  {{"Transmissionline",
+          {{{"from", "N203"},
+            {"to", "N202"},
+            {"B",1},
+            {"G",1},
+            {"id", "N201"},
+            {"power2gas_q_coeff",1},
+            {"gas2power_q_coeff",1}},
+           {{"from", "N201"},
+            {"to", "N202"},
+            {"B",2},
+            {"G",2},
+            {"id", "N203"},
+            {"power2gas_q_coeff",0.5},
+            {"gas2power_q_coeff",0.5}}}}};
+
+  std::vector<std::unique_ptr<Network::Edge>> edges;
+  edges = Model::Networkproblem::build_edge_vector(edge_topology, nodes, edgetypemap);
+
+  EXPECT_TRUE(dynamic_cast<Model::Networkproblem::Power::Transmissionline *>(edges[0].get()));
+}
