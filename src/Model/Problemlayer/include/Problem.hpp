@@ -1,6 +1,7 @@
 #pragma once
+
 #include <Eigen/Sparse>
-#include <Subproblem.hpp> // This is really needed here!
+// #include <Subproblem.hpp> // This is really needed here!
 #include <filesystem>
 #include <memory>
 #include <nlohmann/json.hpp>
@@ -16,6 +17,7 @@ namespace Aux {
  * derivatives thereof.
  */
 namespace Model {
+  class Subproblem;
 
   class Problem {
 

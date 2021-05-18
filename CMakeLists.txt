@@ -6,25 +6,29 @@ include(CheckIPOSupported)
 
 
 #for multiple compiler compatibility:
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 #for development:
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(BUILD_WITH_LIBCPP "Build with libc++ instead of libstdc++, if the compiler is clang." OFF)
 
 # include the googletest project for tests:
 # here also the standard library has to be set, if compiling with llvms libc++.
 # Our own compile options are set later.
-if (BUILD_WITH_LIBCPP AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+if (BUILD_WITH_LIBCPP AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options("-stdlib=libc++")
   add_link_options("-stdlib=libc++")
   message(STATUS "Will compile with libc++.")
 endif()
 enable_testing()
+
+# for debug builds use the debug configuration of the standard libraries:
+add_compile_definitions("$<$<CONFIG:DEBUG>:_GLIBCXX_DEBUG;_LIBCPP_DEBUG>")
+
 
 
 # https://github.com/google/googletest/blob/master/googletest/README.md#visual-studio-dynamic-vs-static-runtimes
