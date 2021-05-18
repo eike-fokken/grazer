@@ -2,6 +2,7 @@
 #include "Input_output.hpp"
 #include "Problem.hpp"
 #include "Timeevolver.hpp"
+#include "schema_generation.hpp"
 #include <Eigen/Sparse>
 #include <any>
 #include <chrono>
@@ -64,7 +65,7 @@ io::Command grazer(
          "grazer schema --help)"),
      io::Command(
          {
-             {run,
+             {Aux::schema::make_full_factory_schemas,
               /*options=*/std::vector<io::Option>(),
               /*arguments=*/{"directory"},
               /*name=*/"make",
