@@ -32,17 +32,19 @@ namespace io {
           std::function<int(Command const *, Option const *, std::any)>> const
           _callback,
       bool const _is_eager) :
-      name(_name),
-      nargs(_nargs),
-      alias(_alias),
-      description(_description),
       default_value(_default_value),
+      name(_name),
+      description(_description),
+      alias(_alias),
+      nargs(_nargs),
+      is_eager(_is_eager),
       parser(_parser),
-      callback(_callback),
-      is_eager(_is_eager) {}
+      callback(_callback) {}
 
   std::vector<Option>
-  preprocess_options(Command *command, std::vector<Option> options) {
+  preprocess_options(std::vector<Option> options);
+  std::vector<Option>
+  preprocess_options(std::vector<Option> options) {
     options.push_back(Option(
         "help", 0, {"h"}, "display this help text", std::nullopt,
         [](std::vector<string>) { return std::any(std::nullopt); },
@@ -54,13 +56,14 @@ namespace io {
     return options;
   }
 
-  const char *EagerOptionEncountered::what() const {
+  const char *EagerOptionEncountered::what() const noexcept {
     return "encountered eager option with return code: " + this->exit_code;
   }
 
   EagerOptionEncountered::EagerOptionEncountered(int _exit_code) :
       exit_code(_exit_code) {}
 
+  void print_commands(std::vector<Command> commands);
   void print_commands(std::vector<Command> commands) {
     if (not commands.empty()) {
       size_t max_name_size = 0;
@@ -78,6 +81,7 @@ namespace io {
     }
   }
 
+  std::optional<string> find_character_alias(Option option);
   std::optional<string> find_character_alias(Option option) {
     for (auto const &alias : option.alias) {
       if (alias.size() == 1) {
@@ -87,6 +91,7 @@ namespace io {
     return std::nullopt;
   }
 
+  void print_options(std::vector<Option> options);
   void print_options(std::vector<Option> options) {
     if (not options.empty()) {
       size_t max_name_size = 0;
@@ -152,6 +157,7 @@ namespace io {
     return;
   }
 
+  std::map<string, size_t> hash_map_from_vec(std::vector<Option> options);
   std::map<string, size_t> hash_map_from_vec(std::vector<Option> options) {
     std::map<string, size_t> result;
     for (size_t idx = 0; idx < options.size(); idx++) {
@@ -172,7 +178,7 @@ namespace io {
             for (auto const &command : subcommands) {
               if (command.name == args[0]) {
                 args.pop_front();
-                return command.execute(args);
+                return command(args);
               }
             }
             throw std::invalid_argument("No such command: " + args[0]);
@@ -185,8 +191,8 @@ namespace io {
       io::program const _program, std::vector<Option> _options,
       std::vector<string> arguments, string const _name,
       string const _description) :
-      program(_program),
-      options(preprocess_options(this, _options)),
+      script(_program),
+      options(preprocess_options(_options)),
       opt_name_map(hash_map_from_vec(options)),
       args_or_subcommands(arguments),
       name(_name),
@@ -195,8 +201,8 @@ namespace io {
   Command::Command(
       std::vector<Command> const subcommands, string const _name,
       string const _description) :
-      program(group(this, subcommands)),
-      options(preprocess_options(this, std::vector<Option>())),
+      script(group(this, subcommands)),
+      options(preprocess_options(std::vector<Option>())),
       opt_name_map(hash_map_from_vec(options)),
       args_or_subcommands(subcommands),
       name(_name),
@@ -206,11 +212,11 @@ namespace io {
     return std::deque<std::string>(argv + 1, argv + argc);
   }
 
-  int Command::execute(std::deque<string> args) const noexcept {
+  int Command::operator()(std::deque<string> args) const noexcept {
     std::map<string, std::any> kwargs;
     try {
       this->parse_options(kwargs, args);
-      return this->program(args, kwargs);
+      return this->script(args, kwargs);
     } catch (EagerOptionEncountered const &ex) {
       return ex.exit_code;
     } catch (std::invalid_argument const &ex) {
@@ -271,7 +277,7 @@ namespace io {
           args.pop_front();
         }
       } else { // --option=value
-        if (not option.nargs == 1) {
+        if (option.nargs != 1) {
           throw std::invalid_argument(
               "how is an --option=value with more/less values than 1 supposed "
               "to look?");
@@ -318,7 +324,7 @@ namespace io {
         args.pop_front();
       }
     } else if (option_str[2] == '=') {
-      if (not option.nargs == 1) {
+      if (option.nargs != 1) {
         throw std::invalid_argument(
             "how is an --option=value with more/less values than 1 supposed "
             "to look?");

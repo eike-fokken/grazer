@@ -13,6 +13,9 @@
 
 int run(
     std::deque<std::string> cmd_arguments,
+    std::map<std::string, std::any> kwargs);
+int run(
+    std::deque<std::string> cmd_arguments,
     std::map<std::string, std::any> kwargs) {
   std::filesystem::path problem_data_file
       = io::extract_input_data(cmd_arguments);
@@ -57,5 +60,5 @@ io::Command grazer(
     /*description=*/"PDE Solver");
 
 int main(int argc, char **argv) {
-  return grazer.execute(io::args_as_deque(argc, argv));
+  return grazer(io::args_as_deque(argc, argv));
 }

@@ -19,7 +19,7 @@ namespace io {
   class Option;
 
   class Command {
-    program const program;
+    program const script;
     std::vector<Option> const options;
     std::map<string, size_t> const opt_name_map;
     std::variant<std::vector<string>, std::vector<Command>> const
@@ -43,7 +43,7 @@ namespace io {
     string const name;
     std::optional<Command *> parent_command = std::nullopt;
     string const description; // help text
-    int execute(std::deque<string> arguments) const noexcept;
+    int operator()(std::deque<string> arguments) const noexcept;
 
     /**
      * @brief Create a Command Group
@@ -69,6 +69,9 @@ namespace io {
         std::vector<string> const arguments, string const name,
         string const description);
   };
+  
+  io::program group(Command *parent, std::vector<Command> subcommands);
+
   class Option {
     std::optional<std::any> const default_value;
 
@@ -98,7 +101,7 @@ namespace io {
   class EagerOptionEncountered : public std::exception {
   public:
     int exit_code;
-    const char *what() const override;
+    const char *what() const noexcept override;
     EagerOptionEncountered(int exit_code);
   };
 
