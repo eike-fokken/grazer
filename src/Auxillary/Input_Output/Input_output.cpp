@@ -41,10 +41,8 @@ namespace io {
       parser(_parser),
       callback(_callback) {}
 
-  std::vector<Option>
-  preprocess_options(std::vector<Option> options);
-  std::vector<Option>
-  preprocess_options(std::vector<Option> options) {
+  std::vector<Option> preprocess_options(std::vector<Option> options);
+  std::vector<Option> preprocess_options(std::vector<Option> options) {
     options.push_back(Option(
         "help", 0, {"h"}, "display this help text", std::nullopt,
         [](std::vector<string>) { return std::any(std::nullopt); },

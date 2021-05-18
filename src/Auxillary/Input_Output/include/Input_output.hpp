@@ -69,7 +69,7 @@ namespace io {
         std::vector<string> const arguments, string const name,
         string const description);
   };
-  
+
   io::program group(Command *parent, std::vector<Command> subcommands);
 
   class Option {
@@ -85,8 +85,7 @@ namespace io {
     std::optional<std::function<int(
         Command const *, Option const *, std::any)>> const callback;
     Option(
-        string const name,
-        uint16_t const nargs,
+        string const name, uint16_t const nargs,
         std::vector<string> const alias = std::vector<string>(),
         string const description = "",
         std::optional<std::any> const default_value = std::nullopt,
