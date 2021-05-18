@@ -78,7 +78,7 @@ namespace Model {
         problem.json_save(new_time, new_state);
         retry = 0;
       } else {
-        if (retry < 2) {
+        if (retry < 5) {
           --i;
           ++retry;
           std::cout << "\nretrying timestep " << new_time << "\n" << std::endl;
