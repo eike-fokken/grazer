@@ -90,7 +90,7 @@ namespace io {
         string const description = "",
         std::optional<std::any> const default_value = std::nullopt,
         std::function<std::any(std::vector<string>)> const parser
-        = [](std::vector<string> v) { return std::any(std::nullopt); },
+        = [](std::vector<string>) { return std::any(std::nullopt); },
         std::optional<std::function<
             int(Command const *, Option const *, std::any)>> const callback
         = std::nullopt,

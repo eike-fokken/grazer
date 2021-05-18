@@ -46,7 +46,7 @@ namespace io {
     options.push_back(Option(
         "help", 0, {"h"}, "display this help text", std::nullopt,
         [](std::vector<string>) { return std::any(std::nullopt); },
-        [](Command const *command, Option const *option, std::any) {
+        [](Command const *command, Option const * /*option*/, std::any) {
           command->print_help();
           return 0;
         },
@@ -169,20 +169,20 @@ namespace io {
 
   io::program group(Command *parent, std::vector<Command> subcommands) {
     for (auto &subcommand : subcommands) { subcommand.parent_command = parent; }
-    return
-        [subcommands](
-            std::deque<string> args, std::map<string, std::any> kwargs) -> int {
-          if (not args.empty()) {
-            for (auto const &command : subcommands) {
-              if (command.name == args[0]) {
-                args.pop_front();
-                return command(args);
-              }
-            }
-            throw std::invalid_argument("No such command: " + args[0]);
+    return [subcommands](
+               std::deque<string> args,
+               std::map<string, std::any> /*kwargs*/) -> int {
+      if (not args.empty()) {
+        for (auto const &command : subcommands) {
+          if (command.name == args[0]) {
+            args.pop_front();
+            return command(args);
           }
-          throw std::invalid_argument("Missing Command");
-        };
+        }
+        throw std::invalid_argument("No such command: " + args[0]);
+      }
+      throw std::invalid_argument("Missing Command");
+    };
   }
 
   Command::Command(

@@ -16,7 +16,7 @@ int run(
     std::map<std::string, std::any> kwargs);
 int run(
     std::deque<std::string> cmd_arguments,
-    std::map<std::string, std::any> kwargs) {
+    std::map<std::string, std::any> /*kwargs*/) {
   std::filesystem::path problem_data_file
       = io::extract_input_data(cmd_arguments);
 
