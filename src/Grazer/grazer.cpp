@@ -39,7 +39,8 @@ int main(int argc, char **argv) {
     Model::Timedata timedata(time_evolution_json);
 
     double tolerance = 1e-8;
-    int maximal_number_of_newton_iterations = 50;
+    int maximal_number_of_newton_iterations = time_evolution_json
+        ["maximal_number_of_newton_iterations_per_time_step"];
     Model::Timeevolver timeevolver(
         tolerance, maximal_number_of_newton_iterations, output_dir);
 
