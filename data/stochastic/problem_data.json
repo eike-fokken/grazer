@@ -1,9 +1,11 @@
 {
     "time_evolution_data":
     {
+        "always_recompute_jacobian": false,
+        "maximal_number_of_newton_iterations_per_time_step": 50,
         "start_time": 0,
-        "end_time": 18000,
-        "desired_delta_t": 120
+        "end_time": 86400,
+        "desired_delta_t": 480
     },
     "initial_values":{
         "subproblems":
@@ -22,10 +24,10 @@
             {
                 "StochasticPQnode_data": {
                     "number_of_stochastic_steps": 100,
-                    "theta_P": 0.5,
-                    "sigma_P": 0.5,
-                    "theta_Q": 0.5,
-                    "sigma_Q": 0.5
+                    "theta_P": 0.1,
+                    "sigma_P": 0.005,
+                    "theta_Q": 0.1,
+                    "sigma_Q": 0.005
                 },
                 "balancelaw": "Isothermaleulerequation",
                 "scheme": "Implicitboxscheme",
