@@ -54,13 +54,10 @@ namespace io {
     return options;
   }
 
-  const char *EagerOptionEncountered::what() const noexcept {
-    return ("encountered eager option with return code: "
-            + std::to_string(this->exit_code))
-        .c_str();
-  }
-
   EagerOptionEncountered::EagerOptionEncountered(int _exit_code) :
+      std::runtime_error(
+          "encountered eager option with return code: "
+          + std::to_string(_exit_code)),
       exit_code(_exit_code) {}
 
   void print_commands(std::vector<Command> commands);

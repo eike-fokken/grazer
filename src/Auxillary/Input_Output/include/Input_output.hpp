@@ -4,7 +4,9 @@
 #include <filesystem>
 #include <functional>
 #include <map>
+#include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <tuple>
 #include <variant>
@@ -97,10 +99,9 @@ namespace io {
         bool const is_eager = false);
   };
 
-  class EagerOptionEncountered : public std::exception {
+  class EagerOptionEncountered : public std::runtime_error {
   public:
     int exit_code;
-    const char *what() const noexcept override;
     EagerOptionEncountered(int exit_code);
   };
 
