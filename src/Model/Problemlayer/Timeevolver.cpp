@@ -1,9 +1,11 @@
 #include "Timeevolver.hpp"
+#include "Exception.hpp"
 #include "Problem.hpp"
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <nlohmann/json.hpp>
+#include <string>
 
 namespace Model {
 
@@ -64,30 +66,49 @@ namespace Model {
     std::cout << "number of non-zeros in jacobian: "
               << solver.get_number_non_zeros_jacobian() << std::endl;
 
-    int retry = 0;
-
     for (int i = 0; i != timedata.get_number_of_steps(); ++i) {
       new_time = last_time + timedata.get_delta_t();
-      problem.prepare_timestep(last_time, new_time, last_state, new_state);
-      auto solstruct = solver.solve(
-          new_state, problem, false, last_time, new_time, last_state);
+      Solver::Solutionstruct solstruct;
+      int retry = 0;
+      bool use_full_jacobian = false;
+
+      while (not solstruct.success) {
+        problem.prepare_timestep(last_time, new_time, last_state, new_state);
+        solstruct = solver.solve(
+            new_state, problem, false, use_full_jacobian, last_time, new_time,
+            last_state);
+        if (solstruct.success) {
+
+          if (retry > 0) {
+            std::cout << "succeeded after retries!\n" << std::endl;
+          }
+          problem.json_save(new_time, new_state);
+          break;
+        }
+        if (retry == 6) {
+          use_full_jacobian = true;
+          std::cout << "Switching to updated Jacobian in every step."
+                    << std::endl;
+        }
+        if (retry > 10) {
+          problem.json_save(new_time, new_state);
+          gthrow({"Failed timestep irrevocably!", std::to_string(new_time)});
+        }
+
+        ++retry;
+        if (retry == 1) {
+          std::cout << "\nretrying timestep " << new_time << std::endl;
+        }
+        if (retry > 0) {
+          std::cout << new_time << ": ";
+          std::cout << solstruct.residual << ", ";
+          std::cout << solstruct.used_iterations << std::endl;
+        }
+      }
       std::cout << new_time << ": ";
       std::cout << solstruct.residual << ", ";
       std::cout << solstruct.used_iterations << std::endl;
-      if (solstruct.success) {
-        problem.json_save(new_time, new_state);
-        retry = 0;
-      } else {
-        if (retry < 5) {
-          --i;
-          ++retry;
-          std::cout << "\nretrying timestep " << new_time << "\n" << std::endl;
-          continue;
-        } else {
-          std::cout << "Failed timestep irrevocably!" << new_time << std::endl;
-          problem.json_save(new_time, new_state);
-        }
-      }
+
       last_state = new_state;
       last_time = new_time;
     }
