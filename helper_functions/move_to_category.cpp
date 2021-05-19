@@ -51,8 +51,12 @@ int main(int argc, char **argv) {
       if (it == currcat.end()) {
         continue;
       } else {
-        comptype[to_category].push_back(*it);
+        auto current_json = *it;
         currcat.erase(it);
+        if (not comptype.contains(to_category)) {
+          comptype[to_category] = nlohmann::json::array();
+        }
+        comptype[to_category].push_back(current_json);
         found = true;
       }
     }
