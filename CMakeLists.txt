@@ -14,8 +14,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
-option(BUILD_WITH_LIBCPP "Build with libc++ instead of libstdc++, if the compiler is clang." OFF)
+# for debug builds use the debug configuration of the standard libraries:
+add_compile_definitions("$<$<CONFIG:DEBUG>:_GLIBCXX_DEBUG;_LIBCPP_DEBUG>")
 
+option(BUILD_WITH_LIBCPP "Build with libc++ instead of libstdc++, if the compiler is clang." OFF)
 # include the googletest project for tests:
 # here also the standard library has to be set, if compiling with llvms libc++.
 # Our own compile options are set later.
@@ -26,8 +28,6 @@ if (BUILD_WITH_LIBCPP AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 enable_testing()
 
-# for debug builds use the debug configuration of the standard libraries:
-add_compile_definitions("$<$<CONFIG:DEBUG>:_GLIBCXX_DEBUG;_LIBCPP_DEBUG>")
 
 
 
