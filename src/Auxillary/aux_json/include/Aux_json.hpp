@@ -19,6 +19,7 @@ namespace aux_json {
   nlohmann::json
   get_json_from_file_path(std::filesystem::path const &file_path);
 
-  void overwrite_json(std::filesystem::path const &file_path, nlohmann::json const &target);
+  void overwrite_json(
+      std::filesystem::path const &file_path, nlohmann::json const &new_json);
 
 } // namespace aux_json

@@ -3,7 +3,7 @@
 #include <schema_key_insertion.hpp>
 
 namespace Aux::schema {
-  int insert_schema_key_into_data_jsons(path grazer_directory) {
+  int insert_schema_key_into_data_jsons(path const &grazer_directory) {
     auto schemas = grazer_directory / "schemas";
     auto problem_dir = grazer_directory / "problem";
 

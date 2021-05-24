@@ -67,8 +67,38 @@ namespace aux_json {
     return json_object;
   }
 
-  void overwrite_json(std::filesystem::path const &file_path, nlohmann::json const &target) {
-    
+  void overwrite_json(
+      std::filesystem::path const &file_path, nlohmann::json const &new_json) {
+
+    // creating a backup if this file existed
+    bool had_existed = false;
+    std::filesystem::path backup_path = file_path.parent_path() / "tmp_backup";
+    if (std::filesystem::exists(file_path)) {
+      had_existed = true;
+      std::filesystem::rename(file_path, backup_path);
+      if (not std::filesystem::exists(backup_path)) {
+        throw std::filesystem::filesystem_error(
+            "backup file could not be created, aborting", std::error_code());
+      }
+    }
+
+    try {
+      // attempting the overwrite
+      std::ofstream ofs(file_path, std::ofstream::trunc);
+      ofs << new_json;
+      ofs.close();
+    } catch (...) {
+      std::cout << "something went wrong writing the modified json to file"
+                << std::endl;
+      if (had_existed) {
+        if (std::filesystem::exists(backup_path)) {
+          std::cout << "rolling back to old version" << std::endl;
+          std::filesystem::rename(backup_path, file_path);
+        } else {
+          std::cout << "backup file is missing!" << std::endl;
+        }
+      }
+    }
   }
 
 } // namespace aux_json
