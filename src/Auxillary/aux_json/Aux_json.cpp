@@ -67,4 +67,8 @@ namespace aux_json {
     return json_object;
   }
 
+  void overwrite_json(std::filesystem::path const &file_path, nlohmann::json const &target) {
+    
+  }
+
 } // namespace aux_json
