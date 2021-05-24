@@ -11,7 +11,7 @@
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <string>
-#include <structopt/app.hpp>
+#include <structopt/structopt.hpp>
 
 static int grazer_run(std::filesystem::path directory_path) {
   auto problem_directory = directory_path / "problem";
