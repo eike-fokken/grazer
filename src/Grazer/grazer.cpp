@@ -11,15 +11,9 @@
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <string>
+#include <structopt/app.hpp>
 
-int run(
-    std::deque<std::string> cmd_arguments,
-    std::map<std::string, std::any> /*kwargs*/);
-int run(
-    std::deque<std::string> cmd_arguments,
-    std::map<std::string, std::any> /*kwargs*/) {
-  std::filesystem::path directory_path = io::extract_input_data(cmd_arguments);
-
+static int grazer_run(std::filesystem::path directory_path) {
   auto problem_directory = directory_path / "problem";
   auto problem_data_file = problem_directory / "problem_data.json";
   auto output_dir = io::prepare_output_dir(directory_path / "output");
@@ -51,34 +45,47 @@ int run(
   return 0;
 }
 
-io::Command grazer(
-    {io::Command(
-         run,
-         /*options=*/std::vector<io::Option>(),
-         /*arguments=*/{"directory"},
-         /*name=*/"run",
-         /*description=*/
-         "Solves the Problem specified in the `problem` folder inside the "
-         "provided directory and saves the result to the output folder in the "
-         "same "
-         "directory. It is recommended to validate the problem data first (see "
-         "grazer schema --help)"),
-     io::Command(
-         {
-             {Aux::schema::make_full_factory_schemas,
-              /*options=*/std::vector<io::Option>(),
-              /*arguments=*/{"directory"},
-              /*name=*/"make",
-              /*description=*/
-              "creates json schemas to validate the problem data and places "
-              "them in the schema folder inside the provided directory"},
+struct Grazer {
+  struct Run : structopt::sub_command {
+    std::filesystem::path grazer_directory;
+  };
+  struct Schema : structopt::sub_command {
+    struct Make_Full_Factory : structopt::sub_command {
+      std::filesystem::path grazer_directory;
+    };
 
-         },
-         /*name=*/"schema",
-         /*description=*/"Utilities for JSON Schemas to validate input data.")},
-    /*name=*/"grazer",
-    /*description=*/"PDE Solver");
+    Make_Full_Factory make_full_factory;
+  };
+
+  Run run;
+  Schema schema;
+};
+STRUCTOPT(Grazer::Run, grazer_directory);
+STRUCTOPT(Grazer::Schema::Make_Full_Factory, grazer_directory);
+STRUCTOPT(Grazer::Schema, make_full_factory);
+STRUCTOPT(Grazer, run, schema);
 
 int main(int argc, char **argv) {
-  return grazer(io::args_as_deque(argc, argv));
+  auto app = structopt::app("grazer");
+  try {
+    auto args = app.parse<Grazer>(argc, argv);
+
+    // run?
+    if (args.run.has_value()) {
+      return grazer_run(args.run.grazer_directory);
+    } else if (args.schema.has_value()) {
+      if (args.schema.make_full_factory.has_value()) {
+        return Aux::schema::make_full_factory_schemas(
+            args.schema.make_full_factory.grazer_directory);
+      }
+    }
+  } catch (std::exception const &ex) {
+    std::cout << "[Error]: " << ex.what() << std::endl;
+  } catch (...) {
+    std::cout << "An unkown type of exception was thrown.\n\n"
+                 "This is a bug and must be fixed!\n\n"
+              << std::endl;
+  }
+  std::cout << app.help() << std::endl;
+  return 1;
 }

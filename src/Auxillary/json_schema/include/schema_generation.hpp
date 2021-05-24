@@ -9,8 +9,7 @@
 namespace Aux::schema {
   using Model::Componentfactory::Componentfactory;
 
-  int make_full_factory_schemas(
-      std::deque<std::string> args, std::map<std::string, std::any> /*kwargs*/);
+  int make_full_factory_schemas(std::filesystem::path grazer_dir);
 
   void make_schemas(
       Componentfactory const &factory, std::filesystem::path schema_dir);

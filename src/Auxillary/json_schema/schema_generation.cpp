@@ -19,13 +19,7 @@ namespace Aux::schema {
       path directory, std::map<std::string, json> schemas);
   ///////////////////////////////////////////////////////////////////////////
 
-  int make_full_factory_schemas(
-      std::deque<std::string> args,
-      std::map<std::string, std::any> /*kwargs*/) {
-    if (args.size() != 1) {
-      gthrow({"Need exactly one argument, the grazer directory"});
-    }
-    std::filesystem::path grazer_dir(args.front());
+  int make_full_factory_schemas(path grazer_dir){
     Model::Componentfactory::Full_factory full_factory;
     make_schemas(full_factory, grazer_dir / "schemas");
     return 0;

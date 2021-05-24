@@ -1,2 +1,2 @@
 add_executable(grazer grazer.cpp)
-target_link_libraries(grazer PRIVATE problemlayer aux_json input_output aux_schema_generation)
+target_link_libraries(grazer PRIVATE structopt problemlayer aux_json input_output aux_schema_generation)
