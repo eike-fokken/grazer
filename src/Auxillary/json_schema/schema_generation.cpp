@@ -19,7 +19,7 @@ namespace Aux::schema {
       path directory, std::map<std::string, json> schemas);
   ///////////////////////////////////////////////////////////////////////////
 
-  int make_full_factory_schemas(path grazer_dir){
+  int make_full_factory_schemas(path grazer_dir) {
     Model::Componentfactory::Full_factory full_factory;
     make_schemas(full_factory, grazer_dir / "schemas");
     return 0;
