@@ -85,7 +85,7 @@ namespace aux_json {
     try {
       // attempting the overwrite
       std::ofstream ofs(file_path, std::ofstream::trunc);
-      ofs << new_json;
+      ofs << new_json.dump(/*indent=*/2);
       ofs.close();
     } catch (...) {
       std::cout << "something went wrong writing the modified json to file"
@@ -98,6 +98,10 @@ namespace aux_json {
           std::cout << "backup file is missing!" << std::endl;
         }
       }
+    }
+    // remove backup
+    if (had_existed) {
+      std::filesystem::remove(backup_path);
     }
   }
 
