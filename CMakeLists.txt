@@ -15,7 +15,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
 # for debug builds use the debug configuration of the standard libraries:
-add_compile_definitions("$<$<CONFIG:DEBUG>:_GLIBCXX_DEBUG;_LIBCPP_DEBUG>")
+if(NOT (CMAKE_CXX_COMPILER_ID MATCHES "AppleClang"))
+  add_compile_definitions("$<$<CONFIG:DEBUG>:_GLIBCXX_DEBUG;_LIBCPP_DEBUG>")
+endif()
 
 option(BUILD_WITH_LIBCPP "Build with libc++ instead of libstdc++, if the compiler is clang." OFF)
 # include the googletest project for tests:
