@@ -14,8 +14,12 @@ namespace Aux::schema {
       if (std::filesystem::exists(schemas / (type + "_schema.json"))) {
         path file = problem_dir / (type + ".json");
         ordered_json ord_json = aux_json::get_ordered_json_from_file_path(file);
-        ord_json["$schema"] = "../schemas/" + type + "_schema.json";
-        aux_json::overwrite_json(file, ord_json);
+        ordered_json result;
+        result["$schema"] = "../schemas/" + type + "_schema.json";
+        for (auto &[key, value] : ord_json.items()) {
+          result[key] = std::move(value);
+        }
+        aux_json::overwrite_json(file, result);
       } else {
         std::cout << "Mising schema for: " << type << ", skipping!"
                   << std::endl;
