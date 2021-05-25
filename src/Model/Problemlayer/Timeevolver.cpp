@@ -22,7 +22,7 @@ namespace Model {
 
   int Timedata::init_Number_of_timesteps(double desired_delta_t) const {
     int const _Number_of_timesteps
-        = static_cast<int>(std::ceil(get_timeinterval() / desired_delta_t));
+        = static_cast<int>(std::ceil(get_timeinterval() / desired_delta_t)) + 1;
     return _Number_of_timesteps;
   }
 
@@ -33,7 +33,7 @@ namespace Model {
   int Timedata::get_number_of_steps() const { return Number_of_timesteps; }
 
   double Timedata::init_delta_t() const {
-    return get_timeinterval() / Number_of_timesteps;
+    return get_timeinterval() / (Number_of_timesteps - 1);
   }
 
   Timeevolver::Timeevolver(
@@ -45,15 +45,15 @@ namespace Model {
   void Timeevolver::simulate(
       Timedata timedata, Model::Problem &problem, int number_of_states,
       nlohmann::json &problem_initial_json) {
-    double last_time = timedata.get_starttime();
+    double last_time = timedata.get_starttime() - timedata.get_delta_t();
     Eigen::VectorXd last_state(number_of_states);
 
     problem.set_initial_values(last_state, problem_initial_json);
 
-    // This initializes P and Q-values of P-Q-nodes.
-    problem.prepare_timestep(last_time, last_time, last_state, last_state);
-    // save the initial values.
-    problem.json_save(last_time, last_state);
+    // // This initializes P and Q-values of P-Q-nodes.
+    // problem.prepare_timestep(last_time, last_time, last_state, last_state);
+    // // save the initial values.
+    // problem.json_save(last_time, last_state);
 
     double new_time = last_time + timedata.get_delta_t();
 
