@@ -7,12 +7,13 @@
 #include <stdexcept>
 #include <string>
 
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 namespace fs = std::filesystem;
 
 json convert_resultdata_to_intialdata(json datapoint, std::string ctypename);
 json powerinitial(json datapoint);
 json gasinitial(json datapoint);
+
 int main(int argc, char **argv) {
   std::filesystem::path inputfile;
   std::filesystem::path outputfile;
@@ -83,34 +84,35 @@ int main(int argc, char **argv) {
         }
         json initialvalue;
         initialvalue["id"] = component["id"];
-        initialvalue["data"] = initialdata;
+        initialvalue["data"].push_back(initialdata);
         new_initial_values[classname][ctypename].push_back(initialvalue);
       };
     }
   }
   {
     std::ofstream outstream(outputfile);
-    outstream << new_initial_values.dump(1);
+    outstream << new_initial_values.dump(1, '\t');
   }
 }
 
 json convert_resultdata_to_intialdata(json datapoint, std::string ctypename) {
 
   std::vector<std::string> powertypes{
-      "PQnode", "PVnode", "Vphinode", "StochasticPQnode"};
+      "PQnode", "PVnode", "Vphinode", "StochasticPQnode", "ExternalPowerplant"};
   std::vector<std::string> gastypes{
       "Pipe", "Shortpipe", "Gaspowerconnection", "Compressorstation",
       "Controlvalve"};
 
   {
+
     auto name_it = std::find(powertypes.begin(), powertypes.end(), ctypename);
-    if (name_it == powertypes.end()) {
+    if (name_it != powertypes.end()) {
       return powerinitial(datapoint);
     }
   }
   {
     auto name_it = std::find(gastypes.begin(), gastypes.end(), ctypename);
-    if (name_it == gastypes.end()) {
+    if (name_it != gastypes.end()) {
       return gasinitial(datapoint);
     }
   }
@@ -118,6 +120,15 @@ json convert_resultdata_to_intialdata(json datapoint, std::string ctypename) {
       "Unknown componenttype, not a power node, not a gas edge!");
 }
 
-json powerinitial(json datapoint) { return datapoint; }
+json powerinitial(json datapoint) {
+  json init_datapoint;
+  init_datapoint["x"] = 0.0;
+  init_datapoint["values"] = json::array();
+  init_datapoint["values"].push_back(datapoint["P"]);
+  init_datapoint["values"].push_back(datapoint["Q"]);
+  init_datapoint["values"].push_back(datapoint["V"]);
+  init_datapoint["values"].push_back(datapoint["phi"]);
+  return init_datapoint;
+}
 
 json gasinitial(json datapoint) { return datapoint; }
