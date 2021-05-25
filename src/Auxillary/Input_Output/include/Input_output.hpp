@@ -13,8 +13,6 @@
 #include <vector>
 
 namespace io {
-  std::deque<std::string> args_as_deque(int argc, char **argv);
-
   /// Checks whether the given path filepath is inside of problem_root_path.
   ///
   /// If yes, returns a normalized path.

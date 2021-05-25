@@ -45,19 +45,6 @@ TEST(absolute_file_path_in_rootTEST, right_path) {
   EXPECT_TRUE(io::absolute_file_path_in_root(problem_root_path, filepath_true));
 }
 
-TEST(make_cmd_argument_vectorTEST, two_arguments) {
-
-  // The c++ standard requires that argv[argc]==nullptr.
-  const char *const_argv[] = {"grazer", "arg1", "arg2", nullptr};
-  int argc = 3;
-  char **argv = const_cast<char **>(const_argv);
-
-  std::deque<std::string> vec;
-  vec = {"arg1", "arg2"};
-
-  EXPECT_EQ(io::args_as_deque(argc, argv), vec);
-}
-
 TEST_F(prepare_output_dirTEST, path_not_below_current_dir) {
 
   std::filesystem::path temp_dirpath("temporary_dir");

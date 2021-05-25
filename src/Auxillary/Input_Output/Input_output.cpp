@@ -24,10 +24,6 @@ namespace io {
   }
 
 
-  std::deque<std::string> args_as_deque(int argc, char **argv) {
-    return std::deque<std::string>(argv + 1, argv + argc);
-  }
-
   std::filesystem::path prepare_output_dir(std::filesystem::path output_dir) {
 
     if (!absolute_file_path_in_root(
