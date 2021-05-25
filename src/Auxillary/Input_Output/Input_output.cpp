@@ -2,10 +2,8 @@
 #include <Input_output.hpp>
 #include <filesystem>
 #include <iostream>
-#include <stdexcept>
 
 namespace io {
-  using std::string;
 
   bool absolute_file_path_in_root(
       const std::filesystem::path &problem_root_path,
@@ -56,25 +54,6 @@ namespace io {
     }
     std::filesystem::create_directory(output_dir);
     return output_dir;
-  }
-
-  std::filesystem::path
-  extract_input_data(std::deque<std::string> const &cmd_arguments) {
-
-    if (cmd_arguments.size() != 1) {
-      gthrow(
-          {"Grazer needs 1 argument: The problem directory.\n"
-           "Aborting now."})
-    }
-    std::filesystem::path problem_directory = cmd_arguments[0];
-    if (!std::filesystem::is_directory(problem_directory)) {
-      gthrow(
-          {"The given path\n\n",
-           std::filesystem::absolute(problem_directory).string(),
-           "\n\ndoes not point to a valid directory.  Maybe the name is "
-           "misspelled."});
-    }
-    return problem_directory;
   }
 
 } // namespace io

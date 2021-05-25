@@ -29,7 +29,4 @@ namespace io {
   /// not a directory, it throws an exception.
   std::filesystem::path prepare_output_dir(std::filesystem::path output_dir);
 
-  std::filesystem::path
-  extract_input_data(std::deque<std::string> const &cmd_arguments);
-
 } // namespace io

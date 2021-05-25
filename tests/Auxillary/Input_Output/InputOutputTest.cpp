@@ -99,27 +99,3 @@ TEST_F(prepare_output_dirTEST, path_points_to_file) {
       = io::prepare_output_dir(temp_filepath.string()),
       std::runtime_error);
 }
-
-TEST_F(extract_input_dataTEST, input_vector_too_large) {
-
-  // Testing vector containing too many (>1) command arguments
-  std::deque<std::string> too_many_args = {"str1", "str2"};
-
-  EXPECT_THROW(
-      [[maybe_unused]] auto result = io::extract_input_data(too_many_args),
-      std::runtime_error);
-}
-
-TEST_F(extract_input_dataTEST, input_vector_works) {
-  std::filesystem::path dir_path = "test_pathname";
-  std::filesystem::create_directory(dir_path);
-  EXPECT_EQ(dir_path, io::extract_input_data({dir_path.string()}));
-}
-
-TEST_F(extract_input_dataTEST, input_vector_empty) {
-  // Testing empty vector
-  std::deque<std::string> vector_empty = {};
-  EXPECT_THROW(
-      [[maybe_unused]] auto result = io::extract_input_data(vector_empty),
-      std::runtime_error);
-}
