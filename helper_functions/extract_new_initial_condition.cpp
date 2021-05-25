@@ -84,7 +84,7 @@ int main(int argc, char **argv) {
         }
         json initialvalue;
         initialvalue["id"] = component["id"];
-        initialvalue["data"].push_back(initialdata);
+        initialvalue["data"] = initialdata;
         new_initial_values[classname][ctypename].push_back(initialvalue);
       };
     }
@@ -121,6 +121,7 @@ json convert_resultdata_to_intialdata(json datapoint, std::string ctypename) {
 }
 
 json powerinitial(json datapoint) {
+  json init_data = json::array();
   json init_datapoint;
   init_datapoint["x"] = 0.0;
   init_datapoint["values"] = json::array();
@@ -128,7 +129,21 @@ json powerinitial(json datapoint) {
   init_datapoint["values"].push_back(datapoint["Q"]);
   init_datapoint["values"].push_back(datapoint["V"]);
   init_datapoint["values"].push_back(datapoint["phi"]);
-  return init_datapoint;
+  init_data.push_back(init_datapoint);
+  return init_data;
 }
 
-json gasinitial(json datapoint) { return datapoint; }
+json gasinitial(json datapoint) {
+  json init_data = json::array();
+  auto flow_it = datapoint["flow"].begin();
+  auto pressure_it = datapoint["pressure"].begin();
+  for (; flow_it != datapoint["flow"].end(); ++flow_it, ++pressure_it) {
+    json init_datapoint;
+    init_datapoint["x"] = (*flow_it)["x"];
+    init_datapoint["values"] = json::array();
+    init_datapoint["values"].push_back((*pressure_it)["value"]);
+    init_datapoint["values"].push_back((*flow_it)["value"]);
+    init_data.push_back(init_datapoint);
+  }
+  return init_data;
+}
