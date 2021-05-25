@@ -116,11 +116,13 @@ namespace Model::Networkproblem::Power {
       double Q_val) {
 
     nlohmann::json current_value;
-    current_value["time"] = time;
-    current_value["P"] = P_val;
-    current_value["Q"] = Q_val;
-    current_value["V"] = state[get_start_state_index()];
-    current_value["phi"] = state[get_start_state_index() + 1];
+    current_value["t"] = time;
+    current_value["values"] = nlohmann::json::array();
+
+    current_value["values"].push_back(P_val);
+    current_value["values"].push_back(Q_val);
+    current_value["values"].push_back(state[get_start_state_index()]);
+    current_value["values"].push_back(state[get_start_state_index() + 1]);
 
     auto &output_json = get_output_json_ref();
     output_json["data"].push_back(std::move(current_value));
