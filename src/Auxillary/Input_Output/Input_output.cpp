@@ -21,7 +21,6 @@ namespace io {
     }
   }
 
-
   std::filesystem::path prepare_output_dir(std::filesystem::path output_dir) {
 
     if (!absolute_file_path_in_root(

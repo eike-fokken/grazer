@@ -5,7 +5,6 @@
 #include "schema_generation.hpp"
 #include "schema_key_insertion.hpp"
 #include <Eigen/Sparse>
-#include <any>
 #include <chrono>
 #include <filesystem>
 #include <iostream>
