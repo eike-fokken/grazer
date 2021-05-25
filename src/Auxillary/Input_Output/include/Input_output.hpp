@@ -1,15 +1,7 @@
 #pragma once
-#include <any>
-#include <deque>
 #include <filesystem>
-#include <functional>
-#include <map>
-#include <memory>
-#include <optional>
-#include <stdexcept>
 #include <string>
 #include <tuple>
-#include <variant>
 #include <vector>
 
 namespace io {
