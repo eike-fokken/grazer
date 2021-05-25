@@ -15,6 +15,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
 # for debug builds use the debug configuration of the standard libraries:
+# Unfortunately MacOS doesn't ship the debug versions of standard types,
+# therefore we forego the debug macro for Apple's Clang.
 if(NOT (CMAKE_CXX_COMPILER_ID MATCHES "AppleClang"))
   add_compile_definitions("$<$<CONFIG:DEBUG>:_GLIBCXX_DEBUG;_LIBCPP_DEBUG>")
 endif()
