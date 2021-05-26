@@ -1,8 +1,14 @@
 #pragma once
 #include "Edge.hpp"
-#include <Gasedge.hpp>
-#include <Implicitboxscheme.hpp>
-#include <Isothermaleulerequation.hpp>
+#include "Gasedge.hpp"
+
+namespace Model::Balancelaw {
+  class Pipe_Balancelaw;
+}
+
+namespace Model::Scheme {
+  class Threepointscheme;
+}
 
 namespace Model::Networkproblem::Gas {
 
@@ -17,6 +23,8 @@ namespace Model::Networkproblem::Gas {
     Pipe(
         nlohmann::json const &topology,
         std::vector<std::unique_ptr<Network::Node>> &nodes);
+
+    ~Pipe() override;
 
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
@@ -50,13 +58,11 @@ namespace Model::Networkproblem::Gas {
 
   private:
     double get_length();
-    double const diameter;
-    double const roughness;
     int const number_of_points;
     double const Delta_x;
 
-    Balancelaw::Isothermaleulerequation const bl;
-    Model::Scheme::Implicitboxscheme const scheme;
+    std::unique_ptr<Balancelaw::Pipe_Balancelaw const> bl;
+    std::unique_ptr<Scheme::Threepointscheme const> scheme;
   };
 
 } // namespace Model::Networkproblem::Gas

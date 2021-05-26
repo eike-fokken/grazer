@@ -28,7 +28,7 @@ namespace Model::Networkproblem {
     /// \brief getter for #after_state_index
     int get_after_state_index() const;
 
-    virtual void print_to_files(nlohmann::json &){};
+    virtual void print_to_files(nlohmann::json &);
 
     /// \brief Stores computed values in an output json.
     virtual void json_save(double time, Eigen::Ref<Eigen::VectorXd const> state)

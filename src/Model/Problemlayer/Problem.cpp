@@ -1,10 +1,10 @@
+#include "Problem.hpp"
+#include "Aux_json.hpp"
 #include "Exception.hpp"
-#include <Aux_json.hpp>
+#include "Matrixhandler.hpp"
+#include "Subproblem.hpp"
+#include "Subproblemchooser.hpp"
 #include <Eigen/Dense>
-#include <Matrixhandler.hpp>
-#include <Problem.hpp>
-#include <Subproblem.hpp>
-#include <Subproblemchooser.hpp>
 #include <exception>
 #include <fstream>
 #include <iostream>

@@ -1,45 +1,47 @@
 #pragma once
+#include "Pipe_Balancelaw.hpp"
 #include <Eigen/Dense>
+#include <nlohmann/json.hpp>
 
 namespace Model::Balancelaw {
 
-  class Isothermaleulerequation {
+  class Isothermaleulerequation : public Pipe_Balancelaw {
 
   public:
-    Isothermaleulerequation(){};
+    Isothermaleulerequation(nlohmann::json const &json);
 
-    static Eigen::Vector2d
-    flux(Eigen::Ref<Eigen::Vector2d const> state, double diameter);
-    static Eigen::Matrix2d
-    dflux_dstate(Eigen::Ref<Eigen::Vector2d const> state, double diameter);
+    Eigen::Vector2d
+    flux(Eigen::Ref<Eigen::Vector2d const> state) const override;
+    Eigen::Matrix2d
+    dflux_dstate(Eigen::Ref<Eigen::Vector2d const> state) const override;
 
-    static Eigen::Vector2d source(
-        Eigen::Ref<Eigen::Vector2d const> state, double diameter,
-        double roughness);
-    static Eigen::Matrix2d dsource_dstate(
-        Eigen::Ref<Eigen::Vector2d const> state, double diameter,
-        double roughness);
+    Eigen::Vector2d
+    source(Eigen::Ref<Eigen::Vector2d const> state) const override;
+    Eigen::Matrix2d
+    dsource_dstate(Eigen::Ref<Eigen::Vector2d const> state) const override;
 
-    static Eigen::Vector2d p_qvol(Eigen::Ref<Eigen::Vector2d const> state);
-    static Eigen::Matrix2d
-    dp_qvol_dstate(Eigen::Ref<Eigen::Vector2d const> state);
+    Eigen::Vector2d
+    p_qvol(Eigen::Ref<Eigen::Vector2d const> state) const override;
+    Eigen::Matrix2d
+    dp_qvol_dstate(Eigen::Ref<Eigen::Vector2d const> state) const override;
 
-    static Eigen::Vector2d state(Eigen::Ref<Eigen::Vector2d const> p_qvol);
-    static double p_pascal_from_p_bar(double p);
-    static Eigen::Vector2d
-    p_qvol_from_p_qvol_bar(Eigen::Ref<Eigen::Vector2d const> p_qvol_bar);
+    Eigen::Vector2d
+    state(Eigen::Ref<Eigen::Vector2d const> p_qvol) const override;
+    double p_pascal_from_p_bar(double p) const override;
+    Eigen::Vector2d p_qvol_from_p_qvol_bar(
+        Eigen::Ref<Eigen::Vector2d const> p_qvol_bar) const override;
 
-    static double p_bar_from_p_pascal(double p);
-    static double dp_bar_from_p_pascal_dp_pascal(double p);
+    double p_bar_from_p_pascal(double p) const override;
+    double dp_bar_from_p_pascal_dp_pascal(double p) const override;
 
-    static Eigen::Vector2d
-    p_qvol_bar_from_p_qvol(Eigen::Ref<Eigen::Vector2d const> p_qvol);
-    static Eigen::Matrix2d
-    dp_qvol_bar_from_p_qvold_p_qvol(Eigen::Ref<Eigen::Vector2d const> p_qvol);
+    Eigen::Vector2d p_qvol_bar_from_p_qvol(
+        Eigen::Ref<Eigen::Vector2d const> p_qvol) const override;
+    Eigen::Matrix2d dp_qvol_bar_from_p_qvold_p_qvol(
+        Eigen::Ref<Eigen::Vector2d const> p_qvol) const override;
 
-    static double p(double rho);
-    static double dp_drho(double rho);
-    static double rho(double rho);
+    double p(double rho) const override;
+    double dp_drho(double rho) const override;
+    double rho(double rho) const override;
 
     static double
     lambda_non_laminar(double Re, double diameter, double roughness);
@@ -74,6 +76,9 @@ namespace Model::Balancelaw {
     static constexpr double c_vac_squared{p_0 * T / (z_0 * T_0 * rho_0)};
 
   private:
+    double const diameter;
+    double const roughness;
+
     static Eigen::Vector4d get_coefficients(double diameter, double roughness);
 
     static constexpr double laminar_border{2000.0};
