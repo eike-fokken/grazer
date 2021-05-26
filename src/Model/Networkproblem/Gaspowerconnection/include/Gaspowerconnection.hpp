@@ -4,12 +4,9 @@
 #include "Edge.hpp"
 #include "Gasedge.hpp"
 
-namespace Model::Networkproblem::Power {
-  class Powernode;
-} // namespace Model::Networkproblem::Power
-
 namespace Model::Networkproblem::Gaspowerconnection {
 
+  class ExternalPowerplant;
   /** \brief an edge connecting a gasnode to a powernode and modelling a
    * gaspower plant/power-to-gas plant.
    *
@@ -83,7 +80,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
      * power-controlled periods are ignored.
      */
     Boundaryvalue<1> boundaryvalue;
-    Power::Powernode *powerendnode{nullptr};
+    ExternalPowerplant *powerendnode{nullptr};
 
     double const gas2power_q_coefficient;
     double const power2gas_q_coefficient;
