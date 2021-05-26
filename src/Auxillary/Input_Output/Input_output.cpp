@@ -23,14 +23,14 @@ namespace io {
 
   std::filesystem::path prepare_output_dir(std::filesystem::path output_dir) {
 
-    if (!absolute_file_path_in_root(
-            std::filesystem::current_path(), output_dir)) {
-      gthrow(
-          {"The output directory must be below the current working ",
-           "directory, but it is not.\n", "Current working directory: ",
-           std::filesystem::current_path().string(), "\n",
-           "Chosen output directory: ", output_dir.string()});
-    }
+    // if (!absolute_file_path_in_root(
+    //         std::filesystem::current_path(), output_dir)) {
+    //   gthrow(
+    //       {"The output directory must be below the current working ",
+    //        "directory, but it is not.\n", "Current working directory: ",
+    //        std::filesystem::current_path().string(), "\n",
+    //        "Chosen output directory: ", output_dir.string()});
+    // }
 
     if (std::filesystem::exists(output_dir)) {
       if (!std::filesystem::is_directory(output_dir)) {
