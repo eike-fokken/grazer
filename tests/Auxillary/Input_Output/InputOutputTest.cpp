@@ -45,21 +45,21 @@ TEST(absolute_file_path_in_rootTEST, right_path) {
   EXPECT_TRUE(io::absolute_file_path_in_root(problem_root_path, filepath_true));
 }
 
-TEST_F(prepare_output_dirTEST, path_not_below_current_dir) {
+// TEST_F(prepare_output_dirTEST, path_not_below_current_dir) {
 
-  std::filesystem::path temp_dirpath("temporary_dir");
-  std::filesystem::path dirpath_false;
+//   std::filesystem::path temp_dirpath("temporary_dir");
+//   std::filesystem::path dirpath_false;
 
-  std::filesystem::create_directory(temp_dirpath);
+//   std::filesystem::create_directory(temp_dirpath);
 
-  // Testing a path that is not below the current working directory
-  dirpath_false = std::filesystem::path("..") / temp_dirpath;
+//   // Testing a path that is not below the current working directory
+//   dirpath_false = std::filesystem::path("..") / temp_dirpath;
 
-  EXPECT_THROW(
-      [[maybe_unused]] auto result
-      = io::prepare_output_dir(dirpath_false.string()),
-      std::runtime_error);
-}
+//   EXPECT_THROW(
+//       [[maybe_unused]] auto result
+//       = io::prepare_output_dir(dirpath_false.string()),
+//       std::runtime_error);
+// }
 
 TEST_F(prepare_output_dirTEST, directory_has_new_unique_name) {
 
