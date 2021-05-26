@@ -1,109 +1,109 @@
 {
-    "information": {
-        "title": "greek-power",
-        "type": "gas-power",
-        "author": "automatic conversion",
-        "date": "2016-10-19",
-        "documentation": "Adapted gaslib-134 combined with ieee-300 network."
-    },
-    "nodes": {
-        "Source": [
-            {
-                "id": "node_1",
-                "x": 10.000000,
-                "y": 10.000000,
-                "height": {
-                    "value": 0.000000
-                },
-                "temperature": {
-                    "unit": "K",
-                    "value": 283.150000
-                },
-                "pressureMin": {
-                    "unit": "bar",
-                    "value": 50.000000
-                },
-                "pressureMax": {
-                    "unit": "bar",
-                    "value": 66.400000
-                },
-                "pressureInit": {
-                    "unit": "bar",
-                    "value": 58.200000
-                },
-                "flowMin": {
-                    "unit": "m_cube_per_s",
-                    "value": 0.000000
-                },
-                "flowMax": {
-                    "unit": "m_cube_per_s",
-                    "value": 113.826115
-                }
-            }
-        ],
-        "Sink": [
-            {
-                "id": "node_2",
-                "x": 20.000000,
-                "y": 10.000000,
-                "height": {
-                    "value": 0.000000
-                },
-                "temperature": {
-                    "unit": "K",
-                    "value": 283.150000
-                },
-                "pressureMin": {
-                    "unit": "bar",
-                    "value": 35.000000
-                },
-                "pressureMax": {
-                    "unit": "bar",
-                    "value": 66.400000
-                },
-                "pressureInit": {
-                    "unit": "bar",
-                    "value": 50.700000
-                }
-            }
-        ]
-    },
-    "connections": {
-        "Pipe": [
-            {
-                "id": "p_br1",
-                "from": "node_1",
-                "to": "node_2",
-                "heatTransferCoefficient": "2",
-                "flowMin": {
-                    "unit": "m_cube_per_s",
-                    "value": -6369.426752
-                },
-                "flowMax": {
-                    "unit": "m_cube_per_s",
-                    "value": 6369.426752
-                },
-                "flowInInit": {
-                    "unit": "m_cube_per_s",
-                    "value": -6369.426752
-                },
-                "flowOutInit": {
-                    "unit": "m_cube_per_s",
-                    "value": -6369.426752
-                },
-                "length": {
-                    "unit": "km",
-                    "value": 14.56
-                },
-                "diameter": {
-                    "unit": "mm",
-                    "value": 914.400000
-                },
-                "roughness": {
-                    "unit": "m",
-                    "value": 0.000008
-                }
-            }
-        ]
-    }
+	"information": {
+		"title": "greek-power",
+		"type": "gas-power",
+		"author": "automatic conversion",
+		"date": "2016-10-19",
+		"documentation": "Adapted gaslib-134 combined with ieee-300 network."
+	},
+	"nodes": {
+		"Source": [
+			{
+				"id": "node_1",
+				"x": 10.0,
+				"y": 10.0,
+				"height": {
+					"value": 0.0
+				},
+				"temperature": {
+					"unit": "K",
+					"value": 283.15
+				},
+				"pressureMin": {
+					"unit": "bar",
+					"value": 50.0
+				},
+				"pressureMax": {
+					"unit": "bar",
+					"value": 66.4
+				},
+				"pressureInit": {
+					"unit": "bar",
+					"value": 58.2
+				},
+				"flowMin": {
+					"unit": "m_cube_per_s",
+					"value": 0.0
+				},
+				"flowMax": {
+					"unit": "m_cube_per_s",
+					"value": 113.826115
+				}
+			}
+		],
+		"Sink": [
+			{
+				"id": "node_2",
+				"x": 20.0,
+				"y": 10.0,
+				"height": {
+					"value": 0.0
+				},
+				"temperature": {
+					"unit": "K",
+					"value": 283.15
+				},
+				"pressureMin": {
+					"unit": "bar",
+					"value": 35.0
+				},
+				"pressureMax": {
+					"unit": "bar",
+					"value": 66.4
+				},
+				"pressureInit": {
+					"unit": "bar",
+					"value": 50.7
+				}
+			}
+		]
+	},
+	"connections": {
+		"Pipe": [
+			{
+				"id": "p_br1",
+				"from": "node_1",
+				"to": "node_2",
+				"heatTransferCoefficient": "2",
+				"flowMin": {
+					"unit": "m_cube_per_s",
+					"value": -6369.426752
+				},
+				"flowMax": {
+					"unit": "m_cube_per_s",
+					"value": 6369.426752
+				},
+				"flowInInit": {
+					"unit": "m_cube_per_s",
+					"value": -6369.426752
+				},
+				"flowOutInit": {
+					"unit": "m_cube_per_s",
+					"value": -6369.426752
+				},
+				"length": {
+					"unit": "km",
+					"value": 14.56
+				},
+				"diameter": {
+					"unit": "mm",
+					"value": 914.4
+				},
+				"roughness": {
+					"unit": "m",
+					"value": 8e-06
+				}
+			}
+		]
+	}
 }
