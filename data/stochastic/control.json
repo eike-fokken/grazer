@@ -40,6 +40,23 @@
 		],
 		"Gaspowerconnection": [
 			{
+				"id": "g2p_ld38_N7166",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							0.0
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							0.0
+						]
+					}
+				]
+			},
+			{
 				"id": "g2p_ld37_N9002",
 				"data": [
 					{
