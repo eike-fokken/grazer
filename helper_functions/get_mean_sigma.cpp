@@ -86,7 +86,7 @@ int main(int argc, char **argv) {
     }
   }
   std::ofstream outstream(computed_output);
-  outstream << output.dump(1);
+  outstream << output.dump(1,'\t');
 }
 
 void add_power_json_data(

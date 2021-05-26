@@ -4,6 +4,6 @@
 
 int main() {
   Model::Componentfactory::Full_factory full_factory;
-  std::cout << full_factory.get_boundary_schema().dump(/*indent=*/4)
+  std::cout << full_factory.get_boundary_schema().dump(1,'\t')
             << std::endl;
 }

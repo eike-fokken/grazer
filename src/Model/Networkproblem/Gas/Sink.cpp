@@ -15,7 +15,7 @@ namespace Model::Networkproblem::Gas {
       gthrow(
           {"The sink json ", data["id"],
            " did not contain boundary values.  Something went wrong.\n",
-           "Its json was: ", data.dump(4)});
+           "Its json was: ", data.dump(1,'\t')});
     }
     for (auto &datum : reverted_boundary_json["boundary_values"]["data"]) {
       for (auto &value_json : datum["values"]) {
