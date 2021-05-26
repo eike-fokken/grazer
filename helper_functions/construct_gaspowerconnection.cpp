@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
   std::string to_category = "ExternalPowerplant";
   std::string startid = argv[1];
   std::string endid = argv[2];
-
+  std::string fullstartid = "node_" + startid;
   std::string g2pid = "g2p_" + startid + "_" + endid;
 
   std::string g2pcategory = "Gaspowerconnection";
@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
           auto newg2p = currcat.front();
           currcat.insert(currcat.begin(), newg2p);
           currcat.front()["id"] = g2pid;
-          currcat.front()["from"] = startid;
+          currcat.front()["from"] = fullstartid;
           currcat.front()["to"] = endid;
         } else {
           auto newg2p = currcat.front();
