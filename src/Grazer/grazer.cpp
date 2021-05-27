@@ -41,8 +41,9 @@ int main(int argc, char **argv) {
     double tolerance = 1e-8;
     int maximal_number_of_newton_iterations = time_evolution_json
         ["maximal_number_of_newton_iterations_per_time_step"];
+    int retries = time_evolution_json["retries"];
     Model::Timeevolver timeevolver(
-        tolerance, maximal_number_of_newton_iterations, output_dir);
+        tolerance, maximal_number_of_newton_iterations, retries, output_dir);
 
     Model::Problem problem(problem_json, timeevolver.get_output_dir());
     int number_of_states = problem.set_indices();

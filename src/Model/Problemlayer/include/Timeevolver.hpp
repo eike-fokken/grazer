@@ -39,7 +39,7 @@ namespace Model {
   public:
     Timeevolver() = delete;
     Timeevolver(
-        double tolerance, int maximal_number_of_iterations,
+        double tolerance, int maximal_number_of_iterations, int retries,
         std::filesystem::path const &output_dir);
 
     void simulate(
@@ -51,6 +51,7 @@ namespace Model {
   private:
     Solver::Newtonsolver<Problem> solver;
     std::filesystem::path const output_dir;
+    int retries;
   };
 
 } // namespace Model

@@ -3,6 +3,7 @@
     {
         "always_recompute_jacobian": false,
         "maximal_number_of_newton_iterations_per_time_step": 70,
+        "retries": 5,
         "start_time": 0,
         "end_time": 86400,
         "desired_delta_t": 480

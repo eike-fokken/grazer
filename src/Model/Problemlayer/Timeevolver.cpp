@@ -37,10 +37,15 @@ namespace Model {
   }
 
   Timeevolver::Timeevolver(
-      double tolerance, int maximal_number_of_iterations,
+      double tolerance, int maximal_number_of_iterations, int _retries,
       std::filesystem::path const &_output_dir) :
       solver(tolerance, maximal_number_of_iterations),
-      output_dir(_output_dir) {}
+      output_dir(_output_dir),
+      retries(_retries) {
+    if (_retries < 0) {
+      gthrow({"The number of retries cannot be negative!"});
+    }
+  }
 
   void Timeevolver::simulate(
       Timedata timedata, Model::Problem &problem, int number_of_states,
@@ -86,12 +91,12 @@ namespace Model {
           problem.json_save(new_time, new_state);
           break;
         }
-        if (retry == 6) {
+        if (retry == retries) {
           use_full_jacobian = true;
           std::cout << "Switching to updated Jacobian in every step."
                     << std::endl;
         }
-        if (retry > 10) {
+        if (retry > 2 * retries) {
           problem.json_save(new_time, new_state);
           gthrow({"Failed timestep irrevocably!", std::to_string(new_time)});
         }
