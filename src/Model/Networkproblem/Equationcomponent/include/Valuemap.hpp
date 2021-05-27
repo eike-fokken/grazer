@@ -131,7 +131,7 @@ namespace Model::Networkproblem {
                      pair_values.begin(), pair_values.end(), compare_eq);
 
       if (first_eq_pair != pair_values.end()) {
-        gthrow({"The value, (*first_eq_pair).first,  appears twice in node with id",
+        gthrow({"The value ", std::to_string(first_eq_pair->first), " appears twice in node with id ",
             values_json["id"], " ."});
       }
 
