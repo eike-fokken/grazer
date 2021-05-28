@@ -41,8 +41,8 @@ namespace Aux::schema {
 
     for (auto const &[name, schema] : schemas) {
       path file = schema_dir / path(name + "_schema.json");
-      std::ofstream initial_stream(file);
-      initial_stream << factory.get_initial_schema().dump(
+      std::ofstream ofs(file);
+      ofs << schema.dump(
           /*indent=*/1, /*indent_char=*/'\t');
     }
   }
