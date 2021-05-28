@@ -9,14 +9,28 @@ namespace Aux::schema {
     auto schemas = grazer_directory / "schemas";
     auto problem_dir = grazer_directory / "problem";
 
+    if (not std::filesystem::is_directory(problem_dir)) {
+      if (std::filesystem::exists(problem_dir)) {
+        throw std::runtime_error(
+            "Problem directory is not a directory but some other file. "
+            "Aborting!");
+      }
+      std::filesystem::create_directory(problem_dir);
+    }
+
     for (std::string const &type :
          {"boundary", "control", "initial", "topology"}) {
       if (std::filesystem::exists(schemas / (type + "_schema.json"))) {
         path file = problem_dir / (type + ".json");
-        ordered_json ord_json = aux_json::get_ordered_json_from_file_path(file);
+        ordered_json old_json;
+        if (std::filesystem::exists(file)) {
+          old_json = aux_json::get_ordered_json_from_file_path(file);
+        } else {
+          old_json = {};
+        }
         ordered_json result;
         result["$schema"] = "../schemas/" + type + "_schema.json";
-        for (auto &[key, value] : ord_json.items()) {
+        for (auto &[key, value] : old_json.items()) {
           result[key] = std::move(value);
         }
         aux_json::overwrite_json(file, result);
