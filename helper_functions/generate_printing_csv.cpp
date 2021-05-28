@@ -133,29 +133,28 @@ void write_power_csv(std::string id, json object) {
   std::ofstream outstream(outpath);
 
   outstream << "time";
-  for (auto q_it = object["data"][0].begin(); q_it != object["data"][0].end();
-       ++q_it) {
-    if (q_it.key() == "time") {
+  for (auto const &[key, value] : object["data"][0].items()) {
+    if (key == "time") {
       continue;
     }
-    outstream << ",   " << q_it.key();
+    outstream << ",   " << key;
   }
   outstream << "\n";
 
   for (auto &timestep : object["data"]) {
     outstream << timestep["time"];
-    for (auto q_it = timestep.begin(); q_it != timestep.end(); ++q_it) {
-      if (q_it.key() == "time") {
+    for (auto const &[key, value] : timestep.items()) {
+      if (key == "time") {
         continue;
       }
-      if (not q_it.value().is_number()) {
+      if (not value.is_number()) {
         std::cout << std::endl;
         fs::remove(outpath);
         throw std::invalid_argument(
-            "This seems to be no powernode, as the value of " + q_it.key()
+            "This seems to be no powernode, as the value of " + key
             + " is not just a number.");
       }
-      outstream << ",   " << q_it.value();
+      outstream << ",   " << value;
     }
     outstream << "\n";
   }
@@ -164,11 +163,16 @@ void write_power_csv(std::string id, json object) {
 void write_gas_csv(std::string id, json object) {
   auto first_step = object["data"][0];
 
-  for (auto q_it = first_step.begin(); q_it != first_step.end(); ++q_it) {
-    if (q_it.key() == "time") {
+  for (auto const &[key, value] :
+       object["data"][0]
+           .items() //  auto q_it
+                    //                            = first_step.begin();
+                    // q_it != first_step.end(); ++q_it
+  ) {
+    if (key == "time") {
       continue;
     }
-    fs::path outpath(id + "_" + q_it.key() + ".csv");
+    fs::path outpath(id + "_" + key + ".csv");
     std::cout << "Creating or overwriting " << outpath.string() << std::endl;
 
     if (not Aux_executable::absolute_file_path_in_root(
@@ -179,13 +183,13 @@ void write_gas_csv(std::string id, json object) {
     }
     std::ofstream outstream(outpath);
     outstream << "t-x";
-    for (auto &valuepair : first_step[q_it.key()]) {
+    for (auto &valuepair : first_step[key]) {
       outstream << ",   " << valuepair["x"];
     }
     outstream << "\n";
     for (auto &timestep : object["data"]) {
       outstream << timestep["time"];
-      for (auto &valuepair : timestep[q_it.key()]) {
+      for (auto &valuepair : timestep[key]) {
         outstream << ",   " << valuepair["value"];
       }
       outstream << "\n";
