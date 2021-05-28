@@ -13,7 +13,7 @@
 // Inheritance just for the name change (test fixture inherits name)
 class prepare_output_dirTEST : public CWD_To_Rand_Test_Dir {};
 
-//Inheritance just for the name change (test fixture inherits name)
+// Inheritance just for the name change (test fixture inherits name)
 class extract_input_dataTEST : public CWD_To_Rand_Test_Dir {};
 
 TEST(absolute_file_path_in_rootTEST, wrong_path) {

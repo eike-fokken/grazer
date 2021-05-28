@@ -3,8 +3,8 @@
 #include <filesystem>
 #include <fstream>
 #include <gtest/gtest.h>
-#include <nlohmann/json.hpp>
 #include <iostream>
+#include <nlohmann/json.hpp>
 
 // Inheritance just for the name change (test fixture inherits name)
 class schema_key_Insertion_Test : public CWD_To_Rand_Test_Dir {};
