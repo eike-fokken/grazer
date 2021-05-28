@@ -6,37 +6,23 @@ namespace Aux::schema {
   using Model::Componentfactory::Componentfactory;
   using std::filesystem::path;
 
+  // private functions
+  bool
+  key_from_map_is_prefix(std::map<std::string, json> map, std::string string);
+
+  /**
+   * @brief directory validation (directory may only include known schema files)
+   * @param directory
+   * @param schemas
+   */
+  void assert_only_known_schemas(
+      path directory, std::map<std::string, json> schemas);
+  ///////////////////////////////////////////////////////////////////////////
+
   int make_full_factory_schemas(path grazer_dir) {
     Model::Componentfactory::Full_factory full_factory;
     make_schemas(full_factory, grazer_dir / "schemas");
     return 0;
-  }
-
-  static bool
-  key_from_map_is_prefix(std::map<std::string, json> map, std::string string) {
-    for (auto const &[name, _] : map) {
-      if (string.rfind(name, 0) == 0) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  static void assert_only_known_schemas(
-      path directory, std::map<std::string, json> schemas) {
-    for (auto const &file : std::filesystem::directory_iterator(directory)) {
-      std::string filename = file.path().filename().string();
-      if (std::filesystem::is_directory(file)) {
-        gthrow(
-            {"unknown directory ", filename, " inside ", directory.string(),
-             " aborting to avoid overriding data"});
-      }
-      if (not key_from_map_is_prefix(schemas, filename)) {
-        gthrow(
-            {"unknown file ", filename, "inside", directory.string(),
-             "are you sure this is the right directory?"});
-      }
-    }
   }
 
   void make_schemas(Componentfactory const &factory, path schema_dir) {
@@ -59,6 +45,33 @@ namespace Aux::schema {
       initial_stream << factory.get_initial_schema().dump(
           /*indent=*/1, /*indent_char=*/'\t');
     }
+  }
+
+  void assert_only_known_schemas(
+      path directory, std::map<std::string, json> schemas) {
+    for (auto const &file : std::filesystem::directory_iterator(directory)) {
+      std::string filename = file.path().filename().string();
+      if (std::filesystem::is_directory(file)) {
+        gthrow(
+            {"unknown directory ", filename, " inside ", directory.string(),
+             " aborting to avoid overriding data"});
+      }
+      if (not key_from_map_is_prefix(schemas, filename)) {
+        gthrow(
+            {"unknown file ", filename, "inside", directory.string(),
+             "are you sure this is the right directory?"});
+      }
+    }
+  }
+
+  bool
+  key_from_map_is_prefix(std::map<std::string, json> map, std::string string) {
+    for (auto const &[name, _] : map) {
+      if (string.rfind(name, 0) == 0) {
+        return true;
+      }
+    }
+    return false;
   }
 
 } // namespace Aux::schema
