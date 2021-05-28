@@ -10,23 +10,11 @@
 #include <string>
 #include <vector>
 
-class prepare_output_dirTEST : public ::testing::Test {
-public:
-  prepare_output_dirTEST() : path_changer(directory_creator.get_path()) {}
+// Inheritance just for the name change (test fixture inherits name)
+class prepare_output_dirTEST : public CWD_To_Rand_Test_Dir {};
 
-private:
-  Directory_creator const directory_creator;
-  Path_changer const path_changer;
-};
-
-class extract_input_dataTEST : public ::testing::Test {
-public:
-  extract_input_dataTEST() : path_changer(directory_creator.get_path()) {}
-
-private:
-  Directory_creator const directory_creator;
-  Path_changer const path_changer;
-};
+//Inheritance just for the name change (test fixture inherits name)
+class extract_input_dataTEST : public CWD_To_Rand_Test_Dir {};
 
 TEST(absolute_file_path_in_rootTEST, wrong_path) {
 
