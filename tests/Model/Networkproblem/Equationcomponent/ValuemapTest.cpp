@@ -99,8 +99,6 @@ TEST(set_conditionTEST, duplicate_x_value) {
     Model::Networkproblem::Valuemap<2>::set_condition(values_json, "x");
   } catch (std::exception &e) {
     EXPECT_THAT(
-        e.what(),
-        testing::HasSubstr(
-            "The value 1.000000 appears twice in node with id N213 ."));
+        e.what(), testing::HasSubstr(" appears twice in node with id N213."));
   }
 }
