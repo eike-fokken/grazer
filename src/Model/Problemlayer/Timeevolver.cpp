@@ -8,7 +8,7 @@
 #include <fstream>
 #include <iostream>
 #include <nlohmann/json.hpp>
-#include <string>
+
 namespace Model {
 
   Timedata::Timedata(nlohmann::json const &time_evolution_data) :

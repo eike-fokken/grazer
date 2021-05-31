@@ -1,10 +1,6 @@
 #pragma once
 #include "Newtonsolver.hpp"
-#include <Eigen/Sparse>
-#include <filesystem>
-#include <memory>
 #include <nlohmann/json.hpp>
-#include <utility>
 
 namespace Model {
 
