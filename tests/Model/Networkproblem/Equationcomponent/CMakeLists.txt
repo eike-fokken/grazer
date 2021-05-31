@@ -10,6 +10,9 @@ add_executable(control_test ControlTest.cpp )
 target_link_libraries(control_test PUBLIC equationcomponent )
 target_link_libraries(control_test PUBLIC gtest gtest_main gmock)
 
+add_executable(valuemap_test ValuemapTest.cpp )
+target_link_libraries(valuemap_test PUBLIC equationcomponent )
+target_link_libraries(valuemap_test PUBLIC gtest gtest_main gmock)
 
 add_test(
   NAME boundary_test
@@ -22,4 +25,8 @@ add_test(
 add_test(
   NAME control_test
   COMMAND control_test
+  )
+add_test(
+  NAME valuemap_test
+  COMMAND valuemap_test
   )
