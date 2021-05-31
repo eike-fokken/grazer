@@ -14,6 +14,10 @@ namespace Aux::schema {
     json string();
     json string(std::string description);
     json string(std::string title, std::string description);
+    json boolean();
+    json boolean(std::string description);
+    json boolean(std::string title, std::string description);
+
     json length();
   } // namespace type
 
