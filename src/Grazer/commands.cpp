@@ -1,6 +1,6 @@
+#include "commands.hpp"
 #include "Aux_json.hpp"
 #include "Input_output.hpp"
-#include "commands.hpp"
 #include "Problem.hpp"
 #include "Timeevolver.hpp"
 #include <iostream>
