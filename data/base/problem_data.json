@@ -1,9 +1,10 @@
 {
     "time_evolution_data":
     {
-        "always_recompute_jacobian": false,
-        "retries": 0,
-        "maximal_number_of_newton_iterations_per_time_step": 70,
+        "use_simplified_newton": true,
+        "maximal_number_of_newton_iterations": 100,
+        "tolerance": 1e-8,
+        "retries": 5,
         "start_time": 0,
         "end_time": 86400,
         "desired_delta_t": 1800
