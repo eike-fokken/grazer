@@ -1,17 +1,12 @@
 #include "Netfactory.hpp"
-#include "Componentfactory.hpp"
-#include "Edge.hpp"
-#include "Node.hpp"
 #include "PQnode.hpp"
 #include "PVnode.hpp"
 #include "Power_factory.hpp"
-#include "Powernode.hpp"
 #include "Transmissionline.hpp"
 #include "Vphinode.hpp"
-#include <Eigen/Dense>
+
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
-#include <ostream>
 #include <stdexcept>
 
 TEST(sort_json_vectors_by_idTEST, not_sorted) {
