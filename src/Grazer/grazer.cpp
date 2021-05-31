@@ -4,6 +4,7 @@
 #include "Timeevolver.hpp"
 #include <Eigen/Sparse>
 #include <chrono>
+#include <cstdlib>
 #include <filesystem>
 #include <iostream>
 #include <memory>
@@ -38,14 +39,9 @@ int main(int argc, char **argv) {
     initial_value_json["GRAZER_file_directory"] = directory_path.string();
     Model::Timedata timedata(time_evolution_json);
 
-    double tolerance = 1e-8;
-    int maximal_number_of_newton_iterations = time_evolution_json
-        ["maximal_number_of_newton_iterations_per_time_step"];
-    int retries = time_evolution_json["retries"];
-    Model::Timeevolver timeevolver(
-        tolerance, maximal_number_of_newton_iterations, retries, output_dir);
+    auto timeevolver = Model::Timeevolver::make_instance(time_evolution_json);
 
-    Model::Problem problem(problem_json, timeevolver.get_output_dir());
+    Model::Problem problem(problem_json, output_dir);
     int number_of_states = problem.set_indices();
     std::cout << "data read" << std::endl;
 
@@ -63,13 +59,13 @@ int main(int argc, char **argv) {
               << ex.what()
               << "\n###############################################\n\n"
               << std::endl;
-    return 1;
+    return EXIT_FAILURE;
   } catch (...) {
     std::cout << "An unknown type of exception was thrown.\n\n"
                  "This is a bug and must be fixed!\n\n"
                  "Please contact the maintainer of Grazer!"
               << std::endl;
-    return 1;
+    return EXIT_FAILURE;
   }
-  return 0;
+  return EXIT_SUCCESS;
 }

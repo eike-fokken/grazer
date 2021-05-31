@@ -37,21 +37,18 @@ namespace Model {
   class Timeevolver {
 
   public:
-    Timeevolver() = delete;
-    Timeevolver(
-        double tolerance, int maximal_number_of_iterations, int retries,
-        std::filesystem::path const &output_dir);
+    static nlohmann::json get_schema();
+    static Timeevolver make_instance(nlohmann::json const &timeevolver_data);
 
     void simulate(
         Timedata timedata, Model::Problem &problem, int number_of_states,
         nlohmann::json &problem_initial_json);
 
-    std::filesystem::path const &get_output_dir();
-
   private:
+    Timeevolver(nlohmann::json const &timeevolver_data);
     Solver::Newtonsolver<Problem> solver;
-    std::filesystem::path const output_dir;
     int retries;
+    bool const use_simplified_newton;
   };
 
 } // namespace Model

@@ -1,12 +1,14 @@
 #include "Timeevolver.hpp"
 #include "Exception.hpp"
 #include "Problem.hpp"
+#include "json_validation.hpp"
+#include "make_schema.hpp"
+
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <string>
-
 namespace Model {
 
   Timedata::Timedata(nlohmann::json const &time_evolution_data) :
@@ -36,16 +38,32 @@ namespace Model {
     return get_timeinterval() / (Number_of_timesteps - 1);
   }
 
-  Timeevolver::Timeevolver(
-      double tolerance, int maximal_number_of_iterations, int _retries,
-      std::filesystem::path const &_output_dir) :
-      solver(tolerance, maximal_number_of_iterations),
-      output_dir(_output_dir),
-      retries(_retries) {
-    if (_retries < 0) {
-      gthrow({"The number of retries cannot be negative!"});
-    }
+  nlohmann::json Timeevolver::get_schema() {
+    nlohmann::json schema;
+    schema["type"] = "object";
+    Aux::schema::add_required(schema, "tolerance", Aux::schema::type::number());
+    Aux::schema::add_required(
+        schema, "maximal_number_of_newton_iterations",
+        Aux::schema::type::number());
+    Aux::schema::add_required(schema, "retries", Aux::schema::type::number());
+    Aux::schema::add_required(
+        schema, "use_simplified_newton", Aux::schema::type::boolean());
+
+    return schema;
   }
+
+  Timeevolver
+  Timeevolver::make_instance(nlohmann::json const &timeevolver_data) {
+    validation::validate_json(timeevolver_data, get_schema());
+    return Timeevolver(timeevolver_data);
+  }
+
+  Timeevolver::Timeevolver(nlohmann::json const &timeevolver_data) :
+      solver(
+          timeevolver_data["tolerance"],
+          timeevolver_data["maximal_number_of_newton_iterations"]),
+      retries(timeevolver_data["retries"]),
+      use_simplified_newton(timeevolver_data["use_simplified_newton"]) {}
 
   void Timeevolver::simulate(
       Timedata timedata, Model::Problem &problem, int number_of_states,
@@ -75,7 +93,17 @@ namespace Model {
       new_time = last_time + timedata.get_delta_t();
       Solver::Solutionstruct solstruct;
       int retry = 0;
-      bool use_full_jacobian = false;
+      if (use_simplified_newton) {
+        retry = 0;
+      } else {
+        retry = retries;
+      }
+      bool use_full_jacobian = true;
+      if (use_simplified_newton) {
+        use_full_jacobian = false;
+      } else {
+        use_full_jacobian = true;
+      }
       Eigen::VectorXd new_state_backup = new_state;
       while (not solstruct.success) {
         new_state = new_state_backup;
@@ -85,13 +113,15 @@ namespace Model {
             last_state);
         if (solstruct.success) {
 
-          if (retry > 0) {
+          if (use_simplified_newton and retry > 0) {
+            std::cout << "succeeded after retries!\n" << std::endl;
+          } else if (not use_simplified_newton and retry > retries) {
             std::cout << "succeeded after retries!\n" << std::endl;
           }
           problem.json_save(new_time, new_state);
           break;
         }
-        if (retry == retries) {
+        if (use_simplified_newton and retry == retries) {
           use_full_jacobian = true;
           std::cout << "Switching to updated Jacobian in every step."
                     << std::endl;
@@ -102,7 +132,9 @@ namespace Model {
         }
 
         ++retry;
-        if (retry == 1) {
+        if (use_simplified_newton and retry == 1) {
+          std::cout << "\nretrying timestep " << new_time << std::endl;
+        } else if (not use_simplified_newton and retry == retries + 1) {
           std::cout << "\nretrying timestep " << new_time << std::endl;
         }
         if (retry > 0) {
@@ -118,10 +150,6 @@ namespace Model {
       last_state = new_state;
       last_time = new_time;
     }
-  }
-
-  std::filesystem::path const &Timeevolver::get_output_dir() {
-    return output_dir;
   }
 
 } // namespace Model
