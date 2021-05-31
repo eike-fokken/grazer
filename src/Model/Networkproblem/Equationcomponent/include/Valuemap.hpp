@@ -128,11 +128,12 @@ namespace Model::Networkproblem {
       std::sort(pair_values.begin(), pair_values.end(), argument_less);
 
       auto first_eq_pair = std::adjacent_find(
-                     pair_values.begin(), pair_values.end(), compare_eq);
+          pair_values.begin(), pair_values.end(), compare_eq);
 
       if (first_eq_pair != pair_values.end()) {
-        gthrow({"The value ", std::to_string(first_eq_pair->first), " appears twice in node with id ",
-            values_json["id"], " ."});
+        gthrow(
+            {"The value ", std::to_string(first_eq_pair->first),
+             " appears twice in node with id ", values_json["id"], " ."});
       }
 
       return pair_values;

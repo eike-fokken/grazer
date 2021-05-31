@@ -27,7 +27,7 @@ TEST(OperatorTEST, interpolation) {
            {{"x", 2.0}, {"values", {b(0), b(1)}}},
            {{"x", 3.0}, {"values", {c(0), c(1)}}}}}};
 
-  Model::Networkproblem::Valuemap<2> valuemap_obj(values_json,"x");
+  Model::Networkproblem::Valuemap<2> valuemap_obj(values_json, "x");
 
   {
     Eigen::Vector2d v2;
@@ -53,7 +53,6 @@ TEST(OperatorTEST, interpolation) {
     // ACT
     EXPECT_EQ(v, v2);
   }
-
 }
 
 TEST(set_conditionTEST, check_order) {
@@ -80,27 +79,28 @@ TEST(set_conditionTEST, check_order) {
   control.push_back(std::make_pair(2.0, M2));
   control.push_back(std::make_pair(3.0, M3));
 
-  EXPECT_EQ(control, Model::Networkproblem::Valuemap<2>::set_condition(values_json, "x"));
-
+  EXPECT_EQ(
+      control,
+      Model::Networkproblem::Valuemap<2>::set_condition(values_json, "x"));
 }
 
-  TEST(set_conditionTEST, duplicate_x_value) {
+TEST(set_conditionTEST, duplicate_x_value) {
 
-    nlohmann::json values_json;
+  nlohmann::json values_json;
 
-    values_json
-        = {{"id", "N213"},
-           {"data",
-            {{{"x", 1.0}, {"values", {0.0, 1.0}}},
-             {{"x", 1.0}, {"values", {1.0, 2.0}}},
-             {{"x", 3.0}, {"values", {2.0, 3.0}}}}}};
+  values_json
+      = {{"id", "N213"},
+         {"data",
+          {{{"x", 1.0}, {"values", {0.0, 1.0}}},
+           {{"x", 1.0}, {"values", {1.0, 2.0}}},
+           {{"x", 3.0}, {"values", {2.0, 3.0}}}}}};
 
-    try {
-      Model::Networkproblem::Valuemap<2>::set_condition(values_json, "x");
-    } catch (std::exception &e) {
-      EXPECT_THAT(
-          e.what(),
-          testing::HasSubstr(
-              "The value 1.000000 appears twice in node with id N213 ."));
-    }
+  try {
+    Model::Networkproblem::Valuemap<2>::set_condition(values_json, "x");
+  } catch (std::exception &e) {
+    EXPECT_THAT(
+        e.what(),
+        testing::HasSubstr(
+            "The value 1.000000 appears twice in node with id N213 ."));
+  }
 }
