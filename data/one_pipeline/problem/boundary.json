@@ -1,43 +1,43 @@
 {
-    "nodes": {
-        "Source": [
-            {
-                "id": "node_1",
-                "data": [
-                    {
-                        "time": 0,
-                        "values": [
-                            58.993631
-                        ]
-                    },
-                    {
-                        "time": 604800,
-                        "values": [
-                            58.993631
-                        ]
-                    }
-                ]
-            }
-        ],
-        "Sink": [
-            {
-                "id": "node_2",
-                "data": [
-                    {
-                        "time": 0,
-                        "values": [
-                            70.993631
-                        ]
-                    },
-                    {
-                        "time": 604800,
-                        "values": [
-                            58.993631
-                        ]
-                    }
-                ]
-            }
-
-        ]
-    }
+	"$schema": "../schemas/boundary_schema.json",
+	"nodes": {
+		"Source": [
+			{
+				"id": "node_1",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							58.993631
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							58.993631
+						]
+					}
+				]
+			}
+		],
+		"Sink": [
+			{
+				"id": "node_2",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							70.993631
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							58.993631
+						]
+					}
+				]
+			}
+		]
+	}
 }
