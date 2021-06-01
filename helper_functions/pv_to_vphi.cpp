@@ -88,7 +88,7 @@ int main(int argc, char **argv) {
     } else {
       {
         std::ofstream outputstream((fs::path(file)));
-        outputstream << input.dump(1,'\t');
+        outputstream << input.dump(1, '\t');
       }
     }
   }

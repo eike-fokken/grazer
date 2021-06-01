@@ -102,7 +102,7 @@ namespace Model {
     std::filesystem::path new_output_file(
         output_directory / std::filesystem::path("output.json"));
     std::ofstream o(new_output_file);
-    o << json_output.dump(1,'\t');
+    o << json_output.dump(1, '\t');
   }
 
   void Problem::set_initial_values(
