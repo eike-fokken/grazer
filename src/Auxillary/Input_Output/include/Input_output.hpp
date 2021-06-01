@@ -4,11 +4,7 @@
 #include <tuple>
 #include <vector>
 
-namespace Aux_executable {
-
-  /// Makes a C++ vector of strings out of the C-style commandline arguments.
-  std::vector<std::string> make_cmd_argument_vector(int argc, char **argv);
-
+namespace io {
   /// Checks whether the given path filepath is inside of problem_root_path.
   ///
   /// If yes, returns a normalized path.
@@ -23,9 +19,6 @@ namespace Aux_executable {
   /// returns the path. If yes, checks whether it is a directory. If yes, moves
   /// this directory and appends a unique string to it. If it is present, but
   /// not a directory, it throws an exception.
-  std::filesystem::path prepare_output_dir(std::string output_dir);
+  std::filesystem::path prepare_output_dir(std::filesystem::path output_dir);
 
-  std::filesystem::path
-  extract_input_data(std::vector<std::string> const &cmd_arguments);
-
-} // namespace Aux_executable
+} // namespace io

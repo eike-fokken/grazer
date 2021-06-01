@@ -1,8 +1,8 @@
 #include "Timeevolver.hpp"
 #include "Exception.hpp"
 #include "Problem.hpp"
-#include "json_validation.hpp"
 #include "make_schema.hpp"
+#include "schema_validation.hpp"
 
 #include <filesystem>
 #include <fstream>
@@ -54,7 +54,7 @@ namespace Model {
 
   Timeevolver
   Timeevolver::make_instance(nlohmann::json const &timeevolver_data) {
-    validation::validate_json(timeevolver_data, get_schema());
+    Aux::schema::validate_json(timeevolver_data, get_schema());
     return Timeevolver(timeevolver_data);
   }
 

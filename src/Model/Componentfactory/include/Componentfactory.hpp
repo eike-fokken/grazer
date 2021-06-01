@@ -1,7 +1,7 @@
 #pragma once
 #include "Edge.hpp"
 #include "Node.hpp"
-#include "json_validation.hpp"
+#include "schema_validation.hpp"
 #include <Statecomponent.hpp>
 #include <exception>
 #include <make_schema.hpp>
@@ -205,7 +205,7 @@ namespace Model::Componentfactory {
     std::unique_ptr<Network::Node>
     make_instance(nlohmann::json const &topology) const override {
 
-      validation::validate_json(topology, this->get_schema(true));
+      Aux::schema::validate_json(topology, this->get_schema(true));
       return std::make_unique<ConcreteNode>(topology);
     };
   };
@@ -298,7 +298,7 @@ namespace Model::Componentfactory {
     std::unique_ptr<Network::Edge> make_instance(
         nlohmann::json const &topology,
         std::vector<std::unique_ptr<Network::Node>> &nodes) const override {
-      validation::validate_json(topology, this->get_schema(true));
+      Aux::schema::validate_json(topology, this->get_schema(true));
       return std::make_unique<ConcreteEdge>(topology, nodes);
     };
   };
@@ -333,23 +333,23 @@ namespace Model::Componentfactory {
      *
      * @return nlohmann::json
      */
-    nlohmann::json get_topology_schema(bool const include_external);
+    nlohmann::json get_topology_schema(bool const include_external) const;
 
     /**
      * @brief Return the Full JSON Schema for the Boundary Behaviour Description
      *
      * @return nlohmann::json
      */
-    nlohmann::json get_boundary_schema();
+    nlohmann::json get_boundary_schema() const;
 
-    nlohmann::json get_control_schema();
+    nlohmann::json get_control_schema() const;
 
     /**
      * @brief Return the Full JSON Schema for the Initial Data Description
      *
      * @return nlohmann::json
      */
-    nlohmann::json get_initial_schema();
+    nlohmann::json get_initial_schema() const;
   };
 
 } // namespace Model::Componentfactory

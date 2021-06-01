@@ -19,3 +19,6 @@
 	path = pcg-cpp
 	url = https://github.com/imneme/pcg-cpp
 	shallow = true
+[submodule "structopt"]
+	path = structopt
+	url = https://github.com/p-ranav/structopt

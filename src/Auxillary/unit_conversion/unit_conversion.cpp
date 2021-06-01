@@ -1,7 +1,7 @@
 #include <unit_conversion.hpp>
 
-#include <json_validation.hpp>
 #include <map>
+#include <schema_validation.hpp>
 #include <sstream>
 
 namespace Aux::unit {
@@ -107,7 +107,7 @@ namespace Aux::unit {
       name(provided_name), conversion_map(conv_map) {}
 
   double Measure::parse_to_si(json const measurement) const {
-    validation::validate_json(measurement, this->get_schema());
+    Aux::schema::validate_json(measurement, this->get_schema());
     std::string unit = measurement["unit"].get<std::string>();
 
     auto [prefix, conv] = parse_unit(unit, this->conversion_map);

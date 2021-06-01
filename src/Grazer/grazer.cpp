@@ -1,71 +1,62 @@
-#include "Aux_json.hpp"
-#include "Input_output.hpp"
-#include "Problem.hpp"
-#include "Timeevolver.hpp"
-#include <Eigen/Sparse>
-#include <chrono>
-#include <cstdlib>
+#include "schema_generation.hpp"
+#include "schema_key_insertion.hpp"
 #include <filesystem>
 #include <iostream>
-#include <memory>
-#include <nlohmann/json.hpp>
 #include <string>
+#include <structopt/structopt.hpp>
+
+#include "commands.hpp"
+
+struct Grazer {
+  struct Run : structopt::sub_command {
+    std::filesystem::path grazer_directory;
+  };
+  struct Schema : structopt::sub_command {
+    struct Make_Full_Factory : structopt::sub_command {
+      std::filesystem::path grazer_directory;
+    };
+
+    struct Insert_Link : structopt::sub_command {
+      std::filesystem::path grazer_directory;
+    };
+
+    Make_Full_Factory make_full_factory;
+    Insert_Link insert_link;
+  };
+
+  Run run;
+  Schema schema;
+};
+STRUCTOPT(Grazer::Run, grazer_directory);
+STRUCTOPT(Grazer::Schema::Make_Full_Factory, grazer_directory);
+STRUCTOPT(Grazer::Schema::Insert_Link, grazer_directory);
+STRUCTOPT(Grazer::Schema, make_full_factory, insert_link);
+STRUCTOPT(Grazer, run, schema);
 
 int main(int argc, char **argv) {
+  auto app = structopt::app("grazer");
   try {
-    std::vector<std::string> cmd_arguments
-        = Aux_executable::make_cmd_argument_vector(argc, argv);
+    auto args = app.parse<Grazer>(argc, argv);
 
-    std::filesystem::path problem_data_file
-        = Aux_executable::extract_input_data(cmd_arguments);
-
-    std::filesystem::path output_dir
-        = Aux_executable::prepare_output_dir("output");
-
-    // This must be wrapped in exception handling code!
-
-    auto all_json = aux_json::get_json_from_file_path(problem_data_file);
-
-    auto time_evolution_json = all_json["time_evolution_data"];
-
-    auto problem_json = all_json["problem_data"];
-
-    // give the path information of the file:
-    auto directory_path
-        = std::filesystem::absolute(problem_data_file).parent_path();
-    problem_json["GRAZER_file_directory"] = directory_path.string();
-
-    auto initial_value_json = all_json["initial_values"];
-    initial_value_json["GRAZER_file_directory"] = directory_path.string();
-    Model::Timedata timedata(time_evolution_json);
-
-    auto timeevolver = Model::Timeevolver::make_instance(time_evolution_json);
-
-    Model::Problem problem(problem_json, output_dir);
-    int number_of_states = problem.set_indices();
-    std::cout << "data read" << std::endl;
-
-    timeevolver.simulate(
-        timedata, problem, number_of_states, initial_value_json);
+    // run?
+    if (args.run.has_value()) {
+      return grazer_run(args.run.grazer_directory);
+    } else if (args.schema.has_value()) {
+      if (args.schema.make_full_factory.has_value()) {
+        return Aux::schema::make_full_factory_schemas(
+            args.schema.make_full_factory.grazer_directory);
+      } else if (args.schema.insert_link.has_value()) {
+        return Aux::schema::insert_schema_key_into_data_jsons(
+            args.schema.insert_link.grazer_directory);
+      }
+    }
   } catch (std::exception const &ex) {
-    std::cout << "An exception was thrown!\n"
-              << "All available data has been printed to output files\n"
-              << "(unless printing failed, if so this is indicated above this "
-                 "message.)\n"
-              << "\nUse with caution!\n"
-              << std::endl;
-    std::cout << "The error message was: \n\n"
-              << "###############################################\n"
-              << ex.what()
-              << "\n###############################################\n\n"
-              << std::endl;
-    return EXIT_FAILURE;
+    std::cout << "\n[Error]: " << ex.what() << std::endl;
   } catch (...) {
-    std::cout << "An unknown type of exception was thrown.\n\n"
+    std::cout << "An unkown type of exception was thrown.\n\n"
                  "This is a bug and must be fixed!\n\n"
-                 "Please contact the maintainer of Grazer!"
               << std::endl;
-    return EXIT_FAILURE;
   }
-  return EXIT_SUCCESS;
+  std::cout << app.help() << std::endl;
+  return 1;
 }

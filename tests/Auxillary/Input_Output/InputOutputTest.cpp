@@ -1,6 +1,7 @@
 #include "Input_output.hpp"
 #include "test_io_helper.hpp"
 #include <array>
+#include <deque>
 #include <exception>
 #include <fstream>
 #include <gtest/gtest.h>
@@ -9,31 +10,19 @@
 #include <string>
 #include <vector>
 
-class prepare_output_dirTEST : public ::testing::Test {
-public:
-  prepare_output_dirTEST() : path_changer(directory_creator.get_path()) {}
+// Inheritance just for the name change (test fixture inherits name)
+class prepare_output_dirTEST : public CWD_To_Rand_Test_Dir {};
 
-private:
-  Directory_creator const directory_creator;
-  Path_changer const path_changer;
-};
-
-class extract_input_dataTEST : public ::testing::Test {
-public:
-  extract_input_dataTEST() : path_changer(directory_creator.get_path()) {}
-
-private:
-  Directory_creator const directory_creator;
-  Path_changer const path_changer;
-};
+// Inheritance just for the name change (test fixture inherits name)
+class extract_input_dataTEST : public CWD_To_Rand_Test_Dir {};
 
 TEST(absolute_file_path_in_rootTEST, wrong_path) {
 
   auto problem_root_path = std::filesystem::path("grazer/src/directory");
   auto filepath_false = std::filesystem::path("/../subdirectory/file");
 
-  EXPECT_FALSE(Aux_executable::absolute_file_path_in_root(
-      problem_root_path, filepath_false));
+  EXPECT_FALSE(
+      io::absolute_file_path_in_root(problem_root_path, filepath_false));
 }
 
 TEST(absolute_file_path_in_rootTEST, right_path) {
@@ -41,38 +30,24 @@ TEST(absolute_file_path_in_rootTEST, right_path) {
   auto problem_root_path = std::filesystem::path("grazer/src/directory");
   auto filepath_true = std::filesystem::path("subdirectory/file");
 
-  EXPECT_TRUE(Aux_executable::absolute_file_path_in_root(
-      problem_root_path, filepath_true));
+  EXPECT_TRUE(io::absolute_file_path_in_root(problem_root_path, filepath_true));
 }
 
-TEST(make_cmd_argument_vectorTEST, two_arguments) {
+// TEST_F(prepare_output_dirTEST, path_not_below_current_dir) {
 
-  // The c++ standard requires that argv[argc]==nullptr.
-  const char *const_argv[] = {"grazer", "arg1", "arg2", nullptr};
-  int argc = 3;
-  char **argv = const_cast<char **>(const_argv);
+//   std::filesystem::path temp_dirpath("temporary_dir");
+//   std::filesystem::path dirpath_false;
 
-  std::vector<std::string> vec;
-  vec = {"arg1", "arg2"};
+//   std::filesystem::create_directory(temp_dirpath);
 
-  EXPECT_EQ(Aux_executable::make_cmd_argument_vector(argc, argv), vec);
-}
+//   // Testing a path that is not below the current working directory
+//   dirpath_false = std::filesystem::path("..") / temp_dirpath;
 
-TEST_F(prepare_output_dirTEST, path_not_below_current_dir) {
-
-  std::filesystem::path temp_dirpath("temporary_dir");
-  std::filesystem::path dirpath_false;
-
-  std::filesystem::create_directory(temp_dirpath);
-
-  // Testing a path that is not below the current working directory
-  dirpath_false = std::filesystem::path("..") / temp_dirpath;
-
-  EXPECT_THROW(
-      [[maybe_unused]] auto result
-      = Aux_executable::prepare_output_dir(dirpath_false.string()),
-      std::runtime_error);
-}
+//   EXPECT_THROW(
+//       [[maybe_unused]] auto result
+//       = io::prepare_output_dir(dirpath_false.string()),
+//       std::runtime_error);
+// }
 
 TEST_F(prepare_output_dirTEST, directory_has_new_unique_name) {
 
@@ -89,8 +64,7 @@ TEST_F(prepare_output_dirTEST, directory_has_new_unique_name) {
     std::stringstream buffer;
     Catch_cout catcher(buffer.rdbuf());
     EXPECT_EQ(
-        Aux_executable::prepare_output_dir(temp_dirpath.string()),
-        temp_dirpath.string());
+        io::prepare_output_dir(temp_dirpath.string()), temp_dirpath.string());
     EXPECT_TRUE(std::filesystem::exists(temp_dirpath));
     output = buffer.str();
   }
@@ -110,51 +84,6 @@ TEST_F(prepare_output_dirTEST, path_points_to_file) {
   std::ofstream file(temp_filepath.string());
   EXPECT_THROW(
       [[maybe_unused]] auto result
-      = Aux_executable::prepare_output_dir(temp_filepath.string()),
+      = io::prepare_output_dir(temp_filepath.string()),
       std::runtime_error);
-}
-
-TEST_F(extract_input_dataTEST, input_vector_too_large) {
-
-  std::vector<std::string> vector_too_large;
-
-  // Testing vector containing too many (>1) command arguments
-  vector_too_large = {"str1", "str2"};
-  EXPECT_THROW(
-      [[maybe_unused]] auto result
-      = Aux_executable::extract_input_data(vector_too_large),
-      std::runtime_error);
-}
-
-TEST_F(extract_input_dataTEST, input_vector_works) {
-
-  nlohmann::json regular_json;
-  std::filesystem::path regular_json_path("test_pathname.json");
-  std::vector<std::string> vector_size_one;
-
-  // Testing a vector containing a string that points to a regular file
-  regular_json = {{"id", "M000"}, {"data", {1.0, 2.0}}};
-  std::ofstream file(regular_json_path);
-  file << regular_json;
-  vector_size_one = {regular_json_path.string()};
-  EXPECT_EQ(
-      std::filesystem::path("test_pathname.json"),
-      Aux_executable::extract_input_data(vector_size_one));
-}
-
-TEST_F(extract_input_dataTEST, input_vector_empty) {
-
-  nlohmann::json regular_json;
-  std::filesystem::path regular_json_path("problem_data.json");
-  std::vector<std::string> vector_empty;
-
-  // Creating json file
-  regular_json = {{"id", "M000"}, {"data", {1.0, 2.0}}};
-  std::ofstream file(regular_json_path);
-  file << regular_json;
-
-  // Testing empty vector
-  vector_empty = {};
-  EXPECT_EQ(
-      regular_json_path, Aux_executable::extract_input_data(vector_empty));
 }

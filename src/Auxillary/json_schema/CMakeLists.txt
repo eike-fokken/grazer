@@ -1,6 +1,15 @@
-
 add_library(aux_make_schema STATIC make_schema.cpp)
-
 target_link_libraries(aux_make_schema PRIVATE nlohmann_json aux_unit_conversion exception)
-
 target_include_directories(aux_make_schema PUBLIC include)
+
+add_library(aux_schema_validation STATIC schema_validation.cpp)
+target_link_libraries(aux_schema_validation PRIVATE nlohmann_json nlohmann_json_schema_validator aux_json)
+target_include_directories(aux_schema_validation PUBLIC include)
+
+add_library(aux_schema_generation STATIC schema_generation.cpp)
+target_link_libraries(aux_schema_generation PUBLIC componentfactory full_factory)
+target_include_directories(aux_schema_generation PUBLIC include)
+
+add_library(aux_schema_key_insertion STATIC schema_key_insertion.cpp)
+target_link_libraries(aux_schema_key_insertion PRIVATE nlohmann_json aux_json)
+target_include_directories(aux_schema_key_insertion PUBLIC include)

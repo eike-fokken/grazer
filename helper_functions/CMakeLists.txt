@@ -7,16 +7,6 @@ target_link_libraries(stringify_values PRIVATE misc)
 
 add_executable(transform_initial transform_initial.cpp)
 
-add_executable(make_topology_schema make_topology_schema.cpp)
-target_link_libraries(make_topology_schema componentfactory full_factory)
-add_executable(make_control_schema make_control_schema.cpp)
-target_link_libraries(make_control_schema componentfactory full_factory)
-add_executable(make_boundary_schema make_boundary_schema.cpp)
-target_link_libraries(make_boundary_schema componentfactory full_factory)
-add_executable(make_initial_schema make_initial_schema.cpp)
-target_link_libraries(make_initial_schema componentfactory full_factory)
-
-
 add_executable(get_mean_sigma get_mean_sigma.cpp)
 
 add_executable(generate_printing_csv generate_printing_csv.cpp)

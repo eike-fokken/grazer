@@ -12,7 +12,7 @@ namespace Model::Componentfactory {
     this->edge_type_map.insert({edgeType->get_name(), std::move(edgeType)});
   }
 
-  nlohmann::json Componentfactory::get_initial_schema() {
+  nlohmann::json Componentfactory::get_initial_schema() const {
     nlohmann::json initial_schema = R"(
     {
       "$schema": "http://json-schema.org/draft-07/schema",
@@ -47,7 +47,7 @@ namespace Model::Componentfactory {
     return initial_schema;
   }
 
-  nlohmann::json Componentfactory::get_control_schema() {
+  nlohmann::json Componentfactory::get_control_schema() const {
     nlohmann::json control_schema = R"(
     {
       "$schema": "http://json-schema.org/draft-07/schema",
@@ -82,7 +82,7 @@ namespace Model::Componentfactory {
     return control_schema;
   }
 
-  nlohmann::json Componentfactory::get_boundary_schema() {
+  nlohmann::json Componentfactory::get_boundary_schema() const {
     nlohmann::json boundary_schema = R"(
     {
       "$schema": "http://json-schema.org/draft-07/schema",
@@ -118,7 +118,7 @@ namespace Model::Componentfactory {
   }
 
   nlohmann::json
-  Componentfactory::get_topology_schema(bool const include_external) {
+  Componentfactory::get_topology_schema(bool const include_external) const {
 
     nlohmann::json topology_schema = R"(
     {
