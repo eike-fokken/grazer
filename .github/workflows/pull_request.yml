@@ -4,6 +4,15 @@ on:
   pull_request:
     branches: [master,develop]
     types: [synchronize, opened, reopened, ready_for_review]
+    paths-ignore:
+    - docs/**
+    - .github/**
+    - "!.github/workflows/pull_request.yml"
+    - .clang-format
+    - README.md
+    - CHANGELOG.md
+    - LICENCE
+    - notes.org
 
 jobs:
   format-check:
