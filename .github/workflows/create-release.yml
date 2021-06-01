@@ -3,7 +3,7 @@ on:
     branches:
     - "master"
     paths:
-    - CMakeLists.txt
+    - Version.cmake
 name: Release
 jobs:
   create-release:
