@@ -76,7 +76,6 @@ TEST(Aux_json, get_json_from_file_path) {
   nlohmann::json aux_sub_json_test;
 
   // Testing wrong paths
-  // EXPECT_ANY_THROW(aux_json::get_json_from_file_path(wrong_path));
   try {
     aux_json::get_json_from_file_path(wrong_path);
   } catch (std::exception &e) {
