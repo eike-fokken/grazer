@@ -1,5 +1,6 @@
 #pragma once
 #include <filesystem>
+#include <gtest/gtest.h>
 
 struct Catch_cout {
   Catch_cout(std::streambuf *new_buffer);
@@ -33,4 +34,13 @@ private:
   std::filesystem::path change_to_testdir(std::filesystem::path testdir);
 
   std::filesystem::path const old_current_directory;
+};
+
+class CWD_To_Rand_Test_Dir : public ::testing::Test {
+public:
+  CWD_To_Rand_Test_Dir() : path_changer(directory_creator.get_path()) {}
+
+private:
+  Directory_creator const directory_creator;
+  Path_changer const path_changer;
 };

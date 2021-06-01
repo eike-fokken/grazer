@@ -122,8 +122,7 @@ int main(int argc, char **argv) {
 
 void write_power_csv(std::string id, json object) {
   fs::path outpath(id + ".csv");
-  if (not Aux_executable::absolute_file_path_in_root(
-          fs::current_path(), outpath)) {
+  if (not io::absolute_file_path_in_root(fs::current_path(), outpath)) {
     throw std::invalid_argument(
         "the path " + outpath.string()
         + " is not in the current working directory!\nProbably the id is wrong.");
@@ -171,8 +170,7 @@ void write_gas_csv(std::string id, json object) {
     fs::path outpath(id + "_" + q_it.key() + ".csv");
     std::cout << "Creating or overwriting " << outpath.string() << std::endl;
 
-    if (not Aux_executable::absolute_file_path_in_root(
-            fs::current_path(), outpath)) {
+    if (not io::absolute_file_path_in_root(fs::current_path(), outpath)) {
       throw std::invalid_argument(
         "the path " + outpath.string()
         + " is not in the current working directory!\nProbably the id is wrong.");

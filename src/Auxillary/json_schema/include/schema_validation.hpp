@@ -1,7 +1,7 @@
 #pragma once
 #include <nlohmann/json.hpp>
 
-namespace validation {
+namespace Aux::schema {
   /**
    * @brief assumes that the json data has a "$schema" key which points to
    * a valid json schema to validate the data against
@@ -28,4 +28,4 @@ namespace validation {
    * @param schema json schema
    */
   void validate_json(nlohmann::json const &data, nlohmann::json const &schema);
-} // namespace validation
+} // namespace Aux::schema

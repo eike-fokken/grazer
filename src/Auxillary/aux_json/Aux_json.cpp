@@ -67,4 +67,62 @@ namespace aux_json {
     return json_object;
   }
 
+  nlohmann::ordered_json
+  get_ordered_json_from_file_path(std::filesystem::path const &file_path) {
+    nlohmann::ordered_json json_object;
+    if (not std::filesystem::exists(file_path)) {
+      gthrow(
+          {"The file \n", std::filesystem::absolute(file_path).string(),
+           "\n does not exist!"});
+    }
+    try {
+      std::ifstream jsonfilestream(file_path);
+      jsonfilestream >> json_object;
+    } catch (...) {
+      std::cout << __FILE__ << ":" << __LINE__
+                << ": Couldn't load json from file: " << file_path << std::endl;
+      throw;
+    }
+    return json_object;
+  }
+
+  void overwrite_json(
+      std::filesystem::path const &file_path,
+      nlohmann::ordered_json const &new_json) {
+
+    // creating a backup if this file existed
+    bool had_existed = false;
+    std::filesystem::path backup_path = file_path.parent_path() / "tmp_backup";
+    if (std::filesystem::exists(file_path)) {
+      had_existed = true;
+      std::filesystem::rename(file_path, backup_path);
+      if (not std::filesystem::exists(backup_path)) {
+        throw std::filesystem::filesystem_error(
+            "backup file could not be created, aborting", std::error_code());
+      }
+    }
+
+    try {
+      // attempting the overwrite
+      std::ofstream ofs(file_path, std::ofstream::trunc);
+      ofs << new_json.dump(/*indent=*/1, /*indent_char=*/'\t');
+      ofs.close();
+    } catch (...) {
+      std::cout << "something went wrong writing the modified json to file"
+                << std::endl;
+      if (had_existed) {
+        if (std::filesystem::exists(backup_path)) {
+          std::cout << "rolling back to old version" << std::endl;
+          std::filesystem::rename(backup_path, file_path);
+        } else {
+          std::cout << "backup file is missing!" << std::endl;
+        }
+      }
+    }
+    // remove backup
+    if (had_existed) {
+      std::filesystem::remove(backup_path);
+    }
+  }
+
 } // namespace aux_json
