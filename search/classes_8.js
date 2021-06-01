@@ -1,10 +1,10 @@
 var searchData=
 [
-  ['pipe',['Pipe',['../classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html',1,'Model::Networkproblem::Gas']]],
-  ['powernode',['Powernode',['../classModel_1_1Networkproblem_1_1Power_1_1Powernode.html',1,'Model::Networkproblem::Power']]],
-  ['pqnode',['PQnode',['../classModel_1_1Networkproblem_1_1Power_1_1PQnode.html',1,'Model::Networkproblem::Power']]],
-  ['pressureboundarynode',['Pressureboundarynode',['../classModel_1_1Networkproblem_1_1Gas_1_1Pressureboundarynode.html',1,'Model::Networkproblem::Gas']]],
-  ['printguard',['Printguard',['../classAux_1_1Printguard.html',1,'Aux']]],
-  ['problem',['Problem',['../classModel_1_1Problem.html',1,'Model']]],
-  ['pvnode',['PVnode',['../classModel_1_1Networkproblem_1_1Power_1_1PVnode.html',1,'Model::Networkproblem::Power']]]
+  ['net',['Net',['../classNetwork_1_1Net.html',1,'Network']]],
+  ['networkproblem',['Networkproblem',['../classModel_1_1Networkproblem_1_1Networkproblem.html',1,'Model::Networkproblem']]],
+  ['newtonsolver',['Newtonsolver',['../classSolver_1_1Newtonsolver.html',1,'Solver']]],
+  ['newtonsolver_3c_20model_3a_3aproblem_20_3e',['Newtonsolver&lt; Model::Problem &gt;',['../classSolver_1_1Newtonsolver.html',1,'Solver']]],
+  ['node',['Node',['../classNetwork_1_1Node.html',1,'Network']]],
+  ['nodetype',['NodeType',['../structModel_1_1Componentfactory_1_1NodeType.html',1,'Model::Componentfactory']]],
+  ['normaldistribution',['Normaldistribution',['../classAux_1_1Normaldistribution.html',1,'Aux']]]
 ];

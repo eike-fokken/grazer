@@ -1,6 +1,8 @@
 <map id="Model::Networkproblem::Gas::Flowboundarynode" name="Model::Networkproblem::Gas::Flowboundarynode">
-<area shape="rect" id="node2" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gasnode.html" title="Model::Networkproblem\l::Gas::Gasnode" alt="" coords="71,169,250,211"/>
-<area shape="rect" id="node3" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="15,87,133,114"/>
-<area shape="rect" id="node4" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="5,5,143,32"/>
-<area shape="rect" id="node5" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="158,80,337,121"/>
+<area shape="rect" id="node6" href="$classModel_1_1Networkproblem_1_1Gas_1_1Sink.html" title="Model::Networkproblem\l::Gas::Sink" alt="" coords="5,348,184,389"/>
+<area shape="rect" id="node7" href="$classModel_1_1Networkproblem_1_1Gas_1_1Source.html" title="Model::Networkproblem\l::Gas::Source" alt="" coords="208,348,387,389"/>
+<area shape="rect" id="node2" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gasnode.html" title="Model::Networkproblem\l::Gas::Gasnode" alt="" coords="107,169,285,211"/>
+<area shape="rect" id="node3" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="A base class for network components that supply model equations to be solved. " alt="" coords="20,80,199,121"/>
+<area shape="rect" id="node4" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="223,87,342,114"/>
+<area shape="rect" id="node5" href="$classNetwork_1_1Idobject.html" title="Provides a unified &quot;name&quot; to inheriting classes. " alt="" coords="214,5,351,32"/>
 </map>

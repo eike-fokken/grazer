@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['z_5f0',['z_0',['../classModel_1_1Balancelaw_1_1Isothermaleulerequation.html#a0f0eaf5236d214c98f1d0b2415bbb42b',1,'Model::Balancelaw::Isothermaleulerequation']]]
+  ['while',['while',['../compute__mu__sigma_8m.html#afa632198beccfbf27a57fde879e7a15d',1,'while(iraw~=length(component_files)+1) first_character:&#160;compute_mu_sigma.m'],['../get__all__output__directories_8m.html#a5708723a6f50163a2d2c852c8b9c2143',1,'while(index~=length(dir_list)+1) if(strfind(dir_list(index).name:&#160;get_all_output_directories.m']]],
+  ['white',['WHITE',['../Coloroutput_8hpp.html#a87b537f5fa5c109d3c05c13d6b18f382',1,'Coloroutput.hpp']]]
 ];

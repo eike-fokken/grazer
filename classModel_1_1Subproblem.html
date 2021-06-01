@@ -29,6 +29,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Grazer
+   &#160;<span id="projectnumber">0.0.1</span>
    </div>
   </td>
  </tr>
@@ -101,22 +102,25 @@ Inheritance diagram for Model::Subproblem:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a0c76c019ae21609b7214f64de204616a"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Subproblem.html#a0c76c019ae21609b7214f64de204616a">get_type</a> () const =0</td></tr>
+<tr class="memdesc:a0c76c019ae21609b7214f64de204616a"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the type of an instance  <a href="#a0c76c019ae21609b7214f64de204616a">More...</a><br /></td></tr>
+<tr class="separator:a0c76c019ae21609b7214f64de204616a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4241f9123be74be697c59abc6f5921b9"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Subproblem.html#a4241f9123be74be697c59abc6f5921b9">~Subproblem</a> ()</td></tr>
 <tr class="separator:a4241f9123be74be697c59abc6f5921b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a09defb5a5f5ec5e1593fc583a965f4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Subproblem.html#a5a09defb5a5f5ec5e1593fc583a965f4">evaluate</a> (Eigen::Ref&lt; Eigen::VectorXd &gt; rootvalues, double last_time, double new_time, Eigen::Ref&lt; Eigen::VectorXd const &gt; const &amp;last_state, Eigen::Ref&lt; Eigen::VectorXd const &gt; const &amp;new_state) const =0</td></tr>
-<tr class="separator:a5a09defb5a5f5ec5e1593fc583a965f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a056620da0bdf785020bc817b01ac7962"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Subproblem.html#a056620da0bdf785020bc817b01ac7962">evaluate_state_derivative</a> (<a class="el" href="classAux_1_1Matrixhandler.html">Aux::Matrixhandler</a> *jacobianhandler, double last_time, double new_time, Eigen::Ref&lt; Eigen::VectorXd const &gt; const &amp;, Eigen::Ref&lt; Eigen::VectorXd const &gt; const &amp;new_state) const =0</td></tr>
-<tr class="separator:a056620da0bdf785020bc817b01ac7962"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abffd21f0264aab51ebbdf36493e01d1c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Subproblem.html#abffd21f0264aab51ebbdf36493e01d1c">save_values</a> (double time, Eigen::Ref&lt; Eigen::VectorXd &gt;new_state)=0</td></tr>
-<tr class="separator:abffd21f0264aab51ebbdf36493e01d1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad0c8317aaa542d292d13f9f77317073e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Subproblem.html#ad0c8317aaa542d292d13f9f77317073e">print_to_files</a> (std::filesystem::path const &amp;output_directory)=0</td></tr>
-<tr class="separator:ad0c8317aaa542d292d13f9f77317073e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb36f9cd465e2b28b94761fb52c0688e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Subproblem.html#adb36f9cd465e2b28b94761fb52c0688e">display</a> () const =0</td></tr>
-<tr class="separator:adb36f9cd465e2b28b94761fb52c0688e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ae7a554811c8eaf7f5b46665c403dec"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Subproblem.html#a3ae7a554811c8eaf7f5b46665c403dec">evaluate</a> (Eigen::Ref&lt; Eigen::VectorXd &gt; rootvalues, double last_time, double new_time, Eigen::Ref&lt; Eigen::VectorXd const &gt; last_state, Eigen::Ref&lt; Eigen::VectorXd const &gt; new_state) const =0</td></tr>
+<tr class="separator:a3ae7a554811c8eaf7f5b46665c403dec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09186779c0f9e6e025be1a90afbdd10d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Subproblem.html#a09186779c0f9e6e025be1a90afbdd10d">prepare_timestep</a> (double last_time, double new_time, Eigen::Ref&lt; Eigen::VectorXd const &gt; last_state, Eigen::Ref&lt; Eigen::VectorXd const &gt; new_state)=0</td></tr>
+<tr class="separator:a09186779c0f9e6e025be1a90afbdd10d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af26e72e86b77fe9229c5c9af5c8a5a09"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Subproblem.html#af26e72e86b77fe9229c5c9af5c8a5a09">evaluate_state_derivative</a> (<a class="el" href="classAux_1_1Matrixhandler.html">Aux::Matrixhandler</a> *jacobianhandler, double last_time, double new_time, Eigen::Ref&lt; Eigen::VectorXd const &gt;, Eigen::Ref&lt; Eigen::VectorXd const &gt; new_state) const =0</td></tr>
+<tr class="separator:af26e72e86b77fe9229c5c9af5c8a5a09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc73703fe7b394e92c1753cd0a135eda"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Subproblem.html#afc73703fe7b394e92c1753cd0a135eda">json_save</a> (double time, Eigen::Ref&lt; Eigen::VectorXd const &gt; state)=0</td></tr>
+<tr class="separator:afc73703fe7b394e92c1753cd0a135eda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af055be85c37f4ea668bcabe496c22a3d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Subproblem.html#af055be85c37f4ea668bcabe496c22a3d">print_to_files</a> (<a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> &amp;new_output)=0</td></tr>
+<tr class="separator:af055be85c37f4ea668bcabe496c22a3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60f5001e825110df89233f3b8cbde39b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Subproblem.html#a60f5001e825110df89233f3b8cbde39b">set_indices</a> (int const next_free_index)</td></tr>
 <tr class="separator:a60f5001e825110df89233f3b8cbde39b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d0964e7666619ff796e07a9204edfb8"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Subproblem.html#a1d0964e7666619ff796e07a9204edfb8">set_initial_values</a> (Eigen::Ref&lt; Eigen::VectorXd &gt;new_state, nlohmann::ordered_json initial_json)=0</td></tr>
-<tr class="separator:a1d0964e7666619ff796e07a9204edfb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1316337e63fde2805027f714825fa322"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Subproblem.html#a1316337e63fde2805027f714825fa322">set_initial_values</a> (Eigen::Ref&lt; Eigen::VectorXd &gt; new_state, <a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> initial_json)=0</td></tr>
+<tr class="separator:a1316337e63fde2805027f714825fa322"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca5b0a1cf166e78fa5a0ad518b79f804"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Subproblem.html#aca5b0a1cf166e78fa5a0ad518b79f804">get_number_of_states</a> () const</td></tr>
 <tr class="separator:aca5b0a1cf166e78fa5a0ad518b79f804"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa19dd338d49359f3fd2cf2202fb3495d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Subproblem.html#aa19dd338d49359f3fd2cf2202fb3495d">get_start_state_index</a> () const</td></tr>
@@ -163,35 +167,8 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="adb36f9cd465e2b28b94761fb52c0688e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adb36f9cd465e2b28b94761fb52c0688e">&#9670;&nbsp;</a></span>display()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void Model::Subproblem::display </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implemented in <a class="el" href="classModel_1_1Networkproblem_1_1Networkproblem.html#af8e487779e7a4d5fdfbdbffc5c92b1ea">Model::Networkproblem::Networkproblem</a>.</p>
-
-</div>
-</div>
-<a id="a5a09defb5a5f5ec5e1593fc583a965f4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5a09defb5a5f5ec5e1593fc583a965f4">&#9670;&nbsp;</a></span>evaluate()</h2>
+<a id="a3ae7a554811c8eaf7f5b46665c403dec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ae7a554811c8eaf7f5b46665c403dec">&#9670;&nbsp;</a></span>evaluate()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -220,13 +197,13 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt; const &amp;&#160;</td>
+          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt;&#160;</td>
           <td class="paramname"><em>last_state</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt; const &amp;&#160;</td>
+          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt;&#160;</td>
           <td class="paramname"><em>new_state</em>&#160;</td>
         </tr>
         <tr>
@@ -242,12 +219,12 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classModel_1_1Networkproblem_1_1Networkproblem.html#a6b50a6eacfb815e8d2d1bff3f1e7e425">Model::Networkproblem::Networkproblem</a>.</p>
+<p>Implemented in <a class="el" href="classModel_1_1Networkproblem_1_1Networkproblem.html#a99832e8dd56ded65c8452088218ee3c3">Model::Networkproblem::Networkproblem</a>.</p>
 
 </div>
 </div>
-<a id="a056620da0bdf785020bc817b01ac7962"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a056620da0bdf785020bc817b01ac7962">&#9670;&nbsp;</a></span>evaluate_state_derivative()</h2>
+<a id="af26e72e86b77fe9229c5c9af5c8a5a09"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af26e72e86b77fe9229c5c9af5c8a5a09">&#9670;&nbsp;</a></span>evaluate_state_derivative()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -276,13 +253,13 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt; const &amp;&#160;</td>
+          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt;&#160;</td>
           <td class="paramname">, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt; const &amp;&#160;</td>
+          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt;&#160;</td>
           <td class="paramname"><em>new_state</em>&#160;</td>
         </tr>
         <tr>
@@ -298,7 +275,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classModel_1_1Networkproblem_1_1Networkproblem.html#a47e2bbb1babb03f7748feaeff21bfdb9">Model::Networkproblem::Networkproblem</a>.</p>
+<p>Implemented in <a class="el" href="classModel_1_1Networkproblem_1_1Networkproblem.html#a99b1a9c139c92424e323058b6e662dde">Model::Networkproblem::Networkproblem</a>.</p>
 
 </div>
 </div>
@@ -353,8 +330,126 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ad0c8317aaa542d292d13f9f77317073e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad0c8317aaa542d292d13f9f77317073e">&#9670;&nbsp;</a></span>print_to_files()</h2>
+<a id="a0c76c019ae21609b7214f64de204616a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c76c019ae21609b7214f64de204616a">&#9670;&nbsp;</a></span>get_type()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::string Model::Subproblem::get_type </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>returns the type of an instance </p>
+<dl class="section return"><dt>Returns</dt><dd>the string that is the corresponding json key in the problem_data_file.json. </dd></dl>
+
+<p>Implemented in <a class="el" href="classModel_1_1Networkproblem_1_1Networkproblem.html#abafecd628b6e99a462285ae13b7b2e63">Model::Networkproblem::Networkproblem</a>.</p>
+
+</div>
+</div>
+<a id="afc73703fe7b394e92c1753cd0a135eda"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc73703fe7b394e92c1753cd0a135eda">&#9670;&nbsp;</a></span>json_save()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void Model::Subproblem::json_save </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>time</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt;&#160;</td>
+          <td class="paramname"><em>state</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classModel_1_1Networkproblem_1_1Networkproblem.html#a94b874e84c4b9b690aa7f14e65ddfa48">Model::Networkproblem::Networkproblem</a>.</p>
+
+</div>
+</div>
+<a id="a09186779c0f9e6e025be1a90afbdd10d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a09186779c0f9e6e025be1a90afbdd10d">&#9670;&nbsp;</a></span>prepare_timestep()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void Model::Subproblem::prepare_timestep </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>last_time</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>new_time</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt;&#160;</td>
+          <td class="paramname"><em>last_state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt;&#160;</td>
+          <td class="paramname"><em>new_state</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classModel_1_1Networkproblem_1_1Networkproblem.html#a94099f46c448dd4f1665139582887dbe">Model::Networkproblem::Networkproblem</a>.</p>
+
+</div>
+</div>
+<a id="af055be85c37f4ea668bcabe496c22a3d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af055be85c37f4ea668bcabe496c22a3d">&#9670;&nbsp;</a></span>print_to_files()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -365,8 +460,8 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="memname">virtual void Model::Subproblem::print_to_files </td>
           <td>(</td>
-          <td class="paramtype">std::filesystem::path const &amp;&#160;</td>
-          <td class="paramname"><em>output_directory</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> &amp;&#160;</td>
+          <td class="paramname"><em>new_output</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -377,7 +472,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classModel_1_1Networkproblem_1_1Networkproblem.html#ae7c5154cfb16873634d50e41c7701802">Model::Networkproblem::Networkproblem</a>.</p>
+<p>Implemented in <a class="el" href="classModel_1_1Networkproblem_1_1Networkproblem.html#aa67a6329f25057b63bec2380a487382b">Model::Networkproblem::Networkproblem</a>.</p>
 
 </div>
 </div>
@@ -416,44 +511,6 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="abffd21f0264aab51ebbdf36493e01d1c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abffd21f0264aab51ebbdf36493e01d1c">&#9670;&nbsp;</a></span>save_values()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void Model::Subproblem::save_values </td>
-          <td>(</td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>time</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd &gt;&#160;</td>
-          <td class="paramname"><em>new_state</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implemented in <a class="el" href="classModel_1_1Networkproblem_1_1Networkproblem.html#a3a51e459a82752d31d7c54cb6a954e97">Model::Networkproblem::Networkproblem</a>.</p>
-
-</div>
-</div>
 <a id="a60f5001e825110df89233f3b8cbde39b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a60f5001e825110df89233f3b8cbde39b">&#9670;&nbsp;</a></span>set_indices()</h2>
 
@@ -472,8 +529,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a1d0964e7666619ff796e07a9204edfb8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1d0964e7666619ff796e07a9204edfb8">&#9670;&nbsp;</a></span>set_initial_values()</h2>
+<a id="a1316337e63fde2805027f714825fa322"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1316337e63fde2805027f714825fa322">&#9670;&nbsp;</a></span>set_initial_values()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -490,7 +547,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">nlohmann::ordered_json&#160;</td>
+          <td class="paramtype"><a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a>&#160;</td>
           <td class="paramname"><em>initial_json</em>&#160;</td>
         </tr>
         <tr>
@@ -506,7 +563,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classModel_1_1Networkproblem_1_1Networkproblem.html#aead1161c48b0c9ffb4b10f581cc91785">Model::Networkproblem::Networkproblem</a>.</p>
+<p>Implemented in <a class="el" href="classModel_1_1Networkproblem_1_1Networkproblem.html#a7b07378587cd65b58f5b1f3d2a8a3767">Model::Networkproblem::Networkproblem</a>.</p>
 
 </div>
 </div>
@@ -556,8 +613,8 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>Model/Problemlayer/include/<a class="el" href="Subproblem_8hpp_source.html">Subproblem.hpp</a></li>
-<li>Model/Problemlayer/<a class="el" href="Subproblem_8cpp.html">Subproblem.cpp</a></li>
+<li>src/Model/Subproblem/include/<a class="el" href="Subproblem_8hpp_source.html">Subproblem.hpp</a></li>
+<li>src/Model/Subproblem/<a class="el" href="Subproblem_8cpp.html">Subproblem.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

@@ -1,10 +1,12 @@
 <map id="Model::Networkproblem::Networkproblem" name="Model::Networkproblem::Networkproblem">
-<area shape="rect" id="node2" href="$classModel_1_1Subproblem.html" title="Model::Subproblem" alt="" coords="2791,9,2937,35"/>
-<area shape="rect" id="node4" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="2423,60,2601,101"/>
-<area shape="rect" id="node8" href="$classNetwork_1_1Net.html" title="Network::Net" alt="" coords="2458,133,2566,159"/>
-<area shape="rect" id="node11" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="775,171,892,198"/>
-<area shape="rect" id="node12" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="588,254,725,281"/>
-<area shape="rect" id="node16" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="1404,189,1523,215"/>
-<area shape="rect" id="node14" title="STL class. " alt="" coords="193,254,280,281"/>
-<area shape="rect" id="node15" title="STL class. " alt="" coords="5,247,144,288"/>
+<area shape="rect" id="node2" href="$classModel_1_1Subproblem.html" title="Model::Subproblem" alt="" coords="3674,5,3821,32"/>
+<area shape="rect" id="node4" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="A base class for network components that supply model equations to be solved. " alt="" coords="2725,59,2904,101"/>
+<area shape="rect" id="node6" href="$classModel_1_1Networkproblem_1_1Statecomponent.html" title="Model::Networkproblem\l::Statecomponent" alt="" coords="3084,119,3263,161"/>
+<area shape="rect" id="node9" href="$classNetwork_1_1Net.html" title="Network::Net" alt="" coords="3119,192,3227,219"/>
+<area shape="rect" id="node12" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="775,288,892,315"/>
+<area shape="rect" id="node13" href="$classNetwork_1_1Idobject.html" title="Provides a unified &quot;name&quot; to inheriting classes. " alt="" coords="588,359,725,385"/>
+<area shape="rect" id="node17" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="2207,299,2325,325"/>
+<area shape="rect" id="node15" title="STL class. " alt="" coords="193,359,280,385"/>
+<area shape="rect" id="node16" title="STL class. " alt="" coords="5,351,144,393"/>
+<area shape="rect" id="node19" href="$structNetwork_1_1Node_1_1Edgecollection.html" title="Network::Node::Edgecollection" alt="" coords="1404,247,1627,273"/>
 </map>

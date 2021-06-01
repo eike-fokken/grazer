@@ -1,9 +1,10 @@
 <map id="Model::Networkproblem::Gas::Innode" name="Model::Networkproblem::Gas::Innode">
-<area shape="rect" id="node2" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gasnode.html" title="Model::Networkproblem\l::Gas::Gasnode" alt="" coords="1369,136,1548,177"/>
-<area shape="rect" id="node3" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="1001,45,1119,71"/>
-<area shape="rect" id="node9" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="1400,7,1517,34"/>
-<area shape="rect" id="node4" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="645,13,782,39"/>
-<area shape="rect" id="node6" title="STL class. " alt="" coords="193,13,280,39"/>
-<area shape="rect" id="node7" title="STL class. " alt="" coords="5,5,144,47"/>
-<area shape="rect" id="node10" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="971,123,1149,164"/>
+<area shape="rect" id="node2" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gasnode.html" title="Model::Networkproblem\l::Gas::Gasnode" alt="" coords="1193,79,1372,120"/>
+<area shape="rect" id="node3" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="A base class for network components that supply model equations to be solved. " alt="" coords="795,5,973,47"/>
+<area shape="rect" id="node4" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="825,185,943,211"/>
+<area shape="rect" id="node12" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="1224,233,1341,259"/>
+<area shape="rect" id="node5" href="$classNetwork_1_1Idobject.html" title="Provides a unified &quot;name&quot; to inheriting classes. " alt="" coords="588,241,725,267"/>
+<area shape="rect" id="node7" title="STL class. " alt="" coords="193,241,280,267"/>
+<area shape="rect" id="node8" title="STL class. " alt="" coords="5,233,144,275"/>
+<area shape="rect" id="node10" href="$structNetwork_1_1Node_1_1Edgecollection.html" title="Network::Node::Edgecollection" alt="" coords="1813,218,2036,245"/>
 </map>

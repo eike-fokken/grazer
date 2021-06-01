@@ -29,6 +29,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Grazer
+   &#160;<span id="projectnumber">0.0.1</span>
    </div>
   </td>
  </tr>
@@ -83,17 +84,17 @@ $(document).ready(function(){initNavTree('functions_vars.html','');});
 
 <h3><a id="index_a"></a>- a -</h3><ul>
 <li>after_state_index
-: <a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a3e8bee9dc8bbbfe33f38008bf25ea413">Model::Networkproblem::Equationcomponent</a>
+: <a class="el" href="classModel_1_1Networkproblem_1_1Statecomponent.html#a03cc274681d0db7e874e10a6fead24e8">Model::Networkproblem::Statecomponent</a>
 , <a class="el" href="classModel_1_1Subproblem.html#ab3042f0463beb42842757bd7698d0450">Model::Subproblem</a>
 </li>
 <li>alpha
 : <a class="el" href="classModel_1_1Balancelaw_1_1Isothermaleulerequation.html#a5f61beb83da76b825e633de318273357">Model::Balancelaw::Isothermaleulerequation</a>
 </li>
-<li>Area
-: <a class="el" href="classModel_1_1Balancelaw_1_1Isothermaleulerequation.html#af7f7d5b8c7dcbaecfa43c50b2ec6415e">Model::Balancelaw::Isothermaleulerequation</a>
-</li>
 <li>attached_component_data
-: <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1Powernode.html#abfa2bac7787b1ec3388adc3a98476e74">Model::Networkproblem::Power::Powernode</a>
+: <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1Powernode.html#ac47602b1c6fe480bdcad909395dca949">Model::Networkproblem::Power::Powernode</a>
+</li>
+<li>attached_edges
+: <a class="el" href="classNetwork_1_1Node.html#aef71f4cb3cb2e0cae1ca5e0edb696a60">Network::Node</a>
 </li>
 </ul>
 
@@ -107,15 +108,12 @@ $(document).ready(function(){initNavTree('functions_vars.html','');});
 : <a class="el" href="classModel_1_1Balancelaw_1_1Isothermaleulerequation.html#a417494684fe4a744d24bd62a41c62f75">Model::Balancelaw::Isothermaleulerequation</a>
 </li>
 <li>bl
-: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html#acc69fa90b7a65662a09075eecfe5de5a">Model::Networkproblem::Gas::Pipe</a>
-</li>
-<li>boundary_values
-: <a class="el" href="classModel_1_1Networkproblem_1_1Boundaryvalue.html#a12695cee70faeac27e64eca4c69265bd">Model::Networkproblem::Boundaryvalue&lt; T, N &gt;</a>
+: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html#a3a19a5877a2d371671cceb1def940973">Model::Networkproblem::Gas::Pipe</a>
 </li>
 <li>boundaryvalue
-: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Flowboundarynode.html#a98e8191010bdb37e215aae7cacf9ce70">Model::Networkproblem::Gas::Flowboundarynode</a>
-, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Pressureboundarynode.html#ab9dff9d1b0f607a607d661b9d68d0031">Model::Networkproblem::Gas::Pressureboundarynode</a>
-, <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1Powernode.html#a70ff4aa6a3b0843415399b8775628fbe">Model::Networkproblem::Power::Powernode</a>
+: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Flowboundarynode.html#af255c0e199f70a619b356af1f00b789f">Model::Networkproblem::Gas::Flowboundarynode</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1Gaspowerconnection.html#a7e7803d02e00beb67cf15f3ad2a642e4">Model::Networkproblem::Gaspowerconnection::Gaspowerconnection</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1Powernode.html#a63df96c2fd4bf328b7d030a0620b90e5">Model::Networkproblem::Power::Powernode</a>
 </li>
 </ul>
 
@@ -124,47 +122,79 @@ $(document).ready(function(){initNavTree('functions_vars.html','');});
 <li>c_vac_squared
 : <a class="el" href="classModel_1_1Balancelaw_1_1Isothermaleulerequation.html#a375c7c108bb42b04f2cee1521a09322b">Model::Balancelaw::Isothermaleulerequation</a>
 </li>
-<li>coefficients
-: <a class="el" href="classModel_1_1Balancelaw_1_1Isothermaleulerequation.html#ab7c0ca84a12ca5ea0edfe4c13b075a46">Model::Balancelaw::Isothermaleulerequation</a>
+<li>coeff_helper_matrix
+: <a class="el" href="classModel_1_1Balancelaw_1_1Isothermaleulerequation.html#aed83b69cc8e19e7ad216e03291189f4c">Model::Balancelaw::Isothermaleulerequation</a>
+</li>
+<li>component_output
+: <a class="el" href="classModel_1_1Networkproblem_1_1Statecomponent.html#afde85b66ba9ad652988d06aee8a305cf">Model::Networkproblem::Statecomponent</a>
+</li>
+<li>connection
+: <a class="el" href="classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1ExternalPowerplant.html#a41aa1516ff01fad340187be1cfca5fc5">Model::Networkproblem::Gaspowerconnection::ExternalPowerplant</a>
+</li>
+<li>control
+: <a class="el" href="classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1Gaspowerconnection.html#a5d6fbaf70a87c5c08be87f1d904ba220">Model::Networkproblem::Gaspowerconnection::Gaspowerconnection</a>
+</li>
+<li>control_values
+: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Controlvalve.html#aa4d0baa145c814fa1c8481a855f00ade">Model::Networkproblem::Gas::Controlvalve</a>
+</li>
+<li>conversion_map
+: <a class="el" href="classAux_1_1unit_1_1Measure.html#a22d680f2c2da2d53bf70b4c473b8ad9f">Aux::unit::Measure</a>
+</li>
+<li>current_P
+: <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1StochasticPQnode.html#a060051249b077a9918e8e637f195788f">Model::Networkproblem::Power::StochasticPQnode</a>
+</li>
+<li>current_Q
+: <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1StochasticPQnode.html#a0804e51cbd8d994e329fa950c9686260">Model::Networkproblem::Power::StochasticPQnode</a>
 </li>
 </ul>
 
 
 <h3><a id="index_d"></a>- d -</h3><ul>
 <li>decrease_value
-: <a class="el" href="classSolver_1_1Newtonsolver__temp.html#ab28ba948553d4caf1c94e360a0ae4f6b">Solver::Newtonsolver_temp&lt; Problemtype &gt;</a>
+: <a class="el" href="classSolver_1_1Newtonsolver.html#a0744c20ac6ff7f06b4d1a82b26be2459">Solver::Newtonsolver&lt; Problemtype &gt;</a>
+</li>
+<li>delta_t
+: <a class="el" href="structModel_1_1Timedata.html#ad1c56c8b15f99463739faf413834c9fa">Model::Timedata</a>
 </li>
 <li>Delta_x
 : <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html#af14ecbc6d74874a15b0049fd80493d42">Model::Networkproblem::Gas::Pipe</a>
 </li>
 <li>diameter
 : <a class="el" href="classModel_1_1Balancelaw_1_1Isothermaleulerequation.html#a25dd6e4ac044e9287900770517602cd1">Model::Balancelaw::Isothermaleulerequation</a>
-, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html#a6c6e4499e78e2d9ffb060e06a98d2b34">Model::Networkproblem::Gas::Pipe</a>
 </li>
 <li>directed_attached_gas_edges
 : <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasnode.html#acbcb5bef5c426c17747036499c3a9998">Model::Networkproblem::Gas::Gasnode</a>
+</li>
+<li>dist
+: <a class="el" href="classAux_1_1Normaldistribution.html#ab06bdbef0cf282db39fa806e83333b8a">Aux::Normaldistribution</a>
+</li>
+<li>distribution
+: <a class="el" href="structModel_1_1Networkproblem_1_1Power_1_1StochasticPQnode_1_1StochasticData.html#aeef6e1dae7a2de760057b537c877d480">Model::Networkproblem::Power::StochasticPQnode::StochasticData</a>
 </li>
 </ul>
 
 
 <h3><a id="index_e"></a>- e -</h3><ul>
+<li>edge_type_map
+: <a class="el" href="structModel_1_1Componentfactory_1_1Componentfactory.html#aa3f64a3367e3da0b57516080048c9bd6">Model::Componentfactory::Componentfactory</a>
+</li>
 <li>edges
 : <a class="el" href="classNetwork_1_1Net.html#aa1bbc35da225aefd7cda03f33cc0356a">Network::Net</a>
 </li>
 <li>ending_edges
-: <a class="el" href="classNetwork_1_1Node.html#a64bf2802b0f2c6a84719e8e7e95829ee">Network::Node</a>
+: <a class="el" href="structNetwork_1_1Node_1_1Edgecollection.html#a4315e352849003b72fabc6df1b2d8856">Network::Node::Edgecollection</a>
 </li>
 <li>ending_node
 : <a class="el" href="classNetwork_1_1Edge.html#ace3b3960ecd3e835eb82892987f38ae3">Network::Edge</a>
 </li>
-<li>eqtimes
-: <a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a099b4131bdb3705753a560dd7852e529">Model::Networkproblem::Equationcomponent</a>
+<li>endtime
+: <a class="el" href="structModel_1_1Timedata.html#a8595a51fef02189a83e7201b51af11eb">Model::Timedata</a>
+</li>
+<li>engine_
+: <a class="el" href="classrandutils_1_1random__generator.html#aa9341052e73bd58553b12f5990494a5b">randutils::random_generator&lt; RandomEngine, DefaultSeedSeq &gt;</a>
 </li>
 <li>equationcomponents
 : <a class="el" href="classModel_1_1Networkproblem_1_1Networkproblem.html#a587440a85df090924e0da5fb48fd509e">Model::Networkproblem::Networkproblem</a>
-</li>
-<li>eqvalues
-: <a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a378fd3a126025586e903411d4415b3d6">Model::Networkproblem::Equationcomponent</a>
 </li>
 <li>eta
 : <a class="el" href="classModel_1_1Balancelaw_1_1Isothermaleulerequation.html#a01a2b311267b52692cfdf3cc2916b791">Model::Balancelaw::Isothermaleulerequation</a>
@@ -178,41 +208,50 @@ $(document).ready(function(){initNavTree('functions_vars.html','');});
 , <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1Transmissionline.html#a5e06115066db524cf67398dfe2ccbbc9">Model::Networkproblem::Power::Transmissionline</a>
 </li>
 <li>gas2power_q_coefficient
-: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gaspowerconnection.html#a7347be50c9ed3d8eb7e76bc5749fbbd4">Model::Networkproblem::Gas::Gaspowerconnection</a>
+: <a class="el" href="classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1Gaspowerconnection.html#a0f7f45f9d46c5ead0536115d67c0147f">Model::Networkproblem::Gaspowerconnection::Gaspowerconnection</a>
+</li>
+<li>generator
+: <a class="el" href="classAux_1_1Normaldistribution.html#ac2d88c957b71fc1ece80452834d9260f">Aux::Normaldistribution</a>
 </li>
 </ul>
 
 
 <h3><a id="index_i"></a>- i -</h3><ul>
 <li>idptr
-: <a class="el" href="classNetwork_1_1Idobject.html#a88305984c187b70983e931a795c180a3">Network::Idobject</a>
+: <a class="el" href="classNetwork_1_1Idobject.html#a407bd727fd57f9007496fca516b564ef">Network::Idobject</a>
 </li>
-<li>initial_values
-: <a class="el" href="classModel_1_1Networkproblem_1_1Initialvalue.html#adf76ba08341ca3d7e0345b7a52854ca4">Model::Networkproblem::Initialvalue&lt; T, N &gt;</a>
+<li>INIT_A
+: <a class="el" href="structrandutils_1_1seed__seq__fe.html#a198d666bd651fc7bfef3e464fdf7edb0">randutils::seed_seq_fe&lt; count, IntRep, mix_rounds &gt;</a>
+</li>
+<li>INIT_B
+: <a class="el" href="structrandutils_1_1seed__seq__fe.html#a6510938b3eda1cb42122ba291ac8da22">randutils::seed_seq_fe&lt; count, IntRep, mix_rounds &gt;</a>
 </li>
 </ul>
 
 
 <h3><a id="index_j"></a>- j -</h3><ul>
 <li>jacobian
-: <a class="el" href="classSolver_1_1Newtonsolver__temp.html#a191d09ec217e54465c09f737d876645f">Solver::Newtonsolver_temp&lt; Problemtype &gt;</a>
+: <a class="el" href="classSolver_1_1Newtonsolver.html#a76712652907e7b3775a3513beefece3e">Solver::Newtonsolver&lt; Problemtype &gt;</a>
+</li>
+<li>json_output
+: <a class="el" href="classModel_1_1Problem.html#ae3a34ce9a0deaa2ad3d6c2abc63ca378">Model::Problem</a>
 </li>
 </ul>
 
 
 <h3><a id="index_k"></a>- k -</h3><ul>
 <li>kappa
-: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gaspowerconnection.html#a2f6cdae4036f5d658d50e77b9b036996">Model::Networkproblem::Gas::Gaspowerconnection</a>
+: <a class="el" href="classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1Gaspowerconnection.html#a07487a3815a4ffa50d3a7c7919e0dff1">Model::Networkproblem::Gaspowerconnection::Gaspowerconnection</a>
 </li>
 </ul>
 
 
 <h3><a id="index_l"></a>- l -</h3><ul>
-<li>length
-: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html#a7a29f56227a999b6cb42abb8c0bdcd79">Model::Networkproblem::Gas::Pipe</a>
+<li>laminar_border
+: <a class="el" href="classModel_1_1Balancelaw_1_1Isothermaleulerequation.html#a3fc6b96a634d793af2a1c3682ba665ad">Model::Balancelaw::Isothermaleulerequation</a>
 </li>
 <li>lusolver
-: <a class="el" href="classSolver_1_1Newtonsolver__temp.html#a9fb68b536a567d6a286de56c9f1d355c">Solver::Newtonsolver_temp&lt; Problemtype &gt;</a>
+: <a class="el" href="classSolver_1_1Newtonsolver.html#af5f14a4df708f21d63246c3fa4c7bced">Solver::Newtonsolver&lt; Problemtype &gt;</a>
 </li>
 </ul>
 
@@ -222,31 +261,69 @@ $(document).ready(function(){initNavTree('functions_vars.html','');});
 : <a class="el" href="classAux_1_1Matrixhandler.html#a9d4e6cd23a027eaa1a9abbbc258466dc">Aux::Matrixhandler</a>
 </li>
 <li>maximal_iterations
-: <a class="el" href="classSolver_1_1Newtonsolver__temp.html#aa320e51a28bc934eede1adfe4f89cda4">Solver::Newtonsolver_temp&lt; Problemtype &gt;</a>
+: <a class="el" href="classSolver_1_1Newtonsolver.html#a10fdf944bebf72281cf87b16bcb72fa8">Solver::Newtonsolver&lt; Problemtype &gt;</a>
 </li>
 <li>minimal_stepsize
-: <a class="el" href="classSolver_1_1Newtonsolver__temp.html#ab89adf3660fe83fa0cfa26ad3cd43a3f">Solver::Newtonsolver_temp&lt; Problemtype &gt;</a>
+: <a class="el" href="classSolver_1_1Newtonsolver.html#a8abf64ff3c741d30819b72e9e11f25aa">Solver::Newtonsolver&lt; Problemtype &gt;</a>
 </li>
-<li>msg
-: <a class="el" href="classException.html#afd220ed8cf38d0788a9d03c25235ee85">Exception</a>
+<li>MIX_MULT_L
+: <a class="el" href="structrandutils_1_1seed__seq__fe.html#ac55c2f9717c344eeea9f39e95e4f18b1">randutils::seed_seq_fe&lt; count, IntRep, mix_rounds &gt;</a>
+</li>
+<li>MIX_MULT_R
+: <a class="el" href="structrandutils_1_1seed__seq__fe.html#a5f2364ef615edbe9fa6726a805f96357">randutils::seed_seq_fe&lt; count, IntRep, mix_rounds &gt;</a>
+</li>
+<li>mixer_
+: <a class="el" href="structrandutils_1_1seed__seq__fe.html#a7adabe6d9ee2746adc61a5599f5d3891">randutils::seed_seq_fe&lt; count, IntRep, mix_rounds &gt;</a>
+</li>
+<li>MULT_A
+: <a class="el" href="structrandutils_1_1seed__seq__fe.html#a9c5f14fe04647b17302eb57575181d51">randutils::seed_seq_fe&lt; count, IntRep, mix_rounds &gt;</a>
+</li>
+<li>MULT_B
+: <a class="el" href="structrandutils_1_1seed__seq__fe.html#ae52ef9d2548b0e7eb8dbabbc5ba50518">randutils::seed_seq_fe&lt; count, IntRep, mix_rounds &gt;</a>
+</li>
+<li>multiplicator
+: <a class="el" href="classAux_1_1unit_1_1Conversion.html#ae3cb51b2c91497c715e1716101e7da9a">Aux::unit::Conversion</a>
 </li>
 </ul>
 
 
 <h3><a id="index_n"></a>- n -</h3><ul>
+<li>name
+: <a class="el" href="classAux_1_1unit_1_1Measure.html#abd318d74ece15063a7931be681cfb609">Aux::unit::Measure</a>
+</li>
 <li>network
 : <a class="el" href="classModel_1_1Networkproblem_1_1Networkproblem.html#a7596ed900b8aa16f281efbbcf4afcbf5">Model::Networkproblem::Networkproblem</a>
+</li>
+<li>node_type_map
+: <a class="el" href="structModel_1_1Componentfactory_1_1Componentfactory.html#af20110e6ba7405f3dd25015323ddf3dc">Model::Componentfactory::Componentfactory</a>
 </li>
 <li>nodes
 : <a class="el" href="classNetwork_1_1Net.html#ae23fc1a293126401227424133b807875">Network::Net</a>
 </li>
+<li>normaldist
+: <a class="el" href="classAux_1_1Truncatednormaldist.html#a57149a353f49e15a18b5a7c96d94917f">Aux::Truncatednormaldist</a>
+</li>
 <li>number_of_points
 : <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html#a7479b2005a896f60ce1bbb9f6e3a4fa3">Model::Networkproblem::Gas::Pipe</a>
+</li>
+<li>number_of_state_variables
+: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasnode.html#a603d2181366fc5c365c97bc2ceb03237">Model::Networkproblem::Gas::Gasnode</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent.html#a96028354b33297030b6279aa3bd2d955">Model::Networkproblem::Gas::Shortcomponent</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1Powernode.html#a85367fdba4c55cafa06a09614a80eb42">Model::Networkproblem::Power::Powernode</a>
+</li>
+<li>number_of_stochastic_steps
+: <a class="el" href="structModel_1_1Networkproblem_1_1Power_1_1StochasticPQnode_1_1StochasticData.html#af213586fd81b1c3ddcd757468a29d9f1">Model::Networkproblem::Power::StochasticPQnode::StochasticData</a>
+</li>
+<li>Number_of_timesteps
+: <a class="el" href="structModel_1_1Timedata.html#a13962d504818c4a3139fd004183ea647">Model::Timedata</a>
 </li>
 </ul>
 
 
 <h3><a id="index_o"></a>- o -</h3><ul>
+<li>offset
+: <a class="el" href="classAux_1_1unit_1_1Conversion.html#a63997fbb680f6c827e8937e58043f5b8">Aux::unit::Conversion</a>
+</li>
 <li>output_directory
 : <a class="el" href="classModel_1_1Problem.html#ac1b0abfa5d9fec3b5e06e496d75511cd">Model::Problem</a>
 </li>
@@ -254,9 +331,6 @@ $(document).ready(function(){initNavTree('functions_vars.html','');});
 
 
 <h3><a id="index_p"></a>- p -</h3><ul>
-<li>p
-: <a class="el" href="classAux_1_1Printguard.html#a793191089911a5e56c95bf295ce7dcc6">Aux::Printguard</a>
-</li>
 <li>p_0
 : <a class="el" href="classModel_1_1Balancelaw_1_1Isothermaleulerequation.html#a6ab86cf05baf78d3389e3acc97587fd1">Model::Balancelaw::Isothermaleulerequation</a>
 </li>
@@ -264,44 +338,61 @@ $(document).ready(function(){initNavTree('functions_vars.html','');});
 : <a class="el" href="classModel_1_1Balancelaw_1_1Isothermaleulerequation.html#ad7bd8292717da5694abdc0766bef26dc">Model::Balancelaw::Isothermaleulerequation</a>
 </li>
 <li>power2gas_q_coefficient
-: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gaspowerconnection.html#a91b84fb40fb6669c78b76952d3dbc5ad">Model::Networkproblem::Gas::Gaspowerconnection</a>
+: <a class="el" href="classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1Gaspowerconnection.html#ae897a1e1540844f47dd732a8db03d750">Model::Networkproblem::Gaspowerconnection::Gaspowerconnection</a>
 </li>
 <li>powerendnode
-: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gaspowerconnection.html#a27fa2b718201a2a807c95a848391e2c4">Model::Networkproblem::Gas::Gaspowerconnection</a>
+: <a class="el" href="classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1Gaspowerconnection.html#ae98d1b9ac16d519a5f332abd88f1d13a">Model::Networkproblem::Gaspowerconnection::Gaspowerconnection</a>
 </li>
 </ul>
 
 
 <h3><a id="index_r"></a>- r -</h3><ul>
-<li>rawmsg
-: <a class="el" href="classException.html#a60fd50d849faaa1a10a9548743bdb846">Exception</a>
-</li>
 <li>residual
 : <a class="el" href="structSolver_1_1Solutionstruct.html#a3a48efd88b8bd65476717a92fc930896">Solver::Solutionstruct</a>
+</li>
+<li>retries
+: <a class="el" href="classModel_1_1Timeevolver.html#a9cb12483a9ff60ac974437b2fb899a8c">Model::Timeevolver</a>
 </li>
 <li>rho_0
 : <a class="el" href="classModel_1_1Balancelaw_1_1Isothermaleulerequation.html#a8d46f2dcad339c9326c5e9c4ab7ef969">Model::Balancelaw::Isothermaleulerequation</a>
 </li>
 <li>roughness
 : <a class="el" href="classModel_1_1Balancelaw_1_1Isothermaleulerequation.html#a2985b5ad0eb69dea2e216c91e10bfbd7">Model::Balancelaw::Isothermaleulerequation</a>
-, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html#ab9850490cbaaf1bf7ce31873594804e8">Model::Networkproblem::Gas::Pipe</a>
 </li>
 </ul>
 
 
 <h3><a id="index_s"></a>- s -</h3><ul>
 <li>scheme
-: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html#a1c89244d40099ecd7f5897ddc064b63e">Model::Networkproblem::Gas::Pipe</a>
+: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html#a241c8608c490e8e71ee8c53fe97ddd45">Model::Networkproblem::Gas::Pipe</a>
+</li>
+<li>sigma_P
+: <a class="el" href="structModel_1_1Networkproblem_1_1Power_1_1StochasticPQnode_1_1StochasticData.html#acf30f68db64b21aa834efe540ded302e">Model::Networkproblem::Power::StochasticPQnode::StochasticData</a>
+</li>
+<li>sigma_Q
+: <a class="el" href="structModel_1_1Networkproblem_1_1Power_1_1StochasticPQnode_1_1StochasticData.html#aa067672cd938a7deff607528c839b73f">Model::Networkproblem::Power::StochasticPQnode::StochasticData</a>
+</li>
+<li>solver
+: <a class="el" href="classModel_1_1Timeevolver.html#a887c4a6c3e6a67dd20179c22163d3da2">Model::Timeevolver</a>
 </li>
 <li>start_state_index
-: <a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a4f7156777033b17c75367108ea56a6ad">Model::Networkproblem::Equationcomponent</a>
+: <a class="el" href="classModel_1_1Networkproblem_1_1Statecomponent.html#afc0e23f8a398c69ca6710954aae6aadb">Model::Networkproblem::Statecomponent</a>
 , <a class="el" href="classModel_1_1Subproblem.html#a5c6c2e289bbf5dfa20d431e3997f2bc6">Model::Subproblem</a>
 </li>
 <li>starting_edges
-: <a class="el" href="classNetwork_1_1Node.html#a732420b475f2eadda5b1aa9c54ef1615">Network::Node</a>
+: <a class="el" href="structNetwork_1_1Node_1_1Edgecollection.html#a9ea78d3a3f4df3b853860971f4122671">Network::Node::Edgecollection</a>
 </li>
 <li>starting_node
 : <a class="el" href="classNetwork_1_1Edge.html#a16b1c376ea66162f958d024a41ae23df">Network::Edge</a>
+</li>
+<li>starttime
+: <a class="el" href="structModel_1_1Timedata.html#ab9d90ce7a61f50cec4cfd453b055e7c1">Model::Timedata</a>
+</li>
+<li>statecomponents
+: <a class="el" href="classModel_1_1Networkproblem_1_1Networkproblem.html#a361378f4a5f0c021e8bfa07e5968e2b4">Model::Networkproblem::Networkproblem</a>
+</li>
+<li>stochasticdata
+: <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1StochasticPQnode.html#a243182c927ea687585c500152c8472b5">Model::Networkproblem::Power::StochasticPQnode</a>
 </li>
 <li>subproblems
 : <a class="el" href="classModel_1_1Problem.html#ad91a3758d59064d10d884c3be060f7bc">Model::Problem</a>
@@ -322,18 +413,49 @@ $(document).ready(function(){initNavTree('functions_vars.html','');});
 <li>T_crit
 : <a class="el" href="classModel_1_1Balancelaw_1_1Isothermaleulerequation.html#ad4e3a6470a6a0c2b340c06ffe6bfcacd">Model::Balancelaw::Isothermaleulerequation</a>
 </li>
+<li>theta_P
+: <a class="el" href="structModel_1_1Networkproblem_1_1Power_1_1StochasticPQnode_1_1StochasticData.html#a11ba8e731893f6f4bc13ae9652f01560">Model::Networkproblem::Power::StochasticPQnode::StochasticData</a>
+</li>
+<li>theta_Q
+: <a class="el" href="structModel_1_1Networkproblem_1_1Power_1_1StochasticPQnode_1_1StochasticData.html#a37257f888f68f2d1df776076e8257c98">Model::Networkproblem::Power::StochasticPQnode::StochasticData</a>
+</li>
 <li>tolerance
-: <a class="el" href="classSolver_1_1Newtonsolver__temp.html#aa6b2cb706f7e75636cf62a1a6c6e31f4">Solver::Newtonsolver_temp&lt; Problemtype &gt;</a>
+: <a class="el" href="classSolver_1_1Newtonsolver.html#a6cab9d2c6ccb5ddb254474d5caa7557e">Solver::Newtonsolver&lt; Problemtype &gt;</a>
 </li>
 <li>tripletlist
 : <a class="el" href="classAux_1_1Triplethandler.html#afbf6b12b45200b4552bb8cf4002dd239">Aux::Triplethandler</a>
+</li>
+<li>turbulent_border
+: <a class="el" href="classModel_1_1Balancelaw_1_1Isothermaleulerequation.html#a1ede6f950283ddeed36aaafab422f245">Model::Balancelaw::Isothermaleulerequation</a>
 </li>
 </ul>
 
 
 <h3><a id="index_u"></a>- u -</h3><ul>
+<li>use_simplified_newton
+: <a class="el" href="classModel_1_1Timeevolver.html#a2698dff5615bf8b9ce50d9dfc766fa38">Model::Timeevolver</a>
+</li>
 <li>used_iterations
 : <a class="el" href="structSolver_1_1Solutionstruct.html#aa93d7557f2887a3204bbcd2f2f9f2554">Solver::Solutionstruct</a>
+</li>
+</ul>
+
+
+<h3><a id="index_v"></a>- v -</h3><ul>
+<li>valuemap
+: <a class="el" href="classModel_1_1Networkproblem_1_1Boundaryvalue.html#a1c2d6506d924e002d5cf01c4a5e4afda">Model::Networkproblem::Boundaryvalue&lt; N &gt;</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Control.html#a046d3d4dfcbb6b0eef89b440f853bf23">Model::Networkproblem::Control&lt; N &gt;</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Initialvalue.html#a400c829d4df291293a6402703fb5cd80">Model::Networkproblem::Initialvalue&lt; N &gt;</a>
+</li>
+<li>values
+: <a class="el" href="classModel_1_1Networkproblem_1_1Valuemap.html#a71e94dd5d89fc59053f38d85b346bd4c">Model::Networkproblem::Valuemap&lt; N &gt;</a>
+</li>
+</ul>
+
+
+<h3><a id="index_x"></a>- x -</h3><ul>
+<li>XSHIFT
+: <a class="el" href="structrandutils_1_1seed__seq__fe.html#aa420118b0b72a69972ec4fcb5f9d2dd1">randutils::seed_seq_fe&lt; count, IntRep, mix_rounds &gt;</a>
 </li>
 </ul>
 

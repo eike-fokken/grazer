@@ -1,11 +1,12 @@
 var searchData=
 [
-  ['net_2ecpp',['Net.cpp',['../Net_8cpp.html',1,'']]],
-  ['net_2ehpp',['Net.hpp',['../Net_8hpp.html',1,'']]],
-  ['networkproblem_2ecpp',['Networkproblem.cpp',['../Networkproblem_8cpp.html',1,'']]],
-  ['networkproblem_2ehpp',['Networkproblem.hpp',['../Networkproblem_8hpp.html',1,'']]],
-  ['newtonsolver_2ecpp',['Newtonsolver.cpp',['../Newtonsolver_8cpp.html',1,'']]],
-  ['newtonsolver_2ehpp',['Newtonsolver.hpp',['../Newtonsolver_8hpp.html',1,'']]],
-  ['node_2ecpp',['Node.cpp',['../Node_8cpp.html',1,'']]],
-  ['node_2ehpp',['Node.hpp',['../Node_8hpp.html',1,'']]]
+  ['make_5fschema_2ecpp',['make_schema.cpp',['../make__schema_8cpp.html',1,'']]],
+  ['make_5fschema_2ehpp',['make_schema.hpp',['../make__schema_8hpp.html',1,'']]],
+  ['mathfunctions_2ecpp',['Mathfunctions.cpp',['../Mathfunctions_8cpp.html',1,'']]],
+  ['mathfunctions_2ehpp',['Mathfunctions.hpp',['../Mathfunctions_8hpp.html',1,'']]],
+  ['matrixhandler_2ecpp',['Matrixhandler.cpp',['../Matrixhandler_8cpp.html',1,'']]],
+  ['matrixhandler_2ehpp',['Matrixhandler.hpp',['../Matrixhandler_8hpp.html',1,'']]],
+  ['misc_2ecpp',['Misc.cpp',['../Misc_8cpp.html',1,'']]],
+  ['misc_2ehpp',['Misc.hpp',['../Misc_8hpp.html',1,'']]],
+  ['move_5fto_5fcategory_2ecpp',['move_to_category.cpp',['../move__to__category_8cpp.html',1,'']]]
 ];

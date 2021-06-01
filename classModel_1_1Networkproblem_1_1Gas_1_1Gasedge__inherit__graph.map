@@ -1,8 +1,10 @@
 <map id="Model::Networkproblem::Gas::Gasedge" name="Model::Networkproblem::Gas::Gasedge">
-<area shape="rect" id="node3" href="$classModel_1_1Networkproblem_1_1Gas_1_1Compressorstation.html" title="Model::Networkproblem\l::Gas::Compressorstation" alt="" coords="465,5,651,47"/>
-<area shape="rect" id="node4" href="$classModel_1_1Networkproblem_1_1Gas_1_1Controlvalve.html" title="Model::Networkproblem\l::Gas::Controlvalve" alt="" coords="469,71,647,112"/>
-<area shape="rect" id="node5" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gaspowerconnection.html" title="Model::Networkproblem\l::Gas::Gaspowerconnection" alt="" coords="459,136,657,177"/>
-<area shape="rect" id="node6" href="$classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html" title="Model::Networkproblem\l::Gas::Pipe" alt="" coords="469,201,647,243"/>
-<area shape="rect" id="node7" href="$classModel_1_1Networkproblem_1_1Gas_1_1Shortpipe.html" title="Model::Networkproblem\l::Gas::Shortpipe" alt="" coords="469,267,647,308"/>
-<area shape="rect" id="node2" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="5,136,184,177"/>
+<area shape="rect" id="node4" href="$classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html" title="Model::Networkproblem\l::Gas::Pipe" alt="" coords="685,5,864,47"/>
+<area shape="rect" id="node5" href="$classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent.html" title="Model::Networkproblem\l::Gas::Shortcomponent" alt="" coords="685,71,864,112"/>
+<area shape="rect" id="node9" href="$classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1Gaspowerconnection.html" title="an edge connecting a gasnode to a powernode and modelling a gaspower plant/power&#45;to&#45;gas plant..." alt="" coords="685,137,864,193"/>
+<area shape="rect" id="node2" href="$classModel_1_1Networkproblem_1_1Statecomponent.html" title="Model::Networkproblem\l::Statecomponent" alt="" coords="232,71,411,112"/>
+<area shape="rect" id="node3" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="A base class for network components that supply model equations to be solved. " alt="" coords="5,71,184,112"/>
+<area shape="rect" id="node6" href="$classModel_1_1Networkproblem_1_1Gas_1_1Controlvalve.html" title="Model::Networkproblem\l::Gas::Controlvalve" alt="" coords="912,39,1091,80"/>
+<area shape="rect" id="node7" href="$classModel_1_1Networkproblem_1_1Gas_1_1Shortpipe.html" title="Model::Networkproblem\l::Gas::Shortpipe" alt="" coords="912,104,1091,145"/>
+<area shape="rect" id="node8" href="$classModel_1_1Networkproblem_1_1Gas_1_1Compressorstation.html" title="Model::Networkproblem\l::Gas::Compressorstation" alt="" coords="1139,104,1325,145"/>
 </map>

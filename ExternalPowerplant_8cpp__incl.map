@@ -1,0 +1,18 @@
+<map id="src/Model/Networkproblem/Gaspowerconnection/ExternalPowerplant.cpp" name="src/Model/Networkproblem/Gaspowerconnection/ExternalPowerplant.cpp">
+<area shape="rect" id="node2" href="$ExternalPowerplant_8hpp.html" title="ExternalPowerplant.hpp" alt="" coords="424,95,602,121"/>
+<area shape="rect" id="node3" href="$Powernode_8hpp.html" title="Powernode.hpp" alt="" coords="461,169,584,196"/>
+<area shape="rect" id="node23" href="$Gaspowerconnection_8hpp.html" title="Gaspowerconnection.hpp" alt="" coords="677,95,864,121"/>
+<area shape="rect" id="node27" href="$Matrixhandler_8hpp.html" title="Matrixhandler.hpp" alt="" coords="878,319,1017,345"/>
+<area shape="rect" id="node28" href="$make__schema_8hpp.html" title="make_schema.hpp" alt="" coords="23,319,168,345"/>
+<area shape="rect" id="node4" href="$Boundaryvalue_8hpp.html" title="Boundaryvalue.hpp" alt="" coords="1072,244,1220,271"/>
+<area shape="rect" id="node16" href="$Node_8hpp.html" title="Node.hpp" alt="" coords="335,244,419,271"/>
+<area shape="rect" id="node19" href="$Statecomponent_8hpp.html" title="Statecomponent.hpp" alt="" coords="444,244,601,271"/>
+<area shape="rect" id="node5" href="$Exception_8hpp.html" title="Exception.hpp" alt="" coords="1578,393,1693,420"/>
+<area shape="rect" id="node8" href="$Mathfunctions_8hpp.html" title="Mathfunctions.hpp" alt="" coords="1411,393,1554,420"/>
+<area shape="rect" id="node9" href="$Valuemap_8hpp.html" title="Valuemap.hpp" alt="" coords="1092,319,1206,345"/>
+<area shape="rect" id="node17" href="$Idobject_8hpp.html" title="Idobject.hpp" alt="" coords="396,319,499,345"/>
+<area shape="rect" id="node20" href="$Equationcomponent_8hpp.html" title="Equationcomponent.hpp" alt="" coords="192,319,372,345"/>
+<area shape="rect" id="node24" href="$Control_8hpp.html" title="Control.hpp" alt="" coords="947,244,1044,271"/>
+<area shape="rect" id="node25" href="$Edge_8hpp.html" title="Edge.hpp" alt="" coords="608,169,690,196"/>
+<area shape="rect" id="node26" href="$Gasedge_8hpp.html" title="Gasedge.hpp" alt="" coords="714,169,821,196"/>
+</map>

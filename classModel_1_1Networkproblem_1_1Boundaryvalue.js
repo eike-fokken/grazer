@@ -1,8 +1,6 @@
 var classModel_1_1Networkproblem_1_1Boundaryvalue =
 [
-    [ "Boundaryvalue", "classModel_1_1Networkproblem_1_1Boundaryvalue.html#a00d30b01bac9f8f98cdc2d656773c236", null ],
-    [ "Boundaryvalue", "classModel_1_1Networkproblem_1_1Boundaryvalue.html#a9b2e5a3efe02dcff0e9abae3958caf28", null ],
-    [ "operator()", "classModel_1_1Networkproblem_1_1Boundaryvalue.html#a221d198d211247b0eb31cb8a48d403fc", null ],
-    [ "set_boundary_condition", "classModel_1_1Networkproblem_1_1Boundaryvalue.html#aa8bf916c8a0d24635e0bcc502421479e", null ],
-    [ "boundary_values", "classModel_1_1Networkproblem_1_1Boundaryvalue.html#a12695cee70faeac27e64eca4c69265bd", null ]
+    [ "Boundaryvalue", "classModel_1_1Networkproblem_1_1Boundaryvalue.html#a3d3952ebf81503ea130f2b953f6b4220", null ],
+    [ "operator()", "classModel_1_1Networkproblem_1_1Boundaryvalue.html#af0cbcdf98684e8cb7384489a848b2c94", null ],
+    [ "valuemap", "classModel_1_1Networkproblem_1_1Boundaryvalue.html#a1c2d6506d924e002d5cf01c4a5e4afda", null ]
 ];

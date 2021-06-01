@@ -1,7 +1,6 @@
-<map id="Model/Balancelaw/include/Isothermaleulerequation.hpp" name="Model/Balancelaw/include/Isothermaleulerequation.hpp">
-<area shape="rect" id="node2" href="$Isothermaleulerequation_8cpp.html" title="Model/Balancelaw/Isothermaleulerequation.cpp" alt="" coords="5,102,336,129"/>
-<area shape="rect" id="node3" href="$Pipe_8hpp.html" title="Model/Networkproblem\l/Gas/include/Pipe.hpp" alt="" coords="361,95,535,136"/>
-<area shape="rect" id="node5" href="$Pipe_8cpp.html" title="Model/Networkproblem\l/Gas/Pipe.cpp" alt="" coords="486,184,661,225"/>
-<area shape="rect" id="node6" href="$Implicitboxscheme_8cpp.html" title="Model/Scheme/Implicitboxscheme.cpp" alt="" coords="611,102,883,129"/>
-<area shape="rect" id="node4" href="$Jsonreader_8cpp.html" title="Jsonreader/Jsonreader.cpp" alt="" coords="271,191,462,218"/>
+<map id="src/Model/Balancelaw/include/Isothermaleulerequation.hpp" name="src/Model/Balancelaw/include/Isothermaleulerequation.hpp">
+<area shape="rect" id="node2" href="$Balancelaw__factory_8cpp.html" title="src/Model/Balancelaw\l/Balancelaw_factory.cpp" alt="" coords="5,95,184,136"/>
+<area shape="rect" id="node3" href="$Isothermaleulerequation_8cpp.html" title="src/Model/Balancelaw\l/Isothermaleulerequation.cpp" alt="" coords="208,95,421,136"/>
+<area shape="rect" id="node4" href="$Pipe_8cpp.html" title="src/Model/Networkproblem\l/Gas/Pipe.cpp" alt="" coords="445,95,643,136"/>
+<area shape="rect" id="node5" href="$Implicitboxscheme_8cpp.html" title="src/Model/Scheme/Implicitboxscheme.cpp" alt="" coords="667,102,962,129"/>
 </map>

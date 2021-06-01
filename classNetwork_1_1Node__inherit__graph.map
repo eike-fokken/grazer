@@ -1,11 +1,14 @@
 <map id="Network::Node" name="Network::Node">
-<area shape="rect" id="node3" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gasnode.html" title="Model::Networkproblem\l::Gas::Gasnode" alt="" coords="357,104,536,145"/>
-<area shape="rect" id="node7" href="$classModel_1_1Networkproblem_1_1Power_1_1Powernode.html" title="Model::Networkproblem\l::Power::Powernode" alt="" coords="357,233,536,275"/>
-<area shape="rect" id="node2" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="5,209,143,235"/>
-<area shape="rect" id="node4" href="$classModel_1_1Networkproblem_1_1Gas_1_1Flowboundarynode.html" title="Model::Networkproblem\l::Gas::Flowboundarynode" alt="" coords="597,5,783,47"/>
-<area shape="rect" id="node5" href="$classModel_1_1Networkproblem_1_1Gas_1_1Innode.html" title="This class represents an inner node of the gas network, that neither injects gas nor takes gas out..." alt="" coords="601,71,779,112"/>
-<area shape="rect" id="node6" href="$classModel_1_1Networkproblem_1_1Gas_1_1Pressureboundarynode.html" title="Model::Networkproblem\l::Gas::Pressureboundarynode" alt="" coords="584,136,796,177"/>
-<area shape="rect" id="node8" href="$classModel_1_1Networkproblem_1_1Power_1_1PQnode.html" title="Model::Networkproblem\l::Power::PQnode" alt="" coords="601,201,779,243"/>
-<area shape="rect" id="node9" href="$classModel_1_1Networkproblem_1_1Power_1_1PVnode.html" title="Model::Networkproblem\l::Power::PVnode" alt="" coords="601,267,779,308"/>
-<area shape="rect" id="node10" href="$classModel_1_1Networkproblem_1_1Power_1_1Vphinode.html" title="Model::Networkproblem\l::Power::Vphinode" alt="" coords="601,332,779,373"/>
+<area shape="rect" id="node3" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gasnode.html" title="Model::Networkproblem\l::Gas::Gasnode" alt="" coords="357,103,536,144"/>
+<area shape="rect" id="node8" href="$classModel_1_1Networkproblem_1_1Power_1_1Powernode.html" title="Model::Networkproblem\l::Power::Powernode" alt="" coords="357,281,536,323"/>
+<area shape="rect" id="node2" href="$classNetwork_1_1Idobject.html" title="Provides a unified &quot;name&quot; to inheriting classes. " alt="" coords="5,215,143,242"/>
+<area shape="rect" id="node4" href="$classModel_1_1Networkproblem_1_1Gas_1_1Flowboundarynode.html" title="Model::Networkproblem\l::Gas::Flowboundarynode" alt="" coords="588,37,775,79"/>
+<area shape="rect" id="node7" href="$classModel_1_1Networkproblem_1_1Gas_1_1Innode.html" title="Model::Networkproblem\l::Gas::Innode" alt="" coords="592,103,771,144"/>
+<area shape="rect" id="node5" href="$classModel_1_1Networkproblem_1_1Gas_1_1Sink.html" title="Model::Networkproblem\l::Gas::Sink" alt="" coords="827,5,1005,47"/>
+<area shape="rect" id="node6" href="$classModel_1_1Networkproblem_1_1Gas_1_1Source.html" title="Model::Networkproblem\l::Gas::Source" alt="" coords="827,71,1005,112"/>
+<area shape="rect" id="node9" href="$classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1ExternalPowerplant.html" title="A Powernode to be connected to an edge that leads out of the power network. " alt="" coords="592,169,771,225"/>
+<area shape="rect" id="node10" href="$classModel_1_1Networkproblem_1_1Power_1_1PQnode.html" title="Model::Networkproblem\l::Power::PQnode" alt="" coords="592,249,771,291"/>
+<area shape="rect" id="node11" href="$classModel_1_1Networkproblem_1_1Power_1_1PVnode.html" title="Model::Networkproblem\l::Power::PVnode" alt="" coords="592,315,771,356"/>
+<area shape="rect" id="node12" href="$classModel_1_1Networkproblem_1_1Power_1_1StochasticPQnode.html" title="Model::Networkproblem\l::Power::StochasticPQnode" alt="" coords="584,380,779,421"/>
+<area shape="rect" id="node13" href="$classModel_1_1Networkproblem_1_1Power_1_1Vphinode.html" title="Model::Networkproblem\l::Power::Vphinode" alt="" coords="592,445,771,487"/>
 </map>

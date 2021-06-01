@@ -29,6 +29,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Grazer
+   &#160;<span id="projectnumber">0.0.1</span>
    </div>
   </td>
  </tr>
@@ -81,7 +82,7 @@ $(document).ready(function(){initNavTree('classNetwork_1_1Idobject.html','');});
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classNetwork_1_1Idobject-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -89,26 +90,35 @@ $(document).ready(function(){initNavTree('classNetwork_1_1Idobject.html','');});
 </div><!--header-->
 <div class="contents">
 
+<p>Provides a unified "name" to inheriting classes.  
+ <a href="classNetwork_1_1Idobject.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="Idobject_8hpp_source.html">Idobject.hpp</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for Network::Idobject:</div>
 <div class="dyncontent">
 <div class="center"><img src="classNetwork_1_1Idobject__inherit__graph.png" border="0" usemap="#Network_1_1Idobject_inherit__map" alt="Inheritance graph"/></div>
 <map name="Network_1_1Idobject_inherit__map" id="Network_1_1Idobject_inherit__map">
-<area shape="rect" id="node2" href="classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="191,143,309,170"/>
-<area shape="rect" id="node7" href="classNetwork_1_1Node.html" title="Network::Node" alt="" coords="191,274,309,301"/>
-<area shape="rect" id="node3" href="classModel_1_1Networkproblem_1_1Gas_1_1Gaspowerconnection.html" title="Model::Networkproblem\l::Gas::Gaspowerconnection" alt="" coords="357,5,556,47"/>
-<area shape="rect" id="node4" href="classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html" title="Model::Networkproblem\l::Gas::Pipe" alt="" coords="367,71,546,112"/>
-<area shape="rect" id="node5" href="classModel_1_1Networkproblem_1_1Gas_1_1Shortpipe.html" title="Model::Networkproblem\l::Gas::Shortpipe" alt="" coords="367,136,546,177"/>
-<area shape="rect" id="node6" href="classModel_1_1Networkproblem_1_1Power_1_1Transmissionline.html" title="Model::Networkproblem\l::Power::Transmissionline" alt="" coords="363,201,550,243"/>
-<area shape="rect" id="node8" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasnode.html" title="Model::Networkproblem\l::Gas::Gasnode" alt="" coords="367,267,546,308"/>
-<area shape="rect" id="node12" href="classModel_1_1Networkproblem_1_1Power_1_1Powernode.html" title="Model::Networkproblem\l::Power::Powernode" alt="" coords="367,364,546,405"/>
-<area shape="rect" id="node9" href="classModel_1_1Networkproblem_1_1Gas_1_1Flowboundarynode.html" title="Model::Networkproblem\l::Gas::Flowboundarynode" alt="" coords="617,152,803,193"/>
-<area shape="rect" id="node10" href="classModel_1_1Networkproblem_1_1Gas_1_1Innode.html" title="This class represents an inner node of the gas network, that neither injects gas nor takes gas out..." alt="" coords="621,217,799,259"/>
-<area shape="rect" id="node11" href="classModel_1_1Networkproblem_1_1Gas_1_1Pressureboundarynode.html" title="Model::Networkproblem\l::Gas::Pressureboundarynode" alt="" coords="604,283,816,324"/>
-<area shape="rect" id="node13" href="classModel_1_1Networkproblem_1_1Power_1_1PQnode.html" title="Model::Networkproblem\l::Power::PQnode" alt="" coords="621,348,799,389"/>
-<area shape="rect" id="node14" href="classModel_1_1Networkproblem_1_1Power_1_1PVnode.html" title="Model::Networkproblem\l::Power::PVnode" alt="" coords="621,413,799,455"/>
-<area shape="rect" id="node15" href="classModel_1_1Networkproblem_1_1Power_1_1Vphinode.html" title="Model::Networkproblem\l::Power::Vphinode" alt="" coords="621,479,799,520"/>
+<area shape="rect" id="node2" href="classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="191,151,309,178"/>
+<area shape="rect" id="node10" href="classNetwork_1_1Node.html" title="Network::Node" alt="" coords="191,290,309,317"/>
+<area shape="rect" id="node3" href="classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html" title="Model::Networkproblem\l::Gas::Pipe" alt="" coords="361,5,540,47"/>
+<area shape="rect" id="node4" href="classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent.html" title="Model::Networkproblem\l::Gas::Shortcomponent" alt="" coords="361,71,540,112"/>
+<area shape="rect" id="node8" href="classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1Gaspowerconnection.html" title="an edge connecting a gasnode to a powernode and modelling a gaspower plant/power&#45;to&#45;gas plant..." alt="" coords="361,137,540,193"/>
+<area shape="rect" id="node9" href="classModel_1_1Networkproblem_1_1Power_1_1Transmissionline.html" title="Model::Networkproblem\l::Power::Transmissionline" alt="" coords="357,217,544,259"/>
+<area shape="rect" id="node5" href="classModel_1_1Networkproblem_1_1Gas_1_1Controlvalve.html" title="Model::Networkproblem\l::Gas::Controlvalve" alt="" coords="600,29,779,71"/>
+<area shape="rect" id="node6" href="classModel_1_1Networkproblem_1_1Gas_1_1Shortpipe.html" title="Model::Networkproblem\l::Gas::Shortpipe" alt="" coords="600,95,779,136"/>
+<area shape="rect" id="node7" href="classModel_1_1Networkproblem_1_1Gas_1_1Compressorstation.html" title="Model::Networkproblem\l::Gas::Compressorstation" alt="" coords="835,95,1021,136"/>
+<area shape="rect" id="node11" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasnode.html" title="Model::Networkproblem\l::Gas::Gasnode" alt="" coords="361,283,540,324"/>
+<area shape="rect" id="node16" href="classModel_1_1Networkproblem_1_1Power_1_1Powernode.html" title="Model::Networkproblem\l::Power::Powernode" alt="" coords="361,461,540,503"/>
+<area shape="rect" id="node12" href="classModel_1_1Networkproblem_1_1Gas_1_1Flowboundarynode.html" title="Model::Networkproblem\l::Gas::Flowboundarynode" alt="" coords="596,217,783,259"/>
+<area shape="rect" id="node15" href="classModel_1_1Networkproblem_1_1Gas_1_1Innode.html" title="Model::Networkproblem\l::Gas::Innode" alt="" coords="600,283,779,324"/>
+<area shape="rect" id="node13" href="classModel_1_1Networkproblem_1_1Gas_1_1Sink.html" title="Model::Networkproblem\l::Gas::Sink" alt="" coords="839,185,1017,227"/>
+<area shape="rect" id="node14" href="classModel_1_1Networkproblem_1_1Gas_1_1Source.html" title="Model::Networkproblem\l::Gas::Source" alt="" coords="839,251,1017,292"/>
+<area shape="rect" id="node17" href="classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1ExternalPowerplant.html" title="A Powernode to be connected to an edge that leads out of the power network. " alt="" coords="600,349,779,405"/>
+<area shape="rect" id="node18" href="classModel_1_1Networkproblem_1_1Power_1_1PQnode.html" title="Model::Networkproblem\l::Power::PQnode" alt="" coords="600,429,779,471"/>
+<area shape="rect" id="node19" href="classModel_1_1Networkproblem_1_1Power_1_1PVnode.html" title="Model::Networkproblem\l::Power::PVnode" alt="" coords="600,495,779,536"/>
+<area shape="rect" id="node20" href="classModel_1_1Networkproblem_1_1Power_1_1StochasticPQnode.html" title="Model::Networkproblem\l::Power::StochasticPQnode" alt="" coords="592,560,787,601"/>
+<area shape="rect" id="node21" href="classModel_1_1Networkproblem_1_1Power_1_1Vphinode.html" title="Model::Networkproblem\l::Power::Vphinode" alt="" coords="600,625,779,667"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
@@ -125,26 +135,27 @@ Collaboration diagram for Network::Idobject:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a5b18e70ec73b9efa261c2568de0904b3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Idobject.html#a5b18e70ec73b9efa261c2568de0904b3">Idobject</a> (std::string const &amp;_id)</td></tr>
 <tr class="separator:a5b18e70ec73b9efa261c2568de0904b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6467602eaab8b64c02c4b2ca429e2204"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Idobject.html#a6467602eaab8b64c02c4b2ca429e2204">~Idobject</a> ()</td></tr>
-<tr class="separator:a6467602eaab8b64c02c4b2ca429e2204"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ab88c86e4f63380e0af473f78aa10f9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Idobject.html#a3ab88c86e4f63380e0af473f78aa10f9">display</a> () const</td></tr>
-<tr class="separator:a3ab88c86e4f63380e0af473f78aa10f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8307f1ede9c14826b393daf531c3a99d"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Idobject.html#a8307f1ede9c14826b393daf531c3a99d">get_id</a> () const</td></tr>
-<tr class="memdesc:a8307f1ede9c14826b393daf531c3a99d"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function returns the id of the object.  <a href="#a8307f1ede9c14826b393daf531c3a99d">More...</a><br /></td></tr>
-<tr class="separator:a8307f1ede9c14826b393daf531c3a99d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19a67ff832707bedf05a5d5f567c519c"><td class="memItemLeft" align="right" valign="top">std::string const  &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Idobject.html#a19a67ff832707bedf05a5d5f567c519c">get_id</a> () const</td></tr>
+<tr class="memdesc:a19a67ff832707bedf05a5d5f567c519c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Getter for a const reference to the id.  <a href="#a19a67ff832707bedf05a5d5f567c519c">More...</a><br /></td></tr>
+<tr class="separator:a19a67ff832707bedf05a5d5f567c519c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaacb499dd168c6a36f63fbe512df5f95"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Idobject.html#aaacb499dd168c6a36f63fbe512df5f95">get_id_copy</a> () const</td></tr>
+<tr class="memdesc:aaacb499dd168c6a36f63fbe512df5f95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Getter for a copy of the id.  <a href="#aaacb499dd168c6a36f63fbe512df5f95">More...</a><br /></td></tr>
+<tr class="separator:aaacb499dd168c6a36f63fbe512df5f95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
-Protected Member Functions</h2></td></tr>
-<tr class="memitem:a080329392cd90c186df35d1afe6681dd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Idobject.html#a080329392cd90c186df35d1afe6681dd">print_id</a> () const</td></tr>
-<tr class="separator:a080329392cd90c186df35d1afe6681dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a877c79a6e8039ce592142b762b05aa45"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Idobject.html#a877c79a6e8039ce592142b762b05aa45">get_schema</a> ()</td></tr>
+<tr class="separator:a877c79a6e8039ce592142b762b05aa45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a88305984c187b70983e931a795c180a3"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Idobject.html#a88305984c187b70983e931a795c180a3">idptr</a></td></tr>
-<tr class="memdesc:a88305984c187b70983e931a795c180a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">A unique id for the node.  <a href="#a88305984c187b70983e931a795c180a3">More...</a><br /></td></tr>
-<tr class="separator:a88305984c187b70983e931a795c180a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a407bd727fd57f9007496fca516b564ef"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; std::string const  &gt; const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Idobject.html#a407bd727fd57f9007496fca516b564ef">idptr</a></td></tr>
+<tr class="memdesc:a407bd727fd57f9007496fca516b564ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">pointer to the actual string holding the id.  <a href="#a407bd727fd57f9007496fca516b564ef">More...</a><br /></td></tr>
+<tr class="separator:a407bd727fd57f9007496fca516b564ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Provides a unified "name" to inheriting classes. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a5b18e70ec73b9efa261c2568de0904b3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5b18e70ec73b9efa261c2568de0904b3">&#9670;&nbsp;</a></span>Idobject()</h2>
 
@@ -163,8 +174,47 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a6467602eaab8b64c02c4b2ca429e2204"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6467602eaab8b64c02c4b2ca429e2204">&#9670;&nbsp;</a></span>~Idobject()</h2>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a19a67ff832707bedf05a5d5f567c519c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a19a67ff832707bedf05a5d5f567c519c">&#9670;&nbsp;</a></span>get_id()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string const  &amp; Network::Idobject::get_id </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Getter for a const reference to the id. </p>
+
+</div>
+</div>
+<a id="aaacb499dd168c6a36f63fbe512df5f95"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaacb499dd168c6a36f63fbe512df5f95">&#9670;&nbsp;</a></span>get_id_copy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string Network::Idobject::get_id_copy </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Getter for a copy of the id. </p>
+
+</div>
+</div>
+<a id="a877c79a6e8039ce592142b762b05aa45"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a877c79a6e8039ce592142b762b05aa45">&#9670;&nbsp;</a></span>get_schema()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -173,7 +223,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual Network::Idobject::~Idobject </td>
+          <td class="memname"><a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> Network::Idobject::get_schema </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -181,79 +231,7 @@ Private Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a id="a3ab88c86e4f63380e0af473f78aa10f9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3ab88c86e4f63380e0af473f78aa10f9">&#9670;&nbsp;</a></span>display()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Network::Idobject::display </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Reimplemented in <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Flowboundarynode.html#ac5c8295d8c42d796fe813953e32ac760">Model::Networkproblem::Gas::Flowboundarynode</a>, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html#a55267c15e7de426dd54ed7fa70f1a14c">Model::Networkproblem::Gas::Pipe</a>, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Pressureboundarynode.html#a1a329b179738a7996ee16f7c2d38bf71">Model::Networkproblem::Gas::Pressureboundarynode</a>, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Innode.html#aaef77be6e938862757af55fc49b28c79">Model::Networkproblem::Gas::Innode</a>, <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1PQnode.html#a0bea73908220d11683ee13b76390eec9">Model::Networkproblem::Power::PQnode</a>, <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1PVnode.html#a2bdf618ddfb2d5a10b1f914a3f40c49b">Model::Networkproblem::Power::PVnode</a>, <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1Vphinode.html#ae52f02c50597e6fb0fcf5b1dfd189077">Model::Networkproblem::Power::Vphinode</a>, and <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1Transmissionline.html#aadf877c35e40884f485a98cc0d56ee3f">Model::Networkproblem::Power::Transmissionline</a>.</p>
-
-</div>
-</div>
-<a id="a8307f1ede9c14826b393daf531c3a99d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8307f1ede9c14826b393daf531c3a99d">&#9670;&nbsp;</a></span>get_id()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string Network::Idobject::get_id </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>This function returns the id of the object. </p>
-
-</div>
-</div>
-<a id="a080329392cd90c186df35d1afe6681dd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a080329392cd90c186df35d1afe6681dd">&#9670;&nbsp;</a></span>print_id()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Network::Idobject::print_id </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -261,8 +239,8 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a88305984c187b70983e931a795c180a3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a88305984c187b70983e931a795c180a3">&#9670;&nbsp;</a></span>idptr</h2>
+<a id="a407bd727fd57f9007496fca516b564ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a407bd727fd57f9007496fca516b564ef">&#9670;&nbsp;</a></span>idptr</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -271,7 +249,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::unique_ptr&lt;std::string&gt; Network::Idobject::idptr</td>
+          <td class="memname">std::unique_ptr&lt;std::string const&gt; const Network::Idobject::idptr</td>
         </tr>
       </table>
   </td>
@@ -281,13 +259,14 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>A unique id for the node. </p>
+<p>pointer to the actual string holding the id. </p>
+<p>This is a unique pointer instead of the string itself to save space on the stack. The price for dereferencing is acceptable because the id is used only during construction of a network and during writing out the data to the output files. </p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>Model/Network/include/<a class="el" href="Idobject_8hpp_source.html">Idobject.hpp</a></li>
-<li>Model/Network/<a class="el" href="Idobject_8cpp.html">Idobject.cpp</a></li>
+<li>src/Model/Network/include/<a class="el" href="Idobject_8hpp_source.html">Idobject.hpp</a></li>
+<li>src/Model/Network/<a class="el" href="Idobject_8cpp.html">Idobject.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

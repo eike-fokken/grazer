@@ -29,6 +29,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Grazer
+   &#160;<span id="projectnumber">0.0.1</span>
    </div>
   </td>
  </tr>
@@ -81,7 +82,8 @@ $(document).ready(function(){initNavTree('namespaceModel.html','');});
 <div class="header">
   <div class="summary">
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#nested-classes">Classes</a>  </div>
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">Model Namespace Reference</div>  </div>
 </div><!--header-->
@@ -90,6 +92,8 @@ $(document).ready(function(){initNavTree('namespaceModel.html','');});
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespaceModel_1_1Balancelaw"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceModel_1_1Balancelaw.html">Balancelaw</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespaceModel_1_1Componentfactory"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceModel_1_1Componentfactory.html">Componentfactory</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespaceModel_1_1Networkproblem"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceModel_1_1Networkproblem.html">Networkproblem</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -102,10 +106,68 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Subproblem.html">Subproblem</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structModel_1_1Timedata.html">Timedata</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Timeevolver.html">Timeevolver</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ada7262ff932b02c83dc2219eafd34fe6"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classModel_1_1Subproblem.html">Subproblem</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceModel.html#ada7262ff932b02c83dc2219eafd34fe6">build_subproblem</a> (std::string subproblem_type, <a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> &amp;subproblem_json)</td></tr>
+<tr class="separator:ada7262ff932b02c83dc2219eafd34fe6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b5c357a7f7c7446375cbe3e37ae31fe"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classModel_1_1Subproblem.html">Subproblem</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceModel.html#a1b5c357a7f7c7446375cbe3e37ae31fe">build_networkproblem</a> (<a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> &amp;subproblem_json)</td></tr>
+<tr class="separator:a1b5c357a7f7c7446375cbe3e37ae31fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This namespace holds all data for setting up model equations and for taking derivatives thereof. </p>
-</div></div><!-- contents -->
+</div><h2 class="groupheader">Function Documentation</h2>
+<a id="a1b5c357a7f7c7446375cbe3e37ae31fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b5c357a7f7c7446375cbe3e37ae31fe">&#9670;&nbsp;</a></span>build_networkproblem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt; <a class="el" href="classModel_1_1Subproblem.html">Subproblem</a> &gt; Model::build_networkproblem </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> &amp;&#160;</td>
+          <td class="paramname"><em>subproblem_json</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ada7262ff932b02c83dc2219eafd34fe6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada7262ff932b02c83dc2219eafd34fe6">&#9670;&nbsp;</a></span>build_subproblem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt; <a class="el" href="classModel_1_1Subproblem.html">Subproblem</a> &gt; Model::build_subproblem </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>subproblem_type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> &amp;&#160;</td>
+          <td class="paramname"><em>subproblem_json</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

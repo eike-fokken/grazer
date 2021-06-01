@@ -29,6 +29,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Grazer
+   &#160;<span id="projectnumber">0.0.1</span>
    </div>
   </td>
  </tr>
@@ -80,9 +81,12 @@ $(document).ready(function(){initNavTree('classModel_1_1Networkproblem_1_1Gas_1_
 
 <div class="header">
   <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classModel_1_1Networkproblem_1_1Gas_1_1Controlvalve-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">Model::Networkproblem::Gas::Controlvalve Class Reference</div>  </div>
+<div class="title">Model::Networkproblem::Gas::Controlvalve Class Reference<span class="mlabels"><span class="mlabel">final</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -92,8 +96,12 @@ Inheritance diagram for Model::Networkproblem::Gas::Controlvalve:</div>
 <div class="dyncontent">
 <div class="center"><img src="classModel_1_1Networkproblem_1_1Gas_1_1Controlvalve__inherit__graph.png" border="0" usemap="#Model_1_1Networkproblem_1_1Gas_1_1Controlvalve_inherit__map" alt="Inheritance graph"/></div>
 <map name="Model_1_1Networkproblem_1_1Gas_1_1Controlvalve_inherit__map" id="Model_1_1Networkproblem_1_1Gas_1_1Controlvalve_inherit__map">
-<area shape="rect" id="node2" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html" title="This class is a base class for all Gas edges with a 2x2 balance law. " alt="" coords="5,95,184,136"/>
-<area shape="rect" id="node3" href="classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="5,5,184,47"/>
+<area shape="rect" id="node2" href="classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent.html" title="Model::Networkproblem\l::Gas::Shortcomponent" alt="" coords="75,273,254,315"/>
+<area shape="rect" id="node3" href="classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="21,191,138,218"/>
+<area shape="rect" id="node4" href="classNetwork_1_1Idobject.html" title="Provides a unified &quot;name&quot; to inheriting classes. " alt="" coords="5,102,143,129"/>
+<area shape="rect" id="node5" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html" title="This class is a base class for all Gas edges with a 2x2 balance law. " alt="" coords="165,184,343,225"/>
+<area shape="rect" id="node6" href="classModel_1_1Networkproblem_1_1Statecomponent.html" title="Model::Networkproblem\l::Statecomponent" alt="" coords="167,95,346,136"/>
+<area shape="rect" id="node7" href="classModel_1_1Networkproblem_1_1Equationcomponent.html" title="A base class for network components that supply model equations to be solved. " alt="" coords="167,5,346,47"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
@@ -101,13 +109,76 @@ Collaboration diagram for Model::Networkproblem::Gas::Controlvalve:</div>
 <div class="dyncontent">
 <div class="center"><img src="classModel_1_1Networkproblem_1_1Gas_1_1Controlvalve__coll__graph.png" border="0" usemap="#Model_1_1Networkproblem_1_1Gas_1_1Controlvalve_coll__map" alt="Collaboration graph"/></div>
 <map name="Model_1_1Networkproblem_1_1Gas_1_1Controlvalve_coll__map" id="Model_1_1Networkproblem_1_1Gas_1_1Controlvalve_coll__map">
-<area shape="rect" id="node2" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html" title="This class is a base class for all Gas edges with a 2x2 balance law. " alt="" coords="157,200,336,241"/>
-<area shape="rect" id="node3" href="classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="157,109,336,151"/>
+<area shape="rect" id="node2" href="classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent.html" title="Model::Networkproblem\l::Gas::Shortcomponent" alt="" coords="1224,175,1403,217"/>
+<area shape="rect" id="node3" href="classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="963,76,1080,103"/>
+<area shape="rect" id="node4" href="classNetwork_1_1Idobject.html" title="Provides a unified &quot;name&quot; to inheriting classes. " alt="" coords="725,35,862,61"/>
+<area shape="rect" id="node8" href="classNetwork_1_1Node.html" title="Network::Node" alt="" coords="2191,59,2309,85"/>
+<area shape="rect" id="node6" title="STL class. " alt="" coords="193,35,280,61"/>
+<area shape="rect" id="node7" title="STL class. " alt="" coords="5,27,144,69"/>
+<area shape="rect" id="node10" href="structNetwork_1_1Node_1_1Edgecollection.html" title="Network::Node::Edgecollection" alt="" coords="1552,120,1775,147"/>
+<area shape="rect" id="node12" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html" title="This class is a base class for all Gas edges with a 2x2 balance law. " alt="" coords="932,175,1111,217"/>
+<area shape="rect" id="node13" href="classModel_1_1Networkproblem_1_1Statecomponent.html" title="Model::Networkproblem\l::Statecomponent" alt="" coords="704,175,883,217"/>
+<area shape="rect" id="node14" href="classModel_1_1Networkproblem_1_1Equationcomponent.html" title="A base class for network components that supply model equations to be solved. " alt="" coords="351,146,529,187"/>
+<area shape="rect" id="node16" href="classModel_1_1Networkproblem_1_1Control.html" title="Model::Networkproblem\l::Control\&lt; 1 \&gt;" alt="" coords="1224,241,1403,282"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a3b661afd5a9983ec5e09259f35ad0320"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Controlvalve.html#a3b661afd5a9983ec5e09259f35ad0320">get_gas_type</a> () const override</td></tr>
+<tr class="separator:a3b661afd5a9983ec5e09259f35ad0320"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaafb0d6ddfdab8b05c56a5025b7a657e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Controlvalve.html#aaafb0d6ddfdab8b05c56a5025b7a657e">Controlvalve</a> (<a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> const &amp;edge_json, std::vector&lt; std::unique_ptr&lt; <a class="el" href="classNetwork_1_1Node.html">Network::Node</a> &gt;&gt; &amp;nodes)</td></tr>
+<tr class="separator:aaafb0d6ddfdab8b05c56a5025b7a657e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2862dbdd164720ecb1146fec4b84907"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Controlvalve.html#ac2862dbdd164720ecb1146fec4b84907">evaluate</a> (Eigen::Ref&lt; Eigen::VectorXd &gt; rootvalues, double last_time, double new_time, Eigen::Ref&lt; Eigen::VectorXd const &gt; last_state, Eigen::Ref&lt; Eigen::VectorXd const &gt; new_state) const override</td></tr>
+<tr class="memdesc:ac2862dbdd164720ecb1146fec4b84907"><td class="mdescLeft">&#160;</td><td class="mdescRight">evaluates the model equations into rootvalues.  <a href="#ac2862dbdd164720ecb1146fec4b84907">More...</a><br /></td></tr>
+<tr class="separator:ac2862dbdd164720ecb1146fec4b84907"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2d789860ddb5b10f7e1b178035af536"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Controlvalve.html#ae2d789860ddb5b10f7e1b178035af536">evaluate_state_derivative</a> (<a class="el" href="classAux_1_1Matrixhandler.html">Aux::Matrixhandler</a> *jacobianhandler, double last_time, double new_time, Eigen::Ref&lt; Eigen::VectorXd const &gt;, Eigen::Ref&lt; Eigen::VectorXd const &gt; new_state) const override</td></tr>
+<tr class="memdesc:ae2d789860ddb5b10f7e1b178035af536"><td class="mdescLeft">&#160;</td><td class="mdescRight">derivative of <a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a83ffe05ddb6c5bb38b2f932aabb5ac0d" title="evaluates the model equations into rootvalues. ">Equationcomponent::evaluate</a>.  <a href="#ae2d789860ddb5b10f7e1b178035af536">More...</a><br /></td></tr>
+<tr class="separator:ae2d789860ddb5b10f7e1b178035af536"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87c503fe6cc0de88f5f98d1580652471"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Controlvalve.html#a87c503fe6cc0de88f5f98d1580652471">set_initial_values</a> (Eigen::Ref&lt; Eigen::VectorXd &gt; new_state, <a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> const &amp;initial_json) override</td></tr>
+<tr class="memdesc:a87c503fe6cc0de88f5f98d1580652471"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fills the indices owned by this component with initial values from a json.  <a href="#a87c503fe6cc0de88f5f98d1580652471">More...</a><br /></td></tr>
+<tr class="separator:a87c503fe6cc0de88f5f98d1580652471"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a3c6c9661b79623c95cc83b8e4cbca0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Controlvalve.html#a0a3c6c9661b79623c95cc83b8e4cbca0">print_to_files</a> (<a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> &amp;new_output) final</td></tr>
+<tr class="separator:a0a3c6c9661b79623c95cc83b8e4cbca0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent.html">Model::Networkproblem::Gas::Shortcomponent</a></td></tr>
+<tr class="memitem:a8b3aac9c1da279c2f8891097fb00b6dd inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent.html#a8b3aac9c1da279c2f8891097fb00b6dd">get_number_of_states</a> () const final</td></tr>
+<tr class="memdesc:a8b3aac9c1da279c2f8891097fb00b6dd inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns number of state variables needed by this component.  <a href="classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent.html#a8b3aac9c1da279c2f8891097fb00b6dd">More...</a><br /></td></tr>
+<tr class="separator:a8b3aac9c1da279c2f8891097fb00b6dd inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a5413c946a14558413747d96438499e inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent.html#a1a5413c946a14558413747d96438499e">setup</a> () override</td></tr>
+<tr class="memdesc:a1a5413c946a14558413747d96438499e inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent"><td class="mdescLeft">&#160;</td><td class="mdescRight">Utility for setup of things that cannot be done during construction.  <a href="classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent.html#a1a5413c946a14558413747d96438499e">More...</a><br /></td></tr>
+<tr class="separator:a1a5413c946a14558413747d96438499e inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada50495d58c400bc219da3ff0d21b04d inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent.html#ada50495d58c400bc219da3ff0d21b04d">new_print_helper</a> (<a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> &amp;new_output, std::string const &amp;component_type, std::string const &amp;type)</td></tr>
+<tr class="separator:ada50495d58c400bc219da3ff0d21b04d inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac463688150e19c4a0105475814a0f7a7 inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent.html#ac463688150e19c4a0105475814a0f7a7">json_save</a> (double, Eigen::Ref&lt; Eigen::VectorXd const &gt;) override</td></tr>
+<tr class="memdesc:ac463688150e19c4a0105475814a0f7a7 inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores computed values in an output json.  <a href="classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent.html#ac463688150e19c4a0105475814a0f7a7">More...</a><br /></td></tr>
+<tr class="separator:ac463688150e19c4a0105475814a0f7a7 inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a639958550dc2414014186850e60b46d9 inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent.html#a639958550dc2414014186850e60b46d9">initial_values_helper</a> (Eigen::Ref&lt; Eigen::VectorXd &gt; new_state, <a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> const &amp;initial_json)</td></tr>
+<tr class="separator:a639958550dc2414014186850e60b46d9 inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a3a7d03f2eded16b4395e2ec77e8f8e inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent"><td class="memItemLeft" align="right" valign="top">Eigen::Vector2d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent.html#a6a3a7d03f2eded16b4395e2ec77e8f8e">get_boundary_p_qvol_bar</a> (int direction, Eigen::Ref&lt; Eigen::VectorXd const &gt; state) const final</td></tr>
+<tr class="separator:a6a3a7d03f2eded16b4395e2ec77e8f8e inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71bdf5c0fd0b1288d5348e2755ff3d9f inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent.html#a71bdf5c0fd0b1288d5348e2755ff3d9f">dboundary_p_qvol_dstate</a> (int direction, <a class="el" href="classAux_1_1Matrixhandler.html">Aux::Matrixhandler</a> *jacobianhandler, Eigen::RowVector2d function_derivative, int rootvalues_index, Eigen::Ref&lt; Eigen::VectorXd const &gt; state) const final</td></tr>
+<tr class="separator:a71bdf5c0fd0b1288d5348e2755ff3d9f inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classNetwork_1_1Edge"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classNetwork_1_1Edge')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classNetwork_1_1Edge.html">Network::Edge</a></td></tr>
+<tr class="memitem:a851558f5eef5d95c5b68d28faf774c56 inherit pub_methods_classNetwork_1_1Edge"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Edge.html#a851558f5eef5d95c5b68d28faf774c56">Edge</a> ()=delete</td></tr>
+<tr class="separator:a851558f5eef5d95c5b68d28faf774c56 inherit pub_methods_classNetwork_1_1Edge"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ecdaf59781a81a18822540272b82128 inherit pub_methods_classNetwork_1_1Edge"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Edge.html#a8ecdaf59781a81a18822540272b82128">Edge</a> (<a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> const &amp;edge_json, std::vector&lt; std::unique_ptr&lt; <a class="el" href="classNetwork_1_1Node.html">Node</a> &gt;&gt; &amp;nodes)</td></tr>
+<tr class="memdesc:a8ecdaf59781a81a18822540272b82128 inherit pub_methods_classNetwork_1_1Edge"><td class="mdescLeft">&#160;</td><td class="mdescRight">Builds an edge from an appropriate json AND registers it in the start and end nodes.  <a href="classNetwork_1_1Edge.html#a8ecdaf59781a81a18822540272b82128">More...</a><br /></td></tr>
+<tr class="separator:a8ecdaf59781a81a18822540272b82128 inherit pub_methods_classNetwork_1_1Edge"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a8e295c9695a6f17bf1aec36f6c0d2f inherit pub_methods_classNetwork_1_1Edge"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Edge.html#a3a8e295c9695a6f17bf1aec36f6c0d2f">~Edge</a> ()</td></tr>
+<tr class="separator:a3a8e295c9695a6f17bf1aec36f6c0d2f inherit pub_methods_classNetwork_1_1Edge"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a335f29a0e9fe4a3a6ef699e7205db9b0 inherit pub_methods_classNetwork_1_1Edge"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classNetwork_1_1Node.html">Node</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Edge.html#a335f29a0e9fe4a3a6ef699e7205db9b0">get_starting_node</a> () const</td></tr>
+<tr class="separator:a335f29a0e9fe4a3a6ef699e7205db9b0 inherit pub_methods_classNetwork_1_1Edge"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac36edf15b78f6b8510b449ae5a7ddfc2 inherit pub_methods_classNetwork_1_1Edge"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classNetwork_1_1Node.html">Node</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Edge.html#ac36edf15b78f6b8510b449ae5a7ddfc2">get_ending_node</a> () const</td></tr>
+<tr class="separator:ac36edf15b78f6b8510b449ae5a7ddfc2 inherit pub_methods_classNetwork_1_1Edge"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classNetwork_1_1Idobject"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classNetwork_1_1Idobject')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classNetwork_1_1Idobject.html">Network::Idobject</a></td></tr>
+<tr class="memitem:a5b18e70ec73b9efa261c2568de0904b3 inherit pub_methods_classNetwork_1_1Idobject"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Idobject.html#a5b18e70ec73b9efa261c2568de0904b3">Idobject</a> (std::string const &amp;_id)</td></tr>
+<tr class="separator:a5b18e70ec73b9efa261c2568de0904b3 inherit pub_methods_classNetwork_1_1Idobject"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19a67ff832707bedf05a5d5f567c519c inherit pub_methods_classNetwork_1_1Idobject"><td class="memItemLeft" align="right" valign="top">std::string const  &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Idobject.html#a19a67ff832707bedf05a5d5f567c519c">get_id</a> () const</td></tr>
+<tr class="memdesc:a19a67ff832707bedf05a5d5f567c519c inherit pub_methods_classNetwork_1_1Idobject"><td class="mdescLeft">&#160;</td><td class="mdescRight">Getter for a const reference to the id.  <a href="classNetwork_1_1Idobject.html#a19a67ff832707bedf05a5d5f567c519c">More...</a><br /></td></tr>
+<tr class="separator:a19a67ff832707bedf05a5d5f567c519c inherit pub_methods_classNetwork_1_1Idobject"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaacb499dd168c6a36f63fbe512df5f95 inherit pub_methods_classNetwork_1_1Idobject"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Idobject.html#aaacb499dd168c6a36f63fbe512df5f95">get_id_copy</a> () const</td></tr>
+<tr class="memdesc:aaacb499dd168c6a36f63fbe512df5f95 inherit pub_methods_classNetwork_1_1Idobject"><td class="mdescLeft">&#160;</td><td class="mdescRight">Getter for a copy of the id.  <a href="classNetwork_1_1Idobject.html#aaacb499dd168c6a36f63fbe512df5f95">More...</a><br /></td></tr>
+<tr class="separator:aaacb499dd168c6a36f63fbe512df5f95 inherit pub_methods_classNetwork_1_1Idobject"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Gasedge"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Gasedge')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html">Model::Networkproblem::Gas::Gasedge</a></td></tr>
 <tr class="memitem:ae2518b107beb690ef6953917ca47a11b inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Gasedge"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#ae2518b107beb690ef6953917ca47a11b">give_away_boundary_index</a> (int direction) const</td></tr>
 <tr class="separator:ae2518b107beb690ef6953917ca47a11b inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Gasedge"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -117,53 +188,412 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a16c67ef467ea10ee18bae6b7bbb3436b inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Gasedge"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a45ac17ec102f2e28dfb985cbe334b07e inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Gasedge"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#a45ac17ec102f2e28dfb985cbe334b07e">get_equation_after_index</a> () const</td></tr>
 <tr class="separator:a45ac17ec102f2e28dfb985cbe334b07e inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Gasedge"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af72ff992f29605abf0ee286416acf28b inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Gasedge"><td class="memItemLeft" align="right" valign="top">Eigen::Vector2d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#af72ff992f29605abf0ee286416acf28b">get_boundary_state</a> (int direction, Eigen::Ref&lt; Eigen::VectorXd const &gt; const &amp;state) const</td></tr>
-<tr class="memdesc:af72ff992f29605abf0ee286416acf28b inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Gasedge"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the boundary.  <a href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#af72ff992f29605abf0ee286416acf28b">More...</a><br /></td></tr>
-<tr class="separator:af72ff992f29605abf0ee286416acf28b inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Gasedge"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a21561e613fcde86dff4699c51f55779c inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Gasedge"><td class="memItemLeft" align="right" valign="top">virtual Eigen::Vector2d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#a21561e613fcde86dff4699c51f55779c">get_boundary_p_qvol_bar</a> (int direction, Eigen::Ref&lt; Eigen::VectorXd const &gt; const &amp;state) const =0</td></tr>
-<tr class="separator:a21561e613fcde86dff4699c51f55779c inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Gasedge"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03e07a716fc64f93c5f99e560243677f inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Gasedge"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#a03e07a716fc64f93c5f99e560243677f">dboundary_p_qvol_dstate</a> (int direction, <a class="el" href="classAux_1_1Matrixhandler.html">Aux::Matrixhandler</a> *jacobianhandler, Eigen::RowVector2d function_derivative, int rootvalues_index, Eigen::Ref&lt; Eigen::VectorXd const &gt; const &amp;state) const =0</td></tr>
-<tr class="memdesc:a03e07a716fc64f93c5f99e560243677f inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Gasedge"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the derivatives with respect to the boundary states.  <a href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#a03e07a716fc64f93c5f99e560243677f">More...</a><br /></td></tr>
-<tr class="separator:a03e07a716fc64f93c5f99e560243677f inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Gasedge"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a165117109b13b33dc29fa40bcd4438fa inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Gasedge"><td class="memItemLeft" align="right" valign="top">Eigen::Vector2d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#a165117109b13b33dc29fa40bcd4438fa">get_boundary_state</a> (int direction, Eigen::Ref&lt; Eigen::VectorXd const &gt; state) const</td></tr>
+<tr class="memdesc:a165117109b13b33dc29fa40bcd4438fa inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Gasedge"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the boundary.  <a href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#a165117109b13b33dc29fa40bcd4438fa">More...</a><br /></td></tr>
+<tr class="separator:a165117109b13b33dc29fa40bcd4438fa inherit pub_methods_classModel_1_1Networkproblem_1_1Gas_1_1Gasedge"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classModel_1_1Networkproblem_1_1Statecomponent"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classModel_1_1Networkproblem_1_1Statecomponent')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classModel_1_1Networkproblem_1_1Statecomponent.html">Model::Networkproblem::Statecomponent</a></td></tr>
+<tr class="memitem:a9637ec02fa326223d5296411c3685d8b inherit pub_methods_classModel_1_1Networkproblem_1_1Statecomponent"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Statecomponent.html#a9637ec02fa326223d5296411c3685d8b">set_indices</a> (int const next_free_index)</td></tr>
+<tr class="memdesc:a9637ec02fa326223d5296411c3685d8b inherit pub_methods_classModel_1_1Networkproblem_1_1Statecomponent"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function sets the indices <a class="el" href="classModel_1_1Networkproblem_1_1Statecomponent.html#afc0e23f8a398c69ca6710954aae6aadb" title="The first index, this Equationcomponent &quot;owns&quot;. ">start_state_index</a> and <a class="el" href="classModel_1_1Networkproblem_1_1Statecomponent.html#a03cc274681d0db7e874e10a6fead24e8" title="The first index after start_state_index, that is not &quot;owned&quot; by this Equationcomponent. ">after_state_index</a> AND calls <a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a77daec171b90d20e19d29d79860327af" title="Utility for setup of things that cannot be done during construction. ">setup()</a>  <a href="classModel_1_1Networkproblem_1_1Statecomponent.html#a9637ec02fa326223d5296411c3685d8b">More...</a><br /></td></tr>
+<tr class="separator:a9637ec02fa326223d5296411c3685d8b inherit pub_methods_classModel_1_1Networkproblem_1_1Statecomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24f714d89cc8070d3d5d63f9d20b1275 inherit pub_methods_classModel_1_1Networkproblem_1_1Statecomponent"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Statecomponent.html#a24f714d89cc8070d3d5d63f9d20b1275">get_start_state_index</a> () const</td></tr>
+<tr class="memdesc:a24f714d89cc8070d3d5d63f9d20b1275 inherit pub_methods_classModel_1_1Networkproblem_1_1Statecomponent"><td class="mdescLeft">&#160;</td><td class="mdescRight">getter for <a class="el" href="classModel_1_1Networkproblem_1_1Statecomponent.html#afc0e23f8a398c69ca6710954aae6aadb" title="The first index, this Equationcomponent &quot;owns&quot;. ">start_state_index</a>  <a href="classModel_1_1Networkproblem_1_1Statecomponent.html#a24f714d89cc8070d3d5d63f9d20b1275">More...</a><br /></td></tr>
+<tr class="separator:a24f714d89cc8070d3d5d63f9d20b1275 inherit pub_methods_classModel_1_1Networkproblem_1_1Statecomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9734c6f20f0cfe0f28e51bf11c058bb2 inherit pub_methods_classModel_1_1Networkproblem_1_1Statecomponent"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Statecomponent.html#a9734c6f20f0cfe0f28e51bf11c058bb2">get_after_state_index</a> () const</td></tr>
+<tr class="memdesc:a9734c6f20f0cfe0f28e51bf11c058bb2 inherit pub_methods_classModel_1_1Networkproblem_1_1Statecomponent"><td class="mdescLeft">&#160;</td><td class="mdescRight">getter for <a class="el" href="classModel_1_1Networkproblem_1_1Statecomponent.html#a03cc274681d0db7e874e10a6fead24e8" title="The first index after start_state_index, that is not &quot;owned&quot; by this Equationcomponent. ">after_state_index</a>  <a href="classModel_1_1Networkproblem_1_1Statecomponent.html#a9734c6f20f0cfe0f28e51bf11c058bb2">More...</a><br /></td></tr>
+<tr class="separator:a9734c6f20f0cfe0f28e51bf11c058bb2 inherit pub_methods_classModel_1_1Networkproblem_1_1Statecomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html">Model::Networkproblem::Equationcomponent</a></td></tr>
 <tr class="memitem:aa8de6b44fb16de2004c6ccb06e0c1965 inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#aa8de6b44fb16de2004c6ccb06e0c1965">~Equationcomponent</a> ()</td></tr>
 <tr class="separator:aa8de6b44fb16de2004c6ccb06e0c1965 inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5ead5e0af889e4ac22b56f63da4b7021 inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a5ead5e0af889e4ac22b56f63da4b7021">evaluate</a> (Eigen::Ref&lt; Eigen::VectorXd &gt; rootvalues, double last_time, double new_time, Eigen::Ref&lt; Eigen::VectorXd const &gt; const &amp;last_state, Eigen::Ref&lt; Eigen::VectorXd const &gt; const &amp;new_state) const =0</td></tr>
-<tr class="separator:a5ead5e0af889e4ac22b56f63da4b7021 inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d0b04d2c831195f8c3be021986a3825 inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a4d0b04d2c831195f8c3be021986a3825">evaluate_state_derivative</a> (<a class="el" href="classAux_1_1Matrixhandler.html">Aux::Matrixhandler</a> *jacobianhandler, double last_time, double new_time, Eigen::Ref&lt; Eigen::VectorXd const &gt; const &amp;, Eigen::Ref&lt; Eigen::VectorXd const &gt; const &amp;new_state) const =0</td></tr>
-<tr class="separator:a4d0b04d2c831195f8c3be021986a3825 inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98e9b7cd3aff9e8622695f2e3cce09d7 inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a98e9b7cd3aff9e8622695f2e3cce09d7">get_number_of_states</a> () const =0</td></tr>
-<tr class="separator:a98e9b7cd3aff9e8622695f2e3cce09d7 inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77daec171b90d20e19d29d79860327af inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a77daec171b90d20e19d29d79860327af">setup</a> ()</td></tr>
-<tr class="separator:a77daec171b90d20e19d29d79860327af inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5e74388a1cb83e10cfa1b1712b1151e1 inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a5e74388a1cb83e10cfa1b1712b1151e1">set_indices</a> (int const next_free_index)</td></tr>
-<tr class="separator:a5e74388a1cb83e10cfa1b1712b1151e1 inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaeb71a664222ff59a8e502a9a9b24e6c inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#aaeb71a664222ff59a8e502a9a9b24e6c">get_start_state_index</a> () const</td></tr>
-<tr class="separator:aaeb71a664222ff59a8e502a9a9b24e6c inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a50c205c2304c8b3debecf1f5f2e16ade inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a50c205c2304c8b3debecf1f5f2e16ade">get_after_state_index</a> () const</td></tr>
-<tr class="separator:a50c205c2304c8b3debecf1f5f2e16ade inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3496282bb20e2c4d65c590c7443ede76 inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a3496282bb20e2c4d65c590c7443ede76">print_out_files</a> ()</td></tr>
-<tr class="separator:a3496282bb20e2c4d65c590c7443ede76 inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af4334579ffa9741d26dcad356e1bf68d inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#af4334579ffa9741d26dcad356e1bf68d">print_to_files</a> (std::filesystem::path const &amp;output_directory)=0</td></tr>
-<tr class="separator:af4334579ffa9741d26dcad356e1bf68d inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0e18e885fb44fb9c7440975c7e91b83e inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a0e18e885fb44fb9c7440975c7e91b83e">save_values</a> (double time, Eigen::Ref&lt; Eigen::VectorXd const &gt; const &amp;state)=0</td></tr>
-<tr class="separator:a0e18e885fb44fb9c7440975c7e91b83e inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a59cc710f2b89c8e889a8677868ea6a3a inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a59cc710f2b89c8e889a8677868ea6a3a">set_initial_values</a> (Eigen::Ref&lt; Eigen::VectorXd &gt;new_state, nlohmann::ordered_json initial_json)=0</td></tr>
-<tr class="separator:a59cc710f2b89c8e889a8677868ea6a3a inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pro_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classModel_1_1Networkproblem_1_1Equationcomponent')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html">Model::Networkproblem::Equationcomponent</a></td></tr>
-<tr class="memitem:a5ad1d689e0793bc6102815d78c57f481 inherit pro_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a5ad1d689e0793bc6102815d78c57f481">push_to_values</a> (double t, std::vector&lt; std::map&lt; double, double &gt;&gt;)</td></tr>
-<tr class="separator:a5ad1d689e0793bc6102815d78c57f481 inherit pro_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad19b783d696e2a2de7e1743d1b6e86b7 inherit pro_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#ad19b783d696e2a2de7e1743d1b6e86b7">print_indices</a> () const</td></tr>
-<tr class="separator:ad19b783d696e2a2de7e1743d1b6e86b7 inherit pro_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8babbd8863c72a5e65941a85e1c5b8c9 inherit pro_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a8babbd8863c72a5e65941a85e1c5b8c9">write_to_files</a> ()</td></tr>
-<tr class="separator:a8babbd8863c72a5e65941a85e1c5b8c9 inherit pro_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a564b04fe938828caaac39db30c0fda8c inherit pro_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt; const  &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a564b04fe938828caaac39db30c0fda8c">get_times</a> () const</td></tr>
-<tr class="separator:a564b04fe938828caaac39db30c0fda8c inherit pro_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4871e8f45a9de8c5aaab0532831e5226 inherit pro_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; std::map&lt; double, double &gt; &gt; &gt; const  &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a4871e8f45a9de8c5aaab0532831e5226">get_values</a> () const</td></tr>
-<tr class="separator:a4871e8f45a9de8c5aaab0532831e5226 inherit pro_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3f65e72b92ddfa535a664e2e1c67ccf inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#ad3f65e72b92ddfa535a664e2e1c67ccf">prepare_timestep</a> (double last_time, double new_time, Eigen::Ref&lt; Eigen::VectorXd const &gt; last_state, Eigen::Ref&lt; Eigen::VectorXd const &gt; new_state)</td></tr>
+<tr class="memdesc:ad3f65e72b92ddfa535a664e2e1c67ccf inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="mdescLeft">&#160;</td><td class="mdescRight">Carries out steps that need to be taken before the Newton method for a time step can start.  <a href="classModel_1_1Networkproblem_1_1Equationcomponent.html#ad3f65e72b92ddfa535a664e2e1c67ccf">More...</a><br /></td></tr>
+<tr class="separator:ad3f65e72b92ddfa535a664e2e1c67ccf inherit pub_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a22f00d0d9050c34c44a4cd002f6cc05b"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Controlvalve.html#a22f00d0d9050c34c44a4cd002f6cc05b">get_type</a> ()</td></tr>
+<tr class="separator:a22f00d0d9050c34c44a4cd002f6cc05b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e8f783836024200402b35b7eb95bc5f"><td class="memItemLeft" align="right" valign="top">static std::optional&lt; <a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Controlvalve.html#a5e8f783836024200402b35b7eb95bc5f">get_control_schema</a> ()</td></tr>
+<tr class="separator:a5e8f783836024200402b35b7eb95bc5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_static_methods_classNetwork_1_1Edge"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classNetwork_1_1Edge')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classNetwork_1_1Edge.html">Network::Edge</a></td></tr>
+<tr class="memitem:a661c7a088dfc165eb9b86cf6bc2c3f1a inherit pub_static_methods_classNetwork_1_1Edge"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Edge.html#a661c7a088dfc165eb9b86cf6bc2c3f1a">get_type</a> ()</td></tr>
+<tr class="separator:a661c7a088dfc165eb9b86cf6bc2c3f1a inherit pub_static_methods_classNetwork_1_1Edge"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b4bf87bee27d5a1047d0c5d3e7c99bf inherit pub_static_methods_classNetwork_1_1Edge"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Edge.html#a7b4bf87bee27d5a1047d0c5d3e7c99bf">get_schema</a> ()</td></tr>
+<tr class="separator:a7b4bf87bee27d5a1047d0c5d3e7c99bf inherit pub_static_methods_classNetwork_1_1Edge"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_static_methods_classNetwork_1_1Idobject"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classNetwork_1_1Idobject')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classNetwork_1_1Idobject.html">Network::Idobject</a></td></tr>
+<tr class="memitem:a877c79a6e8039ce592142b762b05aa45 inherit pub_static_methods_classNetwork_1_1Idobject"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Idobject.html#a877c79a6e8039ce592142b762b05aa45">get_schema</a> ()</td></tr>
+<tr class="separator:a877c79a6e8039ce592142b762b05aa45 inherit pub_static_methods_classNetwork_1_1Idobject"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_static_methods_classModel_1_1Networkproblem_1_1Gas_1_1Gasedge"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classModel_1_1Networkproblem_1_1Gas_1_1Gasedge')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html">Model::Networkproblem::Gas::Gasedge</a></td></tr>
+<tr class="memitem:afea0c3dac65851a38467d40fc76321a6 inherit pub_static_methods_classModel_1_1Networkproblem_1_1Gas_1_1Gasedge"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#afea0c3dac65851a38467d40fc76321a6">init_vals_per_interpol_point</a> ()</td></tr>
+<tr class="separator:afea0c3dac65851a38467d40fc76321a6 inherit pub_static_methods_classModel_1_1Networkproblem_1_1Gas_1_1Gasedge"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30e0e3191826c8d706541cbfbe7ba011 inherit pub_static_methods_classModel_1_1Networkproblem_1_1Gas_1_1Gasedge"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#a30e0e3191826c8d706541cbfbe7ba011">get_initial_schema</a> ()</td></tr>
+<tr class="separator:a30e0e3191826c8d706541cbfbe7ba011 inherit pub_static_methods_classModel_1_1Networkproblem_1_1Gas_1_1Gasedge"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_static_methods_classModel_1_1Networkproblem_1_1Statecomponent"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classModel_1_1Networkproblem_1_1Statecomponent')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classModel_1_1Networkproblem_1_1Statecomponent.html">Model::Networkproblem::Statecomponent</a></td></tr>
+<tr class="memitem:abe38a320b9d37ec65ab9383c90254b8e inherit pub_static_methods_classModel_1_1Networkproblem_1_1Statecomponent"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Statecomponent.html#abe38a320b9d37ec65ab9383c90254b8e">get_initial_schema</a> ()</td></tr>
+<tr class="separator:abe38a320b9d37ec65ab9383c90254b8e inherit pub_static_methods_classModel_1_1Networkproblem_1_1Statecomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_static_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classModel_1_1Networkproblem_1_1Equationcomponent')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html">Model::Networkproblem::Equationcomponent</a></td></tr>
+<tr class="memitem:ab2abbee664bac81e8da50e2090358762 inherit pub_static_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memItemLeft" align="right" valign="top">static std::optional&lt; <a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#ab2abbee664bac81e8da50e2090358762">get_boundary_schema</a> ()</td></tr>
+<tr class="separator:ab2abbee664bac81e8da50e2090358762 inherit pub_static_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a558e014b11d80ab26b3e3c00256ee253 inherit pub_static_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memItemLeft" align="right" valign="top">static std::optional&lt; <a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a558e014b11d80ab26b3e3c00256ee253">get_control_schema</a> ()</td></tr>
+<tr class="separator:a558e014b11d80ab26b3e3c00256ee253 inherit pub_static_methods_classModel_1_1Networkproblem_1_1Equationcomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:aa4d0baa145c814fa1c8481a855f00ade"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classModel_1_1Networkproblem_1_1Control.html">Control</a>&lt; 1 &gt; const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Controlvalve.html#aa4d0baa145c814fa1c8481a855f00ade">control_values</a></td></tr>
+<tr class="separator:aa4d0baa145c814fa1c8481a855f00ade"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pro_methods_classModel_1_1Networkproblem_1_1Statecomponent"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classModel_1_1Networkproblem_1_1Statecomponent')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classModel_1_1Networkproblem_1_1Statecomponent.html">Model::Networkproblem::Statecomponent</a></td></tr>
+<tr class="memitem:a695acc9eda0e5e7825683d57cea900aa inherit pro_methods_classModel_1_1Networkproblem_1_1Statecomponent"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Statecomponent.html#a695acc9eda0e5e7825683d57cea900aa">setup_output_json_helper</a> (std::string const &amp;id)</td></tr>
+<tr class="separator:a695acc9eda0e5e7825683d57cea900aa inherit pro_methods_classModel_1_1Networkproblem_1_1Statecomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a709b73508a2451fc179689c6fa730bde inherit pro_methods_classModel_1_1Networkproblem_1_1Statecomponent"><td class="memItemLeft" align="right" valign="top"><a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Statecomponent.html#a709b73508a2451fc179689c6fa730bde">get_output_json_ref</a> ()</td></tr>
+<tr class="separator:a709b73508a2451fc179689c6fa730bde inherit pro_methods_classModel_1_1Networkproblem_1_1Statecomponent"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this class was generated from the following file:<ul>
-<li>Model/Networkproblem/Gas/include/<a class="el" href="Controlvalve_8hpp_source.html">Controlvalve.hpp</a></li>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="aaafb0d6ddfdab8b05c56a5025b7a657e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaafb0d6ddfdab8b05c56a5025b7a657e">&#9670;&nbsp;</a></span>Controlvalve()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Model::Networkproblem::Gas::Controlvalve::Controlvalve </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> const &amp;&#160;</td>
+          <td class="paramname"><em>edge_json</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; std::unique_ptr&lt; <a class="el" href="classNetwork_1_1Node.html">Network::Node</a> &gt;&gt; &amp;&#160;</td>
+          <td class="paramname"><em>nodes</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="ac2862dbdd164720ecb1146fec4b84907"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac2862dbdd164720ecb1146fec4b84907">&#9670;&nbsp;</a></span>evaluate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Model::Networkproblem::Gas::Controlvalve::evaluate </td>
+          <td>(</td>
+          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd &gt;&#160;</td>
+          <td class="paramname"><em>rootvalues</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>last_time</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>new_time</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt;&#160;</td>
+          <td class="paramname"><em>last_state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt;&#160;</td>
+          <td class="paramname"><em>new_state</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>evaluates the model equations into rootvalues. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">rootvalues</td><td>Results of the model equations, when evaluated on the other parameters. </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">last_time</td><td>time point of the last time step. Usually important for PDEs </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">new_time</td><td>time point of the current time step. </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">last_state</td><td>value of the state at last time step. </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">new_state</td><td>value of the state at current time step. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a83ffe05ddb6c5bb38b2f932aabb5ac0d">Model::Networkproblem::Equationcomponent</a>.</p>
+
+</div>
+</div>
+<a id="ae2d789860ddb5b10f7e1b178035af536"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae2d789860ddb5b10f7e1b178035af536">&#9670;&nbsp;</a></span>evaluate_state_derivative()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Model::Networkproblem::Gas::Controlvalve::evaluate_state_derivative </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classAux_1_1Matrixhandler.html">Aux::Matrixhandler</a> *&#160;</td>
+          <td class="paramname"><em>jacobianhandler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>last_time</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>new_time</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt;&#160;</td>
+          <td class="paramname"><em>new_state</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>derivative of <a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a83ffe05ddb6c5bb38b2f932aabb5ac0d" title="evaluates the model equations into rootvalues. ">Equationcomponent::evaluate</a>. </p>
+<p>evaluates the derivative of <a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a83ffe05ddb6c5bb38b2f932aabb5ac0d" title="evaluates the model equations into rootvalues. ">Equationcomponent::evaluate</a> and hands the result to jacobianhandler, which will fill the Jacobi matrix. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">jacobianhandler</td><td>A helper object, that fills a sparse matrix in an efficient way. </td></tr>
+    <tr><td class="paramname">last_time</td><td>time point of the last time step. Usually important for PDEs </td></tr>
+    <tr><td class="paramname">new_time</td><td>time point of the current time step. </td></tr>
+    <tr><td class="paramname">last_state</td><td>value of the state at last time step. </td></tr>
+    <tr><td class="paramname">new_state</td><td>value of the state at current time step. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#ae02c914c2aa328883252f7c907a545e2">Model::Networkproblem::Equationcomponent</a>.</p>
+
+</div>
+</div>
+<a id="a5e8f783836024200402b35b7eb95bc5f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e8f783836024200402b35b7eb95bc5f">&#9670;&nbsp;</a></span>get_control_schema()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt; <a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> &gt; Model::Networkproblem::Gas::Controlvalve::get_control_schema </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3b661afd5a9983ec5e09259f35ad0320"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3b661afd5a9983ec5e09259f35ad0320">&#9670;&nbsp;</a></span>get_gas_type()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string Model::Networkproblem::Gas::Controlvalve::get_gas_type </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#ade6df934d8974a9d7fb516095dc6f0af">Model::Networkproblem::Gas::Gasedge</a>.</p>
+
+</div>
+</div>
+<a id="a22f00d0d9050c34c44a4cd002f6cc05b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22f00d0d9050c34c44a4cd002f6cc05b">&#9670;&nbsp;</a></span>get_type()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string Model::Networkproblem::Gas::Controlvalve::get_type </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0a3c6c9661b79623c95cc83b8e4cbca0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a3c6c9661b79623c95cc83b8e4cbca0">&#9670;&nbsp;</a></span>print_to_files()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Model::Networkproblem::Gas::Controlvalve::print_to_files </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> &amp;&#160;</td>
+          <td class="paramname"><em>new_output</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">final</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classModel_1_1Networkproblem_1_1Statecomponent.html#a28fec071ce8832914bf10b2a530c94eb">Model::Networkproblem::Statecomponent</a>.</p>
+
+</div>
+</div>
+<a id="a87c503fe6cc0de88f5f98d1580652471"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87c503fe6cc0de88f5f98d1580652471">&#9670;&nbsp;</a></span>set_initial_values()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Model::Networkproblem::Gas::Controlvalve::set_initial_values </td>
+          <td>(</td>
+          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd &gt;&#160;</td>
+          <td class="paramname"><em>new_state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> const &amp;&#160;</td>
+          <td class="paramname"><em>initial_json</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Fills the indices owned by this component with initial values from a json. </p>
+<p>Relies on the exact format of the json.</p><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd>{ Document the intial json format. } </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">new_state</td><td>state vector, who shall contain the initial values. </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">initial_json</td><td>Json object that contains the initial values. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classModel_1_1Networkproblem_1_1Statecomponent.html#a2c51253d26789a6d4a36feb494b96de8">Model::Networkproblem::Statecomponent</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="aa4d0baa145c814fa1c8481a855f00ade"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa4d0baa145c814fa1c8481a855f00ade">&#9670;&nbsp;</a></span>control_values</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classModel_1_1Networkproblem_1_1Control.html">Control</a>&lt;1&gt; const Model::Networkproblem::Gas::Controlvalve::control_values</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following files:<ul>
+<li>src/Model/Networkproblem/Gas/include/<a class="el" href="Controlvalve_8hpp_source.html">Controlvalve.hpp</a></li>
+<li>src/Model/Networkproblem/Gas/<a class="el" href="Controlvalve_8cpp.html">Controlvalve.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

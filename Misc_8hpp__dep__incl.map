@@ -1,4 +1,5 @@
-<map id="Auxillary/Misc/include/Misc.hpp" name="Auxillary/Misc/include/Misc.hpp">
-<area shape="rect" id="node2" href="$Misc_8cpp.html" title="Auxillary/Misc/Misc.cpp" alt="" coords="5,102,179,129"/>
-<area shape="rect" id="node3" href="$Gaspowerconnection_8cpp.html" title="Model/Networkproblem\l/Gas/Gaspowerconnection.cpp" alt="" coords="203,95,421,136"/>
+<map id="src/Auxillary/Misc/include/Misc.hpp" name="src/Auxillary/Misc/include/Misc.hpp">
+<area shape="rect" id="node2" href="$Misc_8cpp.html" title="src/Auxillary/Misc\l/Misc.cpp" alt="" coords="5,95,141,136"/>
+<area shape="rect" id="node3" href="$Gaspowerconnection_8cpp.html" title="src/Model/Networkproblem\l/Gaspowerconnection/Gaspowerconnection.cpp" alt="" coords="166,95,495,136"/>
+<area shape="rect" id="node4" href="$stringify__value__json_8cpp.html" title="helper_functions/stringify\l_value_json.cpp" alt="" coords="519,95,707,136"/>
 </map>

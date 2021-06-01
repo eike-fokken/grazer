@@ -1,9 +1,5 @@
-<map id="Model/Problemlayer/include/Problem.hpp" name="Model/Problemlayer/include/Problem.hpp">
-<area shape="rect" id="node2" href="$Printguard_8hpp.html" title="Auxillary/Printguard\l/include/Printguard.hpp" alt="" coords="39,95,211,136"/>
-<area shape="rect" id="node4" href="$grazer_8cpp.html" title="Grazer/grazer.cpp" alt="" coords="181,191,317,218"/>
-<area shape="rect" id="node5" href="$grazer_8hpp.html" title="Grazer/include/grazer.hpp" alt="" coords="287,102,475,129"/>
-<area shape="rect" id="node6" href="$Jsonreader_8cpp.html" title="Jsonreader/Jsonreader.cpp" alt="" coords="499,102,689,129"/>
-<area shape="rect" id="node7" href="$Problem_8cpp.html" title="Model/Problemlayer\l/Problem.cpp" alt="" coords="714,95,866,136"/>
-<area shape="rect" id="node8" href="$Newtonsolver_8cpp.html" title="Newtonsolver/Newtonsolver.cpp" alt="" coords="890,102,1122,129"/>
-<area shape="rect" id="node3" href="$Printguard_8cpp.html" title="Auxillary/Printguard\l/Printguard.cpp" alt="" coords="5,184,156,225"/>
+<map id="src/Model/Problemlayer/include/Problem.hpp" name="src/Model/Problemlayer/include/Problem.hpp">
+<area shape="rect" id="node2" href="$commands_8cpp.html" title="src/Grazer/commands.cpp" alt="" coords="5,102,196,129"/>
+<area shape="rect" id="node3" href="$Problem_8cpp.html" title="src/Model/Problemlayer\l/Problem.cpp" alt="" coords="220,95,395,136"/>
+<area shape="rect" id="node4" href="$Timeevolver_8cpp.html" title="src/Model/Problemlayer\l/Timeevolver.cpp" alt="" coords="419,95,593,136"/>
 </map>

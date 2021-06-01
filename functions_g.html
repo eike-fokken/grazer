@@ -29,6 +29,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Grazer
+   &#160;<span id="projectnumber">0.0.1</span>
    </div>
   </td>
  </tr>
@@ -87,16 +88,26 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 , <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1Transmissionline.html#a5e06115066db524cf67398dfe2ccbbc9">Model::Networkproblem::Power::Transmissionline</a>
 </li>
 <li>gas2power_q_coefficient
-: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gaspowerconnection.html#a7347be50c9ed3d8eb7e76bc5749fbbd4">Model::Networkproblem::Gas::Gaspowerconnection</a>
+: <a class="el" href="classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1Gaspowerconnection.html#a0f7f45f9d46c5ead0536115d67c0147f">Model::Networkproblem::Gaspowerconnection::Gaspowerconnection</a>
+</li>
+<li>Gas_factory()
+: <a class="el" href="structModel_1_1Componentfactory_1_1Gas__factory.html#a5cc1ba8208b51a2b7481002b041a7d09">Model::Componentfactory::Gas_factory</a>
 </li>
 <li>Gaspowerconnection()
-: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gaspowerconnection.html#a6f93735f24948f354a52f549e1532aad">Model::Networkproblem::Gas::Gaspowerconnection</a>
+: <a class="el" href="classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1Gaspowerconnection.html#a489f5b4913ab214c7a2db6eeaab54bbd">Model::Networkproblem::Gaspowerconnection::Gaspowerconnection</a>
+</li>
+<li>generate()
+: <a class="el" href="classrandutils_1_1random__generator.html#ae061f844df411efc2ebfe6c3bbc6f206">randutils::random_generator&lt; RandomEngine, DefaultSeedSeq &gt;</a>
+, <a class="el" href="structrandutils_1_1seed__seq__fe.html#ae58680e1f287045e63010b0dda42e104">randutils::seed_seq_fe&lt; count, IntRep, mix_rounds &gt;</a>
 </li>
 <li>generated_power()
-: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gaspowerconnection.html#a48f020afd22167f797e37bd009016812">Model::Networkproblem::Gas::Gaspowerconnection</a>
+: <a class="el" href="classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1Gaspowerconnection.html#a42f131319348062e96ad00c4d601a059">Model::Networkproblem::Gaspowerconnection::Gaspowerconnection</a>
+</li>
+<li>generator
+: <a class="el" href="classAux_1_1Normaldistribution.html#ac2d88c957b71fc1ece80452834d9260f">Aux::Normaldistribution</a>
 </li>
 <li>get_after_state_index()
-: <a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a50c205c2304c8b3debecf1f5f2e16ade">Model::Networkproblem::Equationcomponent</a>
+: <a class="el" href="classModel_1_1Networkproblem_1_1Statecomponent.html#a9734c6f20f0cfe0f28e51bf11c058bb2">Model::Networkproblem::Statecomponent</a>
 , <a class="el" href="classModel_1_1Subproblem.html#a93e95cd003af0b6b30b6aab56a1ef7ff">Model::Subproblem</a>
 </li>
 <li>get_B()
@@ -104,16 +115,48 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 , <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1Transmissionline.html#a52ee71b92c7bf5b34373fe41cdcaf466">Model::Networkproblem::Power::Transmissionline</a>
 </li>
 <li>get_boundary_p_qvol_bar()
-: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#a21561e613fcde86dff4699c51f55779c">Model::Networkproblem::Gas::Gasedge</a>
-, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gaspowerconnection.html#a2dcaf33781e3612316c9b78380e608ce">Model::Networkproblem::Gas::Gaspowerconnection</a>
-, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html#aba4dfa4e4d55e152f6191b9c2cbf087a">Model::Networkproblem::Gas::Pipe</a>
-, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Shortpipe.html#aa0e86351c94946a0f9f04a84b627f9aa">Model::Networkproblem::Gas::Shortpipe</a>
+: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#a8574cf5e4325f2c769456ab16190fec5">Model::Networkproblem::Gas::Gasedge</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html#a8f2f58aecc7d8500b569288f9123e0dc">Model::Networkproblem::Gas::Pipe</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent.html#a6a3a7d03f2eded16b4395e2ec77e8f8e">Model::Networkproblem::Gas::Shortcomponent</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1Gaspowerconnection.html#a56116d2000d56aa756467c4284467211">Model::Networkproblem::Gaspowerconnection::Gaspowerconnection</a>
+</li>
+<li>get_boundary_schema()
+: <a class="el" href="structModel_1_1Componentfactory_1_1AbstractComponentType.html#aa9fff050e1d831f8aae95b092d8faf88">Model::Componentfactory::AbstractComponentType</a>
+, <a class="el" href="structModel_1_1Componentfactory_1_1Componentfactory.html#af3cc2a0f4e90b6f72ae2b989c65df885">Model::Componentfactory::Componentfactory</a>
+, <a class="el" href="structModel_1_1Componentfactory_1_1EdgeType.html#a751e780549aecb713e37974e846c3b9b">Model::Componentfactory::EdgeType&lt; ConcreteEdge &gt;</a>
+, <a class="el" href="structModel_1_1Componentfactory_1_1NodeType.html#a1562d5ae652b6137b55c34771a71e976">Model::Componentfactory::NodeType&lt; ConcreteNode &gt;</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#ab2abbee664bac81e8da50e2090358762">Model::Networkproblem::Equationcomponent</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Flowboundarynode.html#a5ab2b620e0cc4b65bb43a3247c695540">Model::Networkproblem::Gas::Flowboundarynode</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1Gaspowerconnection.html#a55541e477b5afa697597024d23777832">Model::Networkproblem::Gaspowerconnection::Gaspowerconnection</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1Powernode.html#a77163a0a74b34ae5fb6655871a380291">Model::Networkproblem::Power::Powernode</a>
 </li>
 <li>get_boundary_state()
-: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#af72ff992f29605abf0ee286416acf28b">Model::Networkproblem::Gas::Gasedge</a>
+: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#a165117109b13b33dc29fa40bcd4438fa">Model::Networkproblem::Gas::Gasedge</a>
 </li>
 <li>get_boundary_state_index()
 : <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#ab80d7c010154283d1d80c564ad49bda8">Model::Networkproblem::Gas::Gasedge</a>
+</li>
+<li>get_coefficients()
+: <a class="el" href="classModel_1_1Balancelaw_1_1Isothermaleulerequation.html#a8241fe656702aaf366f6ac34e0cd04a2">Model::Balancelaw::Isothermaleulerequation</a>
+</li>
+<li>get_control_schema()
+: <a class="el" href="structModel_1_1Componentfactory_1_1AbstractComponentType.html#ab0e195375cbf53370e3b98217d336097">Model::Componentfactory::AbstractComponentType</a>
+, <a class="el" href="structModel_1_1Componentfactory_1_1Componentfactory.html#a1248afb64ecf1c20935253d6879bdd2e">Model::Componentfactory::Componentfactory</a>
+, <a class="el" href="structModel_1_1Componentfactory_1_1EdgeType.html#aafa68db976afba5edb972bb4b6d012ca">Model::Componentfactory::EdgeType&lt; ConcreteEdge &gt;</a>
+, <a class="el" href="structModel_1_1Componentfactory_1_1NodeType.html#af570b877caed34ec36654081a1be4936">Model::Componentfactory::NodeType&lt; ConcreteNode &gt;</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a558e014b11d80ab26b3e3c00256ee253">Model::Networkproblem::Equationcomponent</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Compressorstation.html#a280dec6d55121358b984bf05f8fdcd5b">Model::Networkproblem::Gas::Compressorstation</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Controlvalve.html#a5e8f783836024200402b35b7eb95bc5f">Model::Networkproblem::Gas::Controlvalve</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1Gaspowerconnection.html#a1f772f0c188afdd0449f0baaa3102c60">Model::Networkproblem::Gaspowerconnection::Gaspowerconnection</a>
+</li>
+<li>get_current_P()
+: <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1StochasticPQnode.html#adaab9e9e8e6c73082f175812f217d13e">Model::Networkproblem::Power::StochasticPQnode</a>
+</li>
+<li>get_current_Q()
+: <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1StochasticPQnode.html#a675c285cab3d16b9d06fd09454bcd18a">Model::Networkproblem::Power::StochasticPQnode</a>
+</li>
+<li>get_delta_t()
+: <a class="el" href="structModel_1_1Timedata.html#adb554705583e807f39d23ce936d3376f">Model::Timedata</a>
 </li>
 <li>get_edge_by_id()
 : <a class="el" href="classNetwork_1_1Net.html#ac849dd43b08af983cd205d75d4450ca6">Network::Net</a>
@@ -125,7 +168,7 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 : <a class="el" href="classNetwork_1_1Net.html#a0ba0cc3301c61be5f51b1b53cda41feb">Network::Net</a>
 </li>
 <li>get_ending_edges()
-: <a class="el" href="classNetwork_1_1Node.html#a816a57c44e7bffa3e0d11d7824ac9098">Network::Node</a>
+: <a class="el" href="classNetwork_1_1Node.html#aed1e585aa3b6637553c1f93ba28eaaaa">Network::Node</a>
 </li>
 <li>get_ending_node()
 : <a class="el" href="classNetwork_1_1Edge.html#ac36edf15b78f6b8510b449ae5a7ddfc2">Network::Edge</a>
@@ -134,10 +177,13 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 : <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1Transmissionline.html#af06d658bb2d67c2f0b7fa933f3a2a385">Model::Networkproblem::Power::Transmissionline</a>
 </li>
 <li>get_ending_state()
-: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#ab0c7942c73cd20a4dddd98699fef80c7">Model::Networkproblem::Gas::Gasedge</a>
+: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#aa218fb169423024423417c88067bab2d">Model::Networkproblem::Gas::Gasedge</a>
 </li>
 <li>get_ending_state_index()
 : <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#a2389e68856f5b5ab996135e934ecaa99">Model::Networkproblem::Gas::Gasedge</a>
+</li>
+<li>get_endtime()
+: <a class="el" href="structModel_1_1Timedata.html#a0f8ecbad2234a0aef8a5dfb05894b0ed">Model::Timedata</a>
 </li>
 <li>get_equation_after_index()
 : <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#a45ac17ec102f2e28dfb985cbe334b07e">Model::Networkproblem::Gas::Gasedge</a>
@@ -149,36 +195,103 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 : <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1Powernode.html#aaef49bcc0f7f2757505f5a02595fce58">Model::Networkproblem::Power::Powernode</a>
 , <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1Transmissionline.html#a2f5590be816cffd9ac221dc0e273aed3">Model::Networkproblem::Power::Transmissionline</a>
 </li>
+<li>get_gas_type()
+: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Compressorstation.html#a28df46599ab4fed44631fc2e78b032ac">Model::Networkproblem::Gas::Compressorstation</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Controlvalve.html#a3b661afd5a9983ec5e09259f35ad0320">Model::Networkproblem::Gas::Controlvalve</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#ade6df934d8974a9d7fb516095dc6f0af">Model::Networkproblem::Gas::Gasedge</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html#a174cca48871cea1cfe62b43eaa4e5e0c">Model::Networkproblem::Gas::Pipe</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Shortpipe.html#ac18259ad7044c1739d19cb31f0c8d243">Model::Networkproblem::Gas::Shortpipe</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1Gaspowerconnection.html#a60f17b69cc045c3d28226f67de6088f4">Model::Networkproblem::Gaspowerconnection::Gaspowerconnection</a>
+</li>
 <li>get_id()
-: <a class="el" href="classNetwork_1_1Idobject.html#a8307f1ede9c14826b393daf531c3a99d">Network::Idobject</a>
+: <a class="el" href="classNetwork_1_1Idobject.html#a19a67ff832707bedf05a5d5f567c519c">Network::Idobject</a>
+</li>
+<li>get_id_copy()
+: <a class="el" href="classNetwork_1_1Idobject.html#aaacb499dd168c6a36f63fbe512df5f95">Network::Idobject</a>
+</li>
+<li>get_initial_schema()
+: <a class="el" href="structModel_1_1Componentfactory_1_1AbstractComponentType.html#ad4d7a7c20506ef1b37a2b1fea080b982">Model::Componentfactory::AbstractComponentType</a>
+, <a class="el" href="structModel_1_1Componentfactory_1_1Componentfactory.html#abe029e345a42921d19b18615c15d317a">Model::Componentfactory::Componentfactory</a>
+, <a class="el" href="structModel_1_1Componentfactory_1_1EdgeType.html#a1a0f0fc39ec5ce449aab701bf1e90d7f">Model::Componentfactory::EdgeType&lt; ConcreteEdge &gt;</a>
+, <a class="el" href="structModel_1_1Componentfactory_1_1NodeType.html#aadfe296c451885bafdd22fb3a4a26dca">Model::Componentfactory::NodeType&lt; ConcreteNode &gt;</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#a30e0e3191826c8d706541cbfbe7ba011">Model::Networkproblem::Gas::Gasedge</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html#a5e5d310fabe51242cd23f73c05041f4d">Model::Networkproblem::Gas::Pipe</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1Gaspowerconnection.html#ae6a43fe9be5e1ea8489c10da8088646e">Model::Networkproblem::Gaspowerconnection::Gaspowerconnection</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1Powernode.html#a1cf6536847e6853e339151110783c356">Model::Networkproblem::Power::Powernode</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Statecomponent.html#abe38a320b9d37ec65ab9383c90254b8e">Model::Networkproblem::Statecomponent</a>
+</li>
+<li>get_length()
+: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html#a473ffeb2eb6b97c9f53d78fd598bb071">Model::Networkproblem::Gas::Pipe</a>
+</li>
+<li>get_name()
+: <a class="el" href="structModel_1_1Componentfactory_1_1AbstractComponentType.html#a063f33bf971a3a66478423329f4cfe44">Model::Componentfactory::AbstractComponentType</a>
+, <a class="el" href="structModel_1_1Componentfactory_1_1EdgeType.html#a77a2ddb125268242006bde974521e12c">Model::Componentfactory::EdgeType&lt; ConcreteEdge &gt;</a>
+, <a class="el" href="structModel_1_1Componentfactory_1_1NodeType.html#ace7ad22685c0b1c43e944d0425be38a2">Model::Componentfactory::NodeType&lt; ConcreteNode &gt;</a>
+</li>
+<li>get_network()
+: <a class="el" href="classModel_1_1Networkproblem_1_1Networkproblem.html#af9d1ea3f52eff56a65ea26f48eaa080c">Model::Networkproblem::Networkproblem</a>
 </li>
 <li>get_node_by_id()
 : <a class="el" href="classNetwork_1_1Net.html#ad63d8f0b926fa6480187c873a4da5fbf">Network::Net</a>
+</li>
+<li>get_node_from_json()
+: <a class="el" href="classNetwork_1_1Edge.html#a4a278e5186cba13311b012414e62055e">Network::Edge</a>
 </li>
 <li>get_nodes()
 : <a class="el" href="classNetwork_1_1Net.html#a2891149e27578ea9ab6aa1f8a43970f4">Network::Net</a>
 </li>
 <li>get_number_non_zeros_jacobian()
-: <a class="el" href="classSolver_1_1Newtonsolver__temp.html#a68ab3c023842e8818773ee19c898bc3f">Solver::Newtonsolver_temp&lt; Problemtype &gt;</a>
+: <a class="el" href="classSolver_1_1Newtonsolver.html#acf68f4022b9af4fd5a84ef1791e5c942">Solver::Newtonsolver&lt; Problemtype &gt;</a>
 </li>
 <li>get_number_of_states()
-: <a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a98e9b7cd3aff9e8622695f2e3cce09d7">Model::Networkproblem::Equationcomponent</a>
-, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasnode.html#acf3a9bfb07235f3ae0501786f2f3ccf2">Model::Networkproblem::Gas::Gasnode</a>
-, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gaspowerconnection.html#acb50ffe4cf1070720616703e7a66cada">Model::Networkproblem::Gas::Gaspowerconnection</a>
-, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html#ace9ea1ede129f3a7e84f771f64296436">Model::Networkproblem::Gas::Pipe</a>
-, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Shortpipe.html#a6a33cfbacc9dd44c2ca1122efa16c270">Model::Networkproblem::Gas::Shortpipe</a>
+: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html#ace9ea1ede129f3a7e84f771f64296436">Model::Networkproblem::Gas::Pipe</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent.html#a8b3aac9c1da279c2f8891097fb00b6dd">Model::Networkproblem::Gas::Shortcomponent</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1Gaspowerconnection.html#abb9243e2811bd89479e9f43c4328d6b5">Model::Networkproblem::Gaspowerconnection::Gaspowerconnection</a>
 , <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1Powernode.html#af74d8d81197fad5567e409498e42f6dc">Model::Networkproblem::Power::Powernode</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Statecomponent.html#a219d9d3572da0f087f5d1acaf271e93b">Model::Networkproblem::Statecomponent</a>
 , <a class="el" href="classModel_1_1Subproblem.html#aca5b0a1cf166e78fa5a0ad518b79f804">Model::Subproblem</a>
+</li>
+<li>get_number_of_steps()
+: <a class="el" href="structModel_1_1Timedata.html#a0f47ee5449e150e7f36e11733b3cf158">Model::Timedata</a>
 </li>
 <li>get_output_directory()
 : <a class="el" href="classModel_1_1Problem.html#a47b5d33f72008c80402de829693aa8cf">Model::Problem</a>
 </li>
+<li>get_output_json_ref()
+: <a class="el" href="classModel_1_1Networkproblem_1_1Statecomponent.html#a709b73508a2451fc179689c6fa730bde">Model::Networkproblem::Statecomponent</a>
+</li>
+<li>get_power_type()
+: <a class="el" href="classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1ExternalPowerplant.html#a2f727482ba27edd837a3bad9e70b38ea">Model::Networkproblem::Gaspowerconnection::ExternalPowerplant</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1Powernode.html#a63976951ed512a1ed9900e2764737a38">Model::Networkproblem::Power::Powernode</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1PQnode.html#a2d95a4f7dc65925227c8c73a25bd9f50">Model::Networkproblem::Power::PQnode</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1PVnode.html#aee8624c3e8517c5b06f946fb40a45972">Model::Networkproblem::Power::PVnode</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1StochasticPQnode.html#ac025ee650bcd49543f3e6355803db4a7">Model::Networkproblem::Power::StochasticPQnode</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1Vphinode.html#ac18e40a13d27df0d5ad75db8e32aa0ab">Model::Networkproblem::Power::Vphinode</a>
+</li>
+<li>get_sample()
+: <a class="el" href="classAux_1_1Normaldistribution.html#a80c8aac1e48abe0f07e9e9f34b7a761a">Aux::Normaldistribution</a>
+, <a class="el" href="classAux_1_1Truncatednormaldist.html#a8f17b1b95fc7de805ad222cb35f088d6">Aux::Truncatednormaldist</a>
+</li>
+<li>get_schema()
+: <a class="el" href="classAux_1_1unit_1_1Measure.html#a966a3913bf44feeb52a1d47dae42e027">Aux::unit::Measure</a>
+, <a class="el" href="structModel_1_1Componentfactory_1_1AbstractComponentType.html#a80100e63b8c1e196f2c15f6bde6be6be">Model::Componentfactory::AbstractComponentType</a>
+, <a class="el" href="structModel_1_1Componentfactory_1_1EdgeType.html#a3309570e77488c8b541c3c5d6f48dbd4">Model::Componentfactory::EdgeType&lt; ConcreteEdge &gt;</a>
+, <a class="el" href="structModel_1_1Componentfactory_1_1NodeType.html#a47a60bdb62136bb03f279b4399113954">Model::Componentfactory::NodeType&lt; ConcreteNode &gt;</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html#a065241fc24d32ef4c1865ec2c3c288ee">Model::Networkproblem::Gas::Pipe</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1Gaspowerconnection.html#a38c23ce62ef7d1a27d5bdf304f4187a4">Model::Networkproblem::Gaspowerconnection::Gaspowerconnection</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1Powernode.html#ac48a8211b864e154c7b07514a3eb509f">Model::Networkproblem::Power::Powernode</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1StochasticPQnode.html#ace67567a4a6abf6edbdf4b3baeb3840d">Model::Networkproblem::Power::StochasticPQnode</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1Transmissionline.html#a020f420546bf85cbc6dc34d88155a2e9">Model::Networkproblem::Power::Transmissionline</a>
+, <a class="el" href="classModel_1_1Timeevolver.html#aecc515a3e72cf498e6ef16b7a798605f">Model::Timeevolver</a>
+, <a class="el" href="classNetwork_1_1Edge.html#a7b4bf87bee27d5a1047d0c5d3e7c99bf">Network::Edge</a>
+, <a class="el" href="classNetwork_1_1Idobject.html#a877c79a6e8039ce592142b762b05aa45">Network::Idobject</a>
+</li>
 <li>get_start_state_index()
-: <a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#aaeb71a664222ff59a8e502a9a9b24e6c">Model::Networkproblem::Equationcomponent</a>
+: <a class="el" href="classModel_1_1Networkproblem_1_1Statecomponent.html#a24f714d89cc8070d3d5d63f9d20b1275">Model::Networkproblem::Statecomponent</a>
 , <a class="el" href="classModel_1_1Subproblem.html#aa19dd338d49359f3fd2cf2202fb3495d">Model::Subproblem</a>
 </li>
 <li>get_starting_edges()
-: <a class="el" href="classNetwork_1_1Node.html#a73eea933473d20e0786df26d2de932de">Network::Node</a>
+: <a class="el" href="classNetwork_1_1Node.html#af987c6d3d1dc130648108f2ffd2a24a6">Network::Node</a>
 </li>
 <li>get_starting_node()
 : <a class="el" href="classNetwork_1_1Edge.html#a335f29a0e9fe4a3a6ef699e7205db9b0">Network::Edge</a>
@@ -187,22 +300,45 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 : <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1Transmissionline.html#aeb434e2894c6324b5240520635046713">Model::Networkproblem::Power::Transmissionline</a>
 </li>
 <li>get_starting_state()
-: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#a95897c64be51ef768709f6aaff10713c">Model::Networkproblem::Gas::Gasedge</a>
+: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#afde6ce811f4c0f435e0d996293fe9943">Model::Networkproblem::Gas::Gasedge</a>
 </li>
 <li>get_starting_state_index()
 : <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#a89c57f4843470ac3fd149a5647ddcda6">Model::Networkproblem::Gas::Gasedge</a>
 </li>
+<li>get_starttime()
+: <a class="el" href="structModel_1_1Timedata.html#ae0fb07e7c065c78c1851587d98b85be6">Model::Timedata</a>
+</li>
 <li>get_subproblems()
 : <a class="el" href="classModel_1_1Problem.html#a4aeaaefa997a9e5769e9dc3305002248">Model::Problem</a>
 </li>
-<li>get_times()
-: <a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a564b04fe938828caaac39db30c0fda8c">Model::Networkproblem::Equationcomponent</a>
+<li>get_timeinterval()
+: <a class="el" href="structModel_1_1Timedata.html#a6f193168db5f83056599495e93725569">Model::Timedata</a>
+</li>
+<li>get_topology_schema()
+: <a class="el" href="structModel_1_1Componentfactory_1_1Componentfactory.html#a9c1f082162da68f62812427dd1dc9c5b">Model::Componentfactory::Componentfactory</a>
+</li>
+<li>get_type()
+: <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Compressorstation.html#aa8a1c65806961d141fa3d0ded39204d1">Model::Networkproblem::Gas::Compressorstation</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Controlvalve.html#a22f00d0d9050c34c44a4cd002f6cc05b">Model::Networkproblem::Gas::Controlvalve</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Innode.html#a8cc5138ac26347ead7affd8137fb616d">Model::Networkproblem::Gas::Innode</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html#a99598b32210340e47db01e5bcb66a2c6">Model::Networkproblem::Gas::Pipe</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Shortpipe.html#a599bc5e1805fba29fd2ca73fc71dcb64">Model::Networkproblem::Gas::Shortpipe</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Sink.html#ab2c07bb4fa6eff4522fbf6bac7209766">Model::Networkproblem::Gas::Sink</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Source.html#a3d6afd23cbd5f96fa614312b2edf9adc">Model::Networkproblem::Gas::Source</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1ExternalPowerplant.html#a56696f348b1c6adffebf15452a54fe6d">Model::Networkproblem::Gaspowerconnection::ExternalPowerplant</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1Gaspowerconnection.html#a5cd1244a119b60514046d7095504a052">Model::Networkproblem::Gaspowerconnection::Gaspowerconnection</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Networkproblem.html#abafecd628b6e99a462285ae13b7b2e63">Model::Networkproblem::Networkproblem</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1PQnode.html#a7fde0959e2fe816bdd2ca80040c27c78">Model::Networkproblem::Power::PQnode</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1PVnode.html#a55316f9a07b9e98d3049da342954104f">Model::Networkproblem::Power::PVnode</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1StochasticPQnode.html#af137ec45e2fe4706ba41de59420c20c9">Model::Networkproblem::Power::StochasticPQnode</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1Transmissionline.html#ae562ca07e23b95aa245ee7bc9f84d1ef">Model::Networkproblem::Power::Transmissionline</a>
+, <a class="el" href="classModel_1_1Networkproblem_1_1Power_1_1Vphinode.html#aba4530f6bb495e10fef830323763099b">Model::Networkproblem::Power::Vphinode</a>
+, <a class="el" href="classModel_1_1Subproblem.html#a0c76c019ae21609b7214f64de204616a">Model::Subproblem</a>
+, <a class="el" href="classNetwork_1_1Edge.html#a661c7a088dfc165eb9b86cf6bc2c3f1a">Network::Edge</a>
+, <a class="el" href="classNetwork_1_1Node.html#a59ad911befa40026b7e4e0187556bfd8">Network::Node</a>
 </li>
 <li>get_valid_node_ids()
 : <a class="el" href="classNetwork_1_1Net.html#a8e1f10a2a4d8c6d9a5270f5bcd7c4d72">Network::Net</a>
-</li>
-<li>get_values()
-: <a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html#a4871e8f45a9de8c5aaab0532831e5226">Model::Networkproblem::Equationcomponent</a>
 </li>
 <li>give_away_boundary_index()
 : <a class="el" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html#ae2518b107beb690ef6953917ca47a11b">Model::Networkproblem::Gas::Gasedge</a>

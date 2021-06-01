@@ -1,6 +1,12 @@
-<map id="Model/Networkproblem/Gas/include/Gaspowerconnection.hpp" name="Model/Networkproblem/Gas/include/Gaspowerconnection.hpp">
-<area shape="rect" id="node2" href="$Edge_8hpp.html" title="Edge.hpp" alt="" coords="133,169,216,196"/>
-<area shape="rect" id="node6" href="$Gasedge_8hpp.html" title="Gasedge.hpp" alt="" coords="212,95,319,121"/>
-<area shape="rect" id="node3" href="$Idobject_8hpp.html" title="Idobject.hpp" alt="" coords="39,244,142,271"/>
-<area shape="rect" id="node8" href="$Equationcomponent_8hpp.html" title="Equationcomponent.hpp" alt="" coords="303,169,483,196"/>
+<map id="src/Model/Networkproblem/Gaspowerconnection/include/Gaspowerconnection.hpp" name="src/Model/Networkproblem/Gaspowerconnection/include/Gaspowerconnection.hpp">
+<area shape="rect" id="node2" href="$Boundaryvalue_8hpp.html" title="Boundaryvalue.hpp" alt="" coords="516,184,664,211"/>
+<area shape="rect" id="node14" href="$Control_8hpp.html" title="Control.hpp" alt="" coords="737,184,835,211"/>
+<area shape="rect" id="node15" href="$Edge_8hpp.html" title="Edge.hpp" alt="" coords="826,109,909,136"/>
+<area shape="rect" id="node18" href="$Gasedge_8hpp.html" title="Gasedge.hpp" alt="" coords="935,109,1042,136"/>
+<area shape="rect" id="node3" href="$Exception_8hpp.html" title="Exception.hpp" alt="" coords="298,333,413,360"/>
+<area shape="rect" id="node6" href="$Mathfunctions_8hpp.html" title="Mathfunctions.hpp" alt="" coords="131,333,273,360"/>
+<area shape="rect" id="node7" href="$Valuemap_8hpp.html" title="Valuemap.hpp" alt="" coords="533,259,647,285"/>
+<area shape="rect" id="node16" href="$Idobject_8hpp.html" title="Idobject.hpp" alt="" coords="1093,259,1196,285"/>
+<area shape="rect" id="node19" href="$Statecomponent_8hpp.html" title="Statecomponent.hpp" alt="" coords="1167,184,1325,211"/>
+<area shape="rect" id="node20" href="$Equationcomponent_8hpp.html" title="Equationcomponent.hpp" alt="" coords="1220,259,1400,285"/>
 </map>

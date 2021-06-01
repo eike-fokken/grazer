@@ -1,13 +1,14 @@
 var namespaceModel_1_1Networkproblem_1_1Gas =
 [
-    [ "Compressorstation", "classModel_1_1Networkproblem_1_1Gas_1_1Compressorstation.html", null ],
-    [ "Controlvalve", "classModel_1_1Networkproblem_1_1Gas_1_1Controlvalve.html", null ],
+    [ "Compressorstation", "classModel_1_1Networkproblem_1_1Gas_1_1Compressorstation.html", "classModel_1_1Networkproblem_1_1Gas_1_1Compressorstation" ],
+    [ "Controlvalve", "classModel_1_1Networkproblem_1_1Gas_1_1Controlvalve.html", "classModel_1_1Networkproblem_1_1Gas_1_1Controlvalve" ],
     [ "Flowboundarynode", "classModel_1_1Networkproblem_1_1Gas_1_1Flowboundarynode.html", "classModel_1_1Networkproblem_1_1Gas_1_1Flowboundarynode" ],
     [ "Gasedge", "classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html", "classModel_1_1Networkproblem_1_1Gas_1_1Gasedge" ],
     [ "Gasnode", "classModel_1_1Networkproblem_1_1Gas_1_1Gasnode.html", "classModel_1_1Networkproblem_1_1Gas_1_1Gasnode" ],
-    [ "Gaspowerconnection", "classModel_1_1Networkproblem_1_1Gas_1_1Gaspowerconnection.html", "classModel_1_1Networkproblem_1_1Gas_1_1Gaspowerconnection" ],
     [ "Innode", "classModel_1_1Networkproblem_1_1Gas_1_1Innode.html", "classModel_1_1Networkproblem_1_1Gas_1_1Innode" ],
     [ "Pipe", "classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html", "classModel_1_1Networkproblem_1_1Gas_1_1Pipe" ],
-    [ "Pressureboundarynode", "classModel_1_1Networkproblem_1_1Gas_1_1Pressureboundarynode.html", "classModel_1_1Networkproblem_1_1Gas_1_1Pressureboundarynode" ],
-    [ "Shortpipe", "classModel_1_1Networkproblem_1_1Gas_1_1Shortpipe.html", "classModel_1_1Networkproblem_1_1Gas_1_1Shortpipe" ]
+    [ "Shortcomponent", "classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent.html", "classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent" ],
+    [ "Shortpipe", "classModel_1_1Networkproblem_1_1Gas_1_1Shortpipe.html", "classModel_1_1Networkproblem_1_1Gas_1_1Shortpipe" ],
+    [ "Sink", "classModel_1_1Networkproblem_1_1Gas_1_1Sink.html", "classModel_1_1Networkproblem_1_1Gas_1_1Sink" ],
+    [ "Source", "classModel_1_1Networkproblem_1_1Gas_1_1Source.html", null ]
 ];

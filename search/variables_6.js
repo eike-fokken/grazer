@@ -1,5 +1,8 @@
 var searchData=
 [
-  ['idptr',['idptr',['../classNetwork_1_1Idobject.html#a88305984c187b70983e931a795c180a3',1,'Network::Idobject']]],
-  ['initial_5fvalues',['initial_values',['../classModel_1_1Networkproblem_1_1Initialvalue.html#adf76ba08341ca3d7e0345b7a52854ca4',1,'Model::Networkproblem::Initialvalue']]]
+  ['filecontents',['filecontents',['../get__component__values_8m.html#a1d5efd92ff20a9e9e2fa8e06603927f3',1,'get_component_values.m']]],
+  ['first_5fcomp_5fdir',['first_comp_dir',['../compute__mu__sigma_8m.html#acbb8d1a720600f06c94d5d2a45a152a4',1,'compute_mu_sigma.m']]],
+  ['force',['force',['../namespaceAux_1_1unit.html#a2b4db39f04b51ffe049b8d77cec2af2f',1,'Aux::unit']]],
+  ['frequency',['frequency',['../namespaceAux_1_1unit.html#a3d85bf1afa2e7e6ce862b918bd8849c4',1,'Aux::unit']]],
+  ['function',['function',['../compute__mu__sigma_8m.html#a7fd654f71ea3de09d69cfe4cfc887e91',1,'compute_mu_sigma.m']]]
 ];

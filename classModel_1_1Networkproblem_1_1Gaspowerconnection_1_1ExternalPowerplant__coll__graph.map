@@ -1,0 +1,16 @@
+<map id="Model::Networkproblem::Gaspowerconnection::ExternalPowerplant" name="Model::Networkproblem::Gaspowerconnection::ExternalPowerplant">
+<area shape="rect" id="node17" href="$classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1Gaspowerconnection.html" title="an edge connecting a gasnode to a powernode and modelling a gaspower plant/power&#45;to&#45;gas plant..." alt="" coords="3119,287,3297,343"/>
+<area shape="rect" id="node2" href="$classModel_1_1Networkproblem_1_1Power_1_1Powernode.html" title="Model::Networkproblem\l::Power::Powernode" alt="" coords="2385,199,2564,240"/>
+<area shape="rect" id="node3" href="$classModel_1_1Networkproblem_1_1Statecomponent.html" title="Model::Networkproblem\l::Statecomponent" alt="" coords="1977,45,2156,87"/>
+<area shape="rect" id="node18" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html" title="This class is a base class for all Gas edges with a 2x2 balance law. " alt="" coords="2588,108,2767,149"/>
+<area shape="rect" id="node4" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="A base class for network components that supply model equations to be solved. " alt="" coords="1615,5,1793,47"/>
+<area shape="rect" id="node6" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="2007,206,2126,233"/>
+<area shape="rect" id="node14" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="775,223,892,250"/>
+<area shape="rect" id="node7" href="$classNetwork_1_1Idobject.html" title="Provides a unified &quot;name&quot; to inheriting classes. " alt="" coords="588,182,725,209"/>
+<area shape="rect" id="node9" title="STL class. " alt="" coords="193,182,280,209"/>
+<area shape="rect" id="node10" title="STL class. " alt="" coords="5,175,144,216"/>
+<area shape="rect" id="node12" href="$structNetwork_1_1Node_1_1Edgecollection.html" title="Network::Node::Edgecollection" alt="" coords="1316,267,1539,294"/>
+<area shape="rect" id="node15" href="$classModel_1_1Networkproblem_1_1Boundaryvalue.html" title="Model::Networkproblem\l::Boundaryvalue\&lt; 2 \&gt;" alt="" coords="1977,257,2156,299"/>
+<area shape="rect" id="node19" href="$classModel_1_1Networkproblem_1_1Control.html" title="Model::Networkproblem\l::Control\&lt; 1 \&gt;" alt="" coords="2791,375,2969,416"/>
+<area shape="rect" id="node20" href="$classModel_1_1Networkproblem_1_1Boundaryvalue.html" title="Model::Networkproblem\l::Boundaryvalue\&lt; 1 \&gt;" alt="" coords="2791,440,2969,481"/>
+</map>

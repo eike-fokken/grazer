@@ -1,5 +1,5 @@
 var namespaceSolver =
 [
-    [ "Newtonsolver_temp", "classSolver_1_1Newtonsolver__temp.html", "classSolver_1_1Newtonsolver__temp" ],
+    [ "Newtonsolver", "classSolver_1_1Newtonsolver.html", "classSolver_1_1Newtonsolver" ],
     [ "Solutionstruct", "structSolver_1_1Solutionstruct.html", "structSolver_1_1Solutionstruct" ]
 ];

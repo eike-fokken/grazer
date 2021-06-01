@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Grazer: Model/Networkproblem/include/Equationcomponent.hpp File Reference</title>
+<title>Grazer: src/Model/Networkproblem/Equationcomponent/include/Equationcomponent.hpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,6 +29,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Grazer
+   &#160;<span id="projectnumber">0.0.1</span>
    </div>
   </td>
  </tr>
@@ -88,52 +89,70 @@ $(document).ready(function(){initNavTree('Equationcomponent_8hpp.html','');});
 <div class="contents">
 <div class="textblock"><code>#include &lt;Eigen/Sparse&gt;</code><br />
 <code>#include &lt;filesystem&gt;</code><br />
+<code>#include &lt;memory&gt;</code><br />
 <code>#include &lt;nlohmann/json.hpp&gt;</code><br />
+<code>#include &lt;optional&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for Equationcomponent.hpp:</div>
 <div class="dyncontent">
-<div class="center"><img src="Equationcomponent_8hpp__incl.png" border="0" usemap="#Model_2Networkproblem_2include_2Equationcomponent_8hpp" alt=""/></div>
-<map name="Model_2Networkproblem_2include_2Equationcomponent_8hpp" id="Model_2Networkproblem_2include_2Equationcomponent_8hpp">
+<div class="center"><img src="Equationcomponent_8hpp__incl.png" border="0" usemap="#src_2Model_2Networkproblem_2Equationcomponent_2include_2Equationcomponent_8hpp" alt=""/></div>
+<map name="src_2Model_2Networkproblem_2Equationcomponent_2include_2Equationcomponent_8hpp" id="src_2Model_2Networkproblem_2Equationcomponent_2include_2Equationcomponent_8hpp">
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
 This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
-<div class="center"><img src="Equationcomponent_8hpp__dep__incl.png" border="0" usemap="#Model_2Networkproblem_2include_2Equationcomponent_8hppdep" alt=""/></div>
-<map name="Model_2Networkproblem_2include_2Equationcomponent_8hppdep" id="Model_2Networkproblem_2include_2Equationcomponent_8hppdep">
-<area shape="rect" id="node2" href="Equationcomponent_8cpp.html" title="Model/Networkproblem\l/Equationcomponent.cpp" alt="" coords="232,95,415,136"/>
-<area shape="rect" id="node3" href="Flowboundarynode_8hpp.html" title="Model/Networkproblem\l/Gas/include/Flowboundarynode.hpp" alt="" coords="5,273,263,315"/>
-<area shape="rect" id="node6" href="Gasedge_8hpp.html" title="Model/Networkproblem\l/Gas/include/Gasedge.hpp" alt="" coords="943,95,1133,136"/>
-<area shape="rect" id="node13" href="Gasnode_8hpp.html" title="Model/Networkproblem\l/Gas/include/Gasnode.hpp" alt="" coords="491,184,681,225"/>
-<area shape="rect" id="node16" href="Pressureboundarynode_8hpp.html" title="Model/Networkproblem\l/Gas/include/Pressureboundarynode.hpp" alt="" coords="490,273,773,315"/>
-<area shape="rect" id="node24" href="Networkproblem_8cpp.html" title="Model/Networkproblem\l/Networkproblem.cpp" alt="" coords="1209,95,1384,136"/>
-<area shape="rect" id="node25" href="Powernode_8hpp.html" title="Model/Networkproblem\l/Power/include/Powernode.hpp" alt="" coords="2610,184,2831,225"/>
-<area shape="rect" id="node4" href="Jsonreader_8cpp.html" title="Jsonreader/Jsonreader.cpp" alt="" coords="1893,370,2084,397"/>
-<area shape="rect" id="node5" href="Flowboundarynode_8cpp.html" title="Model/Networkproblem\l/Gas/Flowboundarynode.cpp" alt="" coords="31,363,237,404"/>
-<area shape="rect" id="node7" href="Gasedge_8cpp.html" title="Model/Networkproblem\l/Gas/Gasedge.cpp" alt="" coords="757,184,932,225"/>
-<area shape="rect" id="node8" href="Gasnode_8cpp.html" title="Model/Networkproblem\l/Gas/Gasnode.cpp" alt="" coords="797,273,972,315"/>
-<area shape="rect" id="node9" href="Compressorstation_8hpp.html" title="Model/Networkproblem\l/Gas/include/Compressorstation.hpp" alt="" coords="1228,184,1485,225"/>
-<area shape="rect" id="node11" href="Controlvalve_8hpp.html" title="Model/Networkproblem\l/Gas/include/Controlvalve.hpp" alt="" coords="1509,184,1727,225"/>
-<area shape="rect" id="node18" href="Gaspowerconnection_8hpp.html" title="Model/Networkproblem\l/Gas/include/Gaspowerconnection.hpp" alt="" coords="1959,184,2229,225"/>
-<area shape="rect" id="node20" href="Pipe_8hpp.html" title="Model/Networkproblem\l/Gas/include/Pipe.hpp" alt="" coords="1760,184,1935,225"/>
-<area shape="rect" id="node22" href="Shortpipe_8hpp.html" title="Model/Networkproblem\l/Gas/include/Shortpipe.hpp" alt="" coords="1008,184,1204,225"/>
-<area shape="rect" id="node10" href="Compressorstation_8cpp.html" title="Model/Networkproblem\l/Gas/Compressorstation.cpp" alt="" coords="1246,273,1451,315"/>
-<area shape="rect" id="node12" href="Controlvalve_8cpp.html" title="Model/Networkproblem\l/Gas/Controlvalve.cpp" alt="" coords="1577,273,1752,315"/>
-<area shape="rect" id="node14" href="Innode_8hpp.html" title="Model/Networkproblem\l/Gas/include/Innode.hpp" alt="" coords="287,273,466,315"/>
-<area shape="rect" id="node15" href="Innode_8cpp.html" title="Model/Networkproblem\l/Gas/Innode.cpp" alt="" coords="289,363,464,404"/>
-<area shape="rect" id="node17" href="Pressureboundarynode_8cpp.html" title="Model/Networkproblem\l/Gas/Pressureboundarynode.cpp" alt="" coords="516,363,747,404"/>
-<area shape="rect" id="node19" href="Gaspowerconnection_8cpp.html" title="Model/Networkproblem\l/Gas/Gaspowerconnection.cpp" alt="" coords="2077,273,2295,315"/>
-<area shape="rect" id="node21" href="Pipe_8cpp.html" title="Model/Networkproblem\l/Gas/Pipe.cpp" alt="" coords="1776,273,1951,315"/>
-<area shape="rect" id="node23" href="Shortpipe_8cpp.html" title="Model/Networkproblem\l/Gas/Shortpipe.cpp" alt="" coords="996,273,1171,315"/>
-<area shape="rect" id="node26" href="PQnode_8hpp.html" title="Model/Networkproblem\l/Power/include/PQnode.hpp" alt="" coords="2825,273,3024,315"/>
-<area shape="rect" id="node27" href="Powernode_8cpp.html" title="Model/Networkproblem\l/Power/Powernode.cpp" alt="" coords="2644,363,2819,404"/>
-<area shape="rect" id="node29" href="PVnode_8hpp.html" title="Model/Networkproblem\l/Power/include/PVnode.hpp" alt="" coords="2553,273,2752,315"/>
-<area shape="rect" id="node31" href="Transmissionline_8hpp.html" title="Model/Networkproblem\l/Power/include/Transmissionline.hpp" alt="" coords="3047,273,3306,315"/>
-<area shape="rect" id="node32" href="Transmissionline_8cpp.html" title="Model/Networkproblem\l/Power/Transmissionline.cpp" alt="" coords="3240,363,3447,404"/>
-<area shape="rect" id="node33" href="Vphinode_8hpp.html" title="Model/Networkproblem\l/Power/include/Vphinode.hpp" alt="" coords="2319,273,2530,315"/>
-<area shape="rect" id="node28" href="PQnode_8cpp.html" title="Model/Networkproblem\l/Power/PQnode.cpp" alt="" coords="3041,363,3216,404"/>
-<area shape="rect" id="node30" href="PVnode_8cpp.html" title="Model/Networkproblem\l/Power/PVnode.cpp" alt="" coords="2843,363,3017,404"/>
-<area shape="rect" id="node34" href="Vphinode_8cpp.html" title="Model/Networkproblem\l/Power/Vphinode.cpp" alt="" coords="2337,363,2512,404"/>
+<div class="center"><img src="Equationcomponent_8hpp__dep__incl.png" border="0" usemap="#src_2Model_2Networkproblem_2Equationcomponent_2include_2Equationcomponent_8hppdep" alt=""/></div>
+<map name="src_2Model_2Networkproblem_2Equationcomponent_2include_2Equationcomponent_8hppdep" id="src_2Model_2Networkproblem_2Equationcomponent_2include_2Equationcomponent_8hppdep">
+<area shape="rect" id="node2" href="Equationcomponent_8cpp.html" title="src/Model/Networkproblem\l/Equationcomponent/Equationcomponent.cpp" alt="" coords="1576,117,1893,158"/>
+<area shape="rect" id="node3" href="Statecomponent_8hpp.html" title="src/Model/Networkproblem\l/Equationcomponent/include\l/Statecomponent.hpp" alt="" coords="2285,109,2491,165"/>
+<area shape="rect" id="node27" href="Gasnode_8hpp.html" title="src/Model/Networkproblem\l/Gas/include/Gasnode.hpp" alt="" coords="1968,303,2165,344"/>
+<area shape="rect" id="node28" href="Flowboundarynode_8hpp.html" title="src/Model/Networkproblem\l/Gas/include/Flowboundarynode.hpp" alt="" coords="1262,392,1519,433"/>
+<area shape="rect" id="node40" href="Networkproblem_8cpp.html" title="src/Model/Networkproblem\l/Networkproblem.cpp" alt="" coords="3271,213,3468,255"/>
+<area shape="rect" id="node4" href="Componentfactory_8hpp.html" title="src/Model/Componentfactory\l/include/Componentfactory.hpp" alt="" coords="488,392,712,433"/>
+<area shape="rect" id="node18" href="Statecomponent_8cpp.html" title="src/Model/Networkproblem\l/Equationcomponent/Statecomponent.cpp" alt="" coords="2106,213,2401,255"/>
+<area shape="rect" id="node19" href="Gasedge_8hpp.html" title="src/Model/Networkproblem\l/Gas/include/Gasedge.hpp" alt="" coords="2425,213,2623,255"/>
+<area shape="rect" id="node41" href="Powernode_8hpp.html" title="src/Model/Networkproblem\l/Power/include/Powernode.hpp" alt="" coords="4108,392,4329,433"/>
+<area shape="rect" id="node5" href="schema__generation_8hpp.html" title="src/Auxillary/json\l_schema/include/schema\l_generation.hpp" alt="" coords="392,585,579,641"/>
+<area shape="rect" id="node8" href="Componentfactory_8cpp.html" title="src/Model/Componentfactory\l/Componentfactory.cpp" alt="" coords="611,489,821,530"/>
+<area shape="rect" id="node9" href="Full__factory_8hpp.html" title="src/Model/Componentfactory\l/Full_factory/include/Full\l_factory.hpp" alt="" coords="378,481,587,537"/>
+<area shape="rect" id="node12" href="Gas__factory_8hpp.html" title="src/Model/Componentfactory\l/Gas_factory/include/Gas\l_factory.hpp" alt="" coords="1739,481,1949,537"/>
+<area shape="rect" id="node14" href="Power__factory_8hpp.html" title="src/Model/Componentfactory\l/Power_factory/include/Power\l_factory.hpp" alt="" coords="2658,481,2873,537"/>
+<area shape="rect" id="node16" href="Netfactory_8hpp.html" title="src/Model/Netfactory\l/include/Netfactory.hpp" alt="" coords="130,489,302,530"/>
+<area shape="rect" id="node17" href="Netfactory_8cpp.html" title="src/Model/Netfactory\l/Netfactory.cpp" alt="" coords="5,593,163,634"/>
+<area shape="rect" id="node6" href="schema__generation_8cpp.html" title="src/Auxillary/json\l_schema/schema_generation.cpp" alt="" coords="254,689,493,731"/>
+<area shape="rect" id="node7" href="grazer_8cpp.html" title="src/Grazer/grazer.cpp" alt="" coords="517,697,675,723"/>
+<area shape="rect" id="node10" href="Full__factory_8cpp.html" title="src/Model/Componentfactory\l/Full_factory/Full_factory.cpp" alt="" coords="2421,593,2630,634"/>
+<area shape="rect" id="node11" href="Subproblemchooser_8cpp.html" title="src/Model/Problemlayer\l/Subproblemchooser.cpp" alt="" coords="187,593,368,634"/>
+<area shape="rect" id="node13" href="Gas__factory_8cpp.html" title="src/Model/Componentfactory\l/Gas_factory/Gas_factory.cpp" alt="" coords="1739,593,1949,634"/>
+<area shape="rect" id="node15" href="Power__factory_8cpp.html" title="src/Model/Componentfactory\l/Power_factory/Power_factory.cpp" alt="" coords="3539,593,3781,634"/>
+<area shape="rect" id="node20" href="Controlvalve_8cpp.html" title="src/Model/Networkproblem\l/Gas/Controlvalve.cpp" alt="" coords="2812,593,3009,634"/>
+<area shape="rect" id="node21" href="Gasedge_8cpp.html" title="src/Model/Networkproblem\l/Gas/Gasedge.cpp" alt="" coords="2240,303,2437,344"/>
+<area shape="rect" id="node22" href="Gasnode_8cpp.html" title="src/Model/Networkproblem\l/Gas/Gasnode.cpp" alt="" coords="2036,392,2233,433"/>
+<area shape="rect" id="node23" href="Shortcomponent_8hpp.html" title="src/Model/Networkproblem\l/Gas/include/Shortcomponent.hpp" alt="" coords="2563,392,2805,433"/>
+<area shape="rect" id="node25" href="Controlvalve_8hpp.html" title="src/Model/Networkproblem\l/Gas/include/Controlvalve.hpp" alt="" coords="2417,489,2634,530"/>
+<area shape="rect" id="node36" href="Pipe_8hpp.html" title="src/Model/Networkproblem\l/Gas/include/Pipe.hpp" alt="" coords="1973,489,2171,530"/>
+<area shape="rect" id="node37" href="Gaspowerconnection_8hpp.html" title="src/Model/Networkproblem\l/Gaspowerconnection/include\l/Gaspowerconnection.hpp" alt="" coords="4911,481,5124,537"/>
+<area shape="rect" id="node24" href="Shortpipe_8hpp.html" title="src/Model/Networkproblem\l/Gas/include/Shortpipe.hpp" alt="" coords="2195,489,2392,530"/>
+<area shape="rect" id="node26" href="Shortcomponent_8cpp.html" title="src/Model/Networkproblem\l/Gas/Shortcomponent.cpp" alt="" coords="2948,489,3145,530"/>
+<area shape="rect" id="node34" href="Innode_8hpp.html" title="src/Model/Networkproblem\l/Gas/include/Innode.hpp" alt="" coords="1517,489,1715,530"/>
+<area shape="rect" id="node29" href="Flowboundarynode_8cpp.html" title="src/Model/Networkproblem\l/Gas/Flowboundarynode.cpp" alt="" coords="1288,489,1493,530"/>
+<area shape="rect" id="node30" href="Sink_8hpp.html" title="src/Model/Networkproblem\l/Gas/include/Sink.hpp" alt="" coords="1067,489,1264,530"/>
+<area shape="rect" id="node32" href="Source_8hpp.html" title="src/Model/Networkproblem\l/Gas/include/Source.hpp" alt="" coords="845,489,1043,530"/>
+<area shape="rect" id="node31" href="Sink_8cpp.html" title="src/Model/Networkproblem\l/Gas/Sink.cpp" alt="" coords="1067,593,1264,634"/>
+<area shape="rect" id="node33" href="Source_8cpp.html" title="src/Model/Networkproblem\l/Gas/Source.cpp" alt="" coords="845,593,1043,634"/>
+<area shape="rect" id="node35" href="Innode_8cpp.html" title="src/Model/Networkproblem\l/Gas/Innode.cpp" alt="" coords="1517,593,1715,634"/>
+<area shape="rect" id="node38" href="ExternalPowerplant_8cpp.html" title="src/Model/Networkproblem\l/Gaspowerconnection/ExternalPowerplant.cpp" alt="" coords="4996,593,5316,634"/>
+<area shape="rect" id="node39" href="Gaspowerconnection_8cpp.html" title="src/Model/Networkproblem\l/Gaspowerconnection/Gaspowerconnection.cpp" alt="" coords="4642,593,4971,634"/>
+<area shape="rect" id="node42" href="ExternalPowerplant_8hpp.html" title="src/Model/Networkproblem\l/Gaspowerconnection/include\l/ExternalPowerplant.hpp" alt="" coords="4623,481,4836,537"/>
+<area shape="rect" id="node43" href="PQnode_8hpp.html" title="src/Model/Networkproblem\l/Power/include/PQnode.hpp" alt="" coords="3675,489,3874,530"/>
+<area shape="rect" id="node44" href="PVnode_8hpp.html" title="src/Model/Networkproblem\l/Power/include/PVnode.hpp" alt="" coords="3219,489,3418,530"/>
+<area shape="rect" id="node45" href="StochasticPQnode_8hpp.html" title="src/Model/Networkproblem\l/Power/include/StochasticPQnode.hpp" alt="" coords="4281,489,4548,530"/>
+<area shape="rect" id="node46" href="StochasticPQnode_8cpp.html" title="src/Model/Networkproblem\l/Power/StochasticPQnode.cpp" alt="" coords="4394,593,4609,634"/>
+<area shape="rect" id="node47" href="Transmissionline_8hpp.html" title="src/Model/Networkproblem\l/Power/include/Transmissionline.hpp" alt="" coords="3897,489,4156,530"/>
+<area shape="rect" id="node48" href="Powernode_8cpp.html" title="src/Model/Networkproblem\l/Power/Powernode.cpp" alt="" coords="3923,593,4120,634"/>
+<area shape="rect" id="node49" href="Transmissionline_8cpp.html" title="src/Model/Networkproblem\l/Power/Transmissionline.cpp" alt="" coords="4145,593,4351,634"/>
+<area shape="rect" id="node50" href="Vphinode_8hpp.html" title="src/Model/Networkproblem\l/Power/include/Vphinode.hpp" alt="" coords="3441,489,3652,530"/>
 </map>
 </div>
 </div>
@@ -142,6 +161,7 @@ This graph shows which files directly or indirectly include this file:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Networkproblem_1_1Equationcomponent.html">Model::Networkproblem::Equationcomponent</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A base class for network components that supply model equations to be solved.  <a href="classModel_1_1Networkproblem_1_1Equationcomponent.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
@@ -156,7 +176,7 @@ Namespaces</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_312950da3f243a51cc00f4a947545131.html">Model</a></li><li class="navelem"><a class="el" href="dir_2dae753d3896316cd40187bf6cda48e1.html">Networkproblem</a></li><li class="navelem"><a class="el" href="dir_f5920cb25d6c3b0d4bbe8e6804e0b1d7.html">include</a></li><li class="navelem"><a class="el" href="Equationcomponent_8hpp.html">Equationcomponent.hpp</a></li>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_32e188284d239da8bb14ec1dabb0c35f.html">Model</a></li><li class="navelem"><a class="el" href="dir_8457506e79b067815ec9f925c89b7a4d.html">Networkproblem</a></li><li class="navelem"><a class="el" href="dir_84300a254b69e188fc24fa66d2f719b6.html">Equationcomponent</a></li><li class="navelem"><a class="el" href="dir_54bb87d9f60c1fe4a24ecef047f94d89.html">include</a></li><li class="navelem"><a class="el" href="Equationcomponent_8hpp.html">Equationcomponent.hpp</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>

@@ -1,3 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classModel_1_1Networkproblem_1_1Boundaryvalue.html" title="Model::Networkproblem\l::Boundaryvalue\&lt; Model\l::Networkproblem::Gas::\lFlowboundarynode, 1 \&gt;" alt="" coords="5,5,188,76"/>
+<area shape="rect" id="node1" href="$classModel_1_1Balancelaw_1_1Pipe__Balancelaw.html" title="Model::Balancelaw::\lPipe_Balancelaw" alt="" coords="5,5,156,47"/>
+<area shape="rect" id="node2" href="$classModel_1_1Balancelaw_1_1Isothermaleulerequation.html" title="Model::Balancelaw::\lIsothermaleulerequation" alt="" coords="204,5,387,47"/>
 </map>

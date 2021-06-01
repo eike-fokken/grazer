@@ -1,3 +1,6 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classModel_1_1Networkproblem_1_1Boundaryvalue.html" title="Model::Networkproblem\l::Boundaryvalue\&lt; Model\l::Networkproblem::Power\l::Powernode, 2 \&gt;" alt="" coords="5,5,192,76"/>
+<area shape="rect" id="node1" href="$structModel_1_1Componentfactory_1_1Componentfactory.html" title="Model::Componentfactory\l::Componentfactory" alt="" coords="5,71,196,112"/>
+<area shape="rect" id="node2" href="$structModel_1_1Componentfactory_1_1Full__factory.html" title="This class provides a Componentfactory of all Component types defined for the Networkproblem. " alt="" coords="244,5,435,47"/>
+<area shape="rect" id="node3" href="$structModel_1_1Componentfactory_1_1Gas__factory.html" title="This class provides a Componentfactory of all Gas components. " alt="" coords="244,71,435,112"/>
+<area shape="rect" id="node4" href="$structModel_1_1Componentfactory_1_1Power__factory.html" title="This class provides a Componentfactory of all Power components. " alt="" coords="244,136,435,177"/>
 </map>

@@ -29,6 +29,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Grazer
+   &#160;<span id="projectnumber">0.0.1</span>
    </div>
   </td>
  </tr>
@@ -94,32 +95,34 @@ Collaboration diagram for Model::Problem:</div>
 <div class="dyncontent">
 <div class="center"><img src="classModel_1_1Problem__coll__graph.png" border="0" usemap="#Model_1_1Problem_coll__map" alt="Collaboration graph"/></div>
 <map name="Model_1_1Problem_coll__map" id="Model_1_1Problem_coll__map">
-<area shape="rect" id="node4" href="classModel_1_1Subproblem.html" title="Model::Subproblem" alt="" coords="41,5,187,32"/>
+<area shape="rect" id="node5" href="classModel_1_1Subproblem.html" title="Model::Subproblem" alt="" coords="114,5,261,32"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa50829810d8ac309ec80dd4eca866ccd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Problem.html#aa50829810d8ac309ec80dd4eca866ccd">Problem</a> (std::filesystem::path const &amp;_output_directory)</td></tr>
-<tr class="separator:aa50829810d8ac309ec80dd4eca866ccd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd17baa1f2afa8cd439e001faaf7b02c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Problem.html#acd17baa1f2afa8cd439e001faaf7b02c">Problem</a> (<a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> subproblem_data, std::filesystem::path const &amp;_output_directory)</td></tr>
+<tr class="separator:acd17baa1f2afa8cd439e001faaf7b02c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a041ce6ed2fff6e4bf0cf6b869a4826a5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Problem.html#a041ce6ed2fff6e4bf0cf6b869a4826a5">~Problem</a> ()</td></tr>
+<tr class="separator:a041ce6ed2fff6e4bf0cf6b869a4826a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa93ab9d266b7fb31dd2a925ea0163e6a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Problem.html#aa93ab9d266b7fb31dd2a925ea0163e6a">add_subproblem</a> (std::unique_ptr&lt; <a class="el" href="classModel_1_1Subproblem.html">Subproblem</a> &gt; subproblem_ptr)</td></tr>
 <tr class="separator:aa93ab9d266b7fb31dd2a925ea0163e6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a214427ce190b0ed110512fe26cd4e989"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Problem.html#a214427ce190b0ed110512fe26cd4e989">set_indices</a> ()</td></tr>
 <tr class="separator:a214427ce190b0ed110512fe26cd4e989"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af58b01219c9c29137bb7f699d09ac72c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Problem.html#af58b01219c9c29137bb7f699d09ac72c">evaluate</a> (Eigen::Ref&lt; Eigen::VectorXd &gt; rootvalues, double last_time, double new_time, Eigen::Ref&lt; Eigen::VectorXd const &gt; const &amp;last_state, Eigen::Ref&lt; Eigen::VectorXd const &gt; const &amp;new_state) const</td></tr>
-<tr class="separator:af58b01219c9c29137bb7f699d09ac72c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a58a73a41fbe019d4190394429b2edb4d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Problem.html#a58a73a41fbe019d4190394429b2edb4d">evaluate_state_derivative</a> (<a class="el" href="classAux_1_1Matrixhandler.html">Aux::Matrixhandler</a> *jacobianhandler, double last_time, double new_time, Eigen::Ref&lt; Eigen::VectorXd const &gt; const &amp;last_state, Eigen::Ref&lt; Eigen::VectorXd const &gt; const &amp;new_state) const</td></tr>
-<tr class="separator:a58a73a41fbe019d4190394429b2edb4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1089ee15141999d71921f7d73963d667"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Problem.html#a1089ee15141999d71921f7d73963d667">save_values</a> (double time, Eigen::Ref&lt; Eigen::VectorXd &gt;new_state)</td></tr>
-<tr class="separator:a1089ee15141999d71921f7d73963d667"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e66ef96494c30b087f1ddf72a4450c2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Problem.html#a7e66ef96494c30b087f1ddf72a4450c2">evaluate</a> (Eigen::Ref&lt; Eigen::VectorXd &gt; rootvalues, double last_time, double new_time, Eigen::Ref&lt; Eigen::VectorXd const &gt; last_state, Eigen::Ref&lt; Eigen::VectorXd const &gt; new_state) const</td></tr>
+<tr class="separator:a7e66ef96494c30b087f1ddf72a4450c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4984713d2b7517a9b858b195568c1b37"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Problem.html#a4984713d2b7517a9b858b195568c1b37">prepare_timestep</a> (double last_time, double new_time, Eigen::Ref&lt; Eigen::VectorXd const &gt; last_state, Eigen::Ref&lt; Eigen::VectorXd const &gt; new_state)</td></tr>
+<tr class="separator:a4984713d2b7517a9b858b195568c1b37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81b0453d0666ef6333ca44de7e0d43b4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Problem.html#a81b0453d0666ef6333ca44de7e0d43b4">evaluate_state_derivative</a> (<a class="el" href="classAux_1_1Matrixhandler.html">Aux::Matrixhandler</a> *jacobianhandler, double last_time, double new_time, Eigen::Ref&lt; Eigen::VectorXd const &gt; last_state, Eigen::Ref&lt; Eigen::VectorXd const &gt; new_state) const</td></tr>
+<tr class="separator:a81b0453d0666ef6333ca44de7e0d43b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab979b0d91e8d52ea9bc77bdedf261264"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Problem.html#ab979b0d91e8d52ea9bc77bdedf261264">json_save</a> (double time, Eigen::Ref&lt; Eigen::VectorXd const &gt; state)</td></tr>
+<tr class="separator:ab979b0d91e8d52ea9bc77bdedf261264"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4aeaaefa997a9e5769e9dc3305002248"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classModel_1_1Subproblem.html">Subproblem</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Problem.html#a4aeaaefa997a9e5769e9dc3305002248">get_subproblems</a> () const</td></tr>
 <tr class="separator:a4aeaaefa997a9e5769e9dc3305002248"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc770a8c83affc9bfd6fe3127a61d61e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Problem.html#acc770a8c83affc9bfd6fe3127a61d61e">set_initial_values</a> (Eigen::Ref&lt; Eigen::VectorXd &gt;new_state, nlohmann::ordered_json initialjson)</td></tr>
-<tr class="separator:acc770a8c83affc9bfd6fe3127a61d61e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75bad71474c3883a0fb1ca08bffeadc0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Problem.html#a75bad71474c3883a0fb1ca08bffeadc0">set_initial_values</a> (Eigen::Ref&lt; Eigen::VectorXd &gt; new_state, <a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> &amp;initialjson)</td></tr>
+<tr class="separator:a75bad71474c3883a0fb1ca08bffeadc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a197c1980cb24c6e7dbf8b69efb860b61"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Problem.html#a197c1980cb24c6e7dbf8b69efb860b61">print_to_files</a> ()</td></tr>
 <tr class="separator:a197c1980cb24c6e7dbf8b69efb860b61"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a12e9f309519f2e6a92ef874f27bb0434"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Problem.html#a12e9f309519f2e6a92ef874f27bb0434">display</a> () const</td></tr>
-<tr class="separator:a12e9f309519f2e6a92ef874f27bb0434"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a47b5d33f72008c80402de829693aa8cf"><td class="memItemLeft" align="right" valign="top">std::filesystem::path const  &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Problem.html#a47b5d33f72008c80402de829693aa8cf">get_output_directory</a> () const</td></tr>
 <tr class="separator:a47b5d33f72008c80402de829693aa8cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -130,32 +133,52 @@ Private Attributes</h2></td></tr>
 <tr class="separator:ad91a3758d59064d10d884c3be060f7bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac1b0abfa5d9fec3b5e06e496d75511cd"><td class="memItemLeft" align="right" valign="top">std::filesystem::path const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Problem.html#ac1b0abfa5d9fec3b5e06e496d75511cd">output_directory</a></td></tr>
 <tr class="separator:ac1b0abfa5d9fec3b5e06e496d75511cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3a34ce9a0deaa2ad3d6c2abc63ca378"><td class="memItemLeft" align="right" valign="top"><a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel_1_1Problem.html#ae3a34ce9a0deaa2ad3d6c2abc63ca378">json_output</a></td></tr>
+<tr class="separator:ae3a34ce9a0deaa2ad3d6c2abc63ca378"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="aa50829810d8ac309ec80dd4eca866ccd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa50829810d8ac309ec80dd4eca866ccd">&#9670;&nbsp;</a></span>Problem()</h2>
+<a id="acd17baa1f2afa8cd439e001faaf7b02c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd17baa1f2afa8cd439e001faaf7b02c">&#9670;&nbsp;</a></span>Problem()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">Model::Problem::Problem </td>
           <td>(</td>
+          <td class="paramtype"><a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a>&#160;</td>
+          <td class="paramname"><em>subproblem_data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">std::filesystem::path const &amp;&#160;</td>
-          <td class="paramname"><em>_output_directory</em></td><td>)</td>
+          <td class="paramname"><em>_output_directory</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a041ce6ed2fff6e4bf0cf6b869a4826a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a041ce6ed2fff6e4bf0cf6b869a4826a5">&#9670;&nbsp;</a></span>~Problem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Model::Problem::~Problem </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
-<p>The constructor needs to declare Delta_t </p>
 
 </div>
 </div>
@@ -178,25 +201,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a12e9f309519f2e6a92ef874f27bb0434"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a12e9f309519f2e6a92ef874f27bb0434">&#9670;&nbsp;</a></span>display()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Model::Problem::display </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="af58b01219c9c29137bb7f699d09ac72c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af58b01219c9c29137bb7f699d09ac72c">&#9670;&nbsp;</a></span>evaluate()</h2>
+<a id="a7e66ef96494c30b087f1ddf72a4450c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e66ef96494c30b087f1ddf72a4450c2">&#9670;&nbsp;</a></span>evaluate()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -222,13 +228,13 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt; const &amp;&#160;</td>
+          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt;&#160;</td>
           <td class="paramname"><em>last_state</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt; const &amp;&#160;</td>
+          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt;&#160;</td>
           <td class="paramname"><em>new_state</em>&#160;</td>
         </tr>
         <tr>
@@ -241,8 +247,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a58a73a41fbe019d4190394429b2edb4d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a58a73a41fbe019d4190394429b2edb4d">&#9670;&nbsp;</a></span>evaluate_state_derivative()</h2>
+<a id="a81b0453d0666ef6333ca44de7e0d43b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81b0453d0666ef6333ca44de7e0d43b4">&#9670;&nbsp;</a></span>evaluate_state_derivative()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -268,13 +274,13 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt; const &amp;&#160;</td>
+          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt;&#160;</td>
           <td class="paramname"><em>last_state</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt; const &amp;&#160;</td>
+          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt;&#160;</td>
           <td class="paramname"><em>new_state</em>&#160;</td>
         </tr>
         <tr>
@@ -322,6 +328,74 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="ab979b0d91e8d52ea9bc77bdedf261264"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab979b0d91e8d52ea9bc77bdedf261264">&#9670;&nbsp;</a></span>json_save()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Model::Problem::json_save </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>time</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt;&#160;</td>
+          <td class="paramname"><em>state</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4984713d2b7517a9b858b195568c1b37"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4984713d2b7517a9b858b195568c1b37">&#9670;&nbsp;</a></span>prepare_timestep()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Model::Problem::prepare_timestep </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>last_time</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>new_time</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt;&#160;</td>
+          <td class="paramname"><em>last_state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd const &gt;&#160;</td>
+          <td class="paramname"><em>new_state</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a197c1980cb24c6e7dbf8b69efb860b61"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a197c1980cb24c6e7dbf8b69efb860b61">&#9670;&nbsp;</a></span>print_to_files()</h2>
 
@@ -333,34 +407,6 @@ Private Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a1089ee15141999d71921f7d73963d667"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1089ee15141999d71921f7d73963d667">&#9670;&nbsp;</a></span>save_values()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Model::Problem::save_values </td>
-          <td>(</td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>time</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">Eigen::Ref&lt; Eigen::VectorXd &gt;&#160;</td>
-          <td class="paramname"><em>new_state</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -384,8 +430,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="acc770a8c83affc9bfd6fe3127a61d61e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acc770a8c83affc9bfd6fe3127a61d61e">&#9670;&nbsp;</a></span>set_initial_values()</h2>
+<a id="a75bad71474c3883a0fb1ca08bffeadc0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a75bad71474c3883a0fb1ca08bffeadc0">&#9670;&nbsp;</a></span>set_initial_values()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -399,7 +445,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">nlohmann::ordered_json&#160;</td>
+          <td class="paramtype"><a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> &amp;&#160;</td>
           <td class="paramname"><em>initialjson</em>&#160;</td>
         </tr>
         <tr>
@@ -413,6 +459,28 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="ae3a34ce9a0deaa2ad3d6c2abc63ca378"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3a34ce9a0deaa2ad3d6c2abc63ca378">&#9670;&nbsp;</a></span>json_output</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> Model::Problem::json_output</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ac1b0abfa5d9fec3b5e06e496d75511cd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac1b0abfa5d9fec3b5e06e496d75511cd">&#9670;&nbsp;</a></span>output_directory</h2>
 
@@ -460,8 +528,8 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>Model/Problemlayer/include/<a class="el" href="Problem_8hpp_source.html">Problem.hpp</a></li>
-<li>Model/Problemlayer/<a class="el" href="Problem_8cpp.html">Problem.cpp</a></li>
+<li>src/Model/Problemlayer/include/<a class="el" href="Problem_8hpp_source.html">Problem.hpp</a></li>
+<li>src/Model/Problemlayer/<a class="el" href="Problem_8cpp.html">Problem.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

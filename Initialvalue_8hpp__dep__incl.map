@@ -1,3 +1,6 @@
-<map id="Model/Networkproblem/include/Initialvalue.hpp" name="Model/Networkproblem/include/Initialvalue.hpp">
-<area shape="rect" id="node2" href="$Pipe_8cpp.html" title="Model/Networkproblem\l/Gas/Pipe.cpp" alt="" coords="7,95,182,136"/>
+<map id="src/Model/Networkproblem/Equationcomponent/include/Initialvalue.hpp" name="src/Model/Networkproblem/Equationcomponent/include/Initialvalue.hpp">
+<area shape="rect" id="node2" href="$Pipe_8cpp.html" title="src/Model/Networkproblem\l/Gas/Pipe.cpp" alt="" coords="5,109,203,151"/>
+<area shape="rect" id="node3" href="$Shortcomponent_8cpp.html" title="src/Model/Networkproblem\l/Gas/Shortcomponent.cpp" alt="" coords="227,109,424,151"/>
+<area shape="rect" id="node4" href="$Gaspowerconnection_8cpp.html" title="src/Model/Networkproblem\l/Gaspowerconnection/Gaspowerconnection.cpp" alt="" coords="449,109,778,151"/>
+<area shape="rect" id="node5" href="$Powernode_8cpp.html" title="src/Model/Networkproblem\l/Power/Powernode.cpp" alt="" coords="803,109,1000,151"/>
 </map>

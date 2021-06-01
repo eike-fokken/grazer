@@ -29,6 +29,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Grazer
+   &#160;<span id="projectnumber">0.0.1</span>
    </div>
   </td>
  </tr>
@@ -80,7 +81,9 @@ $(document).ready(function(){initNavTree('classNetwork_1_1Node.html','');});
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classNetwork_1_1Node-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -94,15 +97,18 @@ Inheritance diagram for Network::Node:</div>
 <div class="dyncontent">
 <div class="center"><img src="classNetwork_1_1Node__inherit__graph.png" border="0" usemap="#Network_1_1Node_inherit__map" alt="Inheritance graph"/></div>
 <map name="Network_1_1Node_inherit__map" id="Network_1_1Node_inherit__map">
-<area shape="rect" id="node3" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasnode.html" title="Model::Networkproblem\l::Gas::Gasnode" alt="" coords="357,104,536,145"/>
-<area shape="rect" id="node7" href="classModel_1_1Networkproblem_1_1Power_1_1Powernode.html" title="Model::Networkproblem\l::Power::Powernode" alt="" coords="357,233,536,275"/>
-<area shape="rect" id="node2" href="classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="5,209,143,235"/>
-<area shape="rect" id="node4" href="classModel_1_1Networkproblem_1_1Gas_1_1Flowboundarynode.html" title="Model::Networkproblem\l::Gas::Flowboundarynode" alt="" coords="597,5,783,47"/>
-<area shape="rect" id="node5" href="classModel_1_1Networkproblem_1_1Gas_1_1Innode.html" title="This class represents an inner node of the gas network, that neither injects gas nor takes gas out..." alt="" coords="601,71,779,112"/>
-<area shape="rect" id="node6" href="classModel_1_1Networkproblem_1_1Gas_1_1Pressureboundarynode.html" title="Model::Networkproblem\l::Gas::Pressureboundarynode" alt="" coords="584,136,796,177"/>
-<area shape="rect" id="node8" href="classModel_1_1Networkproblem_1_1Power_1_1PQnode.html" title="Model::Networkproblem\l::Power::PQnode" alt="" coords="601,201,779,243"/>
-<area shape="rect" id="node9" href="classModel_1_1Networkproblem_1_1Power_1_1PVnode.html" title="Model::Networkproblem\l::Power::PVnode" alt="" coords="601,267,779,308"/>
-<area shape="rect" id="node10" href="classModel_1_1Networkproblem_1_1Power_1_1Vphinode.html" title="Model::Networkproblem\l::Power::Vphinode" alt="" coords="601,332,779,373"/>
+<area shape="rect" id="node3" href="classModel_1_1Networkproblem_1_1Gas_1_1Gasnode.html" title="Model::Networkproblem\l::Gas::Gasnode" alt="" coords="357,103,536,144"/>
+<area shape="rect" id="node8" href="classModel_1_1Networkproblem_1_1Power_1_1Powernode.html" title="Model::Networkproblem\l::Power::Powernode" alt="" coords="357,281,536,323"/>
+<area shape="rect" id="node2" href="classNetwork_1_1Idobject.html" title="Provides a unified &quot;name&quot; to inheriting classes. " alt="" coords="5,215,143,242"/>
+<area shape="rect" id="node4" href="classModel_1_1Networkproblem_1_1Gas_1_1Flowboundarynode.html" title="Model::Networkproblem\l::Gas::Flowboundarynode" alt="" coords="588,37,775,79"/>
+<area shape="rect" id="node7" href="classModel_1_1Networkproblem_1_1Gas_1_1Innode.html" title="Model::Networkproblem\l::Gas::Innode" alt="" coords="592,103,771,144"/>
+<area shape="rect" id="node5" href="classModel_1_1Networkproblem_1_1Gas_1_1Sink.html" title="Model::Networkproblem\l::Gas::Sink" alt="" coords="827,5,1005,47"/>
+<area shape="rect" id="node6" href="classModel_1_1Networkproblem_1_1Gas_1_1Source.html" title="Model::Networkproblem\l::Gas::Source" alt="" coords="827,71,1005,112"/>
+<area shape="rect" id="node9" href="classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1ExternalPowerplant.html" title="A Powernode to be connected to an edge that leads out of the power network. " alt="" coords="592,169,771,225"/>
+<area shape="rect" id="node10" href="classModel_1_1Networkproblem_1_1Power_1_1PQnode.html" title="Model::Networkproblem\l::Power::PQnode" alt="" coords="592,249,771,291"/>
+<area shape="rect" id="node11" href="classModel_1_1Networkproblem_1_1Power_1_1PVnode.html" title="Model::Networkproblem\l::Power::PVnode" alt="" coords="592,315,771,356"/>
+<area shape="rect" id="node12" href="classModel_1_1Networkproblem_1_1Power_1_1StochasticPQnode.html" title="Model::Networkproblem\l::Power::StochasticPQnode" alt="" coords="584,380,779,421"/>
+<area shape="rect" id="node13" href="classModel_1_1Networkproblem_1_1Power_1_1Vphinode.html" title="Model::Networkproblem\l::Power::Vphinode" alt="" coords="592,445,771,487"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
@@ -110,17 +116,25 @@ Collaboration diagram for Network::Node:</div>
 <div class="dyncontent">
 <div class="center"><img src="classNetwork_1_1Node__coll__graph.png" border="0" usemap="#Network_1_1Node_coll__map" alt="Collaboration graph"/></div>
 <map name="Network_1_1Node_coll__map" id="Network_1_1Node_coll__map">
-<area shape="rect" id="node7" href="classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="190,471,307,497"/>
-<area shape="rect" id="node2" href="classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="123,289,260,316"/>
-<area shape="rect" id="node4" title="STL class. " alt="" coords="148,96,235,123"/>
-<area shape="rect" id="node5" title="STL class. " alt="" coords="122,5,261,47"/>
+<area shape="rect" id="node9" href="classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="205,469,323,496"/>
+<area shape="rect" id="node2" href="classNetwork_1_1Idobject.html" title="Provides a unified &quot;name&quot; to inheriting classes. " alt="" coords="138,289,275,316"/>
+<area shape="rect" id="node4" title="STL class. " alt="" coords="163,96,250,123"/>
+<area shape="rect" id="node5" title="STL class. " alt="" coords="137,5,276,47"/>
+<area shape="rect" id="node7" href="structNetwork_1_1Node_1_1Edgecollection.html" title="Network::Node::Edgecollection" alt="" coords="147,677,370,704"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetwork_1_1Node_1_1Edgecollection.html">Edgecollection</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a382e88fe7bae8a7c9152cb0c66c67e18"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Node.html#a382e88fe7bae8a7c9152cb0c66c67e18">Node</a> ()=delete</td></tr>
 <tr class="separator:a382e88fe7bae8a7c9152cb0c66c67e18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fd605a4f40ed05ee6ba54542fe9cccb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Node.html#a5fd605a4f40ed05ee6ba54542fe9cccb">Node</a> (<a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> const &amp;data)</td></tr>
+<tr class="separator:a5fd605a4f40ed05ee6ba54542fe9cccb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2ea4d03f85a8ed0daeeec9d950129c49"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Node.html#a2ea4d03f85a8ed0daeeec9d950129c49">~Node</a> ()</td></tr>
 <tr class="separator:a2ea4d03f85a8ed0daeeec9d950129c49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1448946ecd8220829392f2c461d85e8b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Node.html#a1448946ecd8220829392f2c461d85e8b">attach_starting_edge</a> (<a class="el" href="classNetwork_1_1Edge.html">Network::Edge</a> *to_attach)</td></tr>
@@ -129,41 +143,40 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a6571f02a290a57dca617030c197650ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab61e7e3feb2b56a353b7db2cece9ceaa"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Node.html#ab61e7e3feb2b56a353b7db2cece9ceaa">remove_edge</a> (<a class="el" href="classNetwork_1_1Edge.html">Network::Edge</a> *to_remove)</td></tr>
 <tr class="separator:ab61e7e3feb2b56a353b7db2cece9ceaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a73eea933473d20e0786df26d2de932de"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classNetwork_1_1Edge.html">Network::Edge</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Node.html#a73eea933473d20e0786df26d2de932de">get_starting_edges</a> () const</td></tr>
-<tr class="memdesc:a73eea933473d20e0786df26d2de932de"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function returns vector pointers of starting edges.  <a href="#a73eea933473d20e0786df26d2de932de">More...</a><br /></td></tr>
-<tr class="separator:a73eea933473d20e0786df26d2de932de"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a816a57c44e7bffa3e0d11d7824ac9098"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classNetwork_1_1Edge.html">Network::Edge</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Node.html#a816a57c44e7bffa3e0d11d7824ac9098">get_ending_edges</a> () const</td></tr>
-<tr class="memdesc:a816a57c44e7bffa3e0d11d7824ac9098"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function returns vector pointers of ending edges.  <a href="#a816a57c44e7bffa3e0d11d7824ac9098">More...</a><br /></td></tr>
-<tr class="separator:a816a57c44e7bffa3e0d11d7824ac9098"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af987c6d3d1dc130648108f2ffd2a24a6"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classNetwork_1_1Edge.html">Network::Edge</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Node.html#af987c6d3d1dc130648108f2ffd2a24a6">get_starting_edges</a> () const</td></tr>
+<tr class="memdesc:af987c6d3d1dc130648108f2ffd2a24a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function returns vector pointers of starting edges.  <a href="#af987c6d3d1dc130648108f2ffd2a24a6">More...</a><br /></td></tr>
+<tr class="separator:af987c6d3d1dc130648108f2ffd2a24a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed1e585aa3b6637553c1f93ba28eaaaa"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classNetwork_1_1Edge.html">Network::Edge</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Node.html#aed1e585aa3b6637553c1f93ba28eaaaa">get_ending_edges</a> () const</td></tr>
+<tr class="memdesc:aed1e585aa3b6637553c1f93ba28eaaaa"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function returns vector pointers of ending edges.  <a href="#aed1e585aa3b6637553c1f93ba28eaaaa">More...</a><br /></td></tr>
+<tr class="separator:aed1e585aa3b6637553c1f93ba28eaaaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classNetwork_1_1Idobject"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classNetwork_1_1Idobject')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classNetwork_1_1Idobject.html">Network::Idobject</a></td></tr>
 <tr class="memitem:a5b18e70ec73b9efa261c2568de0904b3 inherit pub_methods_classNetwork_1_1Idobject"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Idobject.html#a5b18e70ec73b9efa261c2568de0904b3">Idobject</a> (std::string const &amp;_id)</td></tr>
 <tr class="separator:a5b18e70ec73b9efa261c2568de0904b3 inherit pub_methods_classNetwork_1_1Idobject"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6467602eaab8b64c02c4b2ca429e2204 inherit pub_methods_classNetwork_1_1Idobject"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Idobject.html#a6467602eaab8b64c02c4b2ca429e2204">~Idobject</a> ()</td></tr>
-<tr class="separator:a6467602eaab8b64c02c4b2ca429e2204 inherit pub_methods_classNetwork_1_1Idobject"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ab88c86e4f63380e0af473f78aa10f9 inherit pub_methods_classNetwork_1_1Idobject"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Idobject.html#a3ab88c86e4f63380e0af473f78aa10f9">display</a> () const</td></tr>
-<tr class="separator:a3ab88c86e4f63380e0af473f78aa10f9 inherit pub_methods_classNetwork_1_1Idobject"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8307f1ede9c14826b393daf531c3a99d inherit pub_methods_classNetwork_1_1Idobject"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Idobject.html#a8307f1ede9c14826b393daf531c3a99d">get_id</a> () const</td></tr>
-<tr class="memdesc:a8307f1ede9c14826b393daf531c3a99d inherit pub_methods_classNetwork_1_1Idobject"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function returns the id of the object.  <a href="classNetwork_1_1Idobject.html#a8307f1ede9c14826b393daf531c3a99d">More...</a><br /></td></tr>
-<tr class="separator:a8307f1ede9c14826b393daf531c3a99d inherit pub_methods_classNetwork_1_1Idobject"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19a67ff832707bedf05a5d5f567c519c inherit pub_methods_classNetwork_1_1Idobject"><td class="memItemLeft" align="right" valign="top">std::string const  &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Idobject.html#a19a67ff832707bedf05a5d5f567c519c">get_id</a> () const</td></tr>
+<tr class="memdesc:a19a67ff832707bedf05a5d5f567c519c inherit pub_methods_classNetwork_1_1Idobject"><td class="mdescLeft">&#160;</td><td class="mdescRight">Getter for a const reference to the id.  <a href="classNetwork_1_1Idobject.html#a19a67ff832707bedf05a5d5f567c519c">More...</a><br /></td></tr>
+<tr class="separator:a19a67ff832707bedf05a5d5f567c519c inherit pub_methods_classNetwork_1_1Idobject"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaacb499dd168c6a36f63fbe512df5f95 inherit pub_methods_classNetwork_1_1Idobject"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Idobject.html#aaacb499dd168c6a36f63fbe512df5f95">get_id_copy</a> () const</td></tr>
+<tr class="memdesc:aaacb499dd168c6a36f63fbe512df5f95 inherit pub_methods_classNetwork_1_1Idobject"><td class="mdescLeft">&#160;</td><td class="mdescRight">Getter for a copy of the id.  <a href="classNetwork_1_1Idobject.html#aaacb499dd168c6a36f63fbe512df5f95">More...</a><br /></td></tr>
+<tr class="separator:aaacb499dd168c6a36f63fbe512df5f95 inherit pub_methods_classNetwork_1_1Idobject"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a59ad911befa40026b7e4e0187556bfd8"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Node.html#a59ad911befa40026b7e4e0187556bfd8">get_type</a> ()</td></tr>
+<tr class="separator:a59ad911befa40026b7e4e0187556bfd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_static_methods_classNetwork_1_1Idobject"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classNetwork_1_1Idobject')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classNetwork_1_1Idobject.html">Network::Idobject</a></td></tr>
+<tr class="memitem:a877c79a6e8039ce592142b762b05aa45 inherit pub_static_methods_classNetwork_1_1Idobject"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Idobject.html#a877c79a6e8039ce592142b762b05aa45">get_schema</a> ()</td></tr>
+<tr class="separator:a877c79a6e8039ce592142b762b05aa45 inherit pub_static_methods_classNetwork_1_1Idobject"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a732420b475f2eadda5b1aa9c54ef1615"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classNetwork_1_1Edge.html">Network::Edge</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Node.html#a732420b475f2eadda5b1aa9c54ef1615">starting_edges</a></td></tr>
-<tr class="separator:a732420b475f2eadda5b1aa9c54ef1615"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a64bf2802b0f2c6a84719e8e7e95829ee"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classNetwork_1_1Edge.html">Network::Edge</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Node.html#a64bf2802b0f2c6a84719e8e7e95829ee">ending_edges</a></td></tr>
-<tr class="separator:a64bf2802b0f2c6a84719e8e7e95829ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pro_methods_classNetwork_1_1Idobject"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classNetwork_1_1Idobject')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classNetwork_1_1Idobject.html">Network::Idobject</a></td></tr>
-<tr class="memitem:a080329392cd90c186df35d1afe6681dd inherit pro_methods_classNetwork_1_1Idobject"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Idobject.html#a080329392cd90c186df35d1afe6681dd">print_id</a> () const</td></tr>
-<tr class="separator:a080329392cd90c186df35d1afe6681dd inherit pro_methods_classNetwork_1_1Idobject"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef71f4cb3cb2e0cae1ca5e0edb696a60"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structNetwork_1_1Node_1_1Edgecollection.html">Edgecollection</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNetwork_1_1Node.html#aef71f4cb3cb2e0cae1ca5e0edb696a60">attached_edges</a></td></tr>
+<tr class="separator:aef71f4cb3cb2e0cae1ca5e0edb696a60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The class node contains all relevant functions for handling attachments and removement of edges as well as providing information about the nodes id. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a382e88fe7bae8a7c9152cb0c66c67e18"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a382e88fe7bae8a7c9152cb0c66c67e18">&#9670;&nbsp;</a></span>Node()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a382e88fe7bae8a7c9152cb0c66c67e18">&#9670;&nbsp;</a></span>Node() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -183,6 +196,24 @@ Additional Inherited Members</h2></td></tr>
 <span class="mlabels"><span class="mlabel">delete</span></span>  </td>
   </tr>
 </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5fd605a4f40ed05ee6ba54542fe9cccb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fd605a4f40ed05ee6ba54542fe9cccb">&#9670;&nbsp;</a></span>Node() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Network::Node::Node </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="pv__to__vphi_8cpp.html#a14e105ccb5fd45948f970d3a740a2b3d">nlohmann::json</a> const &amp;&#160;</td>
+          <td class="paramname"><em>data</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
 </div><div class="memdoc">
 
 </div>
@@ -261,14 +292,14 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a816a57c44e7bffa3e0d11d7824ac9098"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a816a57c44e7bffa3e0d11d7824ac9098">&#9670;&nbsp;</a></span>get_ending_edges()</h2>
+<a id="aed1e585aa3b6637553c1f93ba28eaaaa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed1e585aa3b6637553c1f93ba28eaaaa">&#9670;&nbsp;</a></span>get_ending_edges()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt; <a class="el" href="classNetwork_1_1Edge.html">Network::Edge</a> * &gt; Network::Node::get_ending_edges </td>
+          <td class="memname">std::vector&lt; <a class="el" href="classNetwork_1_1Edge.html">Edge</a> * &gt; Network::Node::get_ending_edges </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -280,14 +311,14 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a73eea933473d20e0786df26d2de932de"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a73eea933473d20e0786df26d2de932de">&#9670;&nbsp;</a></span>get_starting_edges()</h2>
+<a id="af987c6d3d1dc130648108f2ffd2a24a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af987c6d3d1dc130648108f2ffd2a24a6">&#9670;&nbsp;</a></span>get_starting_edges()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt; <a class="el" href="classNetwork_1_1Edge.html">Network::Edge</a> * &gt; Network::Node::get_starting_edges </td>
+          <td class="memname">std::vector&lt; <a class="el" href="classNetwork_1_1Edge.html">Edge</a> * &gt; Network::Node::get_starting_edges </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -296,6 +327,31 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>This function returns vector pointers of starting edges. </p>
+
+</div>
+</div>
+<a id="a59ad911befa40026b7e4e0187556bfd8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a59ad911befa40026b7e4e0187556bfd8">&#9670;&nbsp;</a></span>get_type()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string Network::Node::get_type </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -324,8 +380,8 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a64bf2802b0f2c6a84719e8e7e95829ee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a64bf2802b0f2c6a84719e8e7e95829ee">&#9670;&nbsp;</a></span>ending_edges</h2>
+<a id="aef71f4cb3cb2e0cae1ca5e0edb696a60"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef71f4cb3cb2e0cae1ca5e0edb696a60">&#9670;&nbsp;</a></span>attached_edges</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -334,7 +390,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;<a class="el" href="classNetwork_1_1Edge.html">Network::Edge</a> *&gt; Network::Node::ending_edges</td>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="structNetwork_1_1Node_1_1Edgecollection.html">Edgecollection</a>&gt; Network::Node::attached_edges</td>
         </tr>
       </table>
   </td>
@@ -343,34 +399,12 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="a732420b475f2eadda5b1aa9c54ef1615"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a732420b475f2eadda5b1aa9c54ef1615">&#9670;&nbsp;</a></span>starting_edges</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::vector&lt;<a class="el" href="classNetwork_1_1Edge.html">Network::Edge</a> *&gt; Network::Node::starting_edges</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
+<b>Initial value:</b><div class="fragment"><div class="line">{</div><div class="line">        std::make_unique&lt;Edgecollection&gt;()}</div></div><!-- fragment -->
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>Model/Network/include/<a class="el" href="Node_8hpp_source.html">Node.hpp</a></li>
-<li>Model/Network/<a class="el" href="Node_8cpp.html">Node.cpp</a></li>
+<li>src/Model/Network/include/<a class="el" href="Node_8hpp_source.html">Node.hpp</a></li>
+<li>src/Model/Network/<a class="el" href="Node_8cpp.html">Node.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

@@ -1,6 +1,10 @@
 var searchData=
 [
-  ['shortpipe',['Shortpipe',['../classModel_1_1Networkproblem_1_1Gas_1_1Shortpipe.html',1,'Model::Networkproblem::Gas']]],
-  ['solutionstruct',['Solutionstruct',['../structSolver_1_1Solutionstruct.html',1,'Solver']]],
-  ['subproblem',['Subproblem',['../classModel_1_1Subproblem.html',1,'Model']]]
+  ['pipe',['Pipe',['../classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html',1,'Model::Networkproblem::Gas']]],
+  ['pipe_5fbalancelaw',['Pipe_Balancelaw',['../classModel_1_1Balancelaw_1_1Pipe__Balancelaw.html',1,'Model::Balancelaw']]],
+  ['power_5ffactory',['Power_factory',['../structModel_1_1Componentfactory_1_1Power__factory.html',1,'Model::Componentfactory']]],
+  ['powernode',['Powernode',['../classModel_1_1Networkproblem_1_1Power_1_1Powernode.html',1,'Model::Networkproblem::Power']]],
+  ['pqnode',['PQnode',['../classModel_1_1Networkproblem_1_1Power_1_1PQnode.html',1,'Model::Networkproblem::Power']]],
+  ['problem',['Problem',['../classModel_1_1Problem.html',1,'Model']]],
+  ['pvnode',['PVnode',['../classModel_1_1Networkproblem_1_1Power_1_1PVnode.html',1,'Model::Networkproblem::Power']]]
 ];

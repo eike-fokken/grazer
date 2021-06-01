@@ -1,7 +1,8 @@
 <map id="Network::Net" name="Network::Net">
-<area shape="rect" id="node4" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="775,99,892,126"/>
-<area shape="rect" id="node5" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="588,182,725,209"/>
-<area shape="rect" id="node9" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="1404,117,1523,143"/>
-<area shape="rect" id="node7" title="STL class. " alt="" coords="193,182,280,209"/>
-<area shape="rect" id="node8" title="STL class. " alt="" coords="5,175,144,216"/>
+<area shape="rect" id="node4" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="775,113,892,139"/>
+<area shape="rect" id="node5" href="$classNetwork_1_1Idobject.html" title="Provides a unified &quot;name&quot; to inheriting classes. " alt="" coords="588,183,725,210"/>
+<area shape="rect" id="node9" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="2207,123,2325,150"/>
+<area shape="rect" id="node7" title="STL class. " alt="" coords="193,183,280,210"/>
+<area shape="rect" id="node8" title="STL class. " alt="" coords="5,176,144,217"/>
+<area shape="rect" id="node11" href="$structNetwork_1_1Node_1_1Edgecollection.html" title="Network::Node::Edgecollection" alt="" coords="1404,71,1627,98"/>
 </map>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Grazer: Model/Networkproblem/Power/Transmissionline.cpp File Reference</title>
+<title>Grazer: src/Model/Networkproblem/Power/Transmissionline.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,6 +29,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Grazer
+   &#160;<span id="projectnumber">0.0.1</span>
    </div>
   </td>
  </tr>
@@ -86,23 +87,28 @@ $(document).ready(function(){initNavTree('Transmissionline_8cpp.html','');});
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="Powernode_8hpp_source.html">Powernode.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="make__schema_8hpp_source.html">make_schema.hpp</a>&quot;</code><br />
+<code>#include &lt;<a class="el" href="Exception_8hpp_source.html">Exception.hpp</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="Transmissionline_8hpp_source.html">Transmissionline.hpp</a>&gt;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
-<code>#include &lt;<a class="el" href="Exception_8hpp_source.html">Exception.hpp</a>&gt;</code><br />
+<code>#include &lt;tuple&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for Transmissionline.cpp:</div>
 <div class="dyncontent">
-<div class="center"><img src="Transmissionline_8cpp__incl.png" border="0" usemap="#Model_2Networkproblem_2Power_2Transmissionline_8cpp" alt=""/></div>
-<map name="Model_2Networkproblem_2Power_2Transmissionline_8cpp" id="Model_2Networkproblem_2Power_2Transmissionline_8cpp">
-<area shape="rect" id="node2" href="Powernode_8hpp.html" title="Powernode.hpp" alt="" coords="661,169,784,196"/>
-<area shape="rect" id="node6" href="Exception_8hpp.html" title="Exception.hpp" alt="" coords="109,319,224,345"/>
-<area shape="rect" id="node18" href="Transmissionline_8hpp.html" title="Transmissionline.hpp" alt="" coords="735,95,894,121"/>
-<area shape="rect" id="node3" href="Boundaryvalue_8hpp.html" title="Boundaryvalue.hpp" alt="" coords="342,244,490,271"/>
-<area shape="rect" id="node13" href="Equationcomponent_8hpp.html" title="Equationcomponent.hpp" alt="" coords="633,244,813,271"/>
-<area shape="rect" id="node15" href="Node_8hpp.html" title="Node.hpp" alt="" coords="899,244,983,271"/>
-<area shape="rect" id="node4" href="Mathfunctions_8hpp.html" title="Mathfunctions.hpp" alt="" coords="374,319,517,345"/>
-<area shape="rect" id="node16" href="Idobject_8hpp.html" title="Idobject.hpp" alt="" coords="1110,319,1213,345"/>
-<area shape="rect" id="node19" href="Edge_8hpp.html" title="Edge.hpp" alt="" coords="1089,244,1172,271"/>
+<div class="center"><img src="Transmissionline_8cpp__incl.png" border="0" usemap="#src_2Model_2Networkproblem_2Power_2Transmissionline_8cpp" alt=""/></div>
+<map name="src_2Model_2Networkproblem_2Power_2Transmissionline_8cpp" id="src_2Model_2Networkproblem_2Power_2Transmissionline_8cpp">
+<area shape="rect" id="node2" href="Powernode_8hpp.html" title="Powernode.hpp" alt="" coords="1067,169,1190,196"/>
+<area shape="rect" id="node4" href="Exception_8hpp.html" title="Exception.hpp" alt="" coords="127,393,242,420"/>
+<area shape="rect" id="node22" href="make__schema_8hpp.html" title="make_schema.hpp" alt="" coords="1217,319,1362,345"/>
+<area shape="rect" id="node23" href="Transmissionline_8hpp.html" title="Transmissionline.hpp" alt="" coords="1342,95,1501,121"/>
+<area shape="rect" id="node3" href="Boundaryvalue_8hpp.html" title="Boundaryvalue.hpp" alt="" coords="561,244,709,271"/>
+<area shape="rect" id="node15" href="Node_8hpp.html" title="Node.hpp" alt="" coords="1168,244,1252,271"/>
+<area shape="rect" id="node18" href="Statecomponent_8hpp.html" title="Statecomponent.hpp" alt="" coords="986,244,1143,271"/>
+<area shape="rect" id="node7" href="Mathfunctions_8hpp.html" title="Mathfunctions.hpp" alt="" coords="266,393,409,420"/>
+<area shape="rect" id="node8" href="Valuemap_8hpp.html" title="Valuemap.hpp" alt="" coords="578,319,692,345"/>
+<area shape="rect" id="node16" href="Idobject_8hpp.html" title="Idobject.hpp" alt="" coords="1386,319,1489,345"/>
+<area shape="rect" id="node19" href="Equationcomponent_8hpp.html" title="Equationcomponent.hpp" alt="" coords="1013,319,1193,345"/>
+<area shape="rect" id="node24" href="Edge_8hpp.html" title="Edge.hpp" alt="" coords="1384,169,1467,196"/>
 </map>
 </div>
 </div><table class="memberdecls">
@@ -116,7 +122,7 @@ Namespaces</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_312950da3f243a51cc00f4a947545131.html">Model</a></li><li class="navelem"><a class="el" href="dir_2dae753d3896316cd40187bf6cda48e1.html">Networkproblem</a></li><li class="navelem"><a class="el" href="dir_98f59be2a3138dcda2abf23e3d1a6ae0.html">Power</a></li><li class="navelem"><a class="el" href="Transmissionline_8cpp.html">Transmissionline.cpp</a></li>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_32e188284d239da8bb14ec1dabb0c35f.html">Model</a></li><li class="navelem"><a class="el" href="dir_8457506e79b067815ec9f925c89b7a4d.html">Networkproblem</a></li><li class="navelem"><a class="el" href="dir_f2ce7d9882f548e34d7fe4f50f85b37d.html">Power</a></li><li class="navelem"><a class="el" href="Transmissionline_8cpp.html">Transmissionline.cpp</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>

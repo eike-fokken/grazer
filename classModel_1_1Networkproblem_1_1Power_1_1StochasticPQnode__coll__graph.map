@@ -1,0 +1,15 @@
+<map id="Model::Networkproblem::Power::StochasticPQnode" name="Model::Networkproblem::Power::StochasticPQnode">
+<area shape="rect" id="node2" href="$classModel_1_1Networkproblem_1_1Power_1_1Powernode.html" title="Model::Networkproblem\l::Power::Powernode" alt="" coords="1478,219,1657,260"/>
+<area shape="rect" id="node3" href="$classModel_1_1Networkproblem_1_1Statecomponent.html" title="Model::Networkproblem\l::Statecomponent" alt="" coords="1021,364,1200,405"/>
+<area shape="rect" id="node4" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="A base class for network components that supply model equations to be solved. " alt="" coords="655,335,834,376"/>
+<area shape="rect" id="node6" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="1051,50,1170,77"/>
+<area shape="rect" id="node14" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="1509,25,1626,51"/>
+<area shape="rect" id="node7" href="$classNetwork_1_1Idobject.html" title="Provides a unified &quot;name&quot; to inheriting classes. " alt="" coords="676,13,813,39"/>
+<area shape="rect" id="node9" title="STL class. " alt="" coords="193,13,280,39"/>
+<area shape="rect" id="node10" title="STL class. " alt="" coords="5,5,144,47"/>
+<area shape="rect" id="node12" href="$structNetwork_1_1Node_1_1Edgecollection.html" title="Network::Node::Edgecollection" alt="" coords="2193,30,2416,57"/>
+<area shape="rect" id="node15" href="$classModel_1_1Networkproblem_1_1Boundaryvalue.html" title="Model::Networkproblem\l::Boundaryvalue\&lt; 2 \&gt;" alt="" coords="1021,204,1200,245"/>
+<area shape="rect" id="node18" href="$structModel_1_1Networkproblem_1_1Power_1_1StochasticPQnode_1_1StochasticData.html" title="Model::Networkproblem\l::Power::StochasticPQnode\l::StochasticData" alt="" coords="1013,123,1208,179"/>
+<area shape="rect" id="node19" href="$classAux_1_1Truncatednormaldist.html" title="provides a truncated normal distribution sample on invocation. " alt="" coords="651,138,839,165"/>
+<area shape="rect" id="node20" href="$classAux_1_1Normaldistribution.html" title="provides a normal distribution sample on invocation. " alt="" coords="351,138,528,165"/>
+</map>

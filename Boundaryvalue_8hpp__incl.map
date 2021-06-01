@@ -1,4 +1,5 @@
-<map id="Model/Networkproblem/include/Boundaryvalue.hpp" name="Model/Networkproblem/include/Boundaryvalue.hpp">
-<area shape="rect" id="node2" href="$Mathfunctions_8hpp.html" title="Mathfunctions.hpp" alt="" coords="5,95,148,121"/>
-<area shape="rect" id="node4" href="$Exception_8hpp.html" title="Exception.hpp" alt="" coords="303,95,418,121"/>
+<map id="src/Model/Networkproblem/Equationcomponent/include/Boundaryvalue.hpp" name="src/Model/Networkproblem/Equationcomponent/include/Boundaryvalue.hpp">
+<area shape="rect" id="node2" href="$Exception_8hpp.html" title="Exception.hpp" alt="" coords="322,184,436,211"/>
+<area shape="rect" id="node5" href="$Mathfunctions_8hpp.html" title="Mathfunctions.hpp" alt="" coords="24,184,166,211"/>
+<area shape="rect" id="node6" href="$Valuemap_8hpp.html" title="Valuemap.hpp" alt="" coords="467,109,582,136"/>
 </map>

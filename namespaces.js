@@ -1,10 +1,11 @@
 var namespaces =
 [
-    [ "Aux", "namespaceAux.html", null ],
+    [ "Aux", "namespaceAux.html", "namespaceAux" ],
+    [ "aux_json", "namespaceaux__json.html", null ],
     [ "grazer", "namespacegrazer.html", null ],
-    [ "GrazerTest", "namespaceGrazerTest.html", null ],
-    [ "Jsonreader", "namespaceJsonreader.html", null ],
+    [ "io", "namespaceio.html", null ],
     [ "Model", "namespaceModel.html", "namespaceModel" ],
     [ "Network", "namespaceNetwork.html", null ],
+    [ "randutils", "namespacerandutils.html", null ],
     [ "Solver", "namespaceSolver.html", null ]
 ];

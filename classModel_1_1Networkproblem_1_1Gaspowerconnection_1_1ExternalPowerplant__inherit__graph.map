@@ -1,0 +1,7 @@
+<map id="Model::Networkproblem::Gaspowerconnection::ExternalPowerplant" name="Model::Networkproblem::Gaspowerconnection::ExternalPowerplant">
+<area shape="rect" id="node2" href="$classModel_1_1Networkproblem_1_1Power_1_1Powernode.html" title="Model::Networkproblem\l::Power::Powernode" alt="" coords="96,184,275,225"/>
+<area shape="rect" id="node3" href="$classModel_1_1Networkproblem_1_1Statecomponent.html" title="Model::Networkproblem\l::Statecomponent" alt="" coords="9,95,188,136"/>
+<area shape="rect" id="node4" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="A base class for network components that supply model equations to be solved. " alt="" coords="5,5,184,47"/>
+<area shape="rect" id="node5" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="215,102,334,129"/>
+<area shape="rect" id="node6" href="$classNetwork_1_1Idobject.html" title="Provides a unified &quot;name&quot; to inheriting classes. " alt="" coords="209,13,346,39"/>
+</map>

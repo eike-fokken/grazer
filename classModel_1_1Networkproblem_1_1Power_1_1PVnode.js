@@ -1,6 +1,7 @@
 var classModel_1_1Networkproblem_1_1Power_1_1PVnode =
 [
-    [ "display", "classModel_1_1Networkproblem_1_1Power_1_1PVnode.html#a2bdf618ddfb2d5a10b1f914a3f40c49b", null ],
-    [ "evaluate", "classModel_1_1Networkproblem_1_1Power_1_1PVnode.html#a6684572c8af628abee054ccb78f39ceb", null ],
-    [ "evaluate_state_derivative", "classModel_1_1Networkproblem_1_1Power_1_1PVnode.html#a8d9cd54d62b3f2f8da260b1da005c34d", null ]
+    [ "evaluate", "classModel_1_1Networkproblem_1_1Power_1_1PVnode.html#a2796d70dc8a133267724f0a21b7de7d0", null ],
+    [ "evaluate_state_derivative", "classModel_1_1Networkproblem_1_1Power_1_1PVnode.html#aef8337e2ac49204bb4c3e4258b8620da", null ],
+    [ "get_power_type", "classModel_1_1Networkproblem_1_1Power_1_1PVnode.html#aee8624c3e8517c5b06f946fb40a45972", null ],
+    [ "json_save", "classModel_1_1Networkproblem_1_1Power_1_1PVnode.html#ac060f53dec1fb38cf7ff9e8b2a57f54a", null ]
 ];

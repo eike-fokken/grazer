@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Grazer: Auxillary/Misc/include/Misc.hpp Source File</title>
+<title>Grazer: src/Auxillary/Misc/include/Misc.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,6 +29,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Grazer
+   &#160;<span id="projectnumber">0.0.1</span>
    </div>
   </td>
  </tr>
@@ -83,14 +84,15 @@ $(document).ready(function(){initNavTree('Misc_8hpp_source.html','');});
 <div class="title">Misc.hpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<a href="Misc_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &lt;sstream&gt;</span></div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;</div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;</div><div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceAux.html">Aux</a> {</div><div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;std::string <a class="code" href="namespaceAux.html#a16c9a7ff53b49f27c735dbeb599a1c35">to_string_precise</a> (<span class="keywordtype">double</span> value, <span class="keywordtype">int</span> n = 9);</div><div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div><div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;}</div><div class="ttc" id="namespaceAux_html"><div class="ttname"><a href="namespaceAux.html">Aux</a></div><div class="ttdef"><b>Definition:</b> Mathfunctions.hpp:2</div></div>
-<div class="ttc" id="namespaceAux_html_a16c9a7ff53b49f27c735dbeb599a1c35"><div class="ttname"><a href="namespaceAux.html#a16c9a7ff53b49f27c735dbeb599a1c35">Aux::to_string_precise</a></div><div class="ttdeci">std::string to_string_precise(double value, int n=9)</div><div class="ttdoc">A version of std::to_string with more precision. </div><div class="ttdef"><b>Definition:</b> Misc.cpp:5</div></div>
+<a href="Misc_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &lt;sstream&gt;</span></div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;</div><div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceAux.html">Aux</a> {</div><div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;  <a class="code" href="namespaceAux_1_1schema_1_1type.html#a308a45671d0694cf7403d68e8e6d0be8">std::string</a> <a class="code" href="namespaceAux.html#a16c9a7ff53b49f27c735dbeb599a1c35">to_string_precise</a>(<span class="keywordtype">double</span> value, <span class="keywordtype">int</span> n = 9);</div><div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div><div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;} <span class="comment">// namespace Aux</span></div><div class="ttc" id="namespaceAux_1_1schema_1_1type_html_a308a45671d0694cf7403d68e8e6d0be8"><div class="ttname"><a href="namespaceAux_1_1schema_1_1type.html#a308a45671d0694cf7403d68e8e6d0be8">Aux::schema::type::string</a></div><div class="ttdeci">json string()</div><div class="ttdef"><b>Definition:</b> make_schema.cpp:38</div></div>
+<div class="ttc" id="namespaceAux_html"><div class="ttname"><a href="namespaceAux.html">Aux</a></div></div>
+<div class="ttc" id="namespaceAux_html_a16c9a7ff53b49f27c735dbeb599a1c35"><div class="ttname"><a href="namespaceAux.html#a16c9a7ff53b49f27c735dbeb599a1c35">Aux::to_string_precise</a></div><div class="ttdeci">std::string to_string_precise(double value, int n=9)</div><div class="ttdoc">A version of std::to_string with more precision. </div><div class="ttdef"><b>Definition:</b> Misc.cpp:4</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_9aa834dcee1c3877d23313d83b24d193.html">Auxillary</a></li><li class="navelem"><a class="el" href="dir_4758c0eb2d0e05ea06d4c7de11ab1343.html">Misc</a></li><li class="navelem"><a class="el" href="dir_94fec3d0c1397ba2d602c55c5e8f36fa.html">include</a></li><li class="navelem"><a class="el" href="Misc_8hpp.html">Misc.hpp</a></li>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_058944e7a9d91d5de3111caaae92055e.html">Auxillary</a></li><li class="navelem"><a class="el" href="dir_43e16506247ff3a1172d7b474387fee4.html">Misc</a></li><li class="navelem"><a class="el" href="dir_f3ab6dc55001322746212b1382028406.html">include</a></li><li class="navelem"><a class="el" href="Misc_8hpp.html">Misc.hpp</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>

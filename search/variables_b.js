@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['network',['network',['../classModel_1_1Networkproblem_1_1Networkproblem.html#a7596ed900b8aa16f281efbbcf4afcbf5',1,'Model::Networkproblem::Networkproblem']]],
-  ['nodes',['nodes',['../classNetwork_1_1Net.html#ae23fc1a293126401227424133b807875',1,'Network::Net']]],
-  ['number_5fof_5fpoints',['number_of_points',['../classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html#a7479b2005a896f60ce1bbb9f6e3a4fa3',1,'Model::Networkproblem::Gas::Pipe']]]
+  ['laminar_5fborder',['laminar_border',['../classModel_1_1Balancelaw_1_1Isothermaleulerequation.html#a3fc6b96a634d793af2a1c3682ba665ad',1,'Model::Balancelaw::Isothermaleulerequation']]],
+  ['length',['length',['../namespaceAux_1_1unit.html#ab6c274a99aabc68b5010b0194bcf4571',1,'Aux::unit']]],
+  ['lusolver',['lusolver',['../classSolver_1_1Newtonsolver.html#af5f14a4df708f21d63246c3fa4c7bced',1,'Solver::Newtonsolver']]]
 ];

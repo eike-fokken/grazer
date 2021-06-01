@@ -1,21 +1,3 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="191,296,369,337"/>
-<area shape="rect" id="node2" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html" title="This class is a base class for all Gas edges with a 2x2 balance law. " alt="" coords="417,495,596,536"/>
-<area shape="rect" id="node8" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gasnode.html" title="Model::Networkproblem\l::Gas::Gasnode" alt="" coords="417,136,596,177"/>
-<area shape="rect" id="node12" href="$classModel_1_1Networkproblem_1_1Power_1_1Powernode.html" title="Model::Networkproblem\l::Power::Powernode" alt="" coords="417,267,596,308"/>
-<area shape="rect" id="node3" href="$classModel_1_1Networkproblem_1_1Gas_1_1Compressorstation.html" title="Model::Networkproblem\l::Gas::Compressorstation" alt="" coords="657,397,843,439"/>
-<area shape="rect" id="node4" href="$classModel_1_1Networkproblem_1_1Gas_1_1Controlvalve.html" title="Model::Networkproblem\l::Gas::Controlvalve" alt="" coords="661,463,839,504"/>
-<area shape="rect" id="node5" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gaspowerconnection.html" title="Model::Networkproblem\l::Gas::Gaspowerconnection" alt="" coords="651,528,849,569"/>
-<area shape="rect" id="node6" href="$classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html" title="Model::Networkproblem\l::Gas::Pipe" alt="" coords="661,593,839,635"/>
-<area shape="rect" id="node7" href="$classModel_1_1Networkproblem_1_1Gas_1_1Shortpipe.html" title="Model::Networkproblem\l::Gas::Shortpipe" alt="" coords="661,659,839,700"/>
-<area shape="rect" id="node9" href="$classModel_1_1Networkproblem_1_1Gas_1_1Flowboundarynode.html" title="Model::Networkproblem\l::Gas::Flowboundarynode" alt="" coords="657,5,843,47"/>
-<area shape="rect" id="node10" href="$classModel_1_1Networkproblem_1_1Gas_1_1Innode.html" title="This class represents an inner node of the gas network, that neither injects gas nor takes gas out..." alt="" coords="661,71,839,112"/>
-<area shape="rect" id="node11" href="$classModel_1_1Networkproblem_1_1Gas_1_1Pressureboundarynode.html" title="Model::Networkproblem\l::Gas::Pressureboundarynode" alt="" coords="644,136,856,177"/>
-<area shape="rect" id="node13" href="$classModel_1_1Networkproblem_1_1Power_1_1PQnode.html" title="Model::Networkproblem\l::Power::PQnode" alt="" coords="661,201,839,243"/>
-<area shape="rect" id="node14" href="$classModel_1_1Networkproblem_1_1Power_1_1PVnode.html" title="Model::Networkproblem\l::Power::PVnode" alt="" coords="661,267,839,308"/>
-<area shape="rect" id="node15" href="$classModel_1_1Networkproblem_1_1Power_1_1Vphinode.html" title="Model::Networkproblem\l::Power::Vphinode" alt="" coords="661,332,839,373"/>
-<area shape="rect" id="node16" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="5,407,143,434"/>
-<area shape="rect" id="node17" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="448,601,565,627"/>
-<area shape="rect" id="node19" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="221,245,339,271"/>
-<area shape="rect" id="node18" href="$classModel_1_1Networkproblem_1_1Power_1_1Transmissionline.html" title="Model::Networkproblem\l::Power::Transmissionline" alt="" coords="657,724,843,765"/>
+<area shape="rect" id="node1" href="$classModel_1_1Networkproblem_1_1Initialvalue.html" title="Model::Networkproblem\l::Initialvalue\&lt; N \&gt;" alt="" coords="5,5,184,47"/>
 </map>

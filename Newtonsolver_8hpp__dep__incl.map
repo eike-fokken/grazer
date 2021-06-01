@@ -1,4 +1,5 @@
-<map id="Newtonsolver/include/Newtonsolver.hpp" name="Newtonsolver/include/Newtonsolver.hpp">
-<area shape="rect" id="node2" href="$grazer_8cpp.html" title="Grazer/grazer.cpp" alt="" coords="5,95,141,121"/>
-<area shape="rect" id="node3" href="$Newtonsolver_8cpp.html" title="Newtonsolver/Newtonsolver.cpp" alt="" coords="165,95,397,121"/>
+<map id="src/Newtonsolver/include/Newtonsolver.hpp" name="src/Newtonsolver/include/Newtonsolver.hpp">
+<area shape="rect" id="node2" href="$Timeevolver_8hpp.html" title="src/Model/Problemlayer\l/include/Timeevolver.hpp" alt="" coords="110,95,297,136"/>
+<area shape="rect" id="node3" href="$commands_8cpp.html" title="src/Grazer/commands.cpp" alt="" coords="5,191,196,218"/>
+<area shape="rect" id="node4" href="$Timeevolver_8cpp.html" title="src/Model/Problemlayer\l/Timeevolver.cpp" alt="" coords="220,184,395,225"/>
 </map>

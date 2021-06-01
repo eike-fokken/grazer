@@ -1,4 +1,13 @@
 <map id="Model::Networkproblem::Gas::Compressorstation" name="Model::Networkproblem::Gas::Compressorstation">
-<area shape="rect" id="node2" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html" title="This class is a base class for all Gas edges with a 2x2 balance law. " alt="" coords="157,200,336,241"/>
-<area shape="rect" id="node3" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="157,109,336,151"/>
+<area shape="rect" id="node2" href="$classModel_1_1Networkproblem_1_1Gas_1_1Shortpipe.html" title="Model::Networkproblem\l::Gas::Shortpipe" alt="" coords="1574,121,1753,162"/>
+<area shape="rect" id="node3" href="$classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent.html" title="Model::Networkproblem\l::Gas::Shortcomponent" alt="" coords="1224,117,1403,158"/>
+<area shape="rect" id="node4" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="963,75,1080,101"/>
+<area shape="rect" id="node5" href="$classNetwork_1_1Idobject.html" title="Provides a unified &quot;name&quot; to inheriting classes. " alt="" coords="725,25,862,52"/>
+<area shape="rect" id="node9" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="2191,59,2309,85"/>
+<area shape="rect" id="node7" title="STL class. " alt="" coords="193,25,280,52"/>
+<area shape="rect" id="node8" title="STL class. " alt="" coords="5,18,144,59"/>
+<area shape="rect" id="node11" href="$structNetwork_1_1Node_1_1Edgecollection.html" title="Network::Node::Edgecollection" alt="" coords="1552,189,1775,216"/>
+<area shape="rect" id="node13" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html" title="This class is a base class for all Gas edges with a 2x2 balance law. " alt="" coords="932,163,1111,205"/>
+<area shape="rect" id="node14" href="$classModel_1_1Networkproblem_1_1Statecomponent.html" title="Model::Networkproblem\l::Statecomponent" alt="" coords="704,163,883,205"/>
+<area shape="rect" id="node15" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="A base class for network components that supply model equations to be solved. " alt="" coords="351,134,529,175"/>
 </map>

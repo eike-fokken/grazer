@@ -1,6 +1,9 @@
 <map id="Model::Networkproblem::Gas::Shortpipe" name="Model::Networkproblem::Gas::Shortpipe">
-<area shape="rect" id="node2" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="21,102,138,129"/>
-<area shape="rect" id="node3" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="5,13,143,39"/>
-<area shape="rect" id="node4" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html" title="This class is a base class for all Gas edges with a 2x2 balance law. " alt="" coords="165,95,343,136"/>
-<area shape="rect" id="node5" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="167,5,346,47"/>
+<area shape="rect" id="node8" href="$classModel_1_1Networkproblem_1_1Gas_1_1Compressorstation.html" title="Model::Networkproblem\l::Gas::Compressorstation" alt="" coords="71,452,258,493"/>
+<area shape="rect" id="node2" href="$classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent.html" title="Model::Networkproblem\l::Gas::Shortcomponent" alt="" coords="75,273,254,315"/>
+<area shape="rect" id="node3" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="21,191,138,218"/>
+<area shape="rect" id="node4" href="$classNetwork_1_1Idobject.html" title="Provides a unified &quot;name&quot; to inheriting classes. " alt="" coords="5,102,143,129"/>
+<area shape="rect" id="node5" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gasedge.html" title="This class is a base class for all Gas edges with a 2x2 balance law. " alt="" coords="165,184,343,225"/>
+<area shape="rect" id="node6" href="$classModel_1_1Networkproblem_1_1Statecomponent.html" title="Model::Networkproblem\l::Statecomponent" alt="" coords="167,95,346,136"/>
+<area shape="rect" id="node7" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="A base class for network components that supply model equations to be solved. " alt="" coords="167,5,346,47"/>
 </map>

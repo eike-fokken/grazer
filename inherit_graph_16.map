@@ -1,3 +1,6 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structSolver_1_1Solutionstruct.html" title="This struct holds info on the solution of a solve&#45;execution. " alt="" coords="5,5,167,32"/>
+<area shape="rect" id="node1" title="STL class. " alt="" coords="5,13,120,39"/>
+<area shape="rect" id="node2" title="STL class. " alt="" coords="168,13,287,39"/>
+<area shape="rect" id="node3" title="STL class. " alt="" coords="335,13,469,39"/>
+<area shape="rect" id="node4" href="$classModel_1_1Networkproblem_1_1Valuemap__out__of__range.html" title="This exception class returns information on whether too high or too low a value was requested..." alt="" coords="517,5,704,47"/>
 </map>

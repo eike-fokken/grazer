@@ -1,4 +1,4 @@
 <map id="Model::Networkproblem::Power::Transmissionline" name="Model::Networkproblem::Power::Transmissionline">
 <area shape="rect" id="node2" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="40,80,157,107"/>
-<area shape="rect" id="node3" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="30,5,167,32"/>
+<area shape="rect" id="node3" href="$classNetwork_1_1Idobject.html" title="Provides a unified &quot;name&quot; to inheriting classes. " alt="" coords="30,5,167,32"/>
 </map>

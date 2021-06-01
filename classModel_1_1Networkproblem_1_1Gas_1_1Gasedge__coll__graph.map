@@ -1,3 +1,4 @@
 <map id="Model::Networkproblem::Gas::Gasedge" name="Model::Networkproblem::Gas::Gasedge">
-<area shape="rect" id="node2" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="157,109,336,151"/>
+<area shape="rect" id="node2" href="$classModel_1_1Networkproblem_1_1Statecomponent.html" title="Model::Networkproblem\l::Statecomponent" alt="" coords="75,109,253,151"/>
+<area shape="rect" id="node3" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="A base class for network components that supply model equations to be solved. " alt="" coords="5,5,184,47"/>
 </map>

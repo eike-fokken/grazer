@@ -1,6 +1,27 @@
 var searchData=
 [
-  ['vphinode',['Vphinode',['../classModel_1_1Networkproblem_1_1Power_1_1Vphinode.html',1,'Model::Networkproblem::Power']]],
-  ['vphinode_2ecpp',['Vphinode.cpp',['../Vphinode_8cpp.html',1,'']]],
-  ['vphinode_2ehpp',['Vphinode.hpp',['../Vphinode_8hpp.html',1,'']]]
+  ['t',['T',['../classModel_1_1Balancelaw_1_1Isothermaleulerequation.html#a4d6b3887d8e210f8bee9eede0ad6019e',1,'Model::Balancelaw::Isothermaleulerequation']]],
+  ['t_5f0',['T_0',['../classModel_1_1Balancelaw_1_1Isothermaleulerequation.html#a8758f3b5781fb7f691fb2b39e6df4836',1,'Model::Balancelaw::Isothermaleulerequation']]],
+  ['t_5fcrit',['T_crit',['../classModel_1_1Balancelaw_1_1Isothermaleulerequation.html#ad4e3a6470a6a0c2b340c06ffe6bfcacd',1,'Model::Balancelaw::Isothermaleulerequation']]],
+  ['temperature',['temperature',['../namespaceAux_1_1unit.html#a7dcf6a84810bfeb11b0a829592790bdb',1,'Aux::unit']]],
+  ['theta_5fp',['theta_P',['../structModel_1_1Networkproblem_1_1Power_1_1StochasticPQnode_1_1StochasticData.html#a11ba8e731893f6f4bc13ae9652f01560',1,'Model::Networkproblem::Power::StochasticPQnode::StochasticData']]],
+  ['theta_5fq',['theta_Q',['../structModel_1_1Networkproblem_1_1Power_1_1StochasticPQnode_1_1StochasticData.html#a37257f888f68f2d1df776076e8257c98',1,'Model::Networkproblem::Power::StochasticPQnode::StochasticData']]],
+  ['threepointscheme',['Threepointscheme',['../classModel_1_1Scheme_1_1Threepointscheme.html',1,'Model::Scheme']]],
+  ['threepointscheme_2ehpp',['Threepointscheme.hpp',['../Threepointscheme_8hpp.html',1,'']]],
+  ['timedata',['Timedata',['../structModel_1_1Timedata.html',1,'Model::Timedata'],['../structModel_1_1Timedata.html#a0e89d68bdc467920242e07e162c82475',1,'Model::Timedata::Timedata()=delete'],['../structModel_1_1Timedata.html#a992f385c930f756f1eb9aa64e3738872',1,'Model::Timedata::Timedata(nlohmann::json const &amp;time_evolution_data)']]],
+  ['timeevolver',['Timeevolver',['../classModel_1_1Timeevolver.html',1,'Model::Timeevolver'],['../classModel_1_1Timeevolver.html#aa987ea08759b3c810f0e10863392dc1c',1,'Model::Timeevolver::Timeevolver()']]],
+  ['timeevolver_2ecpp',['Timeevolver.cpp',['../Timeevolver_8cpp.html',1,'']]],
+  ['timeevolver_2ehpp',['Timeevolver.hpp',['../Timeevolver_8hpp.html',1,'']]],
+  ['to_5fstring_5fprecise',['to_string_precise',['../namespaceAux.html#a16c9a7ff53b49f27c735dbeb599a1c35',1,'Aux']]],
+  ['todo_20list',['Todo List',['../todo.html',1,'']]],
+  ['tolerance',['tolerance',['../classSolver_1_1Newtonsolver.html#a6cab9d2c6ccb5ddb254474d5caa7557e',1,'Solver::Newtonsolver']]],
+  ['transform_5fboundary_2ecpp',['transform_boundary.cpp',['../transform__boundary_8cpp.html',1,'']]],
+  ['transform_5finitial_2ecpp',['transform_initial.cpp',['../transform__initial_8cpp.html',1,'']]],
+  ['transmissionline',['Transmissionline',['../classModel_1_1Networkproblem_1_1Power_1_1Transmissionline.html',1,'Model::Networkproblem::Power::Transmissionline'],['../classModel_1_1Networkproblem_1_1Power_1_1Transmissionline.html#a3d443d9914d0bd92cebe2986ed551521',1,'Model::Networkproblem::Power::Transmissionline::Transmissionline()']]],
+  ['transmissionline_2ecpp',['Transmissionline.cpp',['../Transmissionline_8cpp.html',1,'']]],
+  ['transmissionline_2ehpp',['Transmissionline.hpp',['../Transmissionline_8hpp.html',1,'']]],
+  ['triplethandler',['Triplethandler',['../classAux_1_1Triplethandler.html',1,'Aux']]],
+  ['tripletlist',['tripletlist',['../classAux_1_1Triplethandler.html#afbf6b12b45200b4552bb8cf4002dd239',1,'Aux::Triplethandler']]],
+  ['truncatednormaldist',['Truncatednormaldist',['../classAux_1_1Truncatednormaldist.html',1,'Aux::Truncatednormaldist'],['../classAux_1_1Truncatednormaldist.html#a1b06e0275d83a74a3cb283963cbdb430',1,'Aux::Truncatednormaldist::Truncatednormaldist()']]],
+  ['turbulent_5fborder',['turbulent_border',['../classModel_1_1Balancelaw_1_1Isothermaleulerequation.html#a1ede6f950283ddeed36aaafab422f245',1,'Model::Balancelaw::Isothermaleulerequation']]]
 ];

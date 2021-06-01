@@ -1,7 +1,10 @@
 <map id="Network::Edge" name="Network::Edge">
-<area shape="rect" id="node3" href="$classModel_1_1Networkproblem_1_1Gas_1_1Gaspowerconnection.html" title="Model::Networkproblem\l::Gas::Gaspowerconnection" alt="" coords="356,5,555,47"/>
-<area shape="rect" id="node4" href="$classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html" title="Model::Networkproblem\l::Gas::Pipe" alt="" coords="366,71,545,112"/>
-<area shape="rect" id="node5" href="$classModel_1_1Networkproblem_1_1Gas_1_1Shortpipe.html" title="Model::Networkproblem\l::Gas::Shortpipe" alt="" coords="366,136,545,177"/>
-<area shape="rect" id="node6" href="$classModel_1_1Networkproblem_1_1Power_1_1Transmissionline.html" title="Model::Networkproblem\l::Power::Transmissionline" alt="" coords="362,201,549,243"/>
-<area shape="rect" id="node2" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="5,111,143,138"/>
+<area shape="rect" id="node3" href="$classModel_1_1Networkproblem_1_1Gas_1_1Pipe.html" title="Model::Networkproblem\l::Gas::Pipe" alt="" coords="360,5,539,47"/>
+<area shape="rect" id="node4" href="$classModel_1_1Networkproblem_1_1Gas_1_1Shortcomponent.html" title="Model::Networkproblem\l::Gas::Shortcomponent" alt="" coords="360,71,539,112"/>
+<area shape="rect" id="node8" href="$classModel_1_1Networkproblem_1_1Gaspowerconnection_1_1Gaspowerconnection.html" title="an edge connecting a gasnode to a powernode and modelling a gaspower plant/power&#45;to&#45;gas plant..." alt="" coords="360,137,539,193"/>
+<area shape="rect" id="node9" href="$classModel_1_1Networkproblem_1_1Power_1_1Transmissionline.html" title="Model::Networkproblem\l::Power::Transmissionline" alt="" coords="356,217,543,259"/>
+<area shape="rect" id="node2" href="$classNetwork_1_1Idobject.html" title="Provides a unified &quot;name&quot; to inheriting classes. " alt="" coords="5,115,143,142"/>
+<area shape="rect" id="node5" href="$classModel_1_1Networkproblem_1_1Gas_1_1Controlvalve.html" title="Model::Networkproblem\l::Gas::Controlvalve" alt="" coords="591,39,769,80"/>
+<area shape="rect" id="node6" href="$classModel_1_1Networkproblem_1_1Gas_1_1Shortpipe.html" title="Model::Networkproblem\l::Gas::Shortpipe" alt="" coords="591,104,769,145"/>
+<area shape="rect" id="node7" href="$classModel_1_1Networkproblem_1_1Gas_1_1Compressorstation.html" title="Model::Networkproblem\l::Gas::Compressorstation" alt="" coords="817,104,1004,145"/>
 </map>

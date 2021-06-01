@@ -1,8 +1,9 @@
 <map id="Model::Networkproblem::Gas::Gasnode" name="Model::Networkproblem::Gas::Gasnode">
-<area shape="rect" id="node5" href="$classModel_1_1Networkproblem_1_1Gas_1_1Flowboundarynode.html" title="Model::Networkproblem\l::Gas::Flowboundarynode" alt="" coords="657,5,843,47"/>
-<area shape="rect" id="node6" href="$classModel_1_1Networkproblem_1_1Gas_1_1Innode.html" title="This class represents an inner node of the gas network, that neither injects gas nor takes gas out..." alt="" coords="661,71,839,112"/>
-<area shape="rect" id="node7" href="$classModel_1_1Networkproblem_1_1Gas_1_1Pressureboundarynode.html" title="Model::Networkproblem\l::Gas::Pressureboundarynode" alt="" coords="644,136,856,177"/>
-<area shape="rect" id="node2" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="221,49,339,75"/>
-<area shape="rect" id="node3" href="$classNetwork_1_1Idobject.html" title="Network::Idobject" alt="" coords="5,49,143,75"/>
-<area shape="rect" id="node4" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="Model::Networkproblem\l::Equationcomponent" alt="" coords="191,100,369,141"/>
+<area shape="rect" id="node5" href="$classModel_1_1Networkproblem_1_1Gas_1_1Flowboundarynode.html" title="Model::Networkproblem\l::Gas::Flowboundarynode" alt="" coords="103,259,289,300"/>
+<area shape="rect" id="node8" href="$classModel_1_1Networkproblem_1_1Gas_1_1Innode.html" title="Model::Networkproblem\l::Gas::Innode" alt="" coords="313,259,492,300"/>
+<area shape="rect" id="node2" href="$classModel_1_1Networkproblem_1_1Equationcomponent.html" title="A base class for network components that supply model equations to be solved. " alt="" coords="123,80,301,121"/>
+<area shape="rect" id="node3" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="326,87,445,114"/>
+<area shape="rect" id="node4" href="$classNetwork_1_1Idobject.html" title="Provides a unified &quot;name&quot; to inheriting classes. " alt="" coords="317,5,454,32"/>
+<area shape="rect" id="node6" href="$classModel_1_1Networkproblem_1_1Gas_1_1Sink.html" title="Model::Networkproblem\l::Gas::Sink" alt="" coords="5,348,184,389"/>
+<area shape="rect" id="node7" href="$classModel_1_1Networkproblem_1_1Gas_1_1Source.html" title="Model::Networkproblem\l::Gas::Source" alt="" coords="208,348,387,389"/>
 </map>

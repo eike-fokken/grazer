@@ -29,6 +29,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Grazer
+   &#160;<span id="projectnumber">0.0.1</span>
    </div>
   </td>
  </tr>
@@ -88,14 +89,17 @@ $(document).ready(function(){initNavTree('classAux_1_1Matrixhandler.html','');})
 </div><!--header-->
 <div class="contents">
 
+<p>A utility base class that is used to setup and modify a sparse matrix.  
+ <a href="classAux_1_1Matrixhandler.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="Matrixhandler_8hpp_source.html">Matrixhandler.hpp</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for Aux::Matrixhandler:</div>
 <div class="dyncontent">
 <div class="center"><img src="classAux_1_1Matrixhandler__inherit__graph.png" border="0" usemap="#Aux_1_1Matrixhandler_inherit__map" alt="Inheritance graph"/></div>
 <map name="Aux_1_1Matrixhandler_inherit__map" id="Aux_1_1Matrixhandler_inherit__map">
-<area shape="rect" id="node2" href="classAux_1_1Coeffrefhandler.html" title="Aux::Coeffrefhandler" alt="" coords="5,80,161,107"/>
-<area shape="rect" id="node3" href="classAux_1_1Triplethandler.html" title="Aux::Triplethandler" alt="" coords="186,80,330,107"/>
+<area shape="rect" id="node2" href="classAux_1_1Coeffrefhandler.html" title="The Coeffrefhandler variety directly sets the coefficients and contains no state. ..." alt="" coords="5,80,161,107"/>
+<area shape="rect" id="node3" href="classAux_1_1Triplethandler.html" title="The Triplethandler variety gathers the coefficients in triplets and later builds the matrix from the ..." alt="" coords="186,80,330,107"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -108,8 +112,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5e439108c6ca83d3281c73ad48892e56"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAux_1_1Matrixhandler.html#a5e439108c6ca83d3281c73ad48892e56">~Matrixhandler</a> ()</td></tr>
 <tr class="separator:a5e439108c6ca83d3281c73ad48892e56"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad161df85146adef30711b5d15548c752"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAux_1_1Matrixhandler.html#ad161df85146adef30711b5d15548c752">add_to_coefficient</a> (int row, int col, double value)=0</td></tr>
+<tr class="memdesc:ad161df85146adef30711b5d15548c752"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds to a coefficient.  <a href="#ad161df85146adef30711b5d15548c752">More...</a><br /></td></tr>
 <tr class="separator:ad161df85146adef30711b5d15548c752"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb29f46157acdf41c1cc88e8c8d9e99b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAux_1_1Matrixhandler.html#aeb29f46157acdf41c1cc88e8c8d9e99b">set_coefficient</a> (int row, int col, double value)=0</td></tr>
+<tr class="memdesc:aeb29f46157acdf41c1cc88e8c8d9e99b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a coefficient. For #Triplethandler this actually behaves like <a class="el" href="classAux_1_1Matrixhandler.html#ad161df85146adef30711b5d15548c752" title="Adds to a coefficient. ">add_to_coefficient</a>.  <a href="#aeb29f46157acdf41c1cc88e8c8d9e99b">More...</a><br /></td></tr>
 <tr class="separator:aeb29f46157acdf41c1cc88e8c8d9e99b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad85352916689c898c53840d47cdccbcb"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAux_1_1Matrixhandler.html#ad85352916689c898c53840d47cdccbcb">set_matrix</a> ()=0</td></tr>
 <tr class="separator:ad85352916689c898c53840d47cdccbcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -119,7 +125,9 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a9d4e6cd23a027eaa1a9abbbc258466dc"><td class="memItemLeft" align="right" valign="top">Eigen::SparseMatrix&lt; double &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAux_1_1Matrixhandler.html#a9d4e6cd23a027eaa1a9abbbc258466dc">matrix</a></td></tr>
 <tr class="separator:a9d4e6cd23a027eaa1a9abbbc258466dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>A utility base class that is used to setup and modify a sparse matrix. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a7f8f67cee2e533d0131640ed233932f0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7f8f67cee2e533d0131640ed233932f0">&#9670;&nbsp;</a></span>Matrixhandler() <span class="overload">[1/2]</span></h2>
 
@@ -237,7 +245,17 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classAux_1_1Coeffrefhandler.html#a92c08c9baff9f99f082c10f009d62f93">Aux::Coeffrefhandler</a>, and <a class="el" href="classAux_1_1Triplethandler.html#a63813cdd8a604ab9fb8a9b7557fab254">Aux::Triplethandler</a>.</p>
+<p>Adds to a coefficient. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">row</td><td>The row index of the coefficient. </td></tr>
+    <tr><td class="paramname">col</td><td>The column index of the coefficient. </td></tr>
+    <tr><td class="paramname">value</td><td>The value to be added to the already present coefficient. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classAux_1_1Coeffrefhandler.html#ae5b1901301e842e3e055a16dc427cf7b">Aux::Coeffrefhandler</a>, and <a class="el" href="classAux_1_1Triplethandler.html#a1362d674607d867d94e82c7d51f80357">Aux::Triplethandler</a>.</p>
 
 </div>
 </div>
@@ -281,7 +299,17 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classAux_1_1Coeffrefhandler.html#a60c03eb90676f496f424bd4582c1f732">Aux::Coeffrefhandler</a>, and <a class="el" href="classAux_1_1Triplethandler.html#afd62f3cd4ddf478297e967245c357a0f">Aux::Triplethandler</a>.</p>
+<p>Sets a coefficient. For #Triplethandler this actually behaves like <a class="el" href="classAux_1_1Matrixhandler.html#ad161df85146adef30711b5d15548c752" title="Adds to a coefficient. ">add_to_coefficient</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">row</td><td>The row index of the coefficient. </td></tr>
+    <tr><td class="paramname">col</td><td>The column index of the coefficient. </td></tr>
+    <tr><td class="paramname">value</td><td>The value to be inserted. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classAux_1_1Coeffrefhandler.html#a6c14b44ea4c579dc264a9468f216440f">Aux::Coeffrefhandler</a>, and <a class="el" href="classAux_1_1Triplethandler.html#a28a71e96470a29aae217b2178b634794">Aux::Triplethandler</a>.</p>
 
 </div>
 </div>
@@ -307,8 +335,10 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>For #Triplethandler: Builds the matrix from the gathered coefficients and then forgets the coefficients.</p>
+<p>For #Coeffrefhandler: Does nothing. </p>
 
-<p>Implemented in <a class="el" href="classAux_1_1Coeffrefhandler.html#a784da3050bec6af5da82032ebea29721">Aux::Coeffrefhandler</a>, and <a class="el" href="classAux_1_1Triplethandler.html#a8a6502dc91ba165b72bc52dc3c9ec722">Aux::Triplethandler</a>.</p>
+<p>Implemented in <a class="el" href="classAux_1_1Coeffrefhandler.html#ae3707ac2eb6ffe3f214cbd90de64ffbe">Aux::Coeffrefhandler</a>, and <a class="el" href="classAux_1_1Triplethandler.html#a46af51a4087b78bf9473251ce4819fe6">Aux::Triplethandler</a>.</p>
 
 </div>
 </div>
@@ -336,7 +366,7 @@ Protected Attributes</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>Auxillary/Matrixhandler/include/<a class="el" href="Matrixhandler_8hpp_source.html">Matrixhandler.hpp</a></li>
+<li>src/Auxillary/Matrixhandler/include/<a class="el" href="Matrixhandler_8hpp_source.html">Matrixhandler.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

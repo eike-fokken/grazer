@@ -1,6 +1,9 @@
-<map id="Model/Networkproblem/Gas/include/Compressorstation.hpp" name="Model/Networkproblem/Gas/include/Compressorstation.hpp">
-<area shape="rect" id="node2" href="$Gasedge_8hpp.html" title="Gasedge.hpp" alt="" coords="212,95,319,121"/>
-<area shape="rect" id="node3" href="$Edge_8hpp.html" title="Edge.hpp" alt="" coords="95,169,177,196"/>
-<area shape="rect" id="node8" href="$Equationcomponent_8hpp.html" title="Equationcomponent.hpp" alt="" coords="303,169,483,196"/>
-<area shape="rect" id="node4" href="$Idobject_8hpp.html" title="Idobject.hpp" alt="" coords="39,244,142,271"/>
+<map id="src/Model/Networkproblem/Gas/include/Compressorstation.hpp" name="src/Model/Networkproblem/Gas/include/Compressorstation.hpp">
+<area shape="rect" id="node2" href="$Shortpipe_8hpp.html" title="Shortpipe.hpp" alt="" coords="212,95,324,121"/>
+<area shape="rect" id="node3" href="$Shortcomponent_8hpp.html" title="Shortcomponent.hpp" alt="" coords="189,169,347,196"/>
+<area shape="rect" id="node4" href="$Edge_8hpp.html" title="Edge.hpp" alt="" coords="168,244,251,271"/>
+<area shape="rect" id="node8" href="$Gasedge_8hpp.html" title="Gasedge.hpp" alt="" coords="287,244,393,271"/>
+<area shape="rect" id="node5" href="$Idobject_8hpp.html" title="Idobject.hpp" alt="" coords="123,393,226,420"/>
+<area shape="rect" id="node9" href="$Statecomponent_8hpp.html" title="Statecomponent.hpp" alt="" coords="261,319,419,345"/>
+<area shape="rect" id="node10" href="$Equationcomponent_8hpp.html" title="Equationcomponent.hpp" alt="" coords="250,393,430,420"/>
 </map>
