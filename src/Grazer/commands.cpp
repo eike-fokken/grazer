@@ -5,7 +5,7 @@
 #include "Timeevolver.hpp"
 #include <iostream>
 
-int grazer_run(std::filesystem::path directory_path) {
+int grazer::run(std::filesystem::path directory_path) {
   auto problem_directory = directory_path / "problem";
   auto problem_data_file = problem_directory / "problem_data.json";
   auto output_dir = io::prepare_output_dir(directory_path / "output");
