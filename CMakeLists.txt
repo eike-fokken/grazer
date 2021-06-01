@@ -1,7 +1,8 @@
 cmake_minimum_required (VERSION 3.9)
 # 3.9 is needed for CheckIPOSupported and for doxygen_add_docs.
 
-project(Grazer LANGUAGES C CXX VERSION 0.0.1)
+project(Grazer LANGUAGES C CXX VERSION 0.1.1)
+message(STATUS "grazer-version: ${PROJECT_VERSION}")
 
 include(CheckIPOSupported)
 

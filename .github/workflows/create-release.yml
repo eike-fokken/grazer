@@ -1,0 +1,33 @@
+on:
+  push:
+    branches:
+    - "master"
+    paths:
+    - CMakeLists.txt
+name: Release
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Get Version
+      id: get_version
+      run: |        
+        cmake -E make_directory ${{github.workspace}}/build
+        VERSION=$(cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=Release | grep 'grazer-version:' | grep -oE '[0-9\.]+')
+        echo ${VERSION}
+        echo "::set-output name=version::${VERSION}"
+        touch CHANGELOG.md
+        echo "::set-output name=changelog::$(cat CHANGELOG.md)"
+
+    - name: Create a GitHub release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ steps.get_version.outputs.version }}
+        release_name: Release Version ${{ steps.get_version.outputs.version }}
+        body: ${{ steps.get_version.outputs.changelog }} 
