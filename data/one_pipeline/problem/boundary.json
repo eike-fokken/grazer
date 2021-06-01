@@ -1,4 +1,5 @@
 {
+	"$schema": "../schemas/boundary_schema.json",
 	"nodes": {
 		"Source": [
 			{

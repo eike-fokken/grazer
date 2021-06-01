@@ -1,4 +1,5 @@
 {
+	"$schema": "../schemas/topology_schema.json",
 	"information": {
 		"title": "greek-power",
 		"type": "gas-power",

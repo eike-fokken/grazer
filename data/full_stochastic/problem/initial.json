@@ -1,4 +1,5 @@
 {
+	"$schema": "../schemas/initial_schema.json",
 	"nodes": {
 		"Vphinode": [
 			{
