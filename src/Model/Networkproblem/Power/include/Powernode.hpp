@@ -1,19 +1,23 @@
 #pragma once
-#include <Boundaryvalue.hpp>
+#include "Boundaryvalue.hpp"
+#include "Node.hpp"
+#include "Statecomponent.hpp"
 #include <Eigen/Sparse>
-#include <Equationcomponent.hpp>
-#include <Node.hpp>
-#include <nlohmann/json.hpp>
 
 namespace Model::Networkproblem::Power {
 
-  class Powernode : public Equationcomponent, public Network::Node {
+  class Powernode : public Statecomponent, public Network::Node {
 
   public:
-    Powernode(std::string _id, nlohmann::ordered_json boundary_json, double _G,
-              double _B);
+    virtual std::string get_power_type() const = 0;
+    static nlohmann::json get_schema();
+    static std::optional<nlohmann::json> get_boundary_schema();
+    static nlohmann::json get_initial_schema();
+    static int init_vals_per_interpol_point();
 
-    virtual ~Powernode(){};
+    Powernode(nlohmann::json const &topology);
+
+    ~Powernode() override{};
 
     void setup() override;
 
@@ -22,32 +26,38 @@ namespace Model::Networkproblem::Power {
     double get_G() const;
     double get_B() const;
 
-    void print_to_files(std::filesystem::path const &output_directory) final;
+    void print_to_files(nlohmann::json &new_output) override;
 
-    void set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
-                            nlohmann::ordered_json initial_json) final;
+    void set_initial_values(
+        Eigen::Ref<Eigen::VectorXd> new_state,
+        nlohmann::json const &initial_json) final;
 
-    double P(Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
-    double Q(Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
-    void evaluate_P_derivative(int equationindex, Aux::Matrixhandler *jacobianhandler,
-        Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
-    void evaluate_Q_derivative(int equationindex, Aux::Matrixhandler *jacobianhandler,
-        Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
+    double P(Eigen::Ref<Eigen::VectorXd const> state) const;
+    double Q(Eigen::Ref<Eigen::VectorXd const> state) const;
+    void evaluate_P_derivative(
+        int equationindex, Aux::Matrixhandler *jacobianhandler,
+        Eigen::Ref<Eigen::VectorXd const> new_state) const;
+    void evaluate_Q_derivative(
+        int equationindex, Aux::Matrixhandler *jacobianhandler,
+        Eigen::Ref<Eigen::VectorXd const> new_state) const;
 
   protected:
-    void save_values(double time, Eigen::Ref<Eigen::VectorXd const> const &state) final;
+    void json_save_power(
+        double time, Eigen::Ref<Eigen::VectorXd const> state, double P_val,
+        double Q_val);
 
-    
-
-    Boundaryvalue<Powernode, 2> boundaryvalue;
+    Boundaryvalue<2> const boundaryvalue;
     /// Real part of the admittance of this node
     double G;
     /// Imaginary part of the admittance of this node
     double B;
 
   private:
-    std::vector<std::tuple<double,double,Powernode*>> attached_component_data;
+    /// \brief number of state variables, this component needs.
+    static constexpr int number_of_state_variables{2};
 
+    std::vector<std::tuple<double, double, Powernode *>>
+        attached_component_data;
   };
 
 } // namespace Model::Networkproblem::Power

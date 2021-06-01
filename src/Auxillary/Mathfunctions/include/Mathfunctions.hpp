@@ -4,7 +4,8 @@ namespace Aux {
   /// \brief The mathematical constant Pi
   extern double const Pi;
 
-  /// \brief This constant is chosen such that doubles whose differences are less than EPSILON, are considered equal.
+  /// \brief This constant is chosen such that doubles whose differences are
+  /// less than EPSILON, are considered equal.
   extern double const EPSILON;
 
   double circle_area(double radius);
@@ -17,6 +18,6 @@ namespace Aux {
 
   /// This is a derivative function for double std::abs(double x).
   /// It throws an exception, if it is called on a value smaller than 1e-13.
-  int dabs_dx(double x); 
+  int dabs_dx(double x);
 
-}
+} // namespace Aux

@@ -1,5 +1,5 @@
 #pragma once
-#include <Idobject.hpp>
+#include "Idobject.hpp"
 #include <vector>
 
 namespace Network {
@@ -15,9 +15,11 @@ namespace Network {
   class Node : public Idobject {
 
   public:
+    static std::string get_type();
+
     Node() = delete;
 
-    using Idobject::Idobject;
+    Node(nlohmann::json const &data);
 
     virtual ~Node(){};
 
@@ -46,8 +48,12 @@ namespace Network {
     std::vector<Network::Edge *> get_ending_edges() const;
 
   private:
-    std::vector<Network::Edge *> starting_edges;
-    std::vector<Network::Edge *> ending_edges;
+    struct Edgecollection {
+      std::vector<Network::Edge *> starting_edges;
+      std::vector<Network::Edge *> ending_edges;
+    };
+    std::unique_ptr<Edgecollection> attached_edges{
+        std::make_unique<Edgecollection>()};
   };
 
 } // namespace Network

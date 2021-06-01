@@ -1,0 +1,36 @@
+{
+    "time_evolution_data":
+    {
+        "use_simplified_newton": true,
+        "maximal_number_of_newton_iterations": 100,
+        "tolerance": 1e-8,
+        "retries": 0,
+        "start_time": 0,
+        "end_time": 18000,
+        "desired_delta_t": 450
+    },
+    "initial_values":{
+        "subproblems":
+        {
+            "Network_problem":
+            {
+                "initial_json":"initial.json"
+            }
+        }
+    },
+    "problem_data":
+    {
+        "subproblems":
+        {
+            "Network_problem":
+            {
+                "balancelaw": "Isothermaleulerequation",
+                "scheme": "Implicitboxscheme",
+                "desired_delta_x": 1000,
+                "topology_json":"topology.json",
+                "boundary_json":"boundary.json",
+                "control_json": {}
+            }
+        }
+    }
+}

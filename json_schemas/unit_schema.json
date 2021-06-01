@@ -1,0 +1,154 @@
+{
+  "defaultUnit": {
+    "type": "object",
+    "description": "Default Measurement without unit type safety",
+    "required": ["value", "unit"],
+    "additionalProperties": false,
+    "properties": {"unit": {"type": "string"}, "value": {"type": "number"}}
+  },
+  "pressure": {
+    "type": "object",
+    "description": "Dressure Measurement",
+    "required": ["value", "unit"],
+    "additionalProperties": false,
+    "properties": {
+      "unit": {
+        "type": "string",
+        "oneOf": [
+          {"pattern": "^(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(Pa|bar|atm|psi)$"},
+          {"pattern": "^([0-9]*(\\.[0-9]+)? )(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(Pa|bar|atm|psi)$"}
+      ]},
+      "value": {"type": "number"}
+    }
+  },
+  "temperature": {
+    "type": "object",
+    "description": "Temperature Measurement",
+    "required": ["value", "unit"],
+    "additionalProperties": false,
+    "properties": {
+      "unit": {
+        "type": "string",
+        "oneOf": [
+          {"pattern": "^(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(K|C|Celsius|\u2103|\u00B0C|F|\u2109|\u00B0F)$"},
+          {"pattern": "^([0-9]*(\\.[0-9]+)? )(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(K|C|Celsius|\u2103|\u00B0C|F|\u2109|\u00B0F)$"}
+      ]},
+      "value": {"type": "number"}
+    }
+  },
+  "flux": {
+    "type": "object",
+    "description": "Flux Measurement",
+    "required": ["value", "unit"],
+    "additionalProperties": false,
+    "properties": {
+      "unit": {"type": "string", "enum": ["m_cube_per_s", "1000m_cube_per_hour"]},
+      "value": {"type": "number"}
+    }
+  },
+  "power": {
+    "type": "object",
+    "description": "Power Measurement",
+    "required": ["value", "unit"],
+    "additionalProperties": false,
+    "properties": {
+      "unit": {
+        "type": "string",
+        "oneOf": [
+          {"pattern": "^(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(W|PS)$"},
+          {"pattern": "^([0-9]*(\\.[0-9]+)? )(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(W|PS)$"}
+      ]},
+      "value": {"type": "number"}
+    }
+  },
+  "frequency": {
+    "type": "object",
+    "description": "Frequency Measurement",
+    "required": ["value", "unit"],
+    "additionalProperties": false,
+    "properties": {
+      "unit": {
+        "type": "string",
+        "oneOf": [
+          {"pattern": "^(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(Hz|per_min|per_minute)$"},
+          {"pattern": "^([0-9]*(\\.[0-9]+)? )(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(Hz|per_min|per_minute)$"}
+      ]},
+      "value": {"type": "number"}
+    }
+  },
+  "length": {
+    "type": "object",
+    "description": "Length Measurement",
+    "required": ["value", "unit"],
+    "additionalProperties": false,
+    "properties": {
+      "unit": {
+        "type": "string",
+        "oneOf": [
+          {"pattern": "^(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(m|ft|in|yd|mi)$"},
+          {"pattern": "^([0-9]*(\\.[0-9]+)? )(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(m|ft|in|yd|mi)$"}
+      ]},
+      "value": {"type": "number"}
+    }
+  },
+  "force": {
+    "type": "object",
+    "description": "Force Measurement",
+    "required": ["value", "unit"],
+    "additionalProperties": false,
+    "properties": {
+      "unit": {
+        "type": "string",
+        "oneOf": [
+          {"pattern": "^(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(N)$"},
+          {"pattern": "^([0-9]*(\\.[0-9]+)? )(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(N)$"}
+      ]},
+      "value": {"type": "number"}
+    }
+  },
+  "mass": {
+    "type": "object",
+    "description": "Mass Measurement",
+    "required": ["value", "unit"],
+    "additionalProperties": false,
+    "properties": {
+      "unit": {
+        "type": "string",
+        "oneOf": [
+          {"pattern": "^(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(g|t|oz|lb)$"},
+          {"pattern": "^([0-9]*(\\.[0-9]+)? )(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(g|t|oz|lb)$"}
+      ]},
+      "value": {"type": "number"}
+    }
+  },
+  "volume": {
+    "type": "object",
+    "description": "Volume Measurement",
+    "required": ["value", "unit"],
+    "additionalProperties": false,
+    "properties": {
+      "unit": {
+        "type": "string",
+        "oneOf": [
+          {"pattern": "^(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(m^3|L|l|\u2113)$"},
+          {"pattern": "^([0-9]*(\\.[0-9]+)? )(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(m^3|L|l|\u2113)$"}
+      ]},
+      "value": {"type": "number"}
+    }
+  },
+  "angular_velocity": {
+    "type": "object",
+    "description": "Angular Velocity Measurement",
+    "required": ["value", "unit"],
+    "additionalProperties": false,
+    "properties": {
+      "unit": {
+        "type": "string",
+        "oneOf": [
+          {"pattern": "^(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(rad/s|rpm)$"},
+          {"pattern": "^([0-9]*(\\.[0-9]+)? )(Y|Z|E|P|T|G|M|k|h|da|d|c|m|mu|\u00B5|\u03BC|n|p|f|a|z|y)?(rad/s|rpm)$"}
+      ]},
+      "value": {"type": "number"}
+    }
+  }
+}

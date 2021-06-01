@@ -1,10 +1,25 @@
 [submodule "googletest"]
 	path = googletest
 	url = https://github.com/google/googletest.git
+	shallow = true
 [submodule "nlohmann_json"]
 	path = nlohmann_json
 	url = https://github.com/nlohmann/json.git
 	branch = master
+	shallow = true
 [submodule "eigen"]
 	path = eigen
 	url = https://gitlab.com/libeigen/eigen.git
+	shallow = true
+[submodule "json-schema-validator"]
+	path = json-schema-validator
+	url = https://github.com/pboettch/json-schema-validator
+	shallow = true
+[submodule "pcg-cpp"]
+	path = pcg-cpp
+	url = https://github.com/imneme/pcg-cpp
+	shallow = true
+[submodule "CLI11"]
+	path = CLI11
+	url = https://github.com/CLIUtils/CLI11.git
+	shallow = true

@@ -1,0 +1,33 @@
+\documentclass{standalone}
+
+%\providecommand{\datapath}{.}
+
+\usepackage{tikz}
+\usepackage{pgfplotstable}
+\usepackage{siunitx}
+\pgfplotsset{compat=1.13}
+\usetikzlibrary{plotmarks,calc,math,shapes}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{axis}[
+    x filter/.code={\pgfmathparse{#1/3600}\pgfmathresult},
+    y filter/.code={\pgfmathparse{#1*(-1)}\pgfmathresult},
+    xlabel={\large t(\si{\hour})},
+    ylabel={\large P(\SI{100}{\mega \watt})},
+    table/col sep=comma,
+    legend pos=north east,legend cell align=left]
+
+    \pgfplotstableread{./N1_deterministic.csv}\deterministic
+    \pgfplotstableread{./N1_stochastic.csv}\stochastic
+
+    \addplot[color=cyan,solid,line width=1pt] table[x index =0,y=P] {\deterministic};
+    \addplot[color=red,solid,line width=1pt] table[x index =0,y=P] {\stochastic};
+    \addlegendentry{\tiny Deterministic power draw}
+    \addlegendentry{\tiny Stochastic power draw}
+
+  \end{axis}
+\end{tikzpicture}
+\end{document}
+
+

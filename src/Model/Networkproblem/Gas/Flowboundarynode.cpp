@@ -1,37 +1,39 @@
+#include "make_schema.hpp"
+#include <Eigen/Sparse>
 #include <Exception.hpp>
 #include <Flowboundarynode.hpp>
 #include <iostream>
-#include <Eigen/Sparse>
 
 namespace Model::Networkproblem::Gas {
 
-  Flowboundarynode::Flowboundarynode(std::string _id, nlohmann::ordered_json boundary_json,
-                 nlohmann::ordered_json )
-    : Gasnode(_id) {
-    boundaryvalue.set_boundary_condition(boundary_json);
+  std::optional<nlohmann::json> Flowboundarynode::get_boundary_schema() {
+    return Aux::schema::make_boundary_schema(1);
   }
 
-  void Flowboundarynode::evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double ,
-                double new_time, Eigen::Ref<Eigen::VectorXd const> const &,
-                Eigen::Ref<Eigen::VectorXd const> const &new_state) const{
+  Flowboundarynode::Flowboundarynode(nlohmann::json const &data) :
+      Gasnode(data), boundaryvalue(data["boundary_values"]) {}
 
-    if(directed_attached_gas_edges.empty()){ return; }
+  void Flowboundarynode::evaluate(
+      Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
+      Eigen::Ref<Eigen::VectorXd const>,
+      Eigen::Ref<Eigen::VectorXd const> new_state) const {
 
-        evaluate_flow_node_balance(rootvalues,new_state, boundaryvalue(new_time)[0]);
-      }
+    if (directed_attached_gas_edges.empty()) {
+      return;
+    }
 
-  void Flowboundarynode::evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,
-                                 double , double ,
-                                 Eigen::Ref<Eigen::VectorXd const> const &,
-                                 Eigen::Ref<Eigen::VectorXd const> const &new_state) const{
-    if(directed_attached_gas_edges.empty()){ return; }
-    evaluate_flow_node_derivative(jacobianhandler,new_state);
+    evaluate_flow_node_balance(
+        rootvalues, new_state, boundaryvalue(new_time)[0]);
   }
 
-  void Flowboundarynode::display() const {
-    Node::print_id();
-    Equationcomponent::print_indices();
-    std::cout << "NO FURTHER DISPLAY PARAMETERS IMPLEMENTED IN" << __FILE__ << ":" << __LINE__ << std::endl;
-    // here show information of the gas node!
+  void Flowboundarynode::evaluate_state_derivative(
+      Aux::Matrixhandler *jacobianhandler, double, double,
+      Eigen::Ref<Eigen::VectorXd const>,
+      Eigen::Ref<Eigen::VectorXd const> new_state) const {
+    if (directed_attached_gas_edges.empty()) {
+      return;
+    }
+    evaluate_flow_node_derivative(jacobianhandler, new_state);
   }
-}
+
+} // namespace Model::Networkproblem::Gas

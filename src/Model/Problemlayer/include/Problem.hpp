@@ -1,6 +1,7 @@
 #pragma once
+
 #include <Eigen/Sparse>
-#include <Subproblem.hpp> // This is really needed here!
+// #include <Subproblem.hpp> // This is really needed here!
 #include <filesystem>
 #include <memory>
 #include <nlohmann/json.hpp>
@@ -16,41 +17,46 @@ namespace Aux {
  * derivatives thereof.
  */
 namespace Model {
-
   class Subproblem;
 
   class Problem {
 
   public:
-    /// The constructor needs to declare Delta_t
-    ///
-    Problem(std::filesystem::path const &_output_directory)
-        : output_directory(_output_directory){};
+    Problem(
+        nlohmann::json subproblem_data,
+        std::filesystem::path const &_output_directory);
+
+    ~Problem();
 
     void add_subproblem(std::unique_ptr<Subproblem> subproblem_ptr);
 
     int set_indices();
 
-    void evaluate(Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-                  double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
-                  Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
+    void evaluate(
+        Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
+        double new_time, Eigen::Ref<Eigen::VectorXd const> last_state,
+        Eigen::Ref<Eigen::VectorXd const> new_state) const;
 
-    void evaluate_state_derivative(Aux::Matrixhandler *jacobianhandler,
-                                   double last_time, double new_time,
-                                   Eigen::Ref<Eigen::VectorXd const> const &last_state,
-                                   Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
+    void prepare_timestep(
+        double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> last_state,
+        Eigen::Ref<Eigen::VectorXd const> new_state);
 
-    void save_values(double time, Eigen::Ref<Eigen::VectorXd>new_state);
+    void evaluate_state_derivative(
+        Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> last_state,
+        Eigen::Ref<Eigen::VectorXd const> new_state) const;
+
+    void json_save(double time, Eigen::Ref<Eigen::VectorXd const> state);
+
     /// As we have unique pointers, we can only give back a pointer to our
     /// subproblems.
     std::vector<Subproblem *> get_subproblems() const;
 
-    void set_initial_values(Eigen::Ref<Eigen::VectorXd>new_state,
-                            nlohmann::ordered_json initialjson);
+    void set_initial_values(
+        Eigen::Ref<Eigen::VectorXd> new_state, nlohmann::json &initialjson);
 
     void print_to_files();
-
-    void display() const;
 
     std::filesystem::path const &get_output_directory() const;
 
@@ -59,6 +65,7 @@ namespace Model {
     std::vector<std::unique_ptr<Subproblem>> subproblems;
 
     std::filesystem::path const output_directory;
+    nlohmann::json json_output;
   };
 
 } // namespace Model

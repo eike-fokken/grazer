@@ -1,0 +1,104 @@
+* General todos:
+
+** TODO modernize the readme
+  
+** TODO  Maybe introduce an additional function "register_edges_with_nodes" to make the edge constructor not change the nodes.
+      This may be more clear.
+
+** DONE src/Test ordner weg
+
+   
+** TODO  Durchgehen und Dokumentation schreiben!
+
+** DONE Think about Exception handling for data input validation. Whatever you do: Catch all exceptions and display the error message instead of rethrowing in the end!
+   CLOSED: [2021-03-11 Thu 18:07]
+
+** TODO  Introduce an optional CFL check for schemes.
+
+** TODO  make subproblems inherit from nodes and define connecting problems as edges. --> Problem should hold a network of subproblems.
+      Think about "connecting problems", e.g. for gas to power networks..
+*** TODO In this process reuse the Nodechooser and Edgechooser classes for setting up subproblems.
+
+      
+** TODO  Think about implementation of explicit methods without too much performance hit
+
+** TODO  Factor out pde-specific parts from gas edge.
+
+** TODO  replace all eigen indices by long (instead of int), requires performance testing.
+
+** TODO  Validate the json!
+
+** DONE Make a function that dispatches to various constructors. Also make all constructors take the same arguments.
+   CLOSED: [2021-03-11 Thu 18:06]
+*** Here there is already much progress.
+    
+
+** TODO  Go back to strings in json files. DONE: topology file. Still todo: initial and boundary values.
+
+** TODO  Refactor Isothermaleulerequation into an Isentropiceulerequation template, that takes an Isentropicpressurelaw
+      and a Frictionexpression template.
+
+** TODO  The current design of gas nodes is bad, think more about it.
+   Let the pipes also handle the evaluation, not only the derivatives.
+
+** TODO  Change the power to make it also behave like the pipes.
+
+** TODO  Review, whether parallel execution in Networkproblem is worth it and whether it produces bugs!
+
+** TODO  make a convenient way to activate sanitizers in cmake. Check out scan-build!
+
+** TODO  make the writeout of data check for failures to open files. (failbit?)
+
+** TODO  Replace most (all?) appearances of raw pointers with references, e.g. with std::ref and std::cref.
+
+
+
+
+* EASY Todos:
+
+** TODO remove all instances of ordered_json. We don't need the ordering.
+
+** TODO Make all main headers of the style #include "main.hpp" to enable clang-format ordering
+   
+** TODO Change namespaces to always have lower case names
+ -  Also Think about reducing the number of nested namespaces, because C++ lookup means they don't really guard against name collisions.
+  
+** TODO  Ein kleines Beispiel zeigen in der Doku.
+
+** TODO  Idobject
+   check, whether replacing the string member in Idobject with a unique pointer to a string member is more efficient (smaller objects!)
+   Also: Maybe make Idobject non-virtual to save an additional 8 bytes vtable pointer (But then display must be non-virtual, some refactoring is then required.
+
+** TODO  Declare all classes where it is appropriate final.
+
+** TODO  go over the tests and use the googletest framework to deduplicate code!
+
+** TODO  Make better tests.
+   The current tests didn't detect a raise condition, that setup cannot rely on indices of neighbouring
+   components to be set already.
+
+** TODO  write getters for the data members in Isothermaleulerequations and then make the data members private.
+
+** TODO  refactor the print_to_files function in all gas edges into Gasedge
+
+** TODO  call "set_indices" from "set_initial_values" to make sure it is called beforehand.
+
+** DONE Think about the boolian passed to solve that marks whether the Jacobian should be reanalyzed.
+   Up to now, it seems to make no difference, whether we reanalyze the pattern everytime. Check this further.
+   It is of little consequence, because it is one reanalyzation per time-step.
+   But it is hugely beneficial to not reanalyze on every factorization in the Newton-Iteration itself.
+
+
+* UNIMPORTANT
+
+** TODO  Consider to replace the maps in Intialvalue and Boundaryvalue by ordered vectors (only for performance, probably irrelevant)
+
+
+* Future
+
+** TODO Make grazer a shared library for use in other languages.
+   - Probably it should be a C library for easier portability
+   - Maybe it should take callback functions to enable users to write python (or even matlab but that may prove difficult)
+     functions that are used as PDEs or objective functions.
+     These may (look into that) even be relatively fast if they can be just-in-time compiled.
+   - This should also work with Julia
