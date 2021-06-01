@@ -35,21 +35,20 @@ will appear in `release/src/Grazer/`.
 
 ## Usage
 
-Grazer has a command line interface - running the executable without any
-arguments will look like this:
+Grazer has a command line interface - running the executable with `--help` 
+will look something like this:
 
 ```bash
-$ grazer
+$ grazer --help
+Simulation of dynamical systems
+Usage: grazer [OPTIONS] SUBCOMMAND
 
-USAGE: grazer [OPTIONS] [SUBCOMMANDS] 
+Options:
+  -h,--help                   Print this help message and exit
 
-OPTIONS:
-    -h, --help <help>
-    -v, --version <version>
-
-SUBCOMMANDS:
-    run
-    schema
+Subcommands:
+  run                         Simulate the evolution of the given dynamical system
+  schema                      Schema Helpers for the JSON Schemas validating the input files
 
 ```
 

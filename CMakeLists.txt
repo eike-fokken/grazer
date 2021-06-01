@@ -152,8 +152,8 @@ include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/nlohmann_json/single_in
 
 # This includes the pcg random number generator suite.
 include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp/include/")
-include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/structopt/single_include/")
 
+include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/CLI11/include/")
 
 
 find_package(Doxygen)
