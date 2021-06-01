@@ -153,6 +153,7 @@ include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/nlohmann_json/single_in
 # This includes the pcg random number generator suite.
 include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp/include/")
 
+include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/CLI11/include/")
 
 
 
@@ -166,7 +167,6 @@ endif()
 add_subdirectory(src)
 add_subdirectory(tests)
 add_subdirectory(helper_functions)
-add_subdirectory(CLI11)
 
 
 
