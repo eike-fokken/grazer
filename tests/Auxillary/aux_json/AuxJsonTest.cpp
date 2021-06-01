@@ -1,6 +1,8 @@
 #include "Aux_json.hpp"
+#include <exception>
 #include <filesystem>
 #include <fstream>
+#include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
@@ -54,9 +56,13 @@ TEST(Aux_json, replace_entry_with_json_from_file) {
 
   // Testing jsons containing a wrong path (e.g. non-existing path)
   wrong_path_json = {{"key", "/wrong/path.json"}};
-  EXPECT_THROW(
-      aux_json::replace_entry_with_json_from_file(wrong_path_json, "key"),
-      std::runtime_error);
+
+  try {
+    aux_json::replace_entry_with_json_from_file(wrong_path_json, "key");
+  } catch (std::exception &e) {
+    EXPECT_THAT(e.what(), testing::HasSubstr(
+         "The file \n/wrong/path.json\n does not exist!"));
+  }
 
   // Removing temporary file
   std::filesystem::remove(temp_json_path);
@@ -70,7 +76,14 @@ TEST(Aux_json, get_json_from_file_path) {
   nlohmann::json aux_sub_json_test;
 
   // Testing wrong paths
-  EXPECT_ANY_THROW(aux_json::get_json_from_file_path(wrong_path));
+  // EXPECT_ANY_THROW(aux_json::get_json_from_file_path(wrong_path));
+  try {
+    aux_json::get_json_from_file_path(wrong_path);
+  } catch (std::exception &e) {
+    EXPECT_THAT(
+        e.what(),
+        testing::HasSubstr("The file \n/wrong/path.json\n does not exist!"));
+  }
 
   // Testing right path
   aux_sub_json_test
