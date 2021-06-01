@@ -17,22 +17,22 @@ jobs:
         - name: ubuntu-20.04
           os: ubuntu-20.04
           compiler: g++-10
-          artifact_name: grazer
           artifact_path: /build/src/Grazer/grazer
-          artifact_description: Binary for ubuntu-20.04
+          asset_name: grazer
+          asset_description: Binary for ubuntu-20.04
           dep-install: sudo apt-get install -y cmake doxygen graphviz
         - name: MacOS
           os: macos-10.15
           compiler: clang++
-          artifact_name: grazer_mac
           artifact_path: /build/src/Grazer/grazer
-          artifact_description: Binary for MacOS
+          asset_name: grazer_mac
+          asset_description: Binary for MacOS
         - name: Windows
           os: windows-2019
           compiler: msvs
-          artifact_name: grazer.exe
           artifact_path: \build\src\Grazer\Release\grazer.exe
-          artifact_description: Binary for Windows
+          asset_name: grazer.exe
+          asset_description: Binary for Windows
 
     env:
       # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -70,7 +70,7 @@ jobs:
       working-directory: ${{github.workspace}}/build
       shell: bash
       # Execute the build.  You can specify a specific target with "--target <NAME>"
-      run: cmake --build . --config Release --parallel 10
+      run: cmake --build . --config Release --target grazer --parallel 10
 
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
@@ -79,5 +79,5 @@ jobs:
         file: ${{github.workspace}}${{ matrix.artifact_path }}
         asset_name: ${{ matrix.asset_name }}
         tag: ${{ github.ref }}
-        body: ${{ matrix.artifact_description }}
+        body: ${{ matrix.asset_description }}
 
