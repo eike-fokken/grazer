@@ -15,3 +15,9 @@ target_link_libraries(generate_printing_csv PRIVATE input_output)
 add_executable(move_to_category move_to_category.cpp)
 add_executable(normalize_jsons normalize_jsons.cpp)
 add_executable(draw_gaslib_graph draw_gaslib_graph.cpp)
+
+add_executable(extract_new_initial_condition extract_new_initial_condition.cpp)
+
+
+add_executable(pv_to_vphi pv_to_vphi.cpp)
+add_executable(construct_gaspowerconnection construct_gaspowerconnection.cpp)

@@ -1,9 +1,9 @@
 cmake_minimum_required (VERSION 3.9)
 # 3.9 is needed for CheckIPOSupported and for doxygen_add_docs.
 
-project(Grazer C CXX)
-include(CheckIPOSupported)
+project(Grazer LANGUAGES C CXX VERSION 0.0.1)
 
+include(CheckIPOSupported)
 
 #for multiple compiler compatibility:
 set(CMAKE_CXX_STANDARD 17)
@@ -62,9 +62,11 @@ endif()
 
 
 # An option to exclude IPO from the release type to make better use of a compiler cache (like ccache) for development:
-
 if (NOT DEVEL_RELEASE)
-  #set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+  # Funny enough, this is actually detrimental on my machine.
+  # add_compile_options("$<$<CONFIG:RELEASE>:-march=native>")
+
   # for Release types add link-time optimization
   check_ipo_supported(RESULT is_ipo_supported OUTPUT lto_error)
   if(is_ipo_supported)
@@ -123,8 +125,6 @@ else()
 endif()
 
 
-# add_compile_options("$<$<CONFIG:RELEASE>:-march=native>"
-#     )
 
 # # for sanitizing in debug mode:
 # set(MY_SANITIZE_OPTIONS -fsanitize=address -fno-omit-frame-pointer -fsanitize=undefined)
@@ -154,7 +154,6 @@ include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/nlohmann_json/single_in
 include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp/include/")
 
 include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/CLI11/include/")
-
 
 
 find_package(Doxygen)

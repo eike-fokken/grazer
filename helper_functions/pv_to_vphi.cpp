@@ -18,14 +18,14 @@ namespace fs = std::filesystem;
  */
 
 int main(int argc, char **argv) {
-  if (argc != 4) {
-    std::cout << "You must provide a from category, a to category and an id."
-              << std::endl;
+  if (argc != 3) {
+    std::cout << "You must provide an id and a resultsfile." << std::endl;
     return 1;
   }
-  std::string from_category = argv[1];
-  std::string to_category = argv[2];
-  std::string id = argv[3];
+  std::string from_category = "PVnode";
+  std::string to_category = "Vphinode";
+  std::string id = argv[1];
+  std::string resultsfile = argv[2];
 
   std::vector<std::string> files
       = {"topology.json", "boundary.json", "initial.json", "control.json"};
@@ -37,8 +37,14 @@ int main(int argc, char **argv) {
       std::ifstream inputstream((fs::path(file)));
       inputstream >> input;
     }
+    json results;
+    if (file == "boundary.json") {
+
+      std::ifstream resultsstream((fs::path(resultsfile)));
+      resultsstream >> results;
+    }
     bool found = false;
-    for (auto &comptype : input) { // nodes and connections
+    for (auto &[compname, comptype] : input.items()) { // nodes and connections
       if (not comptype.contains(from_category)) {
         continue;
       }
@@ -58,6 +64,22 @@ int main(int argc, char **argv) {
         }
         comptype[to_category].push_back(current_json);
         found = true;
+
+        if (file == "boundary.json") {
+          json boundarydata = json::array();
+          auto results_it = std::find_if(
+              results[compname][from_category].begin(),
+              results[compname][from_category].end(), id_equals);
+          for (auto &timepoint : (*results_it)["data"]) {
+            json boundary_timepoint;
+            boundary_timepoint["time"] = timepoint["time"];
+            boundary_timepoint["values"] = json::array();
+            boundary_timepoint["values"].push_back(timepoint["V"]);
+            boundary_timepoint["values"].push_back(timepoint["phi"]);
+            boundarydata.push_back(boundary_timepoint);
+          }
+          comptype[to_category].back()["data"] = boundarydata;
+        }
       }
     }
     if (not found) {

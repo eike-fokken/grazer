@@ -26,24 +26,30 @@ namespace Aux::schema {
     type_schema["description"] = description;
     return type_schema;
   }
-  json type::number() { return type::simple("number"); }
 
+  json type::number() { return type::simple("number"); }
   json type::number(std::string description) {
     return type::simple("number", description);
   }
-
   json type::number(std::string title, std::string description) {
     return type::simple("number", title, description);
   }
 
   json type::string() { return type::simple("string"); }
-
   json type::string(std::string description) {
     return type::simple("string", description);
   }
-
   json type::string(std::string title, std::string description) {
     return type::simple("string", title, description);
+  }
+
+  json type::boolean() { return type::simple("boolean"); }
+  json type::boolean(std::string description) {
+    return type::simple("boolean", description);
+  }
+
+  json type::boolean(std::string title, std::string description) {
+    return type::simple("boolean", title, description);
   }
 
   nlohmann::json make_list_schema_of(nlohmann::json const &element_schema) {
