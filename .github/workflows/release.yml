@@ -17,12 +17,18 @@ jobs:
         - name: MacOS
           os: macos-10.15
           compiler: clang++
+          artifact_name: grazer
+          artifact_description: Binary for MacOS
         - name: Windows
           os: windows-2019
           compiler: msvs
+          artifact_name: grazer.exe
+          artifact_description: Binary for Windows
         - name: ubuntu-20.04
           os: ubuntu-20.04
           compiler: g++-10
+          artifact_name: grazer
+          artifact_description: Binary for ubuntu-20.04
           dep-install: sudo apt-get install -y cmake doxygen graphviz
 
     env:
@@ -63,9 +69,12 @@ jobs:
       # Execute the build.  You can specify a specific target with "--target <NAME>"
       run: cmake --build . --config $BUILD_TYPE --parallel 10
 
-    - name: Upload the artifacts
-      uses: skx/github-action-publish-binaries@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload binaries to release
+      uses: svenstaro/upload-release-action@v2
       with:
-        args: '${{github.workspace}}/build/src/Grazer/grazer*'
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: ${{github.workspace}}/build/src/Grazer/${{ matrix.artifact_name }}
+        asset_name: ${{ matrix.asset_name }}
+        tag: ${{ github.ref }}
+        body: ${{ matrix.artifact_description }}
+
