@@ -1,6 +1,10 @@
 {
     "time_evolution_data":
     {
+        "use_simplified_newton": true,
+        "maximal_number_of_newton_iterations": 100,
+        "tolerance": 1e-8,
+        "retries": 5,
         "start_time": 0,
         "end_time": 86400,
         "desired_delta_t": 1800

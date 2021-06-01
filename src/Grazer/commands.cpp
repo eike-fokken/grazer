@@ -3,6 +3,7 @@
 #include "Input_output.hpp"
 #include "Problem.hpp"
 #include "Timeevolver.hpp"
+#include <cstdlib>
 #include <iostream>
 
 int grazer_run(std::filesystem::path directory_path) {
@@ -24,15 +25,12 @@ int grazer_run(std::filesystem::path directory_path) {
   initial_value_json["GRAZER_file_directory"] = problem_directory.string();
   Model::Timedata timedata(time_evolution_json);
 
-  double tolerance = 1e-8;
-  int maximal_number_of_newton_iterations = 50;
-  Model::Timeevolver timeevolver(
-      tolerance, maximal_number_of_newton_iterations, output_dir);
+  auto timeevolver = Model::Timeevolver::make_instance(time_evolution_json);
 
-  Model::Problem problem(problem_json, timeevolver.get_output_dir());
+  Model::Problem problem(problem_json, output_dir);
   int number_of_states = problem.set_indices();
   std::cout << "data read" << std::endl;
 
   timeevolver.simulate(timedata, problem, number_of_states, initial_value_json);
-  return 0;
+  return EXIT_SUCCESS;
 }

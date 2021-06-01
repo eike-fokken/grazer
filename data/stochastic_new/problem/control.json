@@ -1,5 +1,4 @@
 {
-	"$schema": "../schemas/control_schema.json",
 	"connections": {
 		"Controlvalve": [
 			{
@@ -40,6 +39,23 @@
 			}
 		],
 		"Gaspowerconnection": [
+			{
+				"id": "g2p_ld39_N7003",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							0.0
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							0.0
+						]
+					}
+				]
+			},
 			{
 				"id": "g2p_ld38_N7166",
 				"data": [

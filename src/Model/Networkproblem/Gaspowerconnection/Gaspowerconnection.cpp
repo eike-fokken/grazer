@@ -1,5 +1,6 @@
 #include "Gaspowerconnection.hpp"
 #include "Exception.hpp"
+#include "ExternalPowerplant.hpp"
 #include "Get_base_component.hpp"
 #include "Initialvalue.hpp"
 #include "Mathfunctions.hpp"
@@ -91,14 +92,15 @@ namespace Model::Networkproblem::Gaspowerconnection {
     if (powerendnode != nullptr) {
       std::cout << "You are calling setup a second time!" << std::endl;
     }
-    auto powernodeptr = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+    auto powernodeptr = dynamic_cast<
+        Model::Networkproblem::Gaspowerconnection::ExternalPowerplant *>(
         get_ending_node());
     if (powernodeptr == nullptr) {
       gthrow(
-          {"An edge of type \"Gaspowerconnection\" can only end at a "
-           "\"Powernode\" but its ending "
+          {"An edge of type \"Gaspowerconnection\" can only end at an "
+           "\"ExternalPowerplant\" but its ending "
            "node, ",
-           get_ending_node()->get_id(), " is not a Powernode."});
+           get_ending_node()->get_id(), " is not an ExternalPowerplant."});
     }
     powerendnode = powernodeptr;
   }

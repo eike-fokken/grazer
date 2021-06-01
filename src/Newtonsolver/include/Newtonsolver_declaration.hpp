@@ -62,7 +62,7 @@ namespace Solver {
     /// tolerance).
     Solutionstruct solve(
         Eigen::Ref<Eigen::VectorXd> new_state, Problemtype &problem,
-        bool newjac, double last_time, double new_time,
+        bool newjac, bool use_full_jacobian, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> last_state);
 
   private:

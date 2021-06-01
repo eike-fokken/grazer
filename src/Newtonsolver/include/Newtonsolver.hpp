@@ -46,7 +46,7 @@ namespace Solver {
   template <typename Problemtype>
   Solutionstruct Newtonsolver<Problemtype>::solve(
       Eigen::Ref<Eigen::VectorXd> new_state, Problemtype &problem, bool newjac,
-      double last_time, double new_time,
+      bool use_full_jacobian, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> last_state) {
     Solutionstruct solstruct;
 
@@ -71,8 +71,7 @@ namespace Solver {
       evaluate_state_derivative_coeffref(
           problem, last_time, new_time, last_state, new_state);
     }
-    while (rootvalues.norm() > tolerance
-           && solstruct.used_iterations < maximal_iterations) {
+    if (not use_full_jacobian) {
       lusolver.factorize(jacobian);
       if (lusolver.info() != Eigen::Success) {
         gthrow(
@@ -80,6 +79,19 @@ namespace Solver {
              "time: ",
              std::to_string(new_time),
              "\n Note, that only LU decomposition is implemented."})
+      }
+    }
+    while (rootvalues.norm() > tolerance
+           && solstruct.used_iterations < maximal_iterations) {
+      if (use_full_jacobian) {
+        lusolver.factorize(jacobian);
+        if (lusolver.info() != Eigen::Success) {
+          gthrow(
+              {"Couldn't decompose a Jacobian, it may be non-invertible.\n "
+               "time: ",
+               std::to_string(new_time),
+               "\n Note, that only LU decomposition is implemented."})
+        }
       }
       // compute Dx_k:
       Eigen::VectorXd step = -lusolver.solve(rootvalues);
