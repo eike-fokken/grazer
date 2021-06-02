@@ -7,7 +7,7 @@ on:
     paths-ignore:
     - docs/**
     - .github/**
-    - "!.github/workflows/pull_request.yml"
+    - "!.github/workflows/pull-request.yml"
     - .clang-format
     - README.md
     - CHANGELOG.md
