@@ -34,22 +34,22 @@ jobs:
         - Linux-GNU
         - Linux-Clang
         - Linux-Clang-libc++
-        # - MacOS-Clang
+        - MacOS-Clang
         - Windows-VisualStudio
         build_type: [ Debug ]
         include:
         - name: Linux-GNU
           compiler: g++-9
           os: ubuntu-18.04
-          dep-install: sudo apt-get install -y cmake doxygen graphviz
+          dep-install: sudo apt-get install -y cmake
         - name: Linux-Clang
           compiler: clang++-9
           os: ubuntu-16.04
-          dep-install: sudo apt-get install -y cmake doxygen graphviz clang
+          dep-install: sudo apt-get install -y cmake clang
         - name: Linux-Clang-libc++
           compiler: clang++-9
           os: ubuntu-18.04
-          dep-install: sudo apt-get install -y cmake doxygen graphviz clang libc++abi-9-dev  libc++-9-dev
+          dep-install: sudo apt-get install -y cmake clang libc++abi-9-dev  libc++-9-dev
           build_with_libcpp: ON
         - name: MacOS-Clang
           os: macos-10.15
@@ -60,7 +60,7 @@ jobs:
         - name: Release
           os: ubuntu-20.04
           compiler: g++-10
-          dep-install: sudo apt-get install -y cmake doxygen graphviz
+          dep-install: sudo apt-get install -y cmake
           build_type: Release
 
 
