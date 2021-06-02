@@ -3,6 +3,7 @@
 #include <CLI/App.hpp>
 #include <CLI/Config.hpp>
 #include <CLI/Formatter.hpp>
+#include <cstdlib>
 #include <filesystem>
 #include <iostream>
 #include <string>
@@ -57,6 +58,7 @@ int main(int argc, char **argv) {
 
     try {
       app.parse(argc, argv);
+      return EXIT_SUCCESS;
     } catch (const CLI::ParseError &e) { return app.exit(e); }
   } catch (std::exception const &ex) {
     std::cout << "\n[Error]: " << ex.what() << std::endl;
@@ -65,5 +67,5 @@ int main(int argc, char **argv) {
                  "This is a bug and must be fixed!\n\n"
               << std::endl;
   }
-  return 1;
+  return EXIT_FAILURE;
 }
