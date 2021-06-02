@@ -1,0 +1,158 @@
+on:
+  push:
+    branches:
+    - "master"
+    paths:
+    - Version.cmake
+name: Release
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Get Version
+      id: get_version
+      run: |        
+        cmake -E make_directory ${{github.workspace}}/build
+        VERSION=$(cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=Release | grep 'grazer-version:' | grep -oE '[0-9\.]+')
+        echo ${VERSION} > version.txt
+        echo "::set-output name=version::${VERSION}"
+        touch CHANGELOG.md
+        echo "::set-output name=changelog::$(cat CHANGELOG.md)"
+    - uses: actions/upload-artifact@v2
+      with:
+        name: version
+        path: version.txt
+
+    - name: Create a GitHub release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ steps.get_version.outputs.version }}
+        release_name: Release Version ${{ steps.get_version.outputs.version }}
+        body: ${{ steps.get_version.outputs.changelog }} 
+
+  generate-binaries:
+    name: Generate Binaries 
+    needs: create-release
+
+    strategy:
+      fail-fast: false
+      matrix:
+        name:
+        - ubuntu-20.04
+        - MacOS
+        - Windows
+        include:
+        - name: ubuntu-20.04
+          os: ubuntu-20.04
+          compiler: clang++-9
+          artifact_path: /build/src/Grazer/grazer
+          asset_name: grazer
+          asset_description: Binary for ubuntu-20.04
+          dep-install: sudo apt-get install -y cmake doxygen graphviz
+        - name: MacOS
+          os: macos-10.15
+          compiler: clang++
+          artifact_path: /build/src/Grazer/grazer
+          asset_name: grazer_mac
+          asset_description: Binary for MacOS
+        - name: Windows
+          os: windows-2019
+          compiler: msvc
+          artifact_path: \build\src\Grazer\Release\grazer.exe
+          asset_name: grazer.exe
+          asset_description: Binary for Windows
+
+    env:
+      # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+      CXX: ${{ matrix.compiler }}
+    # The CMake configure and build commands are platform agnostic and should work equally
+    # well on Windows or Mac.  You can convert this to a matrix build if you need
+    # cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: ${{matrix.os}}
+
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Install Dependencies
+      run: ${{ matrix.dep-install }}
+
+    - name: Create Build Environment
+      # Some projects don't allow in-source building, so create a separate build directory
+      # We'll use this as our working directory for all subsequent commands
+      run: cmake -E make_directory ${{github.workspace}}/build
+
+    - name: Configure CMake
+      # Use a bash shell so we can use the same syntax for environment variable
+      # access regardless of the host operating system
+      shell: bash
+      working-directory: ${{github.workspace}}/build
+      # Note the current convention is to use the -S and -B options here to specify source 
+      # and build directories, but this is only available with CMake 3.13 and higher.  
+      # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=Release
+    - name: Build
+      working-directory: ${{github.workspace}}/build
+      shell: bash
+      # Execute the build.  You can specify a specific target with "--target <NAME>"
+      run: cmake --build . --config Release --target grazer --parallel 10
+
+    - name: Upload binaries to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: ${{github.workspace}}${{ matrix.artifact_path }}
+        asset_name: ${{ matrix.asset_name }}
+        tag: ${{ github.ref }}
+
+  Documentation:
+    needs: generate-binaries
+    runs-on: ubuntu-18.04
+    env:
+      # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+      BUILD_TYPE: Debug 
+      CXX: g++-9
+      CTEST_OUTPUT_ON_FAILURE: 1
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Install Dependencies
+      run: sudo apt-get install -y cmake doxygen graphviz
+
+    - name: Create Build Environment
+      # Some projects don't allow in-source building, so create a separate build directory
+      # We'll use this as our working directory for all subsequent commands
+      run: cmake -E make_directory ${{github.workspace}}/build
+
+    - name: Configure CMake
+      # Use a bash shell so we can use the same syntax for environment variable
+      # access regardless of the host operating system
+      shell: bash
+      working-directory: ${{github.workspace}}/build
+      # Note the current convention is to use the -S and -B options here to specify source 
+      # and build directories, but this is only available with CMake 3.13 and higher.  
+      # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
+      run: echo $BUILD_WITH_LIBCPP &&  cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+
+    - name: Generate Documentation
+      working-directory: ${{ github.workspace }}/build
+      shell: bash
+      run: cmake --build . --config $BUILD_TYPE --target docs --parallel 10
+    
+    - name: Upload Doku to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@4.1.0
+      with:
+        branch: gh-pages
+        folder: build/docs/html
