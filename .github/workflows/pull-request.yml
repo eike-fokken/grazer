@@ -34,7 +34,7 @@ jobs:
         - Linux-GNU
         - Linux-Clang
         - Linux-Clang-libc++
-        # - MacOS-Clang
+        - MacOS-Clang
         - Windows-VisualStudio
         build_type: [ Debug ]
         include:
