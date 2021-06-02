@@ -1316,7 +1316,7 @@
 				]
 			}
 		],
-		"PQnode": [
+		"StochasticPQnode": [
 			{
 				"id": "N1",
 				"data": [

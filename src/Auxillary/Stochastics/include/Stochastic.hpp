@@ -3,6 +3,9 @@
 #include <iostream>
 
 namespace Aux {
+
+  template <typename T> int sgn(T val) { return (T(0) < val) - (val < T(0)); }
+
   class Normaldistribution;
 
   template <typename Distribution>
@@ -18,7 +21,14 @@ namespace Aux {
     }
     // std::cout << "mean: " << mu << "\n";
     // std::cout << "computed: " << current_value << "\n";
-    return current_value;
+    double difference = 0.43;
+    if (sgn(mu) * current_value < (1.0 - difference) * sgn(mu) * mu) {
+      return (1.0 - difference) * mu;
+    } else if (sgn(mu) * current_value > (1.0 + difference) * sgn(mu) * mu) {
+      return (1.0 + difference) * mu;
+    } else {
+      return current_value;
+    }
   }
 
   template <typename Distribution>
@@ -34,7 +44,13 @@ namespace Aux {
     }
     // std::cout << "mean: " << mu << "\n";
     // std::cout << "computed: " << current_value << "\n";
-    return current_value;
+    if (sgn(mu) * current_value < 0.8 * sgn(mu) * mu) {
+      return 0.8 * mu;
+    } else if (sgn(mu) * current_value > 1.2 * sgn(mu) * mu) {
+      return 1.2 * mu;
+    } else {
+      return current_value;
+    }
   }
 
 } // namespace Aux

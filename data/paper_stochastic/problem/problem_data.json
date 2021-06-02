@@ -2,9 +2,9 @@
     "time_evolution_data":
     {
         "use_simplified_newton": true,
-        "maximal_number_of_newton_iterations": 100,
+        "maximal_number_of_newton_iterations": 50,
         "tolerance": 1e-8,
-        "retries": 5,
+        "retries": 10,
         "start_time": 0,
         "end_time": 86400,
         "desired_delta_t": 1800
@@ -27,9 +27,9 @@
                 "StochasticPQnode_data": {
                     "number_of_stochastic_steps": 5000,
                     "theta_P": 0.3,
-                    "sigma_P": 0.2,
+                    "sigma_P": 0.1,
                     "theta_Q": 0.3,
-                    "sigma_Q": 0.2
+                    "sigma_Q": 0.1
                 },
                 "balancelaw": "Isothermaleulerequation",
                 "scheme": "Implicitboxscheme",
