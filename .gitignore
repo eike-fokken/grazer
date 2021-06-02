@@ -67,3 +67,6 @@ compile_commands.json
 
 # python
 gui/env
+**/__pycache__
+gui/dist
+gui/build

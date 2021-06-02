@@ -1,11 +1,25 @@
+import sys
+from pathlib import Path
 from gooey import Gooey, GooeyParser
 
 
-@Gooey(target="grazer", program_name="Grazer", suppress_gooey_flag=True)
+grazer_executable = "grazer"
+if sys.platform.startswith("win"):
+    grazer_executable += ".exe"
+parent_dir = Path(__file__).parent
+grazer_path = parent_dir.joinpath("bin/"+grazer_executable).absolute()
+
+@Gooey(target=str(grazer_path), program_name="Grazer", suppress_gooey_flag=True)
 def main():
+    # make sure that the output is not buffered (cf. https://chriskiehl.com/article/packaging-gooey-with-pyinstaller)
+    # nonbuffered_stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
+    # sys.stdout = nonbuffered_stdout
+    #### 
+
+
     parser = GooeyParser(description="Simulation of dynamical systems")
     grazer_subparser = parser.add_subparsers(help="Programs")
-    grazer_run = grazer_subparser.add_parser("run")
+    grazer_run = grazer_subparser.add_parser("run", help="Run Simulation")
     grazer_run_group = grazer_run.add_argument_group("Run Simulation")
     grazer_run_group.add_argument(
         "grazer-directory",

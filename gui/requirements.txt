@@ -6,3 +6,4 @@ psutil==5.8.0
 pygtrie==2.4.2
 six==1.16.0
 wxPython==4.1.0
+pyinstaller==4.3
