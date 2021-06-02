@@ -36,7 +36,7 @@ jobs:
         - Linux-Clang-libc++
         - MacOS-Clang
         - Windows-VisualStudio
-        - Release
+        - Release-Test
         include:
         - name: Linux-GNU
           compiler: g++-9
@@ -66,9 +66,9 @@ jobs:
           compiler: msvs
           build_type: Debug
           binary-path: \build\src\Grazer\Debug\grazer.exe
-        - name: Release
+        - name: Release-Test
           os: ubuntu-20.04
-          compiler: g++-10
+          compiler: clang++-10
           dep-install: sudo apt-get install -y cmake
           build_type: Release
           binary-path: /build/src/Grazer/grazer
