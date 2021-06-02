@@ -21,3 +21,8 @@ add_executable(extract_new_initial_condition extract_new_initial_condition.cpp)
 
 add_executable(pv_to_vphi pv_to_vphi.cpp)
 add_executable(construct_gaspowerconnection construct_gaspowerconnection.cpp)
+
+
+
+#temporary:
+add_executable(sum_outflow sum_outflow.cpp)
