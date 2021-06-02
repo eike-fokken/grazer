@@ -52,7 +52,7 @@ jobs:
           artifact_path: /build/src/Grazer/grazer
           asset_name: grazer
           asset_description: Binary for ubuntu-20.04
-          dep-install: sudo apt-get install -y cmake clang-10 graphviz
+          dep-install: sudo apt-get install -y cmake clang-10
         - name: MacOS
           os: macos-10.15
           compiler: clang++
