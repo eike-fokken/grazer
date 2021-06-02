@@ -132,6 +132,6 @@ jobs:
       run: ctest -V -C ${{ matrix.build_type }}
     
     - name: Integration Test 
-      run: ${{github.workspace}}${{ matrix.binary-path }} run ./data/base
+      run: ${{github.workspace}}${{ matrix.binary-path }} run ./data/basetest
 
 
