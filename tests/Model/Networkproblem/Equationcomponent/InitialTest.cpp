@@ -2,6 +2,7 @@
 #include "Initialvalue.hpp"
 #include "Valuemap.hpp"
 #include <Eigen/Dense>
+#include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
@@ -23,8 +24,19 @@ TEST(Initialvalue, Operator) {
 
   Model::Networkproblem::Initialvalue<2> initial_object(initial_value_map);
 
-  EXPECT_THROW(initial_object(3.5), std::runtime_error);
-  EXPECT_THROW(initial_object(0.5), std::runtime_error);
+  try {
+    initial_object(3.5);
+  } catch (std::exception &e) {
+    EXPECT_THAT(
+        e.what(), testing::HasSubstr("Out-of-range error in initial values"));
+  }
+
+  try {
+    initial_object(0.5);
+  } catch (std::exception &e) {
+    EXPECT_THAT(
+        e.what(), testing::HasSubstr("Out-of-range error in initial values"));
+  }
 
   // TEST2
   {

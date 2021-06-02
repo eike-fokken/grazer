@@ -5,6 +5,8 @@
 #include "Transmissionline.hpp"
 #include "Vphinode.hpp"
 
+#include <exception>
+#include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
@@ -82,10 +84,14 @@ TEST(check_for_duplicatesTEST, duplicate_id_in_same_vector) {
             {{{"id", "node_5"}, {"x", 10.000000}},
              {{"id", "node_6"}, {"x", 13.000000}}}}}}};
 
-  EXPECT_THROW(
-      Model::Networkproblem::check_for_duplicates(
-          id_duplicate_json, "topology_key"),
-      std::runtime_error);
+  try {
+    Model::Networkproblem::check_for_duplicates(
+        id_duplicate_json, "topology_key");
+  } catch (std::exception &e) {
+    EXPECT_THAT(
+        e.what(),
+        testing::HasSubstr("The id node_1 appears twice in topology_key"));
+  }
 }
 
 TEST(check_for_duplicatesTEST, duplicate_id_in_neighbour_vector) {
@@ -103,10 +109,14 @@ TEST(check_for_duplicatesTEST, duplicate_id_in_neighbour_vector) {
          {{{"id", "node_4"}, {"x", 10.000000}},
           {{"id", "node_6"}, {"x", 13.000000}}}}}}};
 
-  EXPECT_THROW(
-      Model::Networkproblem::check_for_duplicates(
-          id_duplicate_json, "topology_key"),
-      std::runtime_error);
+  try {
+    Model::Networkproblem::check_for_duplicates(
+        id_duplicate_json, "topology_key");
+  } catch (std::exception &e) {
+    EXPECT_THAT(
+        e.what(),
+        testing::HasSubstr("The id node_4 appears twice in topology_key"));
+  }
 }
 
 TEST(build_node_vectorTEST, node_type_not_known) {
@@ -138,7 +148,7 @@ TEST(build_node_vectorTEST, node_type_not_known) {
             {"boundary_values",
              {{"id", "N203"},
               {"data", {{{"time", 1}, {"values", {1.01, -0.203}}}}}}}}}},
-         {"wrong_node_type_name",
+         {"ABCnode",
           {{"B", -26.2023789002},
            {"G", 1.7238407171},
            {"id", "N204"},
@@ -146,9 +156,13 @@ TEST(build_node_vectorTEST, node_type_not_known) {
             {{"id", "N204"},
              {"data", {{{{"time", 1}, {"values", {1.01, -0.203}}}}}}}}}}};
 
-  EXPECT_THROW(
-      Model::Networkproblem::build_node_vector(node_topology, nodetypemap),
-      std::runtime_error);
+  try {
+    Model::Networkproblem::build_node_vector(node_topology, nodetypemap);
+  } catch (std::exception &e) {
+    EXPECT_THAT(
+        e.what(), testing::HasSubstr("node type ABCnode, given in the topology "
+                                     "file, is unknown to grazer"));
+  }
 }
 
 TEST(build_node_vectorTEST, evaluate) {
@@ -231,7 +245,7 @@ TEST(build_edge_vectorTEST, edge_type_not_known) {
   nlohmann::json edge_topology;
 
   edge_topology
-      = {{"wrong_edge_type_name",
+      = {{"ABCedge",
           {{{"from", "N203"},
             {"to", "N202"},
             {"B", 1},
@@ -247,10 +261,13 @@ TEST(build_edge_vectorTEST, edge_type_not_known) {
             {"power2gas_q_coeff", 0.5},
             {"gas2power_q_coeff", 0.5}}}}};
 
-  EXPECT_THROW(
-      Model::Networkproblem::build_edge_vector(
-          edge_topology, nodes, edgetypemap),
-      std::runtime_error);
+  try {
+    Model::Networkproblem::build_edge_vector(edge_topology, nodes, edgetypemap);
+  } catch (std::exception &e) {
+    EXPECT_THAT(
+        e.what(), testing::HasSubstr("edge type ABCedge, given in the topology "
+                                     "file, is unknown to grazer"));
+  }
 }
 
 TEST(build_edge_vectorTEST, evaluate) {

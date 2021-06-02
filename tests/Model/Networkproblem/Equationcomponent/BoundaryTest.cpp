@@ -2,6 +2,8 @@
 #include "Exception.hpp"
 #include "Valuemap.hpp"
 #include <Eigen/Dense>
+#include <exception>
+#include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
@@ -23,9 +25,19 @@ TEST(Boundaryvalue, Operator) {
 
   Model::Networkproblem::Boundaryvalue<2> boundary_object(boundary_value_map);
 
-  EXPECT_THROW(boundary_object(3.5), std::runtime_error);
-  EXPECT_THROW(boundary_object(0.5), std::runtime_error);
-  // EXPECT_ANY_THROW(boundary_object(0.5));
+  try {
+    boundary_object(3.5);
+  } catch (std::exception &e) {
+    EXPECT_THAT(
+        e.what(), testing::HasSubstr("Out-of-range error in boundary values"));
+  }
+
+  try {
+    boundary_object(0.5);
+  } catch (std::exception &e) {
+    EXPECT_THAT(
+        e.what(), testing::HasSubstr("Out-of-range error in boundary values"));
+  }
 
   // TEST2
   {

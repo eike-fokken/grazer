@@ -2,6 +2,7 @@
 #include "Exception.hpp"
 #include "Valuemap.hpp"
 #include <Eigen/Dense>
+#include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
@@ -23,9 +24,19 @@ TEST(Control, Operator) {
 
   Model::Networkproblem::Control<2> control_object(control_value_map);
 
-  EXPECT_THROW(control_object(3.5), std::runtime_error);
-  EXPECT_THROW(control_object(0.5), std::runtime_error);
-  // EXPECT_ANY_THROW(boundary_object(0.5));
+  try {
+    control_object(3.5);
+  } catch (std::exception &e) {
+    EXPECT_THAT(
+        e.what(), testing::HasSubstr("Out-of-range error in control values"));
+  }
+
+  try {
+    control_object(0.5);
+  } catch (std::exception &e) {
+    EXPECT_THAT(
+        e.what(), testing::HasSubstr("Out-of-range error in control values"));
+  }
 
   // TEST2
   {

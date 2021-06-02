@@ -60,8 +60,9 @@ TEST(Aux_json, replace_entry_with_json_from_file) {
   try {
     aux_json::replace_entry_with_json_from_file(wrong_path_json, "key");
   } catch (std::exception &e) {
-    EXPECT_THAT(e.what(), testing::HasSubstr(
-         "The file \n/wrong/path.json\n does not exist!"));
+    EXPECT_THAT(
+        e.what(),
+        testing::HasSubstr("The file \n/wrong/path.json\n does not exist!"));
   }
 
   // Removing temporary file

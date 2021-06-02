@@ -4,6 +4,7 @@
 #include <deque>
 #include <exception>
 #include <fstream>
+#include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
@@ -82,8 +83,17 @@ TEST_F(prepare_output_dirTEST, path_points_to_file) {
 
   // Testing a path that does not point to a directory but to a file
   std::ofstream file(temp_filepath.string());
-  EXPECT_THROW(
-      [[maybe_unused]] auto result
-      = io::prepare_output_dir(temp_filepath.string()),
-      std::runtime_error);
+  // EXPECT_THROW(
+  //     [[maybe_unused]] auto result
+  //     = io::prepare_output_dir(temp_filepath.string()),
+  //     std::runtime_error);
+
+  try {
+    [[maybe_unused]] auto result
+        = io::prepare_output_dir(temp_filepath.string());
+  } catch (std::exception &e) {
+    EXPECT_THAT(
+        e.what(), testing::HasSubstr("The output directory, \"temporary_file\" "
+                                     "is present, but not a directory"));
+  }
 }
