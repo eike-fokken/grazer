@@ -1,10 +1,42 @@
 on:
-  release:
-    types: [published]
-name: Add Binaries to Release
+  push:
+    branches:
+    - "master"
+    paths:
+    - Version.cmake
+name: Release
 jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-20.04
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Get Version
+      id: get_version
+      run: |        
+        cmake -E make_directory ${{github.workspace}}/build
+        VERSION=$(cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=Release | grep 'grazer-version:' | grep -oE '[0-9\.]+')
+        echo ${VERSION}
+        echo "::set-output name=version::${VERSION}"
+        touch CHANGELOG.md
+        echo "::set-output name=changelog::$(cat CHANGELOG.md)"
+
+    - name: Create a GitHub release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ steps.get_version.outputs.version }}
+        release_name: Release Version ${{ steps.get_version.outputs.version }}
+        body: ${{ steps.get_version.outputs.changelog }} 
+
   generate-binaries:
     name: Generate Binaries 
+    needs: create-release
 
     strategy:
       fail-fast: false
@@ -71,14 +103,14 @@ jobs:
       shell: bash
       # Execute the build.  You can specify a specific target with "--target <NAME>"
       run: cmake --build . --config Release --target grazer --parallel 10
-
+    
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: ${{github.workspace}}${{ matrix.artifact_path }}
         asset_name: ${{ matrix.asset_name }}
-        tag: ${{ github.ref }}
+        tag: v${{ needs.create-release.outputs.version }}
 
   Documentation:
     needs: generate-binaries

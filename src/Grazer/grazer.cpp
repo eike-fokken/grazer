@@ -57,6 +57,7 @@ int main(int argc, char **argv) {
 
     try {
       app.parse(argc, argv);
+      return 0;
     } catch (const CLI::ParseError &e) { return app.exit(e); }
   } catch (std::exception const &ex) {
     std::cout << "\n[Error]: " << ex.what() << std::endl;
