@@ -138,7 +138,7 @@ jobs:
         pip install wheel
         pip install \
           -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/${{matrix.os}} \
-          wxPython
+          wxPython==4.1.0
     
     - name: Build GUI
       working-directory: ${{github.workspace}}/gui
