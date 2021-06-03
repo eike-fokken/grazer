@@ -100,11 +100,12 @@ jobs:
       with:
         key: ${{ matrix.name }}
 
-    - name: Set up buildcache
-      if: matrix.os == 'windows-2019' # works for all
-      uses: mikehardy/buildcache-action@v1
-      with:
-        cache_key: ${{ matrix.name }} # might be useful in the furture
+    ## works for clang only (all OS)
+    # - name: Set up buildcache
+    #   if: matrix.os == 'windows-2019' 
+    #   uses: mikehardy/buildcache-action@v1
+    #   with:
+    #     cache_key: ${{ matrix.name }} # might be useful in the furture
 
     - name: Install Dependencies
       run: ${{ matrix.dep-install }}
