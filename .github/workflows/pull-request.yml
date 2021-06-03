@@ -122,7 +122,7 @@ jobs:
     - name: Move Executable (Win)
       if: startsWith( matrix.os, 'windows' )
       run: |
-        mv ${{github.workspace}}\build\src\Grazer\Debug\grazer.exe ${{github.workspace}}\gui\bin\grazer.exe
+        mv ${{github.workspace}}\build\src\Grazer\Debug\grazer.exe ${{github.workspace}}/gui/bin/grazer.exe
         ls ${{github.workspace}}\gui\bin
 
     - name: Move Executable (Unix)
@@ -159,9 +159,16 @@ jobs:
         name: grazer_binary_${{matrix.os}}
         path: ${{github.workspace}}\gui\dist\grazer_gui.exe
 
-    - name: Upload binary (Unix)
+    - name: Upload binary (Mac)
       if: "!startsWith( matrix.os , 'windows')"
       uses: actions/upload-artifact@v2
       with:
         name: grazer_binary_${{matrix.os}}
         path: ${{github.workspace}}/gui/dist/grazer_gui.app
+
+    - name: Upload binary (Linux)
+      if: "!startsWith( matrix.os , 'windows')"
+      uses: actions/upload-artifact@v2
+      with:
+        name: grazer_binary_${{matrix.os}}
+        path: ${{github.workspace}}/gui/dist/grazer_gui
