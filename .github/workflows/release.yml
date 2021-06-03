@@ -105,7 +105,7 @@ jobs:
       run: cmake --build . --config Release --target grazer --parallel 10
     
     - name: Final Smoke Test
-      run: ${{github.workspace}}${{ matrix.binary-path }} run ./data/base
+      run: ${{github.workspace}}${{ matrix.binary-path }} run ./data/basetest
     
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
