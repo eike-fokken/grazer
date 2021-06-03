@@ -126,7 +126,7 @@ jobs:
         mv ${{github.workspace}}\build\src\Grazer\Debug\grazer.exe ${{github.workspace}}\gui\bin
         cd ${{github.workspace}}\gui
         python -m venv env
-        & . .\env\Scripts\Activate.ps1
+        & .\env\Scripts\Activate.ps1
         pip install -r requirements.txt
         pyinstaller gui.spec
     
