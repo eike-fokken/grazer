@@ -1,0 +1,15 @@
+name: Changelog Update
+
+on:
+  pull_request:
+    branches: [master]
+    types: [synchronize, opened, reopened, ready_for_review]
+    paths:
+    - CHANGELOG.md
+
+jobs:
+  update-check:
+    name: Changelog has been updated
+    runs-on: ubuntu-latest
+    # no steps - always succeeds only has to be triggered
+    # (-> enforces changes to CHANGELOG.md for every pull request)
