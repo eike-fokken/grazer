@@ -124,21 +124,30 @@ jobs:
       if: matrix.os == 'windows-2019'
       run: |
         mv ${{github.workspace}}\build\src\Grazer\Debug\grazer.exe ${{github.workspace}}\gui\bin\grazer.exe
-        cd ${{github.workspace}}\gui
-        ls ./bin
+        ls ${{github.workspace}}\gui\bin
 
-    - name: Move Executable (MacOS)
-      if: matrix.os == 'macos-10.15'
+    - name: Move Executable (Unix)
+      if: matrix.os != 'windows-2019'
       run: |
         mv ${{github.workspace}}/build/src/Grazer/grazer ${{github.workspace}}/gui/bin/grazer
-        cd ${{github.workspace}}/gui
-        ls ./bin
+        ls ${{github.workspace}}/gui/bin
     
-    - name: Build GUI
-      if: matrix.os == 'windows-2019' || matrix.os == 'macos-10.15'
+    - name: Build GUI (Win)
+      if: matrix.os == 'windows-2019'
+      working-directory: ${{github.workspace}}/gui
       run: |
         python -m venv env
         & .\env\Scripts\Activate.ps1
+        pip install wheel
+        pip install -r requirements.txt
+        pyinstaller --windowed -F gui.spec
+
+    - name: Build GUI (MacOS)
+      if: matrix.os == 'macos-10.15'
+      working-directory: ${{github.workspace}}/gui
+      run: |
+        python -m venv env
+        .\env\Scripts\activate
         pip install wheel
         pip install -r requirements.txt
         pyinstaller --windowed -F gui.spec
