@@ -64,7 +64,7 @@ jobs:
           binary-path: /build/src/Grazer/grazer
         - name: Windows-VisualStudio
           os: windows-2019
-          compiler: msvs
+          compiler: msvc
           build_type: Debug
           binary-path: \build\src\Grazer\Debug\grazer.exe
         - name: Release-Test
@@ -103,6 +103,8 @@ jobs:
     - name: Set up buildcache
       if: matrix.os == 'windows-2019' # works for all
       uses: mikehardy/buildcache-action@v1
+      with:
+        cache_key: ${{ matrix.os }}-${{ matrix.build_type }} # might be useful in the furture
 
     - name: Install Dependencies
       run: ${{ matrix.dep-install }}
