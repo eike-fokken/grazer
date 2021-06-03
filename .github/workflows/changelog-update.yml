@@ -11,5 +11,8 @@ jobs:
   update-check:
     name: Changelog has been updated
     runs-on: ubuntu-latest
+    steps:
+      - name: Success
+        run: echo Success
     # no steps - always succeeds only has to be triggered
     # (-> enforces changes to CHANGELOG.md for every pull request)
