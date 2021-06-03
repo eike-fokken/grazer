@@ -115,7 +115,7 @@ jobs:
     ### Testing GUI building
 
     - uses: actions/setup-python@v2
-      if: matrix.os == 'windows-2019' || matrix.os == 'macos-10.15'
+      # if: matrix.os == 'windows-2019' || matrix.os == 'macos-10.15'
       with:
         python-version: '3.8' # Version range or exact version of a Python version to use, using SemVer's version range syntax
         architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
@@ -132,24 +132,15 @@ jobs:
         mv ${{github.workspace}}/build/src/Grazer/grazer ${{github.workspace}}/gui/bin/grazer
         ls ${{github.workspace}}/gui/bin
     
-    - name: Build GUI (Win)
-      if: matrix.os == 'windows-2019'
+    - name: Build GUI
+      # if: matrix.os == 'windows-2019' || matrix.os == 'macos-10.15'
       working-directory: ${{github.workspace}}/gui
       run: |
+        pip install --upgrade pip
         pip install wheel
         pip install -r requirements.txt
         pyinstaller --windowed -F gui.spec
 
-    - name: Build GUI (MacOS)
-      if: matrix.os == 'macos-10.15'
-      working-directory: ${{github.workspace}}/gui
-      run: |
-        python -m venv env
-        ./env/Scripts/activate
-        pip install wheel
-        pip install -r requirements.txt
-        pyinstaller --windowed -F gui.spec
-    
     - name: Upload binary
       if: matrix.os == 'windows-2019'
       uses: actions/upload-artifact@v2

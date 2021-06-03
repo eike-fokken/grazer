@@ -1,6 +1,12 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+import os
 import sys
+
+from PyInstaller.building.api import EXE, PYZ, COLLECT
+from PyInstaller.building.build_main import Analysis
+from PyInstaller.building.datastruct import Tree
+
 import gooey
 gooey_root = os.path.dirname(gooey.__file__)
 gooey_languages = Tree(os.path.join(gooey_root, 'languages'), prefix = 'gooey/languages')
@@ -41,3 +47,14 @@ exe = EXE(
     console=False,
     icon=os.path.join(gooey_root, 'images', 'program_icon.ico')
 )
+
+# MacOS (https://docs.python.org/3/library/sys.html#sys.platform)
+if sys.platform.startswith('darwin'):
+    from PyInstaller.building.osx import BUNDLE
+
+    info_plist = {'addition_prop': 'additional_value'}
+    app = BUNDLE(exe,
+                name='APPNAME.app',
+                bundle_identifier=None,
+                info_plist=info_plist
+                )
