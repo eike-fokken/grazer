@@ -7,7 +7,7 @@ on:
     paths-ignore:
     - docs/**
     - .github/**
-    - "!.github/workflows/pull_request.yml"
+    - "!.github/workflows/pull-request.yml"
     - .clang-format
     - README.md
     - CHANGELOG.md
@@ -115,13 +115,13 @@ jobs:
     ### Testing GUI building
 
     - uses: actions/setup-python@v2
-      if: matrix.os == windows-2019
+      if: matrix.os == 'windows-2019'
       with:
         python-version: '3.x' # Version range or exact version of a Python version to use, using SemVer's version range syntax
         architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
     
     - name: Build GUI
-      if: matrix.os == windows-2019
+      if: matrix.os == 'windows-2019'
       run: |
         mv ${{github.workspace}}\build\src\Grazer\Debug\grazer.exe ${{github.workspace}}\gui\bin
         cd ${{github.workspace}}\gui
@@ -131,7 +131,7 @@ jobs:
         pyinstaller gui.spec
     
     - name: Upload binary
-      if: matrix.os == windows-2019
+      if: matrix.os == 'windows-2019'
       uses: actions/upload-artifact@v2
       with:
         name: grazer_binary 
