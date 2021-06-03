@@ -140,6 +140,8 @@ jobs:
         pip install wheel
         pip install -r requirements.txt
         pyinstaller --windowed -F gui.spec
+        ls ./dist
+        ls ./build
 
     - name: Upload binary
       if: matrix.os == 'windows-2019'
@@ -153,4 +155,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: grazer_binary 
-        path: ${{github.workspace}}\gui\dist\grazer_gui.app
+        path: ${{github.workspace}}/gui/dist/grazer_gui.app
