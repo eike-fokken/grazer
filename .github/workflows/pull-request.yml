@@ -97,6 +97,8 @@ jobs:
     - name: Set up CCache
       if: matrix.os != 'windows-2019' # does not work for windows
       uses: hendrikmuhs/ccache-action@v1 
+      with:
+        key: ${{ matrix.os }}-${{ matrix.build_type }}
 
     - name: Set up buildcache
       if: matrix.os == 'windows-2019' # works for all
