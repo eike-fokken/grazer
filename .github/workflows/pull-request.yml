@@ -136,8 +136,6 @@ jobs:
       if: matrix.os == 'windows-2019'
       working-directory: ${{github.workspace}}/gui
       run: |
-        python -m venv env
-        & .\env\Scripts\Activate.ps1
         pip install wheel
         pip install -r requirements.txt
         pyinstaller --windowed -F gui.spec
@@ -147,7 +145,7 @@ jobs:
       working-directory: ${{github.workspace}}/gui
       run: |
         python -m venv env
-        .\env\Scripts\activate
+        ./env/Scripts/activate
         pip install wheel
         pip install -r requirements.txt
         pyinstaller --windowed -F gui.spec
