@@ -115,41 +115,41 @@ jobs:
     ### Testing GUI building
 
     - uses: actions/setup-python@v2
-      if: matrix.os == 'windows-2019' || matrix.os == 'macos-10.15' || matrix.os == 'ubuntu-16.04'
       with:
         python-version: '3.8' # Version range or exact version of a Python version to use, using SemVer's version range syntax
         architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
     
     - name: Move Executable (Win)
-      if: matrix.os == 'windows-2019'
+      if: startsWith( matrix.os, 'windows' )
       run: |
         mv ${{github.workspace}}\build\src\Grazer\Debug\grazer.exe ${{github.workspace}}\gui\bin\grazer.exe
         ls ${{github.workspace}}\gui\bin
 
     - name: Move Executable (Unix)
-      if: matrix.os != 'windows-2019'
+      if: "!startsWith( matrix.os , 'windows')"
       run: |
         mv ${{github.workspace}}/build/src/Grazer/grazer ${{github.workspace}}/gui/bin/grazer
         ls ${{github.workspace}}/gui/bin
     
-    - name: Install wxpython on ubuntu-16.04 
-      if: matrix.os == 'ubuntu-16.04'
+    - name: Install wxpython on Linux 
+      if: (!startsWith( matrix.os , 'windows' )) && (!startsWith(matrix.os, 'macos'))
       run: |
         pip install --upgrade pip
         pip install wheel
         pip install \
-          -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04 \
+          -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/${{matrix.os}} \
           wxPython
     
     - name: Build GUI
-      if: matrix.os == 'windows-2019' || matrix.os == 'macos-10.15' || matrix.os == 'ubuntu-16.04'
       working-directory: ${{github.workspace}}/gui
       run: |
         pip install --upgrade pip
         pip install wheel
         pip install -r requirements.txt
         pyinstaller --windowed -F gui.spec
+        echo "ls ./dist"
         ls ./dist
+        echo "ls ./build"
         ls ./build
 
     - name: Upload binary
@@ -159,8 +159,8 @@ jobs:
         name: grazer_binary_${{matrix.os}}
         path: ${{github.workspace}}\gui\dist\grazer_gui.exe
 
-    - name: Upload binary (Mac)
-      if: matrix.os == 'macos-10.15' || matrix.os == 'ubuntu-16.04'
+    - name: Upload binary (Unix)
+      if: "!startsWith( matrix.os , 'windows')"
       uses: actions/upload-artifact@v2
       with:
         name: grazer_binary_${{matrix.os}}
