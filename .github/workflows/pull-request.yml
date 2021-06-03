@@ -93,11 +93,11 @@ jobs:
         submodules: recursive
     
     - name: Set up CCache
-      if: matrix.os != "windows-2019" # does not work for windows
+      if: matrix.os != 'windows-2019' # does not work for windows
       uses: hendrikmuhs/ccache-action@v1 
 
     - name: Set up buildcache
-      if: matrix.os == "windows-2019" # works for all
+      if: matrix.os == 'windows-2019' # works for all
       uses: mikehardy/buildcache-action@v1
 
     - name: Install Dependencies
