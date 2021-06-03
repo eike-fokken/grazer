@@ -80,6 +80,8 @@ jobs:
       CXX: ${{ matrix.compiler }}
       CTEST_OUTPUT_ON_FAILURE: 1
       BUILD_WITH_LIBCPP: ${{ matrix.build_with_libcpp }}
+      # acts like a ternary:
+      CCACHE_OPTIONS: ${{ matrix.os != 'windows-2019' && '-D CMAKE_CXX_COMPILER_LAUNCHER=ccache -D CMAKE_C_COMPILER_LAUNCHER=ccache' || ' ' }}
     # The CMake configure and build commands are platform agnostic and should work equally
     # well on Windows or Mac.  You can convert this to a matrix build if you need
     # cross-platform coverage.
@@ -120,8 +122,7 @@ jobs:
         echo "Build with Libcpp: $BUILD_WITH_LIBCPP"
         cmake ${{ github.workspace }} \
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-          -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
-          -D CMAKE_C_COMPILER_LAUNCHER=ccache \
+          $CCACHE_OPTIONS \
           -DBUILD_WITH_LIBCPP=${BUILD_WITH_LIBCPP}
     - name: Build
       working-directory: ${{github.workspace}}/build
