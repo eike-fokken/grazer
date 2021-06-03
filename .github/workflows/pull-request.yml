@@ -120,7 +120,7 @@ jobs:
       # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
       run: | 
         echo "Build with Libcpp: $BUILD_WITH_LIBCPP"
-        cmake ${{ github.workspace }} \
+        cmake $GITHUB_WORKSPACE \
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
           $CCACHE_OPTIONS \
           -DBUILD_WITH_LIBCPP=${BUILD_WITH_LIBCPP}
