@@ -11,6 +11,7 @@
 #include "Powernode.hpp"
 #include <Eigen/src/Core/Matrix.h>
 #include <filesystem>
+#include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
 #include <stdexcept>
 
@@ -72,8 +73,20 @@ TEST_F(GaspowerconnectionTEST, smoothing_polynomial) {
   EXPECT_DOUBLE_EQ(
       gp->smoothing_polynomial(-gp->kappa),
       power2gas_q_coefficient * (-gp->kappa));
-  EXPECT_THROW(gp->smoothing_polynomial(gp->kappa + 1), std::runtime_error);
-  EXPECT_THROW(gp->smoothing_polynomial(-gp->kappa - 1), std::runtime_error);
+  try {
+    gp->smoothing_polynomial(gp->kappa + 1);
+  } catch (std::exception &e) {
+    EXPECT_THAT(
+        e.what(), testing::HasSubstr("You can't call this function for values "
+                                     "of q bigger than 60.000000000000"));
+  }
+  try {
+    gp->smoothing_polynomial(-gp->kappa - 1);
+  } catch (std::exception &e) {
+    EXPECT_THAT(
+        e.what(), testing::HasSubstr("You can't call this function for values "
+                                     "of q bigger than 60.000000000000"));
+  }
 }
 
 TEST_F(GaspowerconnectionTEST, dsmoothing_polynomial) {
@@ -114,9 +127,20 @@ TEST_F(GaspowerconnectionTEST, dsmoothing_polynomial) {
   EXPECT_DOUBLE_EQ(
       gp->dsmoothing_polynomial_dq(-gp->kappa), power2gas_q_coefficient);
 
-  EXPECT_THROW(gp->dsmoothing_polynomial_dq(gp->kappa + 1), std::runtime_error);
-  EXPECT_THROW(
-      gp->dsmoothing_polynomial_dq(-gp->kappa - 1), std::runtime_error);
+  try {
+    gp->dsmoothing_polynomial_dq(gp->kappa + 1);
+  } catch (std::exception &e) {
+    EXPECT_THAT(
+        e.what(), testing::HasSubstr("You can't call this function for values "
+                                     "of q bigger than 60.000000000000"));
+  }
+  try {
+    gp->dsmoothing_polynomial_dq(-gp->kappa - 1);
+  } catch (std::exception &e) {
+    EXPECT_THAT(
+        e.what(), testing::HasSubstr("You can't call this function for values "
+                                     "of q bigger than 60.000000000000"));
+  }
 
   double h = sqrt(Aux::EPSILON);
   {

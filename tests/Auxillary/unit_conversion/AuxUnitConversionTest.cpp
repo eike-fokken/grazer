@@ -1,3 +1,4 @@
+#include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 #include <unit_conversion.hpp>
@@ -109,32 +110,52 @@ TEST(unitParser, jsonValidation) {
     "not_value": 10,
     "unit": "m"
   })"_json;
-  EXPECT_THROW(
-      test_validation_in_parsing(
-          wrong_name, "required property 'value' not found in object"),
-      std::runtime_error);
+  try {
+    test_validation_in_parsing(
+        wrong_name, "required property 'value' not found in object");
+  } catch (std::exception &e) {
+    EXPECT_THAT(
+        e.what(),
+        testing::HasSubstr(
+            "The current object json does not conform to its schema."));
+  }
   json wrong_type = R"({
     "value": "string",
     "unit": "m"
   })"_json;
-  EXPECT_THROW(
-      test_validation_in_parsing(wrong_type, "unexpected instance type"),
-      std::runtime_error);
+  try {
+    test_validation_in_parsing(wrong_type, "unexpected instance type");
+  } catch (std::exception &e) {
+    EXPECT_THAT(
+        e.what(),
+        testing::HasSubstr(
+            "The current object json does not conform to its schema."));
+  }
   json additional_property = R"({
     "value": "10",
     "unit": "m",
     "additionalProperty": "notAllowed"
   })"_json;
-  EXPECT_THROW(
-      test_validation_in_parsing(additional_property, "additional property"),
-      std::runtime_error);
+  try {
+    test_validation_in_parsing(additional_property, "additional property");
+  } catch (std::exception &e) {
+    EXPECT_THAT(
+        e.what(),
+        testing::HasSubstr(
+            "The current object json does not conform to its schema."));
+  }
   json unknown_unit = R"({
     "value": "10",
     "unit": "l"
   })"_json;
-  EXPECT_THROW(
-      test_validation_in_parsing(unknown_unit, "no subschema has succeeded"),
-      std::runtime_error);
+  try {
+    test_validation_in_parsing(unknown_unit, "no subschema has succeeded");
+  } catch (std::exception &e) {
+    EXPECT_THAT(
+        e.what(),
+        testing::HasSubstr(
+            "The current object json does not conform to its schema."));
+  }
 }
 
 void test_validation_in_parsing(
