@@ -36,40 +36,52 @@ jobs:
         - Linux-Clang-libc++
         - MacOS-Clang
         - Windows-VisualStudio
-        build_type: [ Debug ]
+        - Release-Test
         include:
         - name: Linux-GNU
           compiler: g++-9
           os: ubuntu-18.04
           dep-install: sudo apt-get install -y cmake
+          build_type: Debug
+          binary-path: /build/src/Grazer/grazer
         - name: Linux-Clang
           compiler: clang++-9
           os: ubuntu-16.04
           dep-install: sudo apt-get install -y cmake clang
+          build_type: Debug
+          binary-path: /build/src/Grazer/grazer
         - name: Linux-Clang-libc++
           compiler: clang++-9
           os: ubuntu-18.04
           dep-install: sudo apt-get install -y cmake clang libc++abi-9-dev  libc++-9-dev
+          build_type: Debug
           build_with_libcpp: ON
+          binary-path: /build/src/Grazer/grazer
         - name: MacOS-Clang
           os: macos-10.15
           compiler: clang++
+          build_type: Debug
+          binary-path: /build/src/Grazer/grazer
         - name: Windows-VisualStudio
           os: windows-2019
-          compiler: msvs
-        - name: Release
+          compiler: msvc
+          build_type: Debug
+          binary-path: \build\src\Grazer\Debug\grazer.exe
+        - name: Release-Test
           os: ubuntu-20.04
-          compiler: g++-10
+          compiler: clang++-10
           dep-install: sudo apt-get install -y cmake
           build_type: Release
+          binary-path: /build/src/Grazer/grazer
 
+          
 
     env:
-      # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-      BUILD_TYPE: ${{ matrix.build_type }}
       CXX: ${{ matrix.compiler }}
       CTEST_OUTPUT_ON_FAILURE: 1
       BUILD_WITH_LIBCPP: ${{ matrix.build_with_libcpp }}
+      # acts like a ternary:
+      CCACHE_OPTIONS: ${{ matrix.os != 'windows-2019' && '-D CMAKE_CXX_COMPILER_LAUNCHER=ccache -D CMAKE_C_COMPILER_LAUNCHER=ccache' || ' ' }}
     # The CMake configure and build commands are platform agnostic and should work equally
     # well on Windows or Mac.  You can convert this to a matrix build if you need
     # cross-platform coverage.
@@ -77,9 +89,23 @@ jobs:
     runs-on: ${{ matrix.os }} 
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout Repository
+      uses: actions/checkout@v2
       with:
         submodules: recursive
+    
+    - name: Set up CCache
+      if: matrix.os != 'windows-2019' # does not work for windows
+      uses: hendrikmuhs/ccache-action@v1 
+      with:
+        key: ${{ matrix.name }}
+
+    ## works for clang only (all OS)
+    # - name: Set up buildcache
+    #   if: matrix.os == 'windows-2019' 
+    #   uses: mikehardy/buildcache-action@v1
+    #   with:
+    #     cache_key: ${{ matrix.name }} # might be useful in the furture
 
     - name: Install Dependencies
       run: ${{ matrix.dep-install }}
@@ -97,16 +123,27 @@ jobs:
       # Note the current convention is to use the -S and -B options here to specify source 
       # and build directories, but this is only available with CMake 3.13 and higher.  
       # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
-      run: echo $BUILD_WITH_LIBCPP &&  cmake $GITHUB_WORKSPACE ${{ matrix.generator }} -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DBUILD_WITH_LIBCPP=$BUILD_WITH_LIBCPP
+      run: | 
+        echo "Build with Libcpp: $BUILD_WITH_LIBCPP"
+        cmake $GITHUB_WORKSPACE \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+          $CCACHE_OPTIONS \
+          -DBUILD_WITH_LIBCPP=${BUILD_WITH_LIBCPP}
+
     - name: Build
       working-directory: ${{github.workspace}}/build
       shell: bash
       # Execute the build.  You can specify a specific target with "--target <NAME>"
-      run: cmake --build . --config $BUILD_TYPE --parallel 10
+      run: cmake --build . --config ${{ matrix.build_type }} --parallel 10
 
-    - name: Test
+    - name: Unit Tests
       working-directory: ${{github.workspace}}/build
       shell: bash
       # Execute tests defined by the CMake configuration.  
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest -V -C $BUILD_TYPE
+      run: ctest -V -C ${{ matrix.build_type }}
+    
+    - name: Integration Test 
+      run: ${{github.workspace}}${{ matrix.binary-path }} run ./data/basetest
+
+
