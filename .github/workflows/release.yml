@@ -32,7 +32,7 @@ jobs:
       with:
         tag_name: v${{ steps.get_version.outputs.version }}
         release_name: Release Version ${{ steps.get_version.outputs.version }}
-        body: ${{ steps.get_version.outputs.changelog }} 
+        body: "${{ steps.get_version.outputs.changelog }}"
 
   generate-binaries:
     name: Generate Binaries 
