@@ -54,12 +54,12 @@ jobs:
         - name: MacOS
           os: macos-10.15
           compiler: clang++
-          binary-name: /build/src/Grazer/grazer
+          binary-path: /build/src/Grazer/grazer
           asset-ending: '.app'
         - name: Windows
           os: windows-2019
           compiler: msvc
-          binary-name: \build\src\Grazer\Release\grazer.exe
+          binary-path: \build\src\Grazer\Release\grazer.exe
           asset-ending: '.exe'
 
     env:
@@ -108,7 +108,7 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: ${{github.workspace}}${{ matrix.binary-path }}
-        asset_name: grazer${{matrix.os}}-v${{ needs.create-release.outputs.version }}${{ matrix.asset-ending }}
+        asset_name: grazer-${{matrix.os}}-v${{ needs.create-release.outputs.version }}${{ matrix.asset-ending }}
         tag: v${{ needs.create-release.outputs.version }}
     
     ## GUI
@@ -151,7 +151,6 @@ jobs:
       # ls ./build
 
     - name: Upload binaries to release
-      if: startsWith( matrix.os,'windows')
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
