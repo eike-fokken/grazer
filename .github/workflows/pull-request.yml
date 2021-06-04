@@ -179,18 +179,23 @@ jobs:
         ls -l ./dist
         echo "ls ./build"
         ls -l ./build
-    
+
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
       with:
         name: grazer-gui-${{matrix.os}}${{ matrix.binary-ending }}
         path: ${{github.workspace}}/gui/dist/grazer_gui${{matrix.binary-ending}}
 
+    - name: Zip .app folder on Mac
+      working-directory: ${{github.workspace}}/gui/dist
+      if: startsWith(matrix.os, 'macos')
+      run: zip -r grazer_gui.app.zip grazer_gui.app
+
     - name: Upload Artifacts
       if: startsWith(matrix.os, 'macos')
       uses: actions/upload-artifact@v2
       with:
         name: grazer-gui-${{matrix.os}}${{ matrix.binary-ending }}
-        path: ${{github.workspace}}/gui/dist/grazer_gui.app
+        path: ${{github.workspace}}/gui/dist/grazer_gui.app.zip
 
 
