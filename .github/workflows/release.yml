@@ -23,7 +23,12 @@ jobs:
         echo ${VERSION}
         echo "::set-output name=version::${VERSION}"
         touch CHANGELOG.md
-        echo "::set-output name=changelog::$(cat CHANGELOG.md)"
+        changelog="$(cat CHANGELOG.md)"
+        changelog="${changelog//'%'/'%25'}"
+        changelog="${changelog//$'\n'/'%0A'}"
+        changelog="${changelog//$'\r'/'%0D'}"
+        echo ::set-output name=changelog::$changelog
+      # escaping newlines from changelog cf. https://github.community/t/set-output-truncates-multiline-strings/16852/3
 
     - name: Create a GitHub release
       uses: actions/create-release@v1
@@ -32,7 +37,7 @@ jobs:
       with:
         tag_name: v${{ steps.get_version.outputs.version }}
         release_name: Release Version ${{ steps.get_version.outputs.version }}
-        body: "${{ steps.get_version.outputs.changelog }}"
+        body: ${{ steps.get_version.outputs.changelog }}
 
   generate-binaries:
     name: Generate Binaries 
