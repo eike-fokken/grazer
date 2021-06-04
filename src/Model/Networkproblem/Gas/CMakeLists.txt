@@ -1,6 +1,7 @@
 add_library(gas STATIC
-  Gasnode.cpp Flowboundarynode.cpp
+  Gasnode.cpp Flowboundarynode.cpp Pressureboundarynode.cpp
   Source.cpp Sink.cpp Innode.cpp
+  Pressuresource.cpp
   Gasedge.cpp 
   Shortcomponent.cpp Shortpipe.cpp Controlvalve.cpp Compressorstation.cpp
   Pipe.cpp

@@ -4,6 +4,7 @@
 #include "Controlvalve.hpp"
 #include "Innode.hpp"
 #include "Pipe.hpp"
+#include "Pressuresource.hpp"
 #include "Shortpipe.hpp"
 #include "Sink.hpp"
 #include "Source.hpp"
@@ -17,6 +18,9 @@ namespace Model::Componentfactory {
         std::make_unique<NodeType<Networkproblem::Gas::Sink>>());
     factory.add_node_type(
         std::make_unique<NodeType<Networkproblem::Gas::Innode>>());
+
+    factory.add_node_type(
+        std::make_unique<NodeType<Networkproblem::Gas::Pressuresource>>());
 
     factory.add_edge_type(
         std::make_unique<EdgeType<Networkproblem::Gas::Pipe>>());
