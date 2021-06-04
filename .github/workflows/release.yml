@@ -60,13 +60,11 @@ jobs:
           os: macos-10.15
           compiler: clang++
           binary-path: /build/src/Grazer/grazer
-          gui-ending: '.app'
         - name: Windows
           os: windows-2019
           compiler: msvc
           binary-path: \build\src\Grazer\Release\grazer.exe
-          cli-ending: '.exe'
-          gui-ending: '.exe'
+          binary-ending: '.exe'
 
     env:
       # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -100,6 +98,7 @@ jobs:
       # and build directories, but this is only available with CMake 3.13 and higher.  
       # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
       run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=Release
+
     - name: Build
       working-directory: ${{github.workspace}}/build
       shell: bash
@@ -114,7 +113,7 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: ${{github.workspace}}${{ matrix.binary-path }}
-        asset_name: grazer-${{matrix.os}}-v${{ needs.create-release.outputs.version }}${{ matrix.cli-ending }}
+        asset_name: grazer-${{matrix.os}}-v${{ needs.create-release.outputs.version }}${{ matrix.binary-ending }}
         tag: v${{ needs.create-release.outputs.version }}
 
     ## GUI
@@ -125,7 +124,7 @@ jobs:
         architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
     
     - name: Move Executable
-      run: mv ${{github.workspace}}${{ matrix.binary-path }} ${{github.workspace}}/gui/bin/grazer${{matrix.cli-ending}}
+      run: mv ${{github.workspace}}${{ matrix.binary-path }} ${{github.workspace}}/gui/bin/grazer${{matrix.binary-ending}}
     
     - name: Install wxpython on Linux 
       if: (!startsWith( matrix.os , 'windows' )) && (!startsWith(matrix.os, 'macos'))
@@ -155,13 +154,26 @@ jobs:
       # wxpython in the step above. If pip install -r requirements.txt fails
       # check whether this might be the reason)
 
-
     - name: Upload GUI Binary to Release
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: ${{github.workspace}}/gui/dist/grazer_gui${{ matrix.gui-ending }}
-        asset_name: grazer-gui-${{matrix.os}}-v${{ needs.create-release.outputs.version }}${{ matrix.gui-ending }}
+        file: ${{github.workspace}}/gui/dist/grazer_gui${{ matrix.binary-ending }}
+        asset_name: grazer-gui-${{matrix.os}}-v${{ needs.create-release.outputs.version }}${{ matrix.binary-ending }}
+        tag: v${{ needs.create-release.outputs.version }}
+    
+    - name: Zip .app folder on Mac
+      working-directory: ${{github.workspace}}/gui/dist
+      if: startsWith(matrix.os, 'macos')
+      run: zip -r grazer_gui.app.zip grazer_gui.app
+
+    - name: Upload Mac App GUI Binary to Release
+      if: startsWith(matrix.os, 'macos')
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: ${{github.workspace}}/gui/dist/grazer_gui.app.zip
+        asset_name: grazer-gui-${{matrix.os}}-v${{ needs.create-release.outputs.version }}.app.zip
         tag: v${{ needs.create-release.outputs.version }}
 
   Documentation:

@@ -67,7 +67,7 @@ jobs:
           compiler: msvc
           build_type: Debug
           binary-path: \build\src\Grazer\Debug\grazer.exe
-          cli-ending: ".exe"
+          binary-ending: ".exe"
         - name: Release-Test
           os: ubuntu-20.04
           compiler: clang++-10
@@ -155,7 +155,7 @@ jobs:
         architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
 
     - name: Move Executable
-      run: mv ${{github.workspace}}${{ matrix.binary-path }} ${{github.workspace}}/gui/bin/grazer${{matrix.cli-ending}}
+      run: mv ${{github.workspace}}${{ matrix.binary-path }} ${{github.workspace}}/gui/bin/grazer${{matrix.binary-ending}}
 
     - name: Install wxpython on Linux 
       if: (!startsWith( matrix.os , 'windows' )) && (!startsWith(matrix.os, 'macos'))
@@ -183,14 +183,14 @@ jobs:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: grazer-gui-${{matrix.os}}${{ matrix.gui-ending }}
-        path: ${{github.workspace}}/gui/dist/grazer_gui${{matrix.cli-ending}}
+        name: grazer-gui-${{matrix.os}}${{ matrix.binary-ending }}
+        path: ${{github.workspace}}/gui/dist/grazer_gui${{matrix.binary-ending}}
 
     - name: Upload Artifacts
       if: startsWith(matrix.os, 'macos')
       uses: actions/upload-artifact@v2
       with:
-        name: grazer-gui-${{matrix.os}}${{ matrix.gui-ending }}
+        name: grazer-gui-${{matrix.os}}${{ matrix.binary-ending }}
         path: ${{github.workspace}}/gui/dist/grazer_gui.app
 
 
