@@ -119,7 +119,7 @@ jobs:
         architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
     
     - name: Move Executable
-      run: mv ${{ matrix.binary-path }} ${{github.workspace}}/gui/bin/grazer${{matrix.asset-ending}}
+      run: mv ${{github.workspace}}${{ matrix.binary-path }} ${{github.workspace}}/gui/bin/grazer${{matrix.asset-ending}}
     
     - name: Install wxpython on Linux 
       if: (!startsWith( matrix.os , 'windows' )) && (!startsWith(matrix.os, 'macos'))
