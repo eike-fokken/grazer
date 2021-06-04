@@ -49,20 +49,20 @@ jobs:
         - name: ubuntu-20.04
           os: ubuntu-20.04
           compiler: clang++-10
-          artifact_path: /build/src/Grazer/grazer
+          binary-path: /build/src/Grazer/grazer
           asset_name: grazer
           asset_description: Binary for ubuntu-20.04
           dep-install: sudo apt-get install -y cmake clang-10
         - name: MacOS
           os: macos-10.15
           compiler: clang++
-          artifact_path: /build/src/Grazer/grazer
+          binary-path: /build/src/Grazer/grazer
           asset_name: grazer_mac
           asset_description: Binary for MacOS
         - name: Windows
           os: windows-2019
           compiler: msvc
-          artifact_path: \build\src\Grazer\Release\grazer.exe
+          binary-path: \build\src\Grazer\Release\grazer.exe
           asset_name: grazer.exe
           asset_description: Binary for Windows
 
@@ -104,11 +104,14 @@ jobs:
       # Execute the build.  You can specify a specific target with "--target <NAME>"
       run: cmake --build . --config Release --target grazer --parallel 10
     
+    - name: Final Smoke Test
+      run: ${{github.workspace}}${{ matrix.binary-path }} run ./data/basetest
+    
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: ${{github.workspace}}${{ matrix.artifact_path }}
+        file: ${{github.workspace}}${{ matrix.binary-path }}
         asset_name: ${{ matrix.asset_name }}
         tag: v${{ needs.create-release.outputs.version }}
 

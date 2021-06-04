@@ -1,3 +1,5 @@
+[![Release](https://github.com/eike-fokken/grazer/actions/workflows/release.yml/badge.svg)](https://github.com/eike-fokken/grazer/releases)
+
 ## Grazer
 
 Grazer is a program that shall simulate the time evolution of dynamical systems.
