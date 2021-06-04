@@ -20,7 +20,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Check clang-format style
-      uses: jidicula/clang-format-action@v3.2.0
+      uses: jidicula/clang-format-action@v3.4.0
       with: 
         clang-format-version: "11"
     
