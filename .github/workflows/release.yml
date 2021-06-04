@@ -129,6 +129,8 @@ jobs:
         pip install \
           -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/${{matrix.os}} \
           wxPython==4.1.0
+      # wxpython has many versions for linux so can not be installed with the normal
+      # pip install wxPython command on linux
     
     - name: Build GUI
       working-directory: ${{github.workspace}}/gui
@@ -137,6 +139,12 @@ jobs:
         pip install wheel
         pip install -r requirements.txt
         pyinstaller --windowed -F gui.spec
+      
+      # if you update the gooey version (and thus probably the wxpython version
+      # in the requirements file, remember to update the manual install of
+      # wxpython in the step above. If pip install -r requirements.txt fails
+      # check whether this might be the reason)
+
       # echo "ls ./dist"
       # ls ./dist
       # echo "ls ./build"
