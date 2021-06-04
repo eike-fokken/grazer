@@ -67,6 +67,7 @@ jobs:
           compiler: msvc
           build_type: Debug
           binary-path: \build\src\Grazer\Debug\grazer.exe
+          cli-ending: ".exe"
         - name: Release-Test
           os: ubuntu-20.04
           compiler: clang++-10
@@ -146,11 +147,15 @@ jobs:
     - name: Integration Test 
       run: ${{github.workspace}}${{ matrix.binary-path }} run ./data/basetest
 
+    ## GUI artifacts
+
     - uses: actions/setup-python@v2
       with:
         python-version: '3.8' # Version range or exact version of a Python version to use, using SemVer's version range syntax
         architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
-    - run: mv ${{github.workspace}}${{ matrix.binary-path }} ${{github.workspace}}/gui/bin/grazer
+
+    - name: Move Executable
+      run: mv ${{github.workspace}}${{ matrix.binary-path }} ${{github.workspace}}/gui/bin/grazer${{matrix.cli-ending}}
 
     - name: Build GUI
       if: startsWith(matrix.os, 'macos')
@@ -166,5 +171,11 @@ jobs:
         ls ./dist/grazer_gui.app
         echo "ls ./build"
         ls -l ./build
+    
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: grazer-gui-${{matrix.os}}-v${{ needs.create-release.outputs.version }}${{ matrix.gui-ending }}
+        path: ${{github.workspace}}/gui/dist/grazer_gui${{matrix.cli-ending}}
 
 
