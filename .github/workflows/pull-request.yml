@@ -157,8 +157,18 @@ jobs:
     - name: Move Executable
       run: mv ${{github.workspace}}${{ matrix.binary-path }} ${{github.workspace}}/gui/bin/grazer${{matrix.cli-ending}}
 
+    - name: Install wxpython on Linux 
+      if: (!startsWith( matrix.os , 'windows' )) && (!startsWith(matrix.os, 'macos'))
+      run: |
+        pip install --upgrade pip
+        pip install wheel
+        pip install \
+          -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/${{matrix.os}} \
+          wxPython==4.1.0
+      # wxpython has many versions for linux so can not be installed with the normal
+      # pip install wxPython command on linux
+
     - name: Build GUI
-      if: startsWith(matrix.os, 'macos')
       working-directory: ${{github.workspace}}/gui
       run: |
         pip install --upgrade pip
