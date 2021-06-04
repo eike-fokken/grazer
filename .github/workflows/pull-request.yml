@@ -185,7 +185,14 @@ jobs:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: grazer-gui-${{matrix.os}}-v${{ needs.create-release.outputs.version }}${{ matrix.gui-ending }}
+        name: grazer-gui-${{matrix.os}}-${{ matrix.gui-ending }}
         path: ${{github.workspace}}/gui/dist/grazer_gui${{matrix.cli-ending}}
+
+    - name: Upload Artifacts
+      if: startsWith(matrix.os, 'macos')
+      uses: actions/upload-artifact@v2
+      with:
+        name: grazer-gui-${{matrix.os}}-${{ matrix.gui-ending }}
+        path: ${{github.workspace}}/gui/dist/grazer_gui.app
 
 
