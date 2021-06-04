@@ -65,3 +65,8 @@ compile_commands.json
 .clangd
 .cache
 
+# python
+gui/env
+**/__pycache__
+gui/dist
+gui/build
