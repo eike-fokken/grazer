@@ -49,21 +49,18 @@ jobs:
         - name: ubuntu-20.04
           os: ubuntu-20.04
           compiler: clang++-10
-          artifact_path: /build/src/Grazer/grazer
-          asset_description: Binary for ubuntu-20.04
+          binary-path: /build/src/Grazer/grazer
           dep-install: sudo apt-get install -y cmake clang-10
         - name: MacOS
           os: macos-10.15
           compiler: clang++
-          artifact_path: /build/src/Grazer/grazer
-          asset_ending: '.app'
-          asset_description: Binary for MacOS
+          binary-name: /build/src/Grazer/grazer
+          asset-ending: '.app'
         - name: Windows
           os: windows-2019
           compiler: msvc
-          artifact_path: \build\src\Grazer\Release\grazer.exe
-          asset_ending: '.exe'
-          asset_description: Binary for Windows
+          binary-name: \build\src\Grazer\Release\grazer.exe
+          asset-ending: '.exe'
 
     env:
       # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -103,12 +100,15 @@ jobs:
       # Execute the build.  You can specify a specific target with "--target <NAME>"
       run: cmake --build . --config Release --target grazer --parallel 10
     
+    - name: Final Smoke Test
+      run: ${{github.workspace}}${{ matrix.binary-path }} run ./data/basetest
+    
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: ${{github.workspace}}${{ matrix.artifact_path }}
-        asset_name: grazer${{matrix.os}}-v${{ needs.create-release.outputs.version }}${{ matrix.asset_ending }}
+        asset_name: grazer${{matrix.os}}-v${{ needs.create-release.outputs.version }}${{ matrix.asset-ending }}
         tag: v${{ needs.create-release.outputs.version }}
     
     ## GUI
@@ -119,7 +119,7 @@ jobs:
         architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
     
     - name: Move Executable
-      run: mv ${{ matrix.artifact_path }} ${{github.workspace}}/gui/bin/grazer${{matrix.asset_ending}}
+      run: mv ${{ matrix.artifact_path }} ${{github.workspace}}/gui/bin/grazer${{matrix.asset-ending}}
     
     - name: Install wxpython on Linux 
       if: (!startsWith( matrix.os , 'windows' )) && (!startsWith(matrix.os, 'macos'))
@@ -147,8 +147,8 @@ jobs:
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: ${{github.workspace}}/gui/dist/grazer_gui${{ matrix.asset_ending }}
-        asset_name: grazer-gui-${{matrix.os}}-v${{ needs.create-release.outputs.version }}${{ matrix.asset_ending }}
+        file: ${{github.workspace}}/gui/dist/grazer_gui${{ matrix.asset-ending }}
+        asset_name: grazer-gui-${{matrix.os}}-v${{ needs.create-release.outputs.version }}${{ matrix.asset-ending }}
         tag: v${{ needs.create-release.outputs.version }}
 
   Documentation:
