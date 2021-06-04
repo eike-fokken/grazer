@@ -6,6 +6,9 @@ on:
     types: [synchronize, opened, reopened, ready_for_review]
     paths:
     - CHANGELOG.md
+    ## make this dependabot friendly:
+    - .gitsubmodules
+    - workflows/**
 
 jobs:
   update-check:
