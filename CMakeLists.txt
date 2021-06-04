@@ -9,6 +9,7 @@ message(STATUS "grazer-version: ${PROJECT_VERSION}")
 
 include(CheckIPOSupported)
 
+
 #for multiple compiler compatibility:
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
