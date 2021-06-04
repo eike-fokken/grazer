@@ -161,8 +161,10 @@ jobs:
         pip install -r requirements.txt
         pyinstaller --windowed -F gui.spec
         echo "ls ./dist"
-        ls ./dist
+        ls -l ./dist
+        ls ./dist/grazer_gui
+        ls ./dist/grazer_gui.app
         echo "ls ./build"
-        ls ./build
+        ls -l ./build
 
 
