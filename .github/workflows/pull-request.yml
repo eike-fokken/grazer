@@ -146,4 +146,19 @@ jobs:
     - name: Integration Test 
       run: ${{github.workspace}}${{ matrix.binary-path }} run ./data/basetest
 
+    - run: mv ${{github.workspace}}${{ matrix.binary-path }} ${{github.workspace}}/gui/bin/grazer
+
+    - name: Build GUI
+      if: startsWith(matrix.os, 'macos')
+      working-directory: ${{github.workspace}}/gui
+      run: |
+        pip install --upgrade pip
+        pip install wheel
+        pip install -r requirements.txt
+        pyinstaller --windowed -F gui.spec
+        echo "ls ./dist"
+        ls ./dist
+        echo "ls ./build"
+        ls ./build
+
 
