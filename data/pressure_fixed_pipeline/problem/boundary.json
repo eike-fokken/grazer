@@ -1,0 +1,44 @@
+{
+	"$schema": "../schemas/boundary_schema.json",
+	"nodes": {
+		"Source": [],
+		"Sink": [
+			{
+				"id": "node_2",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							100
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							100
+						]
+					}
+				]
+			}
+		],
+		"Pressuresource": [
+			{
+				"id": "node_1",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							65
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							65
+						]
+					}
+				]
+			}
+		]
+	}
+}

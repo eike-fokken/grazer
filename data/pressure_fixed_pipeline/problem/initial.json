@@ -1,0 +1,26 @@
+{
+	"$schema": "../schemas/initial_schema.json",
+	"connections": {
+		"Pipe": [
+			{
+				"id": "p_br1",
+				"data": [
+					{
+						"x": 0.0,
+						"values": [
+                65,
+                100
+						]
+					},
+					{
+						"x": 14560.0,
+						"values": [
+                65,
+                100
+						]
+					}
+				]
+			}
+		]
+	}
+}
