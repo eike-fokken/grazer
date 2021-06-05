@@ -56,18 +56,18 @@ TEST(Aux_json, replace_entry_with_json_from_file) {
   EXPECT_EQ(aux_sub_json_test, relative_path_json["key"]);
 
   // Testing jsons containing a wrong path (e.g. non-existing path)
-  wrong_path_json = {{"key", "/wrong/path.json"}};
+  std::string wrong_path = "/wrong/path.json";
 
-  auto json_pathstring
-      = std::filesystem::path(wrong_path_json["key"].get<std::string>());
-  auto json_absolute_path = std::filesystem::absolute(json_pathstring);
+  std::string json_path_string = std::filesystem::absolute(wrong_path).string();
+
+  wrong_path_json = {{"key", json_path_string}};
 
   try {
     aux_json::replace_entry_with_json_from_file(wrong_path_json, "key");
   } catch (std::exception &e) {
     EXPECT_THAT(
         e.what(), testing::HasSubstr(
-                      "The file \n" + json_absolute_path.string()
+                      "The file \n" + wrong_path_json["key"].get<std::string>()
                       + "\n does not exist!"));
   }
 
