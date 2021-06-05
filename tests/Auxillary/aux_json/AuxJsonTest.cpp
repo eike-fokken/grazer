@@ -64,9 +64,9 @@ TEST(Aux_json, replace_entry_with_json_from_file) {
     aux_json::replace_entry_with_json_from_file(wrong_path_json, "key");
   } catch (std::exception &e) {
     EXPECT_THAT(
-        e.what(),
-        testing::HasSubstr(
-            "The file \n" + json_absolute_path.string() + "\n does not exist!"));
+        e.what(), testing::HasSubstr(
+                      "The file \n" + json_absolute_path.string()
+                      + "\n does not exist!"));
   }
 
   // Removing temporary file
@@ -87,9 +87,9 @@ TEST(Aux_json, get_json_from_file_path) {
     aux_json::get_json_from_file_path(wrong_path);
   } catch (std::exception &e) {
     EXPECT_THAT(
-        e.what(),
-        testing::HasSubstr(
-            "The file \n" + json_absolute_path.string() + "\n does not exist!"));
+        e.what(), testing::HasSubstr(
+                      "The file \n" + json_absolute_path.string()
+                      + "\n does not exist!"));
   }
 
   // Testing right path
