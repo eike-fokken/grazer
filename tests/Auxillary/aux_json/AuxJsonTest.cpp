@@ -58,8 +58,7 @@ TEST(Aux_json, replace_entry_with_json_from_file) {
   // Testing jsons containing a wrong path (e.g. non-existing path)
   wrong_path_json = {{"key", "/wrong/path.json"}};
 
-  auto json_pathstring = wrong_path_json["key"].get<std::string>();
-  auto json_path = std::filesystem::path(json_pathstring);
+  auto json_absolute_path = std::filesystem::absolute(wrong_path_json["key"]);
 
   try {
     aux_json::replace_entry_with_json_from_file(wrong_path_json, "key");
@@ -67,7 +66,7 @@ TEST(Aux_json, replace_entry_with_json_from_file) {
     EXPECT_THAT(
         e.what(),
         testing::HasSubstr(
-            "The file \n" + json_path.string() + "\n does not exist!"));
+            "The file \n" + json_absolute_path.string() + "\n does not exist!"));
   }
 
   // Removing temporary file
@@ -81,8 +80,7 @@ TEST(Aux_json, get_json_from_file_path) {
   std::filesystem::path absolute_path;
   nlohmann::json aux_sub_json_test;
 
-  auto json_pathstring = wrong_path;
-  auto json_path = std::filesystem::path(json_pathstring);
+  auto json_absolute_path = std::filesystem::absolute(wrong_path);
 
   // Testing wrong paths
   try {
@@ -91,7 +89,7 @@ TEST(Aux_json, get_json_from_file_path) {
     EXPECT_THAT(
         e.what(),
         testing::HasSubstr(
-            "The file \n" + json_path.string() + "\n does not exist!"));
+            "The file \n" + json_absolute_path.string() + "\n does not exist!"));
   }
 
   // Testing right path
