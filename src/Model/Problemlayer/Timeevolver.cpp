@@ -7,6 +7,8 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <chrono>
+#include <ctime>
 #include <nlohmann/json.hpp>
 
 namespace Model {
@@ -71,6 +73,8 @@ namespace Model {
     double last_time = timedata.get_starttime() - timedata.get_delta_t();
     Eigen::VectorXd last_state(number_of_states);
 
+    auto wall_clock_start = std::chrono::system_clock::now();
+
     problem.set_initial_values(last_state, problem_initial_json);
 
     // // This initializes P and Q-values of P-Q-nodes.
@@ -88,6 +92,11 @@ namespace Model {
     std::cout << "Number of variables: " << number_of_states << std::endl;
     std::cout << "number of non-zeros in jacobian: "
               << solver.get_number_non_zeros_jacobian() << std::endl;
+
+    //provide regex help (cf. helper_functions/csv_from_log.py)
+    std::cout << " === simulation start === "  << std::endl; 
+    // csv heading:
+    std::cout << "t, residual, used_iterations" << std::endl;
 
     for (int i = 0; i != timedata.get_number_of_steps(); ++i) {
       new_time = last_time + timedata.get_delta_t();
@@ -138,18 +147,23 @@ namespace Model {
           std::cout << "\nretrying timestep " << new_time << std::endl;
         }
         if (retry > 0) {
-          std::cout << new_time << ": ";
+          std::cout << new_time << ", ";
           std::cout << solstruct.residual << ", ";
           std::cout << solstruct.used_iterations << std::endl;
         }
       }
-      std::cout << new_time << ": ";
+      std::cout << new_time << ", ";
       std::cout << solstruct.residual << ", ";
       std::cout << solstruct.used_iterations << std::endl;
 
       last_state = new_state;
       last_time = new_time;
     }
+
+    std::cout << "=== simulation end ===" << std::endl; //provide regex help
+    auto wall_clock_end = std::chrono::system_clock::now(); 
+    std::chrono::duration<double> diff = wall_clock_end - wall_clock_start;
+    std::cout << "simulation took: " << diff.count() << " seconds" << std::endl;
   }
 
 } // namespace Model
