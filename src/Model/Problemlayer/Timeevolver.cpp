@@ -4,11 +4,11 @@
 #include "make_schema.hpp"
 #include "schema_validation.hpp"
 
+#include <chrono>
+#include <ctime>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <chrono>
-#include <ctime>
 #include <nlohmann/json.hpp>
 
 namespace Model {
@@ -93,8 +93,8 @@ namespace Model {
     std::cout << "number of non-zeros in jacobian: "
               << solver.get_number_non_zeros_jacobian() << std::endl;
 
-    //provide regex help (cf. helper_functions/csv_from_log.py)
-    std::cout << " === simulation start === "  << std::endl; 
+    // provide regex help (cf. helper_functions/csv_from_log.py)
+    std::cout << " === simulation start === " << std::endl;
     // csv heading:
     std::cout << "t, residual, used_iterations" << std::endl;
 
@@ -160,8 +160,8 @@ namespace Model {
       last_time = new_time;
     }
 
-    std::cout << "=== simulation end ===" << std::endl; //provide regex help
-    auto wall_clock_end = std::chrono::system_clock::now(); 
+    std::cout << "=== simulation end ===" << std::endl; // provide regex help
+    auto wall_clock_end = std::chrono::system_clock::now();
     std::chrono::duration<double> diff = wall_clock_end - wall_clock_start;
     std::cout << "simulation took: " << diff.count() << " seconds" << std::endl;
   }
