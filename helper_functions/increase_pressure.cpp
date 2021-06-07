@@ -40,6 +40,9 @@ int main(int argc, char **argv) {
          "Gaspowerconnection"};
   try {
     for (auto const &type : gastypes) {
+      if (not results["connections"].contains(type)) {
+        continue;
+      }
       for (auto &gastype : results["connections"][type]) {
         for (auto &datapoint : gastype["data"]) {
           double value = datapoint["values"][0].get<double>();
