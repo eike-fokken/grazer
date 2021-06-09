@@ -2,9 +2,7 @@
 #include "Exception.hpp"
 #include "pcg_extras.hpp"
 #include "randutils.hpp"
-#include <cmath>
-#include <cstdint>
-#include <iomanip>
+
 #include <iostream>
 #include <map>
 #include <random>
@@ -12,11 +10,30 @@
 
 namespace Aux {
 
-  pcg64 setup_random_number_generator() {
+  std::array<uint32_t, pcg_seed_count> make_random_seed() {
+    std::array<uint32_t, pcg_seed_count> seed;
+    randutils::auto_seeded<randutils::seed_seq_fe<pcg_seed_count, uint32_t>>
+        seed_source;
+    seed_source.param(seed.begin());
+    return seed;
+  }
 
-    randutils::auto_seed_256 seed_source;
+  pcg64 setup_random_number_generator(
+      std::array<uint32_t, pcg_seed_count> &seed_essence) {
+
+    randutils::seed_seq_fe<pcg_seed_count, uint32_t> seed_source(
+        seed_essence.begin(), seed_essence.end());
+
     pcg64 rng(seed_source);
+
     return rng;
+  }
+
+  Normaldistribution::Normaldistribution(
+      std::array<uint32_t, pcg_seed_count> &used_seed,
+      std::array<uint32_t, pcg_seed_count> seed) :
+      generator(setup_random_number_generator(seed)) {
+    used_seed = seed;
   }
 
   double
