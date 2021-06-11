@@ -17,23 +17,27 @@ namespace Model::Networkproblem::Power {
     Aux::schema::add_required(schema, "theta_P", Aux::schema::type::number());
     Aux::schema::add_required(schema, "sigma_Q", Aux::schema::type::number());
     Aux::schema::add_required(schema, "theta_Q", Aux::schema::type::number());
+    return schema;
+  }
 
+  std::optional<nlohmann::json> StochasticPQnode::get_boundary_schema() {
+    auto boundary_schema = Aux::schema::make_boundary_schema(2);
     auto seed_schema
         = Aux::schema::make_list_schema_of(Aux::schema::type::number());
-    Aux::schema::add_property(schema, "seed", seed_schema);
-
-    return schema;
+    Aux::schema::add_property(boundary_schema, "seed", seed_schema);
+    return boundary_schema;
   }
 
   StochasticPQnode::StochasticPQnode(nlohmann::json const &topology) :
       Powernode(topology) {
     std::array<uint32_t, Aux::pcg_seed_count> used_seed;
-    if (topology.contains("seed")) {
+    if (topology["boundary_values"].contains("seed")) {
       stochasticdata = std::make_unique<StochasticData>(
           topology["sigma_P"].get<double>(), topology["theta_P"].get<double>(),
           topology["sigma_Q"].get<double>(), topology["theta_Q"].get<double>(),
           topology["number_of_stochastic_steps"].get<int>(), used_seed,
-          topology["seed"].get<std::array<uint32_t, Aux::pcg_seed_count>>());
+          topology["boundary_values"]["seed"]
+              .get<std::array<uint32_t, Aux::pcg_seed_count>>());
     } else {
       stochasticdata = std::make_unique<StochasticData>(
           topology["sigma_P"].get<double>(), topology["theta_P"].get<double>(),
