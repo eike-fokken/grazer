@@ -44,7 +44,21 @@ namespace Model::Networkproblem::Power {
     struct StochasticData {
       StochasticData(
           double _sigma_P, double _theta_P, double _sigma_Q, double _theta_Q,
-          int _number_of_stochastic_steps) :
+          int _number_of_stochastic_steps,
+          std::array<uint32_t, Aux::pcg_seed_count> &used_seed) :
+          distribution(used_seed),
+          sigma_P(_sigma_P),
+          theta_P(_theta_P),
+          sigma_Q(_sigma_Q),
+          theta_Q(_theta_Q),
+          number_of_stochastic_steps(_number_of_stochastic_steps) {}
+
+      StochasticData(
+          double _sigma_P, double _theta_P, double _sigma_Q, double _theta_Q,
+          int _number_of_stochastic_steps,
+          std::array<uint32_t, Aux::pcg_seed_count> &used_seed,
+          std::array<uint32_t, Aux::pcg_seed_count> seed) :
+          distribution(used_seed, seed),
           sigma_P(_sigma_P),
           theta_P(_theta_P),
           sigma_Q(_sigma_Q),

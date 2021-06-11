@@ -46,6 +46,11 @@ namespace Aux {
     return get_sample(0, standard_deviation);
   }
 
+  Truncatednormaldist::Truncatednormaldist(
+      std::array<uint32_t, pcg_seed_count> &used_seed,
+      std::array<uint32_t, pcg_seed_count> seed) :
+      normaldist(used_seed, seed) {}
+
   double Truncatednormaldist::get_sample(
       double mean, double standard_deviation, double lower_bound,
       double upper_bound) {

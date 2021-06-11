@@ -55,7 +55,9 @@ namespace Aux {
    */
   class Truncatednormaldist final {
   public:
-    Truncatednormaldist() = default;
+    Truncatednormaldist(
+        std::array<uint32_t, pcg_seed_count> &used_seed,
+        std::array<uint32_t, pcg_seed_count> seed = make_random_seed());
 
     /** @brief Obtain a sample of the truncated normal distribution.
      *
