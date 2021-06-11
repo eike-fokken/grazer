@@ -18,6 +18,10 @@ namespace Model::Networkproblem::Power {
     Aux::schema::add_required(schema, "sigma_Q", Aux::schema::type::number());
     Aux::schema::add_required(schema, "theta_Q", Aux::schema::type::number());
 
+    auto seed_schema
+        = Aux::schema::make_list_schema_of(Aux::schema::type::number());
+    Aux::schema::add_property(schema, "seed", seed_schema);
+
     return schema;
   }
 
