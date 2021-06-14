@@ -153,7 +153,7 @@ TEST(Newtonsolver, SingularJacobian) {
         new_state, problem, true, true, last_time, new_time, last_state);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::exception &e) {
+  } catch (std::runtime_error &e) {
     EXPECT_THAT(
         e.what(),
         testing::HasSubstr(

@@ -28,16 +28,15 @@ TEST(Initialvalue, Operator) {
     initial_object(3.5);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::exception &e) {
+  } catch (std::runtime_error &e) {
     EXPECT_THAT(
         e.what(), testing::HasSubstr("Out-of-range error in initial values"));
   }
-
   try {
     initial_object(0.5);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::exception &e) {
+  } catch (std::runtime_error &e) {
     EXPECT_THAT(
         e.what(), testing::HasSubstr("Out-of-range error in initial values"));
   }

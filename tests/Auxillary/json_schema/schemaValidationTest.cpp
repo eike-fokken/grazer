@@ -65,7 +65,7 @@ TEST_F(JsonValidationData, wrongData) {
     Aux::schema::validate_json(missing_data, valid_schema);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::exception &e) {
+  } catch (std::runtime_error &e) {
     EXPECT_THAT(
         e.what(),
         testing::HasSubstr(
@@ -75,7 +75,7 @@ TEST_F(JsonValidationData, wrongData) {
     Aux::schema::validate_json(invalid_data, valid_schema);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::exception &e) {
+  } catch (std::runtime_error &e) {
     EXPECT_THAT(
         e.what(),
         testing::HasSubstr(
@@ -88,7 +88,7 @@ TEST_F(JsonValidationData, invalidSchema) {
     Aux::schema::validate_json(valid_data, invalid_schema);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::exception &e) {
+  } catch (std::runtime_error &e) {
     EXPECT_THAT(
         e.what(),
         testing::HasSubstr(

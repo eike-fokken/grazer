@@ -93,7 +93,7 @@ TEST_F(prepare_output_dirTEST, path_points_to_file) {
         = io::prepare_output_dir(temp_filepath.string());
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::exception &e) {
+  } catch (std::runtime_error &e) {
     EXPECT_THAT(
         e.what(), testing::HasSubstr("The output directory, \"temporary_file\" "
                                      "is present, but not a directory"));

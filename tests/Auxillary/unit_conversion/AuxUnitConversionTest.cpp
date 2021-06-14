@@ -111,29 +111,24 @@ TEST(unitParser, jsonValidation) {
     "unit": "m"
   })"_json;
   try {
-    test_validation_in_parsing(
-        wrong_name, "required property 'value' not found in object");
+    unit::length.parse_to_si(wrong_name);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::exception &e) {
+  } catch (std::runtime_error &e) {
     EXPECT_THAT(
         e.what(),
-        testing::HasSubstr(
-            "The current object json does not conform to its schema."));
+        testing::HasSubstr("required property 'value' not found in object"));
   }
   json wrong_type = R"({
     "value": "string",
     "unit": "m"
   })"_json;
   try {
-    test_validation_in_parsing(wrong_type, "unexpected instance type");
+    unit::length.parse_to_si(wrong_type);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::exception &e) {
-    EXPECT_THAT(
-        e.what(),
-        testing::HasSubstr(
-            "The current object json does not conform to its schema."));
+  } catch (std::runtime_error &e) {
+    EXPECT_THAT(e.what(), testing::HasSubstr("unexpected instance type"));
   }
   json additional_property = R"({
     "value": "10",
@@ -141,44 +136,21 @@ TEST(unitParser, jsonValidation) {
     "additionalProperty": "notAllowed"
   })"_json;
   try {
-    test_validation_in_parsing(additional_property, "additional property");
+    unit::length.parse_to_si(additional_property);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::exception &e) {
-    EXPECT_THAT(
-        e.what(),
-        testing::HasSubstr(
-            "The current object json does not conform to its schema."));
+  } catch (std::runtime_error &e) {
+    EXPECT_THAT(e.what(), testing::HasSubstr("additional property"));
   }
   json unknown_unit = R"({
     "value": "10",
     "unit": "l"
   })"_json;
   try {
-    test_validation_in_parsing(unknown_unit, "no subschema has succeeded");
+    unit::length.parse_to_si(unknown_unit);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::exception &e) {
-    EXPECT_THAT(
-        e.what(),
-        testing::HasSubstr(
-            "The current object json does not conform to its schema."));
+  } catch (std::runtime_error &e) {
+    EXPECT_THAT(e.what(), testing::HasSubstr("no subschema has succeeded"));
   }
-}
-
-void test_validation_in_parsing(
-    json malformed_data, std::string required_hint) {
-  try {
-    unit::length.parse_to_si(malformed_data);
-  } catch (const std::runtime_error &e) {
-    std::string error_msg = e.what();
-    EXPECT_PRED2(
-        error_msg_includes, error_msg, "does not conform to its schema");
-    EXPECT_PRED2(error_msg_includes, error_msg, required_hint);
-    throw;
-  }
-}
-
-bool error_msg_includes(std::string error_message, std::string required_hint) {
-  return error_message.find(required_hint) != std::string::npos;
 }

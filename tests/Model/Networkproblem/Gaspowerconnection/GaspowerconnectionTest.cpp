@@ -77,7 +77,7 @@ TEST_F(GaspowerconnectionTEST, smoothing_polynomial) {
     gp->smoothing_polynomial(gp->kappa + 1);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::exception &e) {
+  } catch (std::runtime_error &e) {
     EXPECT_THAT(
         e.what(), testing::HasSubstr("You can't call this function for values "
                                      "of q bigger than"));
@@ -86,7 +86,7 @@ TEST_F(GaspowerconnectionTEST, smoothing_polynomial) {
     gp->smoothing_polynomial(-gp->kappa - 1);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::exception &e) {
+  } catch (std::runtime_error &e) {
     EXPECT_THAT(
         e.what(), testing::HasSubstr("You can't call this function for values "
                                      "of q bigger than"));
@@ -135,7 +135,7 @@ TEST_F(GaspowerconnectionTEST, dsmoothing_polynomial) {
     gp->dsmoothing_polynomial_dq(gp->kappa + 1);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::exception &e) {
+  } catch (std::runtime_error &e) {
     EXPECT_THAT(
         e.what(), testing::HasSubstr("You can't call this function for values "
                                      "of q bigger than"));
@@ -144,7 +144,7 @@ TEST_F(GaspowerconnectionTEST, dsmoothing_polynomial) {
     gp->dsmoothing_polynomial_dq(-gp->kappa - 1);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::exception &e) {
+  } catch (std::runtime_error &e) {
     EXPECT_THAT(
         e.what(), testing::HasSubstr("You can't call this function for values "
                                      "of q bigger than"));

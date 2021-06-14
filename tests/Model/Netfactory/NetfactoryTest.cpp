@@ -89,9 +89,7 @@ TEST(check_for_duplicatesTEST, duplicate_id_in_same_vector) {
         id_duplicate_json, "topology_key");
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-    FAIL() << "Test FAILED: The statement ABOVE\n"
-           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::exception &e) {
+  } catch (std::runtime_error &e) {
     EXPECT_THAT(
         e.what(),
         testing::HasSubstr("The id node_1 appears twice in topology_key"));
@@ -118,9 +116,7 @@ TEST(check_for_duplicatesTEST, duplicate_id_in_neighbour_vector) {
         id_duplicate_json, "topology_key");
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-    FAIL() << "Test FAILED: The statement ABOVE\n"
-           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::exception &e) {
+  } catch (std::runtime_error &e) {
     EXPECT_THAT(
         e.what(),
         testing::HasSubstr("The id node_4 appears twice in topology_key"));
@@ -168,7 +164,7 @@ TEST(build_node_vectorTEST, node_type_not_known) {
     Model::Networkproblem::build_node_vector(node_topology, nodetypemap);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::exception &e) {
+  } catch (std::runtime_error &e) {
     EXPECT_THAT(
         e.what(),
         testing::HasSubstr("node type Unknown_type_node, given in the topology "
@@ -276,7 +272,7 @@ TEST(build_edge_vectorTEST, edge_type_not_known) {
     Model::Networkproblem::build_edge_vector(edge_topology, nodes, edgetypemap);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::exception &e) {
+  } catch (std::runtime_error &e) {
     EXPECT_THAT(
         e.what(),
         testing::HasSubstr("edge type Unknown_type_edge, given in the topology "
