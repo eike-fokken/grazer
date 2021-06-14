@@ -110,6 +110,7 @@ TEST(unitParser, jsonValidation) {
     "not_value": 10,
     "unit": "m"
   })"_json;
+
   try {
     test_validation_in_parsing(
         wrong_name, "required property 'value' not found in object");
@@ -119,10 +120,12 @@ TEST(unitParser, jsonValidation) {
         testing::HasSubstr(
             "The current object json does not conform to its schema."));
   }
+
   json wrong_type = R"({
     "value": "string",
     "unit": "m"
   })"_json;
+
   try {
     test_validation_in_parsing(wrong_type, "unexpected instance type");
   } catch (std::exception &e) {
@@ -131,11 +134,13 @@ TEST(unitParser, jsonValidation) {
         testing::HasSubstr(
             "The current object json does not conform to its schema."));
   }
+
   json additional_property = R"({
     "value": "10",
     "unit": "m",
     "additionalProperty": "notAllowed"
   })"_json;
+
   try {
     test_validation_in_parsing(additional_property, "additional property");
   } catch (std::exception &e) {
@@ -144,10 +149,12 @@ TEST(unitParser, jsonValidation) {
         testing::HasSubstr(
             "The current object json does not conform to its schema."));
   }
+
   json unknown_unit = R"({
     "value": "10",
     "unit": "l"
   })"_json;
+
   try {
     test_validation_in_parsing(unknown_unit, "no subschema has succeeded");
   } catch (std::exception &e) {

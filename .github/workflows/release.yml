@@ -1,0 +1,212 @@
+on:
+  push:
+    branches:
+    - "master"
+    paths:
+    - Version.cmake
+name: Release
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-20.04
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Get Version
+      id: get_version
+      run: |        
+        cmake -E make_directory ${{github.workspace}}/build
+        VERSION=$(cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=Release | grep 'grazer-version:' | grep -oE '[0-9\.]+')
+        echo ${VERSION}
+        echo "::set-output name=version::${VERSION}"
+        touch CHANGELOG.md
+        changelog="$(cat CHANGELOG.md)"
+        changelog="${changelog//'%'/'%25'}"
+        changelog="${changelog//$'\n'/'%0A'}"
+        changelog="${changelog//$'\r'/'%0D'}"
+        echo ::set-output name=changelog::$changelog
+      # escaping newlines from changelog cf. https://github.community/t/set-output-truncates-multiline-strings/16852/3
+
+    - name: Create a GitHub release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ steps.get_version.outputs.version }}
+        release_name: Release Version ${{ steps.get_version.outputs.version }}
+        body: ${{ steps.get_version.outputs.changelog }}
+
+  generate-binaries:
+    name: Generate Binaries 
+    needs: create-release
+
+    strategy:
+      fail-fast: false
+      matrix:
+        name:
+        - ubuntu-20.04
+        - MacOS
+        - Windows
+        include:
+        - name: ubuntu-20.04
+          os: ubuntu-20.04
+          compiler: clang++-10
+          binary-path: /build/src/Grazer/grazer
+          dep-install: sudo apt-get install -y cmake clang-10
+        - name: MacOS
+          os: macos-10.15
+          compiler: clang++
+          binary-path: /build/src/Grazer/grazer
+          gui-app-extension: .app.zip
+        - name: Windows
+          os: windows-2019
+          compiler: msvc
+          binary-path: \build\src\Grazer\Release\grazer.exe
+          binary-ending: '.exe'
+
+    env:
+      # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+      CXX: ${{ matrix.compiler }}
+    # The CMake configure and build commands are platform agnostic and should work equally
+    # well on Windows or Mac.  You can convert this to a matrix build if you need
+    # cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: ${{matrix.os}}
+
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Install Dependencies
+      run: ${{ matrix.dep-install }}
+
+    - name: Create Build Environment
+      # Some projects don't allow in-source building, so create a separate build directory
+      # We'll use this as our working directory for all subsequent commands
+      run: cmake -E make_directory ${{github.workspace}}/build
+
+    - name: Configure CMake
+      # Use a bash shell so we can use the same syntax for environment variable
+      # access regardless of the host operating system
+      shell: bash
+      working-directory: ${{github.workspace}}/build
+      # Note the current convention is to use the -S and -B options here to specify source 
+      # and build directories, but this is only available with CMake 3.13 and higher.  
+      # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build
+      working-directory: ${{github.workspace}}/build
+      shell: bash
+      # Execute the build.  You can specify a specific target with "--target <NAME>"
+      run: cmake --build . --config Release --target grazer --parallel 10
+    
+    - name: Final Smoke Test
+      run: ${{github.workspace}}${{ matrix.binary-path }} run ./data/basetest
+    
+    - name: Upload CLI Binary to Release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: ${{github.workspace}}${{ matrix.binary-path }}
+        asset_name: grazer-${{matrix.os}}-v${{ needs.create-release.outputs.version }}${{ matrix.binary-ending }}
+        tag: v${{ needs.create-release.outputs.version }}
+
+    ## GUI
+
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.8' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+        architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
+    
+    - name: Move Executable
+      run: mv ${{github.workspace}}${{ matrix.binary-path }} ${{github.workspace}}/gui/bin/grazer${{matrix.binary-ending}}
+    
+    - name: Install wxpython on Linux 
+      if: (!startsWith( matrix.os , 'windows' )) && (!startsWith(matrix.os, 'macos'))
+      run: |
+        pip install --upgrade pip
+        pip install wheel
+        pip install \
+          -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/${{matrix.os}} \
+          wxPython==4.1.0
+      # wxpython has many versions for linux so can not be installed with the normal
+      # pip install wxPython command on linux
+    
+    - name: Build GUI
+      working-directory: ${{github.workspace}}/gui
+      run: |
+        pip install --upgrade pip
+        pip install wheel
+        pip install -r requirements.txt
+        pyinstaller --windowed -F gui.spec
+        echo "ls ./dist"
+        ls ./dist
+        echo "ls ./build"
+        ls ./build
+      
+      # if you update the gooey version (and thus probably the wxpython version
+      # in the requirements file, remember to update the manual install of
+      # wxpython in the step above. If pip install -r requirements.txt fails
+      # check whether this might be the reason)
+
+    - name: Zip .app folder on Mac
+      working-directory: ${{github.workspace}}/gui/dist
+      if: startsWith(matrix.os, 'macos')
+      run: zip -r grazer_gui.app.zip grazer_gui.app
+
+    - name: Upload GUI Binary to Release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: ${{github.workspace}}/gui/dist/grazer_gui${{ matrix.binary-ending }}${{ matrix.gui-app-extension }}
+        asset_name: grazer-gui-${{matrix.os}}-v${{ needs.create-release.outputs.version }}${{ matrix.binary-ending }}${{ matrix.gui-app-extension }}
+        tag: v${{ needs.create-release.outputs.version }}
+
+  Documentation:
+    needs: generate-binaries
+    runs-on: ubuntu-18.04
+    env:
+      # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+      BUILD_TYPE: Debug 
+      CXX: g++-9
+      CTEST_OUTPUT_ON_FAILURE: 1
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Install Dependencies
+      run: sudo apt-get install -y cmake doxygen graphviz
+
+    - name: Create Build Environment
+      # Some projects don't allow in-source building, so create a separate build directory
+      # We'll use this as our working directory for all subsequent commands
+      run: cmake -E make_directory ${{github.workspace}}/build
+
+    - name: Configure CMake
+      # Use a bash shell so we can use the same syntax for environment variable
+      # access regardless of the host operating system
+      shell: bash
+      working-directory: ${{github.workspace}}/build
+      # Note the current convention is to use the -S and -B options here to specify source 
+      # and build directories, but this is only available with CMake 3.13 and higher.  
+      # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
+      run: echo $BUILD_WITH_LIBCPP &&  cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+
+    - name: Generate Documentation
+      working-directory: ${{ github.workspace }}/build
+      shell: bash
+      run: cmake --build . --config $BUILD_TYPE --target docs --parallel 10
+    
+    - name: Upload Doku to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@4.1.4
+      with:
+        branch: gh-pages
+        folder: build/docs/html

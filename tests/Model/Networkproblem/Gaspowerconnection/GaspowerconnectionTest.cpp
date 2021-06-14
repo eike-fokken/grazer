@@ -73,6 +73,7 @@ TEST_F(GaspowerconnectionTEST, smoothing_polynomial) {
   EXPECT_DOUBLE_EQ(
       gp->smoothing_polynomial(-gp->kappa),
       power2gas_q_coefficient * (-gp->kappa));
+
   try {
     gp->smoothing_polynomial(gp->kappa + 1);
   } catch (std::exception &e) {
@@ -127,6 +128,7 @@ TEST_F(GaspowerconnectionTEST, dsmoothing_polynomial) {
   EXPECT_DOUBLE_EQ(
       gp->dsmoothing_polynomial_dq(-gp->kappa), power2gas_q_coefficient);
 
+<<<<<<< HEAD
   try {
     gp->dsmoothing_polynomial_dq(gp->kappa + 1);
   } catch (std::exception &e) {
@@ -141,6 +143,11 @@ TEST_F(GaspowerconnectionTEST, dsmoothing_polynomial) {
         e.what(), testing::HasSubstr("You can't call this function for values "
                                      "of q bigger than 60.000000000000"));
   }
+=======
+  EXPECT_THROW(gp->dsmoothing_polynomial_dq(gp->kappa + 1), std::runtime_error);
+  EXPECT_THROW(
+      gp->dsmoothing_polynomial_dq(-gp->kappa - 1), std::runtime_error);
+>>>>>>> master
 
   double h = sqrt(Aux::EPSILON);
   {
