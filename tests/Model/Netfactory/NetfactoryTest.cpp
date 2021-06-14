@@ -148,7 +148,7 @@ TEST(build_node_vectorTEST, node_type_not_known) {
             {"boundary_values",
              {{"id", "N203"},
               {"data", {{{"time", 1}, {"values", {1.01, -0.203}}}}}}}}}},
-         {"ABCnode",
+         {"Unknown_type_node",
           {{"B", -26.2023789002},
            {"G", 1.7238407171},
            {"id", "N204"},
@@ -160,8 +160,9 @@ TEST(build_node_vectorTEST, node_type_not_known) {
     Model::Networkproblem::build_node_vector(node_topology, nodetypemap);
   } catch (std::exception &e) {
     EXPECT_THAT(
-        e.what(), testing::HasSubstr("node type ABCnode, given in the topology "
-                                     "file, is unknown to grazer"));
+        e.what(),
+        testing::HasSubstr("node type Unknown_type_node, given in the topology "
+                           "file, is unknown to grazer"));
   }
 }
 
@@ -245,7 +246,7 @@ TEST(build_edge_vectorTEST, edge_type_not_known) {
   nlohmann::json edge_topology;
 
   edge_topology
-      = {{"ABCedge",
+      = {{"Unknown_type_edge",
           {{{"from", "N203"},
             {"to", "N202"},
             {"B", 1},
@@ -265,8 +266,9 @@ TEST(build_edge_vectorTEST, edge_type_not_known) {
     Model::Networkproblem::build_edge_vector(edge_topology, nodes, edgetypemap);
   } catch (std::exception &e) {
     EXPECT_THAT(
-        e.what(), testing::HasSubstr("edge type ABCedge, given in the topology "
-                                     "file, is unknown to grazer"));
+        e.what(),
+        testing::HasSubstr("edge type Unknown_type_edge, given in the topology "
+                           "file, is unknown to grazer"));
   }
 }
 

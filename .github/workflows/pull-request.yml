@@ -1,0 +1,192 @@
+name: CMake
+
+on:
+  pull_request:
+    branches: [master,develop]
+    types: [synchronize, opened, reopened, ready_for_review]
+
+jobs:
+  format-check:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check clang-format style
+      uses: jidicula/clang-format-action@v3.4.0
+      with: 
+        clang-format-version: "11"
+    
+
+  build-and-test:
+    if: github.event.pull_request.draft == false
+    strategy:
+      fail-fast: false
+      matrix:
+        name:
+        - Linux-GNU
+        - Linux-Clang
+        - Linux-Clang-libc++
+        - MacOS-Clang
+        - Windows-VisualStudio
+        - Release-Test
+        include:
+        - name: Linux-GNU
+          compiler: g++-9
+          os: ubuntu-18.04
+          dep-install: sudo apt-get install -y cmake
+          build_type: Debug
+          binary-path: /build/src/Grazer/grazer
+        - name: Linux-Clang
+          compiler: clang++-9
+          os: ubuntu-16.04
+          dep-install: sudo apt-get install -y cmake clang
+          build_type: Debug
+          binary-path: /build/src/Grazer/grazer
+        - name: Linux-Clang-libc++
+          compiler: clang++-9
+          os: ubuntu-18.04
+          dep-install: sudo apt-get install -y cmake clang libc++abi-9-dev  libc++-9-dev
+          build_type: Debug
+          build_with_libcpp: ON
+          binary-path: /build/src/Grazer/grazer
+        - name: MacOS-Clang
+          os: macos-10.15
+          compiler: clang++
+          build_type: Debug
+          binary-path: /build/src/Grazer/grazer
+        - name: Windows-VisualStudio
+          os: windows-2019
+          compiler: msvc
+          build_type: Debug
+          binary-path: \build\src\Grazer\Debug\grazer.exe
+          binary-ending: ".exe"
+        - name: Release-Test
+          os: ubuntu-20.04
+          compiler: clang++-10
+          dep-install: sudo apt-get install -y cmake
+          build_type: Release
+          binary-path: /build/src/Grazer/grazer
+
+          
+
+    env:
+      CXX: ${{ matrix.compiler }}
+      CTEST_OUTPUT_ON_FAILURE: 1
+      BUILD_WITH_LIBCPP: ${{ matrix.build_with_libcpp }}
+      # acts like a ternary:
+      CCACHE_OPTIONS: ${{ matrix.os != 'windows-2019' && '-D CMAKE_CXX_COMPILER_LAUNCHER=ccache -D CMAKE_C_COMPILER_LAUNCHER=ccache' || ' ' }}
+    # The CMake configure and build commands are platform agnostic and should work equally
+    # well on Windows or Mac.  You can convert this to a matrix build if you need
+    # cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: ${{ matrix.os }} 
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    
+    - name: Set up CCache
+      if: matrix.os != 'windows-2019' # does not work for windows
+      uses: hendrikmuhs/ccache-action@v1 
+      with:
+        key: ${{ matrix.name }}
+
+    ## works for clang only (all OS)
+    # - name: Set up buildcache
+    #   if: matrix.os == 'windows-2019' 
+    #   uses: mikehardy/buildcache-action@v1
+    #   with:
+    #     cache_key: ${{ matrix.name }} # might be useful in the furture
+
+    - name: Install Dependencies
+      run: ${{ matrix.dep-install }}
+
+    - name: Create Build Environment
+      # Some projects don't allow in-source building, so create a separate build directory
+      # We'll use this as our working directory for all subsequent commands
+      run: cmake -E make_directory ${{github.workspace}}/build
+
+    - name: Configure CMake
+      # Use a bash shell so we can use the same syntax for environment variable
+      # access regardless of the host operating system
+      shell: bash
+      working-directory: ${{github.workspace}}/build
+      # Note the current convention is to use the -S and -B options here to specify source 
+      # and build directories, but this is only available with CMake 3.13 and higher.  
+      # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
+      run: | 
+        echo "Build with Libcpp: $BUILD_WITH_LIBCPP"
+        cmake $GITHUB_WORKSPACE \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+          $CCACHE_OPTIONS \
+          -DBUILD_WITH_LIBCPP=${BUILD_WITH_LIBCPP}
+
+    - name: Build
+      working-directory: ${{github.workspace}}/build
+      shell: bash
+      # Execute the build.  You can specify a specific target with "--target <NAME>"
+      run: cmake --build . --config ${{ matrix.build_type }} --parallel 10
+
+    - name: Unit Tests
+      working-directory: ${{github.workspace}}/build
+      shell: bash
+      # Execute tests defined by the CMake configuration.  
+      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+      run: ctest -V -C ${{ matrix.build_type }}
+    
+    - name: Integration Test 
+      run: ${{github.workspace}}${{ matrix.binary-path }} run ./data/basetest
+
+    ## GUI Artifacts Test
+
+    # - uses: actions/setup-python@v2
+    #   with:
+    #     python-version: '3.8' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+    #     architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
+
+    # - name: Move Executable
+    #   run: mv ${{github.workspace}}${{ matrix.binary-path }} ${{github.workspace}}/gui/bin/grazer${{matrix.binary-ending}}
+
+    # - name: Install wxpython on Linux 
+    #   if: (!startsWith( matrix.os , 'windows' )) && (!startsWith(matrix.os, 'macos'))
+    #   run: |
+    #     pip install --upgrade pip
+    #     pip install wheel
+    #     pip install \
+    #       -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/${{matrix.os}} \
+    #       wxPython==4.1.0
+    #   # wxpython has many versions for linux so can not be installed with the normal
+    #   # pip install wxPython command on linux
+
+    # - name: Build GUI
+    #   working-directory: ${{github.workspace}}/gui
+    #   run: |
+    #     pip install --upgrade pip
+    #     pip install wheel
+    #     pip install -r requirements.txt
+    #     pyinstaller --windowed -F gui.spec
+    #     echo "ls ./dist"
+    #     ls -l ./dist
+    #     echo "ls ./build"
+    #     ls -l ./build
+
+    # - name: Upload Artifacts
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: grazer-gui-${{matrix.os}}
+    #     path: ${{github.workspace}}/gui/dist/grazer_gui${{matrix.binary-ending}}
+
+    # - name: Zip .app folder on Mac
+    #   working-directory: ${{github.workspace}}/gui/dist
+    #   if: startsWith(matrix.os, 'macos')
+    #   run: zip -r grazer_gui.app.zip grazer_gui.app
+
+    # - name: Upload Artifacts
+    #   if: startsWith(matrix.os, 'macos')
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: grazer-gui-${{matrix.os}}
+    #     path: ${{github.workspace}}/gui/dist/grazer_gui.app.zip
+
+

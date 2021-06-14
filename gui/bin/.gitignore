@@ -1,0 +1,3 @@
+# makes sure this folder checked into git, but nothing inside it
+*
+!.gitignore

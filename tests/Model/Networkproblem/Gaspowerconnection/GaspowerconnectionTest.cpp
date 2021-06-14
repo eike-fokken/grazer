@@ -78,14 +78,14 @@ TEST_F(GaspowerconnectionTEST, smoothing_polynomial) {
   } catch (std::exception &e) {
     EXPECT_THAT(
         e.what(), testing::HasSubstr("You can't call this function for values "
-                                     "of q bigger than 60.000000000000"));
+                                     "of q bigger than"));
   }
   try {
     gp->smoothing_polynomial(-gp->kappa - 1);
   } catch (std::exception &e) {
     EXPECT_THAT(
         e.what(), testing::HasSubstr("You can't call this function for values "
-                                     "of q bigger than 60.000000000000"));
+                                     "of q bigger than"));
   }
 }
 
@@ -132,14 +132,14 @@ TEST_F(GaspowerconnectionTEST, dsmoothing_polynomial) {
   } catch (std::exception &e) {
     EXPECT_THAT(
         e.what(), testing::HasSubstr("You can't call this function for values "
-                                     "of q bigger than 60.000000000000"));
+                                     "of q bigger than"));
   }
   try {
     gp->dsmoothing_polynomial_dq(-gp->kappa - 1);
   } catch (std::exception &e) {
     EXPECT_THAT(
         e.what(), testing::HasSubstr("You can't call this function for values "
-                                     "of q bigger than 60.000000000000"));
+                                     "of q bigger than"));
   }
 
   double h = sqrt(Aux::EPSILON);

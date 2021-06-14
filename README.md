@@ -1,3 +1,5 @@
+[![Release](https://github.com/eike-fokken/grazer/actions/workflows/release.yml/badge.svg)](https://github.com/eike-fokken/grazer/releases)
+
 ## Grazer
 
 Grazer is a program that shall simulate the time evolution of dynamical systems.
@@ -35,6 +37,12 @@ will appear in `release/src/Grazer/`.
 
 ## Usage
 
+Grazer provides both a command line interface (cli) and graphical user interface
+(gui) both binaries can be downloaded from [our GitHub releases
+page](https://github.com/eike-fokken/grazer/releases).
+
+### Command Line Interface (CLI)
+
 Grazer has a command line interface - running the executable with `--help` 
 will look something like this:
 
@@ -55,13 +63,13 @@ Subcommands:
 You can explore all grazer commands with `--help`. Commands usually expect a
 `grazer_directory` argument, which is a directory with the following structure
 
-```sh
+```txt
 grazer_directory
 |- problem
 |  |- problem_data.json
 |  |- topology.json
 |  |- ...
-|- schema
+|- schemas
 |- output
 ```
 
@@ -79,6 +87,21 @@ will only insert the `$schema` keys.)
 
 Right now only Power and Gas networks are supported out of the box.
 A few example problems can be found in the `data` subdirectory.
+
+
+### Graphical User Interface (GUI)
+
+Grazer uses [Gooey](https://github.com/chriskiehl/Gooey) to provide a thin
+GUI wrapper for the command line interface. 
+
+![Grazer-Gui](./docs/images/grazer-gui.png)
+
+> Note: Since Gooey is a python package
+it would require an installation of python. To avoid this dependency we use
+[pyinstaller](https://www.pyinstaller.org/) to package everything into an
+executable. But this does mean we essentially ship a full python version with
+the GUI, which increases Grazers size from something like 2mb to something like
+20mb on windows and mac and even larger on linux.
 
 ## Feedback
 Feedback is welcome! Just open a github issue or write an email to
