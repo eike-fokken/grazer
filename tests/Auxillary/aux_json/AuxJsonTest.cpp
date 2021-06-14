@@ -64,6 +64,8 @@ TEST(Aux_json, replace_entry_with_json_from_file) {
 
   try {
     aux_json::replace_entry_with_json_from_file(wrong_path_json, "key");
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::exception &e) {
     EXPECT_THAT(
         e.what(), testing::HasSubstr(
@@ -88,6 +90,8 @@ TEST(Aux_json, get_json_from_file_path) {
   // Testing wrong paths
   try {
     aux_json::get_json_from_file_path(wrong_path);
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::exception &e) {
     EXPECT_THAT(
         e.what(), testing::HasSubstr(

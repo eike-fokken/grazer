@@ -113,6 +113,8 @@ TEST(unitParser, jsonValidation) {
   try {
     test_validation_in_parsing(
         wrong_name, "required property 'value' not found in object");
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::exception &e) {
     EXPECT_THAT(
         e.what(),
@@ -125,6 +127,8 @@ TEST(unitParser, jsonValidation) {
   })"_json;
   try {
     test_validation_in_parsing(wrong_type, "unexpected instance type");
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::exception &e) {
     EXPECT_THAT(
         e.what(),
@@ -138,6 +142,8 @@ TEST(unitParser, jsonValidation) {
   })"_json;
   try {
     test_validation_in_parsing(additional_property, "additional property");
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::exception &e) {
     EXPECT_THAT(
         e.what(),
@@ -150,6 +156,8 @@ TEST(unitParser, jsonValidation) {
   })"_json;
   try {
     test_validation_in_parsing(unknown_unit, "no subschema has succeeded");
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::exception &e) {
     EXPECT_THAT(
         e.what(),

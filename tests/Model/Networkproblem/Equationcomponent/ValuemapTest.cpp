@@ -97,6 +97,8 @@ TEST(set_conditionTEST, duplicate_x_value) {
 
   try {
     Model::Networkproblem::Valuemap<2>::set_condition(values_json, "x");
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::exception &e) {
     EXPECT_THAT(
         e.what(), testing::HasSubstr(" appears twice in node with id N213."));

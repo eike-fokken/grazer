@@ -87,6 +87,10 @@ TEST(check_for_duplicatesTEST, duplicate_id_in_same_vector) {
   try {
     Model::Networkproblem::check_for_duplicates(
         id_duplicate_json, "topology_key");
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::exception &e) {
     EXPECT_THAT(
         e.what(),
@@ -112,6 +116,10 @@ TEST(check_for_duplicatesTEST, duplicate_id_in_neighbour_vector) {
   try {
     Model::Networkproblem::check_for_duplicates(
         id_duplicate_json, "topology_key");
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::exception &e) {
     EXPECT_THAT(
         e.what(),
@@ -158,6 +166,8 @@ TEST(build_node_vectorTEST, node_type_not_known) {
 
   try {
     Model::Networkproblem::build_node_vector(node_topology, nodetypemap);
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::exception &e) {
     EXPECT_THAT(
         e.what(),
@@ -264,6 +274,8 @@ TEST(build_edge_vectorTEST, edge_type_not_known) {
 
   try {
     Model::Networkproblem::build_edge_vector(edge_topology, nodes, edgetypemap);
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::exception &e) {
     EXPECT_THAT(
         e.what(),

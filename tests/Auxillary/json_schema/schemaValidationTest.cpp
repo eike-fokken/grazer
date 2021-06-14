@@ -63,6 +63,8 @@ TEST_F(JsonValidationData, happyPath) {
 TEST_F(JsonValidationData, wrongData) {
   try {
     Aux::schema::validate_json(missing_data, valid_schema);
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::exception &e) {
     EXPECT_THAT(
         e.what(),
@@ -71,6 +73,8 @@ TEST_F(JsonValidationData, wrongData) {
   }
   try {
     Aux::schema::validate_json(invalid_data, valid_schema);
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::exception &e) {
     EXPECT_THAT(
         e.what(),
@@ -82,6 +86,8 @@ TEST_F(JsonValidationData, wrongData) {
 TEST_F(JsonValidationData, invalidSchema) {
   try {
     Aux::schema::validate_json(valid_data, invalid_schema);
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::exception &e) {
     EXPECT_THAT(
         e.what(),
