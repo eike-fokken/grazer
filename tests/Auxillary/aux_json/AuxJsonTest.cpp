@@ -1,13 +1,17 @@
 #include "Aux_json.hpp"
+#include "test_io_helper.hpp"
+#include <exception>
 #include <filesystem>
 #include <fstream>
+#include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
+#include <string>
 
-// #include <iostream>
+class Aux_json_Test : public CWD_To_Rand_Test_Dir {};
 
-TEST(Aux_json, replace_entry_with_json_from_file) {
+TEST_F(Aux_json_Test, replace_entry_with_json_from_file) {
 
   nlohmann::json aux_sub_json_test;
   nlohmann::json object_json_test;
@@ -53,24 +57,45 @@ TEST(Aux_json, replace_entry_with_json_from_file) {
   EXPECT_EQ(aux_sub_json_test, relative_path_json["key"]);
 
   // Testing jsons containing a wrong path (e.g. non-existing path)
-  wrong_path_json = {{"key", "/wrong/path.json"}};
-  EXPECT_THROW(
-      aux_json::replace_entry_with_json_from_file(wrong_path_json, "key"),
-      std::runtime_error);
+  std::string wrong_path = "wrong/path.json";
 
-  // Removing temporary file
-  std::filesystem::remove(temp_json_path);
+  std::string json_path_string = std::filesystem::absolute(wrong_path).string();
+
+  wrong_path_json = {{"key", json_path_string}};
+
+  try {
+    aux_json::replace_entry_with_json_from_file(wrong_path_json, "key");
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
+  } catch (std::runtime_error &e) {
+    EXPECT_THAT(
+        e.what(), testing::HasSubstr(
+                      "The file \n" + wrong_path_json["key"].get<std::string>()
+                      + "\n does not exist!"));
+  }
 }
 
-TEST(Aux_json, get_json_from_file_path) {
+TEST_F(Aux_json_Test, get_json_from_file_path) {
 
   std::string temp_json_name;
-  std::string wrong_path = "/wrong/path.json";
+  std::string wrong_path = "wrong/path.json";
   std::filesystem::path absolute_path;
   nlohmann::json aux_sub_json_test;
 
+  auto json_pathstring = std::filesystem::path(wrong_path);
+  auto json_absolute_path = std::filesystem::absolute(json_pathstring);
+
   // Testing wrong paths
-  EXPECT_ANY_THROW(aux_json::get_json_from_file_path(wrong_path));
+  try {
+    aux_json::get_json_from_file_path(wrong_path);
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
+  } catch (std::runtime_error &e) {
+    EXPECT_THAT(
+        e.what(), testing::HasSubstr(
+                      "The file \n" + json_absolute_path.string()
+                      + "\n does not exist!"));
+  }
 
   // Testing right path
   aux_sub_json_test
@@ -91,7 +116,4 @@ TEST(Aux_json, get_json_from_file_path) {
 
   EXPECT_EQ(
       aux_sub_json_test, aux_json::get_json_from_file_path(absolute_path));
-
-  // Removing temporary file
-  std::filesystem::remove(temp_json_name);
 }

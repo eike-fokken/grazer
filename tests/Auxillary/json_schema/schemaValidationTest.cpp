@@ -1,3 +1,4 @@
+#include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
 
 #include <nlohmann/json.hpp>
@@ -60,16 +61,37 @@ TEST_F(JsonValidationData, happyPath) {
 }
 
 TEST_F(JsonValidationData, wrongData) {
-  EXPECT_THROW(
-      Aux::schema::validate_json(missing_data, valid_schema),
-      std::runtime_error);
-  EXPECT_THROW(
-      Aux::schema::validate_json(invalid_data, valid_schema),
-      std::runtime_error);
+  try {
+    Aux::schema::validate_json(missing_data, valid_schema);
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
+  } catch (std::runtime_error &e) {
+    EXPECT_THAT(
+        e.what(),
+        testing::HasSubstr(
+            "The current object json does not conform to its schema."));
+  }
+  try {
+    Aux::schema::validate_json(invalid_data, valid_schema);
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
+  } catch (std::runtime_error &e) {
+    EXPECT_THAT(
+        e.what(),
+        testing::HasSubstr(
+            "The current object json does not conform to its schema."));
+  }
 }
 
 TEST_F(JsonValidationData, invalidSchema) {
-  EXPECT_THROW(
-      Aux::schema::validate_json(valid_data, invalid_schema),
-      std::runtime_error);
+  try {
+    Aux::schema::validate_json(valid_data, invalid_schema);
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
+  } catch (std::runtime_error &e) {
+    EXPECT_THAT(
+        e.what(),
+        testing::HasSubstr(
+            "The current object json does not conform to its schema."));
+  }
 }

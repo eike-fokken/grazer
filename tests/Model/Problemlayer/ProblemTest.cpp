@@ -1,8 +1,10 @@
 #include "Problem.hpp"
 #include "MockSubproblem.hpp"
+#include "test_io_helper.hpp"
 #include <gtest/gtest.h>
 
-TEST(modelTest, get_number_of_states) {
+class modelTest : public CWD_To_Rand_Test_Dir {};
+TEST_F(modelTest, get_number_of_states) {
 
   // Test how often this class is being called
   GrazerTest::MockSubproblem mocksub;
@@ -11,7 +13,7 @@ TEST(modelTest, get_number_of_states) {
   mocksub.set_indices(0);
 }
 
-TEST(modelSubproblem, Model_evaluate) {
+TEST_F(modelTest, Model_evaluate) {
 
   auto problem_json = R"( {"subproblems": {}} )"_json;
   auto output_dir = std::filesystem::path("");
