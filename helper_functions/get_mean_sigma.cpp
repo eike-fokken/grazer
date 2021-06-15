@@ -141,9 +141,8 @@ void add_power_json_data(
             std::cout << "Expected id:" << id << std::endl;
             std::cout << "Gotten id:" << (*it)["id"] << std::endl;
             throw std::runtime_error(
-                "input wasn't sorted. is this really an output file of "
-                "Grazer? "
-                "If yes, file a bug!");
+                "input wasn't sorted or some outputs stem from different "
+                "topology files than others!");
           }
           auto &olddata = (*it)["data"];
           auto &newdata = component["data"];
