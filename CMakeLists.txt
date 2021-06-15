@@ -129,12 +129,13 @@ else()
 endif()
 
 
-
+option(USE_SANITIZERS "compile sanitizers in" OFF)
+if (USE_SANITIZERS)
 # # for sanitizing in debug mode:
-# set(MY_SANITIZE_OPTIONS -fsanitize=address -fno-omit-frame-pointer -fsanitize=undefined)
-# add_compile_options("$<$<CONFIG:DEBUG>:${MY_SANITIZE_OPTIONS}>")
-# add_link_options("$<$<CONFIG:DEBUG>:${MY_SANITIZE_OPTIONS}>")
-
+set(my_sanitize_options -fsanitize=address -fno-omit-frame-pointer -fsanitize=undefined)
+add_compile_options("$<$<CONFIG:DEBUG>:${my_sanitize_options}>")
+add_link_options("$<$<CONFIG:DEBUG>:${my_sanitize_options}>")
+endif()
 
 
 
