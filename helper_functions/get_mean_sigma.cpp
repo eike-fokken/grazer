@@ -138,6 +138,8 @@ void add_power_json_data(
 
         } else {
           if ((*it)["id"] != id) {
+            std::cout << "Expected id:" << id << std::endl;
+            std::cout << "Gotten id:" << (*it)["id"] << std::endl;
             throw std::runtime_error(
                 "input wasn't sorted. is this really an output file of "
                 "Grazer? "
