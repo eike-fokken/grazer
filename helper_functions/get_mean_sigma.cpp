@@ -122,14 +122,14 @@ void add_power_json_data(
           auto &newdata = component["data"];
           for (auto &step : newdata) {
             json time_step_to_save;
-            for (auto varit = step.begin(); varit != step.end(); ++varit) {
-              if (varit.key() == "time") {
-                time_step_to_save[varit.key()] = varit.value();
+            for (auto &[key, value] : step.items()) {
+              if (key == "time") {
+                time_step_to_save[key] = value;
                 continue;
               }
-              auto meankey = varit.key() + "_mean";
-              auto sigmakey = varit.key() + "_sigma";
-              time_step_to_save[meankey] = varit.value();
+              auto meankey = key + "_mean";
+              auto sigmakey = key + "_sigma";
+              time_step_to_save[meankey] = value;
               time_step_to_save[sigmakey] = 0;
             }
             data_to_save.push_back(time_step_to_save);
@@ -148,15 +148,15 @@ void add_power_json_data(
           auto &newdata = component["data"];
           auto oldit = olddata.begin();
           for (auto &step : newdata) {
-            for (auto varit = step.begin(); varit != step.end(); ++varit) {
-              if (varit.key() == "time") {
+            for (auto &[key, value] : step.items()) {
+              if (key == "time") {
                 continue;
               }
-              auto meankey = varit.key() + "_mean";
-              auto sigmakey = varit.key() + "_sigma";
+              auto meankey = key + "_mean";
+              auto sigmakey = key + "_sigma";
 
               double n = number_of_runs;
-              double new_value = varit.value().get<double>();
+              double new_value = value.get<double>();
               double old_mean = (*oldit)[meankey].get<double>();
               double old_sigma = (*oldit)[sigmakey].get<double>();
 
@@ -202,15 +202,15 @@ void add_gas_json_data(
           auto &data_to_add = component["data"];
           for (auto &step : data_to_add) {
             json time_step_to_save;
-            for (auto varit = step.begin(); varit != step.end(); ++varit) {
-              if (varit.key() == "time") {
-                time_step_to_save["time"] = varit.value();
+            for (auto &[key, value] : step.items()) {
+              if (key == "time") {
+                time_step_to_save["time"] = value;
                 continue;
               }
-              auto meankey = varit.key() + "_mean";
-              time_step_to_save[meankey] = varit.value();
-              auto sigmakey = varit.key() + "_sigma";
-              for (auto &value_pair_to_add : varit.value()) {
+              auto meankey = key + "_mean";
+              time_step_to_save[meankey] = value;
+              auto sigmakey = key + "_sigma";
+              for (auto &value_pair_to_add : value) {
                 json value_pair_to_save;
                 value_pair_to_save["x"] = value_pair_to_add["x"];
                 value_pair_to_save["value"] = 0.0;
@@ -232,13 +232,13 @@ void add_gas_json_data(
           auto &data_to_add = component["data"];
           auto data_to_save_it = data_to_save.begin();
           for (auto &step : data_to_add) {
-            for (auto varit = step.begin(); varit != step.end(); ++varit) {
-              if (varit.key() == "time") {
+            for (auto &[key, value] : step.items()) {
+              if (key == "time") {
                 continue;
               }
-              auto meankey = varit.key() + "_mean";
-              auto sigmakey = varit.key() + "_sigma";
-              for (auto &value_pair : varit.value()) {
+              auto meankey = key + "_mean";
+              auto sigmakey = key + "_sigma";
+              for (auto &value_pair : value) {
                 auto x = value_pair["x"];
                 auto compare_for_x = [](json const &a, json const &b) -> bool {
                   return a["x"].get<double>() < b["x"].get<double>();
