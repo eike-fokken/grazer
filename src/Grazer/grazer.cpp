@@ -1,21 +1,29 @@
+#include "commands.hpp"
 #include "schema_generation.hpp"
 #include "schema_key_insertion.hpp"
-#include <CLI/App.hpp>
-#include <CLI/Config.hpp>
-#include <CLI/Formatter.hpp>
+
+#include <CLI/CLI.hpp>
+#include <cstddef>
 #include <filesystem>
 #include <iostream>
 #include <string>
 
-#include "commands.hpp"
+// Preprocessor magic...
+#define STRING(s) #s
+#define GETSTRING(s) STRING(s)
 
 int main(int argc, char **argv) {
   try {
     CLI::App app{"Simulation of dynamical systems", "grazer"};
-    //
+
+    app.require_subcommand();
+
+    std::string versionstring
+        = "Grazer version\n" + std::string(GETSTRING(GRAZER_VERSION));
+    app.set_version_flag("-v,--version", versionstring);
+
     CLI::App *grazer_run = app.add_subcommand(
         "run", "Simulate the evolution of the given dynamical system");
-    app.require_subcommand();
 
     std::filesystem::path grazer_dir;
     grazer_run
