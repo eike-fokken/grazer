@@ -28,7 +28,7 @@ namespace Model::Networkproblem::Gas {
   std::string Pipe::get_type() { return "Pipe"; }
   std::string Pipe::get_gas_type() const { return get_type(); }
 
-  int Pipe::init_vals_per_interpol_point() { return 2; }
+  constexpr int Pipe::init_vals_per_interpol_point() { return 2; }
 
   namespace unit = Aux::unit;
 
@@ -78,14 +78,17 @@ namespace Model::Networkproblem::Gas {
       Eigen::Ref<Eigen::VectorXd const> last_state,
       Eigen::Ref<Eigen::VectorXd const> new_state) const {
     for (int i = get_equation_start_index(); i != get_equation_after_index();
-         i += 2) {
+         i += init_vals_per_interpol_point()) {
 
-      auto rootvalue_segment = rootvalues.segment<2>(i);
+      auto rootvalue_segment
+          = rootvalues.segment<init_vals_per_interpol_point()>(i);
 
-      auto last_left = last_state.segment<2>(i - 1);
-      auto last_right = last_state.segment<2>(i + 1);
-      auto new_left = new_state.segment<2>(i - 1);
-      auto new_right = new_state.segment<2>(i + 1);
+      auto last_left
+          = last_state.segment<init_vals_per_interpol_point()>(i - 1);
+      auto last_right
+          = last_state.segment<init_vals_per_interpol_point()>(i + 1);
+      auto new_left = new_state.segment<init_vals_per_interpol_point()>(i - 1);
+      auto new_right = new_state.segment<init_vals_per_interpol_point()>(i + 1);
 
       scheme->evaluate_point(
           rootvalue_segment, last_time, new_time, Delta_x, last_left,
@@ -132,7 +135,9 @@ namespace Model::Networkproblem::Gas {
 
   void Pipe::setup() { setup_output_json_helper(get_id()); }
 
-  int Pipe::get_number_of_states() const { return 2 * number_of_points; }
+  int Pipe::get_number_of_states() const {
+    return init_vals_per_interpol_point() * number_of_points;
+  }
 
   void Pipe::print_to_files(nlohmann::json &new_output) {
     auto &this_output_json = get_output_json_ref();

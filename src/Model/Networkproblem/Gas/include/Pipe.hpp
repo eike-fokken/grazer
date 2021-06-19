@@ -16,7 +16,7 @@ namespace Model::Networkproblem::Gas {
   public:
     static std::string get_type();
     std::string get_gas_type() const override;
-    static int init_vals_per_interpol_point();
+    static constexpr int init_vals_per_interpol_point();
     static nlohmann::json get_schema();
     static nlohmann::json get_initial_schema();
 
