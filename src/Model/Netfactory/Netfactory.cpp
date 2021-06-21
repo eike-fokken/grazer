@@ -26,6 +26,11 @@ namespace Model::Networkproblem {
       for (auto &[component_type, sub_json] :
            components[component_class].items()) {
         for (auto &component : sub_json) {
+          if (not component.contains("id")) {
+            gthrow(
+                {"The json of the following object does not contain an id! ",
+                 component.dump(1, '\t'), "\n", "Aborting..."});
+          }
           component_vector.push_back(component["id"].get<std::string>());
         }
       }
