@@ -160,6 +160,8 @@ include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp/include/")
 include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/CLI11/include/")
 
 
+# for building latex documentation
+include(UseLATEX/UseLATEX.cmake)
 find_package(Doxygen)
 if(NOT Doxygen_FOUND)
   message(STATUS "Doxygen not found! building without docs")

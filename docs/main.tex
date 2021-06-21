@@ -1,0 +1,164 @@
+\documentclass[a4paper]{article}
+
+\usepackage{todonotes}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tabularx}
+
+
+\definecolor{eclipseStrings}{RGB}{42,0.0,255}
+\definecolor{eclipseKeywords}{RGB}{127,0,85}
+\colorlet{numb}{magenta!60!black}
+
+\lstdefinelanguage{json}{
+    basicstyle=\normalfont\ttfamily,
+    commentstyle=\color{eclipseStrings}, % style of comment
+    stringstyle=\color{eclipseKeywords}, % style of strings
+    numbers=left,
+    numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    frame=lines,
+    backgroundcolor=\color{white}, %only if you like
+    string=[s]{"}{"},
+    comment=[l]{:\ "},
+    morecomment=[l]{:"},
+    literate=
+        *{0}{{{\color{numb}0}}}{1}
+         {1}{{{\color{numb}1}}}{1}
+         {2}{{{\color{numb}2}}}{1}
+         {3}{{{\color{numb}3}}}{1}
+         {4}{{{\color{numb}4}}}{1}
+         {5}{{{\color{numb}5}}}{1}
+         {6}{{{\color{numb}6}}}{1}
+         {7}{{{\color{numb}7}}}{1}
+         {8}{{{\color{numb}8}}}{1}
+         {9}{{{\color{numb}9}}}{1}
+}
+
+\newcommand{\sco
+}{\textunderscore{}}
+
+
+\begin{document}
+\section{Grazer}
+\label{sec:grazer}
+This is the user guide for grazer.
+
+\subsection{Usage}
+\label{sec:usage}
+
+\subsubsection{Input files}
+\label{sec:input-files}
+Grazer is controlled by input files, which contain json code.
+The most important such file is called \emph{problem\sco data.json}. Its top-level structure is given in \autoref{fig:problem_data.json}.
+
+\begin{figure}[ht]
+  \centering
+  \begin{lstlisting}[language=json,firstnumber=1]
+    {
+      "time_evolution_data": { ... },
+      "initial_values": { ... },
+      "problem_data": { ... }
+    }
+  \end{lstlisting}
+  \caption{problem\sco data.json}
+  \label{fig:problem_data.json}
+\end{figure}
+Here \verb|"time_evolution_data"| provides all data on time and newton solver. An example is given in
+
+\begin{figure}[ht]
+  \centering
+\begin{lstlisting}[language=json,firstnumber=1]
+    "time_evolution_data":
+    {
+        "use_simplified_newton": true,
+        "maximal_number_of_newton_iterations": 100,
+        "tolerance": 1e-8,
+        "retries": 5,
+        "start_time": 0,
+        "end_time": 86400,
+        "desired_delta_t": 1800
+    }
+\end{lstlisting}
+  \caption{time evolution data entry}
+  \label{fig:time_evolution_data}
+\end{figure}
+
+\begin{table}[ht]
+  \centering
+  \begin{tabularx}{\textwidth}{llXl}
+    \toprule
+    name (abr.) & type & explanation &example \\
+   \midrule
+    u.\sco s.\sco n.&Boolian& Choose to update Jacobian on every iteration(false) or only at the beginning of a time step(true)& true \\
+    m.\sco n.\sco of\sco n.\sco i. &Integer& Abort if this many iterations didn't converge & 50\\
+    tolerance&Float& Declare time step converged, if the objective function value is this close to zero& 1e-8\\
+p    retries&Integer& Only useful for stochastic inputs: Retry the step, if it didn't converge with new stochastic sample & 0\\
+    start\sco time&Float& Start time of the simulation in seconds& 0\\
+    end\sco time&Float& End time of the simulation in seconds& 3600\\
+    desired\sco delta\sco t&Float& Given in seconds. The next-smaller number
+    that is a divisor of endtime-starttime is chosen as timestep & 60\\
+    \bottomrule
+  \end{tabularx}
+  \caption{All keys in time evolution data}
+  \label{tab:time_evolution_data}
+\end{table}
+
+The internal structure of the intial\sco values json is given in \autoref{fig:initvalues}.
+The structure at the moment is not very interesting, as it only holds a file name to an additional initialvalues json which unsurprisingly holds initial values.
+This is sorted by subproblem. When (and if) support for different subproblem types arrives, this structure will probably change.
+
+\begin{figure}[ht]
+  \centering
+\begin{lstlisting}[language=json,firstnumber=1]
+  "initial_values":{
+    "subproblems":
+    {
+      "Network_problem":
+      {
+        "initial_json":"initial.json"
+      }
+    }
+  }
+\end{lstlisting}
+  \caption{intialvalues json}
+  \label{fig:initvalues}
+\end{figure}
+
+Lastly the problem data contains all information
+
+
+\todo{erklären, wie die jsons zusammengesetzt werden.}
+\subsubsection{Internal structure}
+\label{sec:internal-structure}
+After all filenames have been replaced with their file contents, the final json objects are handed to the objects, that finally carry out the computations.
+
+A Problem object passes on subproblem jsons to the factory functions of subproblem objects (at the moment only Networkproblem is implemented).
+The Networkproblem needs a network.
+This is constructed from the arrays of object jsons. First the nodes, then the edges. The network is then passed to the Networkproblem object.
+
+
+After construction the main loop starts.
+The timeevolver object loads the initial state from the initial condition json and runs the time steps.
+Therefore it calls \emph{evaluate} on the problem object, which in turn calls \emph{evaluate} on its subproblems.
+These handle the evaluation. The Networkproblem also hands \emph{evaluate} to its members, namely the nodes and edges.
+
+\subsubsection*{evaluate}
+
+\subsection{Extending Networkproblem}
+\label{sec:extend-netw}
+The easiest way to extend grazer for your needs, is to create new classes that inherit from \emph{Node} or \emph{Edge} and
+(most of these at least do) from either \emph{Statecomponent} (if the new componenttype has its own variables) or
+\emph{Equationcomponent} (if the new component sets model equations in other components.)
+
+Examples are \emph{Transmissionline}, which only inherits from \emph{Edge}, because it holds some parameters but neither sets equations, nor holds variables.
+On the other hand \emph{Pipe} inherits from \emph{Edge} and \emph{Statecomponent}, because it has its own variables, namely pressure and flow values and sets their equations.
+Lastly the gas nodes \emph{Source, Sink} and \emph{Innode} inherit from \emph{Node} and \emph{Equationcomponent}, because they set equations, but do so in the gas edges, that meet in the node. These nodes have no variables of their own.
+
+
+\end{document}
