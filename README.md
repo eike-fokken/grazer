@@ -11,7 +11,7 @@ Yet feel free to dig into it.  Any feedback in github issues or to the mail addr
 
 
 ## Installation
-Before you can use grazer, you must build it (or download a prebuilt version: [Releases](https://github.com/eike-fokken/grazer/releases))
+Before you can use grazer, you must build it (or download a prebuilt version: [Releases](https://github.com/eike-fokken/grazer/releases)).
 Supported compilers are clang-9, gcc-9 and Microsofts Visual Studio 2019 as well as later version.
 Other compilers may work and probably do as we strive for full standard compliance to C++17.
 
@@ -21,7 +21,7 @@ To build grazer, clone this git repository, change into it and run
 git submodule update --init --recursive --depth=1
 ```
 
-to fetch dependencies (`--depth=1` is not needed but cuts down the size tremendously.)
+to fetch dependencies (`--depth=1` is not needed but cuts down the size tremendously).
 
 Then run
 
