@@ -38,7 +38,7 @@ cmake --build release
 You can also build a debug build, just exchange 'release' with 'debug' and 'Release' with 'Debug'
 everywhere in the last two commands.
 
-After the build has completed, a binary named grazer (or grazer.exe , if built with mingw compiler)
+After the build has completed, a binary named grazer (or grazer.exe , if built on Windows)
 will appear in `release/src/Grazer/`.
 
 ## Usage
@@ -69,9 +69,9 @@ Subcommands:
 As a first try after compilation, run
 
 ```bash
-release/srx/Grazer/grazer run data/base
+release/src/Grazer/grazer run data/base
 ```
-(or `.../grazer.exe ...` under Windows) to run a simulation of a gas-power network.
+from the reposiroty directory (or `.../grazer.exe ...` under Windows) to run a simulation of a gas-power network.
 
 You can explore all grazer commands with `--help`. Commands usually expect a
 `grazer_directory` argument, which is a directory with the following structure
@@ -115,6 +115,19 @@ it would require an installation of python. To avoid this dependency we use
 executable. But this does mean we essentially ship a full python version with
 the GUI, which increases Grazers size from something like 2mb to something like
 20mb on windows and mac and even larger on linux.
+
+## Documentation
+Documentation is still a work in progress (I know, everyone claims that, but a
+pdf is on the way) but you can already generate some documentation with
+```bash
+cmake --build release --target docs
+```
+if you have doxygen installed. This will generate technical documentation under
+```
+release/docs/html/index.html
+```
+although it is not yet very complete.
+
 
 ## Feedback
 Feedback is welcome! Just open a github issue or write an email to
