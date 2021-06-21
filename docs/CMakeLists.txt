@@ -1,3 +1,10 @@
+add_custom_target(docs)
+
+if(NOT Doxygen_FOUND)
+  message(STATUS "Doxygen not found! building without docs")
+else()
+
+
 set(DOXYGEN_EXTRACT_PRIVATE YES)
 
 set(DOXYGEN_EXTRACT_ALL YES)
@@ -6,9 +13,13 @@ set(DOXYGEN_RECURSIVE YES)
 set(DOXYGEN_GENERATE_TREEVIEW YES)
 
 
-add_custom_target(docs)
+
 
 doxygen_add_docs(doxygen "${PROJECT_SOURCE_DIR}/src" "${PROJECT_SOURCE_DIR}/helper_functions" WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}" )
+
+endif()
+
+if(LATEX_FOUND)
 
 add_latex_document(
   main.tex
@@ -16,3 +27,5 @@ add_latex_document(
   EXCLUDE_FROM_ALL)
 # explicitly add dependency to doc
 add_dependencies(docs user_guide doxygen)
+
+endif()

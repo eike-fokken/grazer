@@ -161,13 +161,15 @@ include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/CLI11/include/")
 
 
 # for building latex documentation
-include(UseLATEX/UseLATEX.cmake)
+
 find_package(Doxygen)
-if(NOT Doxygen_FOUND)
-  message(STATUS "Doxygen not found! building without docs")
-else()
-  add_subdirectory(docs)
+find_package(LATEX COMPONENTS PDFLATEX)
+if(LATEX_FOUND)
+  include(UseLATEX/UseLATEX.cmake)
 endif()
+
+add_subdirectory(docs)
+
 
 add_subdirectory(src)
 add_subdirectory(tests)
