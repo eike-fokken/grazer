@@ -21,7 +21,7 @@ if(NOT LATEX_FOUND)
 else()
 
 add_latex_document(
-  main.tex
+  userguide.tex
   TARGET_NAME user_guide
   EXCLUDE_FROM_ALL)
 # explicitly add dependency to doc
