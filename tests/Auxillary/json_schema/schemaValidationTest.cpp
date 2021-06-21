@@ -67,9 +67,8 @@ TEST_F(JsonValidationData, wrongData) {
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
     EXPECT_THAT(
-        e.what(),
-        testing::HasSubstr(
-            "The current object json does not conform to its schema."));
+        e.what(), testing::HasSubstr("The json of the following object json "
+                                     "does not conform to its schema."));
   }
   try {
     Aux::schema::validate_json(invalid_data, valid_schema);
@@ -77,9 +76,8 @@ TEST_F(JsonValidationData, wrongData) {
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
     EXPECT_THAT(
-        e.what(),
-        testing::HasSubstr(
-            "The current object json does not conform to its schema."));
+        e.what(), testing::HasSubstr("The json of the following object json "
+                                     "does not conform to its schema."));
   }
 }
 
@@ -90,8 +88,7 @@ TEST_F(JsonValidationData, invalidSchema) {
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
     EXPECT_THAT(
-        e.what(),
-        testing::HasSubstr(
-            "The current object json does not conform to its schema."));
+        e.what(), testing::HasSubstr("The json of the following object json "
+                                     "does not conform to its schema."));
   }
 }
