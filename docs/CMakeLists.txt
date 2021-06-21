@@ -1,7 +1,7 @@
 add_custom_target(docs)
 
 if(NOT Doxygen_FOUND)
-  message(STATUS "Doxygen not found! building without docs")
+  message(STATUS "Doxygen not found! building without doxygen docs.")
 else()
 
 
@@ -12,14 +12,13 @@ set(DOXYGEN_BUILTIN_STL_SUPPORT YES)
 set(DOXYGEN_RECURSIVE YES)
 set(DOXYGEN_GENERATE_TREEVIEW YES)
 
-
-
-
 doxygen_add_docs(doxygen "${PROJECT_SOURCE_DIR}/src" "${PROJECT_SOURCE_DIR}/helper_functions" WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}" )
 
 endif()
 
-if(LATEX_FOUND)
+if(NOT LATEX_FOUND)
+  message(STATUS "pdflatex not found! building without latex docs.")
+else()
 
 add_latex_document(
   main.tex
