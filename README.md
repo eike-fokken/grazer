@@ -117,16 +117,21 @@ the GUI, which increases Grazers size from something like 2mb to something like
 20mb on windows and mac and even larger on linux.
 
 ## Documentation
-Documentation is still a work in progress (I know, everyone claims that, but a
-pdf is on the way) but you can already generate some documentation with
+Documentation is still a work in progress but you can already generate some documentation with
 ```bash
 cmake --build release --target docs
 ```
-if you have doxygen installed. This will generate technical documentation under
+If you have doxygen installed, this will generate technical documentation under
 ```
-release/docs/html/index.html
+release/docs/html/index.html.
 ```
 although it is not yet very complete.
+If you have pdflatex and the packages listed in `docs/userguide.tex` installed, a file
+```
+release/docs/userguide.pdf
+```
+will appear. Note that the userguide is also not yet very usable.
+
 
 
 ## Feedback

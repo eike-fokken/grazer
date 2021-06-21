@@ -1,16 +1,30 @@
-if("${CMAKE_BUILD_TYPE}" MATCHES "Release")
-elseif("${CMAKE_BUILD_TYPE}" MATCHES "Relwithdebinfo" OR "${CMAKE_BUILD_TYPE}" MATCHES "Debug")
-  set(DOXYGEN_EXTRACT_PRIVATE YES)
-endif()
+add_custom_target(docs)
+
+if(NOT Doxygen_FOUND)
+  message(STATUS "Doxygen not found! building without doxygen docs.")
+else()
 
 
+set(DOXYGEN_EXTRACT_PRIVATE YES)
 
 set(DOXYGEN_EXTRACT_ALL YES)
 set(DOXYGEN_BUILTIN_STL_SUPPORT YES)
 set(DOXYGEN_RECURSIVE YES)
 set(DOXYGEN_GENERATE_TREEVIEW YES)
 
+doxygen_add_docs(doxygen "${PROJECT_SOURCE_DIR}/src" "${PROJECT_SOURCE_DIR}/helper_functions" WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}" )
 
+endif()
 
-doxygen_add_docs(docs "${PROJECT_SOURCE_DIR}/src" "${PROJECT_SOURCE_DIR}/helper_functions" WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}" )
+if(NOT LATEX_FOUND)
+  message(STATUS "pdflatex not found! building without latex docs.")
+else()
 
+add_latex_document(
+  userguide.tex
+  TARGET_NAME user_guide
+  EXCLUDE_FROM_ALL)
+# explicitly add dependency to doc
+add_dependencies(docs user_guide doxygen)
+
+endif()
