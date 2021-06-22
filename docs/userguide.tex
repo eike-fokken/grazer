@@ -1,65 +1,127 @@
-\documentclass[a4paper]{article}
+\documentclass[a4paper,xcolor=dvipsnames]{article}
 
+\usepackage[pdfusetitle]{hyperref}
+
+\hypersetup{
+  colorlinks=true,
+  citecolor=blue,
+  linktocpage=true,
+  % pdfstartpage=3,
+  pdfstartview=FitV,
+  breaklinks=true,
+  pdfpagemode=UseNone,
+  pageanchor=true,
+  pdfpagemode=UseOutlines,
+  plainpages=false,
+  bookmarksnumbered,
+  bookmarksopen=true,
+  bookmarksopenlevel=1,
+  hypertexnames=false,
+  % hyperfootnotes=false,
+  pdfhighlight=/O,
+  nesting=true,
+  % frenchlinks,%
+  % urlcolor=webbrown,
+  % linkcolor=RoyalBlue,
+  % citecolor=webgreen,
+  % pagecolor=RoyalBlue,
+  pdfsubject={},
+  pdfkeywords={},
+  pdfcreator={pdfLaTeX},
+  pdfproducer={},
+} 
+
+
+
+\usepackage[dvipsnames]{xcolor}
 \usepackage{todonotes}
 \usepackage{booktabs}
-\usepackage{hyperref}
 \usepackage{listings}
-\usepackage{xcolor}
+
 \usepackage{tabularx}
+\usepackage{bera}
 
+%%%% taken from https://tex.stackexchange.com/a/569146/48323
 
-\definecolor{eclipseStrings}{RGB}{42,0.0,255}
-\definecolor{eclipseKeywords}{RGB}{127,0,85}
-\colorlet{numb}{magenta!60!black}
+\newcommand\jsonkey{\color{Violet}}
+\newcommand\jsonvalue{\color{blue}}
+\newcommand\jsonnumber{\color{red}}
+
+% switch used as state variable
+\makeatletter
+\newif\ifisvalue@json
 
 \lstdefinelanguage{json}{
-    basicstyle=\normalfont\ttfamily,
-    commentstyle=\color{eclipseStrings}, % style of comment
-    stringstyle=\color{eclipseKeywords}, % style of strings
-    numbers=left,
-    numberstyle=\scriptsize,
-    stepnumber=1,
-    numbersep=8pt,
-    showstringspaces=false,
-    breaklines=true,
-    frame=lines,
-    backgroundcolor=\color{white}, %only if you like
-    string=[s]{"}{"},
-    comment=[l]{:\ "},
-    morecomment=[l]{:"},
-    literate=
-        *{0}{{{\color{numb}0}}}{1}
-         {1}{{{\color{numb}1}}}{1}
-         {2}{{{\color{numb}2}}}{1}
-         {3}{{{\color{numb}3}}}{1}
-         {4}{{{\color{numb}4}}}{1}
-         {5}{{{\color{numb}5}}}{1}
-         {6}{{{\color{numb}6}}}{1}
-         {7}{{{\color{numb}7}}}{1}
-         {8}{{{\color{numb}8}}}{1}
-         {9}{{{\color{numb}9}}}{1}
+    tabsize             = 4,
+    showstringspaces    = false,
+    keywords            = {false,true},
+    alsoletter          = 0123456789.,
+    morestring          = [s]{"}{"},
+    stringstyle         = \jsonkey\ifisvalue@json\jsonvalue\fi,
+    MoreSelectCharTable = \lst@DefSaveDef{`:}\colon@json{\enterMode@json},
+    MoreSelectCharTable = \lst@DefSaveDef{`,}\comma@json{\exitMode@json{\comma@json}},
+    MoreSelectCharTable = \lst@DefSaveDef{`\{}\bracket@json{\exitMode@json{\bracket@json}},
+    basicstyle          = \ttfamily
 }
+
+% enter "value" mode after encountering a colon
+\newcommand\enterMode@json{%
+    \colon@json%
+    \ifnum\lst@mode=\lst@Pmode%
+        \global\isvalue@jsontrue%
+    \fi
+}
+
+% leave "value" mode: either we hit a comma, or the value is a nested object
+\newcommand\exitMode@json[1]{#1\global\isvalue@jsonfalse}
+
+\lst@AddToHook{Output}{%
+    \ifisvalue@json%
+        \ifnum\lst@mode=\lst@Pmode%
+            \def\lst@thestyle{\jsonnumber}%
+        \fi
+    \fi
+    %override by keyword style if a keyword is detected!
+    \lsthk@DetectKeywords% 
+}
+
+\makeatother
 
 \newcommand{\sco
 }{\textunderscore{}}
 
+\title{Grazer}
+\author{E. Fokken}
+\date{\today}
+
 
 \begin{document}
-
-
+\maketitle
 \todo[inline]{Note that this document is a work in progress and not yet very helpful. This will hopefully and probably change in July 21.}
-\section{Grazer}
-\label{sec:grazer}
+
 This is the user guide for grazer.
 
-\subsection{Usage}
+\section{Usage}
 \label{sec:usage}
+Grazer can be invoked by supplying a directory path leading to the input files:
+\begin{lstlisting}[language=bash,firstnumber=1]
+$ grazer run path/to/problemdirectory
+\end{lstlisting}
+problemdirectory itself should contain a directory called \emph{problem},
+which contains a \emph{problem\sco data.json} file.
+Then grazer will try to compute a solution to the problem defined in
+\emph{problem\sco data.json}
+and either save the computed solution to a folder \emph{output} in \emph{problemdirectory}
+or supply an error message of why a solution couldn't be computed.
 
-\subsubsection{Input files}
+\subsection{Input files}
 \label{sec:input-files}
-Grazer is controlled by input files, which contain json code.
-The most important such file is called \emph{problem\sco data.json}. Its top-level structure is given in \autoref{fig:problem_data.json}.
+Grazer is controlled by an input file, \emph{problem\sco data.json}, which
+contains json code. \emph{problem\sco data.json} may itself reference other json
+files, usually \emph{topology.json}, \emph{boundary.json}, \emph{initial.json}
+and occasionally \emph{control.json}.
 
+The top-level structure of \emph{problem\sco data.json} is given in \autoref{fig:problem_data.json}.
 \begin{figure}[ht]
   \centering
   \begin{lstlisting}[language=json,firstnumber=1]
@@ -72,8 +134,8 @@ The most important such file is called \emph{problem\sco data.json}. Its top-lev
   \caption{problem\sco data.json}
   \label{fig:problem_data.json}
 \end{figure}
-Here \verb|"time_evolution_data"| provides all data on time and newton solver. An example is given in
-
+Here \verb|"time_evolution_data"| provides all data on time and newton solver.
+An example is given in \autoref{fig:time_evolution_data}.
 \begin{figure}[ht]
   \centering
 \begin{lstlisting}[language=json,firstnumber=1]
@@ -136,7 +198,7 @@ This is sorted by subproblem. When (and if) support for different subproblem typ
 Lastly the problem data contains all information
 
 
-\subsubsection{Internal structure}
+\subsection{Internal structure}
 \label{sec:internal-structure}
 After all filenames have been replaced with their file contents, the final json objects are handed to the objects, that finally carry out the computations.
 
@@ -150,9 +212,9 @@ The timeevolver object loads the initial state from the initial condition json a
 Therefore it calls \emph{evaluate} on the problem object, which in turn calls \emph{evaluate} on its subproblems.
 These handle the evaluation. The Networkproblem also hands \emph{evaluate} to its members, namely the nodes and edges.
 
-\subsubsection*{evaluate}
+\subsection*{evaluate}
 
-\subsection{Extending Networkproblem}
+\section{Extending Networkproblem}
 \label{sec:extend-netw}
 The easiest way to extend grazer for your needs, is to create new classes that inherit from \emph{Node} or \emph{Edge} and
 (most of these at least do) from either \emph{Statecomponent} (if the new componenttype has its own variables) or
