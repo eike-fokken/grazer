@@ -18,17 +18,14 @@ namespace Aux {
       current_value
           = current_value + theta * (mu - current_value) * stochastic_stepsize
             + sigma * distribution.get_sample(sqrt(stochastic_stepsize));
+      double difference = 0.43;
+      if (sgn(mu) * current_value < (1.0 - difference) * sgn(mu) * mu) {
+        current_value = (1.0 - difference) * mu;
+      } else if (sgn(mu) * current_value > (1.0 + difference) * sgn(mu) * mu) {
+        current_value = (1.0 + difference) * mu;
+      }
     }
-    // std::cout << "mean: " << mu << "\n";
-    // std::cout << "computed: " << current_value << "\n";
-    double difference = 0.43;
-    if (sgn(mu) * current_value < (1.0 - difference) * sgn(mu) * mu) {
-      return (1.0 - difference) * mu;
-    } else if (sgn(mu) * current_value > (1.0 + difference) * sgn(mu) * mu) {
-      return (1.0 + difference) * mu;
-    } else {
-      return current_value;
-    }
+    return current_value;
   }
 
   template <typename Distribution>
