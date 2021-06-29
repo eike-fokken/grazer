@@ -4,9 +4,9 @@
         "use_simplified_newton": true,
         "maximal_number_of_newton_iterations": 50,
         "tolerance": 1e-8,
-        "retries": 10,
+        "retries": 20,
         "start_time": 0,
-        "end_time": 86400,
+        "end_time": 36000,
         "desired_delta_t": 1800
     },
     "initial_values":{

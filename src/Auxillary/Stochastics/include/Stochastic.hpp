@@ -1,6 +1,6 @@
 #pragma once
+#include "Exception.hpp"
 #include <cmath>
-#include <iostream>
 
 namespace Aux {
 
@@ -14,6 +14,20 @@ namespace Aux {
       Distribution &distribution, int number_of_stochastic_steps) {
     double stochastic_stepsize = delta_t / number_of_stochastic_steps;
     double current_value = last_value;
+    if (1 - theta * stochastic_stepsize < -1) {
+
+      // stability threshold must be between -1 and 1 to guarantee stability in
+      // mean of the Euler Mauryan process. The lower the number, the more steps
+      // must be taken, but also the more stable the process is.
+      double stability_threshold = -0.8;
+      number_of_stochastic_steps
+          = static_cast<int>(
+                std::ceil(theta * delta_t / (1 + stability_threshold)))
+            + 1;
+      stochastic_stepsize = delta_t / (number_of_stochastic_steps - 1);
+      // Probably we should notify the user of the actually used stochastic
+      // stepsize!
+    }
     for (auto i = 0; i != number_of_stochastic_steps; ++i) {
       current_value
           = current_value + theta * (mu - current_value) * stochastic_stepsize
