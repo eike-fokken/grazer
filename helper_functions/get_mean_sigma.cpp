@@ -28,7 +28,7 @@ static void add_gas_json_data(
  * that the same problem was solved with grazer for each of the outputs.
  *
  * All arguments are optional. If one or more arguments is given, the first one
- * is given as the common substring with which all output directories start. If
+ * is given as the common substring with which all output files start. If
  * two arguments are given, the second argument is the filename of the json
  * file, get_mean_sigma should create, to output its computations. The default
  * value of the substring is "output". The default value of the filename is
@@ -36,13 +36,13 @@ static void add_gas_json_data(
  */
 
 int main(int argc, char **argv) {
-  std::string output_dir_trunk;
+  std::string output_filename_trunk;
   if (argc >= 2) {
-    output_dir_trunk = argv[1];
+    output_filename_trunk = argv[1];
   } else {
-    output_dir_trunk = "output";
+    output_filename_trunk = "output";
   }
-  std::cout << output_dir_trunk << std::endl;
+  std::cout << output_filename_trunk << std::endl;
 
   std::string computed_output;
   if (argc >= 3) {
@@ -62,21 +62,16 @@ int main(int argc, char **argv) {
 
   int number_of_runs = 0;
   for (auto &pit : fs::directory_iterator(fs::current_path())) {
-    // check only directories:
-    if (not fs::is_directory(pit.path())) {
-      continue;
-    }
     // ignore directories starting with . (hidden files in unix)
     if ((pit.path().filename().string()).find(".") == 0) {
       continue;
     }
-    if ((pit.path().filename().string()).find(output_dir_trunk) == 0) {
+    if ((pit.path().filename().string()).find(output_filename_trunk) == 0) {
       std::cout << "Processing " << pit.path().filename() << std::endl;
 
       json input;
       {
-        fs::path currpath
-            = fs::absolute(pit.path()) / fs::path("output.json").string();
+        fs::path currpath = fs::absolute(pit.path());
         std::ifstream inputstream(currpath);
         inputstream >> input;
       }
