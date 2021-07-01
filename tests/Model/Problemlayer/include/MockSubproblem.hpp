@@ -36,6 +36,6 @@ namespace GrazerTest {
     MOCK_METHOD(
         (void), json_save, (double, Eigen::Ref<Eigen::VectorXd const>),
         (override));
-    MOCK_METHOD((void), print_to_files, (nlohmann::json &), (override));
+    MOCK_METHOD((void), add_results_to_json, (nlohmann::json &), (override));
   };
 } // namespace GrazerTest
