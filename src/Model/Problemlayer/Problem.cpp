@@ -14,9 +14,8 @@
 namespace Model {
 
   Problem::Problem(
-      nlohmann::json problem_data,
-      std::filesystem::path const &_output_directory) :
-      output_directory(_output_directory) {
+      nlohmann::json problem_data, std::filesystem::path const &_output_file) :
+      output_file(_output_file) {
     auto subproblem_map = problem_data["subproblems"]
                               .get<std::map<std::string, nlohmann::json>>();
     for (auto &[subproblem_type, subproblem_json] : subproblem_map) {
@@ -99,9 +98,7 @@ namespace Model {
     for (auto &subproblem : subproblems) {
       subproblem->add_results_to_json(json_output);
     }
-    std::filesystem::path new_output_file(
-        output_directory / std::filesystem::path("output.json"));
-    std::ofstream o(new_output_file);
+    std::ofstream o(output_file);
     o << json_output.dump(1, '\t');
   }
 
@@ -126,8 +123,8 @@ namespace Model {
     }
   }
 
-  std::filesystem::path const &Problem::get_output_directory() const {
-    return output_directory;
+  std::filesystem::path const &Problem::get_output_file() const {
+    return output_file;
   }
 
 } // namespace Model

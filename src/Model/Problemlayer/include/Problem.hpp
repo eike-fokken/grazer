@@ -24,7 +24,7 @@ namespace Model {
   public:
     Problem(
         nlohmann::json subproblem_data,
-        std::filesystem::path const &_output_directory);
+        std::filesystem::path const &_output_file);
 
     ~Problem();
 
@@ -58,13 +58,13 @@ namespace Model {
 
     void add_results_to_json();
 
-    std::filesystem::path const &get_output_directory() const;
+    std::filesystem::path const &get_output_file() const;
 
   private:
     /// collection of sub-problems
     std::vector<std::unique_ptr<Subproblem>> subproblems;
 
-    std::filesystem::path const output_directory;
+    std::filesystem::path const output_file;
     nlohmann::json json_output;
   };
 
