@@ -61,7 +61,8 @@ int main(int argc, char **argv) {
       "Controlvalve"};
 
   int number_of_runs = 0;
-  for (auto &pit : fs::directory_iterator(fs::current_path())) {
+  for (auto &pit :
+       fs::directory_iterator(fs::current_path() / fs::path("output"))) {
     // ignore directories starting with . (hidden files in unix)
     if ((pit.path().filename().string()).find(".") == 0) {
       continue;
