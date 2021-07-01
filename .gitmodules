@@ -23,3 +23,6 @@
 	path = CLI11
 	url = https://github.com/CLIUtils/CLI11.git
 	shallow = true
+[submodule "UseLATEX"]
+	path = UseLATEX
+	url = https://gitlab.kitware.com/kmorel/UseLATEX.git
