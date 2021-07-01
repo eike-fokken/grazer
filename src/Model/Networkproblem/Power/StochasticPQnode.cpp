@@ -3,7 +3,6 @@
 #include "Powernode.hpp"
 #include "Stochastic.hpp"
 #include "make_schema.hpp"
-#include <bits/stdint-uintn.h>
 #include <fstream>
 
 namespace Model::Networkproblem::Power {
