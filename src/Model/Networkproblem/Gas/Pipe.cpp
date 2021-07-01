@@ -134,7 +134,7 @@ namespace Model::Networkproblem::Gas {
 
   int Pipe::get_number_of_states() const { return 2 * number_of_points; }
 
-  void Pipe::print_to_files(nlohmann::json &new_output) {
+  void Pipe::add_results_to_json(nlohmann::json &new_output) {
     auto &this_output_json = get_output_json_ref();
     std::string comp_type = Aux::component_class(*this);
     new_output[comp_type][get_type()].push_back(std::move(this_output_json));

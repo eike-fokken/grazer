@@ -56,7 +56,7 @@ namespace Model {
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state, nlohmann::json &initialjson);
 
-    void print_to_files();
+    void add_results_to_json();
 
     std::filesystem::path const &get_output_directory() const;
 

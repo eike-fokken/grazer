@@ -30,8 +30,8 @@ namespace Model {
 
   Problem::~Problem() {
     try {
-      // print_to_files();
-      print_to_files();
+      // add_results_to_json();
+      add_results_to_json();
     } catch (std::exception &e) {
       std::cout << "Printing to files failed with error message:"
                 << "\n###############################################\n"
@@ -95,9 +95,9 @@ namespace Model {
     return pointer_vector;
   }
 
-  void Problem::print_to_files() {
+  void Problem::add_results_to_json() {
     for (auto &subproblem : subproblems) {
-      subproblem->print_to_files(json_output);
+      subproblem->add_results_to_json(json_output);
     }
     std::filesystem::path new_output_file(
         output_directory / std::filesystem::path("output.json"));
