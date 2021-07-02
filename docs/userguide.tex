@@ -111,6 +111,22 @@ contains a \emph{problem\sco data.json} file. Then grazer will try to compute a
 solution to the problem defined in \emph{problem\sco data.json} and either save
 the computed solution to a folder \emph{output} in \emph{problemdirectory} or
 supply an error message of why a solution couldn't be computed.
+
+
+Note that under a Unix-like operating system an easy way to run grazer in
+parallel on the same problem, e.g.~for a Monte-Carlo simulation, is
+\begin{lstlisting}[language=bash,basicstyle=\small\ttfamily]
+$seq <total number of runs>| \
+xargs -Inone -P<number of parallel processes> -- \
+./grazer run <problem folder>
+\end{lstlisting}
+for example, for \(100\) runs on a machine with \(8\) cores, a possible invocation would be
+\begin{lstlisting}[language=bash,basicstyle=\small\ttfamily]
+$seq 100 | xargs -Inone -P8 -- ./grazer run data/stochastic
+\end{lstlisting}
+
+
+
 \subsection{Input files}
 \label{sec:input-files}
 Grazer is controlled by an input file, \emph{problem\sco data.json}, which
