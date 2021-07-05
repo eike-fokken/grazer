@@ -12,7 +12,7 @@ namespace Model::Networkproblem::Gas {
     static nlohmann::json get_initial_schema();
 
     virtual std::string get_gas_type() const = 0;
-    int give_away_boundary_index(int direction) const;
+    int boundary_equation_index(int direction) const;
 
     int get_boundary_state_index(int direction) const;
 
