@@ -45,10 +45,11 @@ namespace Model::Networkproblem::Power {
   private:
     struct StochasticData {
       StochasticData(
-          double _sigma_P, double _theta_P, double _sigma_Q, double _theta_Q,
-          int _number_of_stochastic_steps,
+          double _stability_parameter, double _sigma_P, double _theta_P,
+          double _sigma_Q, double _theta_Q, int _number_of_stochastic_steps,
           std::array<uint32_t, Aux::pcg_seed_count> &used_seed) :
           distribution(used_seed),
+          stability_parameter(_stability_parameter),
           sigma_P(_sigma_P),
           theta_P(_theta_P),
           sigma_Q(_sigma_Q),
@@ -56,11 +57,12 @@ namespace Model::Networkproblem::Power {
           number_of_stochastic_steps(_number_of_stochastic_steps) {}
 
       StochasticData(
-          double _sigma_P, double _theta_P, double _sigma_Q, double _theta_Q,
-          int _number_of_stochastic_steps,
+          double _stability_parameter, double _sigma_P, double _theta_P,
+          double _sigma_Q, double _theta_Q, int _number_of_stochastic_steps,
           std::array<uint32_t, Aux::pcg_seed_count> &used_seed,
           std::array<uint32_t, Aux::pcg_seed_count> seed) :
           distribution(used_seed, seed),
+          stability_parameter(_stability_parameter),
           sigma_P(_sigma_P),
           theta_P(_theta_P),
           sigma_Q(_sigma_Q),
@@ -68,6 +70,7 @@ namespace Model::Networkproblem::Power {
           number_of_stochastic_steps(_number_of_stochastic_steps) {}
 
       Aux::Normaldistribution distribution;
+      double const stability_parameter;
       double const sigma_P;
       double const theta_P;
       double const sigma_Q;

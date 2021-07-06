@@ -1,6 +1,7 @@
 
 add_library(stochastics STATIC
   Normaldistribution.cpp
+  Stochastic.cpp
   )
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")

@@ -1,21 +1,24 @@
-// #include "Stochastic.hpp"
-// #include "Normaldistribution.hpp"
+#include "Stochastic.hpp"
+#include "Exception.hpp"
+#include <string>
 
-// namespace Aux {
-//   double euler_maruyama_oup(
-//       double last_value, double theta, double mu, double delta_t, double
-//       sigma, Normaldistribution &distribution, int
-//       number_of_stochastic_steps) {
-//     double stochastic_stepsize = delta_t / number_of_stochastic_steps;
-//     double current_value = last_value;
-//     for (auto i = 0; i != number_of_stochastic_steps; ++i) {
-//       current_value
-//           = current_value + theta * (mu - current_value) *
-//           stochastic_stepsize
-//             + sigma * distribution.get_sample(sqrt(stochastic_stepsize));
-//     }
-//     // std::cout << "mean: " << mu << "\n";
-//     // std::cout << "computed: " << current_value << "\n";
-//     return current_value;
-//   }
-// } // namespace Aux
+namespace Aux {
+
+  int compute_stable_number_of_oup_steps(
+      double stability_parameter, double theta, double delta_t,
+      int number_of_stochastic_steps) {
+    if (stability_parameter <= 0 or stability_parameter >= 2) {
+      gthrow(
+          {"The stability parameter a must fulfill 0 < a < 2. Actual value: ",
+           std::to_string(stability_parameter)});
+    }
+
+    double stochastic_stepsize = delta_t / number_of_stochastic_steps;
+    if (1 - theta * stochastic_stepsize < -1) {
+      number_of_stochastic_steps
+          = static_cast<int>(std::ceil(theta * delta_t / (stability_parameter)))
+            + 1;
+    }
+    return number_of_stochastic_steps;
+  }
+} // namespace Aux
