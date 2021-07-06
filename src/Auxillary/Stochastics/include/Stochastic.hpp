@@ -16,13 +16,13 @@ namespace Aux {
     double current_value = last_value;
     if (1 - theta * stochastic_stepsize < -1) {
 
-      // stability threshold must be between -1 and 1 to guarantee stability in
-      // mean of the Euler Mauryan process. The lower the number, the more steps
-      // must be taken, but also the more stable the process is.
-      double stability_threshold = -0.8;
+      // stability_threshold must fulfill 0 < stability_threshold < 2 to
+      // guarantee stability in mean of the Euler Mauryan process. The lower the
+      // number, the more steps must be taken, but also the more stable the
+      // process is.
+      double stability_threshold = 0.2;
       number_of_stochastic_steps
-          = static_cast<int>(
-                std::ceil(theta * delta_t / (1 + stability_threshold)))
+          = static_cast<int>(std::ceil(theta * delta_t / (stability_threshold)))
             + 1;
       stochastic_stepsize = delta_t / (number_of_stochastic_steps - 1);
       // Probably we should notify the user of the actually used stochastic
