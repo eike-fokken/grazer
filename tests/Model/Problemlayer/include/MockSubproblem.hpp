@@ -29,7 +29,7 @@ namespace GrazerTest {
          (Eigen::Ref<Eigen::VectorXd const> last_state),
          (Eigen::Ref<Eigen::VectorXd const> new_state)),
         (const, override));
-    MOCK_METHOD(int, reserve_indices, (int const next_free_index), (override));
+    MOCK_METHOD(int, reserve_state_indices, (int const next_free_index), (override));
     MOCK_METHOD(
         (void), set_initial_values,
         (Eigen::Ref<Eigen::VectorXd>, nlohmann::json), (override));

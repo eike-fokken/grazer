@@ -56,7 +56,7 @@ namespace Model::Networkproblem {
     std::vector<Equationcomponent *> equationcomponents;
     std::vector<Statecomponent *> statecomponents;
 
-    int reserve_indices(int const next_free_index) final;
+    int reserve_state_indices(int const next_free_index) final;
   };
 
 } // namespace Model::Networkproblem

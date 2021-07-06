@@ -151,10 +151,10 @@ namespace Model::Networkproblem {
 
   Network::Net const &Networkproblem::get_network() const { return *network; }
 
-  int Networkproblem::reserve_indices(int const next_free_index) {
+  int Networkproblem::reserve_state_indices(int const next_free_index) {
     int free_index = next_free_index;
     for (Statecomponent *statecomponent : statecomponents) {
-      free_index = statecomponent->set_indices(free_index);
+      free_index = statecomponent->set_state_indices(free_index);
     }
     for (Equationcomponent *equationcomponent : equationcomponents) {
       equationcomponent->setup();

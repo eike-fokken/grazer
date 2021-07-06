@@ -56,7 +56,7 @@ namespace Model::Networkproblem::Gas {
       nlohmann::json const &initial_json) {
     if (get_start_state_index() == -1 or get_after_state_index() == -1) {
       gthrow(
-          {"This function may only be called if set_indices  has been "
+          {"This function may only be called if set_state_indices  has been "
            "called beforehand!"});
     }
 

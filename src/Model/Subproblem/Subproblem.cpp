@@ -15,9 +15,9 @@ namespace Model {
     }
   }
 
-  int Subproblem::set_indices(int const next_free_index) {
+  int Subproblem::set_state_indices(int const next_free_index) {
     start_state_index = next_free_index;
-    after_state_index = reserve_indices(next_free_index);
+    after_state_index = reserve_state_indices(next_free_index);
     return after_state_index;
   }
 

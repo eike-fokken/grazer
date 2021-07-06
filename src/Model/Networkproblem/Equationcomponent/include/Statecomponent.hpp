@@ -20,7 +20,7 @@ namespace Model::Networkproblem {
     /// @param next_free_index The first index that is currently not claimed by
     /// another component.
     /// @returns The new lowest free index.
-    int set_indices(int const next_free_index);
+    int set_state_indices(int const next_free_index);
 
     /// \brief getter for #start_state_index
     int get_start_state_index() const;

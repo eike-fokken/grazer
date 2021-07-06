@@ -72,7 +72,7 @@ namespace Model::Networkproblem {
     /// \brief Utility for setup of things that cannot be done during
     /// construction.
     ///
-    /// is called during set_indices.
+    /// is called by Networkproblems reserve_state_indices.
     /// Usually does nothing, but for example gas nodes
     /// claim indices from their attached gas edges.
     virtual void setup();

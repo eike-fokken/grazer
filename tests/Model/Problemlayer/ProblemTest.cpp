@@ -8,9 +8,9 @@ TEST_F(modelTest, get_number_of_states) {
 
   // Test how often this class is being called
   GrazerTest::MockSubproblem mocksub;
-  EXPECT_CALL(mocksub, reserve_indices(0)).Times(1);
+  EXPECT_CALL(mocksub, reserve_state_indices(0)).Times(1);
 
-  mocksub.set_indices(0);
+  mocksub.set_state_indices(0);
 }
 
 TEST_F(modelTest, Model_evaluate) {

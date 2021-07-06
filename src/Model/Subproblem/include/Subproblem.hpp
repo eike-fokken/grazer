@@ -50,7 +50,7 @@ namespace Model {
     // vector.
     // @returns int next_free_index the new first non-reserved index of the
     // state vector.
-    int set_indices(int const next_free_index);
+    int set_state_indices(int const next_free_index);
 
     virtual void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state, nlohmann::json initial_json)
@@ -68,10 +68,11 @@ namespace Model {
     // std::vector<int> sporadic_state_indices;
 
     /// This function should reserve indices, e.g. by setting start and end
-    /// indices of subobjects
+    /// indices of subobjects. It can also do additional setup functionality,
+    /// that is only applicable after indices have been reserved.
     /// @param The current smallest non-reserved index.
     /// @returns new smallest non-reserved index.
-    virtual int reserve_indices(int const next_free_index) = 0;
+    virtual int reserve_state_indices(int const next_free_index) = 0;
 
     // have to think about the implementation of connecting problems.
 

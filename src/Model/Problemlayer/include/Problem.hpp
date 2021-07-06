@@ -30,7 +30,9 @@ namespace Model {
 
     void add_subproblem(std::unique_ptr<Subproblem> subproblem_ptr);
 
-    int set_indices();
+    int set_state_indices();
+
+    int set_control_indices();
 
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,

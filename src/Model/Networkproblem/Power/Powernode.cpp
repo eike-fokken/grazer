@@ -50,7 +50,7 @@ namespace Model::Networkproblem::Power {
 
     if (get_start_state_index() == -1) {
       gthrow(
-          {"This function may only be called if set_indices  has been "
+          {"This function may only be called if set_state_indices  has been "
            "called beforehand!"});
     }
 

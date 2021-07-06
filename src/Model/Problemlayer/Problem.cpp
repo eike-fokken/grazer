@@ -45,10 +45,18 @@ namespace Model {
     subproblems.push_back(std::move(subproblem_ptr));
   }
 
-  int Problem::set_indices() {
+  int Problem::set_state_indices() {
     int next_free_index(0);
     for (auto &subproblem : subproblems) {
-      next_free_index = subproblem->set_indices(next_free_index);
+      next_free_index = subproblem->set_state_indices(next_free_index);
+    }
+    return next_free_index;
+  }
+
+  int Problem::set_control_indices() {
+    int next_free_index(0);
+    for (auto &subproblem : subproblems) {
+      next_free_index = subproblem->set_state_indices(next_free_index);
     }
     return next_free_index;
   }
