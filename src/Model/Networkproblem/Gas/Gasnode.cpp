@@ -21,12 +21,12 @@ namespace Model::Networkproblem::Gas {
     auto q0 = p_qvol0[1];
 
     double old_p = p0;
-    int old_equation_index = edge0->give_away_boundary_index(dir0);
+    int old_equation_index = edge0->boundary_equation_index(dir0);
 
     // We will write the flow balance into the last index:
     int last_direction = directed_attached_gas_edges.back().first;
     int last_equation_index
-        = directed_attached_gas_edges.back().second->give_away_boundary_index(
+        = directed_attached_gas_edges.back().second->boundary_equation_index(
             last_direction);
 
     // prescribed boundary condition is like an attached pipe ending at this
@@ -44,7 +44,7 @@ namespace Model::Networkproblem::Gas {
       auto current_p = current_p_qvol[0];
       auto current_qvol = current_p_qvol[1];
       rootvalues[old_equation_index] = current_p - old_p;
-      old_equation_index = edge->give_away_boundary_index(direction);
+      old_equation_index = edge->boundary_equation_index(direction);
       old_p = current_p;
 
       rootvalues[last_equation_index] += direction * current_qvol;
@@ -61,7 +61,7 @@ namespace Model::Networkproblem::Gas {
 
     auto [dir0, edge0] = directed_attached_gas_edges.front();
     auto [dirlast, edgelast] = directed_attached_gas_edges.back();
-    int last_equation_index = edgelast->give_away_boundary_index(dirlast);
+    int last_equation_index = edgelast->boundary_equation_index(dirlast);
     //    rootvalues[last_equation_index]=dir0*state0[1];
 
     Eigen::RowVector2d dF_last_dpq_0(0.0, dir0);
@@ -77,7 +77,7 @@ namespace Model::Networkproblem::Gas {
 
     // first edge is special (sets only one p-derivative)
     Eigen::RowVector2d dF_0_dpq_0(-1.0, 0.0);
-    int old_equation_index = edge0->give_away_boundary_index(dir0);
+    int old_equation_index = edge0->boundary_equation_index(dir0);
 
     edge0->dboundary_p_qvol_dstate(
         dir0, jacobianhandler, dF_0_dpq_0, old_equation_index, state);
@@ -89,7 +89,7 @@ namespace Model::Networkproblem::Gas {
       int direction = it->first;
       Gasedge *edge = it->second;
 
-      int current_equation_index = edge->give_away_boundary_index(direction);
+      int current_equation_index = edge->boundary_equation_index(direction);
       Eigen::RowVector2d dF_old_dpq_now(1.0, 0.0);
       Eigen::RowVector2d dF_now_dpq_now(-1.0, 0.0);
       Eigen::RowVector2d dF_last_dpq_now(0.0, direction);
