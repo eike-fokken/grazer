@@ -33,7 +33,7 @@ namespace Model::Networkproblem::Gas {
     }
     return (get_after_state_index() - 1);
   }
-  int Gasedge::give_away_boundary_index(int direction) const {
+  int Gasedge::boundary_equation_index(int direction) const {
     if (direction == 1) {
       return give_away_start_index();
     } else if (direction == -1) {
