@@ -15,10 +15,10 @@ namespace Model::Networkproblem {
     static nlohmann::json get_initial_schema();
 
     /// \brief This function sets the indices #start_state_index and
-    /// #after_state_index AND calls setup()
+    /// #after_state_index.
     ///
-    /// @param next_free_index The first index that is currently not claimed by
-    /// another component.
+    /// @param next_free_index The first state index that is currently not
+    /// claimed by another component.
     /// @returns The new lowest free index.
     int set_state_indices(int const next_free_index);
 
