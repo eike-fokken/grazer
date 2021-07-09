@@ -40,12 +40,13 @@ namespace Aux {
       current_value
           = current_value + theta * (mu - current_value) * stochastic_stepsize
             + sigma * distribution.get_sample(sqrt(stochastic_stepsize));
-      double difference = 0.4;
-      if (sgn(mu) * current_value < (1.0 - difference) * sgn(mu) * mu) {
-        current_value = (1.0 - difference) * mu;
-      } else if (sgn(mu) * current_value > (1.0 + difference) * sgn(mu) * mu) {
-        current_value = (1.0 + difference) * mu;
-      }
+      // double difference = 0.4;
+      // if (sgn(mu) * current_value < (1.0 - difference) * sgn(mu) * mu) {
+      //   current_value = (1.0 - difference) * mu;
+      // } else if (sgn(mu) * current_value > (1.0 + difference) * sgn(mu) * mu)
+      // {
+      //   current_value = (1.0 + difference) * mu;
+      // }
     }
     return current_value;
   }
