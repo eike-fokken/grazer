@@ -257,7 +257,7 @@ namespace Model::Balancelaw {
     return Re;
   }
 
-  Eigen::RowVector2d Isothermaleulerequation::dReynolds_dstate(
+  Eigen::Vector2d Isothermaleulerequation::dReynolds_dstate(
       Eigen::Ref<Eigen::Vector2d const> state, double diameter) {
     double rho = state[0];
     double q = state[1];
@@ -271,7 +271,7 @@ namespace Model::Balancelaw {
 
     double dRe_drho = diameter / eta * std::abs(q);
     double dRe_dq = diameter / eta * rho * Aux::dabs_dx(q);
-    Eigen::RowVector2d derivative;
+    Eigen::Vector2d derivative;
     derivative << dRe_drho, dRe_dq;
     return derivative;
   }
@@ -284,9 +284,9 @@ namespace Model::Balancelaw {
     return coeff;
   }
 
-  Eigen::RowVector2d Isothermaleulerequation::dcoeff_of_Reynolds_dstate(
+  Eigen::Vector2d Isothermaleulerequation::dcoeff_of_Reynolds_dstate(
       Eigen::Ref<Eigen::Vector2d const>, double diameter) {
-    Eigen::RowVector2d derivative;
+    Eigen::Vector2d derivative;
     derivative[0] = diameter / eta;
     derivative[1] = 0.0;
     return derivative;

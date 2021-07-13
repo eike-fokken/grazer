@@ -54,10 +54,10 @@ namespace Model::Balancelaw {
     static double
     coeff_of_Reynolds(Eigen::Ref<Eigen::Vector2d const> state, double diameter);
 
-    static Eigen::RowVector2d dcoeff_of_Reynolds_dstate(
+    static Eigen::Vector2d dcoeff_of_Reynolds_dstate(
         Eigen::Ref<Eigen::Vector2d const> state, double diameter);
 
-    static Eigen::RowVector2d
+    static Eigen::Vector2d
     dReynolds_dstate(Eigen::Ref<Eigen::Vector2d const> state, double diameter);
 
     static double Swamee_Jain(double Re, double diameter, double roughness);
