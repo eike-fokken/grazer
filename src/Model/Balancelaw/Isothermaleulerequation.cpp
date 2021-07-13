@@ -69,14 +69,14 @@ namespace Model::Balancelaw {
 
     double rho = state[0];
     double q = state[1];
-    double Re = Reynolds(q, diameter);
+    double Re = Reynolds(state, diameter);
 
     Eigen::Vector2d source;
     source[0] = 0.0;
     auto Area = Aux::circle_area(0.5 * diameter);
     if (Re < laminar_border) { // laminar, that is linear friction:
       source[1] = -rho_0 / (2 * Area * diameter) * 64
-                  / coeff_of_Reynolds(diameter) * q / rho;
+                  / coeff_of_Reynolds(state, diameter) * q / rho;
     } else { // transitional and turbulent friction:
       source[1] = -rho_0 / (2 * Area * diameter)
                   * lambda_non_laminar(Re, diameter, roughness) * std::abs(q)
@@ -90,7 +90,7 @@ namespace Model::Balancelaw {
     double rho = state[0];
     double q = state[1];
 
-    double Re = Reynolds(q, diameter);
+    double Re = Reynolds(state, diameter);
     Eigen::Matrix2d dsource;
     dsource(0, 0) = 0;
     dsource(0, 1) = 0;
@@ -99,9 +99,9 @@ namespace Model::Balancelaw {
 
     if (Re < laminar_border) { // laminar, that is, linear friction:
       dsource(1, 0) = rho_0 / (2 * Area * diameter) * 64
-                      / coeff_of_Reynolds(diameter) * q / (rho * rho);
+                      / coeff_of_Reynolds(state, diameter) * q / (rho * rho);
       dsource(1, 1) = -rho_0 / (2 * Area * diameter) * 64
-                      / coeff_of_Reynolds(diameter) / rho;
+                      / coeff_of_Reynolds(state, diameter) / rho;
     } else { // transitional and turbulent friction:
       dsource(1, 0) = rho_0 / (2 * Area * diameter)
                       * lambda_non_laminar(Re, diameter, roughness)
@@ -110,7 +110,7 @@ namespace Model::Balancelaw {
       dsource(1, 1)
           = -rho_0 / (2 * Area * diameter) / rho
             * (dlambda_non_laminar_dRe(Re, diameter, roughness)
-                   * dReynolds_dq(q, diameter) * std::abs(q) * q
+                   * dReynolds_dq(state, diameter) * std::abs(q) * q
                + lambda_non_laminar(Re, diameter, roughness) * Aux::dabs_dx(q)
                      * q
                + lambda_non_laminar(Re, diameter, roughness) * std::abs(q));
@@ -249,21 +249,28 @@ namespace Model::Balancelaw {
     }
   }
 
-  double Isothermaleulerequation::Reynolds(double q, double diameter) {
-    double Re;
-    Re = diameter / eta * rho_0 * std::abs(q);
+  double Isothermaleulerequation::Reynolds(
+      Eigen::Ref<Eigen::Vector2d const> state, double diameter) {
+    double rho = state[0];
+    double q = state[1];
+    double Re = diameter / eta * rho_0 * std::abs(q);
     return Re;
   }
 
-  double Isothermaleulerequation::coeff_of_Reynolds(double diameter) {
+  double Isothermaleulerequation::coeff_of_Reynolds(
+      Eigen::Ref<Eigen::Vector2d const> state, double diameter) {
+    double rho = state[0];
     double coeff;
     coeff = diameter / eta * rho_0;
     return coeff;
   }
 
-  double Isothermaleulerequation::dReynolds_dq(double q, double diameter) {
+  double Isothermaleulerequation::dReynolds_dq(
+      Eigen::Ref<Eigen::Vector2d const> state, double diameter) {
+    double rho = state[0];
+    double q = state[1];
 
-    if (Reynolds(q, diameter) < laminar_border - Aux::EPSILON) {
+    if (Reynolds(state, diameter) < laminar_border - Aux::EPSILON) {
       gthrow(
           {"This function", __FUNCTION__,
            ", should only be called for Reynolds "

@@ -361,12 +361,6 @@ TEST(testIsothermaleulerequation, dlambda_non_laminar_dRe) {
   }
 }
 
-// TEST(testIsothermaleulerequation, Reynolds) {
-
-// }
-
-TEST(testIsothermaleulerequation, coeff_of_Reynolds) {}
-
 TEST(testIsothermaleulerequation, dReynolds_dq) {
 
   double diameter = 3.5;
@@ -379,23 +373,35 @@ TEST(testIsothermaleulerequation, dReynolds_dq) {
   j["roughness"]["unit"] = "m";
   j["roughness"]["value"] = roughness;
 
-  double q0 = 5e-3;
   Model::Balancelaw::Isothermaleulerequation Iso(j);
 
-  EXPECT_ANY_THROW(Iso.dReynolds_dq(q0, diameter));
+  {
+    double rho = 0.4;
+    double q0 = 5e-3;
+    Eigen::Vector2d state;
+    state << rho, q0;
+
+    EXPECT_ANY_THROW(Iso.dReynolds_dq(state, diameter));
+  }
 
   for (int i = 1; i != 21; ++i) {
+
+    double rho = 0.4;
     double q = 10 * (i - 10);
+    Eigen::Vector2d state;
+    state << rho, q;
+
     double epsilon = pow(DBL_EPSILON, 1.0 / 3.0);
-    double h = epsilon;
+    Eigen::Vector2d h;
+    h << 0, epsilon;
     double finite_difference_threshold = sqrt(epsilon);
 
-    if (Iso.Reynolds(q, diameter) > 2000) {
-      double exact_dReynolds = Iso.dReynolds_dq(q, diameter);
-      double difference_dReynolds
-          = 0.5
-            * (Iso.Reynolds(q + h, diameter) - Iso.Reynolds(q - h, diameter))
-            / h;
+    if (Iso.Reynolds(state, diameter) > 2000) {
+      double exact_dReynolds = Iso.dReynolds_dq(state, diameter);
+      double difference_dReynolds = 0.5
+                                    * (Iso.Reynolds(state + h, diameter)
+                                       - Iso.Reynolds(state - h, diameter))
+                                    / epsilon;
       EXPECT_NEAR(
           exact_dReynolds, difference_dReynolds, finite_difference_threshold);
     }

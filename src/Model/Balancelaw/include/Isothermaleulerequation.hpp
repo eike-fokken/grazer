@@ -47,9 +47,12 @@ namespace Model::Balancelaw {
     lambda_non_laminar(double Re, double diameter, double roughness);
     static double
     dlambda_non_laminar_dRe(double Re, double diameter, double roughness);
-    static double Reynolds(double q, double diameter);
-    static double coeff_of_Reynolds(double diameter);
-    static double dReynolds_dq(double q, double diameter);
+    static double
+    Reynolds(Eigen::Ref<Eigen::Vector2d const> state, double diameter);
+    static double
+    coeff_of_Reynolds(Eigen::Ref<Eigen::Vector2d const> state, double diameter);
+    static double
+    dReynolds_dq(Eigen::Ref<Eigen::Vector2d const> state, double diameter);
 
     static double Swamee_Jain(double Re, double diameter, double roughness);
     static double
