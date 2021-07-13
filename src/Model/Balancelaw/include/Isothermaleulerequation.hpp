@@ -1,6 +1,7 @@
 #pragma once
 #include "Pipe_Balancelaw.hpp"
 #include <Eigen/Dense>
+#include <Eigen/src/Core/Matrix.h>
 #include <nlohmann/json.hpp>
 
 namespace Model::Balancelaw {
@@ -49,10 +50,15 @@ namespace Model::Balancelaw {
     dlambda_non_laminar_dRe(double Re, double diameter, double roughness);
     static double
     Reynolds(Eigen::Ref<Eigen::Vector2d const> state, double diameter);
+
     static double
     coeff_of_Reynolds(Eigen::Ref<Eigen::Vector2d const> state, double diameter);
-    static double
-    dReynolds_dq(Eigen::Ref<Eigen::Vector2d const> state, double diameter);
+
+    static Eigen::RowVector2d dcoeff_of_Reynolds_dstate(
+        Eigen::Ref<Eigen::Vector2d const> state, double diameter);
+
+    static Eigen::RowVector2d
+    dReynolds_dstate(Eigen::Ref<Eigen::Vector2d const> state, double diameter);
 
     static double Swamee_Jain(double Re, double diameter, double roughness);
     static double

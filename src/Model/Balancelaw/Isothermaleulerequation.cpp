@@ -110,7 +110,7 @@ namespace Model::Balancelaw {
       dsource(1, 1)
           = -rho_0 / (2 * Area * diameter) / rho
             * (dlambda_non_laminar_dRe(Re, diameter, roughness)
-                   * dReynolds_dq(state, diameter) * std::abs(q) * q
+                   * dReynolds_dstate(state, diameter) * std::abs(q) * q
                + lambda_non_laminar(Re, diameter, roughness) * Aux::dabs_dx(q)
                      * q
                + lambda_non_laminar(Re, diameter, roughness) * std::abs(q));
@@ -253,19 +253,11 @@ namespace Model::Balancelaw {
       Eigen::Ref<Eigen::Vector2d const> state, double diameter) {
     double rho = state[0];
     double q = state[1];
-    double Re = diameter / eta * rho_0 * std::abs(q);
+    double Re = diameter / eta * rho * std::abs(q);
     return Re;
   }
 
-  double Isothermaleulerequation::coeff_of_Reynolds(
-      Eigen::Ref<Eigen::Vector2d const> state, double diameter) {
-    double rho = state[0];
-    double coeff;
-    coeff = diameter / eta * rho_0;
-    return coeff;
-  }
-
-  double Isothermaleulerequation::dReynolds_dq(
+  Eigen::RowVector2d Isothermaleulerequation::dReynolds_dstate(
       Eigen::Ref<Eigen::Vector2d const> state, double diameter) {
     double rho = state[0];
     double q = state[1];
@@ -276,9 +268,28 @@ namespace Model::Balancelaw {
            ", should only be called for Reynolds "
            "numbers over and at 2000!"});
     }
-    double dRe_dq;
-    dRe_dq = diameter / eta * rho_0 * Aux::dabs_dx(q);
-    return dRe_dq;
+
+    double dRe_drho = diameter / eta * std::abs(q);
+    double dRe_dq = diameter / eta * rho * Aux::dabs_dx(q);
+    Eigen::RowVector2d derivative;
+    derivative << dRe_drho, dRe_dq;
+    return derivative;
+  }
+
+  double Isothermaleulerequation::coeff_of_Reynolds(
+      Eigen::Ref<Eigen::Vector2d const> state, double diameter) {
+    double rho = state[0];
+    double coeff;
+    coeff = diameter / eta * rho;
+    return coeff;
+  }
+
+  Eigen::RowVector2d Isothermaleulerequation::dcoeff_of_Reynolds_dstate(
+      Eigen::Ref<Eigen::Vector2d const>, double diameter) {
+    Eigen::RowVector2d derivative;
+    derivative[0] = diameter / eta;
+    derivative[1] = 0.0;
+    return derivative;
   }
 
   double Isothermaleulerequation::Swamee_Jain(
