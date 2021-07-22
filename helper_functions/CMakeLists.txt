@@ -9,6 +9,9 @@ add_executable(transform_initial transform_initial.cpp)
 
 add_executable(get_mean_sigma get_mean_sigma.cpp)
 
+add_executable(get_quantiles get_quantiles.cpp)
+
+
 add_executable(generate_printing_csv generate_printing_csv.cpp)
 target_link_libraries(generate_printing_csv PRIVATE input_output)
 
