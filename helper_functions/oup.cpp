@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
   auto delta_t = delta_t_candidate / number_of_oup_steps;
 
   int number_of_time_points
-      = static_cast<int>((end_time - start_time) / delta_t) + 1;
+      = static_cast<int>((end_time - start_time) / delta_t);
 
   fs::path outputfile(output_filename);
   std::ofstream stream(outputfile);
