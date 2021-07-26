@@ -175,17 +175,19 @@ void add_gas_json_data(
           }
 
           auto &data_to_save = (*it_output)["data"];
-          auto &data_reference = (*it_reference)["data"];
-          auto &data_to_add = component["data"];
+
+          auto const &data_reference = (*it_reference)["data"];
+          auto const &data_to_add = component["data"];
+
           auto data_to_save_it = data_to_save.begin();
-          auto data_reference_it = data_reference.begin();
+          auto data_reference_it = data_reference.cbegin();
 
           for (auto &step : data_to_add) {
             for (auto &[key, value] : step.items()) {
               if (key == "time") {
                 continue;
               }
-              for (auto &value_pair : value) {
+              for (auto const &value_pair : value) {
                 auto x = value_pair["x"];
                 auto compare_for_x = [](json const &a, json const &b) -> bool {
                   return a["x"].get<double>() < b["x"].get<double>();
@@ -194,8 +196,9 @@ void add_gas_json_data(
                     (*data_to_save_it)[key].begin(),
                     (*data_to_save_it)[key].end(), value_pair, compare_for_x);
                 auto reference_point_it = std::lower_bound(
-                    (*data_reference_it)[key].begin(),
-                    (*data_reference_it)[key].end(), value_pair, compare_for_x);
+                    (*data_reference_it)[key].cbegin(),
+                    (*data_reference_it)[key].cend(), value_pair,
+                    compare_for_x);
 
                 if ((*saved_point_it)["x"] != x) {
                   throw std::runtime_error(
@@ -220,6 +223,7 @@ void add_gas_json_data(
             }
             // also make a time step through the already saved values:
             ++data_to_save_it;
+            ++data_reference_it;
           }
         }
       }
