@@ -10,6 +10,7 @@ add_executable(transform_initial transform_initial.cpp)
 add_executable(get_mean_sigma get_mean_sigma.cpp)
 
 add_executable(get_quantiles get_quantiles.cpp)
+add_executable(compute_pressure_discrepance compute_pressure_discrepance.cpp)
 add_executable(oup oup.cpp)
 target_link_libraries(oup stochastics)
 
