@@ -161,58 +161,66 @@ void add_gas_json_data(
           output[compclass][type].push_back(newoutput);
 
         } else {
-          // if ((*it_output)["id"] != id) {
-          //   throw std::runtime_error(
-          //       "input wasn't sorted. Is this really an output file of "
-          //       "Grazer? "
-          //       "If yes, file a bug!");
-          // }
-          // auto &data_to_save = (*it_output)["data"];
-          // auto &data_to_add = component["data"];
-          // auto data_to_save_it = data_to_save.begin();
-          // for (auto &step : data_to_add) {
-          //   for (auto &[key, value] : step.items()) {
-          //     if (key == "time") {
-          //       continue;
-          //     }
-          //     auto meankey = key + "_mean";
-          //     auto sigmakey = key + "_sigma";
-          //     for (auto &value_pair : value) {
-          //       auto x = value_pair["x"];
-          //       auto compare_for_x = [](json const &a, json const &b) -> bool
-          //       {
-          //         return a["x"].get<double>() < b["x"].get<double>();
-          //       };
-          //       auto current_mean_pair_it = std::lower_bound(
-          //           (*data_to_save_it)[meankey].begin(),
-          //           (*data_to_save_it)[meankey].end(), value_pair,
-          //           compare_for_x);
-          //       auto current_sigma_pair_it = std::lower_bound(
-          //           (*data_to_save_it)[sigmakey].begin(),
-          //           (*data_to_save_it)[sigmakey].end(), value_pair,
-          //           compare_for_x);
-          //       if ((*current_mean_pair_it)["x"] != x) {
-          //         throw std::runtime_error(
-          //             "The data wasn't sorted by x in component with id"
-          //             + id.get<std::string>());
-          //       }
-          //       if ((*current_sigma_pair_it)["x"] != x) {
-          //         throw std::runtime_error(
-          //             "The data wasn't sorted by x in component with id"
-          //             + id.get<std::string>());
-          //       }
+          if ((*it_output)["id"] != id) {
+            throw std::runtime_error(
+                "input wasn't sorted. Is this really an output file of "
+                "Grazer? "
+                "If yes, file a bug!");
+          }
+          if ((*it_reference)["id"] != id) {
+            throw std::runtime_error(
+                "reference wasn't sorted. Is this really an output file of "
+                "Grazer? "
+                "If yes, file a bug!");
+          }
 
-          //       double n = std::numeric_limits<double>::infinity();
-          //       double new_value = value_pair["value"];
-          //       double old_mean
-          //           = (*current_mean_pair_it)["value"].get<double>();
-          //       double old_sigma
-          //           = (*current_sigma_pair_it)["value"].get<double>();
-          //     }
-          //   }
-          //   // also make a time step through the already saved values:
-          //   ++data_to_save_it;
-          // }
+          auto &data_to_save = (*it_output)["data"];
+          auto &data_reference = (*it_reference)["data"];
+          auto &data_to_add = component["data"];
+          auto data_to_save_it = data_to_save.begin();
+          auto data_reference_it = data_reference.begin();
+
+          for (auto &step : data_to_add) {
+            for (auto &[key, value] : step.items()) {
+              if (key == "time") {
+                continue;
+              }
+              for (auto &value_pair : value) {
+                auto x = value_pair["x"];
+                auto compare_for_x = [](json const &a, json const &b) -> bool {
+                  return a["x"].get<double>() < b["x"].get<double>();
+                };
+                auto saved_point_it = std::lower_bound(
+                    (*data_to_save_it)[key].begin(),
+                    (*data_to_save_it)[key].end(), value_pair, compare_for_x);
+                auto reference_point_it = std::lower_bound(
+                    (*data_reference_it)[key].begin(),
+                    (*data_reference_it)[key].end(), value_pair, compare_for_x);
+
+                if ((*saved_point_it)["x"] != x) {
+                  throw std::runtime_error(
+                      "The data wasn't sorted by x in component with id"
+                      + id.get<std::string>());
+                }
+                if ((*reference_point_it)["x"] != x) {
+                  throw std::runtime_error(
+                      "The data wasn't sorted by x in component with id"
+                      + id.get<std::string>());
+                }
+
+                double new_discrepance = std::abs(
+                    value_pair["value"].get<double>()
+                    - (*reference_point_it)["value"].get<double>());
+
+                if (new_discrepance
+                    > (*saved_point_it)["value"].get<double>()) {
+                  (*saved_point_it)["value"] = new_discrepance;
+                }
+              }
+            }
+            // also make a time step through the already saved values:
+            ++data_to_save_it;
+          }
         }
       }
     }
