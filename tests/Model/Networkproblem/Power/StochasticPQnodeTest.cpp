@@ -26,8 +26,8 @@
 nlohmann::json stochpq_json(
     std::string id, double G, double B, Eigen::Vector2d bd0,
     Eigen::Vector2d bd1, int number_of_stochastic_steps,
-    double stability_parameter, double theta_P, double sigma_P, double theta_Q,
-    double sigma_Q);
+    double stability_parameter, double cut_off_factor, double theta_P,
+    double sigma_P, double theta_Q, double sigma_Q);
 
 class stochasticPQnodeTEST : public EqcomponentTEST {
   Model::Componentfactory::Power_factory factory;
@@ -48,6 +48,7 @@ public:
   double B2 = 2.0;
   int number_of_stochastic_steps{1000};
   double stability_parameter = 0.3;
+  double cut_off_factor = 0.3;
   double theta_P = 2.0;
   double sigma_P = 0.5;
   double theta_Q = 3.0;
@@ -221,8 +222,8 @@ TEST_F(stochasticPQnodeTEST, evaluate_state_derivative) {
 nlohmann::json stochpq_json(
     std::string id, double G, double B, Eigen::Vector2d bd0,
     Eigen::Vector2d bd1, int number_of_stochastic_steps,
-    double stability_parameter, double theta_P, double sigma_P, double theta_Q,
-    double sigma_Q) {
+    double stability_parameter, double cut_off_factor, double theta_P,
+    double sigma_P, double theta_Q, double sigma_Q) {
 
   nlohmann::json stochpq_json;
   stochpq_json["id"] = id;
@@ -230,6 +231,7 @@ nlohmann::json stochpq_json(
   stochpq_json["B"] = B;
   stochpq_json["number_of_stochastic_steps"] = number_of_stochastic_steps;
   stochpq_json["stability_parameter"] = stability_parameter;
+  stochpq_json["cut_off_factor"] = cut_off_factor;
   stochpq_json["theta_P"] = theta_P;
   stochpq_json["sigma_P"] = sigma_P;
   stochpq_json["theta_Q"] = theta_Q;
@@ -256,7 +258,7 @@ stochasticPQnodeTEST::default_setup() {
   Eigen::Vector2d bdcond2{P2_bd, Q2_bd};
   auto stochasticpq_json = stochpq_json(
       id2, G2, B2, bdcond2, bdcond2, number_of_stochastic_steps,
-      stability_parameter, theta_P, sigma_P, theta_Q, sigma_Q);
+      stability_parameter, cut_off_factor, theta_P, sigma_P, theta_Q, sigma_Q);
 
   Eigen::Vector2d bdcond3{P3_bd, V3_bd};
   auto pv_json = powernode_json(id3, G3, B3, bdcond3, bdcond3);
