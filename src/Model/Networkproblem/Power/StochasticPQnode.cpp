@@ -14,6 +14,9 @@ namespace Model::Networkproblem::Power {
     nlohmann::json schema = Powernode::get_schema();
     Aux::schema::add_required(
         schema, "stability_parameter", Aux::schema::type::number());
+    Aux::schema::add_required(
+        schema, "cut_off_factor", Aux::schema::type::number());
+
     Aux::schema::add_required(schema, "sigma_P", Aux::schema::type::number());
     Aux::schema::add_required(schema, "theta_P", Aux::schema::type::number());
     Aux::schema::add_required(schema, "sigma_Q", Aux::schema::type::number());
@@ -35,6 +38,7 @@ namespace Model::Networkproblem::Power {
     if (topology["boundary_values"].contains("seed")) {
       stochasticdata = std::make_unique<StochasticData>(
           topology["stability_parameter"].get<double>(),
+          topology["cut_off_factor"].get<double>(),
           topology["sigma_P"].get<double>(), topology["theta_P"].get<double>(),
           topology["sigma_Q"].get<double>(), topology["theta_Q"].get<double>(),
           topology["number_of_stochastic_steps"].get<int>(), used_seed,
@@ -43,6 +47,7 @@ namespace Model::Networkproblem::Power {
     } else {
       stochasticdata = std::make_unique<StochasticData>(
           topology["stability_parameter"].get<double>(),
+          topology["cut_off_factor"].get<double>(),
           topology["sigma_P"].get<double>(), topology["theta_P"].get<double>(),
           topology["sigma_Q"].get<double>(), topology["theta_Q"].get<double>(),
           topology["number_of_stochastic_steps"].get<int>(), used_seed);
@@ -72,15 +77,17 @@ namespace Model::Networkproblem::Power {
   ) {
     auto last_P = P(last_state);
     current_P = Aux::euler_maruyama_oup(
-        stochasticdata->stability_parameter, last_P, stochasticdata->theta_P,
-        boundaryvalue(new_time)[0], new_time - last_time,
-        stochasticdata->sigma_P, stochasticdata->distribution,
+        stochasticdata->stability_parameter, stochasticdata->cut_off_factor,
+        last_P, stochasticdata->theta_P, boundaryvalue(new_time)[0],
+        new_time - last_time, stochasticdata->sigma_P,
+        stochasticdata->distribution,
         stochasticdata->number_of_stochastic_steps);
     auto last_Q = Q(last_state);
     current_Q = Aux::euler_maruyama_oup(
-        stochasticdata->stability_parameter, last_Q, stochasticdata->theta_Q,
-        boundaryvalue(new_time)[1], new_time - last_time,
-        stochasticdata->sigma_Q, stochasticdata->distribution,
+        stochasticdata->stability_parameter, stochasticdata->cut_off_factor,
+        last_Q, stochasticdata->theta_Q, boundaryvalue(new_time)[1],
+        new_time - last_time, stochasticdata->sigma_Q,
+        stochasticdata->distribution,
         stochasticdata->number_of_stochastic_steps);
     // std::cout << current_P << std::endl;
   }

@@ -42,6 +42,8 @@ int main(int argc, char **argv) {
 
   double delta_t_candidate = (end_time - start_time) / (number_of_time_steps);
 
+  double cut_off_factor = std::stod("Inf");
+
   std::array<uint32_t, Aux::pcg_seed_count> used_seed;
   Normaldistribution distribution(used_seed);
 
@@ -65,8 +67,8 @@ int main(int argc, char **argv) {
   for (int i = 0; i != number_of_time_points; ++i) {
     time += delta_t;
     last_value = euler_maruyama_oup(
-        stability_parameter, last_value, theta, mu, delta_t, sigma,
-        distribution, number_of_oup_steps);
+        stability_parameter, cut_off_factor, last_value, theta, mu, delta_t,
+        sigma, distribution, number_of_oup_steps);
     stream << time << "," << last_value << "\n";
   }
   return EXIT_SUCCESS;

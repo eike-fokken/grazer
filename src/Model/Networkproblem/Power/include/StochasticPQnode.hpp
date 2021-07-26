@@ -47,9 +47,11 @@ namespace Model::Networkproblem::Power {
       StochasticData(
           double _stability_parameter, double _sigma_P, double _theta_P,
           double _sigma_Q, double _theta_Q, int _number_of_stochastic_steps,
+          double _cut_off_factor,
           std::array<uint32_t, Aux::pcg_seed_count> &used_seed) :
           distribution(used_seed),
           stability_parameter(_stability_parameter),
+          cut_off_factor(_cut_off_factor),
           sigma_P(_sigma_P),
           theta_P(_theta_P),
           sigma_Q(_sigma_Q),
@@ -59,10 +61,12 @@ namespace Model::Networkproblem::Power {
       StochasticData(
           double _stability_parameter, double _sigma_P, double _theta_P,
           double _sigma_Q, double _theta_Q, int _number_of_stochastic_steps,
+          double _cut_off_factor,
           std::array<uint32_t, Aux::pcg_seed_count> &used_seed,
           std::array<uint32_t, Aux::pcg_seed_count> seed) :
           distribution(used_seed, seed),
           stability_parameter(_stability_parameter),
+          cut_off_factor(_cut_off_factor),
           sigma_P(_sigma_P),
           theta_P(_theta_P),
           sigma_Q(_sigma_Q),
@@ -71,6 +75,7 @@ namespace Model::Networkproblem::Power {
 
       Aux::Normaldistribution distribution;
       double const stability_parameter;
+      double const cut_off_factor;
       double const sigma_P;
       double const theta_P;
       double const sigma_Q;
