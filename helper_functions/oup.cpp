@@ -16,17 +16,11 @@ namespace fs = std::filesystem;
 /** \brief Simulates an Ornstein-Uhlenbeck-process with the Euler Maruyama
  * method.
  *
- * All arguments are optional. If one or more arguments is given, the first one
- * is given as the common substring with which all output files start. If
- * two arguments are given, the second argument is the filename of the json
- * file, get_mean_sigma should create, to output its computations. The default
- * value of the substring is "output". The default value of the filename is
- * "mean_and_sigma.json".
  */
 
 int main(int argc, char **argv) {
   using namespace Aux;
-  if (argc != 9) {
+  if (argc != 10) {
     std::cout << "Wrong number of arguments" << std::endl;
     return EXIT_FAILURE;
   }
@@ -38,11 +32,10 @@ int main(int argc, char **argv) {
   double theta = std::stod(argv[5]);
   double sigma = std::stod(argv[6]);
   double stability_parameter = std::stod(argv[7]);
-  std::string output_filename = argv[8];
+  double cut_off_factor = std::stod(argv[8]);
+  std::string output_filename = argv[9];
 
   double delta_t_candidate = (end_time - start_time) / (number_of_time_steps);
-
-  double cut_off_factor = std::stod("Inf");
 
   std::array<uint32_t, Aux::pcg_seed_count> used_seed;
   Normaldistribution distribution(used_seed);
