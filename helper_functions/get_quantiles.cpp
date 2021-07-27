@@ -160,7 +160,7 @@ void add_gas_json_data(
                 }
 
                 (*saved_point_it)["value"].push_back(
-                    value["value"].get<double>());
+                    value_pair["value"].get<double>());
               }
             }
             // also make a time step through the already saved values:
