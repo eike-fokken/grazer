@@ -283,39 +283,38 @@ void compute_actual_quantiles_gas(
               continue;
             }
             auto mediankey = key + "_median";
-            datapoint[mediankey] = json::array();
             auto fifty_low = key + "_fifty_low";
-            datapoint[fifty_low] = json::array();
             auto fifty_high = key + "_fifty_high";
-            datapoint[fifty_high] = json::array();
 
             auto seventy_low = key + "_seventy_low";
             auto seventy_high = key + "_seventy_high";
             auto ninety_low = key + "_ninety_low";
             auto ninety_high = key + "_ninety_high";
 
+            nlohmann::ordered_json son;
             for (unsigned int j = 0; j != value.size(); ++j) {
               std::sort(value[j]["value"].begin(), value[j]["value"].end());
-              // auto vector = make_quantiles(value[j]["value"]);
+              auto vector = make_quantiles(value[j]["value"]);
 
-              // datapoint[mediankey][j]["x"] = value[j]["x"];
-              // datapoint[mediankey][j]["value"] = vector[0].high_value;
+              son[mediankey][j]["x"] = value[j]["x"];
+              son[mediankey][j]["value"] = vector[0].high_value;
 
-              // datapoint[fifty_low][j]["x"] = value[j]["x"];
-              // datapoint[fifty_low][j]["value"] = vector[1].low_value;
-              // datapoint[fifty_high][j]["x"] = value[j]["x"];
-              // datapoint[fifty_high][j]["value"] = vector[1].high_value;
+              son[fifty_low][j]["x"] = value[j]["x"];
+              son[fifty_low][j]["value"] = vector[1].low_value;
+              son[fifty_high][j]["x"] = value[j]["x"];
+              son[fifty_high][j]["value"] = vector[1].high_value;
 
-              // datapoint[seventy_low][j]["x"] = value[j]["x"];
-              // datapoint[seventy_low][j]["value"] = vector[2].low_value;
-              // datapoint[seventy_high][j]["x"] = value[j]["x"];
-              // datapoint[seventy_high][j]["value"] = vector[2].high_value;
+              son[seventy_low][j]["x"] = value[j]["x"];
+              son[seventy_low][j]["value"] = vector[2].low_value;
+              son[seventy_high][j]["x"] = value[j]["x"];
+              son[seventy_high][j]["value"] = vector[2].high_value;
 
-              // datapoint[ninety_low][j]["x"] = value[j]["x"];
-              // datapoint[ninety_low][j]["value"] = vector[3].low_value;
-              // datapoint[ninety_high][j]["x"] = value[j]["x"];
-              // datapoint[ninety_high][j]["value"] = vector[3].high_value;
+              son[ninety_low][j]["x"] = value[j]["x"];
+              son[ninety_low][j]["value"] = vector[3].low_value;
+              son[ninety_high][j]["x"] = value[j]["x"];
+              son[ninety_high][j]["value"] = vector[3].high_value;
             }
+            value = std::move(son);
           }
         }
       }
