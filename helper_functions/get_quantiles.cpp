@@ -159,8 +159,7 @@ void add_gas_json_data(
                       + id.get<std::string>());
                 }
 
-                (*saved_point_it)["value"].push_back(
-                    value["value"].get<double>());
+                (*saved_point_it)["value"].push_back(value.get<double>());
               }
             }
             // also make a time step through the already saved values:
