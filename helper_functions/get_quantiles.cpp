@@ -314,7 +314,7 @@ void compute_actual_quantiles_gas(
               son[ninety_high][j]["x"] = value[j]["x"];
               son[ninety_high][j]["value"] = vector[3].high_value;
             }
-            value = std::move(son);
+            datapoint = std::move(son);
           }
         }
       }
