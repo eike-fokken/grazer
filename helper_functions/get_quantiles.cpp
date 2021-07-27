@@ -283,6 +283,16 @@ void compute_actual_quantiles_gas(
             }
             for (auto &xpoint : value) {
               std::sort(xpoint["value"].begin(), xpoint["value"].end());
+              auto vector = make_quantiles(xpoint["value"]);
+              json quantiles;
+              quantiles["median"] = vector[0].high_value;
+              quantiles["fifty"]["low"] = vector[1].low_value;
+              quantiles["fifty"]["high"] = vector[1].high_value;
+              quantiles["seventy"]["low"] = vector[2].low_value;
+              quantiles["seventy"]["high"] = vector[2].high_value;
+              quantiles["ninety"]["low"] = vector[3].low_value;
+              quantiles["ninety"]["high"] = vector[3].high_value;
+              xpoint["value"] = quantiles;
             }
           }
         }
