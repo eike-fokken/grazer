@@ -64,13 +64,14 @@ int main(int argc, char **argv) {
       "Pipe", "Shortpipe", "Gaspowerconnection", "Compressorstation",
       "Controlvalve"};
 
-  for (auto &pit :
-       fs::directory_iterator(fs::current_path() / fs::path("output"))) {
+  for (auto &pit : fs::directory_iterator(
+           fs::current_path() / fs::path(output_filename_trunk))) {
     // ignore directories starting with . (hidden files in unix)
     if ((pit.path().filename().string()).find(".") == 0) {
       continue;
     }
-    if ((pit.path().filename().string()).find(output_filename_trunk) == 0) {
+    // if ((pit.path().filename().string()).find(output_filename_trunk) == 0)
+    {
       std::cout << "Processing " << pit.path().filename() << std::endl;
 
       json input;
