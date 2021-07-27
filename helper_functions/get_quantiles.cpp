@@ -278,6 +278,7 @@ void compute_actual_quantiles_gas(
 
       for (auto &component : output[compclass][type]) {
         for (auto &datapoint : component["data"]) {
+          nlohmann::ordered_json son;
           for (auto &[key, value] : datapoint.items()) {
             if (key == "time") {
               continue;
@@ -291,7 +292,6 @@ void compute_actual_quantiles_gas(
             auto ninety_low = key + "_ninety_low";
             auto ninety_high = key + "_ninety_high";
 
-            nlohmann::ordered_json son;
             for (unsigned int j = 0; j != value.size(); ++j) {
               std::sort(value[j]["value"].begin(), value[j]["value"].end());
               auto vector = make_quantiles(value[j]["value"]);
@@ -314,8 +314,8 @@ void compute_actual_quantiles_gas(
               son[ninety_high][j]["x"] = value[j]["x"];
               son[ninety_high][j]["value"] = vector[3].high_value;
             }
-            datapoint = std::move(son);
           }
+          datapoint = std::move(son);
         }
       }
     }
