@@ -90,7 +90,7 @@ int main(int argc, char **argv) {
     }
   }
   compute_actual_quantiles_power(output, powertypes);
-  // compute_actual_quantiles_gas(output, gastypes);
+  compute_actual_quantiles_gas(output, gastypes);
   std::ofstream outstream(computed_output);
   outstream << output.dump(1, '\t');
 }
