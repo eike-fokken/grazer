@@ -21,6 +21,8 @@ static void add_gas_json_data(
 
 static void compute_actual_quantiles_gas(
     nlohmann::json &output, std::vector<std::string> types);
+static void compute_actual_quantiles_power(
+    nlohmann::json &output, std::vector<std::string> types);
 
 /** \brief Computes quantiles for a collection of grazer outputs.
  *
@@ -76,7 +78,7 @@ int main(int argc, char **argv) {
       }
     }
   }
-
+  compute_actual_quantiles_power(output, powertypes);
   compute_actual_quantiles_gas(output, gastypes);
   std::ofstream outstream(computed_output);
   outstream << output.dump(1, '\t');
@@ -272,6 +274,32 @@ void compute_actual_quantiles_gas(
             for (auto &xpoint : value) {
               std::sort(xpoint["value"].begin(), xpoint["value"].end());
             }
+          }
+        }
+      }
+    }
+  }
+}
+
+void compute_actual_quantiles_power(
+    nlohmann::json &output, std::vector<std::string> types) {
+
+  for (auto const &compclass : {"nodes", "connections"}) {
+    if (not output.contains(compclass)) {
+      continue;
+    }
+    for (auto &type : types) {
+      if (not output[compclass].contains(type)) {
+        continue;
+      }
+
+      for (auto &component : output[compclass][type]) {
+        for (auto &datapoint : component["data"]) {
+          for (auto &[key, value] : datapoint.items()) {
+            if (key == "time") {
+              continue;
+            }
+            std::sort(value.begin(), value.end());
           }
         }
       }
