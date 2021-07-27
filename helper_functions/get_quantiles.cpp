@@ -83,13 +83,11 @@ void add_gas_json_data(
 
   for (auto const &compclass : {"nodes", "connections"}) {
     if (not input.contains(compclass)) {
-      throw std::runtime_error(
-          "Some input lacks a field, the reference solution has, aborting!");
+      continue;
     }
     for (auto &type : types) {
       if (not input[compclass].contains(type)) {
-        throw std::runtime_error(
-            "Some input lacks a field, the reference solution has, aborting!");
+        continue;
       }
 
       for (auto &component : input[compclass][type]) {
