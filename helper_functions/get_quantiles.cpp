@@ -90,7 +90,7 @@ int main(int argc, char **argv) {
     }
   }
   compute_actual_quantiles_power(output, powertypes);
-  compute_actual_quantiles_gas(output, gastypes);
+  // compute_actual_quantiles_gas(output, gastypes);
   std::ofstream outstream(computed_output);
   outstream << output.dump(1, '\t');
 }
@@ -283,8 +283,12 @@ void compute_actual_quantiles_gas(
               continue;
             }
             auto mediankey = key + "_median";
+            datapoint[mediankey] = json::array();
             auto fifty_low = key + "_fifty_low";
+            datapoint[fifty_low] = json::array();
             auto fifty_high = key + "_fifty_high";
+            datapoint[fifty_high] = json::array();
+
             auto seventy_low = key + "_seventy_low";
             auto seventy_high = key + "_seventy_high";
             auto ninety_low = key + "_ninety_low";
@@ -292,25 +296,25 @@ void compute_actual_quantiles_gas(
 
             for (unsigned int j = 0; j != value.size(); ++j) {
               std::sort(value[j]["value"].begin(), value[j]["value"].end());
-              auto vector = make_quantiles(value[j]["value"]);
+              // auto vector = make_quantiles(value[j]["value"]);
 
-              datapoint[mediankey][j]["x"] = value[j]["x"];
-              datapoint[mediankey][j]["value"] = vector[0].high_value;
+              // datapoint[mediankey][j]["x"] = value[j]["x"];
+              // datapoint[mediankey][j]["value"] = vector[0].high_value;
 
-              datapoint[fifty_low][j]["x"] = value[j]["x"];
-              datapoint[fifty_low][j]["value"] = vector[1].low_value;
-              datapoint[fifty_high][j]["x"] = value[j]["x"];
-              datapoint[fifty_high][j]["value"] = vector[1].high_value;
+              // datapoint[fifty_low][j]["x"] = value[j]["x"];
+              // datapoint[fifty_low][j]["value"] = vector[1].low_value;
+              // datapoint[fifty_high][j]["x"] = value[j]["x"];
+              // datapoint[fifty_high][j]["value"] = vector[1].high_value;
 
-              datapoint[seventy_low][j]["x"] = value[j]["x"];
-              datapoint[seventy_low][j]["value"] = vector[2].low_value;
-              datapoint[seventy_high][j]["x"] = value[j]["x"];
-              datapoint[seventy_high][j]["value"] = vector[2].high_value;
+              // datapoint[seventy_low][j]["x"] = value[j]["x"];
+              // datapoint[seventy_low][j]["value"] = vector[2].low_value;
+              // datapoint[seventy_high][j]["x"] = value[j]["x"];
+              // datapoint[seventy_high][j]["value"] = vector[2].high_value;
 
-              datapoint[ninety_low][j]["x"] = value[j]["x"];
-              datapoint[ninety_low][j]["value"] = vector[3].low_value;
-              datapoint[ninety_high][j]["x"] = value[j]["x"];
-              datapoint[ninety_high][j]["value"] = vector[3].high_value;
+              // datapoint[ninety_low][j]["x"] = value[j]["x"];
+              // datapoint[ninety_low][j]["value"] = vector[3].low_value;
+              // datapoint[ninety_high][j]["x"] = value[j]["x"];
+              // datapoint[ninety_high][j]["value"] = vector[3].high_value;
             }
           }
         }
@@ -333,22 +337,31 @@ void compute_actual_quantiles_power(
 
       for (auto &component : output[compclass][type]) {
         for (auto &datapoint : component["data"]) {
+          json j;
           for (auto &[key, value] : datapoint.items()) {
             if (key == "time") {
               continue;
             }
             std::sort(value.begin(), value.end());
             auto vector = make_quantiles(value);
-            json quantiles;
-            quantiles["median"] = vector[0].high_value;
-            quantiles["fifty"]["low"] = vector[1].low_value;
-            quantiles["fifty"]["high"] = vector[1].high_value;
-            quantiles["seventy"]["low"] = vector[2].low_value;
-            quantiles["seventy"]["high"] = vector[2].high_value;
-            quantiles["ninety"]["low"] = vector[3].low_value;
-            quantiles["ninety"]["high"] = vector[3].high_value;
-            value = quantiles;
+
+            auto mediankey = key + "_median";
+            auto fifty_low = key + "_fifty_low";
+            auto fifty_high = key + "_fifty_high";
+            auto seventy_low = key + "_seventy_low";
+            auto seventy_high = key + "_seventy_high";
+            auto ninety_low = key + "_ninety_low";
+            auto ninety_high = key + "_ninety_high";
+
+            j[mediankey] = vector[0].high_value;
+            j[fifty_low] = vector[1].low_value;
+            j[fifty_high] = vector[1].high_value;
+            j[seventy_low] = vector[2].low_value;
+            j[seventy_high] = vector[2].high_value;
+            j[ninety_low] = vector[3].low_value;
+            j[ninety_high] = vector[3].high_value;
           }
+          datapoint = std::move(j);
         }
       }
     }
