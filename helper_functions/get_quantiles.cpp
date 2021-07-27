@@ -8,9 +8,13 @@
 #include <nlohmann/json.hpp>
 #include <ostream>
 #include <stdexcept>
+#include <utility>
 
 using json = nlohmann::json;
 namespace fs = std::filesystem;
+
+static std::vector<std::tuple<double, double, double>>
+make_quantiles(std::vector<double> data);
 
 static void add_power_json_data(
     nlohmann::json const &input, nlohmann::json &output,
@@ -305,4 +309,25 @@ void compute_actual_quantiles_power(
       }
     }
   }
+}
+
+std::vector<std::tuple<double, double, double>>
+make_quantiles(std::vector<double> data) {
+
+  std::vector<std::tuple<double, double, double>> values;
+  double median;
+  unsigned long n = data.size();
+  if (n % 2 == 1) {
+    median = data[(n + 1) / 2];
+  } else {
+    median = 0.5 * (data[n / 2] + data[n / 2 + 1]);
+  }
+  values.push_back({0, median, median});
+
+  std::vector<double> quantile_values = {0.7, 0.8, 0.9};
+
+  for (auto &qvalue : quantile_values) {}
+  std::pair<double, double> seventy;
+  std::pair<double, double> eighty;
+  std::pair<double, double> ninety;
 }
