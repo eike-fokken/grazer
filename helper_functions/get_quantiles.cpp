@@ -281,18 +281,35 @@ void compute_actual_quantiles_gas(
             if (key == "time") {
               continue;
             }
-            for (auto &xpoint : value) {
-              std::sort(xpoint["value"].begin(), xpoint["value"].end());
-              auto vector = make_quantiles(xpoint["value"]);
-              json quantiles;
-              quantiles["median"] = vector[0].high_value;
-              quantiles["fifty"]["low"] = vector[1].low_value;
-              quantiles["fifty"]["high"] = vector[1].high_value;
-              quantiles["seventy"]["low"] = vector[2].low_value;
-              quantiles["seventy"]["high"] = vector[2].high_value;
-              quantiles["ninety"]["low"] = vector[3].low_value;
-              quantiles["ninety"]["high"] = vector[3].high_value;
-              xpoint["value"] = quantiles;
+            auto mediankey = key + "_median";
+            auto fifty_low = key + "_fifty_low";
+            auto fifty_high = key + "_fifty_high";
+            auto seventy_low = key + "_seventy_low";
+            auto seventy_high = key + "_seventy_high";
+            auto ninety_low = key + "_ninety_low";
+            auto ninety_high = key + "_ninety_high";
+
+            for (unsigned int j = 0; j != value.size(); ++j) {
+              std::sort(value[j]["value"].begin(), value[j]["value"].end());
+              auto vector = make_quantiles(value[j]["value"]);
+
+              datapoint[mediankey][j]["x"] = value[j]["x"];
+              datapoint[mediankey][j]["value"] = vector[0].high_value;
+
+              datapoint[fifty_low][j]["x"] = value[j]["x"];
+              datapoint[fifty_low][j]["value"] = vector[1].low_value;
+              datapoint[fifty_high][j]["x"] = value[j]["x"];
+              datapoint[fifty_high][j]["value"] = vector[1].high_value;
+
+              datapoint[seventy_low][j]["x"] = value[j]["x"];
+              datapoint[seventy_low][j]["value"] = vector[2].low_value;
+              datapoint[seventy_high][j]["x"] = value[j]["x"];
+              datapoint[seventy_high][j]["value"] = vector[2].high_value;
+
+              datapoint[ninety_low][j]["x"] = value[j]["x"];
+              datapoint[ninety_low][j]["value"] = vector[3].low_value;
+              datapoint[ninety_high][j]["x"] = value[j]["x"];
+              datapoint[ninety_high][j]["value"] = vector[3].high_value;
             }
           }
         }
