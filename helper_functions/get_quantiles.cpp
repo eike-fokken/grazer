@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
         std::ifstream inputstream(currpath);
         inputstream >> input;
       }
-      // add_power_json_data(input, output, powertypes);
+      add_power_json_data(input, output, powertypes);
       try {
         add_gas_json_data(input, output, gastypes);
       } catch (std::exception &e) {
@@ -162,6 +162,80 @@ void add_gas_json_data(
                 (*saved_point_it)["value"].push_back(
                     value_pair["value"].get<double>());
               }
+            }
+            // also make a time step through the already saved values:
+            ++data_to_save_it;
+          }
+        }
+      }
+    }
+  }
+}
+
+void add_power_json_data(
+    nlohmann::json const &input, nlohmann::json &output,
+    std::vector<std::string> types) {
+
+  for (auto const &compclass : {"nodes", "connections"}) {
+    if (not input.contains(compclass)) {
+      continue;
+    }
+    for (auto &type : types) {
+      if (not input[compclass].contains(type)) {
+        continue;
+      }
+
+      for (auto &component : input[compclass][type]) {
+        auto id = component["id"];
+        auto id_compare_less
+            = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
+          return a["id"].get<std::string>() < b["id"].get<std::string>();
+        };
+
+        nlohmann::json this_id;
+        this_id["id"] = id;
+
+        auto it_output = std::lower_bound(
+            output[compclass][type].begin(), output[compclass][type].end(),
+            this_id, id_compare_less);
+
+        if (it_output == output[compclass][type].end()) {
+          nlohmann::json newoutput;
+          newoutput["id"] = id;
+
+          for (unsigned int i = 0; i != component["data"].size(); ++i) {
+            auto &step = component["data"][i];
+            json time_step_to_save;
+            for (auto &[key, value] : step.items()) {
+              if (key == "time") {
+                time_step_to_save["time"] = value;
+                continue;
+              }
+              time_step_to_save[key].push_back(value);
+            }
+            newoutput["data"].push_back(time_step_to_save);
+          }
+          output[compclass][type].push_back(newoutput);
+
+        } else {
+          if ((*it_output)["id"] != id) {
+            throw std::runtime_error(
+                "input wasn't sorted. Is this really an output file of "
+                "Grazer? "
+                "If yes, file a bug!");
+          }
+          auto &data_to_save = (*it_output)["data"];
+
+          auto const &data_to_add = component["data"];
+
+          auto data_to_save_it = data_to_save.begin();
+
+          for (unsigned int j = 0; j != data_to_add.size(); ++j) {
+            for (auto &[key, value] : data_to_add[j].items()) {
+              if (key == "time") {
+                continue;
+              }
+              data_to_save[j][key].push_back(value.get<double>());
             }
             // also make a time step through the already saved values:
             ++data_to_save_it;
