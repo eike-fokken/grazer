@@ -1,6 +1,7 @@
 /** @file */
 
 #include <algorithm>
+#include <cstddef>
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
@@ -13,8 +14,13 @@
 using json = nlohmann::json;
 namespace fs = std::filesystem;
 
-static std::vector<std::tuple<double, double, double>>
-make_quantiles(std::vector<double> data);
+struct Quantile_triplet {
+  double quantile;
+  double low_value;
+  double high_value;
+};
+
+static std::vector<Quantile_triplet> make_quantiles(json::array_t const &data);
 
 static void add_power_json_data(
     nlohmann::json const &input, nlohmann::json &output,
@@ -304,6 +310,16 @@ void compute_actual_quantiles_power(
               continue;
             }
             std::sort(value.begin(), value.end());
+            auto vector = make_quantiles(value);
+            json quantiles;
+            quantiles["median"] = vector[0].high_value;
+            quantiles["fifty"]["low"] = vector[1].low_value;
+            quantiles["fifty"]["high"] = vector[1].high_value;
+            quantiles["seventy"]["low"] = vector[2].low_value;
+            quantiles["seventy"]["high"] = vector[2].high_value;
+            quantiles["ninety"]["low"] = vector[3].low_value;
+            quantiles["ninety"]["high"] = vector[3].high_value;
+            value = quantiles;
           }
         }
       }
@@ -311,23 +327,30 @@ void compute_actual_quantiles_power(
   }
 }
 
-std::vector<std::tuple<double, double, double>>
-make_quantiles(std::vector<double> data) {
+std::vector<Quantile_triplet> make_quantiles(json::array_t const &data) {
 
-  std::vector<std::tuple<double, double, double>> values;
-  double median;
-  unsigned long n = data.size();
-  if (n % 2 == 1) {
-    median = data[(n + 1) / 2];
-  } else {
-    median = 0.5 * (data[n / 2] + data[n / 2 + 1]);
+  std::vector<Quantile_triplet> values;
+  // double median;
+
+  size_t n = data.size();
+  // if (n % 2 == 1) {
+  //   median = data[(n + 1) / 2];
+  // } else {
+  //   median = 0.5 * (data[n / 2].get<double>() + data[n / 2 +
+  //   1].get<double>());
+  // }
+
+  // values.push_back({0, median, median});
+
+  std::vector<double> quantile_values = {0.0, 0.5, 0.7, 0.9};
+  for (auto &qvalue : quantile_values) {
+    auto offset = qvalue * 0.5 * static_cast<unsigned int>(n);
+    unsigned int highindex = static_cast<unsigned int>(
+        std::round(0.5 * static_cast<unsigned int>(n) + offset));
+    unsigned int lowindex = static_cast<unsigned int>(
+        std::round(0.5 * static_cast<unsigned int>(n) - offset));
+
+    values.push_back({qvalue, data[lowindex], data[highindex]});
   }
-  values.push_back({0, median, median});
-
-  std::vector<double> quantile_values = {0.7, 0.8, 0.9};
-
-  for (auto &qvalue : quantile_values) {}
-  std::pair<double, double> seventy;
-  std::pair<double, double> eighty;
-  std::pair<double, double> ninety;
+  return values;
 }
