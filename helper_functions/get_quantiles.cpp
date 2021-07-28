@@ -11,7 +11,7 @@
 #include <stdexcept>
 #include <utility>
 
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 namespace fs = std::filesystem;
 
 struct Quantile_triplet {
@@ -23,16 +23,16 @@ struct Quantile_triplet {
 static std::vector<Quantile_triplet> make_quantiles(json::array_t const &data);
 
 static void add_power_json_data(
-    nlohmann::json const &input, nlohmann::json &output,
+    json const &input, json &output,
     std::vector<std::string> types);
 static void add_gas_json_data(
-    nlohmann::json const &input, nlohmann::json &output,
+    json const &input, json &output,
     std::vector<std::string> types);
 
 static void compute_actual_quantiles_gas(
-    nlohmann::json &output, std::vector<std::string> types);
+    json &output, std::vector<std::string> types);
 static void compute_actual_quantiles_power(
-    nlohmann::json &output, std::vector<std::string> types);
+    json &output, std::vector<std::string> types);
 
 /** \brief Computes quantiles for a collection of grazer outputs.
  *
@@ -96,7 +96,7 @@ int main(int argc, char **argv) {
 }
 
 void add_gas_json_data(
-    nlohmann::json const &input, nlohmann::json &output,
+    json const &input, json &output,
     std::vector<std::string> types) {
 
   for (auto const &compclass : {"nodes", "connections"}) {
@@ -111,11 +111,11 @@ void add_gas_json_data(
       for (auto &component : input[compclass][type]) {
         auto id = component["id"];
         auto id_compare_less
-            = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
+            = [](json const &a, json const &b) -> bool {
           return a["id"].get<std::string>() < b["id"].get<std::string>();
         };
 
-        nlohmann::json this_id;
+        json this_id;
         this_id["id"] = id;
 
         auto it_output = std::lower_bound(
@@ -123,7 +123,7 @@ void add_gas_json_data(
             this_id, id_compare_less);
 
         if (it_output == output[compclass][type].end()) {
-          nlohmann::json newoutput;
+          json newoutput;
           newoutput["id"] = id;
 
           for (unsigned int i = 0; i != component["data"].size(); ++i) {
@@ -191,7 +191,7 @@ void add_gas_json_data(
 }
 
 void add_power_json_data(
-    nlohmann::json const &input, nlohmann::json &output,
+    json const &input, json &output,
     std::vector<std::string> types) {
 
   for (auto const &compclass : {"nodes", "connections"}) {
@@ -206,11 +206,11 @@ void add_power_json_data(
       for (auto &component : input[compclass][type]) {
         auto id = component["id"];
         auto id_compare_less
-            = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
+            = [](json const &a, json const &b) -> bool {
           return a["id"].get<std::string>() < b["id"].get<std::string>();
         };
 
-        nlohmann::json this_id;
+        json this_id;
         this_id["id"] = id;
 
         auto it_output = std::lower_bound(
@@ -218,7 +218,7 @@ void add_power_json_data(
             this_id, id_compare_less);
 
         if (it_output == output[compclass][type].end()) {
-          nlohmann::json newoutput;
+          json newoutput;
           newoutput["id"] = id;
 
           for (unsigned int i = 0; i != component["data"].size(); ++i) {
@@ -265,7 +265,7 @@ void add_power_json_data(
 }
 
 void compute_actual_quantiles_gas(
-    nlohmann::json &output, std::vector<std::string> types) {
+    json &output, std::vector<std::string> types) {
 
   for (auto const &compclass : {"nodes", "connections"}) {
     if (not output.contains(compclass)) {
@@ -278,19 +278,19 @@ void compute_actual_quantiles_gas(
 
       for (auto &component : output[compclass][type]) {
         for (auto &datapoint : component["data"]) {
-          nlohmann::ordered_json son;
+          json son;
           for (auto &[key, value] : datapoint.items()) {
             if (key == "time") {
               continue;
             }
             auto mediankey = key + "_median";
-            auto fifty_low = key + "_fifty_low";
-            auto fifty_high = key + "_fifty_high";
+            auto q_one_low = key + "_q_one_low";
+            auto q_one_high = key + "_q_one_high";
 
-            auto seventy_low = key + "_seventy_low";
-            auto seventy_high = key + "_seventy_high";
-            auto ninety_low = key + "_ninety_low";
-            auto ninety_high = key + "_ninety_high";
+            auto q_two_low = key + "_q_two_low";
+            auto q_two_high = key + "_q_two_high";
+            auto q_three_low = key + "_q_three_low";
+            auto q_three_high = key + "_q_three_high";
 
             for (unsigned int j = 0; j != value.size(); ++j) {
               std::sort(value[j]["value"].begin(), value[j]["value"].end());
@@ -299,20 +299,20 @@ void compute_actual_quantiles_gas(
               son[mediankey][j]["x"] = value[j]["x"];
               son[mediankey][j]["value"] = vector[0].high_value;
 
-              son[fifty_low][j]["x"] = value[j]["x"];
-              son[fifty_low][j]["value"] = vector[1].low_value;
-              son[fifty_high][j]["x"] = value[j]["x"];
-              son[fifty_high][j]["value"] = vector[1].high_value;
+              son[q_one_low][j]["x"] = value[j]["x"];
+              son[q_one_low][j]["value"] = vector[1].low_value;
+              son[q_one_high][j]["x"] = value[j]["x"];
+              son[q_one_high][j]["value"] = vector[1].high_value;
 
-              son[seventy_low][j]["x"] = value[j]["x"];
-              son[seventy_low][j]["value"] = vector[2].low_value;
-              son[seventy_high][j]["x"] = value[j]["x"];
-              son[seventy_high][j]["value"] = vector[2].high_value;
+              son[q_two_low][j]["x"] = value[j]["x"];
+              son[q_two_low][j]["value"] = vector[2].low_value;
+              son[q_two_high][j]["x"] = value[j]["x"];
+              son[q_two_high][j]["value"] = vector[2].high_value;
 
-              son[ninety_low][j]["x"] = value[j]["x"];
-              son[ninety_low][j]["value"] = vector[3].low_value;
-              son[ninety_high][j]["x"] = value[j]["x"];
-              son[ninety_high][j]["value"] = vector[3].high_value;
+              son[q_three_low][j]["x"] = value[j]["x"];
+              son[q_three_low][j]["value"] = vector[3].low_value;
+              son[q_three_high][j]["x"] = value[j]["x"];
+              son[q_three_high][j]["value"] = vector[3].high_value;
             }
           }
           datapoint = std::move(son);
@@ -323,7 +323,7 @@ void compute_actual_quantiles_gas(
 }
 
 void compute_actual_quantiles_power(
-    nlohmann::json &output, std::vector<std::string> types) {
+    json &output, std::vector<std::string> types) {
 
   for (auto const &compclass : {"nodes", "connections"}) {
     if (not output.contains(compclass)) {
@@ -345,20 +345,20 @@ void compute_actual_quantiles_power(
             auto vector = make_quantiles(value);
 
             auto mediankey = key + "_median";
-            auto fifty_low = key + "_fifty_low";
-            auto fifty_high = key + "_fifty_high";
-            auto seventy_low = key + "_seventy_low";
-            auto seventy_high = key + "_seventy_high";
-            auto ninety_low = key + "_ninety_low";
-            auto ninety_high = key + "_ninety_high";
+            auto q_one_low = key + "_q_one_low";
+            auto q_one_high = key + "_q_one_high";
+            auto q_two_low = key + "_q_two_low";
+            auto q_two_high = key + "_q_two_high";
+            auto q_three_low = key + "_q_three_low";
+            auto q_three_high = key + "_q_three_high";
 
             j[mediankey] = vector[0].high_value;
-            j[fifty_low] = vector[1].low_value;
-            j[fifty_high] = vector[1].high_value;
-            j[seventy_low] = vector[2].low_value;
-            j[seventy_high] = vector[2].high_value;
-            j[ninety_low] = vector[3].low_value;
-            j[ninety_high] = vector[3].high_value;
+            j[q_one_low] = vector[1].low_value;
+            j[q_one_high] = vector[1].high_value;
+            j[q_two_low] = vector[2].low_value;
+            j[q_two_high] = vector[2].high_value;
+            j[q_three_low] = vector[3].low_value;
+            j[q_three_high] = vector[3].high_value;
           }
           datapoint = std::move(j);
         }
@@ -382,7 +382,7 @@ std::vector<Quantile_triplet> make_quantiles(json::array_t const &data) {
 
   // values.push_back({0, median, median});
 
-  std::vector<double> quantile_values = {0.0, 0.5, 0.7, 0.9};
+  std::vector<double> quantile_values = {0.0,0.5,0.75, 0.9};
   for (auto &qvalue : quantile_values) {
     auto offset = qvalue * 0.5 * static_cast<unsigned int>(n);
     unsigned int highindex = static_cast<unsigned int>(
