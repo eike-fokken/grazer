@@ -11,6 +11,7 @@ add_executable(get_mean_sigma get_mean_sigma.cpp)
 
 add_executable(get_quantiles get_quantiles.cpp)
 add_executable(compute_pressure_discrepance compute_pressure_discrepance.cpp)
+
 add_executable(oup oup.cpp)
 target_link_libraries(oup stochastics)
 
@@ -36,3 +37,6 @@ add_executable(change_inflow change_inflow.cpp)
 add_executable(increase_pressure increase_pressure.cpp)
 add_executable(include_seed_in_boundaryvalues include_seed_in_boundaryvalues.cpp)
 add_executable(remove_seed_from_boundaryvalues remove_seed_from_boundaryvalues.cpp)
+
+add_executable(draw_heatmap_gaslib_graph draw_heatmap_gaslib_graph.cpp)
+target_link_libraries(draw_heatmap_gaslib_graph PUBLIC netfactory)
