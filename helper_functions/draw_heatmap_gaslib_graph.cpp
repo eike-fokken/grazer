@@ -59,9 +59,9 @@ int main(int argc, char **argv) {
   Model::Networkproblem::sort_json_vectors_by_id(results, "results");
   Model::Networkproblem::sort_json_vectors_by_id(topology, "topology");
 
-  std::vector<std::string> nodetypes{"Source", "Sink", "Innode"};
+  std::vector<std::string> nodetypes{"Source", "Innode"};
   std::vector<std::string> edgetypes
-      = {"Pipe", "Controlvalve", "Compressorstation", "Shortpipe"};
+      = {"Pipe", "Controlvalve", "Compressorstation"};
 
   auto [min, max] = extract_min_max_values(results, edgetypes);
   std::cout << "min:" << min << std::endl;
