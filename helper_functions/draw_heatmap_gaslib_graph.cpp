@@ -33,10 +33,10 @@ std::string colorchooser(std::string const &type);
  */
 
 int main(int argc, char **argv) {
-  if (argc != 4) {
+  if (argc != 4 and argc != 5) {
     std::cout << "You must provide a topology file, an outputfile and a latex "
-                 "filename for "
-                 "printout!"
+                 "filename for printout! In addition you can provide a scaling "
+                 "factor."
               << std::endl;
     return 1;
   }
@@ -56,6 +56,10 @@ int main(int argc, char **argv) {
     resultsstream >> results;
   }
 
+  Model::Networkproblem::sort_json_vectors_by_id(results, "results");
+  Model::Networkproblem::sort_json_vectors_by_id(topology, "topology");
+
+  std::vector<std::string> nodetypes{"Source", "Sink", "Innode"};
   std::vector<std::string> edgetypes
       = {"Pipe", "Controlvalve", "Compressorstation", "Shortpipe"};
 
@@ -63,83 +67,101 @@ int main(int argc, char **argv) {
   std::cout << "min:" << min << std::endl;
   std::cout << "max:" << max << std::endl;
 
-  return 0;
+  Model::Networkproblem::insert_second_json_in_topology_json(
+      topology, results, "results");
 
-  // Model::Networkproblem::insert_second_json_in_topology_json(
-  //     topology, results, "data");
+  double divideby = 1.0;
+  if (argc == 4) {
+    divideby = 10;
+  } else {
+    divideby = std::stod(argv[4]);
+  }
 
-  // double divideby = 1.0;
-  // if (argc == 3) {
-  //   divideby = 10;
-  // } else {
-  //   divideby = std::stod(argv[3]);
-  // }
+  std::ofstream outstream((fs::path(texfile)));
 
-  // std::vector<std::string> nodetypes{"Source", "Sink", "Innode"};
-  // // std::vector<std::string> edgetypes
-  // //     = {"Pipe", "Controlvalve", "Compressorstation", "Shortpipe"};
+  outstream << "\\documentclass{standalone}\n"
+            << "\\usepackage{tikz}\n"
+            << "\\begin{document}\n"
+            << "\\begin{tikzpicture}[every node"
+            << "/.style={scale=3,transform shape}]\n";
 
-  // std::ofstream outstream((fs::path(texfile)));
+  struct Node {
+    std::string color;
+    std::string id;
+    double x;
+    double y;
+  };
+  std::vector<Node> nodes;
+  for (auto const &type : nodetypes) {
+    if (not topology["nodes"].contains(type)) {
+      continue;
+    }
+    auto color = colorchooser(type);
+    for (auto const &node : topology["nodes"][type]) {
+      std::string id = node["id"];
+      double x = node["x"].get<double>();
+      double y = node["y"].get<double>();
+      nodes.push_back(Node{color, id, x, y});
+    }
+  }
 
-  // outstream << "\\documentclass{standalone}\n"
-  //           << "\\usepackage{tikz}\n"
-  //           << "\\begin{document}\n"
-  //           << "\\begin{tikzpicture}[every node"
-  //           << "/.style={scale=3,transform shape}]\n";
+  double xmean = 0;
+  double ymean = 0;
 
-  // struct Node {
-  //   std::string color;
-  //   std::string id;
-  //   double x;
-  //   double y;
-  // };
-  // std::vector<Node> nodes;
-  // for (auto const &type : nodetypes) {
-  //   if (not topology["nodes"].contains(type)) {
-  //     continue;
-  //   }
-  //   auto color = colorchooser(type);
-  //   for (auto const &node : topology["nodes"][type]) {
-  //     std::string id = node["id"];
-  //     double x = node["x"].get<double>();
-  //     double y = node["y"].get<double>();
-  //     nodes.push_back(Node{color, id, x, y});
-  //   }
-  // }
+  for (auto &node : nodes) {
+    xmean += node.x;
+    ymean += node.y;
+  }
+  xmean = xmean / static_cast<int>(nodes.size());
+  ymean = ymean / static_cast<int>(nodes.size());
 
-  // double xmean = 0;
-  // double ymean = 0;
+  for (auto &node : nodes) {
+    auto label_id
+        = std::regex_replace(node.id, std::regex("_"), "\\textunderscore ");
+    double out_x = (node.x - xmean) / divideby;
+    double out_y = (node.y - ymean) / divideby;
+    outstream << "\\node[draw=" << node.color << "](" << node.id << ") at("
+              << out_x << ", " << out_y << "){" << label_id << "};\n";
+  }
 
-  // for (auto &node : nodes) {
-  //   xmean += node.x;
-  //   ymean += node.y;
-  // }
-  // xmean = xmean / static_cast<int>(nodes.size());
-  // ymean = ymean / static_cast<int>(nodes.size());
+  for (auto const &type : edgetypes) {
+    if (not topology["connections"].contains(type)) {
+      continue;
+    }
+    // bool done = false;
+    for (auto const &edge : topology["connections"][type]) {
+      // if (not done) {
+      //   std::cout << topology["connections"][type].back().dump(1, '\t');
+      //   done = true;
+      // }
+      std::string from = edge["from"];
+      std::string to = edge["to"];
+      double value = min;
+      if (not edge.contains("results")) {
+        throw std::runtime_error("no results!!");
+      }
+      for (auto const &step : edge["results"]["data"]) {
+        for (auto const &[key, quantity] : step.items()) {
+          if (key.compare("pressure")) {
+            continue;
+          }
+          for (auto const &xpoint : quantity) {
+            if (xpoint["value"].get<double>() > value) {
+              value = xpoint["value"].get<double>();
+            }
+          }
+        }
+      }
+      std::cout << "value: " << value << std::endl;
+      auto color = rgb_color(min, max, value);
+      outstream << "\\draw[color={rgb:red," << color.r << ";green," << color.g
+                << ";blue," << color.b << "}](" << from << ")--(" << to
+                << ");\n";
+    }
+  }
 
-  // for (auto &node : nodes) {
-  //   auto label_id
-  //       = std::regex_replace(node.id, std::regex("_"), "\\textunderscore ");
-  //   double out_x = (node.x - xmean) / divideby;
-  //   double out_y = (node.y - ymean) / divideby;
-  //   outstream << "\\node[draw=" << node.color << "](" << node.id << ") at("
-  //             << out_x << ", " << out_y << "){" << label_id << "};\n";
-  // }
-
-  // for (auto const &type : edgetypes) {
-  //   if (not topology["connections"].contains(type)) {
-  //     continue;
-  //   }
-  //   for (auto const &edge : topology["connections"][type]) {
-  //     std::string from = edge["from"];
-  //     std::string to = edge["to"];
-
-  //     outstream << "\\draw(" << from << ")--(" << to << ");\n";
-  //   }
-  // }
-
-  // outstream << "\\end{tikzpicture}\n"
-  //           << "\\end{document}\n";
+  outstream << "\\end{tikzpicture}\n"
+            << "\\end{document}\n";
 }
 
 std::string colorchooser(std::string const &type) {
@@ -158,6 +180,12 @@ std::string colorchooser(std::string const &type) {
 }
 
 rgb rgb_color(double minimum, double maximum, double value) {
+  if (value < minimum or value > maximum) {
+    std::cout << "min:" << minimum << std::endl;
+    std::cout << "max:" << maximum << std::endl;
+    std::cout << "value:" << value << std::endl;
+    throw std::runtime_error("A value was not in between minimum and maximum!");
+  }
   double ratio = 2 * (value - minimum) / (maximum - minimum);
   int b = static_cast<int>(std::max(0., 255 * (1. - ratio)));
   int r = static_cast<int>(std::max(0., 255 * (ratio - 1)));
@@ -187,13 +215,17 @@ std::pair<double, double> extract_min_max_values(
           if (key != "pressure") {
             continue;
           }
+          double pipe_wide_max = min;
           for (auto const &xpoint : quantity) {
-            if (xpoint["value"] < min) {
-              min = xpoint["value"];
+            if (xpoint["value"] > pipe_wide_max) {
+              pipe_wide_max = xpoint["value"];
             }
-            if (xpoint["value"] > max) {
-              max = xpoint["value"];
-            }
+          }
+          if (pipe_wide_max < min) {
+            min = pipe_wide_max;
+          }
+          if (pipe_wide_max > max) {
+            max = pipe_wide_max;
           }
         }
       }
