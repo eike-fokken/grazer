@@ -154,9 +154,9 @@ int main(int argc, char **argv) {
       }
       std::cout << "value: " << value << std::endl;
       auto color = rgb_color(min, max, value);
-      outstream << "\\draw[color={rgb:red," << color.r << ";green," << color.g
-                << ";blue," << color.b << "}](" << from << ")--(" << to
-                << ");\n";
+      outstream << "\\draw[line width=8pt,color={rgb:red," << color.r
+                << ";green," << color.g << ";blue," << color.b << "}](" << from
+                << ")--(" << to << ");\n";
     }
   }
 
