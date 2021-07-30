@@ -115,13 +115,60 @@ int main(int argc, char **argv) {
   xmean = xmean / static_cast<int>(nodes.size());
   ymean = ymean / static_cast<int>(nodes.size());
 
+  double max_x = 0;
+  double min_x = 0;
+  double max_y = 0;
+  double min_y = 0;
   for (auto &node : nodes) {
     auto label_id
         = std::regex_replace(node.id, std::regex("_"), "\\textunderscore ");
     double out_x = (node.x - xmean) / divideby;
     double out_y = (node.y - ymean) / divideby;
+
+    if (out_x > max_x) {
+      max_x = out_x;
+    }
+    if (out_y > max_y) {
+      max_y = out_y;
+    }
+    if (out_y < min_y) {
+      min_y = out_y;
+    }
+    if (out_x < min_x) {
+      min_x = out_x;
+    }
+
     outstream << "\\node[draw=" << node.color << "](" << node.id << ") at("
               << out_x << ", " << out_y << "){" << label_id << "};\n";
+  }
+
+  double legend_x = max_x + 0.1 * (max_x - min_x);
+
+  for (int i = 0; i != 101; ++i) {
+
+    // auto color = rgb_color(min, max, value);
+    // outstream << "\\node[fill={rgb:red," << color.r << ";green," << color.g
+    //           << ";blue," << color.b << "}](myid" << i << ") at(" << legend_x
+    //           << ", " << min_y + i * 0.01 * (max_y - min_y) << "){};\n";
+    if (i % 10 == 0) {
+      double value = min + i * 0.01 * (max - min);
+      value = std::round(1000 * value) * 0.001;
+      outstream << "\\node[label=right:{ \\Huge" << value
+                << "},inner sep=0pt,minimum size=0pt](myid" << i << ") at("
+                << legend_x << ", " << min_y + i * 0.01 * (max_y - min_y)
+                << "){};\n";
+    } else {
+      outstream << "\\node[inner sep=0pt,minimum size=0pt](myid" << i << ") at("
+                << legend_x << ", " << min_y + i * 0.01 * (max_y - min_y)
+                << "){};\n";
+    }
+  }
+  for (int i = 0; i != 100; ++i) {
+    double value = min + i * 0.01 * (max - min);
+    auto color = rgb_color(min, max, value);
+    outstream << "\\draw[line width=20pt,color={rgb:red," << color.r
+              << ";green," << color.g << ";blue," << color.b << "}](myid" << i
+              << ")--(myid" << i + 1 << ");\n";
   }
 
   for (auto const &type : edgetypes) {
