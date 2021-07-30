@@ -15,12 +15,17 @@ namespace fs = std::filesystem;
 // static void add_power_json_data(
 //     nlohmann::json const &reference, nlohmann::json const &input,
 //     nlohmann::json &output, std::vector<std::string> types);
-static void add_gas_json_data(
+void add_gas_json_data(
     nlohmann::json const &reference, nlohmann::json const &input,
     nlohmann::json &output, std::vector<std::string> types);
 
-/** \brief Computes maximal discrepance between a given bottom line output of a
- * grazer problem and a collection of grazer outputs for the same topology.
+void add_power_json_data(
+    nlohmann::json const &reference, nlohmann::json const &input,
+    nlohmann::json &output, std::vector<std::string> types);
+
+/** \brief Computes maximal discrepance between a given bottom line output
+ * of a grazer problem and a collection of grazer outputs for the same
+ * topology.
  *
  */
 
@@ -51,7 +56,7 @@ int main(int argc, char **argv) {
   if (argc >= 4) {
     computed_output = argv[3];
   } else {
-    computed_output = "pressure_discrepance.json";
+    computed_output = "reference_discrepance.json";
   }
   std::cout << computed_output << std::endl;
 
@@ -109,8 +114,9 @@ void add_gas_json_data(
         continue;
       }
       if (not input[compclass].contains(type)) {
+        std::cout << "missing type: " << type << std::endl;
         throw std::runtime_error(
-            "Some input lacks a field, the reference solution has, aborting!");
+            "Some input lacks types, the reference solution has, aborting!");
       }
 
       for (auto &component : input[compclass][type]) {
@@ -220,6 +226,122 @@ void add_gas_json_data(
                   (*saved_point_it)["value"] = new_discrepance;
                 }
               }
+            }
+            // also make a time step through the already saved values:
+            ++data_to_save_it;
+            ++data_reference_it;
+          }
+        }
+      }
+    }
+  }
+}
+
+void add_power_json_data(
+    nlohmann::json const &reference, nlohmann::json const &input,
+    nlohmann::json &output, std::vector<std::string> types) {
+
+  for (auto const &compclass : {"nodes", "connections"}) {
+    if (not reference.contains(compclass)) {
+      continue;
+    }
+    if (not input.contains(compclass)) {
+      throw std::runtime_error(
+          "Some input lacks a field, the reference solution has, aborting!");
+    }
+
+    for (auto &type : types) {
+      if (not reference[compclass].contains(type)) {
+        continue;
+      }
+      if (not input[compclass].contains(type)) {
+        std::cout << "missing type: " << type << std::endl;
+        throw std::runtime_error(
+            "Some input lacks types, the reference solution has, aborting!");
+      }
+
+      for (auto &component : input[compclass][type]) {
+        auto id = component["id"];
+        auto id_compare_less
+            = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
+          return a["id"].get<std::string>() < b["id"].get<std::string>();
+        };
+
+        nlohmann::json this_id;
+        this_id["id"] = id;
+
+        auto it_output = std::lower_bound(
+            output[compclass][type].begin(), output[compclass][type].end(),
+            this_id, id_compare_less);
+
+        auto it_reference = std::lower_bound(
+            reference[compclass][type].begin(),
+            reference[compclass][type].end(), this_id, id_compare_less);
+
+        if (it_reference == reference[compclass][type].end()) {
+          throw std::runtime_error(
+              "The reference solution lacks a field that is present in some "
+              "input file, aborting!");
+        }
+        if (it_output == output[compclass][type].end()) {
+          nlohmann::json newoutput;
+          newoutput["id"] = id;
+
+          for (unsigned int i = 0; i != component["data"].size(); ++i) {
+            auto &step = component["data"][i];
+            json time_step_to_save;
+            for (auto &[key, value] : step.items()) {
+              if (key == "time") {
+                time_step_to_save["time"] = value;
+                continue;
+              }
+              ////////////////////////////////////////////////
+
+              time_step_to_save[key] = std::abs(
+                  value.get<double>()
+                  - (*it_reference)["data"][i][key].get<double>());
+              //////////////////////////////////////////////////////
+            }
+            newoutput["data"].push_back(time_step_to_save);
+          }
+          output[compclass][type].push_back(newoutput);
+
+        } else {
+          if ((*it_output)["id"] != id) {
+            throw std::runtime_error(
+                "input wasn't sorted. Is this really an output file of "
+                "Grazer? "
+                "If yes, file a bug!");
+          }
+          if ((*it_reference)["id"] != id) {
+            throw std::runtime_error(
+                "reference wasn't sorted. Is this really an output file of "
+                "Grazer? "
+                "If yes, file a bug!");
+          }
+
+          auto &data_to_save = (*it_output)["data"];
+
+          auto const &data_reference = (*it_reference)["data"];
+          auto const &data_to_add = component["data"];
+
+          auto data_to_save_it = data_to_save.begin();
+          auto data_reference_it = data_reference.cbegin();
+
+          for (auto &step : data_to_add) {
+            for (auto &[key, value] : step.items()) {
+              if (key == "time") {
+                continue;
+              }
+              //////////////////////////////////////////////
+              double new_discrepance = std::abs(
+                  value.get<double>()
+                  - (*data_reference_it)[key].get<double>());
+
+              if (new_discrepance > (*data_to_save_it)[key].get<double>()) {
+                (*data_to_save_it)[key] = new_discrepance;
+              }
+              //////////////////////////////////////////////
             }
             // also make a time step through the already saved values:
             ++data_to_save_it;
