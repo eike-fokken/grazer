@@ -81,6 +81,7 @@ int main(int argc, char **argv) {
 
   outstream << "\\documentclass{standalone}\n"
             << "\\usepackage{tikz}\n"
+            << "\\usepackage{mathptmx}\n"
             << "\\begin{document}\n"
             << "\\begin{tikzpicture}[every node"
             << "/.style={scale=3,transform shape}]\n";
@@ -153,10 +154,11 @@ int main(int argc, char **argv) {
     if (i % 10 == 0) {
       double value = min + i * 0.01 * (max - min);
       value = std::round(1000 * value) * 0.001;
-      outstream << "\\node[label=right:{ \\Huge" << value
-                << "},inner sep=0pt,minimum size=0pt](myid" << i << ") at("
-                << legend_x << ", " << min_y + i * 0.01 * (max_y - min_y)
-                << "){};\n";
+      outstream << "\\node[label={[label distance=10pt]right:{ "
+                   "\\fontsize{45}{54}\\selectfont"
+                << value << "}},inner sep=0pt,minimum size=0pt](myid" << i
+                << ") at(" << legend_x << ", "
+                << min_y + i * 0.01 * (max_y - min_y) << "){};\n";
     } else {
       outstream << "\\node[inner sep=0pt,minimum size=0pt](myid" << i << ") at("
                 << legend_x << ", " << min_y + i * 0.01 * (max_y - min_y)
@@ -166,7 +168,7 @@ int main(int argc, char **argv) {
   for (int i = 0; i != 100; ++i) {
     double value = min + i * 0.01 * (max - min);
     auto color = rgb_color(min, max, value);
-    outstream << "\\draw[line width=20pt,color={rgb:red," << color.r
+    outstream << "\\draw[line width=50pt,color={rgb:red," << color.r
               << ";green," << color.g << ";blue," << color.b << "}](myid" << i
               << ")--(myid" << i + 1 << ");\n";
   }
@@ -201,7 +203,7 @@ int main(int argc, char **argv) {
       }
       std::cout << "value: " << value << std::endl;
       auto color = rgb_color(min, max, value);
-      outstream << "\\draw[line width=8pt,color={rgb:red," << color.r
+      outstream << "\\draw[line width=15pt,color={rgb:red," << color.r
                 << ";green," << color.g << ";blue," << color.b << "}](" << from
                 << ")--(" << to << ");\n";
     }
