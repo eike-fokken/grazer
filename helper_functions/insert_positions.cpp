@@ -1,5 +1,4 @@
 #include "Exception.hpp"
-#include "Netfactory.hpp"
 
 #include <filesystem>
 #include <fstream>
@@ -8,10 +7,11 @@
 #include <regex>
 #include <stdexcept>
 #include <vector>
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 namespace fs = std::filesystem;
 
-void insert_positions(nlohmann::json &topology, nlohmann::json &second_json);
+void sort_json_vectors_by_id(json &components, std::string key);
+void insert_positions(json &topology, json &second_json);
 
 int main(int argc, char **argv) {
   if (argc != 4) {
@@ -36,8 +36,8 @@ int main(int argc, char **argv) {
     positionsstream >> positions;
   }
 
-  Model::Networkproblem::sort_json_vectors_by_id(positions, "positions");
-  Model::Networkproblem::sort_json_vectors_by_id(topology, "topology");
+  sort_json_vectors_by_id(positions, "positions");
+  sort_json_vectors_by_id(topology, "topology");
 
   insert_positions(topology, positions);
 
@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
   }
 }
 
-void insert_positions(nlohmann::json &topology, nlohmann::json &second_json) {
+void insert_positions(json &topology, json &second_json) {
   for (auto const &component : {"nodes", "connections"}) {
     // only fire if the json contains entries of this component.
     if (not second_json.contains(component)) {
@@ -71,8 +71,7 @@ void insert_positions(nlohmann::json &topology, nlohmann::json &second_json) {
       // assign the additional values to the topology json.
       while (secjson_it != second_json_vector_json.end()
              and top_it != topology_vector_json.end()) {
-        auto id_compare_less
-            = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
+        auto id_compare_less = [](json const &a, json const &b) -> bool {
           return a["id"].get<std::string>() < b["id"].get<std::string>();
         };
 
@@ -98,6 +97,27 @@ void insert_positions(nlohmann::json &topology, nlohmann::json &second_json) {
           ++top_it;
         }
       }
+    }
+  }
+}
+
+void sort_json_vectors_by_id(json &components, std::string key) {
+
+  for (auto const &component_class : {"nodes", "connections"}) {
+    if (not components.contains(component_class)) {
+      continue;
+    }
+    for (auto &[component_type, sub_json] :
+         components[component_class].items()) {
+      auto &second_json_vector_json
+          = components[component_class][component_type];
+      // Define < function
+      auto id_compare_less = [](json const &a, json const &b) -> bool {
+        return a["id"].get<std::string>() < b["id"].get<std::string>();
+      };
+      std::sort(
+          second_json_vector_json.begin(), second_json_vector_json.end(),
+          id_compare_less);
     }
   }
 }

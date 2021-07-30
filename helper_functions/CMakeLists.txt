@@ -42,4 +42,4 @@ add_executable(draw_heatmap_gaslib_graph draw_heatmap_gaslib_graph.cpp)
 target_link_libraries(draw_heatmap_gaslib_graph PUBLIC netfactory)
 
 add_executable(insert_positions insert_positions.cpp)
-target_link_libraries(insert_positions PUBLIC netfactory exception)
+target_link_libraries(insert_positions PUBLIC exception)
