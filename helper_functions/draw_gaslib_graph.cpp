@@ -89,8 +89,9 @@ int main(int argc, char **argv) {
     // = std::regex_replace(node.id, std::regex("_"), "\\textunderscore ");
     double out_x = (node.x - xmean) / divideby;
     double out_y = (node.y - ymean) / divideby;
-    outstream << "\\node[draw=" << node.color << "](" << node.id << ") at("
-              << out_x << ", " << out_y << "){" << label_id << "};\n";
+    outstream << "\\node[line width=4pt,draw=" << node.color << "](" << node.id
+              << ") at(" << out_x << ", " << out_y << "){" << label_id
+              << "};\n";
   }
 
   for (auto const &type : edgetypes) {
@@ -101,7 +102,7 @@ int main(int argc, char **argv) {
       std::string from = edge["from"];
       std::string to = edge["to"];
 
-      outstream << "\\draw[line width=15pt](" << from << ")--(" << to << ");\n";
+      outstream << "\\draw[line width=6pt](" << from << ")--(" << to << ");\n";
     }
   }
 
