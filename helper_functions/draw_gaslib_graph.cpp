@@ -84,8 +84,9 @@ int main(int argc, char **argv) {
   ymean = ymean / static_cast<int>(nodes.size());
 
   for (auto &node : nodes) {
-    auto label_id
-        = std::regex_replace(node.id, std::regex("_"), "\\textunderscore ");
+    auto label_id = node.id;
+    label_id.erase(0, 5);
+    // = std::regex_replace(node.id, std::regex("_"), "\\textunderscore ");
     double out_x = (node.x - xmean) / divideby;
     double out_y = (node.y - ymean) / divideby;
     outstream << "\\node[draw=" << node.color << "](" << node.id << ") at("
@@ -100,7 +101,7 @@ int main(int argc, char **argv) {
       std::string from = edge["from"];
       std::string to = edge["to"];
 
-      outstream << "\\draw(" << from << ")--(" << to << ");\n";
+      outstream << "\\draw[line width=15pt](" << from << ")--(" << to << ");\n";
     }
   }
 

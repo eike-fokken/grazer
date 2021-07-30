@@ -121,8 +121,12 @@ int main(int argc, char **argv) {
   double max_y = 0;
   double min_y = 0;
   for (auto &node : nodes) {
-    auto label_id
-        = std::regex_replace(node.id, std::regex("_"), "\\textunderscore ");
+
+    auto label_id = node.id;
+    label_id.erase(0, 5);
+
+    // auto label_id
+    //     = std::regex_replace(node.id, std::regex("_"), "\\textunderscore ");
     double out_x = (node.x - xmean) / divideby;
     double out_y = (node.y - ymean) / divideby;
 
