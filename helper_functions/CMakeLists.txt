@@ -23,6 +23,8 @@ add_executable(move_to_category move_to_category.cpp)
 add_executable(normalize_jsons normalize_jsons.cpp)
 add_executable(draw_gaslib_graph draw_gaslib_graph.cpp)
 
+
+
 add_executable(extract_new_initial_condition extract_new_initial_condition.cpp)
 
 
@@ -40,6 +42,9 @@ add_executable(remove_seed_from_boundaryvalues remove_seed_from_boundaryvalues.c
 
 add_executable(draw_heatmap_gaslib_graph draw_heatmap_gaslib_graph.cpp)
 target_link_libraries(draw_heatmap_gaslib_graph PUBLIC netfactory)
+
+add_executable(draw_power_heatmap draw_power_heatmap.cpp)
+target_link_libraries(draw_power_heatmap PUBLIC netfactory)
 
 add_executable(insert_positions insert_positions.cpp)
 target_link_libraries(insert_positions PUBLIC exception)
