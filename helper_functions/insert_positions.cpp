@@ -1,0 +1,103 @@
+#include "Exception.hpp"
+#include "Netfactory.hpp"
+
+#include <filesystem>
+#include <fstream>
+#include <iostream>
+#include <nlohmann/json.hpp>
+#include <regex>
+#include <stdexcept>
+#include <vector>
+using json = nlohmann::json;
+namespace fs = std::filesystem;
+
+void insert_positions(nlohmann::json &topology, nlohmann::json &second_json);
+
+int main(int argc, char **argv) {
+  if (argc != 4) {
+    std::cout
+        << "You must provide a topology file, a positions and an outputfile"
+        << std::endl;
+    return 1;
+  }
+  std::string topfile = argv[1];
+  std::string positionsfile = argv[2];
+  std::string outfile = argv[3];
+
+  json topology;
+  {
+    std::ifstream inputstream((fs::path(topfile)));
+    inputstream >> topology;
+  }
+
+  json positions;
+  {
+    std::ifstream positionsstream(positionsfile);
+    positionsstream >> positions;
+  }
+
+  Model::Networkproblem::sort_json_vectors_by_id(positions, "positions");
+  Model::Networkproblem::sort_json_vectors_by_id(topology, "topology");
+
+  insert_positions(topology, positions);
+
+  {
+    std::ofstream outstream(outfile);
+    outstream << topology.dump(1, '\t');
+  }
+}
+
+void insert_positions(nlohmann::json &topology, nlohmann::json &second_json) {
+  for (auto const &component : {"nodes", "connections"}) {
+    // only fire if the json contains entries of this component.
+    if (not second_json.contains(component)) {
+      continue;
+    }
+    for (auto &[key, ignored] : second_json[component].items()) {
+      if (not topology[component].contains(key)) {
+        std::cout << "Note: Topology json does not contain " << component
+                  << " of type " << key << ", but the "
+                  << "positions"
+                  << " json does contain such " << component << "."
+                  << std::endl;
+        continue;
+      }
+      auto &second_json_vector_json = second_json[component][key];
+      auto &topology_vector_json = topology[component][key];
+
+      auto secjson_it = second_json_vector_json.begin();
+      auto top_it = topology_vector_json.begin();
+
+      // assign the additional values to the topology json.
+      while (secjson_it != second_json_vector_json.end()
+             and top_it != topology_vector_json.end()) {
+        auto id_compare_less
+            = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
+          return a["id"].get<std::string>() < b["id"].get<std::string>();
+        };
+
+        if (id_compare_less(*secjson_it, *top_it)) {
+          std::cout << "The component with id "
+                    << (*secjson_it)["id"].get<std::string>() << '\n'
+                    << " has an entry in the "
+                    << "positions"
+                    << " json but is not given in the "
+                       "topology json."
+                    << std::endl;
+          ++secjson_it;
+        } else if (id_compare_less(*top_it, *secjson_it)) {
+          gthrow(
+              {"The component with id ", (*top_it)["id"].get<std::string>(),
+               "\n is given in the topology json but no ", "positions",
+               " condition is provided."});
+
+        } else {
+          (*top_it)["x"] = (*secjson_it)["x"];
+          (*top_it)["y"] = (*secjson_it)["y"];
+          ++secjson_it;
+          ++top_it;
+        }
+      }
+    }
+  }
+}
