@@ -83,8 +83,9 @@ int main(int argc, char **argv) {
         std::ifstream inputstream(currpath);
         inputstream >> input;
       }
-      // add_power_json_data(reference, input, output, powertypes);
+
       try {
+        add_power_json_data(reference, input, output, powertypes);
         add_gas_json_data(reference, input, output, gastypes);
       } catch (std::exception &e) {
         std::cout << e.what() << std::endl;
