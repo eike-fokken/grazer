@@ -169,7 +169,7 @@ int main(int argc, char **argv) {
       min_x = out_x;
     }
 
-    outstream << "\\node[draw=" << node.color << ",circle,line width=8pt]("
+    outstream << "\\node[draw=" << node.color << ",circle,line width=10pt]("
               << node.id << ") at(" << out_x << ", " << out_y << "){"
               << label_id << "};\n";
   }
