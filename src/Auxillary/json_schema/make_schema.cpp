@@ -180,7 +180,7 @@ namespace Aux::schema {
     for (auto &[key, value] : schema.items()) {
       if (defaults.contains(key)) {
         value["default"] = defaults[key];
-      } 
+      }
       if (value["type"] == "object") {
         // recursion
         add_defaults(value, defaults);
