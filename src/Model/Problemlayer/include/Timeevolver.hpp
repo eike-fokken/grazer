@@ -1,7 +1,7 @@
 #pragma once
 #include "Newtonsolver.hpp"
-#include <nlohmann/json.hpp>
 #include <chrono>
+#include <nlohmann/json.hpp>
 
 namespace Model {
 
