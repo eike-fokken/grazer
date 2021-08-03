@@ -177,11 +177,12 @@ namespace Aux::schema {
   }
 
   void add_defaults(json &schema, json const &defaults) {
-    // add defaults
     for (auto &[key, value] : schema.items()) {
       if (defaults.contains(key)) {
         value["default"] = defaults[key];
-      } else if (value["type"] == "object") {
+      } 
+      if (value["type"] == "object") {
+        // recursion
         add_defaults(value, defaults);
       }
     }
