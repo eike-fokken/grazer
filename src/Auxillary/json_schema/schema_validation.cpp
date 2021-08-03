@@ -84,3 +84,14 @@ void Aux::schema::validate_json(json const &data, json const &schema) {
   // "\"" << std::endl;
   return;
 }
+
+void Aux::schema::apply_defaults(json &data, json const &schema){
+  for (auto &[key, value]: schema.items()) {
+    if(value.contains("default") and (not data.contains(key))) {
+        data[key] = value["default"];
+    } else if ((value["type"] == "object") and (data.contains(key))){
+      // recursion for objects
+      apply_defaults(data[key], value["properties"]);
+    }
+  }
+}

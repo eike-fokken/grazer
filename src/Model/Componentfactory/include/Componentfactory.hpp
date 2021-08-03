@@ -87,7 +87,7 @@ namespace Model::Componentfactory {
      * @return std::unique_ptr<Network::Node>
      */
     virtual std::unique_ptr<Network::Node>
-    make_instance(nlohmann::json const &topology) const = 0;
+    make_instance(nlohmann::json &topology) const = 0;
   };
 
   /**
@@ -118,7 +118,7 @@ namespace Model::Componentfactory {
      * @return std::unique_ptr<Network::Edge>
      */
     virtual std::unique_ptr<Network::Edge> make_instance(
-        nlohmann::json const &topology,
+        nlohmann::json &topology,
         std::vector<std::unique_ptr<Network::Node>> &nodes) const = 0;
   };
 
@@ -221,9 +221,10 @@ namespace Model::Componentfactory {
     }
 
     std::unique_ptr<Network::Node>
-    make_instance(nlohmann::json const &topology) const override {
-
-      Aux::schema::validate_json(topology, this->get_schema(true));
+    make_instance(nlohmann::json &topology) const override {
+      auto topology_schema = this->get_schema(true);
+      Aux::schema::validate_json(topology, topology_schema);
+      Aux::schema::apply_defaults(topology, topology_schema);
       return std::make_unique<ConcreteNode>(topology);
     };
   };
@@ -327,9 +328,11 @@ namespace Model::Componentfactory {
     }
 
     std::unique_ptr<Network::Edge> make_instance(
-        nlohmann::json const &topology,
+        nlohmann::json &topology,
         std::vector<std::unique_ptr<Network::Node>> &nodes) const override {
-      Aux::schema::validate_json(topology, this->get_schema(true));
+      auto topology_schema = this->get_schema(true);
+      Aux::schema::validate_json(topology, topology_schema);
+      Aux::schema::apply_defaults(topology, topology_schema);
       return std::make_unique<ConcreteEdge>(topology, nodes);
     };
   };
