@@ -1,4 +1,4 @@
-name: CMake
+name: PullRequest
 
 on:
   pull_request:
@@ -32,7 +32,7 @@ jobs:
         - name: Linux-GNU
           compiler: g++-9
           os: ubuntu-18.04
-          dep-install: sudo apt-get update && sudo apt-get install -y cmake
+          dep-install: sudo apt-get update && sudo apt-get install -y cmake texlive
           build_type: Debug
           binary-path: /build/src/Grazer/grazer
         - name: Linux-Clang
