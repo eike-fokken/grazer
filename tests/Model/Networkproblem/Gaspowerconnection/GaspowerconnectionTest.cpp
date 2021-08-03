@@ -11,6 +11,7 @@
 #include "Powernode.hpp"
 #include <Eigen/src/Core/Matrix.h>
 #include <filesystem>
+#include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
 #include <stdexcept>
 
@@ -72,8 +73,24 @@ TEST_F(GaspowerconnectionTEST, smoothing_polynomial) {
   EXPECT_DOUBLE_EQ(
       gp->smoothing_polynomial(-gp->kappa),
       power2gas_q_coefficient * (-gp->kappa));
-  EXPECT_THROW(gp->smoothing_polynomial(gp->kappa + 1), std::runtime_error);
-  EXPECT_THROW(gp->smoothing_polynomial(-gp->kappa - 1), std::runtime_error);
+  try {
+    gp->smoothing_polynomial(gp->kappa + 1);
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
+  } catch (std::runtime_error &e) {
+    EXPECT_THAT(
+        e.what(), testing::HasSubstr("You can't call this function for values "
+                                     "of q bigger than"));
+  }
+  try {
+    gp->smoothing_polynomial(-gp->kappa - 1);
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
+  } catch (std::runtime_error &e) {
+    EXPECT_THAT(
+        e.what(), testing::HasSubstr("You can't call this function for values "
+                                     "of q bigger than"));
+  }
 }
 
 TEST_F(GaspowerconnectionTEST, dsmoothing_polynomial) {
@@ -114,9 +131,24 @@ TEST_F(GaspowerconnectionTEST, dsmoothing_polynomial) {
   EXPECT_DOUBLE_EQ(
       gp->dsmoothing_polynomial_dq(-gp->kappa), power2gas_q_coefficient);
 
-  EXPECT_THROW(gp->dsmoothing_polynomial_dq(gp->kappa + 1), std::runtime_error);
-  EXPECT_THROW(
-      gp->dsmoothing_polynomial_dq(-gp->kappa - 1), std::runtime_error);
+  try {
+    gp->dsmoothing_polynomial_dq(gp->kappa + 1);
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
+  } catch (std::runtime_error &e) {
+    EXPECT_THAT(
+        e.what(), testing::HasSubstr("You can't call this function for values "
+                                     "of q bigger than"));
+  }
+  try {
+    gp->dsmoothing_polynomial_dq(-gp->kappa - 1);
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
+  } catch (std::runtime_error &e) {
+    EXPECT_THAT(
+        e.what(), testing::HasSubstr("You can't call this function for values "
+                                     "of q bigger than"));
+  }
 
   double h = sqrt(Aux::EPSILON);
   {

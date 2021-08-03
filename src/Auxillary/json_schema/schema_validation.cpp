@@ -53,18 +53,27 @@ void Aux::schema::validate_json(json const &data, json const &schema) {
 
   // validate
   try {
-    validator.validate(data);
+    class prettyhandler : public nlohmann::json_schema::error_handler {
+      void error(
+          const json::json_pointer &ptr, const json &instance,
+          const std::string &message) override {
+        throw std::invalid_argument(
+            std::string("At ") + ptr.to_string() + " of "
+            + instance.dump(1, '\t') + " - " + message + "\n");
+      }
+    } handler;
+    validator.validate(data, handler);
   } catch (const std::exception &e) {
     std::ostringstream o;
     std::string helper;
     if (data.contains("id")) {
-      o << "The json of object with id " << data["id"].get<std::string>()
-        << " does not conform to its schema!\n\n\n"
-        << data.dump(1, '\t') << "\n";
+      o << "The json of the following object with id "
+        << data["id"].get<std::string>()
+        << " does not conform to its schema!\n\n\n";
     } else {
-      o << "The current object json does not conform to its schema.\n"
-           "It also doesn't have an entry named 'id'.\n"
-           "But you can find all its data in the following dump:\n";
+      o << "The json of the following object json does not "
+           "conform to its schema.\n"
+           "It also doesn't have an entry named 'id'.\n";
     }
     o << e.what() << "\n";
     throw std::runtime_error(o.str());

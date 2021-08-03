@@ -93,7 +93,7 @@ endif()
 
 set(my_debug_options -O0 -Werror -Wconversion -pedantic-errors -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wundef
   -Wdisabled-optimization -Wformat=2 -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wstrict-overflow=5 -Wswitch-default -Wunused -Wno-error=unused-parameter -Wno-error=unused -Wno-error=unused-variable -Wno-error=unused-value -Wdelete-non-virtual-dtor -Wno-error=undef)
-set(debug_clang_options "-fcolor-diagnostics;-Wno-error=unused-private-field;-Wmissing-prototypes")
+set(debug_clang_options "-Wunreachable-code;-fcolor-diagnostics;-Wno-error=unused-private-field;-Wmissing-prototypes")
 
 set(debug_gcc_options "-fdiagnostics-color;-Wno-error=strict-overflow;-Wno-error=unused-but-set-variable")
 
@@ -125,7 +125,7 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     "$<$<NOT:$<CONFIG:Debug>>:${release_msvc_options}>"
   )
 else()
-  message(FATAL_ERROR "Unknown compiler: ${CMAKE_CXX_COMPILER_ID}")
+  message(WARNING "Your compiler, ${CMAKE_CXX_COMPILER_ID}, is untested with Grazer but maybe still works. Tested compilers are gcc, clang and msvc.")
 endif()
 
 
@@ -160,12 +160,16 @@ include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp/include/")
 include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/CLI11/include/")
 
 
+# for building latex documentation
+
 find_package(Doxygen)
-if(NOT Doxygen_FOUND)
-  message(STATUS "Doxygen not found! building without docs")
-else()
-  add_subdirectory(docs)
+find_package(LATEX COMPONENTS PDFLATEX)
+if(LATEX_FOUND)
+  include(UseLATEX/UseLATEX.cmake)
 endif()
+
+add_subdirectory(docs)
+
 
 add_subdirectory(src)
 add_subdirectory(tests)
