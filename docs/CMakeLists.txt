@@ -3,17 +3,14 @@ add_custom_target(docs)
 if(NOT Doxygen_FOUND)
   message(STATUS "Doxygen not found! building without doxygen docs.")
 else()
+  set(DOXYGEN_EXTRACT_PRIVATE YES)
 
+  set(DOXYGEN_EXTRACT_ALL YES)
+  set(DOXYGEN_BUILTIN_STL_SUPPORT YES)
+  set(DOXYGEN_RECURSIVE YES)
+  set(DOXYGEN_GENERATE_TREEVIEW YES)
 
-set(DOXYGEN_EXTRACT_PRIVATE YES)
-
-set(DOXYGEN_EXTRACT_ALL YES)
-set(DOXYGEN_BUILTIN_STL_SUPPORT YES)
-set(DOXYGEN_RECURSIVE YES)
-set(DOXYGEN_GENERATE_TREEVIEW YES)
-
-doxygen_add_docs(doxygen "${PROJECT_SOURCE_DIR}/src" "${PROJECT_SOURCE_DIR}/helper_functions" WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}" )
-
+  doxygen_add_docs(doxygen "${PROJECT_SOURCE_DIR}/src" "${PROJECT_SOURCE_DIR}/helper_functions" WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}" )
 endif()
 
 if(NOT LATEX_FOUND)
