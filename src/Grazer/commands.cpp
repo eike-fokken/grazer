@@ -3,10 +3,12 @@
 #include "Input_output.hpp"
 #include "Problem.hpp"
 #include "Timeevolver.hpp"
+#include <chrono>
 #include <cstdlib>
 #include <iostream>
 
 int grazer::run(std::filesystem::path directory_path) {
+  auto wall_clock_start = std::chrono::system_clock::now();
   auto problem_directory = directory_path / "problem";
   auto problem_data_file = problem_directory / "problem_data.json";
   auto output_dir = io::prepare_output_dir(directory_path / "output");
@@ -31,6 +33,24 @@ int grazer::run(std::filesystem::path directory_path) {
   int number_of_states = problem.set_indices();
   std::cout << "data read" << std::endl;
 
-  timeevolver.simulate(timedata, problem, number_of_states, initial_value_json);
+  auto wall_clock_setup_end = std::chrono::system_clock::now();
+  std::chrono::duration sim_duration = timeevolver.simulate(
+      timedata, problem, number_of_states, initial_value_json);
+
+  std::chrono::duration<double> setup_duration
+      = wall_clock_setup_end - wall_clock_start;
+  auto wall_clock_end = std::chrono::system_clock::now();
+  std::chrono::duration<double> total_duration
+      = wall_clock_end - wall_clock_start;
+  std::cout << "setup took: " << setup_duration.count() << " seconds"
+            << std::endl;
+  std::cout << "simulation took: " << sim_duration.count() << " seconds"
+            << std::endl;
+  std::cout << "teardown took: "
+            << total_duration.count() - setup_duration.count()
+                   - sim_duration.count()
+            << " seconds" << std::endl;
+  std::cout << "-----------------------------" << std::endl;
+  std::cout << "total: " << total_duration.count() << " seconds" << std::endl;
   return EXIT_SUCCESS;
 }

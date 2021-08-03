@@ -67,7 +67,7 @@ namespace Model {
       retries(timeevolver_data["retries"]),
       use_simplified_newton(timeevolver_data["use_simplified_newton"]) {}
 
-  void Timeevolver::simulate(
+  std::chrono::duration<double> Timeevolver::simulate(
       Timedata timedata, Model::Problem &problem, int number_of_states,
       nlohmann::json &problem_initial_json) {
     double last_time = timedata.get_starttime() - timedata.get_delta_t();
@@ -94,7 +94,7 @@ namespace Model {
               << solver.get_number_non_zeros_jacobian() << std::endl;
 
     // provide regex help (cf. helper_functions/csv_from_log.py)
-    std::cout << " === simulation start === " << std::endl;
+    std::cout << "=== simulation start ===" << std::endl;
     // csv heading:
     std::cout << "t, residual, used_iterations" << std::endl;
 
@@ -162,8 +162,7 @@ namespace Model {
 
     std::cout << "=== simulation end ===" << std::endl; // provide regex help
     auto wall_clock_end = std::chrono::system_clock::now();
-    std::chrono::duration<double> diff = wall_clock_end - wall_clock_start;
-    std::cout << "simulation took: " << diff.count() << " seconds" << std::endl;
+    return wall_clock_end - wall_clock_start;
   }
 
 } // namespace Model
