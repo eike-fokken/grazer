@@ -176,4 +176,15 @@ namespace Aux::schema {
     return schema;
   }
 
+  void add_defaults(json &schema, json const &defaults){
+    // add defaults
+    for(auto &[key, value] : schema.items()){
+      if(defaults.contains(key)){
+        value["default"] = defaults[key];
+      } else if (value["type"] == "object"){
+        add_defaults(value, defaults);
+      }
+    }
+  }
+
 } // namespace Aux::schema

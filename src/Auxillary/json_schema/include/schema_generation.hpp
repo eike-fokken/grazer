@@ -4,6 +4,7 @@
 #include <any>
 #include <deque>
 #include <filesystem>
+#include <nlohmann/json.hpp>
 #include <string>
 
 namespace Aux::schema {
@@ -12,5 +13,6 @@ namespace Aux::schema {
   int make_full_factory_schemas(std::filesystem::path grazer_dir);
 
   void make_schemas(
-      Componentfactory const &factory, std::filesystem::path schema_dir);
+      Componentfactory const &factory, std::filesystem::path schema_dir,
+      nlohmann::json const defaults = {});
 } // namespace Aux::schema

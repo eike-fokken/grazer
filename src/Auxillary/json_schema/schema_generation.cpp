@@ -1,3 +1,4 @@
+#include <Aux_json.hpp>
 #include <Exception.hpp>
 #include <fstream>
 #include <schema_generation.hpp>
@@ -21,17 +22,23 @@ namespace Aux::schema {
 
   int make_full_factory_schemas(path grazer_dir) {
     Model::Componentfactory::Full_factory full_factory;
-    make_schemas(full_factory, grazer_dir / "schemas");
+    nlohmann::json defaults = aux_json::get_json_from_file_path(
+        grazer_dir / "problem"
+        / "problem_data.json")["problem_data"]["Network_problem"]["defaults"];
+    make_schemas(full_factory, grazer_dir / "schemas", defaults);
     return 0;
   }
 
-  void make_schemas(Componentfactory const &factory, path schema_dir) {
+  void make_schemas(
+      Componentfactory const &factory, path schema_dir,
+      nlohmann::json const defaults) {
 
     std::map<std::string, json> schemas{
-        {"topology", factory.get_topology_schema(/*include_external=*/false)},
-        {"initial", factory.get_initial_schema()},
-        {"boundary", factory.get_boundary_schema()},
-        {"control", factory.get_control_schema()}};
+        {"topology",
+         factory.get_topology_schema(/*include_external=*/false, defaults)},
+        {"initial", factory.get_initial_schema(defaults)},
+        {"boundary", factory.get_boundary_schema(defaults)},
+        {"control", factory.get_control_schema(defaults)}};
 
     if (std::filesystem::exists(schema_dir)) {
       assert_only_known_schemas(schema_dir, schemas);
