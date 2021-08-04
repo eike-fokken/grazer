@@ -186,7 +186,7 @@ namespace Aux::schema {
       if ((definition["type"] == "object")
           and (definition.contains("properties"))) {
         // recursion
-        add_defaults(definition["properties"], defaults);
+        add_defaults_unsafe(definition["properties"], defaults);
       }
     }
   }

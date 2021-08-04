@@ -85,13 +85,46 @@ void Aux::schema::validate_json(json const &data, json const &schema) {
   return;
 }
 
-void Aux::schema::apply_defaults(json &data, json const &schema) {
+static void apply_defaults_unsafe(json &data, json const &schema) {
   for (auto &[key, value] : schema.items()) {
     if (value.contains("default") and (not data.contains(key))) {
       data[key] = value["default"];
-    } else if ((value["type"] == "object") and (data.contains(key))) {
+    } else if (
+        (value["type"] == "object") and value.contains("properties")
+        and data.contains(key)) {
+
+      if (not(data[key].type() == json::value_t::object)) {
+        std::ostringstream o;
+        o << "Default definition assumes \"" << key
+          << "\" is an object, but while the data contains this key, it is not "
+             "an object!\n\n"
+          << "Dump of schema:\n\n" << schema << "\n"
+          << "Dump of data:\n\n" << data;
+        throw std::runtime_error(o.str());
+      }
       // recursion for objects
-      apply_defaults(data[key], value["properties"]);
+      apply_defaults_unsafe(data[key], value["properties"]);
     }
+  }
+}
+
+void Aux::schema::apply_defaults(json &data, json const &schema) {
+  if ((schema.type() == json::value_t::object) and schema.contains("type")
+      and (schema["type"] == "object") and (schema.contains("properties"))) {
+    apply_defaults_unsafe(data, schema["properties"]);
+  } else {
+    // figure out what went wrong and print error message
+    std::ostringstream o;
+    if (not (schema.type() == json::value_t::object)) {
+      o << "Schema is not a JSON object!\n\n";
+    } else if (not schema.contains("type")) {
+      o << "Schema does not contain the key type!\n\n";
+    } else if (schema["type"] != "object") {
+      o << "Schema type is not \"object\"\n\n";
+    } else if (not schema.contains("properties")) {
+      o << "Schema does not contain \"properties\" key\n\n";
+    }
+    o << "Dump of Schema:\n\n" << schema;
+    throw std::runtime_error(o.str());
   }
 }
