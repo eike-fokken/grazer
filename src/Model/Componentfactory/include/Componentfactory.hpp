@@ -163,9 +163,7 @@ namespace Model::Componentfactory {
               schema, "control_values", optional_control.value());
         }
       }
-      if (schema.contains("properties")) {
-        Aux::schema::add_defaults(schema["properties"], this->defaults);
-      }
+      Aux::schema::add_defaults(schema, this->defaults);
       return schema;
     };
 
@@ -179,13 +177,8 @@ namespace Model::Componentfactory {
 
         auto opt_boundary_schema = ConcreteNode::get_boundary_schema();
         if (opt_boundary_schema.has_value()) {
-          auto boundary_schema = opt_boundary_schema.value();
-          if (boundary_schema.contains("properties")) {
-            // the top level schema definition will almost always have a
-            // "properties" key, so this is extra careful already
-            Aux::schema::add_defaults(
-                boundary_schema["properties"], this->defaults);
-          }
+          Aux::schema::add_defaults(
+              opt_boundary_schema.value(), this->defaults);
         }
         return opt_boundary_schema;
       } else {
@@ -202,13 +195,7 @@ namespace Model::Componentfactory {
                         ConcreteNode>::value) {
         auto opt_control_schema = ConcreteNode::get_control_schema();
         if (opt_control_schema.has_value()) {
-          auto control_schema = opt_control_schema.value();
-          if (control_schema.contains("properties")) {
-            // the top level schema definition will almost always have a
-            // "properties" key, so this is extra careful already
-            Aux::schema::add_defaults(
-                control_schema["properties"], this->defaults);
-          }
+          Aux::schema::add_defaults(opt_control_schema.value(), this->defaults);
         }
         return opt_control_schema;
       } else {
@@ -223,10 +210,7 @@ namespace Model::Componentfactory {
       if constexpr (std::is_base_of<
                         Networkproblem::Statecomponent, ConcreteNode>::value) {
         auto initial_schema = ConcreteNode::get_initial_schema();
-        if (initial_schema.contains("properties")) {
-          Aux::schema::add_defaults(
-              initial_schema["properties"], this->defaults);
-        }
+        Aux::schema::add_defaults(initial_schema, this->defaults);
         return std::optional<nlohmann::json>(initial_schema);
       } else {
         return std::nullopt;
@@ -287,9 +271,7 @@ namespace Model::Componentfactory {
               schema, "control_values", optional_control.value());
         }
       }
-      if (schema.contains("properties")) {
-        Aux::schema::add_defaults(schema["properties"], this->defaults);
-      }
+      Aux::schema::add_defaults(schema, this->defaults);
       return schema;
     };
 
@@ -302,11 +284,8 @@ namespace Model::Componentfactory {
                         ConcreteEdge>::value) {
         auto opt_boundary_schema = ConcreteEdge::get_boundary_schema();
         if (opt_boundary_schema.has_value()) {
-          auto boundary_schema = opt_boundary_schema.value();
-          if (boundary_schema.contains("properties")) {
-            Aux::schema::add_defaults(
-                boundary_schema["properties"], this->defaults);
-          }
+          Aux::schema::add_defaults(
+              opt_boundary_schema.value(), this->defaults);
         }
         return opt_boundary_schema;
       } else {
@@ -323,11 +302,7 @@ namespace Model::Componentfactory {
                         ConcreteEdge>::value) {
         auto opt_control_schema = ConcreteEdge::get_control_schema();
         if (opt_control_schema.has_value()) {
-          auto control_schema = opt_control_schema.value();
-          if (control_schema.contains("properties")) {
-            Aux::schema::add_defaults(
-                control_schema["properties"], this->defaults);
-          }
+          Aux::schema::add_defaults(opt_control_schema.value(), this->defaults);
         }
         return opt_control_schema;
       } else {
@@ -343,10 +318,7 @@ namespace Model::Componentfactory {
                         Networkproblem::Equationcomponent,
                         ConcreteEdge>::value) {
         auto initial_schema = ConcreteEdge::get_initial_schema();
-        if (initial_schema.contains("properties")) {
-          Aux::schema::add_defaults(
-              initial_schema["properties"], this->defaults);
-        }
+        Aux::schema::add_defaults(initial_schema, this->defaults);
         return std::optional<nlohmann::json>(initial_schema);
       } else {
         return std::nullopt;

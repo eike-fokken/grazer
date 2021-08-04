@@ -176,15 +176,25 @@ namespace Aux::schema {
     return schema;
   }
 
-  void add_defaults(json &properties, json const &defaults) {
+  static void add_defaults_unsafe(json &properties, json const &defaults) {
+    // assumes that a "properties" json is provided, use the safe add_defaults
+    // instead
     for (auto &[name, definition] : properties.items()) {
       if (defaults.contains(name)) {
         definition["default"] = defaults[name];
       }
-      if ((definition["type"] == "object") and (definition.contains("properties"))) {
+      if ((definition["type"] == "object")
+          and (definition.contains("properties"))) {
         // recursion
         add_defaults(definition["properties"], defaults);
       }
+    }
+  }
+
+  void add_defaults(json &schema, json const &defaults) {
+    if ((schema.type() == json::value_t::object) and schema.contains("type")
+        and (schema["type"] == "object") and (schema.contains("properties"))) {
+      add_defaults_unsafe(schema["properties"], defaults);
     }
   }
 

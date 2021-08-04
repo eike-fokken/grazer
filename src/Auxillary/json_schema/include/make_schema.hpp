@@ -59,7 +59,7 @@ namespace Aux::schema {
   /**
    * @brief Adds default values to Json Schema
    *
-   * @param properties of a schema of type "object"
+   * @param schema target for the defaults
    * @param defaults flat dictionary of defaults, will search all levels of
    * "schema" and whenever a key is also in the defaults will add the value as
    * default
