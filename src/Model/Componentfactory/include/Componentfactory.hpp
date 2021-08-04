@@ -178,7 +178,8 @@ namespace Model::Componentfactory {
         auto opt_boundary_schema = ConcreteNode::get_boundary_schema();
         if (opt_boundary_schema.has_value()) {
           Aux::schema::add_defaults(
-              opt_boundary_schema.value(), this->defaults);
+              opt_boundary_schema.value(),
+              this->defaults.value("boundary_values", R"({})"_json));
         }
         return opt_boundary_schema;
       } else {
@@ -195,7 +196,9 @@ namespace Model::Componentfactory {
                         ConcreteNode>::value) {
         auto opt_control_schema = ConcreteNode::get_control_schema();
         if (opt_control_schema.has_value()) {
-          Aux::schema::add_defaults(opt_control_schema.value(), this->defaults);
+          Aux::schema::add_defaults(
+              opt_control_schema.value(),
+              this->defaults.value("control_values", "R({})"_json));
         }
         return opt_control_schema;
       } else {
@@ -210,7 +213,9 @@ namespace Model::Componentfactory {
       if constexpr (std::is_base_of<
                         Networkproblem::Statecomponent, ConcreteNode>::value) {
         auto initial_schema = ConcreteNode::get_initial_schema();
-        Aux::schema::add_defaults(initial_schema, this->defaults);
+        Aux::schema::add_defaults(
+            initial_schema,
+            this->defaults.value("initial_values", "R({})"_json));
         return std::optional<nlohmann::json>(initial_schema);
       } else {
         return std::nullopt;
@@ -285,7 +290,8 @@ namespace Model::Componentfactory {
         auto opt_boundary_schema = ConcreteEdge::get_boundary_schema();
         if (opt_boundary_schema.has_value()) {
           Aux::schema::add_defaults(
-              opt_boundary_schema.value(), this->defaults);
+              opt_boundary_schema.value(),
+              this->defaults.value("boundary_values", R"({})"_json));
         }
         return opt_boundary_schema;
       } else {
@@ -302,7 +308,9 @@ namespace Model::Componentfactory {
                         ConcreteEdge>::value) {
         auto opt_control_schema = ConcreteEdge::get_control_schema();
         if (opt_control_schema.has_value()) {
-          Aux::schema::add_defaults(opt_control_schema.value(), this->defaults);
+          Aux::schema::add_defaults(
+              opt_control_schema.value(),
+              this->defaults.value("control_values", R"({})"_json));
         }
         return opt_control_schema;
       } else {
@@ -318,7 +326,9 @@ namespace Model::Componentfactory {
                         Networkproblem::Equationcomponent,
                         ConcreteEdge>::value) {
         auto initial_schema = ConcreteEdge::get_initial_schema();
-        Aux::schema::add_defaults(initial_schema, this->defaults);
+        Aux::schema::add_defaults(
+            initial_schema,
+            this->defaults.value("initial_values", R"({})"_json));
         return std::optional<nlohmann::json>(initial_schema);
       } else {
         return std::nullopt;
