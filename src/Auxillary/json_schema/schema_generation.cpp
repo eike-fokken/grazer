@@ -21,11 +21,11 @@ namespace Aux::schema {
   ///////////////////////////////////////////////////////////////////////////
 
   int make_full_factory_schemas(path grazer_dir) {
-    nlohmann::json defaults
-        = aux_json::get_json_from_file_path(
-              grazer_dir / "problem"
-              / "problem_data.json")["problem_data"]["Network_problem"]
-              .value("defaults", R"({})"_json);
+    nlohmann::json defaults = aux_json::get_json_from_file_path(
+                                  grazer_dir / "problem" / "problem_data.json")
+                                  .at("problem_data")
+                                  .at("Network_problem")
+                                  .value("defaults", R"({})"_json);
     Model::Componentfactory::Full_factory full_factory(defaults);
     make_schemas(full_factory, grazer_dir / "schemas");
     return 0;
