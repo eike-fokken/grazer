@@ -125,7 +125,7 @@ TEST(check_for_duplicatesTEST, duplicate_id_in_neighbour_vector) {
 
 TEST(build_node_vectorTEST, node_type_not_known) {
 
-  Model::Componentfactory::Power_factory power_factory;
+  Model::Componentfactory::Power_factory power_factory({});
   auto &nodetypemap = power_factory.node_type_map;
 
   nlohmann::json node_topology;
@@ -174,7 +174,7 @@ TEST(build_node_vectorTEST, node_type_not_known) {
 
 TEST(build_node_vectorTEST, evaluate) {
 
-  Model::Componentfactory::Power_factory power_factory;
+  Model::Componentfactory::Power_factory power_factory({});
   auto &nodetypemap = power_factory.node_type_map;
 
   nlohmann::json node_topology;
@@ -217,7 +217,7 @@ TEST(build_edge_vectorTEST, edge_type_not_known) {
 
   // Building a node vector is required in order to test build_edge_vector()
 
-  Model::Componentfactory::Power_factory power_factory;
+  Model::Componentfactory::Power_factory power_factory({});
   auto &nodetypemap = power_factory.node_type_map;
 
   nlohmann::json node_topology;
@@ -282,7 +282,7 @@ TEST(build_edge_vectorTEST, edge_type_not_known) {
 
 TEST(build_edge_vectorTEST, evaluate) {
 
-  Model::Componentfactory::Power_factory power_factory;
+  Model::Componentfactory::Power_factory power_factory({});
   auto &nodetypemap = power_factory.node_type_map;
 
   nlohmann::json node_topology;

@@ -13,6 +13,5 @@ namespace Aux::schema {
   int make_full_factory_schemas(std::filesystem::path grazer_dir);
 
   void make_schemas(
-      Componentfactory const &factory, std::filesystem::path schema_dir,
-      nlohmann::json const defaults = {});
+      Componentfactory const &factory, std::filesystem::path schema_dir);
 } // namespace Aux::schema

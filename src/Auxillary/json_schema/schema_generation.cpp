@@ -21,24 +21,23 @@ namespace Aux::schema {
   ///////////////////////////////////////////////////////////////////////////
 
   int make_full_factory_schemas(path grazer_dir) {
-    Model::Componentfactory::Full_factory full_factory;
-    nlohmann::json defaults = aux_json::get_json_from_file_path(
-        grazer_dir / "problem"
-        / "problem_data.json")["problem_data"]["Network_problem"]["defaults"];
-    make_schemas(full_factory, grazer_dir / "schemas", defaults);
+    nlohmann::json defaults
+        = aux_json::get_json_from_file_path(
+              grazer_dir / "problem"
+              / "problem_data.json")["problem_data"]["Network_problem"]
+              .value("defaults", {});
+    Model::Componentfactory::Full_factory full_factory(defaults);
+    make_schemas(full_factory, grazer_dir / "schemas");
     return 0;
   }
 
-  void make_schemas(
-      Componentfactory const &factory, path schema_dir,
-      nlohmann::json const defaults) {
+  void make_schemas(Componentfactory const &factory, path schema_dir) {
 
     std::map<std::string, json> schemas{
-        {"topology",
-         factory.get_topology_schema(/*include_external=*/false, defaults)},
-        {"initial", factory.get_initial_schema(defaults)},
-        {"boundary", factory.get_boundary_schema(defaults)},
-        {"control", factory.get_control_schema(defaults)}};
+        {"topology", factory.get_topology_schema(/*include_external=*/false)},
+        {"initial", factory.get_initial_schema()},
+        {"boundary", factory.get_boundary_schema()},
+        {"control", factory.get_control_schema()}};
 
     if (std::filesystem::exists(schema_dir)) {
       assert_only_known_schemas(schema_dir, schemas);

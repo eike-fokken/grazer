@@ -12,8 +12,7 @@ namespace Model::Componentfactory {
     this->edge_type_map.insert({edgeType->get_name(), std::move(edgeType)});
   }
 
-  nlohmann::json
-  Componentfactory::get_initial_schema(nlohmann::json const defaults) const {
+  nlohmann::json Componentfactory::get_initial_schema() const {
     nlohmann::json initial_schema = R"(
     {
       "$schema": "http://json-schema.org/draft-07/schema",
@@ -29,7 +28,7 @@ namespace Model::Componentfactory {
 
     auto &node_schemas = initial_schema["properties"]["nodes"]["properties"];
     for (auto const &[name, component] : this->node_type_map) {
-      auto optional_schema = component->get_initial_schema(defaults[name]);
+      auto optional_schema = component->get_initial_schema();
       if (optional_schema.has_value()) {
         node_schemas[name]
             = Aux::schema::make_list_schema_of(optional_schema.value());
@@ -38,7 +37,7 @@ namespace Model::Componentfactory {
     auto &edge_schemas
         = initial_schema["properties"]["connections"]["properties"];
     for (auto const &[name, component] : this->edge_type_map) {
-      auto optional_schema = component->get_initial_schema(defaults[name]);
+      auto optional_schema = component->get_initial_schema();
       if (optional_schema.has_value()) {
         edge_schemas[name]
             = Aux::schema::make_list_schema_of(optional_schema.value());
@@ -48,8 +47,7 @@ namespace Model::Componentfactory {
     return initial_schema;
   }
 
-  nlohmann::json
-  Componentfactory::get_control_schema(nlohmann::json const defaults) const {
+  nlohmann::json Componentfactory::get_control_schema() const {
     nlohmann::json control_schema = R"(
     {
       "$schema": "http://json-schema.org/draft-07/schema",
@@ -65,7 +63,7 @@ namespace Model::Componentfactory {
 
     auto &node_schemas = control_schema["properties"]["nodes"]["properties"];
     for (auto const &[name, component] : this->node_type_map) {
-      auto optional_schema = component->get_control_schema(defaults[name]);
+      auto optional_schema = component->get_control_schema();
       if (optional_schema.has_value()) {
         node_schemas[name]
             = Aux::schema::make_list_schema_of(optional_schema.value());
@@ -74,7 +72,7 @@ namespace Model::Componentfactory {
     auto &edge_schemas
         = control_schema["properties"]["connections"]["properties"];
     for (auto const &[name, component] : this->edge_type_map) {
-      auto optional_schema = component->get_control_schema(defaults[name]);
+      auto optional_schema = component->get_control_schema();
       if (optional_schema.has_value()) {
         edge_schemas[name]
             = Aux::schema::make_list_schema_of(optional_schema.value());
@@ -84,8 +82,7 @@ namespace Model::Componentfactory {
     return control_schema;
   }
 
-  nlohmann::json
-  Componentfactory::get_boundary_schema(nlohmann::json const defaults) const {
+  nlohmann::json Componentfactory::get_boundary_schema() const {
     nlohmann::json boundary_schema = R"(
     {
       "$schema": "http://json-schema.org/draft-07/schema",
@@ -101,7 +98,7 @@ namespace Model::Componentfactory {
 
     auto &node_schemas = boundary_schema["properties"]["nodes"]["properties"];
     for (auto const &[name, component] : this->node_type_map) {
-      auto optional_schema = component->get_boundary_schema(defaults[name]);
+      auto optional_schema = component->get_boundary_schema();
       if (optional_schema.has_value()) {
         node_schemas[name]
             = Aux::schema::make_list_schema_of(optional_schema.value());
@@ -110,7 +107,7 @@ namespace Model::Componentfactory {
     auto &edge_schemas
         = boundary_schema["properties"]["connections"]["properties"];
     for (auto const &[name, component] : this->edge_type_map) {
-      auto optional_schema = component->get_boundary_schema(defaults[name]);
+      auto optional_schema = component->get_boundary_schema();
       if (optional_schema.has_value()) {
         edge_schemas[name]
             = Aux::schema::make_list_schema_of(optional_schema.value());
@@ -120,8 +117,8 @@ namespace Model::Componentfactory {
     return boundary_schema;
   }
 
-  nlohmann::json Componentfactory::get_topology_schema(
-      bool const include_external, nlohmann::json const defaults) const {
+  nlohmann::json
+  Componentfactory::get_topology_schema(bool const include_external) const {
 
     nlohmann::json topology_schema = R"(
     {
@@ -139,7 +136,7 @@ namespace Model::Componentfactory {
     auto &node_schemas = topology_schema["properties"]["nodes"]["properties"];
     for (auto const &[name, component] : this->node_type_map) {
       auto component_schema = Aux::schema::relax_schema(
-          component->get_schema(include_external, defaults[name]),
+          component->get_schema(include_external),
           {"desired_delta_x", "number_of_stochastic_steps", "theta_P",
            "sigma_P", "theta_Q", "sigma_Q", "balancelaw", "scheme"});
       node_schemas[name] = Aux::schema::make_list_schema_of(component_schema);
@@ -148,7 +145,7 @@ namespace Model::Componentfactory {
         = topology_schema["properties"]["connections"]["properties"];
     for (auto const &[name, component] : this->edge_type_map) {
       auto component_schema = Aux::schema::relax_schema(
-          component->get_schema(include_external, defaults[name]),
+          component->get_schema(include_external),
           {"desired_delta_x", "number_of_stochastic_steps", "theta_P",
            "sigma_P", "theta_Q", "sigma_Q", "balancelaw", "scheme"});
       edge_schemas[name] = Aux::schema::make_list_schema_of(component_schema);

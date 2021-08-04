@@ -17,7 +17,7 @@
 
 class GaspowerconnectionTEST : public EqcomponentTEST {
 public:
-  Model::Componentfactory::Full_factory factory;
+  Model::Componentfactory::Full_factory factory{{}};
 
 public:
   std::unique_ptr<Model::Networkproblem::Networkproblem>

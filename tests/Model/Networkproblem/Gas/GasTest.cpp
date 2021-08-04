@@ -36,7 +36,7 @@ nlohmann::json pipe_json(
 
 class GasTEST : public EqcomponentTEST {
 
-  Model::Componentfactory::Gas_factory factory;
+  Model::Componentfactory::Gas_factory factory{{}};
 
 public:
   std::unique_ptr<Model::Networkproblem::Networkproblem>

@@ -18,16 +18,19 @@
 
 namespace Model::Componentfactory {
 
-  void add_all_components(Componentfactory &factory) {
-    add_power_components(factory);
-    add_gas_components(factory);
+  void
+  add_all_components(Componentfactory &factory, nlohmann::json const defaults) {
+    add_power_components(factory, defaults);
+    add_gas_components(factory, defaults);
     factory.add_edge_type(
         std::make_unique<EdgeType<
-            Networkproblem::Gaspowerconnection::Gaspowerconnection>>());
+            Networkproblem::Gaspowerconnection::Gaspowerconnection>>(defaults));
     factory.add_node_type(
         std::make_unique<NodeType<
-            Networkproblem::Gaspowerconnection::ExternalPowerplant>>());
+            Networkproblem::Gaspowerconnection::ExternalPowerplant>>(defaults));
   }
 
-  Full_factory::Full_factory() { add_all_components(*this); }
+  Full_factory::Full_factory(nlohmann::json const defaults) {
+    add_all_components(*this, defaults);
+  }
 } // namespace Model::Componentfactory
