@@ -29,7 +29,7 @@ nlohmann::json stochpq_json(
     double sigma_P, double theta_Q, double sigma_Q);
 
 class stochasticPQnodeTEST : public EqcomponentTEST {
-  Model::Componentfactory::Power_factory factory{{}};
+  Model::Componentfactory::Power_factory factory{R"({})"_json};
 
 public:
   // values for the Vphinode:

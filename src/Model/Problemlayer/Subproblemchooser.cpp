@@ -20,7 +20,7 @@ namespace Model {
   std::unique_ptr<Subproblem>
   build_networkproblem(nlohmann::json &networkproblem_json) {
     Componentfactory::Full_factory componentfactory(
-        networkproblem_json.value("defaults", {}));
+        networkproblem_json.value("defaults", R"({})"_json));
 
     auto net_ptr
         = Networkproblem::build_net(networkproblem_json, componentfactory);

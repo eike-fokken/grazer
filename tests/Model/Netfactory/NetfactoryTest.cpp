@@ -125,7 +125,7 @@ TEST(check_for_duplicatesTEST, duplicate_id_in_neighbour_vector) {
 
 TEST(build_node_vectorTEST, node_type_not_known) {
 
-  Model::Componentfactory::Power_factory power_factory({});
+  Model::Componentfactory::Power_factory power_factory{R"({})"_json};
   auto &nodetypemap = power_factory.node_type_map;
 
   nlohmann::json node_topology;
