@@ -112,19 +112,19 @@ void Aux::schema::apply_defaults(json &data, json const &schema) {
   if ((schema.type() == json::value_t::object) and schema.contains("type")
       and (schema["type"] == "object") and (schema.contains("properties"))) {
     apply_defaults_unsafe(data, schema["properties"]);
-  } else {
-    // figure out what went wrong and print error message
-    std::ostringstream o;
-    if (not (schema.type() == json::value_t::object)) {
-      o << "Schema is not a JSON object!\n\n";
-    } else if (not schema.contains("type")) {
-      o << "Schema does not contain the key type!\n\n";
-    } else if (schema["type"] != "object") {
-      o << "Schema type is not \"object\"\n\n";
-    } else if (not schema.contains("properties")) {
-      o << "Schema does not contain \"properties\" key\n\n";
-    }
-    o << "Dump of Schema:\n\n" << schema;
-    throw std::runtime_error(o.str());
+    return;
   }
+  // figure out what went wrong and print error message
+  std::ostringstream o;
+  if (not (schema.type() == json::value_t::object)) {
+    o << "Schema is not a JSON object!\n\n";
+  } else if (not schema.contains("type")) {
+    o << "Schema does not contain the key type!\n\n";
+  } else if (schema["type"] != "object") {
+    o << "Schema type is not \"object\"\n\n";
+  } else if (not schema.contains("properties")) {
+    o << "Schema does not contain \"properties\" key\n\n";
+  }
+  o << "Dump of Schema:\n\n" << schema;
+  throw std::runtime_error(o.str());
 }
