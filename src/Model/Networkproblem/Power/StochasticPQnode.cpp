@@ -15,6 +15,8 @@ namespace Model::Networkproblem::Power {
     Aux::schema::add_required(schema, "theta_P", Aux::schema::type::number());
     Aux::schema::add_required(schema, "sigma_Q", Aux::schema::type::number());
     Aux::schema::add_required(schema, "theta_Q", Aux::schema::type::number());
+    Aux::schema::add_required(
+        schema, "number_of_stochastic_steps", Aux::schema::type::number());
 
     return schema;
   }
