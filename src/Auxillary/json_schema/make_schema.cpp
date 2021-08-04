@@ -176,14 +176,14 @@ namespace Aux::schema {
     return schema;
   }
 
-  void add_defaults(json &schema, json const &defaults) {
-    for (auto &[key, value] : schema.items()) {
-      if (defaults.contains(key)) {
-        value["default"] = defaults[key];
+  void add_defaults(json &properties, json const &defaults) {
+    for (auto &[name, definition] : properties.items()) {
+      if (defaults.contains(name)) {
+        definition["default"] = defaults[name];
       }
-      if (value["type"] == "object") {
+      if ((definition["type"] == "object") and (definition.contains("properties"))) {
         // recursion
-        add_defaults(value, defaults);
+        add_defaults(definition["properties"], defaults);
       }
     }
   }
