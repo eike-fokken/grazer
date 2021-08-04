@@ -202,6 +202,7 @@ namespace Aux::schema {
         std::runtime_error(o.str());
       }
       if (defaults.contains(name)) {
+        definition["default"] = defaults[name];
         if ((definition["type"] == "object")
             and (definition.contains("properties"))) {
           if (not(defaults[name].type() == json::value_t::object)) {
@@ -216,8 +217,6 @@ namespace Aux::schema {
           }
           // recursion
           add_defaults_unsafe(definition["properties"], defaults[name]);
-        } else {
-          definition["default"] = defaults[name];
         }
       }
     }

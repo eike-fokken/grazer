@@ -23,7 +23,7 @@ const json JsonValidationData::valid_schema = R"(
     "type": "object",
     "required": ["my_number"],
     "properties": {
-      "my_number": {"type": "number"},
+      "my_number": {"type": "number", "default": 3},
       "my_string": {"type": "string"}
     }
   }
@@ -79,6 +79,9 @@ TEST_F(JsonValidationData, wrongData) {
         e.what(), testing::HasSubstr("The json of the following object json "
                                      "does not conform to its schema."));
   }
+  json missing_data_copy = missing_data;
+  Aux::schema::apply_defaults(missing_data_copy, valid_schema);
+  EXPECT_NO_THROW(Aux::schema::validate_json(missing_data_copy, valid_schema));
 }
 
 TEST_F(JsonValidationData, invalidSchema) {
