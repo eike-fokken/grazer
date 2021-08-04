@@ -98,8 +98,10 @@ static void apply_defaults_unsafe(json &data, json const &schema) {
         o << "Default definition assumes \"" << key
           << "\" is an object, but while the data contains this key, it is not "
              "an object!\n\n"
-          << "Dump of schema:\n\n" << schema << "\n"
-          << "Dump of data:\n\n" << data;
+          << "Dump of schema:\n\n"
+          << schema << "\n"
+          << "Dump of data:\n\n"
+          << data;
         throw std::runtime_error(o.str());
       }
       // recursion for objects
@@ -116,7 +118,7 @@ void Aux::schema::apply_defaults(json &data, json const &schema) {
   }
   // figure out what went wrong and print error message
   std::ostringstream o;
-  if (not (schema.type() == json::value_t::object)) {
+  if (not(schema.type() == json::value_t::object)) {
     o << "Schema is not a JSON object!\n\n";
   } else if (not schema.contains("type")) {
     o << "Schema does not contain the key type!\n\n";

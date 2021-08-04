@@ -199,7 +199,7 @@ namespace Aux::schema {
     }
     // figure out what went wrong and print error message
     std::ostringstream o;
-    if (not (schema.type() == json::value_t::object)) {
+    if (not(schema.type() == json::value_t::object)) {
       o << "Schema is not a JSON object!\n\n";
     } else if (not schema.contains("type")) {
       o << "Schema does not contain the key type!\n\n";
