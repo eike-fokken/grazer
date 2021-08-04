@@ -182,9 +182,10 @@ namespace Aux::schema {
       if (not properties.contains(key)) {
         std::ostringstream o;
         o << "The defaults contain the key \"" << key
-          << "\" which is not defined in the JSON Schema!\n\n"
+          << "\", which is not defined in the JSON Schema!\n\n"
           << "Schema Dump:\n"
           << properties;
+        throw std::runtime_error(o.str());
       }
     }
 

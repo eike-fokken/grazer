@@ -1,10 +1,10 @@
 #include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
 
+#include <iostream>
 #include <make_schema.hpp>
 #include <nlohmann/json.hpp>
 #include <schema_validation.hpp>
-#include <iostream>
 
 using nlohmann::json;
 
@@ -74,7 +74,7 @@ TEST_F(TestDefaults, happy_path) {
   Aux::schema::add_defaults(schema_pipe_copy, defaults_pipe);
   Aux::schema::apply_defaults(pipe_1_copy, schema_pipe_copy);
   EXPECT_NO_THROW(Aux::schema::validate_json(pipe_1_copy, schema_pipe_copy););
-  EXPECT_EQ(pipe_1_copy["meta"], "some string"); //keeps old values
+  EXPECT_EQ(pipe_1_copy["meta"], "some string"); // keeps old values
 
   schema_pipe_copy = schema_pipe;
   json pipe_2_copy = pipe_2;
@@ -83,4 +83,19 @@ TEST_F(TestDefaults, happy_path) {
   EXPECT_NO_THROW(Aux::schema::validate_json(pipe_2_copy, schema_pipe_copy););
   EXPECT_EQ(pipe_2_copy["meta"], "test");
   EXPECT_EQ(pipe_2_copy["dimensions"]["length"]["value"], 2.1);
+}
+
+TEST_F(TestDefaults, too_many_defaults) {
+  json defaults = R"({"unknown": "entry"})"_json;
+  json schema_pipe_copy = schema_pipe;
+  try {
+    Aux::schema::add_defaults(schema_pipe_copy, defaults);
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
+  } catch (std::runtime_error &e) {
+    EXPECT_THAT(
+        e.what(),
+        testing::HasSubstr("defaults contain the key \"unknown\", which is not "
+                           "defined in the JSON Schema"));
+  }
 }
