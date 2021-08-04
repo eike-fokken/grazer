@@ -23,11 +23,13 @@ namespace Model::Componentfactory {
     add_power_components(factory, defaults);
     add_gas_components(factory, defaults);
     factory.add_edge_type(
-        std::make_unique<EdgeType<
-            Networkproblem::Gaspowerconnection::Gaspowerconnection>>(defaults));
+        std::make_unique<
+            EdgeType<Networkproblem::Gaspowerconnection::Gaspowerconnection>>(
+            defaults));
     factory.add_node_type(
-        std::make_unique<NodeType<
-            Networkproblem::Gaspowerconnection::ExternalPowerplant>>(defaults));
+        std::make_unique<
+            NodeType<Networkproblem::Gaspowerconnection::ExternalPowerplant>>(
+            defaults));
   }
 
   Full_factory::Full_factory(nlohmann::json const defaults) {
