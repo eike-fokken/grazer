@@ -234,7 +234,7 @@ namespace Aux::schema {
     } else if (not(defaults.type() == json::value_t::object)) {
       o << "Defaults are not a JSON object!\n"
         << "Dump of Defaults:\n\n"
-        << defaults << "\n";
+        << defaults << "\n\n";
     }
     o << "Dump of Schema:\n\n" << schema;
     throw std::runtime_error(o.str());

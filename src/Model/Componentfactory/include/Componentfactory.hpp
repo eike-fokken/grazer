@@ -143,7 +143,7 @@ namespace Model::Componentfactory {
                  "whether an edge was added to the Nodechooser.");
 
     NodeType(nlohmann::json const all_defaults) :
-        defaults{all_defaults.value(ConcreteNode::get_type(), R"({})"_json)} {};
+        defaults(all_defaults.value(ConcreteNode::get_type(), R"({})"_json)){};
 
     nlohmann::json const defaults;
 
@@ -251,7 +251,7 @@ namespace Model::Componentfactory {
                  "whether a node was added to the Edgechooser.");
 
     EdgeType(nlohmann::json const all_defaults) :
-        defaults{all_defaults.value(ConcreteEdge::get_type(), R"({})"_json)} {};
+        defaults(all_defaults.value(ConcreteEdge::get_type(), R"({})"_json)){};
 
     nlohmann::json const defaults;
 
