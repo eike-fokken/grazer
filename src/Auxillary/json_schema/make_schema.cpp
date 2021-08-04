@@ -177,8 +177,17 @@ namespace Aux::schema {
   }
 
   static void add_defaults_unsafe(json &properties, json const &defaults) {
-    // assumes that a "properties" json is provided, use the safe add_defaults
-    // instead
+    // assumes that a "properties" json is provided, use the safe add_defaults!
+    for (auto &[key, _] : defaults.items()) {
+      if (not properties.contains(key)) {
+        std::ostringstream o;
+        o << "The defaults contain the key \"" << key
+          << "\" which is not defined in the JSON Schema!\n\n"
+          << "Schema Dump:\n"
+          << properties;
+      }
+    }
+
     for (auto &[name, definition] : properties.items()) {
       if (not(definition.type() == json::value_t::object)) {
         std::ostringstream o;
