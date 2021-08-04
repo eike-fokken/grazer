@@ -10,7 +10,8 @@ namespace Model::Componentfactory {
    * @param factory to which the Gas Component schould be added
    * @param defaults a json with defaults for the individual components
    */
-  void add_gas_components(Componentfactory &factory, nlohmann::json const defaults);
+  void
+  add_gas_components(Componentfactory &factory, nlohmann::json const defaults);
 
   /// \brief This class provides a Componentfactory of all Gas components.
   /// \param defaults a json with defaults for the individual components

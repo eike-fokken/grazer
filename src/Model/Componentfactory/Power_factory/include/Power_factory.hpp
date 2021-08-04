@@ -10,7 +10,8 @@ namespace Model::Componentfactory {
    * @param factory to which to add the Power Components
    * @param defaults a json with defaults for the individual components
    */
-  void add_power_components(Componentfactory &factory, nlohmann::json const defaults);
+  void add_power_components(
+      Componentfactory &factory, nlohmann::json const defaults);
 
   /// \brief This class provides a Componentfactory of all Power components.
   /// \param defaults a json with defaults for the individual components
