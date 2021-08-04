@@ -180,20 +180,44 @@ namespace Aux::schema {
     // assumes that a "properties" json is provided, use the safe add_defaults
     // instead
     for (auto &[name, definition] : properties.items()) {
-      if (defaults.contains(name)) {
-        definition["default"] = defaults[name];
+      if (not(definition.type() == json::value_t::object)) {
+        std::ostringstream o;
+        o << "Property Definition is not a JSON Object!\n";
+        o << "Dump of Properties:\n\n" << properties;
+        std::runtime_error(o.str());
       }
-      if ((definition["type"] == "object")
-          and (definition.contains("properties"))) {
-        // recursion
-        add_defaults_unsafe(definition["properties"], defaults);
+      if (not definition.contains("type")) {
+        std::ostringstream o;
+        o << "\"type\" attribute is missing from property!\n";
+        o << "Dump of Properties:\n\n" << properties;
+        std::runtime_error(o.str());
+      }
+      if (defaults.contains(name)) {
+        if ((definition["type"] == "object")
+            and (definition.contains("properties"))) {
+          if (not(defaults[name].type() == json::value_t::object)) {
+            std::ostringstream o;
+            o << "Property " << name
+              << " is an object according to the JSON schema, but the default "
+                 "definition is not a JSON object.\n"
+              << "Dump Defaults:\n\n"
+              << defaults << "\n\n"
+              << "Dump Schema:\n\n"
+              << properties;
+          }
+          // recursion
+          add_defaults_unsafe(definition["properties"], defaults[name]);
+        } else {
+          definition["default"] = defaults[name];
+        }
       }
     }
   }
 
   void add_defaults(json &schema, json const &defaults) {
     if ((schema.type() == json::value_t::object) and schema.contains("type")
-        and (schema["type"] == "object") and (schema.contains("properties"))) {
+        and (schema["type"] == "object") and (schema.contains("properties"))
+        and (defaults.type() == json::value_t::object)) {
       add_defaults_unsafe(schema["properties"], defaults);
       return;
     }
@@ -207,6 +231,10 @@ namespace Aux::schema {
       o << "Schema type is not \"object\"\n\n";
     } else if (not schema.contains("properties")) {
       o << "Schema does not contain \"properties\" key\n\n";
+    } else if (not(defaults.type() == json::value_t::object)) {
+      o << "Defaults are not a JSON object!\n"
+        << "Dump of Defaults:\n\n"
+        << defaults << "\n";
     }
     o << "Dump of Schema:\n\n" << schema;
     throw std::runtime_error(o.str());
