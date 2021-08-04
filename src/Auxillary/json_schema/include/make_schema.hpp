@@ -64,5 +64,5 @@ namespace Aux::schema {
    * "schema" and whenever a key is also in the defaults will add the value as
    * default
    */
-  void add_defaults(json &properties, json const &defaults);
+  void add_defaults(json &schema, json const &defaults);
 } // namespace Aux::schema
