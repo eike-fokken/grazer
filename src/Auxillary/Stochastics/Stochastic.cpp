@@ -14,22 +14,23 @@ namespace Aux {
     }
 
     double stochastic_stepsize = delta_t / number_of_stochastic_steps;
-    if (theta <0){
-      gthrow({"The parameter theta must fulfill theta > 0. Actual value: ",
+    if (theta < 0) {
+      gthrow(
+          {"The parameter theta must fulfill theta > 0. Actual value: ",
            std::to_string(theta)});
     }
     if (number_of_stochastic_steps < 0) {
       gthrow(
-          {"The number of stochstic time steps must fulfill N > 0. Actual value: ",
+          {"The number of stochstic time steps must fulfill N > 0. Actual "
+           "value: ",
            std::to_string(number_of_stochastic_steps)});
     }
 
-      if (theta * stochastic_stepsize >= stability_parameter) {
-        number_of_stochastic_steps
-            = static_cast<int>(
-                  std::ceil(theta * delta_t / (stability_parameter)))
-              + 1;
-      }
+    if (theta * stochastic_stepsize >= stability_parameter) {
+      number_of_stochastic_steps
+          = static_cast<int>(std::ceil(theta * delta_t / (stability_parameter)))
+            + 1;
+    }
     return number_of_stochastic_steps;
   }
 } // namespace Aux
