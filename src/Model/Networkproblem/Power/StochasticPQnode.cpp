@@ -1,5 +1,4 @@
 #include "StochasticPQnode.hpp"
-#include "Normaldistribution.hpp"
 #include "Powernode.hpp"
 #include "Stochastic.hpp"
 #include "make_schema.hpp"
