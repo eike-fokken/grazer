@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include <nlohmann/json.hpp>
 #include <regex>
 #include <stdexcept>
@@ -248,8 +249,9 @@ rgb rgb_color(double minimum, double maximum, double value) {
 
 std::pair<double, double> extract_min_max_values(
     json const &results, std::vector<std::string> const &types) {
-  double min;
-  double max;
+
+  double min = std::numeric_limits<double>::max();
+  double max = std::numeric_limits<double>::min();
 
   bool initialized = false;
 
