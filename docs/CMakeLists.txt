@@ -13,15 +13,16 @@ else()
   doxygen_add_docs(doxygen "${PROJECT_SOURCE_DIR}/src" "${PROJECT_SOURCE_DIR}/helper_functions" WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}" )
 
   # only build latex if doxygen is installed otherwise add_dependencies(docs doxygen) will throw
-  if(NOT LATEX_FOUND)
-    message(STATUS "pdflatex not found! building without latex docs.")
-  else()
-    add_latex_document(
-      userguide.tex
-      TARGET_NAME user_guide
-      EXCLUDE_FROM_ALL)
-    # explicitly add dependency to doc
-    add_dependencies(docs user_guide doxygen)
-  endif()
+  add_dependencies(docs doxygen)
 endif()
 
+if(NOT LATEX_FOUND)
+  message(STATUS "pdflatex not found! building without latex docs.")
+else()
+  add_latex_document(
+    userguide.tex
+    TARGET_NAME user_guide
+    EXCLUDE_FROM_ALL)
+  # explicitly add dependency to doc
+  add_dependencies(docs user_guide)
+endif()
