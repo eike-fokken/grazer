@@ -165,17 +165,6 @@ namespace Aux::schema {
     schema["properties"][property_name] = property_def;
   }
 
-  json relax_schema(json schema, std::vector<std::string> keys) {
-    for (auto const &key : keys) {
-      auto it = std::find(
-          schema["required"].begin(), schema["required"].end(), key);
-      if (it != schema["required"].end()) {
-        schema["required"].erase(it);
-      }
-    }
-    return schema;
-  }
-
   static void add_defaults_unsafe(json &properties, json const &defaults) {
     // assumes that a "properties" json is provided, use the safe add_defaults!
     for (auto &[key, _] : defaults.items()) {
@@ -247,6 +236,36 @@ namespace Aux::schema {
     }
     o << "Dump of Schema:\n\n" << schema;
     throw std::runtime_error(o.str());
+  }
+
+  void remove_defaults_from_required(json &schema) {
+    if ((schema.type() == json::value_t::object) and schema.contains("type")
+        and (schema["type"] == "object") and schema.contains("properties")) {
+      if (schema.contains("required")) {
+        auto required_list = schema["required"];
+        if (not(required_list.type() == json::value_t::array)) {
+          gthrow({"Required List is not a List"}) // TODO: better errmsg + test
+                                                  // elements are strings
+        }
+        required_list.erase( // resizes the vector using the first empty element
+                             // returned by remove_if and the current vector end
+            std::remove_if(
+                // removes all matching elements and fills the gaps by shifting
+                // the remaining elements forward (does not resize!)
+                required_list.begin(), required_list.end(),
+                [&schema](std::string req_property) { // condition lambda
+                  return schema["properties"]
+                      .value(req_property, R"({})"_json)
+                      .contains("default");
+                }),
+            required_list.end());
+      }
+      for (auto &[_, definition] : schema["properties"].items()) {
+        // recursion
+        remove_defaults_from_required(definition);
+      }
+    }
+    return;
   }
 
 } // namespace Aux::schema
