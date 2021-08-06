@@ -189,7 +189,7 @@ namespace Aux::schema {
         std::ostringstream o;
         o << "\"type\" attribute is missing from property!\n";
         o << "Dump of Properties:\n\n" << properties;
-        std::runtime_error(o.str());
+        throw std::runtime_error(o.str());
       }
       if (defaults.contains(name)) {
         definition["default"] = defaults[name];
@@ -204,6 +204,7 @@ namespace Aux::schema {
               << defaults << "\n\n"
               << "Dump Schema:\n\n"
               << properties;
+            throw std::runtime_error(o.str());
           }
           // recursion
           add_defaults_unsafe(definition["properties"], defaults[name]);
@@ -243,9 +244,20 @@ namespace Aux::schema {
         and (schema["type"] == "object") and schema.contains("properties")) {
       if (schema.contains("required")) {
         auto required_list = schema["required"];
-        if (not(required_list.type() == json::value_t::array)) {
-          gthrow({"Required List is not a List"}) // TODO: better errmsg + test
-                                                  // elements are strings
+        if (required_list.type() != json::value_t::array) {
+          std::ostringstream o;
+          o << "Required List is not a List!\n\n"
+            << "Dump of Schema:\n"
+            << schema << "\n";
+          throw std::runtime_error(o.str());
+        }
+        if ((required_list.size() > 0)
+            and (required_list[0].type() != json::value_t::string)) {
+          std::ostringstream o;
+          o << "Required List contains something other than strings!\n\n"
+            << "Dump of Schema:\n"
+            << schema << "\n";
+          throw std::runtime_error(o.str());
         }
         required_list.erase( // resizes the vector using the first empty element
                              // returned by remove_if and the current vector end
