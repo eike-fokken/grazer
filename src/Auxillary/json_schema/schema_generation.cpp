@@ -55,9 +55,12 @@ namespace Aux::schema {
         {"topology",
          factory.get_topology_schema(
              /*allow_required_defaults=*/false, /*include_external=*/false)},
-        {"initial", factory.get_initial_schema(/*allow_required_defaults=*/false)},
-        {"boundary", factory.get_boundary_schema(/*allow_required_defaults=*/false)},
-        {"control", factory.get_control_schema(/*allow_required_defaults=*/false)}};
+        {"initial",
+         factory.get_initial_schema(/*allow_required_defaults=*/false)},
+        {"boundary",
+         factory.get_boundary_schema(/*allow_required_defaults=*/false)},
+        {"control",
+         factory.get_control_schema(/*allow_required_defaults=*/false)}};
 
     if (std::filesystem::exists(schema_dir)) {
       assert_only_known_schemas(schema_dir, schemas);
