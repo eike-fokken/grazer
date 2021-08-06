@@ -1,6 +1,7 @@
 #include <Aux_json.hpp>
 #include <Exception.hpp>
 #include <fstream>
+#include <iostream>
 #include <schema_generation.hpp>
 
 namespace Aux::schema {
@@ -21,12 +22,28 @@ namespace Aux::schema {
   ///////////////////////////////////////////////////////////////////////////
 
   int make_full_factory_schemas(path grazer_dir) {
-    nlohmann::json defaults = aux_json::get_json_from_file_path(
-                                  grazer_dir / "problem" / "problem_data.json")
-                                  .at("problem_data")
-                                  .at("subproblems")
-                                  .at("Network_problem")
-                                  .value("defaults", R"({})"_json);
+    std::filesystem::path problem_data_path
+        = grazer_dir / "problem" / "problem_data.json";
+    nlohmann::json defaults = R"({})"_json;
+    if (std::filesystem::exists(problem_data_path)) {
+      nlohmann::json problem_data
+          = aux_json::get_json_from_file_path(problem_data_path);
+      try {
+        defaults = problem_data.at("problem_data")
+                       .at("subproblems")
+                       .at("Network_problem")
+                       .value("defaults", R"({})"_json);
+      } catch (nlohmann::json::out_of_range &e) {
+        std::cout << "[Warning] The `problem_data.json` does not have the "
+                     "expected structure:\n"
+                  << "  problem_data.subproblems.Network_problem.defaults\n"
+                  << "  " << e.what() << "\n"
+                  << "Generating Schemas without defaults!" << std::endl;
+      }
+    } else {
+      std::cout << "[Warning] The `problem_data.json` does not exist\n"
+                << "Generating Schemas without defaults!" << std::endl;
+    }
     Model::Componentfactory::Full_factory full_factory(defaults);
     make_schemas(full_factory, grazer_dir / "schemas");
     return 0;
