@@ -12,7 +12,7 @@ else()
 
   doxygen_add_docs(doxygen "${PROJECT_SOURCE_DIR}/src" "${PROJECT_SOURCE_DIR}/helper_functions" WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}" )
 
-  # only build latex if doxygen is installed otherwise add_dependencies(docs doxygen) will throw
+  # explicitly add dependency to doc
   add_dependencies(docs doxygen)
 endif()
 
