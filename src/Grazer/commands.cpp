@@ -34,22 +34,27 @@ int grazer::run(std::filesystem::path directory_path) {
   std::cout << "data read" << std::endl;
 
   auto wall_clock_setup_end = std::chrono::system_clock::now();
-  std::chrono::duration sim_duration = timeevolver.simulate(
-      timedata, problem, number_of_states, initial_value_json);
+
+  // ---------------- actual simulation ------------------------------ //
+  timeevolver.simulate(timedata, problem, number_of_states, initial_value_json);
+  // ----------------------------------------------------------------- //
+
+  auto wall_clock_sim_end = std::chrono::system_clock::now();
+  std::chrono::duration<double> sim_duration
+      = wall_clock_sim_end - wall_clock_setup_end;
 
   std::chrono::duration<double> setup_duration
       = wall_clock_setup_end - wall_clock_start;
+
   auto wall_clock_end = std::chrono::system_clock::now();
+
   std::chrono::duration<double> total_duration
       = wall_clock_end - wall_clock_start;
+
   std::cout << "setup took: " << setup_duration.count() << " seconds"
             << std::endl;
   std::cout << "simulation took: " << sim_duration.count() << " seconds"
             << std::endl;
-  std::cout << "teardown took: "
-            << total_duration.count() - setup_duration.count()
-                   - sim_duration.count()
-            << " seconds" << std::endl;
   std::cout << "-----------------------------" << std::endl;
   std::cout << "total: " << total_duration.count() << " seconds" << std::endl;
   return EXIT_SUCCESS;

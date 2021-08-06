@@ -4,8 +4,6 @@
 #include "make_schema.hpp"
 #include "schema_validation.hpp"
 
-#include <chrono>
-#include <ctime>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -67,13 +65,11 @@ namespace Model {
       retries(timeevolver_data["retries"]),
       use_simplified_newton(timeevolver_data["use_simplified_newton"]) {}
 
-  std::chrono::duration<double> Timeevolver::simulate(
+  void Timeevolver::simulate(
       Timedata timedata, Model::Problem &problem, int number_of_states,
       nlohmann::json &problem_initial_json) {
     double last_time = timedata.get_starttime() - timedata.get_delta_t();
     Eigen::VectorXd last_state(number_of_states);
-
-    auto wall_clock_start = std::chrono::system_clock::now();
 
     problem.set_initial_values(last_state, problem_initial_json);
 
@@ -161,8 +157,6 @@ namespace Model {
     }
 
     std::cout << "=== simulation end ===" << std::endl; // provide regex help
-    auto wall_clock_end = std::chrono::system_clock::now();
-    return wall_clock_end - wall_clock_start;
   }
 
 } // namespace Model

@@ -1,6 +1,5 @@
 #pragma once
 #include "Newtonsolver.hpp"
-#include <chrono>
 #include <nlohmann/json.hpp>
 
 namespace Model {
@@ -37,7 +36,7 @@ namespace Model {
     static nlohmann::json get_schema();
     static Timeevolver make_instance(nlohmann::json const &timeevolver_data);
 
-    std::chrono::duration<double> simulate(
+    void simulate(
         Timedata timedata, Model::Problem &problem, int number_of_states,
         nlohmann::json &problem_initial_json);
 
