@@ -198,7 +198,7 @@ namespace Model::Componentfactory {
         if (opt_control_schema.has_value()) {
           Aux::schema::add_defaults(
               opt_control_schema.value(),
-              this->defaults.value("control_values", "R({})"_json));
+              this->defaults.value("control_values", R"({})"_json));
         }
         return opt_control_schema;
       } else {
@@ -215,7 +215,7 @@ namespace Model::Componentfactory {
         auto initial_schema = ConcreteNode::get_initial_schema();
         Aux::schema::add_defaults(
             initial_schema,
-            this->defaults.value("initial_values", "R({})"_json));
+            this->defaults.value("initial_values", R"({})"_json));
         return std::optional<nlohmann::json>(initial_schema);
       } else {
         return std::nullopt;

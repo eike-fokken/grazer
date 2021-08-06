@@ -24,6 +24,7 @@ namespace Aux::schema {
     nlohmann::json defaults = aux_json::get_json_from_file_path(
                                   grazer_dir / "problem" / "problem_data.json")
                                   .at("problem_data")
+                                  .at("subproblems")
                                   .at("Network_problem")
                                   .value("defaults", R"({})"_json);
     Model::Componentfactory::Full_factory full_factory(defaults);
