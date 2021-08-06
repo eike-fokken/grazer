@@ -32,7 +32,7 @@ namespace Aux::schema {
         defaults = problem_data.at("problem_data")
                        .at("subproblems")
                        .at("Network_problem")
-                       .value("defaults", R"({})"_json);
+                       .at("defaults");
       } catch (nlohmann::json::out_of_range &e) {
         std::cout << "[Warning] The `problem_data.json` does not have the "
                      "expected structure:\n"
