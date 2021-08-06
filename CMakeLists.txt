@@ -179,6 +179,36 @@ add_custom_target(cclean COMMAND cd ${CMAKE_SOURCE_DIR} && rm -r ${CMAKE_SOURCE_
   USES_TERMINAL
 )
 
+# GUI
+
+
+add_custom_target(
+  grazer_copy
+  COMMAND "cp -u $<TARGET_FILE:grazer> gui/bin/grazer$<IF:$<BOOL:${WIN32}>,.exe,>"
+  WORKING_DIRECTORY "${CMAKE_SOURCE_DIRECTORY}"
+  # USE_TERMINAL
+)
+add_dependencies(grazer_copy grazer)
+
+if(UNIX AND NOT APPLE)
+  file(READ /etc/issue version_raw)
+  string(TOLOWER ${version_raw} version_raw)
+  string(REGEX REPLACE "(ubuntu)(\\ )([^\\.\\ ]+\\.[^\\.\\ ]+)(.*)" "\\1-\\3" version ${version_raw})
+  message("Matched OS: ${version}")
+  set(CUSTOM_WXPYTHON_INSTALL "&& pip install -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/${version} wxPython==4.1.0")
+  message("Will try: ${CUSTOM_WXPYTHON_INSTALL}")
+endif(UNIX AND NOT APPLE)
+
+add_custom_target(
+  grazer_gui
+  COMMAND pip install --upgrade pip && pip install wheel ${CUSTOM_WXPYTHON_INSTALL} && pip install -r requirements.txt && pyinstaller --windowed -F gui.spec
+  WORKING_DIRECTORY gui
+  USES_TERMINAL
+)
+
+add_dependencies(grazer_gui grazer_copy)
+
+
 # Installation
 
 install(
@@ -188,4 +218,5 @@ install(
 )
 if(WIN32)
   # figure out how to modify PATH variable: https://stackoverflow.com/q/68683998/6662425
+
 endif(WIN32)
