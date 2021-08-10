@@ -46,9 +46,8 @@ namespace Model::Componentfactory {
      * into the topology schema
      * @return nlohmann::json
      */
-    virtual nlohmann::json get_schema(
-        bool const allow_required_defaults,
-        bool const include_external) const = 0;
+    virtual nlohmann::json
+    get_schema(bool allow_required_defaults, bool include_external) const = 0;
 
     /**
      * @brief Get the boundary schema
@@ -56,13 +55,13 @@ namespace Model::Componentfactory {
      * @return nlohmann::json
      */
     virtual std::optional<nlohmann::json>
-    get_boundary_schema(bool const allow_required_defaults) const = 0;
+    get_boundary_schema(bool allow_required_defaults) const = 0;
 
     virtual std::optional<nlohmann::json>
-    get_control_schema(bool const allow_required_defaults) const = 0;
+    get_control_schema(bool allow_required_defaults) const = 0;
 
     virtual std::optional<nlohmann::json>
-    get_initial_schema(bool const allow_requred_defaults) const = 0;
+    get_initial_schema(bool allow_requred_defaults) const = 0;
   };
 
   /**
@@ -149,7 +148,7 @@ namespace Model::Componentfactory {
                  ": ConcreteNode must inherit from Network::Node.\n Check "
                  "whether an edge was added to the Nodechooser.");
 
-    NodeType(nlohmann::json const all_defaults) :
+    NodeType(nlohmann::json const &all_defaults) :
         defaults(all_defaults.value(ConcreteNode::get_type(), R"({})"_json)){};
 
     nlohmann::json const defaults;
@@ -157,8 +156,7 @@ namespace Model::Componentfactory {
     std::string get_name() const override { return ConcreteNode::get_type(); };
 
     nlohmann::json get_schema(
-        const bool allow_required_defaults,
-        const bool include_external) const override {
+        bool allow_required_defaults, bool include_external) const override {
       auto schema = ConcreteNode::get_schema();
       if (include_external) {
         auto optional_boundary = get_boundary_schema(allow_required_defaults);
@@ -180,7 +178,7 @@ namespace Model::Componentfactory {
     };
 
     std::optional<nlohmann::json>
-    get_boundary_schema(const bool allow_required_defaults) const override {
+    get_boundary_schema(bool allow_required_defaults) const override {
       // should really be `requires` (cf.
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
@@ -205,7 +203,7 @@ namespace Model::Componentfactory {
     };
 
     std::optional<nlohmann::json>
-    get_control_schema(const bool allow_required_defaults) const override {
+    get_control_schema(bool allow_required_defaults) const override {
       // should really be `requires` (cf.
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
@@ -229,7 +227,7 @@ namespace Model::Componentfactory {
     };
 
     std::optional<nlohmann::json>
-    get_initial_schema(const bool allow_required_defaults) const override {
+    get_initial_schema(bool allow_required_defaults) const override {
       // should really be `requires` (cf.
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
@@ -283,7 +281,7 @@ namespace Model::Componentfactory {
                  ": ConcreteEdge must inherit from Network::Edge.\n Check "
                  "whether a node was added to the Edgechooser.");
 
-    EdgeType(nlohmann::json const all_defaults) :
+    EdgeType(nlohmann::json const &all_defaults) :
         defaults(all_defaults.value(ConcreteEdge::get_type(), R"({})"_json)){};
 
     nlohmann::json const defaults;
@@ -291,8 +289,7 @@ namespace Model::Componentfactory {
     std::string get_name() const override { return ConcreteEdge::get_type(); };
 
     nlohmann::json get_schema(
-        const bool allow_required_defaults,
-        const bool include_external) const override {
+        bool allow_required_defaults, bool include_external) const override {
       auto schema = ConcreteEdge::get_schema();
       if (include_external) {
         auto optional_boundary = get_boundary_schema(allow_required_defaults);
@@ -314,7 +311,7 @@ namespace Model::Componentfactory {
     };
 
     std::optional<nlohmann::json>
-    get_boundary_schema(const bool allow_required_defaults) const override {
+    get_boundary_schema(bool allow_required_defaults) const override {
       // should really be `requires` (cf.
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
@@ -338,7 +335,7 @@ namespace Model::Componentfactory {
     };
 
     std::optional<nlohmann::json>
-    get_control_schema(const bool allow_required_defaults) const override {
+    get_control_schema(bool allow_required_defaults) const override {
       // should really be `requires` (cf.
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
@@ -362,7 +359,7 @@ namespace Model::Componentfactory {
     };
 
     std::optional<nlohmann::json>
-    get_initial_schema(const bool allow_required_defaults) const override {
+    get_initial_schema(bool allow_required_defaults) const override {
       // should really be `requires` (cf.
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
@@ -428,29 +425,28 @@ namespace Model::Componentfactory {
      * @return nlohmann::json
      */
     nlohmann::json get_topology_schema(
-        bool const allow_required_defaults, bool const include_external) const;
+        bool allow_required_defaults, bool include_external) const;
 
     /**
      * @brief Return the Full JSON Schema for the Boundary Behaviour Description
      *
      * @return nlohmann::json
      */
-    nlohmann::json
-    get_boundary_schema(bool const allow_required_defaults) const;
+    nlohmann::json get_boundary_schema(bool allow_required_defaults) const;
 
     /**
      * @brief Return the Full JSON Schema for the Control Data Description
      *
      * @return nlohmann::json
      */
-    nlohmann::json get_control_schema(bool const allow_required_defaults) const;
+    nlohmann::json get_control_schema(bool allow_required_defaults) const;
 
     /**
      * @brief Return the Full JSON Schema for the Initial Data Description
      *
      * @return nlohmann::json
      */
-    nlohmann::json get_initial_schema(bool const allow_required_defaults) const;
+    nlohmann::json get_initial_schema(bool allow_required_defaults) const;
   };
 
 } // namespace Model::Componentfactory

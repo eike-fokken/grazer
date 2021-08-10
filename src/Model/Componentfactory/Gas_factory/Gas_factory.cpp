@@ -10,8 +10,8 @@
 
 namespace Model::Componentfactory {
 
-  void
-  add_gas_components(Componentfactory &factory, nlohmann::json const defaults) {
+  void add_gas_components(
+      Componentfactory &factory, nlohmann::json const &defaults) {
     factory.add_node_type(
         std::make_unique<NodeType<Networkproblem::Gas::Source>>(defaults));
     factory.add_node_type(
@@ -31,7 +31,7 @@ namespace Model::Componentfactory {
             defaults));
   }
 
-  Gas_factory::Gas_factory(nlohmann::json const defaults) {
+  Gas_factory::Gas_factory(nlohmann::json const &defaults) {
     add_gas_components(*this, defaults);
   }
 } // namespace Model::Componentfactory

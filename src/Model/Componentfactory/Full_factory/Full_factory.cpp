@@ -18,8 +18,8 @@
 
 namespace Model::Componentfactory {
 
-  void
-  add_all_components(Componentfactory &factory, nlohmann::json const defaults) {
+  void add_all_components(
+      Componentfactory &factory, nlohmann::json const &defaults) {
     add_power_components(factory, defaults);
     add_gas_components(factory, defaults);
     factory.add_edge_type(
@@ -32,7 +32,7 @@ namespace Model::Componentfactory {
             defaults));
   }
 
-  Full_factory::Full_factory(nlohmann::json const defaults) {
+  Full_factory::Full_factory(nlohmann::json const &defaults) {
     add_all_components(*this, defaults);
   }
 } // namespace Model::Componentfactory

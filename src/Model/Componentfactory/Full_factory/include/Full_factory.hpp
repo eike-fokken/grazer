@@ -12,7 +12,7 @@ namespace Model::Componentfactory {
    * @param defaults a json with defaults for the individual components
    */
   void
-  add_all_components(Componentfactory &factory, nlohmann::json const defaults);
+  add_all_components(Componentfactory &factory, nlohmann::json const &defaults);
 
   /// \brief This class provides a Componentfactory of all Component types
   /// defined for the Networkproblem.
@@ -20,6 +20,6 @@ namespace Model::Componentfactory {
   ///
   /// At the moment these are Gas components and Power components.
   struct Full_factory : public Componentfactory {
-    Full_factory(nlohmann::json const defaults);
+    Full_factory(nlohmann::json const &defaults);
   };
 } // namespace Model::Componentfactory

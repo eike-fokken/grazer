@@ -19,8 +19,11 @@ namespace Aux::schema {
    */
   void assert_only_known_schemas(
       path directory, std::map<std::string, json> schemas);
-  ///////////////////////////////////////////////////////////////////////////
 
+  //////////////////////////////////////////////////////////////////////////////
+  // For future coders: This function is written only for Network_problem
+  // because up to now we don't have other types of problem.
+  //////////////////////////////////////////////////////////////////////////////
   int make_full_factory_schemas(path grazer_dir) {
     std::filesystem::path problem_data_path
         = grazer_dir / "problem" / "problem_data.json";

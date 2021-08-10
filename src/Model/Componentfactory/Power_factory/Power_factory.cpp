@@ -10,7 +10,7 @@
 namespace Model::Componentfactory {
 
   void add_power_components(
-      Componentfactory &factory, nlohmann::json const defaults) {
+      Componentfactory &factory, nlohmann::json const &defaults) {
     factory.add_node_type(
         std::make_unique<NodeType<Networkproblem::Power::Vphinode>>(defaults));
     factory.add_node_type(
@@ -26,7 +26,7 @@ namespace Model::Componentfactory {
             defaults));
   }
 
-  Power_factory::Power_factory(nlohmann::json const defaults) {
+  Power_factory::Power_factory(nlohmann::json const &defaults) {
     add_power_components(*this, defaults);
   }
 } // namespace Model::Componentfactory

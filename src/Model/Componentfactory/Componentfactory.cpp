@@ -12,8 +12,8 @@ namespace Model::Componentfactory {
     this->edge_type_map.insert({edgeType->get_name(), std::move(edgeType)});
   }
 
-  nlohmann::json Componentfactory::get_initial_schema(
-      bool const allow_required_defaults) const {
+  nlohmann::json
+  Componentfactory::get_initial_schema(bool allow_required_defaults) const {
     nlohmann::json initial_schema = R"(
     {
       "$schema": "http://json-schema.org/draft-07/schema",
@@ -50,8 +50,8 @@ namespace Model::Componentfactory {
     return initial_schema;
   }
 
-  nlohmann::json Componentfactory::get_control_schema(
-      bool const allow_required_defaults) const {
+  nlohmann::json
+  Componentfactory::get_control_schema(bool allow_required_defaults) const {
     nlohmann::json control_schema = R"(
     {
       "$schema": "http://json-schema.org/draft-07/schema",
@@ -88,8 +88,8 @@ namespace Model::Componentfactory {
     return control_schema;
   }
 
-  nlohmann::json Componentfactory::get_boundary_schema(
-      bool const allow_required_defaults) const {
+  nlohmann::json
+  Componentfactory::get_boundary_schema(bool allow_required_defaults) const {
     nlohmann::json boundary_schema = R"(
     {
       "$schema": "http://json-schema.org/draft-07/schema",
@@ -127,7 +127,7 @@ namespace Model::Componentfactory {
   }
 
   nlohmann::json Componentfactory::get_topology_schema(
-      const bool allow_required_defaults, bool const include_external) const {
+      bool allow_required_defaults, bool include_external) const {
 
     nlohmann::json topology_schema = R"(
     {
