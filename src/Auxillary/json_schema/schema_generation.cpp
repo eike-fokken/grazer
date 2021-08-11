@@ -1,5 +1,7 @@
+#include <Aux_json.hpp>
 #include <Exception.hpp>
 #include <fstream>
+#include <iostream>
 #include <schema_generation.hpp>
 
 namespace Aux::schema {
@@ -17,10 +19,35 @@ namespace Aux::schema {
    */
   void assert_only_known_schemas(
       path directory, std::map<std::string, json> schemas);
-  ///////////////////////////////////////////////////////////////////////////
 
+  //////////////////////////////////////////////////////////////////////////////
+  // For future coders: This function is written only for Network_problem
+  // because up to now we don't have other types of problem.
+  //////////////////////////////////////////////////////////////////////////////
   int make_full_factory_schemas(path grazer_dir) {
-    Model::Componentfactory::Full_factory full_factory;
+    std::filesystem::path problem_data_path
+        = grazer_dir / "problem" / "problem_data.json";
+    nlohmann::json defaults = R"({})"_json;
+    if (std::filesystem::exists(problem_data_path)) {
+      nlohmann::json problem_data
+          = aux_json::get_json_from_file_path(problem_data_path);
+      try {
+        defaults = problem_data.at("problem_data")
+                       .at("subproblems")
+                       .at("Network_problem")
+                       .at("defaults");
+      } catch (nlohmann::json::out_of_range &e) {
+        std::cout << "[Warning] The `problem_data.json` does not have the "
+                     "expected structure:\n"
+                  << "  problem_data.subproblems.Network_problem.defaults\n"
+                  << "  " << e.what() << "\n"
+                  << "Generating Schemas without defaults!" << std::endl;
+      }
+    } else {
+      std::cout << "[Warning] The `problem_data.json` does not exist\n"
+                << "Generating Schemas without defaults!" << std::endl;
+    }
+    Model::Componentfactory::Full_factory full_factory(defaults);
     make_schemas(full_factory, grazer_dir / "schemas");
     return 0;
   }
@@ -28,10 +55,15 @@ namespace Aux::schema {
   void make_schemas(Componentfactory const &factory, path schema_dir) {
 
     std::map<std::string, json> schemas{
-        {"topology", factory.get_topology_schema(/*include_external=*/false)},
-        {"initial", factory.get_initial_schema()},
-        {"boundary", factory.get_boundary_schema()},
-        {"control", factory.get_control_schema()}};
+        {"topology",
+         factory.get_topology_schema(
+             /*allow_required_defaults=*/false, /*include_external=*/false)},
+        {"initial",
+         factory.get_initial_schema(/*allow_required_defaults=*/false)},
+        {"boundary",
+         factory.get_boundary_schema(/*allow_required_defaults=*/false)},
+        {"control",
+         factory.get_control_schema(/*allow_required_defaults=*/false)}};
 
     if (std::filesystem::exists(schema_dir)) {
       assert_only_known_schemas(schema_dir, schemas);

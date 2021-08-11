@@ -24,16 +24,20 @@
         {
             "Network_problem":
             {
-                "StochasticPQnode_data": {
-                    "number_of_stochastic_steps": 1000,
-                    "theta_P": 0.3,
-                    "sigma_P": 0.25,
-                    "theta_Q": 0.3,
-                    "sigma_Q": 0.25
+                "defaults":{
+                    "StochasticPQnode": {
+                        "number_of_stochastic_steps": 1000,
+                        "theta_P": 0.3,
+                        "sigma_P": 0.25,
+                        "theta_Q": 0.3,
+                        "sigma_Q": 0.25
+                    },
+                    "Pipe":{
+                        "balancelaw": "Isothermaleulerequation",
+                        "scheme": "Implicitboxscheme",
+                        "desired_delta_x": 10000
+                    }
                 },
-                "balancelaw": "Isothermaleulerequation",
-                "scheme": "Implicitboxscheme",
-                "desired_delta_x": 10000,
                 "topology_json":"topology.json",
                 "boundary_json":"boundary.json",
                 "control_json":"control.json"

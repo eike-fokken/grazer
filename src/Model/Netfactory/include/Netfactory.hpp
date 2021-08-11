@@ -74,10 +74,6 @@ namespace Model::Networkproblem {
       nlohmann::json &topology, nlohmann::json &boundary,
       std::string const &name_of_inserted_json);
 
-  /// \brief Reads values that are meant for many components and writes them
-  /// into each component json.
-  void supply_overall_values_to_components(nlohmann::json &network_json);
-
   /// \brief Constructs a \ref Network::Net "Net" object from the given json.
   ///
   /// @tparam Componentfactory Chooses the \ref

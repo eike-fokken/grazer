@@ -54,5 +54,14 @@ namespace Aux::schema {
       json &schema, std::string const &property_name, json const &property_def);
   void add_property(
       json &schema, std::string const &property_name, json const &property_def);
-  json relax_schema(json component_schema, std::vector<std::string> keys);
+
+  /**
+   * @brief Adds default values to Json Schema
+   *
+   * @param schema target for the defaults
+   * @param defaults json dictionary of defaults
+   */
+  void add_defaults(json &schema, json const &defaults);
+
+  void remove_defaults_from_required(json &schema);
 } // namespace Aux::schema
