@@ -40,7 +40,7 @@ namespace io {
   /** Creates a unique json file in directory/output/ for program output
    *
    *  A unique name is found by attaching the number of milliseconds since the
-   *  unique epoch to the filename "output". If this name is already taken, it
+   *  unix epoch to the filename "output". If this name is already taken, it
    *  sleeps for at least one millisecond and tries again. Throws if 100 tries
    *  fail.
    *  @throws if directory/output/ is present but not a directory.
