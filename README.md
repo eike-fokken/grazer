@@ -26,7 +26,7 @@ to fetch dependencies (`--depth=1` is not needed but cuts down the size tremendo
 Then run
 
 ```
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -S . -B release
+cmake -DCMAKE_BUILD_TYPE=Release -S . -B release
 ```
 
 and afterwards

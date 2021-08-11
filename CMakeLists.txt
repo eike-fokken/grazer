@@ -125,7 +125,7 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     "$<$<NOT:$<CONFIG:Debug>>:${release_msvc_options}>"
   )
 else()
-  message(FATAL_ERROR "Unknown compiler: ${CMAKE_CXX_COMPILER_ID}")
+  message(WARNING "Your compiler, ${CMAKE_CXX_COMPILER_ID}, is untested with Grazer but maybe still works. Tested compilers are gcc, clang and msvc.")
 endif()
 
 
