@@ -251,13 +251,15 @@ namespace Model::Balancelaw {
 
   double Isothermaleulerequation::Reynolds(double q, double diameter) {
     double Re;
-    Re = diameter / eta * rho_0 * std::abs(q);
+    auto Area = Aux::circle_area(0.5 * diameter);
+    Re = diameter / (Area * eta) * rho_0 * std::abs(q);
     return Re;
   }
 
   double Isothermaleulerequation::coeff_of_Reynolds(double diameter) {
     double coeff;
-    coeff = diameter / eta * rho_0;
+    auto Area = Aux::circle_area(0.5 * diameter);
+    coeff = diameter / (Area * eta) * rho_0;
     return coeff;
   }
 
@@ -270,7 +272,8 @@ namespace Model::Balancelaw {
            "numbers over and at 2000!"});
     }
     double dRe_dq;
-    dRe_dq = diameter / eta * rho_0 * Aux::dabs_dx(q);
+    auto Area = Aux::circle_area(0.5 * diameter);
+    dRe_dq = diameter / (Area * eta) * rho_0 * Aux::dabs_dx(q);
     return dRe_dq;
   }
 
