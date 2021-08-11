@@ -3,6 +3,7 @@
 #include "Input_output.hpp"
 #include "Problem.hpp"
 #include "Timeevolver.hpp"
+#include <bits/stdint-intn.h>
 #include <chrono>
 #include <cstdlib>
 #include <iostream>
@@ -37,7 +38,7 @@ int grazer::run(std::filesystem::path directory_path) {
     auto timeevolver = Model::Timeevolver::make_instance(time_evolution_json);
 
     Model::Problem problem(problem_json, output_dir);
-    int number_of_states = problem.set_indices();
+    auto number_of_states = problem.set_indices();
     std::cout << "data read" << std::endl;
 
     wall_clock_setup_end = Clock::now();
@@ -55,7 +56,7 @@ int grazer::run(std::filesystem::path directory_path) {
   auto duration_in_seconds_with_mus_accuracy
       = [](Clock::duration dur) -> double {
     using Mus = std::chrono::microseconds;
-    long msdur = std::chrono::duration_cast<Mus>(dur).count();
+    auto msdur = std::chrono::duration_cast<Mus>(dur).count();
     auto double_msdur = static_cast<double>(msdur);
     return double_msdur / 1e6;
   };
