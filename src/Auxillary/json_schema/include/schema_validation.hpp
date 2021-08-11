@@ -28,4 +28,14 @@ namespace Aux::schema {
    * @param schema json schema
    */
   void validate_json(nlohmann::json const &data, nlohmann::json const &schema);
+
+  /**
+   * @brief Inserts the defaults from the schema into the data when the keys
+   * are missing
+   *
+   * @param data
+   * @param schema
+   */
+  void apply_defaults(nlohmann::json &data, nlohmann::json const &schema);
+
 } // namespace Aux::schema

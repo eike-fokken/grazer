@@ -103,7 +103,6 @@ namespace Model::Networkproblem {
     // build the node vector.
     insert_second_json_in_topology_json(topology, boundary, "boundary_values");
     insert_second_json_in_topology_json(topology, control, "control_values");
-    supply_overall_values_to_components(networkproblem_json);
 
     return networkproblem_json[topology_key];
   }
@@ -250,57 +249,6 @@ namespace Model::Networkproblem {
             (*top_it)[name_of_inserted_json] = (*secjson_it);
             ++secjson_it;
             ++top_it;
-          }
-        }
-      }
-    }
-  }
-
-  void supply_overall_values_to_components(nlohmann::json &network_json) {
-
-    // This list way well become longer!
-    auto pde_components = {"Pipe"};
-    for (auto key : {"desired_delta_x", "balancelaw", "scheme"}) {
-      if (network_json.contains(key)) {
-        for (auto const &type : pde_components) {
-          if (not network_json["topology_json"]["connections"].contains(type)) {
-            continue;
-          }
-          for (auto &pipe :
-               network_json["topology_json"]["connections"][type]) {
-            if (not pipe.contains(key)) {
-              pipe[key] = network_json[key];
-            } else {
-              std::cout << "Object with id " << pipe["id"]
-                        << " has its own value of " << key << std::endl;
-            }
-          }
-        }
-      }
-    }
-
-    // assign stochastic variables to StochasticPQnodes.
-    if (network_json["topology_json"]["nodes"].contains("StochasticPQnode")
-        and network_json.contains("StochasticPQnode_data")) {
-      for (auto &stochpq_node :
-           network_json["topology_json"]["nodes"]["StochasticPQnode"]) {
-        std::array values{
-            "stability_parameter",
-            "cut_off_factor",
-            "theta_P",
-            "sigma_P",
-            "theta_Q",
-            "sigma_Q",
-            "number_of_stochastic_steps"};
-
-        bool all_values_given = true;
-        for (auto &name : values) {
-          all_values_given &= stochpq_node.contains(name);
-        }
-
-        if (not all_values_given) {
-          for (auto const &value : values) {
-            stochpq_node[value] = network_json["StochasticPQnode_data"][value];
           }
         }
       }
