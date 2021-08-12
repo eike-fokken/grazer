@@ -120,7 +120,7 @@ the GUI, which increases Grazers size from something like 2mb to something like
 
 Documentation is still a work in progress
 
-- [User Guide](/wiki/use-grazer)
+- [User Guide](https://github.com/eike-fokken/grazer/wiki/use-grazer)
 - [Technical Documentation](https://eike-fokken.github.io/grazer/)
 
 <details> <summary> Local Documentation </summary>
