@@ -117,7 +117,15 @@ the GUI, which increases Grazers size from something like 2mb to something like
 20mb on windows and mac and even larger on linux.
 
 ## Documentation
-Documentation is still a work in progress but you can already generate some documentation with
+
+Documentation is still a work in progress
+
+- [User Guide](/wiki/use-grazer)
+- [Technical Documentation](https://eike-fokken.github.io/grazer/)
+
+<details> <summary> Local Documentation </summary>
+
+You can generate some documentation with
 ```bash
 cmake --build release --target docs
 ```
@@ -132,6 +140,7 @@ release/docs/userguide.pdf
 ```
 will appear. Note that the userguide is also not yet very usable.
 
+</details>
 
 
 ## Feedback
