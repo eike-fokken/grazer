@@ -7,7 +7,15 @@
 		"time_evolution_data": {
 			"type": "object",
 			"description": "provides all data on time and newton solver",
-			"required": [],
+			"required": [
+				"use_simplified_newton",
+				"maximal_number_of_newton_iterations",
+				"tolerance",
+				"retries",
+				"start_time",
+				"end_time",
+				"desired_delta_t"
+			],
 			"properties": {
 				"use_simplified_newton": {"type": "boolean"},
 				"maximal_number_of_newton_iterations": {"type": "integer", "minimum": 0},
