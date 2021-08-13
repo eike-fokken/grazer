@@ -1,4 +1,8 @@
 
+/**
+ *\cond
+ */
+
 #include "Netfactory.hpp"
 
 #include <filesystem>
@@ -9,11 +13,9 @@
 #include <regex>
 #include <stdexcept>
 #include <vector>
+
 using json = nlohmann::json;
 namespace fs = std::filesystem;
-
-std::pair<double, double> extract_min_max_values(
-    json const &results, std::vector<std::string> const &types);
 
 struct rgb {
   int r;
@@ -21,16 +23,33 @@ struct rgb {
   int b;
 };
 
-rgb rgb_color(double minimum, double maximum, double value);
+/**
+ * \endcond
+ */
 
-std::string colorchooser(std::string const &type);
+static std::pair<double, double> extract_min_max_values(
+    json const &results, std::vector<std::string> const &types);
+static rgb rgb_color(double minimum, double maximum, double value);
+static std::string colorchooser(std::string const &type);
 
-/** @brief A helper function to write out a latex file which draws a graph of
- * the gaslib part of a topology file.
+/** @brief A helper function to write out a latex file which draws a heatmap of
+ * a gas net, where the color shows maximal pressures attained over a simulation
+ * time frame. (E.g.\ maximal pressure over the curse of 24 hours). Takes the
+ * maximal value along each edge (that means an edge is painted in a single
+ * color).
  *
- * The single parameter is the topology file from which to create the graph.
- * @param topology.json The topology file. Should contain Sources, Sinks
- * and/or Innodes.
+ * Ignores Shortpipes and Sinks because at least in Gaslib-134 these are
+ * just connected via Shortpipe to a single Innode.
+ *
+ * @param topology_json_file The topology file.
+ * @param results_json_file For every edge must contain results for the
+ * key "pressure".
+ * @param tex_file Filename of the texfile to be written. Careful: Files are
+ * silently overwritten.
+ * @param scale_factor Optional parameter, defaults to 10. Possibly needed
+ * because tex cannot work with dimensions larger than some value often attained
+ * with large structures like the gaslib data. Higher value means smaller
+ * picture.
  */
 
 int main(int argc, char **argv) {
@@ -117,17 +136,15 @@ int main(int argc, char **argv) {
   xmean = xmean / static_cast<int>(nodes.size());
   ymean = ymean / static_cast<int>(nodes.size());
 
-  double max_x = 0;
-  double min_x = 0;
-  double max_y = 0;
-  double min_y = 0;
+  double max_x = std::numeric_limits<double>::lowest();
+  double min_x = std::numeric_limits<double>::max();
+  double max_y = std::numeric_limits<double>::lowest();
+  double min_y = std::numeric_limits<double>::max();
   for (auto &node : nodes) {
 
     auto label_id = node.id;
     label_id.erase(0, 5);
 
-    // auto label_id
-    //     = std::regex_replace(node.id, std::regex("_"), "\\textunderscore ");
     double out_x = (node.x - xmean) / divideby;
     double out_y = (node.y - ymean) / divideby;
 
@@ -152,10 +169,6 @@ int main(int argc, char **argv) {
 
   for (int i = 0; i != 101; ++i) {
 
-    // auto color = rgb_color(min, max, value);
-    // outstream << "\\node[fill={rgb:red," << color.r << ";green," << color.g
-    //           << ";blue," << color.b << "}](myid" << i << ") at(" << legend_x
-    //           << ", " << min_y + i * 0.01 * (max_y - min_y) << "){};\n";
     if (i % 10 == 0) {
       double value = min + i * 0.01 * (max - min);
       value = std::round(1000 * value) * 0.001;
@@ -196,7 +209,7 @@ int main(int argc, char **argv) {
       }
       for (auto const &step : edge["results"]["data"]) {
         for (auto const &[key, quantity] : step.items()) {
-          if (key.compare("pressure")) {
+          if (key != "pressure") {
             continue;
           }
           for (auto const &xpoint : quantity) {
@@ -251,18 +264,11 @@ std::pair<double, double> extract_min_max_values(
     json const &results, std::vector<std::string> const &types) {
 
   double min = std::numeric_limits<double>::max();
-  double max = std::numeric_limits<double>::min();
-
-  bool initialized = false;
+  double max = std::numeric_limits<double>::lowest();
 
   for (auto const &type : types) {
     if (not results["connections"].contains(type)) {
       continue;
-    }
-    if (not initialized) {
-      min = results["connections"][type][0]["data"][0]["pressure"][0]["value"];
-      max = results["connections"][type][0]["data"][0]["pressure"][0]["value"];
-      initialized = true;
     }
     for (auto const &component : results["connections"][type]) {
       for (auto &step : component["data"]) {
