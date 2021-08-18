@@ -18,7 +18,6 @@ namespace io {
 
   /** attaches the number of milliseconds since 1970 as a string to its argument
    * filename.
-   *
    */
   std::filesystem::path
   attach_epoch_count(std::filesystem::path const &filename);

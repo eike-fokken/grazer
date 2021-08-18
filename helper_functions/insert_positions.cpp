@@ -10,7 +10,7 @@
 using json = nlohmann::ordered_json;
 namespace fs = std::filesystem;
 
-void sort_json_vectors_by_id(json &components, std::string key);
+void sort_json_vectors_by_id(json &components);
 void insert_positions(json &topology, json &second_json);
 
 int main(int argc, char **argv) {
@@ -36,8 +36,8 @@ int main(int argc, char **argv) {
     positionsstream >> positions;
   }
 
-  sort_json_vectors_by_id(positions, "positions");
-  sort_json_vectors_by_id(topology, "topology");
+  sort_json_vectors_by_id(positions);
+  sort_json_vectors_by_id(topology);
 
   insert_positions(topology, positions);
 
@@ -101,7 +101,7 @@ void insert_positions(json &topology, json &second_json) {
   }
 }
 
-void sort_json_vectors_by_id(json &components, std::string key) {
+void sort_json_vectors_by_id(json &components) {
 
   for (auto const &component_class : {"nodes", "connections"}) {
     if (not components.contains(component_class)) {

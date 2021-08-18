@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <string>
 #include <thread>
 
 namespace io {
@@ -44,6 +45,7 @@ namespace io {
       fs::path const &filename, filename_generator generator) {
     fs::path unique_name;
     FILE *fp = nullptr;
+    int const number_of_tries = 10;
     int counter = 0;
     do {
       unique_name = generator(filename);
@@ -53,11 +55,12 @@ namespace io {
       }
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
       ++counter;
-    } while (counter < 10);
+    } while (counter < number_of_tries);
     if (counter >= 10) {
       gthrow(
-          {"Couldn't aquire a unique filename.\n", "Last tried filename was\n",
-           unique_name.string(), "\nAborting..."});
+          {"Couldn't aquire a unique filename in ",
+           std::to_string(number_of_tries), " tries.\n",
+           "Last tried filename was\n", unique_name.string(), "\nAborting..."});
     }
     std::fclose(fp);
     return unique_name;
