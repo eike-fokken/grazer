@@ -18,11 +18,11 @@ namespace Aux {
     return seed;
   }
 
-  pcg64 setup_random_number_generator(
-      std::array<uint32_t, pcg_seed_count> &seed_essence) {
+  pcg64
+  setup_random_number_generator(std::array<uint32_t, pcg_seed_count> &seed) {
 
     randutils::seed_seq_fe<pcg_seed_count, uint32_t> seed_source(
-        seed_essence.begin(), seed_essence.end());
+        seed.begin(), seed.end());
 
     pcg64 rng(seed_source);
 

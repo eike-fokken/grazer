@@ -6,8 +6,18 @@
 namespace Aux {
   static unsigned long constexpr pcg_seed_count = 8;
 
-  pcg64 setup_random_number_generator(std::array<uint32_t, pcg_seed_count> &);
+  /** \brief Sets up an random number generator
+   *
+   * @param seed Seed of the RNG.
+   */
+  pcg64
+  setup_random_number_generator(std::array<uint32_t, pcg_seed_count> &seed);
 
+  /** \brief Creates a random seed.
+   *
+   * Uses the randutils library to create a seed that strives to be random. Look
+   * into the library for details.
+   */
   std::array<uint32_t, pcg_seed_count> make_random_seed();
   /** \brief provides a normal distribution sample on invocation.
    *
