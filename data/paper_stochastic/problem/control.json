@@ -1,0 +1,334 @@
+{
+	"$schema": "../schemas/control_schema.json",
+	"connections": {
+		"Controlvalve": [
+			{
+				"id": "controlValve_br65",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							0.0
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							0.0
+						]
+					}
+				]
+			}
+		],
+		"Compressorstation": [
+			{
+				"id": "cs",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							0.0
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							0.0
+						]
+					}
+				]
+			}
+		],
+		"Gaspowerconnection": [
+			{
+				"id": "g2p_ld27_N187",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							0.0
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							0.0
+						]
+					}
+				]
+			},
+			{
+				"id": "g2p_ld23_N119",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							0.0
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							0.0
+						]
+					}
+				]
+			},
+			{
+				"id": "g2p_ld35_N186",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							0.0
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							0.0
+						]
+					}
+				]
+			},
+			{
+				"id": "g2p_ld39_N7003",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							0.0
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							0.0
+						]
+					}
+				]
+			},
+			{
+				"id": "g2p_ld38_N7166",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							0.0
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							0.0
+						]
+					}
+				]
+			},
+			{
+				"id": "g2p_ld37_N9002",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							0.0
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							0.0
+						]
+					}
+				]
+			},
+			{
+				"id": "g2p_ld33_N9051",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							0.0
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							0.0
+						]
+					}
+				]
+			},
+			{
+				"id": "g2p_ld10_N7071",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							0.0
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							0.0
+						]
+					}
+				]
+			},
+			{
+				"id": "g2p_ld6_N7057",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							0.0
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							0.0
+						]
+					}
+				]
+			},
+			{
+				"id": "g2p_ld31_N213",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							0.0
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							0.0
+						]
+					}
+				]
+			},
+			{
+				"id": "g2p_ld24_N221",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							0.0
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							0.0
+						]
+					}
+				]
+			},
+			{
+				"id": "g2p_ld2_N7017",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							0.0
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							0.0
+						]
+					}
+				]
+			},
+			{
+				"id": "g2p_ld13_N230",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							0.0
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							0.0
+						]
+					}
+				]
+			},
+			{
+				"id": "g2p_ld29_N7061",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							0.0
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							0.0
+						]
+					}
+				]
+			},
+			{
+				"id": "g2p_ld12_N7024",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							0.0
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							0.0
+						]
+					}
+				]
+			},
+			{
+				"id": "g2p_ld36_N7001",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							0.0
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							0.0
+						]
+					}
+				]
+			},
+			{
+				"id": "g2p_ld42_N7039",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							0.0
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							0.0
+						]
+					}
+				]
+			}
+		]
+	}
+}

@@ -1,4 +1,5 @@
 #include "Normaldistribution.hpp"
+#include <cstdint>
 #include <gtest/gtest.h>
 #include <map>
 #include <string>
@@ -8,7 +9,8 @@ TEST(Normaldistribution, operator1) {
   // Careful: this is a probabilistic test and might fail from time to time...
 
   int number_of_samples = 100000;
-  Aux::Normaldistribution n;
+  std::array<std::uint32_t, Aux::pcg_seed_count> seed;
+  Aux::Normaldistribution n(seed);
 
   double mean = 599.0;
   double standard_deviation = 100.0;

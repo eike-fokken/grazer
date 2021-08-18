@@ -1,21 +1,36 @@
 #pragma once
+#include <array>
 #include <pcg_random.hpp>
 #include <random>
 
 namespace Aux {
+  static unsigned long constexpr pcg_seed_count = 8;
 
-  pcg64 setup_random_number_generator();
+  /** \brief Sets up an random number generator
+   *
+   * @param seed Seed of the RNG.
+   */
+  pcg64
+  setup_random_number_generator(std::array<uint32_t, pcg_seed_count> &seed);
 
+  /** \brief Creates a random seed.
+   *
+   * Uses the randutils library to create a seed that strives to be random. Look
+   * into the library for details.
+   */
+  std::array<uint32_t, pcg_seed_count> make_random_seed();
   /** \brief provides a normal distribution sample on invocation.
    *
-   * CAREFUL: This class is probably not thread safe, because pcg64 may not be
-   * thread safe. Also randutils is DEFINITELY not thread safe! At the time of
-   * writing this we create a random number generator per object, so this
-   * should be fine.
+   * CAREFUL: This class is probably not thread safe, because pcg64 may not
+   * be thread safe. Also randutils is DEFINITELY not thread safe! At the
+   * time of writing this we create a random number generator per object, so
+   * this should be fine.
    */
   class Normaldistribution final {
   public:
-    Normaldistribution() = default;
+    Normaldistribution(
+        std::array<uint32_t, pcg_seed_count> &used_seed,
+        std::array<uint32_t, pcg_seed_count> seed = make_random_seed());
 
     /** @brief Obtain a sample of a normal distribution.
      *
@@ -37,7 +52,7 @@ namespace Aux {
     double get_sample(double standard_deviation);
 
   private:
-    pcg64 generator{setup_random_number_generator()};
+    pcg64 generator;
     std::normal_distribution<> dist;
   };
 
@@ -50,7 +65,9 @@ namespace Aux {
    */
   class Truncatednormaldist final {
   public:
-    Truncatednormaldist() = default;
+    Truncatednormaldist(
+        std::array<uint32_t, pcg_seed_count> &used_seed,
+        std::array<uint32_t, pcg_seed_count> seed = make_random_seed());
 
     /** @brief Obtain a sample of the truncated normal distribution.
      *

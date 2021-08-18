@@ -14,6 +14,16 @@ json convert_resultdata_to_intialdata(json datapoint, std::string ctypename);
 json powerinitial(json datapoint);
 json gasinitial(json datapoint);
 
+/** \brief Writes out the state at the given time passed in an results file into
+ * a file that can be used as an initial value file.
+ *
+ * The first time step after the given time is used,
+ * if the time doesn't appear in the output file.  If too great a time is
+ * passed, the last time step is used.
+ * @param results_file json containing results of a grazer computation.
+ * @param output_file name of the outputfile to be written.
+ * @param time The time at which the initial value should be extracted.
+ */
 int main(int argc, char **argv) {
   std::filesystem::path inputfile;
   std::filesystem::path outputfile;
@@ -34,19 +44,7 @@ int main(int argc, char **argv) {
     return 1;
   }
   if (fs::exists(outputfile)) {
-    std::cout << "The outputfile already exits. Really overwrite?" << std::endl;
-    std::string answer;
-    std::cin >> answer;
-
-    if (answer == "n" or answer == "no") {
-      std::cout << "Ok, I won't overwrite and exit now." << std::endl;
-      return 0;
-    }
-
-    if (answer != "y" and answer != "yes") {
-      std::cout << "You must answer yes/no or y/n, aborting!" << std::endl;
-      return 1;
-    }
+    std::cout << "Overriting " << outputfile.string() << std::endl;
   }
 
   json results;
