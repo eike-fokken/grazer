@@ -50,7 +50,7 @@ TEST_F(create_new_output_fileTEST, find_no_unique_name) {
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
     EXPECT_THAT(
-        e.what(), testing::HasSubstr("Couldn't aquire a unique filename."));
+        e.what(), testing::HasSubstr("Couldn't aquire a unique filename"));
   }
 }
 
