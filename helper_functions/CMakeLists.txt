@@ -33,7 +33,6 @@ add_executable(construct_gaspowerconnection construct_gaspowerconnection.cpp)
 
 
 
-#temporary:
 add_executable(sum_outflow sum_outflow.cpp)
 add_executable(change_inflow change_inflow.cpp)
 add_executable(increase_pressure increase_pressure.cpp)

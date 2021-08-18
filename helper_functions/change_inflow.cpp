@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
   double influx;
   std::filesystem::path inputfile = "problem/boundary.json";
   if (argc != 2) {
-    std::cout << "You must provide a total influx number." << std::endl;
+    std::cout << "You must provide a total influx value." << std::endl;
     return 1;
   } else {
     influx = std::stod(argv[1]);
