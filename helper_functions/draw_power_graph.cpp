@@ -12,11 +12,15 @@ namespace fs = std::filesystem;
 std::string colorchooser(std::string const &type);
 
 /** @brief A helper function to write out a latex file which draws a graph of
- * the gaslib part of a topology file.
+ * the power part of a topology file.
  *
- * The single parameter is the topology file from which to create the graph.
- * @param topology.json The topology file. Should contain Sources, Sinks
- * and/or Innodes.
+ * @param topology.json The topology file.
+ * @param tex_file Filename of the texfile to be written. Careful: Files are
+ * silently overwritten.
+ * @param scale_factor Optional parameter, defaults to 10. Possibly needed
+ * because tex cannot work with dimensions larger than some value often attained
+ * with large structures like the gaslib data. Higher value means smaller
+ * picture.
  */
 
 int main(int argc, char **argv) {

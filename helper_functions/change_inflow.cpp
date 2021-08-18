@@ -10,6 +10,10 @@
 using json = nlohmann::ordered_json;
 namespace fs = std::filesystem;
 
+/** \brief Linearly scales the first two flux inputs in a boundary values file
+ * to sum to the given value. Only makes sense for constant influx.
+ */
+
 int main(int argc, char **argv) {
   double influx;
   std::filesystem::path inputfile = "problem/boundary.json";

@@ -25,12 +25,19 @@ rgb rgb_color(double minimum, double maximum, double value);
 
 std::string colorchooser(std::string const &type);
 
-/** @brief A helper function to write out a latex file which draws a graph of
- * the gaslib part of a topology file.
+/** @brief A helper function to write out a latex file which draws a heatmap of
+ * a power net, where the color shows maximal power attained over a simulation
+ * time frame. (E.g.\ maximal value over the curse of 24 hours).
  *
- * The single parameter is the topology file from which to create the graph.
- * @param topology.json The topology file. Should contain Sources, Sinks
- * and/or Innodes.
+ * @param topology_json_file The topology file.
+ * @param results_json_file For every edge must contain results for the
+ * key "pressure".
+ * @param tex_file Filename of the texfile to be written. Careful: Files are
+ * silently overwritten.
+ * @param scale_factor Optional parameter, defaults to 10. Possibly needed
+ * because tex cannot work with dimensions larger than some value often attained
+ * with large structures like the gaslib data. Higher value means smaller
+ * picture.
  */
 
 int main(int argc, char **argv) {
@@ -149,10 +156,7 @@ int main(int argc, char **argv) {
   for (auto &node : nodes) {
 
     auto label_id = node.id;
-    // label_id.erase(0, 5);
 
-    // auto label_id
-    //     = std::regex_replace(node.id, std::regex("_"), "\\textunderscore ");
     double out_x = (node.x - xmean) / divideby;
     double out_y = (node.y - ymean) / divideby;
 

@@ -10,6 +10,11 @@
 using json = nlohmann::ordered_json;
 namespace fs = std::filesystem;
 
+/** \brief Prints the summed outflux of a network.
+ *
+ * Best used in conjuction with change_inflow.
+ */
+
 int main(int argc, char **argv) {
   std::filesystem::path inputfile;
   std::filesystem::path outputfile;

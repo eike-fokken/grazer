@@ -13,9 +13,16 @@ static std::string colorchooser(std::string const &type);
 /** @brief A helper function to write out a latex file which draws a graph of
  * the gaslib part of a topology file.
  *
- * The single parameter is the topology file from which to create the graph.
  * @param topology.json The topology file. Should contain Sources, Sinks and/or
  * Innodes.
+ * @param tex_file Filename of the texfile to be written. Careful: Files are
+ * silently overwritten.
+ * @param scale_factor Optional parameter, defaults to 10. Possibly needed
+ * because tex cannot work with dimensions larger than some value often attained
+ * with large structures like the gaslib data. Higher value means smaller
+ * picture.
+ *
+ * CAREFUL: The labels are modified in here. Search the src for "CAREFUL".
  */
 
 int main(int argc, char **argv) {
@@ -85,6 +92,8 @@ int main(int argc, char **argv) {
 
   for (auto &node : nodes) {
     auto label_id = node.id;
+    // CAREFUL: This should remove the "node_" part of the label but is not
+    // suitable for any other type of label!
     label_id.erase(0, 5);
     // = std::regex_replace(node.id, std::regex("_"), "\\textunderscore ");
     double out_x = (node.x - xmean) / divideby;

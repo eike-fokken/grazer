@@ -10,6 +10,12 @@
 using json = nlohmann::ordered_json;
 namespace fs = std::filesystem;
 
+/** \brief Writes the seeds used in an output file into the boundary values of a
+ * problem folder.
+ *
+ * Used to reproduce an output file that had stochastic inputs.
+ */
+
 int main(int argc, char **argv) {
   fs::path problemfolder;
   fs::path resultsfile;

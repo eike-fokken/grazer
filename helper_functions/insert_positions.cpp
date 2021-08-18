@@ -13,6 +13,10 @@ namespace fs = std::filesystem;
 void sort_json_vectors_by_id(json &components);
 void insert_positions(json &topology, json &second_json);
 
+/** \brief Copies over positions from a topology json file (which only needs to
+ * have "x","y" and "id" keys in each component.).
+ *
+ */
 int main(int argc, char **argv) {
   if (argc != 4) {
     std::cout

@@ -50,6 +50,8 @@ static std::string colorchooser(std::string const &type);
  * because tex cannot work with dimensions larger than some value often attained
  * with large structures like the gaslib data. Higher value means smaller
  * picture.
+ *
+ * CAREFUL: The labels are modified in here. Search the src for "CAREFUL".
  */
 
 int main(int argc, char **argv) {
@@ -143,6 +145,8 @@ int main(int argc, char **argv) {
   for (auto &node : nodes) {
 
     auto label_id = node.id;
+    // CAREFUL: This should remove the "node_" part of the label but is not
+    // suitable for any other type of label!
     label_id.erase(0, 5);
 
     double out_x = (node.x - xmean) / divideby;
