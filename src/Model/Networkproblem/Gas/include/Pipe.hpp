@@ -39,7 +39,7 @@ namespace Model::Networkproblem::Gas {
 
     int get_number_of_states() const override;
 
-    void print_to_files(nlohmann::json &new_output) override;
+    void add_results_to_json(nlohmann::json &new_output) override;
 
     void
     json_save(double time, Eigen::Ref<const Eigen::VectorXd> state) override;

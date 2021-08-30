@@ -26,7 +26,7 @@ namespace Model::Networkproblem::Power {
     double get_G() const;
     double get_B() const;
 
-    void print_to_files(nlohmann::json &new_output) override;
+    void add_results_to_json(nlohmann::json &new_output) override;
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,

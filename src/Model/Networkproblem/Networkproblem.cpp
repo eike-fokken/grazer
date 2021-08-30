@@ -102,10 +102,10 @@ namespace Model::Networkproblem {
     }
   }
 
-  void Networkproblem::print_to_files(nlohmann::json &new_output) {
+  void Networkproblem::add_results_to_json(nlohmann::json &new_output) {
     for (Model::Networkproblem::Statecomponent *statecomponent :
          statecomponents) {
-      statecomponent->print_to_files(new_output);
+      statecomponent->add_results_to_json(new_output);
     }
   }
 

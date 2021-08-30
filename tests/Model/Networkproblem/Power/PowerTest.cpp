@@ -22,7 +22,7 @@
 #include <vector>
 
 class PowerTEST : public EqcomponentTEST {
-  Model::Componentfactory::Power_factory factory;
+  Model::Componentfactory::Power_factory factory{R"({})"_json};
 
 public:
   // values for the Vphinode:

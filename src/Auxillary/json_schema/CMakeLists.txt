@@ -7,7 +7,7 @@ target_link_libraries(aux_schema_validation PRIVATE nlohmann_json nlohmann_json_
 target_include_directories(aux_schema_validation PUBLIC include)
 
 add_library(aux_schema_generation STATIC schema_generation.cpp)
-target_link_libraries(aux_schema_generation PUBLIC componentfactory full_factory)
+target_link_libraries(aux_schema_generation PUBLIC componentfactory full_factory aux_json)
 target_include_directories(aux_schema_generation PUBLIC include)
 
 add_library(aux_schema_key_insertion STATIC schema_key_insertion.cpp)

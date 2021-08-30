@@ -11,19 +11,51 @@ namespace Model::Networkproblem::Power {
 
   nlohmann::json StochasticPQnode::get_schema() {
     nlohmann::json schema = Powernode::get_schema();
+    Aux::schema::add_required(
+        schema, "stability_parameter", Aux::schema::type::number());
+    Aux::schema::add_required(
+        schema, "cut_off_factor", Aux::schema::type::number());
+
     Aux::schema::add_required(schema, "sigma_P", Aux::schema::type::number());
     Aux::schema::add_required(schema, "theta_P", Aux::schema::type::number());
     Aux::schema::add_required(schema, "sigma_Q", Aux::schema::type::number());
     Aux::schema::add_required(schema, "theta_Q", Aux::schema::type::number());
-
+    Aux::schema::add_required(
+        schema, "number_of_stochastic_steps", Aux::schema::type::number());
     return schema;
   }
 
+  std::optional<nlohmann::json> StochasticPQnode::get_boundary_schema() {
+    auto boundary_schema = Aux::schema::make_boundary_schema(2);
+    auto seed_schema
+        = Aux::schema::make_list_schema_of(Aux::schema::type::number());
+    Aux::schema::add_property(boundary_schema, "seed", seed_schema);
+    return boundary_schema;
+  }
+
   StochasticPQnode::StochasticPQnode(nlohmann::json const &topology) :
-      Powernode(topology),
-      stochasticdata(std::make_unique<StochasticData>(
-          topology["sigma_P"], topology["theta_P"], topology["sigma_Q"],
-          topology["theta_Q"], topology["number_of_stochastic_steps"])) {}
+      Powernode(topology) {
+    std::array<uint32_t, Aux::pcg_seed_count> used_seed;
+    if (topology["boundary_values"].contains("seed")) {
+      stochasticdata = std::make_unique<StochasticData>(
+          topology["stability_parameter"].get<double>(),
+          topology["cut_off_factor"].get<double>(),
+          topology["sigma_P"].get<double>(), topology["theta_P"].get<double>(),
+          topology["sigma_Q"].get<double>(), topology["theta_Q"].get<double>(),
+          topology["number_of_stochastic_steps"].get<int>(), used_seed,
+          topology["boundary_values"]["seed"]
+              .get<std::array<uint32_t, Aux::pcg_seed_count>>());
+    } else {
+      stochasticdata = std::make_unique<StochasticData>(
+          topology["stability_parameter"].get<double>(),
+          topology["cut_off_factor"].get<double>(),
+          topology["sigma_P"].get<double>(), topology["theta_P"].get<double>(),
+          topology["sigma_Q"].get<double>(), topology["theta_Q"].get<double>(),
+          topology["number_of_stochastic_steps"].get<int>(), used_seed);
+    }
+    auto &output = get_output_json_ref();
+    output["seed"] = used_seed;
+  }
 
   void StochasticPQnode::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double // last_time
@@ -46,12 +78,14 @@ namespace Model::Networkproblem::Power {
   ) {
     auto last_P = P(last_state);
     current_P = Aux::euler_maruyama_oup(
+        stochasticdata->stability_parameter, stochasticdata->cut_off_factor,
         last_P, stochasticdata->theta_P, boundaryvalue(new_time)[0],
         new_time - last_time, stochasticdata->sigma_P,
         stochasticdata->distribution,
         stochasticdata->number_of_stochastic_steps);
     auto last_Q = Q(last_state);
     current_Q = Aux::euler_maruyama_oup(
+        stochasticdata->stability_parameter, stochasticdata->cut_off_factor,
         last_Q, stochasticdata->theta_Q, boundaryvalue(new_time)[1],
         new_time - last_time, stochasticdata->sigma_Q,
         stochasticdata->distribution,

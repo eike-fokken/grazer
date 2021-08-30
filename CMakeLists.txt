@@ -44,7 +44,7 @@ enable_testing()
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
   set(gtest_force_shared_crt ON CACHE BOOL "Make gtest compile the C standard libraries as DLLs, because MSVE requires that." FORCE)
 endif()
-add_subdirectory(googletest)
+add_subdirectory(googletest EXCLUDE_FROM_ALL)
 
 
 # Typically you don't care so much for a third party library's tests to be
@@ -125,7 +125,7 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     "$<$<NOT:$<CONFIG:Debug>>:${release_msvc_options}>"
   )
 else()
-  message(FATAL_ERROR "Unknown compiler: ${CMAKE_CXX_COMPILER_ID}")
+  message(WARNING "Your compiler, ${CMAKE_CXX_COMPILER_ID}, is untested with Grazer but maybe still works. Tested compilers are gcc, clang and msvc.")
 endif()
 
 
@@ -151,7 +151,7 @@ include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/eigen/")
 # discouraged (although not necessarily well documented as such) to use
 # include(...) for pulling in other CMake projects anyways.
 
-include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/nlohmann_json/single_include/")
+include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/nlohmann_json/include/")
 
 
 # This includes the pcg random number generator suite.
@@ -175,8 +175,17 @@ add_subdirectory(src)
 add_subdirectory(tests)
 add_subdirectory(helper_functions)
 
-
-
 add_custom_target(cclean COMMAND cd ${CMAKE_SOURCE_DIR} && rm -r ${CMAKE_SOURCE_DIR}/build/ && mkdir ${CMAKE_SOURCE_DIR}/build/ && cd ${CMAKE_SOURCE_DIR}/build/
   USES_TERMINAL
-  )
+)
+
+# Installation
+
+install(
+  TARGETS grazer
+  RUNTIME DESTINATION bin # relative to CMAKE_INSTALL_PREFIX (/urs/local -> UNIX, c:/Program Files/${PROJECT_NAME} -> windows)
+  # CONFIGURATIONS Release
+)
+if(WIN32)
+  # figure out how to modify PATH variable: https://stackoverflow.com/q/68683998/6662425
+endif(WIN32)

@@ -43,7 +43,7 @@ namespace Model::Networkproblem {
 
     void json_save(double time, Eigen::Ref<Eigen::VectorXd const> state) final;
 
-    void print_to_files(nlohmann::json &new_output) final;
+    void add_results_to_json(nlohmann::json &new_output) final;
 
     virtual void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,

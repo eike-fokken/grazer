@@ -89,6 +89,11 @@ namespace Model {
     std::cout << "number of non-zeros in jacobian: "
               << solver.get_number_non_zeros_jacobian() << std::endl;
 
+    // provide regex help (cf. helper_functions/csv_from_log.py)
+    std::cout << "=== simulation start ===" << std::endl;
+    // csv heading:
+    std::cout << "t, residual, used_iterations" << std::endl;
+
     for (int i = 0; i != timedata.get_number_of_steps(); ++i) {
       new_time = last_time + timedata.get_delta_t();
       Solver::Solutionstruct solstruct;
@@ -138,18 +143,20 @@ namespace Model {
           std::cout << "\nretrying timestep " << new_time << std::endl;
         }
         if (retry > 0) {
-          std::cout << new_time << ": ";
+          std::cout << new_time << ", ";
           std::cout << solstruct.residual << ", ";
           std::cout << solstruct.used_iterations << std::endl;
         }
       }
-      std::cout << new_time << ": ";
+      std::cout << new_time << ", ";
       std::cout << solstruct.residual << ", ";
       std::cout << solstruct.used_iterations << std::endl;
 
       last_state = new_state;
       last_time = new_time;
     }
+
+    std::cout << "=== simulation end ===" << std::endl; // provide regex help
   }
 
 } // namespace Model

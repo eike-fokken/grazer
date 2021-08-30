@@ -14,7 +14,9 @@ namespace Model::Networkproblem::Power {
   public:
     static std::string get_type();
     std::string get_power_type() const override;
+
     static nlohmann::json get_schema();
+    static std::optional<nlohmann::json> get_boundary_schema();
 
     StochasticPQnode(nlohmann::json const &topology);
 
@@ -43,15 +45,37 @@ namespace Model::Networkproblem::Power {
   private:
     struct StochasticData {
       StochasticData(
-          double _sigma_P, double _theta_P, double _sigma_Q, double _theta_Q,
-          int _number_of_stochastic_steps) :
+          double _stability_parameter, double _cut_off_factor, double _sigma_P,
+          double _theta_P, double _sigma_Q, double _theta_Q,
+          int _number_of_stochastic_steps,
+          std::array<uint32_t, Aux::pcg_seed_count> &used_seed) :
+          distribution(used_seed),
+          stability_parameter(_stability_parameter),
+          cut_off_factor(_cut_off_factor),
           sigma_P(_sigma_P),
           theta_P(_theta_P),
           sigma_Q(_sigma_Q),
           theta_Q(_theta_Q),
           number_of_stochastic_steps(_number_of_stochastic_steps) {}
 
-      Aux::Truncatednormaldist distribution;
+      StochasticData(
+          double _stability_parameter, double _cut_off_factor, double _sigma_P,
+          double _theta_P, double _sigma_Q, double _theta_Q,
+          int _number_of_stochastic_steps,
+          std::array<uint32_t, Aux::pcg_seed_count> &used_seed,
+          std::array<uint32_t, Aux::pcg_seed_count> seed) :
+          distribution(used_seed, seed),
+          stability_parameter(_stability_parameter),
+          cut_off_factor(_cut_off_factor),
+          sigma_P(_sigma_P),
+          theta_P(_theta_P),
+          sigma_Q(_sigma_Q),
+          theta_Q(_theta_Q),
+          number_of_stochastic_steps(_number_of_stochastic_steps) {}
+
+      Aux::Normaldistribution distribution;
+      double const stability_parameter;
+      double const cut_off_factor;
       double const sigma_P;
       double const theta_P;
       double const sigma_Q;
