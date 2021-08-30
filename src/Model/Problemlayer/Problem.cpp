@@ -54,11 +54,11 @@ namespace Model {
 
   int Problem::set_control_indices() {
     int next_free_index(0);
-    for (auto &subproblem : subproblems) {
-      next_free_index = subproblem->set_state_indices(next_free_index);
-    }
+    // for (auto &subproblem : subproblems) {
+    //   next_free_index = subproblem->set_state_indices(next_free_index);
+    // }
     return next_free_index;
-  }
+   }
 
   void Problem::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time, double new_time,
