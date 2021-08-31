@@ -28,7 +28,7 @@ static void add_gas_json_data(
  * that the same problem was solved with grazer for each of the outputs.
  *
  * All arguments are optional. If one or more arguments is given, the first one
- * is given as the common substring with which all output directories start. If
+ * is given as the common substring with which all output files start. If
  * two arguments are given, the second argument is the filename of the json
  * file, get_mean_sigma should create, to output its computations. The default
  * value of the substring is "output". The default value of the filename is
@@ -36,13 +36,13 @@ static void add_gas_json_data(
  */
 
 int main(int argc, char **argv) {
-  std::string output_dir_trunk;
+  std::string output_filename_trunk;
   if (argc >= 2) {
-    output_dir_trunk = argv[1];
+    output_filename_trunk = argv[1];
   } else {
-    output_dir_trunk = "output";
+    output_filename_trunk = "output";
   }
-  std::cout << output_dir_trunk << std::endl;
+  std::cout << output_filename_trunk << std::endl;
 
   std::string computed_output;
   if (argc >= 3) {
@@ -61,22 +61,18 @@ int main(int argc, char **argv) {
       "Controlvalve"};
 
   int number_of_runs = 0;
-  for (auto &pit : fs::directory_iterator(fs::current_path())) {
-    // check only directories:
-    if (not fs::is_directory(pit.path())) {
-      continue;
-    }
+  for (auto &pit :
+       fs::directory_iterator(fs::current_path() / fs::path("output"))) {
     // ignore directories starting with . (hidden files in unix)
     if ((pit.path().filename().string()).find(".") == 0) {
       continue;
     }
-    if ((pit.path().filename().string()).find(output_dir_trunk) == 0) {
+    if ((pit.path().filename().string()).find(output_filename_trunk) == 0) {
       std::cout << "Processing " << pit.path().filename() << std::endl;
 
       json input;
       {
-        fs::path currpath
-            = fs::absolute(pit.path()) / fs::path("output.json").string();
+        fs::path currpath = fs::absolute(pit.path());
         std::ifstream inputstream(currpath);
         inputstream >> input;
       }
@@ -122,14 +118,14 @@ void add_power_json_data(
           auto &newdata = component["data"];
           for (auto &step : newdata) {
             json time_step_to_save;
-            for (auto varit = step.begin(); varit != step.end(); ++varit) {
-              if (varit.key() == "time") {
-                time_step_to_save[varit.key()] = varit.value();
+            for (auto &[key, value] : step.items()) {
+              if (key == "time") {
+                time_step_to_save[key] = value;
                 continue;
               }
-              auto meankey = varit.key() + "_mean";
-              auto sigmakey = varit.key() + "_sigma";
-              time_step_to_save[meankey] = varit.value();
+              auto meankey = key + "_mean";
+              auto sigmakey = key + "_sigma";
+              time_step_to_save[meankey] = value;
               time_step_to_save[sigmakey] = 0;
             }
             data_to_save.push_back(time_step_to_save);
@@ -138,24 +134,25 @@ void add_power_json_data(
 
         } else {
           if ((*it)["id"] != id) {
+            std::cout << "Expected id:" << id << std::endl;
+            std::cout << "Gotten id:" << (*it)["id"] << std::endl;
             throw std::runtime_error(
-                "input wasn't sorted. is this really an output file of "
-                "Grazer? "
-                "If yes, file a bug!");
+                "input wasn't sorted or some outputs stem from different "
+                "topology files than others!");
           }
           auto &olddata = (*it)["data"];
           auto &newdata = component["data"];
           auto oldit = olddata.begin();
           for (auto &step : newdata) {
-            for (auto varit = step.begin(); varit != step.end(); ++varit) {
-              if (varit.key() == "time") {
+            for (auto &[key, value] : step.items()) {
+              if (key == "time") {
                 continue;
               }
-              auto meankey = varit.key() + "_mean";
-              auto sigmakey = varit.key() + "_sigma";
+              auto meankey = key + "_mean";
+              auto sigmakey = key + "_sigma";
 
               double n = number_of_runs;
-              double new_value = varit.value().get<double>();
+              double new_value = value.get<double>();
               double old_mean = (*oldit)[meankey].get<double>();
               double old_sigma = (*oldit)[sigmakey].get<double>();
 
@@ -201,15 +198,15 @@ void add_gas_json_data(
           auto &data_to_add = component["data"];
           for (auto &step : data_to_add) {
             json time_step_to_save;
-            for (auto varit = step.begin(); varit != step.end(); ++varit) {
-              if (varit.key() == "time") {
-                time_step_to_save["time"] = varit.value();
+            for (auto &[key, value] : step.items()) {
+              if (key == "time") {
+                time_step_to_save["time"] = value;
                 continue;
               }
-              auto meankey = varit.key() + "_mean";
-              time_step_to_save[meankey] = varit.value();
-              auto sigmakey = varit.key() + "_sigma";
-              for (auto &value_pair_to_add : varit.value()) {
+              auto meankey = key + "_mean";
+              time_step_to_save[meankey] = value;
+              auto sigmakey = key + "_sigma";
+              for (auto &value_pair_to_add : value) {
                 json value_pair_to_save;
                 value_pair_to_save["x"] = value_pair_to_add["x"];
                 value_pair_to_save["value"] = 0.0;
@@ -231,13 +228,13 @@ void add_gas_json_data(
           auto &data_to_add = component["data"];
           auto data_to_save_it = data_to_save.begin();
           for (auto &step : data_to_add) {
-            for (auto varit = step.begin(); varit != step.end(); ++varit) {
-              if (varit.key() == "time") {
+            for (auto &[key, value] : step.items()) {
+              if (key == "time") {
                 continue;
               }
-              auto meankey = varit.key() + "_mean";
-              auto sigmakey = varit.key() + "_sigma";
-              for (auto &value_pair : varit.value()) {
+              auto meankey = key + "_mean";
+              auto sigmakey = key + "_sigma";
+              for (auto &value_pair : value) {
                 auto x = value_pair["x"];
                 auto compare_for_x = [](json const &a, json const &b) -> bool {
                   return a["x"].get<double>() < b["x"].get<double>();

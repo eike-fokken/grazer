@@ -430,9 +430,15 @@ namespace randutils {
     }
 
     default_seeds local_entropy() {
-      // This is a constant that changes every time we compile the code
-      constexpr uint32_t compile_stamp
-          = fnv(2166136261U, __DATE__ __TIME__ __FILE__);
+
+      /*
+       * The following makes reproducible builds impossible! Also it is not used
+       * at the moment, so we remove it.
+       */
+
+      // // This is a constant that changes every time we compile the code
+      // constexpr uint32_t compile_stamp
+      //     = fnv(2166136261U, __DATE__ __TIME__ __FILE__);
 
       // Some people think you shouldn't use the random device much because
       // on some platforms it could be expensive to call or "use up" vital

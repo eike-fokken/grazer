@@ -4,43 +4,35 @@
 #include <nlohmann/json.hpp>
 #include <regex>
 #include <stdexcept>
+#include <string>
 #include <vector>
-using json = nlohmann::ordered_json;
+using json = nlohmann::json;
 namespace fs = std::filesystem;
 
-static std::string colorchooser(std::string const &type);
+std::string colorchooser(std::string const &type);
 
 /** @brief A helper function to write out a latex file which draws a graph of
- * the gaslib part of a topology file.
+ * the power part of a topology file.
  *
- * @param topology.json The topology file. Should contain Sources, Sinks and/or
- * Innodes.
+ * @param topology.json The topology file.
  * @param tex_file Filename of the texfile to be written. Careful: Files are
  * silently overwritten.
  * @param scale_factor Optional parameter, defaults to 10. Possibly needed
  * because tex cannot work with dimensions larger than some value often attained
  * with large structures like the gaslib data. Higher value means smaller
  * picture.
- *
- * CAREFUL: The labels are modified in here. Search the src for "CAREFUL".
  */
 
 int main(int argc, char **argv) {
   if (argc != 3 and argc != 4) {
-    std::cout
-        << "You must provide a topology file and a latex filename for printout!"
-        << std::endl;
+    std::cout << "You must provide a topology file, an outputfile and a latex "
+                 "filename for printout! In addition you can provide a scaling "
+                 "factor."
+              << std::endl;
     return 1;
   }
   std::string topfile = argv[1];
   std::string texfile = argv[2];
-
-  double divideby = 1.0;
-  if (argc == 3) {
-    divideby = 10;
-  } else {
-    divideby = std::stod(argv[3]);
-  }
 
   json topology;
   {
@@ -48,14 +40,22 @@ int main(int argc, char **argv) {
     inputstream >> topology;
   }
 
-  std::vector<std::string> nodetypes{"Source", "Sink", "Innode"};
-  std::vector<std::string> edgetypes
-      = {"Pipe", "Controlvalve", "Compressorstation", "Shortpipe"};
+  std::vector<std::string> nodetypes{
+      "PQnode", "PVnode", "Vphinode", "StochasticPQnode", "ExternalPowerplant"};
+  std::vector<std::string> edgetypes = {"Transmissionline"};
+
+  double divideby = 1.0;
+  if (argc == 3) {
+    divideby = 0.1;
+  } else {
+    divideby = std::stod(argv[3]);
+  }
 
   std::ofstream outstream((fs::path(texfile)));
 
   outstream << "\\documentclass{standalone}\n"
             << "\\usepackage{tikz}\n"
+            << "\\usepackage{mathptmx}\n"
             << "\\begin{document}\n"
             << "\\begin{tikzpicture}[every node"
             << "/.style={scale=3,transform shape}]\n";
@@ -73,11 +73,17 @@ int main(int argc, char **argv) {
     }
     auto color = colorchooser(type);
     for (auto const &node : topology["nodes"][type]) {
+
+      //////////////////////////////////////////
       std::string id = node["id"];
       double x = node["x"].get<double>();
       double y = node["y"].get<double>();
       nodes.push_back(Node{color, id, x, y});
     }
+
+    /////////////////////////////////////////////
+
+    ////////////////////////////////////////////
   }
 
   double xmean = 0;
@@ -91,62 +97,34 @@ int main(int argc, char **argv) {
   ymean = ymean / static_cast<int>(nodes.size());
 
   for (auto &node : nodes) {
+
     auto label_id = node.id;
-    // CAREFUL: This should remove the "node_" part of the label but is not
-    // suitable for any other type of label!
-    label_id.erase(0, 5);
-    // = std::regex_replace(node.id, std::regex("_"), "\\textunderscore ");
+    // label_id.erase(0, 5);
+
+    // auto label_id
+    //     = std::regex_replace(node.id, std::regex("_"), "\\textunderscore ");
     double out_x = (node.x - xmean) / divideby;
     double out_y = (node.y - ymean) / divideby;
-    outstream << "\\node[line width=4pt,draw=" << node.color << "](" << node.id
-              << ") at(" << out_x << ", " << out_y << "){" << label_id
-              << "};\n";
+
+    outstream << "\\node[draw=" << node.color << ",circle,line width=10pt]("
+              << node.id << ") at(" << out_x << ", " << out_y << "){"
+              << label_id << "};\n";
   }
 
   for (auto const &type : edgetypes) {
     if (not topology["connections"].contains(type)) {
       continue;
     }
+    // bool done = false;
     for (auto const &edge : topology["connections"][type]) {
       std::string from = edge["from"];
       std::string to = edge["to"];
-
-      outstream << "\\draw[line width=6pt](" << from << ")--(" << to << ");\n";
+      outstream << "\\draw[line width=5pt](" << from << ")--(" << to << ");\n";
     }
   }
 
   outstream << "\\end{tikzpicture}\n"
             << "\\end{document}\n";
-
-  //   for (auto &comptype : input) { // nodes and connections
-  //     if (not comptype.contains(from_category)) {
-  //       continue;
-  //     }
-  //     // define an equals function as a lambda
-  //     auto id_equals = [id](nlohmann::json const &a) -> bool {
-  //       return a["id"].get<std::string>() == id;
-  //     };
-  //     auto &currcat = comptype[from_category];
-  //     auto it = std::find_if(currcat.begin(), currcat.end(), id_equals);
-  //     if (it == currcat.end()) {
-  //       continue;
-  //     } else {
-  //       comptype[to_category].push_back(*it);
-  //       currcat.erase(it);
-  //       found = true;
-  //     }
-  //   }
-  //   if (not found) {
-  //     std::cout << "No object with id " << id << " in category " <<
-  //     from_category
-  //               << " in file " << file << std::endl;
-  //   } else {
-  //     {
-  //       std::ofstream outputstream((fs::path(file)));
-  //       outputstream << input.dump(1,'\t');
-  //     }
-  //   }
-  // }
 }
 
 std::string colorchooser(std::string const &type) {
@@ -156,9 +134,20 @@ std::string colorchooser(std::string const &type) {
     return "red";
   } else if (type == "Innode") {
     return "black";
+  } else if (type == "Vphinode") {
+    return "green";
+  } else if (type == "PQnode") {
+    return "red";
+  } else if (type == "PVnode") {
+    return "blue";
+  } else if (type == "StochasticPQnode") {
+    return "red";
+  } else if (type == "ExternalPowerplant") {
+    return "green";
   } else {
     throw std::runtime_error(
-        "Unknown node type! Did you extend this program without extending the "
+        "Unknown node type! Did you extend this program without extending "
+        "the "
         "colorchooser?");
   }
 }

@@ -151,7 +151,7 @@ include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/eigen/")
 # discouraged (although not necessarily well documented as such) to use
 # include(...) for pulling in other CMake projects anyways.
 
-include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/nlohmann_json/single_include/")
+include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/nlohmann_json/include/")
 
 
 # This includes the pcg random number generator suite.
