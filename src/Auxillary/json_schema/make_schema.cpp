@@ -243,10 +243,10 @@ namespace Aux::schema {
     if ((schema.type() == json::value_t::object) and schema.contains("type")
         and (schema["type"] == "object") and schema.contains("properties")) {
       if (schema.contains("required")) {
-        auto required_list = schema["required"];
+        auto &required_list = schema["required"];
         if (required_list.type() != json::value_t::array) {
           std::ostringstream o;
-          o << "Required List is not a List!\n\n"
+          o << "Required List is not an array!\n\n"
             << "Dump of Schema:\n"
             << schema << "\n";
           throw std::runtime_error(o.str());
@@ -259,6 +259,7 @@ namespace Aux::schema {
             << schema << "\n";
           throw std::runtime_error(o.str());
         }
+
         required_list.erase( // resizes the vector using the first empty element
                              // returned by remove_if and the current vector end
             std::remove_if(
@@ -272,7 +273,7 @@ namespace Aux::schema {
                 }),
             required_list.end());
       }
-      for (auto &[_, definition] : schema["properties"].items()) {
+      for (auto &definition : schema["properties"]) {
         // recursion
         remove_defaults_from_required(definition);
       }
