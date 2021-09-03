@@ -6,7 +6,7 @@
 - added a `--version` flag to print out the version of grazer.
 - fixed an important bug, where we failed to take the pipe cross section into account when computing the reynolds number.
 - It is now possible to install grazer with the install target.
-
+- There are now more docs in userguide.tex but it is still not complete.
 
 ### Changes (since v0.1.4)
 
