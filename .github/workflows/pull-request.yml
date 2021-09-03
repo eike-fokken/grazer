@@ -37,6 +37,7 @@ jobs:
           build_type: Debug
           binary-path: /build/src/Grazer/grazer
           specific-target: --target doxygen user_guide
+          no-test-hack: \#
         - name: Linux-GNU
           compiler: g++-9
           os: ubuntu-18.04
@@ -141,7 +142,7 @@ jobs:
       shell: bash
       # Execute tests defined by the CMake configuration.  
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest -V -C ${{ matrix.build_type }}
+      run: ${{ matrix.no-test-hack }} ctest -V -C ${{ matrix.build_type }}
     
     - name: Integration Test 
       run: ${{github.workspace}}${{ matrix.binary-path }} run ./data/basetest
