@@ -33,7 +33,7 @@ jobs:
         - name: Linux-Docs
           compiler: g++-9
           os: ubuntu-18.04
-          dep-install: sudo apt-get update && sudo apt-get install -y cmake texlive-full doxygen
+          dep-install: sudo apt-get update && sudo apt-get install -y cmake texlive-latex-extra doxygen graphviz
           build_type: Debug
           binary-path: /build/src/Grazer/grazer
           specific-target: --target doxygen user_guide
