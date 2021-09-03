@@ -18,7 +18,9 @@ int grazer::run(std::filesystem::path directory_path) {
   {
     auto problem_directory = directory_path / "problem";
     auto problem_data_file = problem_directory / "problem_data.json";
-    auto output_dir = io::prepare_output_dir(directory_path / "output");
+    auto output_file = io::prepare_output_file(directory_path);
+
+    std::cout << "Using output filename\n" << output_file.string() << std::endl;
 
     // This must be wrapped in exception handling code!
 
@@ -36,7 +38,7 @@ int grazer::run(std::filesystem::path directory_path) {
 
     auto timeevolver = Model::Timeevolver::make_instance(time_evolution_json);
 
-    Model::Problem problem(problem_json, output_dir);
+    Model::Problem problem(problem_json, output_file);
     auto number_of_states = problem.set_indices();
     std::cout << "data read" << std::endl;
 
