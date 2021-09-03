@@ -32,13 +32,13 @@ jobs:
         - name: Linux-GNU
           compiler: g++-9
           os: ubuntu-18.04
-          dep-install: sudo apt-get update && sudo apt-get install -y cmake texlive
+          dep-install: sudo apt-get update && sudo apt-get install -y cmake texlive-full
           build_type: Debug
           binary-path: /build/src/Grazer/grazer
         - name: Linux-Clang
           compiler: clang++-9
           os: ubuntu-18.04
-          dep-install: sudo apt-get update && sudo apt-get install -y cmake clang texlive doxygen
+          dep-install: sudo apt-get update && sudo apt-get install -y cmake clang texlive-full doxygen
           build_type: Debug
           binary-path: /build/src/Grazer/grazer
         - name: Linux-Clang-libc++
@@ -126,7 +126,7 @@ jobs:
       working-directory: ${{github.workspace}}/build
       shell: bash
       # Execute the build.  You can specify a specific target with "--target <NAME>"
-      run: cmake --build . --config ${{ matrix.build_type }} --parallel 10
+      run: cmake --build . --config ${{ matrix.build_type }} --target all docs --parallel 10
 
     - name: Unit Tests
       working-directory: ${{github.workspace}}/build
