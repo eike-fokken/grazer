@@ -47,7 +47,6 @@
 \begin{document}
 
 
-\todo[inline]{Note that this document is a work in progress and not yet very helpful. This will hopefully and probably change in July 21.}
 \section{grazer}
 \label{sec:grazer}
 This is the user guide for grazer.
@@ -87,10 +86,19 @@ Because of the low performance of the debug version, you should not install this
 
 \subsection{Usage}
 \label{sec:usage}
+The simulation capabilities of grazer are invoked by calling
+\begin{lstlisting}[language=bash,caption={Invocation},basicstyle=\scriptsize\ttfamily\color{blue}]
+grazer run <path/to/problemfolder>
+\end{lstlisting}
+Grazer should tell you of any errors it encountered. If no errors are reported, an outputfile\\
+\verb|problemfolder/output/outputXXXXXXX.json| should appear. Here
+\emph{XXXXXXX} stands for some number which makes different outputfiles unique.
+This number is the number of milliseconds since the UNIX epoch (01.01.1970).
+Therefore output files are ordered by time of creation.
+
 
 \subsubsection{Input files}
 \label{sec:input-files}
-
 grazer is controlled by input files, which contain json code.
 The most important such file is called \emph{problem\sco data.json}. Its top-level structure is given in \autoref{fig:problem_data.json}.
 
@@ -167,6 +175,21 @@ This is sorted by subproblem. When (and if) support for different subproblem typ
   \label{fig:initvalues}
 \end{figure}
 
+There is also a boundary.json file which contains boundary values which is similar to initial.json.
+
+\subsubsection{topology.json}
+\label{sec:topology.json}
+The most important file is topology.json. In it the underlying graph of the
+problem and all components in it are defined. Its structure is very similar to
+GasLib xml files and split into connections and nodes of the graph. At the
+moment the easiest way to understand its structure is to have a look at the
+example files in the data directory. The problem case \emph{one\sco pipeline}
+consists of a single gas pipeline between a gas source and a gas sink, the
+problem case \emph{base} consists of the GasLib-134 net connected to the
+ieee-300 bus system via gas powerplants and power-to-gas stations and is a
+bigger example containing almost all components present in grazer.
+
+
 Lastly the problem data can contain defaults. These defaults are applied when
 properties in the \emph{topology json} are missing. Since the boundary json and
 control json is merged into the topology json at runtime it is also possible to
@@ -224,6 +247,7 @@ convenience and grazer uses on-the-fly generated schemas internally.
 
 \subsubsection{Internal structure}
 \label{sec:internal-structure}
+\todo[inline]{This section is not yet ready, please raise issues on github about it.}
 After all filenames have been replaced with their file contents, the final json objects are handed to the objects, that finally carry out the computations.
 
 A Problem object passes on subproblem jsons to the factory functions of subproblem objects (at the moment only Networkproblem is implemented).
@@ -240,6 +264,7 @@ These handle the evaluation. The Networkproblem also hands \emph{evaluate} to it
 
 \subsection{Extending Networkproblem}
 \label{sec:extend-netw}
+\todo[inline]{This section is not yet ready, please raise issues on github about it.}
 The easiest way to extend grazer for your needs, is to create new classes that inherit from \emph{Node} or \emph{Edge} and
 (most of these at least do) from either \emph{Statecomponent} (if the new componenttype has its own variables) or
 \emph{Equationcomponent} (if the new component sets model equations in other components.)
