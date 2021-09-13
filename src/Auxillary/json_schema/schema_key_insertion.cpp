@@ -19,7 +19,7 @@ namespace Aux::schema {
     }
 
     for (std::string const &type :
-         {"boundary", "control", "initial", "topology"}) {
+         {"boundary", "control", "initial", "topology", "problem_data"}) {
       if (std::filesystem::exists(schemas / (type + "_schema.json"))) {
         path file = problem_dir / (type + ".json");
         ordered_json old_json;

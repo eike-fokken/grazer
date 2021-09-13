@@ -52,9 +52,12 @@ namespace Aux::schema {
     return 0;
   }
 
+  inline static json get_problem_data_schema();
+
   void make_schemas(Componentfactory const &factory, path schema_dir) {
 
     std::map<std::string, json> schemas{
+        {"problem_data", get_problem_data_schema()},
         {"topology",
          factory.get_topology_schema(
              /*allow_required_defaults=*/false, /*include_external=*/false)},
@@ -104,6 +107,105 @@ namespace Aux::schema {
       }
     }
     return false;
+  }
+
+  inline static json get_problem_data_schema() {
+    // see docs/problem_data_schema.json
+    return R"(
+    {
+      "$schema": "http://json-schema.org/draft-07/schema",
+      "type": "object",
+      "description": "Metadata of the Problem",
+      "required": ["time_evolution_data", "initial_values", "problem_data"],
+      "properties": {
+        "time_evolution_data": {
+          "type": "object",
+          "description": "provides all data on time and newton solver",
+          "required": [
+            "use_simplified_newton",
+            "maximal_number_of_newton_iterations",
+            "tolerance",
+            "retries",
+            "start_time",
+            "end_time",
+            "desired_delta_t"
+          ],
+          "properties": {
+            "use_simplified_newton": {"type": "boolean"},
+            "maximal_number_of_newton_iterations": {"type": "integer", "minimum": 0},
+            "tolerance": {"type": "number"},
+            "retries": {"type": "integer", "minimum": 0},
+            "start_time": {"type": "number"},
+            "end_time": {"type": "number"},
+            "desired_delta_t": {"type": "number"}
+          }
+        },
+        "initial_values": {
+          "type": "object",
+          "description": "holds a file name to an additional initial values json sorted by subproblem",
+          "required": ["subproblems"],
+          "properties": {
+            "subproblems": {
+              "type": "object",
+              "required": ["Network_problem"],
+              "properties": {
+                "Network_problem": {
+                  "type": "object",
+                  "required": ["initial_json"],
+                  "properties": {
+                    "initial_json": {
+                      "type": "string",
+                      "format": "iri-reference",
+                      "description": "Initial Values JSON file"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "problem_data": {
+          "type": "object",
+          "description": "holds a file name to an additional initial values json sorted by subproblem",
+          "required": ["subproblems"],
+          "properties": {
+            "subproblems": {
+              "type": "object",
+              "required": ["Network_problem"],
+              "properties": {
+                "Network_problem": {
+                  "type": "object",
+                  "required": ["defaults", "topology_json", "boundary_json", "control_json"],
+                  "properties": {
+                    "defaults": {
+                      "type": "object",
+                      "patternProperties": {"^.*$": {"type": "object"}},
+                      "description": "Components With default Topology Properties"
+                    },
+                    "topology_json": {
+                      "type": "string",
+                      "format": "iri-reference",
+                      "description": "Topology JSON file"
+                    },
+                    "boundary_json": {
+                      "type": "string",
+                      "format": "iri-reference",
+                      "description": "Boundary JSON file"
+                    },
+                    "control": {
+                      "type": "string",
+                      "format": "iri-reference",
+                      "description": "Control JSON file"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    )"_json;
   }
 
 } // namespace Aux::schema
