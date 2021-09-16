@@ -1,11 +1,12 @@
 #pragma once
+#include "Equationcomponent.hpp"
 #include "Statecomponent.hpp"
 #include <Eigen/Sparse>
 
 namespace Model::Networkproblem::Gas {
 
   /// @brief This class is a base class for all Gas edges with a 2x2 balance law
-  class Gasedge : public Statecomponent {
+  class Gasedge : public Equationcomponent, public Statecomponent {
 
   public:
     static int init_vals_per_interpol_point();
