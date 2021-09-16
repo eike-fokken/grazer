@@ -1,12 +1,16 @@
 #pragma once
 #include "Boundaryvalue.hpp"
+#include "Equationcomponent.hpp"
 #include "Node.hpp"
 #include "Statecomponent.hpp"
 #include <Eigen/Sparse>
 
 namespace Model::Networkproblem::Power {
 
-  class Powernode : public Statecomponent, public Network::Node {
+  class Powernode :
+      public Equationcomponent,
+      public Statecomponent,
+      public Network::Node {
 
   public:
     virtual std::string get_power_type() const = 0;

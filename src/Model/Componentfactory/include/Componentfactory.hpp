@@ -1,17 +1,14 @@
 #pragma once
 #include "Edge.hpp"
+#include "Equationcomponent.hpp"
 #include "Node.hpp"
+#include "Statecomponent.hpp"
+#include "make_schema.hpp"
 #include "schema_validation.hpp"
-#include <Statecomponent.hpp>
-#include <exception>
-#include <make_schema.hpp>
+
 #include <map>
 #include <memory>
 #include <sstream>
-
-namespace Model::Networkproblem {
-  class Statecomponent;
-}
 
 namespace Model::Componentfactory {
 

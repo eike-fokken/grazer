@@ -1,8 +1,10 @@
 #pragma once
-#include "Equationcomponent.hpp"
+#include <Eigen/Sparse>
+#include <nlohmann/json.hpp>
+// #include "Equationcomponent.hpp"
 
 namespace Model::Networkproblem {
-  class Statecomponent : public Equationcomponent {
+  class Statecomponent {
   public:
     /// \brief Returns number of state variables needed by this component.
     ///
