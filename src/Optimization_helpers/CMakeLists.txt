@@ -1,0 +1,3 @@
+add_library(optimization_helpers STATIC Optimization_helpers.cpp)
+
+target_include_directories(optimization_helpers PUBLIC include)
