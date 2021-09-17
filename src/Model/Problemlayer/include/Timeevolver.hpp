@@ -37,7 +37,7 @@ namespace Model {
     static Timeevolver make_instance(nlohmann::json const &timeevolver_data);
 
     void simulate(
-        Timedata timedata, Model::Problem &problem, int number_of_states,
+        Timedata timedata, Problem &problem, int number_of_states,
         nlohmann::json &problem_initial_json);
 
   private:
