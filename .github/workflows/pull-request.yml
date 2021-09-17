@@ -64,12 +64,14 @@ jobs:
           compiler: clang++
           build_type: Debug
           binary-path: /build/src/Grazer/grazer
+          parallel-command: --parallel 10
         - name: Windows-VisualStudio
           os: windows-2019
           compiler: msvc
           build_type: Debug
           binary-path: \build\src\Grazer\Debug\grazer.exe
           binary-ending: ".exe"
+          parallel-command: --parallel 10
         - name: Release-Test
           os: ubuntu-20.04
           compiler: clang++-10
@@ -139,7 +141,7 @@ jobs:
       working-directory: ${{github.workspace}}/build
       shell: bash
       # Execute the build.  You can specify a specific target with "--target <NAME>"
-      run: cmake --build . --config ${{ matrix.build_type }} --parallel 10 ${{ matrix.specific-target }}
+      run: cmake --build . --config ${{ matrix.build_type }}  ${{ matrix.specific-target }} ${{ matrix.parallel-command }}
 
     - name: Unit Tests
       if: matrix.name != 'Linux-Docs'
