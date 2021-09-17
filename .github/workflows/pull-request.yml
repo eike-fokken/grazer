@@ -22,6 +22,7 @@ jobs:
       fail-fast: false
       matrix:
         name:
+        - Linux-Docs
         - Linux-GNU
         - Linux-Clang
         - Linux-Clang-libc++
@@ -29,42 +30,55 @@ jobs:
         - Windows-VisualStudio
         - Release-Test
         include:
+        - name: Linux-Docs
+          compiler: g++-9
+          os: ubuntu-18.04
+          dep-install: sudo apt-get update && sudo apt-get install -y cmake ninja-build texlive-latex-extra doxygen graphviz
+          build_type: Debug
+          binary-path: /build/src/Grazer/grazer
+          specific-target: --target doxygen user_guide
         - name: Linux-GNU
           compiler: g++-9
           os: ubuntu-18.04
-          dep-install: sudo apt-get update && sudo apt-get install -y cmake texlive
+          dep-install: sudo apt-get update && sudo apt-get install -y cmake ninja-build
           build_type: Debug
           binary-path: /build/src/Grazer/grazer
+          generator-command: -G"Ninja"
         - name: Linux-Clang
           compiler: clang++-9
           os: ubuntu-18.04
-          dep-install: sudo apt-get update && sudo apt-get install -y cmake clang texlive doxygen
+          dep-install: sudo apt-get update && sudo apt-get install -y cmake clang ninja-build
           build_type: Debug
           binary-path: /build/src/Grazer/grazer
+          generator-command: -G"Ninja"
         - name: Linux-Clang-libc++
           compiler: clang++-9
           os: ubuntu-18.04
-          dep-install: sudo apt-get update && sudo apt-get install -y cmake clang libc++abi-9-dev  libc++-9-dev
+          dep-install: sudo apt-get update && sudo apt-get install -y cmake clang libc++abi-9-dev  libc++-9-dev ninja-build
           build_type: Debug
           build_with_libcpp: ON
           binary-path: /build/src/Grazer/grazer
+          generator-command: -G"Ninja"
         - name: MacOS-Clang
           os: macos-10.15
           compiler: clang++
           build_type: Debug
           binary-path: /build/src/Grazer/grazer
+          parallel-command: --parallel 10
         - name: Windows-VisualStudio
           os: windows-2019
           compiler: msvc
           build_type: Debug
           binary-path: \build\src\Grazer\Debug\grazer.exe
           binary-ending: ".exe"
+          parallel-command: --parallel 10
         - name: Release-Test
           os: ubuntu-20.04
           compiler: clang++-10
-          dep-install: sudo apt-get update && sudo apt-get install -y cmake
+          dep-install: sudo apt-get update && sudo apt-get install -y cmake ninja-build
           build_type: Release
           binary-path: /build/src/Grazer/grazer
+          generator-command: -G"Ninja"
 
           
 
@@ -120,22 +134,25 @@ jobs:
         cmake $GITHUB_WORKSPACE \
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
           $CCACHE_OPTIONS \
-          -DBUILD_WITH_LIBCPP=${BUILD_WITH_LIBCPP}
+          -DBUILD_WITH_LIBCPP=${BUILD_WITH_LIBCPP} \
+          ${{ matrix.generator-command }}
 
     - name: Build
       working-directory: ${{github.workspace}}/build
       shell: bash
       # Execute the build.  You can specify a specific target with "--target <NAME>"
-      run: cmake --build . --config ${{ matrix.build_type }} --parallel 10
+      run: cmake --build . --config ${{ matrix.build_type }}  ${{ matrix.specific-target }} ${{ matrix.parallel-command }}
 
     - name: Unit Tests
+      if: matrix.name != 'Linux-Docs'
       working-directory: ${{github.workspace}}/build
       shell: bash
       # Execute tests defined by the CMake configuration.  
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -V -C ${{ matrix.build_type }}
     
-    - name: Integration Test 
+    - name: Integration Test
+      if: matrix.name != 'Linux-Docs'
       run: ${{github.workspace}}${{ matrix.binary-path }} run ./data/basetest
 
     ## GUI Artifacts Test
