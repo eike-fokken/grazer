@@ -142,7 +142,7 @@ jobs:
       run: cmake --build . --config ${{ matrix.build_type }} --parallel 10 ${{ matrix.specific-target }}
 
     - name: Unit Tests
-      if: matrix.name != Linux-Docs
+      if: matrix.name != 'Linux-Docs'
       working-directory: ${{github.workspace}}/build
       shell: bash
       # Execute tests defined by the CMake configuration.  
@@ -150,7 +150,7 @@ jobs:
       run: ctest -V -C ${{ matrix.build_type }}
     
     - name: Integration Test
-      if: matrix.name != Linux-Docs
+      if: matrix.name != 'Linux-Docs'
       run: ${{github.workspace}}${{ matrix.binary-path }} run ./data/basetest
 
     ## GUI Artifacts Test
