@@ -23,7 +23,7 @@ void add_power_json_data(
     nlohmann::json const &reference, nlohmann::json const &input,
     nlohmann::json &output, std::vector<std::string> types);
 
-/** \brief Computes maximal discrepance between a given bottom line output
+/** \brief Computes maximal discrepance between a given reference output
  * of a grazer problem and a collection of grazer outputs for the same
  * topology.
  *
