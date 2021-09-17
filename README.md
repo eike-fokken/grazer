@@ -11,8 +11,8 @@ Yet feel free to dig into it.  Any feedback in github issues or to the mail addr
 
 
 ## Installation
-Before you can use grazer, you must build it (or download a prebuilt version: [Releases](https://github.com/eike-fokken/grazer/releases)).
-Supported compilers are clang-9, gcc-9 and Microsofts Visual Studio 2019 as well as later version.
+Before you can use grazer, you must build it (You can also download a prebuilt version, although note that the latex documentation is not included and also the helper functions are missing. But for a first glimpse, checkout [Releases](https://github.com/eike-fokken/grazer/releases)).
+Supported compilers are clang-9, gcc-9 and Microsofts Visual Studio 2019 as well as later versions.
 Other compilers may work and probably do as we strive for full standard compliance to C++17.
 
 To build grazer, clone this git repository, change into it and run
