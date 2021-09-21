@@ -85,7 +85,13 @@ TEST_F(GasTEST, Shortpipe_evaluate) {
 
   netprob->set_initial_values(last_state, np_initialjson);
   Eigen::VectorXd new_state = last_state;
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd new_control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, last_control,
+      new_control);
 
   EXPECT_DOUBLE_EQ(rootvalues[1], pressure_start - pressure_end);
   EXPECT_DOUBLE_EQ(rootvalues[2], flow_start - flow_end);
@@ -134,13 +140,20 @@ TEST_F(GasTEST, Shortpipe_evaluate_state_derivative) {
 
   netprob->set_initial_values(last_state, np_initialjson);
   Eigen::VectorXd new_state = last_state;
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd new_control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, last_control,
+      new_control);
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
   Aux::Triplethandler handler(&J);
 
   netprob->evaluate_state_derivative(
-      &handler, last_time, new_time, last_state, new_state);
+      &handler, last_time, new_time, last_state, new_state, last_control,
+      new_control);
   handler.set_matrix();
 
   Eigen::Matrix4d DenseJ = J;
@@ -216,7 +229,13 @@ TEST_F(GasTEST, Source_evaluate) {
 
   netprob->set_initial_values(new_state, initial_json);
 
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd new_control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, last_control,
+      new_control);
 
   // node0:
   EXPECT_DOUBLE_EQ(rootvalues[0], -sp01_pressure_start + sp20_pressure_end);
@@ -292,8 +311,13 @@ TEST_F(GasTEST, Source_evaluate_state_derivative) {
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
   Aux::Triplethandler handler(&J);
 
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd new_control;
   netprob->evaluate_state_derivative(
-      &handler, last_time, new_time, last_state, new_state);
+      &handler, last_time, new_time, last_state, new_state, last_control,
+      new_control);
   handler.set_matrix();
 
   Eigen::MatrixXd DenseJ = J;
@@ -396,7 +420,13 @@ TEST_F(GasTEST, Sink_evaluate) {
 
   netprob->set_initial_values(new_state, initial_json);
 
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd new_control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, last_control,
+      new_control);
 
   // Note that for sinks the boundary conditions should have the opposite signs
   // compared to sources. node0:
@@ -472,8 +502,13 @@ TEST_F(GasTEST, Sink_evaluate_state_derivative) {
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
   Aux::Triplethandler handler(&J);
 
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd new_control;
   netprob->evaluate_state_derivative(
-      &handler, last_time, new_time, last_state, new_state);
+      &handler, last_time, new_time, last_state, new_state, last_control,
+      new_control);
   handler.set_matrix();
 
   Eigen::MatrixXd DenseJ = J;
@@ -570,7 +605,13 @@ TEST_F(GasTEST, Innode_evaluate) {
 
   netprob->set_initial_values(new_state, initial_json);
 
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd new_control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, last_control,
+      new_control);
 
   // node0:
   EXPECT_DOUBLE_EQ(rootvalues[0], -sp01_pressure_start + sp20_pressure_end);
@@ -639,8 +680,13 @@ TEST_F(GasTEST, Innode_evaluate_state_derivative) {
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
   Aux::Triplethandler handler(&J);
 
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd new_control;
   netprob->evaluate_state_derivative(
-      &handler, last_time, new_time, last_state, new_state);
+      &handler, last_time, new_time, last_state, new_state, last_control,
+      new_control);
   handler.set_matrix();
 
   Eigen::MatrixXd DenseJ = J;
@@ -730,7 +776,13 @@ TEST_F(GasTEST, Pipe_evaluate) {
 
   netprob->set_initial_values(new_state, net_initial);
 
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd new_control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, last_control,
+      new_control);
 
   Eigen::Vector2d last_left = last_state.segment<2>(0);
   Eigen::Vector2d last_right = last_state.segment<2>(2);
@@ -803,8 +855,13 @@ TEST_F(GasTEST, Pipe_evaluate_state_derivative) {
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
   Aux::Triplethandler handler(&J);
 
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd new_control;
   netprob->evaluate_state_derivative(
-      &handler, last_time, new_time, last_state, new_state);
+      &handler, last_time, new_time, last_state, new_state, last_control,
+      new_control);
   handler.set_matrix();
 
   Eigen::Matrix4d DenseJ = J;
