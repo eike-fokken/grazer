@@ -58,13 +58,12 @@ namespace Model::Networkproblem::Power {
   }
 
   void StochasticPQnode::evaluate(
-      Eigen::Ref<Eigen::VectorXd> rootvalues, double // last_time
-      ,
-      double // new_time
-      ,
-      Eigen::Ref<Eigen::VectorXd const> // last_state
-      ,
-      Eigen::Ref<Eigen::VectorXd const> new_state) const {
+      Eigen::Ref<Eigen::VectorXd> rootvalues, double /*last_time*/,
+      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> /*last_state*/,
+      Eigen::Ref<Eigen::VectorXd const> new_state,
+      Eigen::Ref<Eigen::VectorXd const> /*last_control*/,
+      Eigen::Ref<Eigen::VectorXd const> /*new_control*/
+  ) const {
     auto V_index = get_start_state_index();
     auto phi_index = V_index + 1;
     rootvalues[V_index] = P(new_state) - current_P;
@@ -74,7 +73,9 @@ namespace Model::Networkproblem::Power {
   void StochasticPQnode::prepare_timestep(
       double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> last_state,
-      Eigen::Ref<Eigen::VectorXd const> // new_state
+      Eigen::Ref<Eigen::VectorXd const> /*new_state*/,
+      Eigen::Ref<Eigen::VectorXd const> /*last_control*/,
+      Eigen::Ref<Eigen::VectorXd const> /*new_control*/
   ) {
     auto last_P = P(last_state);
     current_P = Aux::euler_maruyama_oup(
@@ -118,13 +119,11 @@ namespace Model::Networkproblem::Power {
   // }
 
   void StochasticPQnode::evaluate_state_derivative(
-      Aux::Matrixhandler *jacobianhandler,
-      double // last_time
-      ,
-      double // new_time
-      ,
-      Eigen::Ref<Eigen::VectorXd const>,
-      Eigen::Ref<Eigen::VectorXd const> new_state) const {
+      Aux::Matrixhandler *jacobianhandler, double /*last_time*/,
+      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> /*last_state*/,
+      Eigen::Ref<Eigen::VectorXd const> new_state,
+      Eigen::Ref<Eigen::VectorXd const> /*last_control*/,
+      Eigen::Ref<Eigen::VectorXd const> /*new_control*/) const {
     auto first_equation_index = get_start_state_index();
     auto second_equation_index = first_equation_index + 1;
     evaluate_P_derivative(first_equation_index, jacobianhandler, new_state);

@@ -76,7 +76,9 @@ namespace Model::Networkproblem::Gas {
   void Pipe::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> last_state,
-      Eigen::Ref<Eigen::VectorXd const> new_state) const {
+      Eigen::Ref<Eigen::VectorXd const> new_state,
+      Eigen::Ref<Eigen::VectorXd const> /*last_control*/,
+      Eigen::Ref<Eigen::VectorXd const> /*new_control*/) const {
     for (int i = get_equation_start_index(); i != get_equation_after_index();
          i += 2) {
 
@@ -96,7 +98,9 @@ namespace Model::Networkproblem::Gas {
   void Pipe::evaluate_state_derivative(
       Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> last_state,
-      Eigen::Ref<Eigen::VectorXd const> new_state) const {
+      Eigen::Ref<Eigen::VectorXd const> new_state,
+      Eigen::Ref<Eigen::VectorXd const> /*last_control*/,
+      Eigen::Ref<Eigen::VectorXd const> /*new_control*/) const {
     for (int i = get_equation_start_index(); i != get_equation_after_index();
          i += 2) {
       // maybe use Eigen::Ref here to avoid copies.

@@ -37,7 +37,9 @@ namespace Model::Networkproblem {
     virtual void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> last_state,
-        Eigen::Ref<Eigen::VectorXd const> new_state) const = 0;
+        Eigen::Ref<Eigen::VectorXd const> new_state,
+        Eigen::Ref<Eigen::VectorXd const> last_control,
+        Eigen::Ref<Eigen::VectorXd const> new_control) const = 0;
 
     /// \brief Carries out steps that need to be taken before the Newton method
     /// for a time step can start.
@@ -51,7 +53,9 @@ namespace Model::Networkproblem {
     virtual void prepare_timestep(
         double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> last_state,
-        Eigen::Ref<Eigen::VectorXd const> new_state);
+        Eigen::Ref<Eigen::VectorXd const> new_state,
+        Eigen::Ref<Eigen::VectorXd const> last_control,
+        Eigen::Ref<Eigen::VectorXd const> new_control);
 
     /// \brief derivative of Equationcomponent::evaluate.
     ///
@@ -66,8 +70,10 @@ namespace Model::Networkproblem {
     /// @param new_state value of the state at current time step.
     virtual void evaluate_state_derivative(
         Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const>,
-        Eigen::Ref<Eigen::VectorXd const> new_state) const = 0;
+        Eigen::Ref<Eigen::VectorXd const> last_state,
+        Eigen::Ref<Eigen::VectorXd const> new_state,
+        Eigen::Ref<Eigen::VectorXd const> last_control,
+        Eigen::Ref<Eigen::VectorXd const> new_control) const = 0;
 
     /// \brief Utility for setup of things that cannot be done during
     /// construction.

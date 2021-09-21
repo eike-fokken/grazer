@@ -37,7 +37,9 @@ namespace Model::Networkproblem::Gaspowerconnection {
   void ExternalPowerplant::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
       Eigen::Ref<Eigen::VectorXd const>,
-      Eigen::Ref<Eigen::VectorXd const> new_state) const {
+      Eigen::Ref<Eigen::VectorXd const> new_state,
+      Eigen::Ref<Eigen::VectorXd const> /*last_control*/,
+      Eigen::Ref<Eigen::VectorXd const> /*new_control*/) const {
 
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
@@ -52,12 +54,11 @@ namespace Model::Networkproblem::Gaspowerconnection {
   }
 
   void ExternalPowerplant::evaluate_state_derivative(
-      Aux::Matrixhandler *jacobianhandler,
-      double // last_time
-      ,
-      double new_time, Eigen::Ref<Eigen::VectorXd const>,
-      Eigen::Ref<Eigen::VectorXd const> // new_state
-  ) const {
+      Aux::Matrixhandler *jacobianhandler, double /*last_time*/,
+      double new_time, Eigen::Ref<Eigen::VectorXd const> /*last_state*/,
+      Eigen::Ref<Eigen::VectorXd const> /*new_state*/,
+      Eigen::Ref<Eigen::VectorXd const> /*last_control*/,
+      Eigen::Ref<Eigen::VectorXd const> /*new_control*/) const {
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
 

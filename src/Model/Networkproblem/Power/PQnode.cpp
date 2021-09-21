@@ -11,8 +11,10 @@ namespace Model::Networkproblem::Power {
   std::string PQnode::get_power_type() const { return get_type(); }
   void PQnode::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
-      Eigen::Ref<Eigen::VectorXd const>,
-      Eigen::Ref<Eigen::VectorXd const> new_state) const {
+      Eigen::Ref<Eigen::VectorXd const> /*last_state*/,
+      Eigen::Ref<Eigen::VectorXd const> new_state,
+      Eigen::Ref<Eigen::VectorXd const> /*last_control*/,
+      Eigen::Ref<Eigen::VectorXd const> /*new_control*/) const {
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
     rootvalues[V_index] = P(new_state) - boundaryvalue(new_time)[0];
@@ -26,7 +28,9 @@ namespace Model::Networkproblem::Power {
       double // new_time
       ,
       Eigen::Ref<Eigen::VectorXd const>,
-      Eigen::Ref<Eigen::VectorXd const> new_state) const {
+      Eigen::Ref<Eigen::VectorXd const> new_state,
+      Eigen::Ref<Eigen::VectorXd const> /*last_control*/,
+      Eigen::Ref<Eigen::VectorXd const> /*new_control*/) const {
     int first_equation_index = get_start_state_index();
     int second_equation_index = first_equation_index + 1;
     evaluate_P_derivative(first_equation_index, jacobianhandler, new_state);

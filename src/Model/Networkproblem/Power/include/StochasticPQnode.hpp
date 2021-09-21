@@ -23,17 +23,23 @@ namespace Model::Networkproblem::Power {
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> last_state,
-        Eigen::Ref<Eigen::VectorXd const> new_state) const override;
+        Eigen::Ref<Eigen::VectorXd const> new_state,
+        Eigen::Ref<Eigen::VectorXd const> last_control,
+        Eigen::Ref<Eigen::VectorXd const> new_control) const override;
 
     void evaluate_state_derivative(
         Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const>,
-        Eigen::Ref<Eigen::VectorXd const> new_state) const override;
+        Eigen::Ref<Eigen::VectorXd const> new_state,
+        Eigen::Ref<Eigen::VectorXd const> last_control,
+        Eigen::Ref<Eigen::VectorXd const> new_control) const override;
 
     void prepare_timestep(
         double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> last_state,
-        Eigen::Ref<Eigen::VectorXd const> new_state) override;
+        Eigen::Ref<Eigen::VectorXd const> new_state,
+        Eigen::Ref<Eigen::VectorXd const> last_control,
+        Eigen::Ref<Eigen::VectorXd const> new_control) override;
 
     void
     json_save(double time, Eigen::Ref<Eigen::VectorXd const> state) override;

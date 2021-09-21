@@ -20,7 +20,8 @@ namespace Model::Networkproblem::Gas {
     if (get_start_state_index() < 0 or get_after_state_index() < 0) {
       gthrow(
           {"This function: ", __FUNCTION__,
-           " can only be called after set_state_indices(...) has been called."});
+           " can only be called after set_state_indices(...) has been "
+           "called."});
     }
     return get_start_state_index();
   }
@@ -29,7 +30,8 @@ namespace Model::Networkproblem::Gas {
     if (get_start_state_index() < 0 or get_after_state_index() < 0) {
       gthrow(
           {"This function: ", __FUNCTION__,
-           " can only be called after set_state_indices(...) has been called."});
+           " can only be called after set_state_indices(...) has been "
+           "called."});
     }
     return (get_after_state_index() - 1);
   }
