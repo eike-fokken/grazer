@@ -72,8 +72,12 @@ namespace Model {
     Eigen::VectorXd last_state(number_of_states);
 
     std::cout
+        << "#############################################################"
+           "#############\n"
         << "FOLLOWING LINE " << __LINE__ << " IN FILE " << __FILE__
-        << " EMPTY CONTROLS ARE SET. MUST BE REPLACED BY ACTUAL CONTROLS!";
+        << "\nEMPTY CONTROLS ARE SET. MUST BE REPLACED BY ACTUAL CONTROLS!\n"
+        << "#############################################################"
+           "#############\n";
     Eigen::VectorXd last_control;
     Eigen::VectorXd new_control;
 
