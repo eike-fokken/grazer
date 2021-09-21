@@ -37,6 +37,10 @@ TEST_F(modelTest, Model_evaluate) {
   // This is necessary for the expect_call to work properly...
   Eigen::Ref<Eigen::VectorXd> rootref(rootvalues);
 
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd new_control;
   // expect the call to evaluate on the subproblems.
   // The cast magic is necessary to have the right type at hand...
   EXPECT_CALL(
@@ -44,15 +48,20 @@ TEST_F(modelTest, Model_evaluate) {
       evaluate(
           Eigen::Ref<Eigen::VectorXd>(rootvalues), last_time, new_time,
           Eigen::Ref<Eigen::VectorXd const>(v1),
-          Eigen::Ref<Eigen::VectorXd const>(v2)))
+          Eigen::Ref<Eigen::VectorXd const>(v2),
+          Eigen::Ref<Eigen::VectorXd const>(last_control),
+          Eigen::Ref<Eigen::VectorXd const>(new_control)))
       .Times(1);
   EXPECT_CALL(
       *dynamic_cast<GrazerTest::MockSubproblem *>(problem.get_subproblems()[1]),
       evaluate(
           Eigen::Ref<Eigen::VectorXd>(rootvalues), last_time, new_time,
           Eigen::Ref<Eigen::VectorXd const>(v1),
-          Eigen::Ref<Eigen::VectorXd const>(v2)))
+          Eigen::Ref<Eigen::VectorXd const>(v2),
+          Eigen::Ref<Eigen::VectorXd const>(last_control),
+          Eigen::Ref<Eigen::VectorXd const>(new_control)))
       .Times(1);
 
-  problem.evaluate(rootvalues, last_time, new_time, v1, v2);
+  problem.evaluate(
+      rootvalues, last_time, new_time, v1, v2, last_control, new_control);
 }
