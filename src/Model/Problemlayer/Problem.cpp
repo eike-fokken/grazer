@@ -58,34 +58,44 @@ namespace Model {
     //   next_free_index = subproblem->set_state_indices(next_free_index);
     // }
     return next_free_index;
-   }
+  }
 
   void Problem::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> last_state,
-      Eigen::Ref<Eigen::VectorXd const> new_state) const {
+      Eigen::Ref<Eigen::VectorXd const> new_state,
+      Eigen::Ref<Eigen::VectorXd const> last_control,
+      Eigen::Ref<Eigen::VectorXd const> new_control) const {
     for (auto &subproblem : subproblems) {
       subproblem->evaluate(
-          rootvalues, last_time, new_time, last_state, new_state);
+          rootvalues, last_time, new_time, last_state, new_state, last_control,
+          new_control);
     }
   }
 
   void Problem::prepare_timestep(
       double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> last_state,
-      Eigen::Ref<Eigen::VectorXd const> new_state) {
+      Eigen::Ref<Eigen::VectorXd const> new_state,
+      Eigen::Ref<Eigen::VectorXd const> last_control,
+      Eigen::Ref<Eigen::VectorXd const> new_control) {
     for (auto &subproblem : subproblems) {
-      subproblem->prepare_timestep(last_time, new_time, last_state, new_state);
+      subproblem->prepare_timestep(
+          last_time, new_time, last_state, new_state, last_control,
+          new_control);
     }
   }
 
   void Problem::evaluate_state_derivative(
       Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> last_state,
-      Eigen::Ref<Eigen::VectorXd const> new_state) const {
+      Eigen::Ref<Eigen::VectorXd const> new_state,
+      Eigen::Ref<Eigen::VectorXd const> last_control,
+      Eigen::Ref<Eigen::VectorXd const> new_control) const {
     for (auto &subproblem : subproblems) {
       subproblem->evaluate_state_derivative(
-          jacobianhandler, last_time, new_time, last_state, new_state);
+          jacobianhandler, last_time, new_time, last_state, new_state,
+          last_control, new_control);
     }
   }
 
