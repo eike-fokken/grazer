@@ -74,17 +74,16 @@ public:
 };
 
 TEST_F(PowerTEST, evaluate_Vphi) {
-
-  // std::unique_ptr<Model::Networkproblem::Networkproblem> netprob;
-  // double last_time;
-  // double new_time;
-  // Eigen::VectorXd last_state;
-  // Eigen::VectorXd new_state;
-  // Eigen::VectorXd rootvalues;
   auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
       = default_setup();
 
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd new_control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, last_control,
+      new_control);
 
   auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
@@ -106,7 +105,13 @@ TEST_F(PowerTEST, evaluate_state_derivative_Vphi) {
   auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
       = default_setup();
 
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd new_control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, last_control,
+      new_control);
 
   auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
@@ -118,7 +123,8 @@ TEST_F(PowerTEST, evaluate_state_derivative_Vphi) {
   Aux::Triplethandler handler(&J);
 
   netprob->evaluate_state_derivative(
-      &handler, last_time, new_time, last_state, new_state);
+      &handler, last_time, new_time, last_state, new_state, last_control,
+      new_control);
   handler.set_matrix();
 
   Eigen::Matrix<double, 6, 6> DenseJ = J;
@@ -149,7 +155,13 @@ TEST_F(PowerTEST, evaluate_PQ) {
   auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
       = default_setup();
 
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd new_control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, last_control,
+      new_control);
 
   auto *pq = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
       netprob->get_network().get_node_by_id("pq"));
@@ -175,7 +187,13 @@ TEST_F(PowerTEST, evaluate_state_derivative_PQ) {
   auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
       = default_setup();
 
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd new_control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, last_control,
+      new_control);
 
   auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
@@ -197,7 +215,8 @@ TEST_F(PowerTEST, evaluate_state_derivative_PQ) {
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
   Aux::Triplethandler handler(&J);
   netprob->evaluate_state_derivative(
-      &handler, last_time, new_time, last_state, new_state);
+      &handler, last_time, new_time, last_state, new_state, last_control,
+      new_control);
   handler.set_matrix();
 
   Eigen::Matrix<double, 6, 6> DenseJ = J;
@@ -258,7 +277,13 @@ TEST_F(PowerTEST, evaluate_PV) {
   auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
       = default_setup();
 
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd new_control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, last_control,
+      new_control);
 
   auto *pv = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
       netprob->get_network().get_node_by_id("pv"));
@@ -281,7 +306,13 @@ TEST_F(PowerTEST, evaluate_state_derivative_PV) {
   auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
       = default_setup();
 
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd new_control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, last_control,
+      new_control);
 
   auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
@@ -303,7 +334,8 @@ TEST_F(PowerTEST, evaluate_state_derivative_PV) {
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
   Aux::Triplethandler handler(&J);
   netprob->evaluate_state_derivative(
-      &handler, last_time, new_time, last_state, new_state);
+      &handler, last_time, new_time, last_state, new_state, last_control,
+      new_control);
   handler.set_matrix();
 
   Eigen::Matrix<double, 6, 6> DenseJ = J;

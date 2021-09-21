@@ -89,11 +89,18 @@ public:
 };
 
 TEST_F(stochasticPQnodeTEST, evaluate) {
-
   auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
       = default_setup();
-  netprob->prepare_timestep(last_time, new_time, last_state, new_state);
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd new_control;
+  netprob->prepare_timestep(
+
+      last_time, new_time, last_state, new_state, last_control, new_control);
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, last_control,
+      new_control);
 
   auto *stoch_pq
       = dynamic_cast<Model::Networkproblem::Power::StochasticPQnode *>(
@@ -136,8 +143,13 @@ TEST_F(stochasticPQnodeTEST, evaluate_state_derivative) {
 
   auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
       = default_setup();
-
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd new_control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, last_control,
+      new_control);
 
   auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
@@ -159,7 +171,8 @@ TEST_F(stochasticPQnodeTEST, evaluate_state_derivative) {
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
   Aux::Triplethandler handler(&J);
   netprob->evaluate_state_derivative(
-      &handler, last_time, new_time, last_state, new_state);
+      &handler, last_time, new_time, last_state, new_state, last_control,
+      new_control);
   handler.set_matrix();
 
   Eigen::Matrix<double, 6, 6> DenseJ = J;
