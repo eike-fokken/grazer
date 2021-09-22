@@ -25,8 +25,12 @@ void add_power_json_data(
 
 /** \brief Computes maximal discrepance between a given reference output
  * of a grazer problem and a collection of grazer outputs for the same
- * topology.
+ * topology. Before running this function, change into the directory containing the grazer output folder.
  *
+ * @param path_to_reference Relative or absolute path to the reference output file
+ * @param output_filename_trunk Default = "output"
+ * @param computed_output Default = "reference_discrepance.json"
+ * 
  */
 
 int main(int argc, char **argv) {
