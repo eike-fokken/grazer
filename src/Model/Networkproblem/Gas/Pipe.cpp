@@ -75,10 +75,10 @@ namespace Model::Networkproblem::Gas {
 
   void Pipe::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> last_state,
-      Eigen::Ref<Eigen::VectorXd const> new_state,
-      Eigen::Ref<Eigen::VectorXd const> /*last_control*/,
-      Eigen::Ref<Eigen::VectorXd const> /*new_control*/) const {
+      Eigen::Ref<Eigen::VectorXd const> const & last_state,
+      Eigen::Ref<Eigen::VectorXd const> const & new_state,
+      Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) const {
     for (int i = get_equation_start_index(); i != get_equation_after_index();
          i += 2) {
 
@@ -97,10 +97,10 @@ namespace Model::Networkproblem::Gas {
 
   void Pipe::evaluate_state_derivative(
       Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> last_state,
-      Eigen::Ref<Eigen::VectorXd const> new_state,
-      Eigen::Ref<Eigen::VectorXd const> /*last_control*/,
-      Eigen::Ref<Eigen::VectorXd const> /*new_control*/) const {
+      Eigen::Ref<Eigen::VectorXd const> const & last_state,
+      Eigen::Ref<Eigen::VectorXd const> const & new_state,
+      Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) const {
     for (int i = get_equation_start_index(); i != get_equation_after_index();
          i += 2) {
       // maybe use Eigen::Ref here to avoid copies.
@@ -144,7 +144,7 @@ namespace Model::Networkproblem::Gas {
     new_output[comp_type][get_type()].push_back(std::move(this_output_json));
   }
 
-  void Pipe::json_save(double time, Eigen::Ref<const Eigen::VectorXd> state) {
+  void Pipe::json_save(double time, Eigen::Ref<Eigen::VectorXd const> const & state) {
 
     nlohmann::json current_value;
     current_value["time"] = time;
@@ -188,7 +188,7 @@ namespace Model::Networkproblem::Gas {
   }
 
   Eigen::Vector2d Pipe::get_boundary_p_qvol_bar(
-      int direction, Eigen::Ref<Eigen::VectorXd const> state) const {
+      int direction, Eigen::Ref<Eigen::VectorXd const> const & state) const {
     Eigen::Vector2d b_state = get_boundary_state(direction, state);
     Eigen::Vector2d p_qvol = bl->p_qvol(b_state);
     return bl->p_qvol_bar_from_p_qvol(p_qvol);
@@ -197,7 +197,7 @@ namespace Model::Networkproblem::Gas {
   void Pipe::dboundary_p_qvol_dstate(
       int direction, Aux::Matrixhandler *jacobianhandler,
       Eigen::RowVector2d function_derivative, int rootvalues_index,
-      Eigen::Ref<Eigen::VectorXd const> state) const {
+      Eigen::Ref<Eigen::VectorXd const> const & state) const {
     Eigen::Vector2d boundary_state = get_boundary_state(direction, state);
 
     Eigen::Vector2d p_qvol = bl->p_qvol(boundary_state);

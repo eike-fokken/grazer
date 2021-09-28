@@ -46,10 +46,10 @@ namespace Model::Networkproblem {
 
   void Networkproblem::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> last_state,
-      Eigen::Ref<Eigen::VectorXd const> new_state,
-      Eigen::Ref<Eigen::VectorXd const> last_control,
-      Eigen::Ref<Eigen::VectorXd const> new_control) const {
+      Eigen::Ref<Eigen::VectorXd const> const & last_state,
+      Eigen::Ref<Eigen::VectorXd const> const & new_state,
+      Eigen::Ref<Eigen::VectorXd const> const & last_control,
+      Eigen::Ref<Eigen::VectorXd const> const & new_control) const {
 
     for (Model::Networkproblem::Equationcomponent *eqcomponent :
          equationcomponents) {
@@ -61,10 +61,10 @@ namespace Model::Networkproblem {
 
   void Networkproblem::prepare_timestep(
       double last_time, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> last_state,
-      Eigen::Ref<Eigen::VectorXd const> new_state,
-      Eigen::Ref<Eigen::VectorXd const> last_control,
-      Eigen::Ref<Eigen::VectorXd const> new_control) {
+      Eigen::Ref<Eigen::VectorXd const> const & last_state,
+      Eigen::Ref<Eigen::VectorXd const> const & new_state,
+      Eigen::Ref<Eigen::VectorXd const> const & last_control,
+      Eigen::Ref<Eigen::VectorXd const> const & new_control) {
     for (Model::Networkproblem::Equationcomponent *eqcomponent :
          equationcomponents) {
       eqcomponent->prepare_timestep(
@@ -75,10 +75,10 @@ namespace Model::Networkproblem {
 
   void Networkproblem::evaluate_state_derivative(
       ::Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> last_state,
-      Eigen::Ref<Eigen::VectorXd const> new_state,
-      Eigen::Ref<Eigen::VectorXd const> last_control,
-      Eigen::Ref<Eigen::VectorXd const> new_control) const {
+      Eigen::Ref<Eigen::VectorXd const> const & last_state,
+      Eigen::Ref<Eigen::VectorXd const> const & new_state,
+      Eigen::Ref<Eigen::VectorXd const> const & last_control,
+      Eigen::Ref<Eigen::VectorXd const> const & new_control) const {
 
     for (Model::Networkproblem::Equationcomponent *eqcomponent :
          equationcomponents) {
@@ -89,7 +89,7 @@ namespace Model::Networkproblem {
   }
 
   void Networkproblem::json_save(
-      double time, Eigen::Ref<Eigen::VectorXd const> state) {
+      double time, Eigen::Ref<Eigen::VectorXd const> const & state) {
     for (Model::Networkproblem::Statecomponent *statecomponent :
          statecomponents) {
       statecomponent->json_save(time, state);

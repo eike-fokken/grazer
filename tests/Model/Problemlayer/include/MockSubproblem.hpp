@@ -14,26 +14,26 @@ namespace GrazerTest {
     MOCK_METHOD(
         void, evaluate,
         ((Eigen::Ref<Eigen::VectorXd>), (double), (double),
-         (Eigen::Ref<Eigen::VectorXd const>),
-         (Eigen::Ref<Eigen::VectorXd const>),
-         (Eigen::Ref<Eigen::VectorXd const>),
-         (Eigen::Ref<Eigen::VectorXd const>)),
+         (Eigen::Ref<Eigen::VectorXd const> const &),
+         (Eigen::Ref<Eigen::VectorXd const> const &),
+         (Eigen::Ref<Eigen::VectorXd const> const &),
+         (Eigen::Ref<Eigen::VectorXd const> const &)),
         (const, override));
     MOCK_METHOD(
         void, prepare_timestep,
-        ((double), (double), (Eigen::Ref<Eigen::VectorXd const>),
-         (Eigen::Ref<Eigen::VectorXd const>),
-         (Eigen::Ref<Eigen::VectorXd const>),
-         (Eigen::Ref<Eigen::VectorXd const>)),
+        ((double), (double), (Eigen::Ref<Eigen::VectorXd const> const &),
+         (Eigen::Ref<Eigen::VectorXd const> const &),
+         (Eigen::Ref<Eigen::VectorXd const> const &),
+         (Eigen::Ref<Eigen::VectorXd const> const &)),
         (override));
 
     MOCK_METHOD(
         void, evaluate_state_derivative,
         ((Aux::Matrixhandler *), (double), (double),
-         (Eigen::Ref<Eigen::VectorXd const>),
-         (Eigen::Ref<Eigen::VectorXd const>),
-         (Eigen::Ref<Eigen::VectorXd const>),
-         (Eigen::Ref<Eigen::VectorXd const>)),
+         (Eigen::Ref<Eigen::VectorXd const> const &),
+         (Eigen::Ref<Eigen::VectorXd const> const &),
+         (Eigen::Ref<Eigen::VectorXd const> const &),
+         (Eigen::Ref<Eigen::VectorXd const> const &)),
         (const, override));
     MOCK_METHOD(
         int, reserve_state_indices, (int const next_free_index), (override));
@@ -41,7 +41,7 @@ namespace GrazerTest {
         (void), set_initial_values,
         (Eigen::Ref<Eigen::VectorXd>, nlohmann::json), (override));
     MOCK_METHOD(
-        (void), json_save, (double, Eigen::Ref<Eigen::VectorXd const>),
+        (void), json_save, (double, Eigen::Ref<Eigen::VectorXd const> const &),
         (override));
     MOCK_METHOD((void), add_results_to_json, (nlohmann::json &), (override));
   };

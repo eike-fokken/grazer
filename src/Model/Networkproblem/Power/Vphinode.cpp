@@ -9,10 +9,10 @@ namespace Model::Networkproblem::Power {
 
   void Vphinode::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double /*last_time*/,
-      double new_time, Eigen::Ref<Eigen::VectorXd const> /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> new_state,
-      Eigen::Ref<Eigen::VectorXd const> /*last_control*/,
-      Eigen::Ref<Eigen::VectorXd const> /*new_control*/) const {
+      double new_time, Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & new_state,
+      Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) const {
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
     rootvalues[V_index] = new_state[V_index] - boundaryvalue(new_time)[0];
@@ -22,10 +22,10 @@ namespace Model::Networkproblem::Power {
 
   void Vphinode::evaluate_state_derivative(
       Aux::Matrixhandler *jacobianhandler, double /*last_time*/,
-      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> /*new_state*/,
-      Eigen::Ref<Eigen::VectorXd const> /*last_control*/,
-      Eigen::Ref<Eigen::VectorXd const> /*new_control*/
+      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/
   ) const {
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
@@ -34,7 +34,7 @@ namespace Model::Networkproblem::Power {
   }
 
   void
-  Vphinode::json_save(double time, Eigen::Ref<Eigen::VectorXd const> state) {
+  Vphinode::json_save(double time, Eigen::Ref<Eigen::VectorXd const> const & state) {
     auto P_val = P(state);
     auto Q_val = Q(state);
     json_save_power(time, state, P_val, Q_val);

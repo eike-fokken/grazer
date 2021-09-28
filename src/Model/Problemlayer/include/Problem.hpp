@@ -36,26 +36,26 @@ namespace Model {
 
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-        double new_time, Eigen::Ref<Eigen::VectorXd const> last_state,
-        Eigen::Ref<Eigen::VectorXd const> new_state,
-        Eigen::Ref<Eigen::VectorXd const> last_control,
-        Eigen::Ref<Eigen::VectorXd const> new_control) const;
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const & last_state,
+        Eigen::Ref<Eigen::VectorXd const> const & new_state,
+        Eigen::Ref<Eigen::VectorXd const> const & last_control,
+        Eigen::Ref<Eigen::VectorXd const> const & new_control) const;
 
     void prepare_timestep(
         double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> last_state,
-        Eigen::Ref<Eigen::VectorXd const> new_state,
-        Eigen::Ref<Eigen::VectorXd const> last_control,
-        Eigen::Ref<Eigen::VectorXd const> new_control);
+        Eigen::Ref<Eigen::VectorXd const> const & last_state,
+        Eigen::Ref<Eigen::VectorXd const> const & new_state,
+        Eigen::Ref<Eigen::VectorXd const> const & last_control,
+        Eigen::Ref<Eigen::VectorXd const> const & new_control);
 
     void evaluate_state_derivative(
         Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> last_state,
-        Eigen::Ref<Eigen::VectorXd const> new_state,
-        Eigen::Ref<Eigen::VectorXd const> last_control,
-        Eigen::Ref<Eigen::VectorXd const> new_control) const;
+        Eigen::Ref<Eigen::VectorXd const> const & last_state,
+        Eigen::Ref<Eigen::VectorXd const> const & new_state,
+        Eigen::Ref<Eigen::VectorXd const> const & last_control,
+        Eigen::Ref<Eigen::VectorXd const> const & new_control) const;
 
-    void json_save(double time, Eigen::Ref<Eigen::VectorXd const> state);
+    void json_save(double time, Eigen::Ref<Eigen::VectorXd const> const & state);
 
     /// As we have unique pointers, we can only give back a pointer to our
     /// subproblems.

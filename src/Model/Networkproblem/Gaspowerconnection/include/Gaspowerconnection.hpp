@@ -32,16 +32,16 @@ namespace Model::Networkproblem::Gaspowerconnection {
 
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-        double new_time, Eigen::Ref<Eigen::VectorXd const> last_state,
-        Eigen::Ref<Eigen::VectorXd const> new_state,
-        Eigen::Ref<Eigen::VectorXd const> last_control,
-        Eigen::Ref<Eigen::VectorXd const> new_control) const override;
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const & last_state,
+        Eigen::Ref<Eigen::VectorXd const> const & new_state,
+        Eigen::Ref<Eigen::VectorXd const> const & last_control,
+        Eigen::Ref<Eigen::VectorXd const> const & new_control) const override;
     void evaluate_state_derivative(
         Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const>,
-        Eigen::Ref<Eigen::VectorXd const> new_state,
-        Eigen::Ref<Eigen::VectorXd const> last_control,
-        Eigen::Ref<Eigen::VectorXd const> new_control) const override;
+        Eigen::Ref<Eigen::VectorXd const> const &,
+        Eigen::Ref<Eigen::VectorXd const> const & new_state,
+        Eigen::Ref<Eigen::VectorXd const> const & last_control,
+        Eigen::Ref<Eigen::VectorXd const> const & new_control) const override;
 
     void setup() override;
 
@@ -50,19 +50,19 @@ namespace Model::Networkproblem::Gaspowerconnection {
     void add_results_to_json(nlohmann::json &new_output) override;
 
     void
-    json_save(double time, Eigen::Ref<const Eigen::VectorXd> state) override;
+    json_save(double time, Eigen::Ref<Eigen::VectorXd const> const & state) override;
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,
         nlohmann::json const &initial_json) override;
 
     Eigen::Vector2d get_boundary_p_qvol_bar(
-        int direction, Eigen::Ref<Eigen::VectorXd const> state) const override;
+        int direction, Eigen::Ref<Eigen::VectorXd const> const & state) const override;
 
     void dboundary_p_qvol_dstate(
         int direction, Aux::Matrixhandler *jacobianhandler,
         Eigen::RowVector2d function_derivative, int rootvalues_index,
-        Eigen::Ref<Eigen::VectorXd const> state) const override;
+        Eigen::Ref<Eigen::VectorXd const> const & state) const override;
 
     double smoothing_polynomial(double q) const;
     double dsmoothing_polynomial_dq(double q) const;

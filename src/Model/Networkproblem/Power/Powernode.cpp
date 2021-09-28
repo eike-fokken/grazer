@@ -112,7 +112,7 @@ namespace Model::Networkproblem::Power {
   }
 
   void Powernode::json_save_power(
-      double time, Eigen::Ref<Eigen::VectorXd const> state, double P_val,
+      double time, Eigen::Ref<Eigen::VectorXd const> const & state, double P_val,
       double Q_val) {
 
     nlohmann::json current_value;
@@ -126,7 +126,7 @@ namespace Model::Networkproblem::Power {
     output_json["data"].push_back(std::move(current_value));
   }
 
-  double Powernode::P(Eigen::Ref<Eigen::VectorXd const> state) const {
+  double Powernode::P(Eigen::Ref<Eigen::VectorXd const> const & state) const {
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
     double G_i = get_G();
@@ -150,7 +150,7 @@ namespace Model::Networkproblem::Power {
     return P;
   }
 
-  double Powernode::Q(Eigen::Ref<Eigen::VectorXd const> state) const {
+  double Powernode::Q(Eigen::Ref<Eigen::VectorXd const> const & state) const {
 
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
@@ -177,7 +177,7 @@ namespace Model::Networkproblem::Power {
 
   void Powernode::evaluate_P_derivative(
       int equationindex, Aux::Matrixhandler *jacobianhandler,
-      Eigen::Ref<Eigen::VectorXd const> new_state) const {
+      Eigen::Ref<Eigen::VectorXd const> const & new_state) const {
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
     double G_i = get_G();
@@ -215,7 +215,7 @@ namespace Model::Networkproblem::Power {
 
   void Powernode::evaluate_Q_derivative(
       int equationindex, Aux::Matrixhandler *jacobianhandler,
-      Eigen::Ref<Eigen::VectorXd const> new_state) const {
+      Eigen::Ref<Eigen::VectorXd const> const & new_state) const {
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
     double B_i = get_B();

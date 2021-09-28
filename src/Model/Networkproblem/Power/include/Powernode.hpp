@@ -36,18 +36,18 @@ namespace Model::Networkproblem::Power {
         Eigen::Ref<Eigen::VectorXd> new_state,
         nlohmann::json const &initial_json) final;
 
-    double P(Eigen::Ref<Eigen::VectorXd const> state) const;
-    double Q(Eigen::Ref<Eigen::VectorXd const> state) const;
+    double P(Eigen::Ref<Eigen::VectorXd const> const & state) const;
+    double Q(Eigen::Ref<Eigen::VectorXd const> const & state) const;
     void evaluate_P_derivative(
         int equationindex, Aux::Matrixhandler *jacobianhandler,
-        Eigen::Ref<Eigen::VectorXd const> new_state) const;
+        Eigen::Ref<Eigen::VectorXd const> const & new_state) const;
     void evaluate_Q_derivative(
         int equationindex, Aux::Matrixhandler *jacobianhandler,
-        Eigen::Ref<Eigen::VectorXd const> new_state) const;
+        Eigen::Ref<Eigen::VectorXd const> const & new_state) const;
 
   protected:
     void json_save_power(
-        double time, Eigen::Ref<Eigen::VectorXd const> state, double P_val,
+        double time, Eigen::Ref<Eigen::VectorXd const> const & state, double P_val,
         double Q_val);
 
     Boundaryvalue<2> const boundaryvalue;

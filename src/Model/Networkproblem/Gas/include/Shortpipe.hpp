@@ -12,17 +12,17 @@ namespace Model::Networkproblem::Gas {
 
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-        double new_time, Eigen::Ref<Eigen::VectorXd const> last_state,
-        Eigen::Ref<Eigen::VectorXd const> new_state,
-        Eigen::Ref<Eigen::VectorXd const> last_control,
-        Eigen::Ref<Eigen::VectorXd const> new_control) const final;
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const & last_state,
+        Eigen::Ref<Eigen::VectorXd const> const & new_state,
+        Eigen::Ref<Eigen::VectorXd const> const & last_control,
+        Eigen::Ref<Eigen::VectorXd const> const & new_control) const final;
 
     void evaluate_state_derivative(
         Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const>,
-        Eigen::Ref<Eigen::VectorXd const> new_state,
-        Eigen::Ref<Eigen::VectorXd const> last_control,
-        Eigen::Ref<Eigen::VectorXd const> new_control) const final;
+        Eigen::Ref<Eigen::VectorXd const> const &,
+        Eigen::Ref<Eigen::VectorXd const> const & new_state,
+        Eigen::Ref<Eigen::VectorXd const> const & last_control,
+        Eigen::Ref<Eigen::VectorXd const> const & new_control) const final;
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,

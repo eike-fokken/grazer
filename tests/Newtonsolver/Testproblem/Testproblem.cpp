@@ -7,20 +7,20 @@ namespace GrazerTest {
 
   void TestProblem::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double,
-      Eigen::Ref<Eigen::VectorXd const> /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> new_state,
-      Eigen::Ref<Eigen::VectorXd const> /*last_control*/,
-      Eigen::Ref<Eigen::VectorXd const> /*new_control*/) const {
+      Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & new_state,
+      Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) const {
 
     rootvalues = f(new_state);
   }
 
   void TestProblem::evaluate_state_derivative(
       Aux::Matrixhandler *jacobianhandler, double, double,
-      Eigen::Ref<Eigen::VectorXd const> /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> new_state,
-      Eigen::Ref<Eigen::VectorXd const> /*last_control*/,
-      Eigen::Ref<Eigen::VectorXd const> /*new_control*/) const {
+      Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & new_state,
+      Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) const {
 
     Eigen::SparseMatrix<double> mat = df(new_state);
     for (int k = 0; k < mat.outerSize(); ++k)

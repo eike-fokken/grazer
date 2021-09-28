@@ -10,11 +10,11 @@ namespace Model::Networkproblem::Power {
 
   void PVnode::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
-      Eigen::Ref<Eigen::VectorXd const>,
-      Eigen::Ref<Eigen::VectorXd const> new_state,
-      Eigen::Ref<Eigen::VectorXd const> // last_control
+      Eigen::Ref<Eigen::VectorXd const> const &,
+      Eigen::Ref<Eigen::VectorXd const> const & new_state,
+      Eigen::Ref<Eigen::VectorXd const> const & // last_control
       ,
-      Eigen::Ref<Eigen::VectorXd const> // new_control
+      Eigen::Ref<Eigen::VectorXd const> const & // new_control
   ) const {
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
@@ -29,11 +29,11 @@ namespace Model::Networkproblem::Power {
       ,
       double // new_time
       ,
-      Eigen::Ref<Eigen::VectorXd const>,
-      Eigen::Ref<Eigen::VectorXd const> new_state,
-      Eigen::Ref<Eigen::VectorXd const> // last_control
+      Eigen::Ref<Eigen::VectorXd const> const &,
+      Eigen::Ref<Eigen::VectorXd const> const & new_state,
+      Eigen::Ref<Eigen::VectorXd const> const & // last_control
       ,
-      Eigen::Ref<Eigen::VectorXd const> // new_control
+      Eigen::Ref<Eigen::VectorXd const> const & // new_control
   ) const {
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
@@ -41,7 +41,7 @@ namespace Model::Networkproblem::Power {
     jacobianhandler->set_coefficient(phi_index, V_index, 1.0);
   }
 
-  void PVnode::json_save(double time, Eigen::Ref<Eigen::VectorXd const> state) {
+  void PVnode::json_save(double time, Eigen::Ref<Eigen::VectorXd const> const & state) {
     auto P_val = boundaryvalue(time)[0];
     auto Q_val = Q(state);
     json_save_power(time, state, P_val, Q_val);
