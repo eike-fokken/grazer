@@ -11,7 +11,7 @@ target_include_directories(power PUBLIC
   include)
 
 target_link_libraries(power PUBLIC
-  equationcomponent
+  componentclasses
   network
   stochastics)
 target_link_libraries(power PRIVATE

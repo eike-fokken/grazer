@@ -14,7 +14,7 @@ target_link_libraries(gaspowerconnection PRIVATE
 
 target_link_libraries(gaspowerconnection PUBLIC
   mathfunctions
-  equationcomponent
+  componentclasses
   gas)
 
 target_include_directories(gaspowerconnection PUBLIC

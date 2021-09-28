@@ -9,6 +9,6 @@ add_library(gas STATIC
 
 target_link_libraries(gas PRIVATE matrixhandler exception coloroutput misc aux_unit_conversion aux_make_schema)
 
-target_link_libraries(gas PUBLIC network balancelaw scheme mathfunctions equationcomponent)
+target_link_libraries(gas PUBLIC network balancelaw scheme mathfunctions componentclasses)
 
 target_include_directories(gas PUBLIC include)
