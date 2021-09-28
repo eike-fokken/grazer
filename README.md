@@ -23,7 +23,7 @@ git submodule update --init --recursive --depth=1
 
 to fetch dependencies (`--depth=1` is not needed but cuts down the size tremendously).
 
-Then run
+Next, install the [Ipopt solver](https://github.com/coin-or/Ipopt) into the `Ipopt` directory. Then run
 
 ```
 cmake -DCMAKE_BUILD_TYPE=Release -S . -B release
