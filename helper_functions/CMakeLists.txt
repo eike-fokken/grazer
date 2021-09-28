@@ -39,11 +39,11 @@ add_executable(increase_pressure increase_pressure.cpp)
 add_executable(include_seed_in_boundaryvalues include_seed_in_boundaryvalues.cpp)
 add_executable(remove_seed_from_boundaryvalues remove_seed_from_boundaryvalues.cpp)
 
-add_executable(draw_heatmap_gaslib_graph draw_heatmap_gaslib_graph.cpp)
-target_link_libraries(draw_heatmap_gaslib_graph PUBLIC netfactory)
+add_executable(draw_heatmap_gaslib draw_heatmap_gaslib.cpp)
+target_link_libraries(draw_heatmap_gaslib PUBLIC netfactory)
 
-add_executable(draw_power_heatmap draw_power_heatmap.cpp)
-target_link_libraries(draw_power_heatmap PUBLIC netfactory)
+add_executable(draw_heatmap_power draw_heatmap_power.cpp)
+target_link_libraries(draw_heatmap_power PUBLIC netfactory)
 
 add_executable(draw_power_graph draw_power_graph.cpp)
 
