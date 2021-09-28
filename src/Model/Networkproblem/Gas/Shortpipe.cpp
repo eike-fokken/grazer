@@ -13,7 +13,7 @@ namespace Model::Networkproblem::Gas {
   void Shortpipe::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double,
       Eigen::Ref<Eigen::VectorXd const> const &,
-      Eigen::Ref<Eigen::VectorXd const> const & new_state,
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) const {
     rootvalues.segment<2>(get_equation_start_index())
@@ -22,7 +22,8 @@ namespace Model::Networkproblem::Gas {
 
   void Shortpipe::evaluate_state_derivative(
       Aux::Matrixhandler *jacobianhandler, double /*last_time*/,
-      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+      double /*new_time*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) const {

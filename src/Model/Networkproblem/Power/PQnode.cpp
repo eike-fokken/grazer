@@ -12,7 +12,7 @@ namespace Model::Networkproblem::Power {
   void PQnode::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const & new_state,
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) const {
     int V_index = get_start_state_index();
@@ -28,7 +28,7 @@ namespace Model::Networkproblem::Power {
       double // new_time
       ,
       Eigen::Ref<Eigen::VectorXd const> const &,
-      Eigen::Ref<Eigen::VectorXd const> const & new_state,
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) const {
     int first_equation_index = get_start_state_index();
@@ -37,7 +37,8 @@ namespace Model::Networkproblem::Power {
     evaluate_Q_derivative(second_equation_index, jacobianhandler, new_state);
   }
 
-  void PQnode::json_save(double time, Eigen::Ref<Eigen::VectorXd const> const & state) {
+  void PQnode::json_save(
+      double time, Eigen::Ref<Eigen::VectorXd const> const &state) {
     auto P_val = boundaryvalue(time)[0];
     auto Q_val = boundaryvalue(time)[1];
     json_save_power(time, state, P_val, Q_val);

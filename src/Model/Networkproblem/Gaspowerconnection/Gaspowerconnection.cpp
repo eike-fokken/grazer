@@ -55,7 +55,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
   void Gaspowerconnection::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &,
-      Eigen::Ref<Eigen::VectorXd const> const & new_state,
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) const {
     int p_index = get_start_state_index();
@@ -71,7 +71,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
   void Gaspowerconnection::evaluate_state_derivative(
       Aux::Matrixhandler *jacobianhandler, double, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &,
-      Eigen::Ref<Eigen::VectorXd const> const & new_state,
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) const {
     int p_index = get_start_state_index();
@@ -118,7 +118,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
   }
 
   void Gaspowerconnection::json_save(
-      double time, Eigen::Ref<Eigen::VectorXd const> const & state) {
+      double time, Eigen::Ref<Eigen::VectorXd const> const &state) {
 
     nlohmann::json current_value;
     current_value["time"] = time;
@@ -163,7 +163,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
   }
 
   Eigen::Vector2d Gaspowerconnection::get_boundary_p_qvol_bar(
-      int direction, Eigen::Ref<Eigen::VectorXd const> const & state) const {
+      int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const {
     return get_boundary_state(direction, state);
   }
 

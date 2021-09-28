@@ -12,10 +12,10 @@ namespace Solver {
   template <typename Problemtype>
   void Newtonsolver<Problemtype>::evaluate_state_derivative_triplets(
       Problemtype &problem, double last_time, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> const & last_state,
-      Eigen::Ref<Eigen::VectorXd const> const & new_state,
-      Eigen::Ref<Eigen::VectorXd const> const & last_control,
-      Eigen::Ref<Eigen::VectorXd const> const & new_control) {
+      Eigen::Ref<Eigen::VectorXd const> const &last_state,
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
+      Eigen::Ref<Eigen::VectorXd const> const &last_control,
+      Eigen::Ref<Eigen::VectorXd const> const &new_control) {
 
     {
       jacobian.resize(new_state.size(), new_state.size());
@@ -33,10 +33,10 @@ namespace Solver {
   template <typename Problemtype>
   void Newtonsolver<Problemtype>::evaluate_state_derivative_coeffref(
       Problemtype &problem, double last_time, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> const & last_state,
-      Eigen::Ref<Eigen::VectorXd const> const & new_state,
-      Eigen::Ref<Eigen::VectorXd const> const & last_control,
-      Eigen::Ref<Eigen::VectorXd const> const & new_control) {
+      Eigen::Ref<Eigen::VectorXd const> const &last_state,
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
+      Eigen::Ref<Eigen::VectorXd const> const &last_control,
+      Eigen::Ref<Eigen::VectorXd const> const &new_control) {
     Aux::Coeffrefhandler handler(&jacobian);
     Aux::Coeffrefhandler *const handler_ptr = &handler;
     problem.evaluate_state_derivative(
@@ -53,9 +53,9 @@ namespace Solver {
   Solutionstruct Newtonsolver<Problemtype>::solve(
       Eigen::Ref<Eigen::VectorXd> new_state, Problemtype &problem, bool newjac,
       bool use_full_jacobian, double last_time, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> const & last_state,
-      Eigen::Ref<Eigen::VectorXd const> const & last_control,
-      Eigen::Ref<Eigen::VectorXd const> const & new_control) {
+      Eigen::Ref<Eigen::VectorXd const> const &last_state,
+      Eigen::Ref<Eigen::VectorXd const> const &last_control,
+      Eigen::Ref<Eigen::VectorXd const> const &new_control) {
     Solutionstruct solstruct;
 
     Eigen::VectorXd rootvalues(new_state.size());

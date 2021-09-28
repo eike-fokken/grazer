@@ -37,7 +37,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
   void ExternalPowerplant::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &,
-      Eigen::Ref<Eigen::VectorXd const> const & new_state,
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) const {
 
@@ -72,7 +72,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
   }
 
   void ExternalPowerplant::json_save(
-      double time, Eigen::Ref<Eigen::VectorXd const> const & state) {
+      double time, Eigen::Ref<Eigen::VectorXd const> const &state) {
     double P_val = P(state);
     double Q_val = Q(state);
     json_save_power(time, state, P_val, Q_val);

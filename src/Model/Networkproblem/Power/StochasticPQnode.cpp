@@ -59,8 +59,9 @@ namespace Model::Networkproblem::Power {
 
   void StochasticPQnode::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double /*last_time*/,
-      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const & new_state,
+      double /*new_time*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/
   ) const {
@@ -72,7 +73,7 @@ namespace Model::Networkproblem::Power {
 
   void StochasticPQnode::prepare_timestep(
       double last_time, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> const & last_state,
+      Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/
@@ -120,8 +121,9 @@ namespace Model::Networkproblem::Power {
 
   void StochasticPQnode::evaluate_state_derivative(
       Aux::Matrixhandler *jacobianhandler, double /*last_time*/,
-      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const & new_state,
+      double /*new_time*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) const {
     auto first_equation_index = get_start_state_index();
@@ -131,7 +133,7 @@ namespace Model::Networkproblem::Power {
   }
 
   void StochasticPQnode::json_save(
-      double time, Eigen::Ref<Eigen::VectorXd const> const & state) {
+      double time, Eigen::Ref<Eigen::VectorXd const> const &state) {
     auto P_val = current_P;
     auto Q_val = current_Q;
     auto P_deviation = P_val - boundaryvalue(time)[0];

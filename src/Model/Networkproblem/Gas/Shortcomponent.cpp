@@ -21,7 +21,7 @@ namespace Model::Networkproblem::Gas {
   }
 
   void Shortcomponent::json_save(
-      double time, Eigen::Ref<Eigen::VectorXd const> const & state) {
+      double time, Eigen::Ref<Eigen::VectorXd const> const &state) {
 
     nlohmann::json current_value;
     current_value["time"] = time;
@@ -73,7 +73,7 @@ namespace Model::Networkproblem::Gas {
   }
 
   Eigen::Vector2d Shortcomponent::get_boundary_p_qvol_bar(
-      int direction, Eigen::Ref<Eigen::VectorXd const> const & state) const {
+      int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const {
     return get_boundary_state(direction, state);
   }
 

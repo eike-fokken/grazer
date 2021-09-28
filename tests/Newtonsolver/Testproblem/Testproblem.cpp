@@ -8,7 +8,7 @@ namespace GrazerTest {
   void TestProblem::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const & new_state,
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) const {
 
@@ -18,7 +18,7 @@ namespace GrazerTest {
   void TestProblem::evaluate_state_derivative(
       Aux::Matrixhandler *jacobianhandler, double, double,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const & new_state,
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) const {
 

@@ -20,16 +20,16 @@ namespace Model::Networkproblem::Gas {
 
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-        double new_time, Eigen::Ref<Eigen::VectorXd const> const & last_state,
-        Eigen::Ref<Eigen::VectorXd const> const & new_state,
-        Eigen::Ref<Eigen::VectorXd const> const & last_control,
-        Eigen::Ref<Eigen::VectorXd const> const & new_control) const override;
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state,
+        Eigen::Ref<Eigen::VectorXd const> const &last_control,
+        Eigen::Ref<Eigen::VectorXd const> const &new_control) const override;
     void evaluate_state_derivative(
         Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> const & last_state,
-        Eigen::Ref<Eigen::VectorXd const> const & new_state,
-        Eigen::Ref<Eigen::VectorXd const> const & last_control,
-        Eigen::Ref<Eigen::VectorXd const> const & new_control) const override;
+        Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state,
+        Eigen::Ref<Eigen::VectorXd const> const &last_control,
+        Eigen::Ref<Eigen::VectorXd const> const &new_control) const override;
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,

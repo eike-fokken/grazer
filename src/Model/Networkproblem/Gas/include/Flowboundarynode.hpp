@@ -19,16 +19,18 @@ namespace Model::Networkproblem::Gas {
 
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-        double new_time, Eigen::Ref<Eigen::VectorXd const> const & last_state,
-        Eigen::Ref<Eigen::VectorXd const> const & new_state,
-        Eigen::Ref<Eigen::VectorXd const> const & last_control,
-        Eigen::Ref<Eigen::VectorXd const> const & new_control) const override final;
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state,
+        Eigen::Ref<Eigen::VectorXd const> const &last_control,
+        Eigen::Ref<Eigen::VectorXd const> const &new_control)
+        const override final;
     void evaluate_state_derivative(
         Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &,
-        Eigen::Ref<Eigen::VectorXd const> const & new_state,
-        Eigen::Ref<Eigen::VectorXd const> const & last_control,
-        Eigen::Ref<Eigen::VectorXd const> const & new_control) const override final;
+        Eigen::Ref<Eigen::VectorXd const> const &new_state,
+        Eigen::Ref<Eigen::VectorXd const> const &last_control,
+        Eigen::Ref<Eigen::VectorXd const> const &new_control)
+        const override final;
 
   private:
     Boundaryvalue<1> const boundaryvalue;

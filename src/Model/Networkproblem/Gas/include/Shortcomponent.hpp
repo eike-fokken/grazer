@@ -27,7 +27,8 @@ namespace Model::Networkproblem::Gas {
     /// variables, so that this function simply returns the corresponding
     /// boundary state.
     Eigen::Vector2d get_boundary_p_qvol_bar(
-        int direction, Eigen::Ref<Eigen::VectorXd const> const & state) const final;
+        int direction,
+        Eigen::Ref<Eigen::VectorXd const> const &state) const final;
 
     /// Because Shortcomponents use pressure and volumetric flow as their state
     /// variables, this function just hands `function_derivative` to
@@ -35,7 +36,7 @@ namespace Model::Networkproblem::Gas {
     void dboundary_p_qvol_dstate(
         int direction, Aux::Matrixhandler *jacobianhandler,
         Eigen::RowVector2d function_derivative, int rootvalues_index,
-        Eigen::Ref<Eigen::VectorXd const> const & state) const final;
+        Eigen::Ref<Eigen::VectorXd const> const &state) const final;
 
   private:
     /// \brief number of state variables, this component needs.
