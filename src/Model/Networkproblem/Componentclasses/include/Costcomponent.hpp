@@ -12,7 +12,7 @@ namespace Model::Networkproblem {
     virtual ~Costcomponent(){};
 
     virtual void evaluate_cost(
-        Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
+        Eigen::Ref<Eigen::VectorXd> cost_values, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
         Eigen::Ref<Eigen::VectorXd const> const &last_control,
@@ -45,5 +45,5 @@ namespace Model::Networkproblem {
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
         Eigen::Ref<Eigen::VectorXd const> const &last_control,
         Eigen::Ref<Eigen::VectorXd const> const &new_control) const = 0;
-  }
+  };
 } // namespace Model::Networkproblem
