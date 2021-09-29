@@ -260,6 +260,45 @@ The timeevolver object loads the initial state from the initial condition json a
 Therefore it calls \emph{evaluate} on the problem object, which in turn calls \emph{evaluate} on its subproblems.
 These handle the evaluation. The Networkproblem also hands \emph{evaluate} to its members, namely the nodes and edges.
 
+\subsubsection{Helper functions}
+\label{sec:helper-functions}
+
+\begin{table}[ht]
+  \centering
+  \begin{tabularx}{\textwidth}{lX}
+    \toprule
+    name (-.cpp) & explanation \\
+   \midrule
+    boundaryprettyfy & Linearly scales the first two flux inputs in a boundary values file to sum to the given value. Only makes sense for constant influx. \\
+    change\sco inflow & none \\
+    compute\sco reference\sco discrepance & none \\
+    construct\sco gaspowerconnection & none \\
+    draw\sco gaslib\sco graph & none \\
+    draw\sco heatmap\sco gaslib\sco graph & none \\
+    draw\sco power\sco graph & none \\
+    draw\sco power\sco heatmap & none \\
+    extract\sco new\sco initial\sco condition & none \\
+    generate\sco printing\sco csv & none \\
+    get\sco mean\sco sigma & none \\
+    get\sco quantiles & none \\
+    include\sco seed\sco in\sco boundaryvalues & none \\
+    increase\sco pressure & none \\
+    insert\sco positions & none \\
+    move\sco to\sco category & none \\
+    normalize\sco jsons & none \\
+    oup & none \\
+    pv\sco to\sco phi & none \\
+    remove\sco seed\sco from\sco boundaryvalues & none \\
+    stringify\sco value\sco json & none \\
+    sum\sco outflow & none \\
+    transform\sco boundary & none \\
+    transform\sco initial & none \\
+    \bottomrule
+  \end{tabularx}
+  \caption{All helper functions}
+  \label{tab:helper_functions}
+\end{table}
+
 \subsubsection*{evaluate}
 
 \subsection{Extending Networkproblem}
