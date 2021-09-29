@@ -141,7 +141,7 @@ jobs:
       working-directory: ${{github.workspace}}/build
       shell: bash
       # Execute the build.  You can specify a specific target with "--target <NAME>"
-      run: cmake --build . --config ${{ matrix.build_type }}  ${{ matrix.specific-target }} ${{ matrix.parallel-command }}
+      run: cmake --build . --config ${{ matrix.build_type }}  ${{ matrix.specific-target }} --parallel 10
 
     - name: Unit Tests
       if: matrix.name != 'Linux-Docs'
