@@ -433,7 +433,7 @@ TEST_F(GaspowerconnectionTEST, evaluate_gas_controlled) {
   }
 }
 
-TEST_F(GaspowerconnectionTEST, evaluate_state_derivative_power_driven) {
+TEST_F(GaspowerconnectionTEST, d_evalutate_d_new_state_power_driven) {
 
   nlohmann::json innode_json;
   innode_json["id"] = "ainnode";
@@ -503,7 +503,7 @@ TEST_F(GaspowerconnectionTEST, evaluate_state_derivative_power_driven) {
 
     Eigen::Matrix4d DenseJ;
     new_state.setRandom();
-    netprob->evaluate_state_derivative(
+    netprob->d_evalutate_d_new_state(
         &handler, last_time, new_time, last_state, new_state, last_control,
         new_control);
     handler.set_matrix();
@@ -541,7 +541,7 @@ TEST_F(GaspowerconnectionTEST, evaluate_state_derivative_power_driven) {
   }
 }
 
-TEST_F(GaspowerconnectionTEST, evaluate_state_derivative_gas_driven) {
+TEST_F(GaspowerconnectionTEST, d_evalutate_d_new_state_gas_driven) {
 
   nlohmann::json innode_json;
   innode_json["id"] = "ainnode";
@@ -612,7 +612,7 @@ TEST_F(GaspowerconnectionTEST, evaluate_state_derivative_gas_driven) {
 
     Eigen::Matrix4d DenseJ;
     new_state.setRandom();
-    netprob->evaluate_state_derivative(
+    netprob->d_evalutate_d_new_state(
         &handler, last_time, new_time, last_state, new_state, last_control,
         new_control);
     handler.set_matrix();

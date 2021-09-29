@@ -20,7 +20,7 @@ namespace Model::Networkproblem::Gas {
         = get_boundary_state(1, new_state) - get_boundary_state(-1, new_state);
   }
 
-  void Shortpipe::evaluate_state_derivative(
+  void Shortpipe::d_evalutate_d_new_state(
       Aux::Matrixhandler *jacobianhandler, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,

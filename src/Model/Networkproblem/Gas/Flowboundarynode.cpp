@@ -28,7 +28,7 @@ namespace Model::Networkproblem::Gas {
         rootvalues, new_state, boundaryvalue(new_time)[0]);
   }
 
-  void Flowboundarynode::evaluate_state_derivative(
+  void Flowboundarynode::d_evalutate_d_new_state(
       Aux::Matrixhandler *jacobianhandler, double, double,
       Eigen::Ref<Eigen::VectorXd const> const &,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,

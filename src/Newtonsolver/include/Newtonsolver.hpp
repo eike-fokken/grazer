@@ -22,7 +22,7 @@ namespace Solver {
       Aux::Triplethandler handler(&jacobian);
 
       Aux::Triplethandler *const handler_ptr = &handler;
-      problem.evaluate_state_derivative(
+      problem.d_evalutate_d_new_state(
           handler_ptr, last_time, new_time, last_state, new_state, last_control,
           new_control);
       handler.set_matrix();
@@ -39,7 +39,7 @@ namespace Solver {
       Eigen::Ref<Eigen::VectorXd const> const &new_control) {
     Aux::Coeffrefhandler handler(&jacobian);
     Aux::Coeffrefhandler *const handler_ptr = &handler;
-    problem.evaluate_state_derivative(
+    problem.d_evalutate_d_new_state(
         handler_ptr, last_time, new_time, last_state, new_state, last_control,
         new_control);
   }

@@ -24,7 +24,7 @@ namespace Model::Networkproblem::Gas {
         Eigen::Ref<Eigen::VectorXd const> const &last_control,
         Eigen::Ref<Eigen::VectorXd const> const &new_control)
         const override final;
-    void evaluate_state_derivative(
+    void d_evalutate_d_new_state(
         Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,

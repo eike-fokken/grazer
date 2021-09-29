@@ -33,7 +33,7 @@ namespace Model::Networkproblem::Gas {
           - pressure_control;
   }
 
-  void Controlvalve::evaluate_state_derivative(
+  void Controlvalve::d_evalutate_d_new_state(
       Aux::Matrixhandler *jacobianhandler, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,

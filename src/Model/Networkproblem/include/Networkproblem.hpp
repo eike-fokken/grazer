@@ -40,7 +40,7 @@ namespace Model::Networkproblem {
         Eigen::Ref<Eigen::VectorXd const> const &last_control,
         Eigen::Ref<Eigen::VectorXd const> const &new_control) override;
 
-    void evaluate_state_derivative(
+    void d_evalutate_d_new_state(
         Aux::Matrixhandler *jacobian, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,

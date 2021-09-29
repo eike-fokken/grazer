@@ -73,7 +73,7 @@ namespace Model::Networkproblem {
     }
   }
 
-  void Networkproblem::evaluate_state_derivative(
+  void Networkproblem::d_evalutate_d_new_state(
       ::Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
@@ -82,7 +82,7 @@ namespace Model::Networkproblem {
 
     for (Model::Networkproblem::Equationcomponent *eqcomponent :
          equationcomponents) {
-      eqcomponent->evaluate_state_derivative(
+      eqcomponent->d_evalutate_d_new_state(
           jacobianhandler, last_time, new_time, last_state, new_state,
           last_control, new_control);
     }

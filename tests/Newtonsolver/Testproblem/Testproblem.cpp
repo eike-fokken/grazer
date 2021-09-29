@@ -15,7 +15,7 @@ namespace GrazerTest {
     rootvalues = f(new_state);
   }
 
-  void TestProblem::evaluate_state_derivative(
+  void TestProblem::d_evalutate_d_new_state(
       Aux::Matrixhandler *jacobianhandler, double, double,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,

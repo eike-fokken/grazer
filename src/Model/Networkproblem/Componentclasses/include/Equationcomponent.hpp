@@ -68,7 +68,7 @@ namespace Model::Networkproblem {
     /// @param new_time time point of the current time step.
     /// @param last_state value of the state at last time step.
     /// @param new_state value of the state at current time step.
-    virtual void evaluate_state_derivative(
+    virtual void d_evalutate_d_new_state(
         Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,

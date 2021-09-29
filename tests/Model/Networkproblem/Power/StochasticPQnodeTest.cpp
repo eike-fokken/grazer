@@ -139,7 +139,7 @@ TEST_F(stochasticPQnodeTEST, evaluate) {
       1e-12);
 }
 
-TEST_F(stochasticPQnodeTEST, evaluate_state_derivative) {
+TEST_F(stochasticPQnodeTEST, d_evalutate_d_new_state) {
 
   auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
       = default_setup();
@@ -170,7 +170,7 @@ TEST_F(stochasticPQnodeTEST, evaluate_state_derivative) {
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
   Aux::Triplethandler handler(&J);
-  netprob->evaluate_state_derivative(
+  netprob->d_evalutate_d_new_state(
       &handler, last_time, new_time, last_state, new_state, last_control,
       new_control);
   handler.set_matrix();

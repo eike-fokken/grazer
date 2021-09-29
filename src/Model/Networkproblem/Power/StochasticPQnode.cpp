@@ -119,7 +119,7 @@ namespace Model::Networkproblem::Power {
   //   }
   // }
 
-  void StochasticPQnode::evaluate_state_derivative(
+  void StochasticPQnode::d_evalutate_d_new_state(
       Aux::Matrixhandler *jacobianhandler, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,

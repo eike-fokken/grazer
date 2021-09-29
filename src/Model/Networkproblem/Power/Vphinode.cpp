@@ -20,7 +20,7 @@ namespace Model::Networkproblem::Power {
     rootvalues[phi_index] = new_state[phi_index] - boundaryvalue(new_time)[1];
   }
 
-  void Vphinode::evaluate_state_derivative(
+  void Vphinode::d_evalutate_d_new_state(
       Aux::Matrixhandler *jacobianhandler, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,

@@ -13,7 +13,7 @@ namespace Model::Networkproblem::Gas {
       Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) const {
     evaluate_flow_node_balance(rootvalues, new_state, 0.0);
   }
-  void Innode::evaluate_state_derivative(
+  void Innode::d_evalutate_d_new_state(
       Aux::Matrixhandler *jacobianhandler, double, double,
       Eigen::Ref<Eigen::VectorXd const> const &,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,

@@ -100,7 +100,7 @@ TEST_F(PowerTEST, evaluate_Vphi) {
       new_state[vphi->get_start_state_index() + 1] - phi1_bd);
 }
 
-TEST_F(PowerTEST, evaluate_state_derivative_Vphi) {
+TEST_F(PowerTEST, d_evalutate_d_new_state_Vphi) {
 
   auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
       = default_setup();
@@ -122,7 +122,7 @@ TEST_F(PowerTEST, evaluate_state_derivative_Vphi) {
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
   Aux::Triplethandler handler(&J);
 
-  netprob->evaluate_state_derivative(
+  netprob->d_evalutate_d_new_state(
       &handler, last_time, new_time, last_state, new_state, last_control,
       new_control);
   handler.set_matrix();
@@ -182,7 +182,7 @@ TEST_F(PowerTEST, evaluate_PQ) {
           + V2 * V3 * (Gt2 * sin(phi2 - phi3) - Bt2 * cos(phi2 - phi3)));
 }
 
-TEST_F(PowerTEST, evaluate_state_derivative_PQ) {
+TEST_F(PowerTEST, d_evalutate_d_new_state_PQ) {
 
   auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
       = default_setup();
@@ -214,7 +214,7 @@ TEST_F(PowerTEST, evaluate_state_derivative_PQ) {
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
   Aux::Triplethandler handler(&J);
-  netprob->evaluate_state_derivative(
+  netprob->d_evalutate_d_new_state(
       &handler, last_time, new_time, last_state, new_state, last_control,
       new_control);
   handler.set_matrix();
@@ -301,7 +301,7 @@ TEST_F(PowerTEST, evaluate_PV) {
       new_state[pv->get_start_state_index()] - V3_bd);
 }
 
-TEST_F(PowerTEST, evaluate_state_derivative_PV) {
+TEST_F(PowerTEST, d_evalutate_d_new_state_PV) {
 
   auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
       = default_setup();
@@ -333,7 +333,7 @@ TEST_F(PowerTEST, evaluate_state_derivative_PV) {
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
   Aux::Triplethandler handler(&J);
-  netprob->evaluate_state_derivative(
+  netprob->d_evalutate_d_new_state(
       &handler, last_time, new_time, last_state, new_state, last_control,
       new_control);
   handler.set_matrix();

@@ -97,7 +97,7 @@ TEST_F(GasTEST, Shortpipe_evaluate) {
   EXPECT_DOUBLE_EQ(rootvalues[2], flow_start - flow_end);
 }
 
-TEST_F(GasTEST, Shortpipe_evaluate_state_derivative) {
+TEST_F(GasTEST, Shortpipe_d_evalutate_d_new_state) {
 
   double flow0start = 88.0;
   double flow0end = 10.0;
@@ -151,7 +151,7 @@ TEST_F(GasTEST, Shortpipe_evaluate_state_derivative) {
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
   Aux::Triplethandler handler(&J);
 
-  netprob->evaluate_state_derivative(
+  netprob->d_evalutate_d_new_state(
       &handler, last_time, new_time, last_state, new_state, last_control,
       new_control);
   handler.set_matrix();
@@ -249,7 +249,7 @@ TEST_F(GasTEST, Source_evaluate) {
   EXPECT_DOUBLE_EQ(rootvalues[4], -flow2start + sp20_flow_start);
 }
 
-TEST_F(GasTEST, Source_evaluate_state_derivative) {
+TEST_F(GasTEST, Source_d_evalutate_d_new_state) {
 
   double flow0start = 88.0;
   double flow0end = 10.0;
@@ -315,7 +315,7 @@ TEST_F(GasTEST, Source_evaluate_state_derivative) {
   // to satisfy the interface, we must provide them.
   Eigen::VectorXd last_control;
   Eigen::VectorXd new_control;
-  netprob->evaluate_state_derivative(
+  netprob->d_evalutate_d_new_state(
       &handler, last_time, new_time, last_state, new_state, last_control,
       new_control);
   handler.set_matrix();
@@ -440,7 +440,7 @@ TEST_F(GasTEST, Sink_evaluate) {
   EXPECT_DOUBLE_EQ(rootvalues[4], flow2start + sp20_flow_start);
 }
 
-TEST_F(GasTEST, Sink_evaluate_state_derivative) {
+TEST_F(GasTEST, Sink_d_evalutate_d_new_state) {
 
   double flow0start = 86.0;
   double flow0end = 193.0;
@@ -506,7 +506,7 @@ TEST_F(GasTEST, Sink_evaluate_state_derivative) {
   // to satisfy the interface, we must provide them.
   Eigen::VectorXd last_control;
   Eigen::VectorXd new_control;
-  netprob->evaluate_state_derivative(
+  netprob->d_evalutate_d_new_state(
       &handler, last_time, new_time, last_state, new_state, last_control,
       new_control);
   handler.set_matrix();
@@ -624,7 +624,7 @@ TEST_F(GasTEST, Innode_evaluate) {
   EXPECT_DOUBLE_EQ(rootvalues[4], sp20_flow_start);
 }
 
-TEST_F(GasTEST, Innode_evaluate_state_derivative) {
+TEST_F(GasTEST, Innode_d_evalutate_d_new_state) {
 
   nlohmann::json node0_json;
   nlohmann::json node1_json;
@@ -684,7 +684,7 @@ TEST_F(GasTEST, Innode_evaluate_state_derivative) {
   // to satisfy the interface, we must provide them.
   Eigen::VectorXd last_control;
   Eigen::VectorXd new_control;
-  netprob->evaluate_state_derivative(
+  netprob->d_evalutate_d_new_state(
       &handler, last_time, new_time, last_state, new_state, last_control,
       new_control);
   handler.set_matrix();
@@ -804,7 +804,7 @@ TEST_F(GasTEST, Pipe_evaluate) {
   EXPECT_DOUBLE_EQ(expected_result[1], rootvalues.segment<2>(1)[1]);
 }
 
-TEST_F(GasTEST, Pipe_evaluate_state_derivative) {
+TEST_F(GasTEST, Pipe_d_evalutate_d_new_state) {
   nlohmann::json node0;
   nlohmann::json node1;
   node0["id"] = "node0";
@@ -859,7 +859,7 @@ TEST_F(GasTEST, Pipe_evaluate_state_derivative) {
   // to satisfy the interface, we must provide them.
   Eigen::VectorXd last_control;
   Eigen::VectorXd new_control;
-  netprob->evaluate_state_derivative(
+  netprob->d_evalutate_d_new_state(
       &handler, last_time, new_time, last_state, new_state, last_control,
       new_control);
   handler.set_matrix();

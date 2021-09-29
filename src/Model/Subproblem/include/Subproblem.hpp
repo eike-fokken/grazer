@@ -39,7 +39,7 @@ namespace Model {
         Eigen::Ref<Eigen::VectorXd const> const &new_control)
         = 0;
 
-    virtual void evaluate_state_derivative(
+    virtual void d_evalutate_d_new_state(
         Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
