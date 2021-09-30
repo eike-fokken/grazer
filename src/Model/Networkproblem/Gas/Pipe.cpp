@@ -105,9 +105,10 @@ namespace Model::Networkproblem::Gas {
       auto new_left = new_state.segment<2>(i - 1);
       auto new_right = new_state.segment<2>(i + 1);
 
-      Eigen::Matrix2d current_derivative_left = scheme->devaluate_point_d_new_left(
-          last_time, new_time, Delta_x, last_left, last_right, new_left,
-          new_right, *bl);
+      Eigen::Matrix2d current_derivative_left
+          = scheme->devaluate_point_d_new_left(
+              last_time, new_time, Delta_x, last_left, last_right, new_left,
+              new_right, *bl);
 
       jacobianhandler.set_coefficient(i, i - 1, current_derivative_left(0, 0));
       jacobianhandler.set_coefficient(i, i, current_derivative_left(0, 1));
@@ -115,9 +116,10 @@ namespace Model::Networkproblem::Gas {
           i + 1, i - 1, current_derivative_left(1, 0));
       jacobianhandler.set_coefficient(i + 1, i, current_derivative_left(1, 1));
 
-      Eigen::Matrix2d current_derivative_right = scheme->devaluate_point_d_new_right(
-          last_time, new_time, Delta_x, last_left, last_right, new_left,
-          new_right, *bl);
+      Eigen::Matrix2d current_derivative_right
+          = scheme->devaluate_point_d_new_right(
+              last_time, new_time, Delta_x, last_left, last_right, new_left,
+              new_right, *bl);
 
       jacobianhandler.set_coefficient(i, i + 1, current_derivative_right(0, 0));
       jacobianhandler.set_coefficient(i, i + 2, current_derivative_right(0, 1));
@@ -131,7 +133,39 @@ namespace Model::Networkproblem::Gas {
   void Pipe::d_evalutate_d_last_state(
       Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {}
+      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
+    for (int i = get_equation_start_index(); i != get_equation_after_index();
+         i += 2) {
+      // maybe use Eigen::Ref here to avoid copies.
+      auto last_left = last_state.segment<2>(i - 1);
+      auto last_right = last_state.segment<2>(i + 1);
+      auto new_left = new_state.segment<2>(i - 1);
+      auto new_right = new_state.segment<2>(i + 1);
+
+      Eigen::Matrix2d current_derivative_left
+          = scheme->devaluate_point_d_last_left(
+              last_time, new_time, Delta_x, last_left, last_right, new_left,
+              new_right, *bl);
+
+      jacobianhandler.set_coefficient(i, i - 1, current_derivative_left(0, 0));
+      jacobianhandler.set_coefficient(i, i, current_derivative_left(0, 1));
+      jacobianhandler.set_coefficient(
+          i + 1, i - 1, current_derivative_left(1, 0));
+      jacobianhandler.set_coefficient(i + 1, i, current_derivative_left(1, 1));
+
+      Eigen::Matrix2d current_derivative_right
+          = scheme->devaluate_point_d_last_right(
+              last_time, new_time, Delta_x, last_left, last_right, new_left,
+              new_right, *bl);
+
+      jacobianhandler.set_coefficient(i, i + 1, current_derivative_right(0, 0));
+      jacobianhandler.set_coefficient(i, i + 2, current_derivative_right(0, 1));
+      jacobianhandler.set_coefficient(
+          i + 1, i + 1, current_derivative_right(1, 0));
+      jacobianhandler.set_coefficient(
+          i + 1, i + 2, current_derivative_right(1, 1));
+    }
+  }
 
   void Pipe::setup() { setup_output_json_helper(get_id()); }
 
