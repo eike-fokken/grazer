@@ -128,6 +128,11 @@ namespace Model::Networkproblem::Gas {
     }
   }
 
+  void Pipe::d_evalutate_d_last_state(
+      Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
+      Eigen::Ref<Eigen::VectorXd const> const &last_state,
+      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {}
+
   void Pipe::setup() { setup_output_json_helper(get_id()); }
 
   int Pipe::get_number_of_states() const { return 2 * number_of_points; }
