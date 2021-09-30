@@ -1,6 +1,7 @@
 #pragma once
 #include "Controlcomponent.hpp"
 #include "Edge.hpp"
+#include "Equation_base.hpp"
 #include "Equationcomponent.hpp"
 #include "Node.hpp"
 #include "Statecomponent.hpp"
@@ -62,7 +63,7 @@ namespace Model::Componentfactory {
     get_initial_schema(bool allow_requred_defaults) const = 0;
 
     template <typename Component>
-    void check_class_hierarchy_properties() const {
+    constexpr void check_class_hierarchy_properties() const {
       static_assert(
           not(std::is_base_of_v<
                   Networkproblem::Equationcomponent,
@@ -193,8 +194,7 @@ namespace Model::Componentfactory {
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
       if constexpr (std::is_base_of<
-                        Networkproblem::Equationcomponent,
-                        ConcreteNode>::value) {
+                        Networkproblem::Equation_base, ConcreteNode>::value) {
 
         auto opt_boundary_schema = ConcreteNode::get_boundary_schema();
         if (opt_boundary_schema.has_value()) {
@@ -328,8 +328,7 @@ namespace Model::Componentfactory {
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
       if constexpr (std::is_base_of<
-                        Networkproblem::Equationcomponent,
-                        ConcreteEdge>::value) {
+                        Networkproblem::Equation_base, ConcreteEdge>::value) {
         auto opt_boundary_schema = ConcreteEdge::get_boundary_schema();
         if (opt_boundary_schema.has_value()) {
           auto boundary_schema = opt_boundary_schema.value();

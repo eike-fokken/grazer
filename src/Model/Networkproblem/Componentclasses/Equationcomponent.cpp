@@ -11,12 +11,6 @@ namespace Model::Networkproblem {
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) {}
 
-  void Equationcomponent::setup() {}
-
-  std::optional<nlohmann::json> Equationcomponent::get_boundary_schema() {
-    return std::nullopt;
-  }
-
   std::optional<nlohmann::json> Equationcomponent::get_control_schema() {
     return std::nullopt;
   }

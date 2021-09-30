@@ -1,4 +1,5 @@
 #pragma once
+#include "Equation_base.hpp"
 #include <Eigen/Sparse>
 #include <filesystem>
 #include <memory>
@@ -21,7 +22,7 @@ namespace Model::Networkproblem {
    * It is implicitely taken for granted that the set of owned indices of all
    * objects starts at 0 and is consecutive.
    */
-  class Equationcomponent {
+  class Equationcomponent : public Equation_base {
 
   public:
     virtual ~Equationcomponent(){};
@@ -74,16 +75,6 @@ namespace Model::Networkproblem {
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
 
-    /** \brief Utility for setup of things that cannot be done during
-     * construction.
-     *
-     * is called by Networkproblems reserve_state_indices.
-     * Usually does nothing, but for example gas nodes
-     * claim indices from their attached gas edges.
-     */
-    virtual void setup();
-
-    static std::optional<nlohmann::json> get_boundary_schema();
     static std::optional<nlohmann::json> get_control_schema();
   };
 

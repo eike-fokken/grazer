@@ -1,4 +1,5 @@
 #pragma once
+#include "Equation_base.hpp"
 #include <Eigen/Dense>
 #include <nlohmann/json.hpp>
 
@@ -7,7 +8,7 @@ namespace Aux {
 }
 
 namespace Model::Networkproblem {
-  class Controlcomponent {
+  class Controlcomponent : public Equation_base {
   public:
     virtual ~Controlcomponent();
 
