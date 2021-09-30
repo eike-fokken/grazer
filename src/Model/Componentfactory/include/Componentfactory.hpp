@@ -1,4 +1,5 @@
 #pragma once
+#include "Controlcomponent.hpp"
 #include "Edge.hpp"
 #include "Equationcomponent.hpp"
 #include "Node.hpp"
@@ -59,6 +60,18 @@ namespace Model::Componentfactory {
 
     virtual std::optional<nlohmann::json>
     get_initial_schema(bool allow_requred_defaults) const = 0;
+
+    template <typename Component>
+    void check_class_hierarchy_properties() const {
+      static_assert(
+          not(std::is_base_of_v<
+                  Networkproblem::Equationcomponent,
+                  Component> and std::is_base_of_v<Networkproblem::Controlcomponent, Component>),
+          "\n\n\nYou have a Component type that inherits both from "
+          "Equationcomponent and Controlcomponent! This is forbidden, as their "
+          "evaluate methods share the same functionality.\n\nPLEASE ONLY "
+          "INHERIT FROM EITHER ONE.\n\n\n");
+    }
   };
 
   /**
@@ -250,6 +263,8 @@ namespace Model::Componentfactory {
       Aux::schema::apply_defaults(topology, topology_schema);
       // order is important (defaults can be required!)
       Aux::schema::validate_json(topology, topology_schema);
+
+      AbstractComponentType::check_class_hierarchy_properties<ConcreteNode>();
       return std::make_unique<ConcreteNode>(topology);
     };
   };
@@ -385,6 +400,7 @@ namespace Model::Componentfactory {
       Aux::schema::apply_defaults(topology, topology_schema);
       // order is important (defaults can be required!)
       Aux::schema::validate_json(topology, topology_schema);
+      AbstractComponentType::check_class_hierarchy_properties<ConcreteEdge>();
       return std::make_unique<ConcreteEdge>(topology, nodes);
     };
   };
