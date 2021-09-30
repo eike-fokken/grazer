@@ -20,12 +20,14 @@ namespace Model::Networkproblem {
      * @param new_time time point of the current time step.
      * @param last_state value of the state at last time step.
      * @param new_state value of the state at current time step.
+     * @param last_control value of the control at last time step.
+     * @param new_control value of the control at current time step.
      */
     virtual void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &old_control,
+        Eigen::Ref<Eigen::VectorXd const> const &last_control,
         Eigen::Ref<Eigen::VectorXd const> const &new_control) const = 0;
 
     /** \brief Carries out steps that need to be taken before the Newton method
@@ -37,13 +39,15 @@ namespace Model::Networkproblem {
      * @param new_time time point of the current time step.
      * @param last_state value of the state at last time step.
      * @param new_state value of the state at current time step.
+     * @param last_control value of the control at last time step.
+     * @param new_control value of the control at current time step.
      */
 
     virtual void prepare_timestep(
         double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &old_control,
+        Eigen::Ref<Eigen::VectorXd const> const &last_control,
         Eigen::Ref<Eigen::VectorXd const> const &new_control);
 
     /** \brief derivative of Equationcomponent::evaluate.
@@ -57,12 +61,14 @@ namespace Model::Networkproblem {
      * @param new_time time point of the current time step.
      * @param last_state value of the state at last time step.
      * @param new_state value of the state at current time step.
+     * @param last_control value of the control at last time step.
+     * @param new_control value of the control at current time step.
      */
     virtual void d_evalutate_d_new_state(
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &old_control,
+        Eigen::Ref<Eigen::VectorXd const> const &last_control,
         Eigen::Ref<Eigen::VectorXd const> const &new_control) const = 0;
 
     /** \brief Utility for setup of things that cannot be done during
@@ -113,13 +119,16 @@ namespace Model::Networkproblem {
         nlohmann::json const &control_json)
         = 0;
 
+    static std::optional<nlohmann::json> get_boundary_schema();
+    static std::optional<nlohmann::json> get_control_schema();
+
   private:
     /** \brief The first control index, this Controlcomponent "owns".
      */
     int start_control_index{-1};
 
     /** \brief The first control index after #start_control_index, that is not
-     * "owned" by this Equationcomponent.
+     * "owned" by this Controlcomponent.
      */
     int after_control_index{-1};
   };

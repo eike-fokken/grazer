@@ -119,10 +119,8 @@ namespace Model::Networkproblem::Gas {
           last_time, new_time, Delta_x, last_left, last_right, new_left,
           new_right, *bl);
 
-      jacobianhandler.set_coefficient(
-          i, i + 1, current_derivative_right(0, 0));
-      jacobianhandler.set_coefficient(
-          i, i + 2, current_derivative_right(0, 1));
+      jacobianhandler.set_coefficient(i, i + 1, current_derivative_right(0, 0));
+      jacobianhandler.set_coefficient(i, i + 2, current_derivative_right(0, 1));
       jacobianhandler.set_coefficient(
           i + 1, i + 1, current_derivative_right(1, 0));
       jacobianhandler.set_coefficient(
@@ -210,8 +208,7 @@ namespace Model::Networkproblem::Gas {
 
     int rho_index = get_boundary_state_index(direction);
     int q_index = rho_index + 1;
-    jacobianhandler.set_coefficient(
-        rootvalues_index, rho_index, derivative[0]);
+    jacobianhandler.set_coefficient(rootvalues_index, rho_index, derivative[0]);
     jacobianhandler.set_coefficient(rootvalues_index, q_index, derivative[1]);
   }
 

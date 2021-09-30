@@ -62,8 +62,7 @@ namespace Model::Networkproblem {
       Eigen::Ref<Eigen::VectorXd const> const &new_state) {
     for (Model::Networkproblem::Equationcomponent *eqcomponent :
          equationcomponents) {
-      eqcomponent->prepare_timestep(
-          last_time, new_time, last_state, new_state);
+      eqcomponent->prepare_timestep(last_time, new_time, last_state, new_state);
     }
   }
 

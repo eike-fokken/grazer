@@ -61,8 +61,7 @@ namespace Model::Networkproblem::Power {
       Eigen::Ref<Eigen::VectorXd> rootvalues, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state
-  ) const {
+      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     auto V_index = get_start_state_index();
     auto phi_index = V_index + 1;
     rootvalues[V_index] = P(new_state) - current_P;

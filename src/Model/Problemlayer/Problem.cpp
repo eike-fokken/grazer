@@ -75,8 +75,7 @@ namespace Model {
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) {
     for (auto &subproblem : subproblems) {
-      subproblem->prepare_timestep(
-          last_time, new_time, last_state, new_state);
+      subproblem->prepare_timestep(last_time, new_time, last_state, new_state);
     }
   }
 
