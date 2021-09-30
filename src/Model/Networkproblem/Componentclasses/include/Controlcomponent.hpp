@@ -55,5 +55,11 @@ namespace Model::Networkproblem {
      * "owned" by this Equationcomponent.
      */
     int after_control_index{-1};
+
+    /** This function should never be defined. Its purpose is to prevent
+     * inheriting both Equationcomponent and Controlcomponent
+     */
+    void
+    DONT_INHERIT_FROM_BOTH_EQUATIONCOMPONENT_AND_CONTROL_COMPONENT_AT_THE_SAME_TIME();
   };
 } // namespace Model::Networkproblem
