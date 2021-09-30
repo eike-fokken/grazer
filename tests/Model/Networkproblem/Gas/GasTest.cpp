@@ -857,10 +857,10 @@ TEST_F(GasTEST, Pipe_d_evalutate_d_new_state) {
   auto new_left = new_state.segment<2>(0);
   auto new_right = new_state.segment<2>(2);
 
-  auto dleft = scheme.devaluate_point_dleft(
+  auto dleft = scheme.devaluate_point_d_new_left(
       last_time, new_time, Delta_x, last_left, last_right, new_left, new_right,
       bl);
-  auto dright = scheme.devaluate_point_dright(
+  auto dright = scheme.devaluate_point_d_new_right(
       last_time, new_time, Delta_x, last_right, last_right, new_right,
       new_right, bl);
 

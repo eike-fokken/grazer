@@ -21,7 +21,7 @@ namespace Model::Scheme {
   }
 
   /// The derivative with respect to \code{.cpp}last_left\endcode
-  Eigen::Matrix2d Implicitboxscheme::devaluate_point_dleft(
+  Eigen::Matrix2d Implicitboxscheme::devaluate_point_d_new_left(
       double last_time, double new_time, double Delta_x,
       Eigen::Ref<Eigen::Vector2d const>, Eigen::Ref<Eigen::Vector2d const>,
       Eigen::Ref<Eigen::Vector2d const> new_left,
@@ -38,7 +38,7 @@ namespace Model::Scheme {
   }
 
   /// The derivative with respect to \code{.cpp}last_right\endcode
-  Eigen::Matrix2d Implicitboxscheme::devaluate_point_dright(
+  Eigen::Matrix2d Implicitboxscheme::devaluate_point_d_new_right(
       double last_time, double new_time, double Delta_x,
       Eigen::Ref<Eigen::Vector2d const>, Eigen::Ref<Eigen::Vector2d const>,
       Eigen::Ref<Eigen::Vector2d const>,

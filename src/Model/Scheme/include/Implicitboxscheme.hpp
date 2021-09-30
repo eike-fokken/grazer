@@ -21,7 +21,7 @@ namespace Model::Scheme {
         Model::Balancelaw::Pipe_Balancelaw const &bl) const override;
 
     /// The derivative with respect to \code{.cpp}last_left\endcode
-    Eigen::Matrix2d devaluate_point_dleft(
+    Eigen::Matrix2d devaluate_point_d_new_left(
         double last_time, double new_time, double Delta_x,
         Eigen::Ref<Eigen::Vector2d const> last_left,
         Eigen::Ref<Eigen::Vector2d const> last_right,
@@ -30,7 +30,7 @@ namespace Model::Scheme {
         Model::Balancelaw::Pipe_Balancelaw const &bl) const override;
 
     /// \brief The derivative with respect to \code{.cpp}last_right\endcode
-    Eigen::Matrix2d devaluate_point_dright(
+    Eigen::Matrix2d devaluate_point_d_new_right(
         double last_time, double new_time, double Delta_x,
         Eigen::Ref<Eigen::Vector2d const> last_left,
         Eigen::Ref<Eigen::Vector2d const> last_right,

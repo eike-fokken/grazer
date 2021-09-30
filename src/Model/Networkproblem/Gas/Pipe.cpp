@@ -105,7 +105,7 @@ namespace Model::Networkproblem::Gas {
       auto new_left = new_state.segment<2>(i - 1);
       auto new_right = new_state.segment<2>(i + 1);
 
-      Eigen::Matrix2d current_derivative_left = scheme->devaluate_point_dleft(
+      Eigen::Matrix2d current_derivative_left = scheme->devaluate_point_d_new_left(
           last_time, new_time, Delta_x, last_left, last_right, new_left,
           new_right, *bl);
 
@@ -115,7 +115,7 @@ namespace Model::Networkproblem::Gas {
           i + 1, i - 1, current_derivative_left(1, 0));
       jacobianhandler.set_coefficient(i + 1, i, current_derivative_left(1, 1));
 
-      Eigen::Matrix2d current_derivative_right = scheme->devaluate_point_dright(
+      Eigen::Matrix2d current_derivative_right = scheme->devaluate_point_d_new_right(
           last_time, new_time, Delta_x, last_left, last_right, new_left,
           new_right, *bl);
 

@@ -54,7 +54,7 @@ TEST(testImplicitboxscheme, evaluate_point) {
   EXPECT_DOUBLE_EQ(result[1], expected_result[1]);
 }
 
-TEST(testImplicitboxscheme, devaluate_point_dleft) {
+TEST(testImplicitboxscheme, devaluate_point_d_new_left) {
   nlohmann::json j;
   j["diameter"] = nlohmann::json::object();
   j["diameter"]["unit"] = "m";
@@ -103,7 +103,7 @@ TEST(testImplicitboxscheme, devaluate_point_dleft) {
   Eigen::Vector2d difference_derivative0
       = 0.5 * (result_h0 - result_mh0) / epsilon;
 
-  Eigen::Matrix2d jacobimatrix = scheme.devaluate_point_dleft(
+  Eigen::Matrix2d jacobimatrix = scheme.devaluate_point_d_new_left(
       last_time, new_time, Delta_x, last_left, last_right, new_left, new_right,
       bl);
   Eigen::Vector2d analytical_derivative = jacobimatrix * h0 / epsilon;
@@ -127,7 +127,7 @@ TEST(testImplicitboxscheme, devaluate_point_dleft) {
   Eigen::Vector2d difference_derivative1
       = 0.5 * (result_h1 - result_mh1) / epsilon;
 
-  Eigen::Matrix2d jacobimatrix1 = scheme.devaluate_point_dleft(
+  Eigen::Matrix2d jacobimatrix1 = scheme.devaluate_point_d_new_left(
       last_time, new_time, Delta_x, last_left, last_right, new_left, new_right,
       bl);
   Eigen::Vector2d analytical_derivative1 = jacobimatrix1 * h1 / epsilon;
@@ -140,7 +140,7 @@ TEST(testImplicitboxscheme, devaluate_point_dleft) {
       finite_difference_threshold);
 }
 
-TEST(testImplicitboxscheme, devaluate_point_dright) {
+TEST(testImplicitboxscheme, devaluate_point_d_new_right) {
   nlohmann::json j;
   j["diameter"] = nlohmann::json::object();
   j["diameter"]["unit"] = "m";
@@ -189,7 +189,7 @@ TEST(testImplicitboxscheme, devaluate_point_dright) {
   Eigen::Vector2d difference_derivative0
       = 0.5 * (result_h0 - result_mh0) / epsilon;
 
-  Eigen::Matrix2d jacobimatrix = scheme.devaluate_point_dright(
+  Eigen::Matrix2d jacobimatrix = scheme.devaluate_point_d_new_right(
       last_time, new_time, Delta_x, last_left, last_right, new_left, new_right,
       bl);
   Eigen::Vector2d analytical_derivative = jacobimatrix * h0 / epsilon;
@@ -214,7 +214,7 @@ TEST(testImplicitboxscheme, devaluate_point_dright) {
   Eigen::Vector2d difference_derivative1
       = 0.5 * (result_h1 - result_mh1) / epsilon;
 
-  Eigen::Matrix2d jacobimatrix1 = scheme.devaluate_point_dright(
+  Eigen::Matrix2d jacobimatrix1 = scheme.devaluate_point_d_new_right(
       last_time, new_time, Delta_x, last_left, last_right, new_left, new_right,
       bl);
   Eigen::Vector2d analytical_derivative1 = jacobimatrix1 * h1 / epsilon;
