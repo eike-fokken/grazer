@@ -19,15 +19,15 @@ namespace Model::Networkproblem::Power {
   }
 
   void Vphinode::d_evalutate_d_new_state(
-      Aux::Matrixhandler *jacobianhandler, double /*last_time*/,
+      Aux::Matrixhandler &jacobianhandler, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/
   ) const {
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
-    jacobianhandler->set_coefficient(V_index, V_index, 1.0);
-    jacobianhandler->set_coefficient(phi_index, phi_index, 1.0);
+    jacobianhandler.set_coefficient(V_index, V_index, 1.0);
+    jacobianhandler.set_coefficient(phi_index, phi_index, 1.0);
   }
 
   void Vphinode::json_save(

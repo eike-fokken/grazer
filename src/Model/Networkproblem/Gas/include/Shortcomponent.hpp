@@ -34,7 +34,7 @@ namespace Model::Networkproblem::Gas {
     /// variables, this function just hands `function_derivative` to
     /// jacobianhandler.
     void dboundary_p_qvol_dstate(
-        int direction, Aux::Matrixhandler *jacobianhandler,
+        int direction, Aux::Matrixhandler &jacobianhandler,
         Eigen::RowVector2d function_derivative, int rootvalues_index,
         Eigen::Ref<Eigen::VectorXd const> const &state) const final;
 

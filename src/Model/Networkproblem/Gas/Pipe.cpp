@@ -94,7 +94,7 @@ namespace Model::Networkproblem::Gas {
   }
 
   void Pipe::d_evalutate_d_new_state(
-      Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
+      Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     for (int i = get_equation_start_index(); i != get_equation_after_index();
@@ -109,23 +109,23 @@ namespace Model::Networkproblem::Gas {
           last_time, new_time, Delta_x, last_left, last_right, new_left,
           new_right, *bl);
 
-      jacobianhandler->set_coefficient(i, i - 1, current_derivative_left(0, 0));
-      jacobianhandler->set_coefficient(i, i, current_derivative_left(0, 1));
-      jacobianhandler->set_coefficient(
+      jacobianhandler.set_coefficient(i, i - 1, current_derivative_left(0, 0));
+      jacobianhandler.set_coefficient(i, i, current_derivative_left(0, 1));
+      jacobianhandler.set_coefficient(
           i + 1, i - 1, current_derivative_left(1, 0));
-      jacobianhandler->set_coefficient(i + 1, i, current_derivative_left(1, 1));
+      jacobianhandler.set_coefficient(i + 1, i, current_derivative_left(1, 1));
 
       Eigen::Matrix2d current_derivative_right = scheme->devaluate_point_dright(
           last_time, new_time, Delta_x, last_left, last_right, new_left,
           new_right, *bl);
 
-      jacobianhandler->set_coefficient(
+      jacobianhandler.set_coefficient(
           i, i + 1, current_derivative_right(0, 0));
-      jacobianhandler->set_coefficient(
+      jacobianhandler.set_coefficient(
           i, i + 2, current_derivative_right(0, 1));
-      jacobianhandler->set_coefficient(
+      jacobianhandler.set_coefficient(
           i + 1, i + 1, current_derivative_right(1, 0));
-      jacobianhandler->set_coefficient(
+      jacobianhandler.set_coefficient(
           i + 1, i + 2, current_derivative_right(1, 1));
     }
   }
@@ -192,7 +192,7 @@ namespace Model::Networkproblem::Gas {
   }
 
   void Pipe::dboundary_p_qvol_dstate(
-      int direction, Aux::Matrixhandler *jacobianhandler,
+      int direction, Aux::Matrixhandler &jacobianhandler,
       Eigen::RowVector2d function_derivative, int rootvalues_index,
       Eigen::Ref<Eigen::VectorXd const> const &state) const {
     Eigen::Vector2d boundary_state = get_boundary_state(direction, state);
@@ -210,9 +210,9 @@ namespace Model::Networkproblem::Gas {
 
     int rho_index = get_boundary_state_index(direction);
     int q_index = rho_index + 1;
-    jacobianhandler->set_coefficient(
+    jacobianhandler.set_coefficient(
         rootvalues_index, rho_index, derivative[0]);
-    jacobianhandler->set_coefficient(rootvalues_index, q_index, derivative[1]);
+    jacobianhandler.set_coefficient(rootvalues_index, q_index, derivative[1]);
   }
 
   double Pipe::get_length() { return (number_of_points - 1) * Delta_x; }

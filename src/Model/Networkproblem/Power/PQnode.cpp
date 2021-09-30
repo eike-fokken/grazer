@@ -20,7 +20,7 @@ namespace Model::Networkproblem::Power {
   }
 
   void PQnode::d_evalutate_d_new_state(
-      Aux::Matrixhandler *jacobianhandler,
+      Aux::Matrixhandler &jacobianhandler,
       double // last_time
       ,
       double // new_time

@@ -37,7 +37,7 @@ namespace Model::Networkproblem {
         Eigen::Ref<Eigen::VectorXd const> const &new_state) override;
 
     void d_evalutate_d_new_state(
-        Aux::Matrixhandler *jacobian, double last_time, double new_time,
+        Aux::Matrixhandler &jacobian, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
 

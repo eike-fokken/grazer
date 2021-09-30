@@ -14,14 +14,14 @@ namespace GrazerTest {
   }
 
   void TestProblem::d_evalutate_d_new_state(
-      Aux::Matrixhandler *jacobianhandler, double, double,
+      Aux::Matrixhandler &jacobianhandler, double, double,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
 
     Eigen::SparseMatrix<double> mat = df(new_state);
     for (int k = 0; k < mat.outerSize(); ++k)
       for (Eigen::SparseMatrix<double>::InnerIterator it(mat, k); it; ++it) {
-        jacobianhandler->set_coefficient(
+        jacobianhandler.set_coefficient(
             static_cast<int>(it.row()), static_cast<int>(it.col()), it.value());
       }
   }

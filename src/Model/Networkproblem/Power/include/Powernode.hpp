@@ -39,10 +39,10 @@ namespace Model::Networkproblem::Power {
     double P(Eigen::Ref<Eigen::VectorXd const> const &state) const;
     double Q(Eigen::Ref<Eigen::VectorXd const> const &state) const;
     void evaluate_P_derivative(
-        int equationindex, Aux::Matrixhandler *jacobianhandler,
+        int equationindex, Aux::Matrixhandler &jacobianhandler,
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
     void evaluate_Q_derivative(
-        int equationindex, Aux::Matrixhandler *jacobianhandler,
+        int equationindex, Aux::Matrixhandler &jacobianhandler,
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
 
   protected:

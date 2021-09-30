@@ -35,7 +35,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
     void d_evalutate_d_new_state(
-        Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
+        Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &,
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
 
@@ -57,7 +57,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
         Eigen::Ref<Eigen::VectorXd const> const &state) const override;
 
     void dboundary_p_qvol_dstate(
-        int direction, Aux::Matrixhandler *jacobianhandler,
+        int direction, Aux::Matrixhandler &jacobianhandler,
         Eigen::RowVector2d function_derivative, int rootvalues_index,
         Eigen::Ref<Eigen::VectorXd const> const &state) const override;
 

@@ -30,7 +30,7 @@ namespace GrazerTest {
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
 
     void d_evalutate_d_new_state(
-        Aux::Matrixhandler *jacobianhandler, double, double,
+        Aux::Matrixhandler &jacobianhandler, double, double,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
 

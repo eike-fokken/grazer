@@ -19,9 +19,8 @@ namespace Solver {
       jacobian.resize(new_state.size(), new_state.size());
       Aux::Triplethandler handler(&jacobian);
 
-      Aux::Triplethandler *const handler_ptr = &handler;
       problem.d_evalutate_d_new_state(
-          handler_ptr, last_time, new_time, last_state, new_state);
+          handler, last_time, new_time, last_state, new_state);
       handler.set_matrix();
     }
     lusolver.analyzePattern(jacobian);
@@ -33,9 +32,8 @@ namespace Solver {
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) {
     Aux::Coeffrefhandler handler(&jacobian);
-    Aux::Coeffrefhandler *const handler_ptr = &handler;
     problem.d_evalutate_d_new_state(
-        handler_ptr, last_time, new_time, last_state, new_state);
+        handler, last_time, new_time, last_state, new_state);
   }
 
   template <typename Problemtype>
@@ -53,8 +51,7 @@ namespace Solver {
     Eigen::VectorXd rootvalues(new_state.size());
 
     // compute f(x_k);
-    problem.evaluate(
-        rootvalues, last_time, new_time, last_state, new_state);
+    problem.evaluate(rootvalues, last_time, new_time, last_state, new_state);
 
     // check if already there:
     if (rootvalues.norm() <= tolerance) {
@@ -119,7 +116,8 @@ namespace Solver {
         lambda *= 0.5;
         candidate_vector = new_state + lambda * step;
         problem.evaluate(
-            candidate_values, last_time, new_time, last_state, candidate_vector);
+            candidate_values, last_time, new_time, last_state,
+            candidate_vector);
         current_norm = (-lusolver.solve(candidate_values)).norm();
       }
       new_state = candidate_vector;

@@ -25,7 +25,7 @@ namespace GrazerTest {
 
     MOCK_METHOD(
         void, d_evalutate_d_new_state,
-        ((Aux::Matrixhandler *), (double), (double),
+        ((Aux::Matrixhandler &), (double), (double),
          (Eigen::Ref<Eigen::VectorXd const> const &),
          (Eigen::Ref<Eigen::VectorXd const> const &)),
         (const, override));

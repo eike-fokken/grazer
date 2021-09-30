@@ -176,7 +176,7 @@ namespace Model::Networkproblem::Power {
   }
 
   void Powernode::evaluate_P_derivative(
-      int equationindex, Aux::Matrixhandler *jacobianhandler,
+      int equationindex, Aux::Matrixhandler &jacobianhandler,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
@@ -184,8 +184,8 @@ namespace Model::Networkproblem::Power {
     double V_i = new_state[V_index];
     double phi_i = new_state[phi_index];
 
-    jacobianhandler->set_coefficient(equationindex, V_index, 2 * G_i * V_i);
-    jacobianhandler->set_coefficient(equationindex, phi_index, 0.0);
+    jacobianhandler.set_coefficient(equationindex, V_index, 2 * G_i * V_i);
+    jacobianhandler.set_coefficient(equationindex, phi_index, 0.0);
 
     for (auto &triple : attached_component_data) {
       double G_ik = std::get<0>(triple);
@@ -197,24 +197,24 @@ namespace Model::Networkproblem::Power {
       double phi_k = new_state[phi_index_k];
       double phi_ik = phi_i - phi_k;
 
-      jacobianhandler->add_to_coefficient(
+      jacobianhandler.add_to_coefficient(
           equationindex, V_index,
           V_k * (G_ik * cos(phi_ik) + B_ik * sin(phi_ik)));
-      jacobianhandler->add_to_coefficient(
+      jacobianhandler.add_to_coefficient(
           equationindex, phi_index,
           V_i * V_k * (-G_ik * sin(phi_ik) + B_ik * cos(phi_ik)));
 
-      jacobianhandler->set_coefficient(
+      jacobianhandler.set_coefficient(
           equationindex, V_index_k,
           V_i * (G_ik * cos(phi_ik) + B_ik * sin(phi_ik)));
-      jacobianhandler->set_coefficient(
+      jacobianhandler.set_coefficient(
           equationindex, phi_index_k,
           V_i * V_k * (G_ik * sin(phi_ik) - B_ik * cos(phi_ik)));
     }
   }
 
   void Powernode::evaluate_Q_derivative(
-      int equationindex, Aux::Matrixhandler *jacobianhandler,
+      int equationindex, Aux::Matrixhandler &jacobianhandler,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
@@ -222,8 +222,8 @@ namespace Model::Networkproblem::Power {
     double V_i = new_state[V_index];
     double phi_i = new_state[phi_index];
 
-    jacobianhandler->set_coefficient(equationindex, V_index, -2 * B_i * V_i);
-    jacobianhandler->set_coefficient(equationindex, phi_index, 0.0);
+    jacobianhandler.set_coefficient(equationindex, V_index, -2 * B_i * V_i);
+    jacobianhandler.set_coefficient(equationindex, phi_index, 0.0);
 
     for (auto &triple : attached_component_data) {
       double G_ik = std::get<0>(triple);
@@ -235,16 +235,16 @@ namespace Model::Networkproblem::Power {
       double phi_k = new_state[phi_index_k];
       double phi_ik = phi_i - phi_k;
 
-      jacobianhandler->add_to_coefficient(
+      jacobianhandler.add_to_coefficient(
           equationindex, V_index,
           V_k * (G_ik * sin(phi_ik) - B_ik * cos(phi_ik)));
-      jacobianhandler->add_to_coefficient(
+      jacobianhandler.add_to_coefficient(
           equationindex, phi_index,
           V_i * V_k * (G_ik * cos(phi_ik) + B_ik * sin(phi_ik)));
-      jacobianhandler->set_coefficient(
+      jacobianhandler.set_coefficient(
           equationindex, V_index_k,
           V_i * (G_ik * sin(phi_ik) - B_ik * cos(phi_ik)));
-      jacobianhandler->set_coefficient(
+      jacobianhandler.set_coefficient(
           equationindex, phi_index_k,
           V_i * V_k * (-G_ik * cos(phi_ik) - B_ik * sin(phi_ik)));
     }

@@ -53,7 +53,7 @@ namespace Model::Networkproblem::Gas {
   }
 
   void Gasnode::evaluate_flow_node_derivative(
-      Aux::Matrixhandler *jacobianhandler,
+      Aux::Matrixhandler &jacobianhandler,
       Eigen::Ref<Eigen::VectorXd const> const &state) const {
 
     if (directed_attached_gas_edges.empty()) {

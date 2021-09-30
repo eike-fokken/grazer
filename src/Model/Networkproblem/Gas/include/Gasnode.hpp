@@ -20,7 +20,7 @@ namespace Model::Networkproblem::Gas {
         double prescribed_flow) const;
 
     void evaluate_flow_node_derivative(
-        Aux::Matrixhandler *jacobianhandler,
+        Aux::Matrixhandler &jacobianhandler,
         Eigen::Ref<Eigen::VectorXd const> const &state) const;
 
     std::vector<std::pair<int, Gasedge *>> directed_attached_gas_edges;

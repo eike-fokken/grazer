@@ -35,11 +35,11 @@ namespace Model::Networkproblem::Gas {
     /// If (p,qvol) = phi(rho,q), then this function must compute
     /// \code{.cpp}dF/dState = function_derivative*phi'\endcode and call
     /// \code{.cpp}
-    /// jacobianhandler->set_coefficient(rootvalues_index, rho_index,
-    /// dF/dState[0]); jacobianhandler->set_coefficient(rootvalues_index,
+    /// jacobianhandler.set_coefficient(rootvalues_index, rho_index,
+    /// dF/dState[0]); jacobianhandler.set_coefficient(rootvalues_index,
     /// q_index, dF/dState[1]); \endcode
     virtual void dboundary_p_qvol_dstate(
-        int direction, Aux::Matrixhandler *jacobianhandler,
+        int direction, Aux::Matrixhandler &jacobianhandler,
         Eigen::RowVector2d function_derivative, int rootvalues_index,
         Eigen::Ref<Eigen::VectorXd const> const &state) const = 0;
 

@@ -67,20 +67,20 @@ namespace Model::Networkproblem::Gaspowerconnection {
   }
 
   void Gaspowerconnection::d_evalutate_d_new_state(
-      Aux::Matrixhandler *jacobianhandler, double, double new_time,
+      Aux::Matrixhandler &jacobianhandler, double, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     int p_index = get_start_state_index();
     int q_index = get_start_state_index() + 1;
     double q = new_state[q_index];
-    jacobianhandler->set_coefficient(q_index, q_index, -dgenerated_power_dq(q));
+    jacobianhandler.set_coefficient(q_index, q_index, -dgenerated_power_dq(q));
     powerendnode->evaluate_P_derivative(q_index, jacobianhandler, new_state);
 
     if (is_gas_driven(new_time)) {
-      jacobianhandler->set_coefficient(
+      jacobianhandler.set_coefficient(
           powerendnode->get_start_state_index(), p_index, 1.0);
     } else {
-      jacobianhandler->set_coefficient(
+      jacobianhandler.set_coefficient(
           powerendnode->get_start_state_index(), p_index, 0.0);
     }
   }
@@ -164,14 +164,14 @@ namespace Model::Networkproblem::Gaspowerconnection {
   }
 
   void Gaspowerconnection::dboundary_p_qvol_dstate(
-      int direction, Aux::Matrixhandler *jacobianhandler,
+      int direction, Aux::Matrixhandler &jacobianhandler,
       Eigen::RowVector2d function_derivative, int rootvalues_index,
       Eigen::Ref<Eigen::VectorXd const> const &) const {
     int p_index = get_boundary_state_index(direction);
     int q_index = p_index + 1;
-    jacobianhandler->set_coefficient(
+    jacobianhandler.set_coefficient(
         rootvalues_index, p_index, function_derivative[0]);
-    jacobianhandler->set_coefficient(
+    jacobianhandler.set_coefficient(
         rootvalues_index, q_index, function_derivative[1]);
   }
 

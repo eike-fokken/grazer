@@ -32,7 +32,7 @@ namespace Model::Networkproblem::Gas {
   }
 
   void Controlvalve::d_evalutate_d_new_state(
-      Aux::Matrixhandler *jacobianhandler, double /*last_time*/,
+      Aux::Matrixhandler &jacobianhandler, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const {
@@ -44,10 +44,10 @@ namespace Model::Networkproblem::Gas {
     auto start_equation_index = get_equation_start_index();
     auto end_equation_index = start_equation_index + 1;
 
-    jacobianhandler->set_coefficient(start_equation_index, start_p_index, 1.0);
-    jacobianhandler->set_coefficient(start_equation_index, end_p_index, -1.0);
-    jacobianhandler->set_coefficient(end_equation_index, start_q_index, 1.0);
-    jacobianhandler->set_coefficient(end_equation_index, end_q_index, -1.0);
+    jacobianhandler.set_coefficient(start_equation_index, start_p_index, 1.0);
+    jacobianhandler.set_coefficient(start_equation_index, end_p_index, -1.0);
+    jacobianhandler.set_coefficient(end_equation_index, start_q_index, 1.0);
+    jacobianhandler.set_coefficient(end_equation_index, end_q_index, -1.0);
   }
 
   void Controlvalve::set_initial_values(

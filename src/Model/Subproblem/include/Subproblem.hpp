@@ -36,7 +36,7 @@ namespace Model {
         = 0;
 
     virtual void d_evalutate_d_new_state(
-        Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
+        Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &,
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
 
