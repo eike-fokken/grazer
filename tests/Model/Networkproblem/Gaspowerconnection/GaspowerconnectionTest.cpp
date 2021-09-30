@@ -42,7 +42,7 @@ TEST_F(GaspowerconnectionTEST, smoothing_polynomial) {
   Eigen::Vector2d cond0(345, 333);
   Eigen::Vector2d cond1(341, 3331);
   auto extpowerplant_json
-      = externalpowerplant_json("bextpowerplant", G, B, cond0, cond1);
+      = externalpowerplant_json("extpowerplant", G, B, cond0, cond1);
 
   double gas2power_q_coefficient = 34;
   double power2gas_q_coefficient = 55;
@@ -295,11 +295,9 @@ TEST_F(GaspowerconnectionTEST, evaluate_power_controlled) {
   for (int i = 0; i != number_of_variables; ++i) { new_state[i] = i; }
   // The following are not needed, as the power nodes are not controlled.  But
   // to satisfy the interface, we must provide them.
-  Eigen::VectorXd last_control;
-  Eigen::VectorXd new_control;
+
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, last_control,
-      new_control);
+      rootvalues, last_time, new_time, last_state, new_state);
   auto edges = netprob->get_network().get_edges();
   if (edges.size() != 1) {
     FAIL();
@@ -327,8 +325,7 @@ TEST_F(GaspowerconnectionTEST, evaluate_power_controlled) {
   for (int i = 0; i != 10; ++i) {
     new_state.setRandom();
     netprob->evaluate(
-        rootvalues, last_time, new_time, last_state, new_state, last_control,
-        new_control);
+        rootvalues, last_time, new_time, last_state, new_state);
     EXPECT_DOUBLE_EQ(
         rootvalues[gp->get_start_state_index() + 1],
         endpowernode->P(new_state)
@@ -385,8 +382,7 @@ TEST_F(GaspowerconnectionTEST, evaluate_gas_controlled) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd new_control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, last_control,
-      new_control);
+      rootvalues, last_time, new_time, last_state, new_state);
   auto edges = netprob->get_network().get_edges();
   if (edges.size() != 1) {
     FAIL();
@@ -414,8 +410,7 @@ TEST_F(GaspowerconnectionTEST, evaluate_gas_controlled) {
   for (int i = 0; i != 10; ++i) {
     new_state.setRandom();
     netprob->evaluate(
-        rootvalues, last_time, new_time, last_state, new_state, last_control,
-        new_control);
+        rootvalues, last_time, new_time, last_state, new_state);
     EXPECT_DOUBLE_EQ(
         rootvalues[gp->get_start_state_index() + 1],
         endpowernode->P(new_state)
@@ -471,8 +466,7 @@ TEST_F(GaspowerconnectionTEST, d_evalutate_d_new_state_power_driven) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd new_control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, last_control,
-      new_control);
+      rootvalues, last_time, new_time, last_state, new_state);
   auto edges = netprob->get_network().get_edges();
   if (edges.size() != 1) {
     FAIL();
@@ -504,8 +498,7 @@ TEST_F(GaspowerconnectionTEST, d_evalutate_d_new_state_power_driven) {
     Eigen::Matrix4d DenseJ;
     new_state.setRandom();
     netprob->d_evalutate_d_new_state(
-        &handler, last_time, new_time, last_state, new_state, last_control,
-        new_control);
+        &handler, last_time, new_time, last_state, new_state);
     handler.set_matrix();
     DenseJ = J;
     EXPECT_DOUBLE_EQ(
@@ -580,8 +573,7 @@ TEST_F(GaspowerconnectionTEST, d_evalutate_d_new_state_gas_driven) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd new_control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, last_control,
-      new_control);
+      rootvalues, last_time, new_time, last_state, new_state);
   auto edges = netprob->get_network().get_edges();
   if (edges.size() != 1) {
     FAIL();
@@ -613,8 +605,7 @@ TEST_F(GaspowerconnectionTEST, d_evalutate_d_new_state_gas_driven) {
     Eigen::Matrix4d DenseJ;
     new_state.setRandom();
     netprob->d_evalutate_d_new_state(
-        &handler, last_time, new_time, last_state, new_state, last_control,
-        new_control);
+        &handler, last_time, new_time, last_state, new_state);
     handler.set_matrix();
     DenseJ = J;
     EXPECT_DOUBLE_EQ(

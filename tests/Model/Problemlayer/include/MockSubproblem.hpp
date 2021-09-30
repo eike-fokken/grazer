@@ -15,23 +15,17 @@ namespace GrazerTest {
         void, evaluate,
         ((Eigen::Ref<Eigen::VectorXd>), (double), (double),
          (Eigen::Ref<Eigen::VectorXd const> const &),
-         (Eigen::Ref<Eigen::VectorXd const> const &),
-         (Eigen::Ref<Eigen::VectorXd const> const &),
          (Eigen::Ref<Eigen::VectorXd const> const &)),
         (const, override));
     MOCK_METHOD(
         void, prepare_timestep,
         ((double), (double), (Eigen::Ref<Eigen::VectorXd const> const &),
-         (Eigen::Ref<Eigen::VectorXd const> const &),
-         (Eigen::Ref<Eigen::VectorXd const> const &),
          (Eigen::Ref<Eigen::VectorXd const> const &)),
         (override));
 
     MOCK_METHOD(
         void, d_evalutate_d_new_state,
         ((Aux::Matrixhandler *), (double), (double),
-         (Eigen::Ref<Eigen::VectorXd const> const &),
-         (Eigen::Ref<Eigen::VectorXd const> const &),
          (Eigen::Ref<Eigen::VectorXd const> const &),
          (Eigen::Ref<Eigen::VectorXd const> const &)),
         (const, override));

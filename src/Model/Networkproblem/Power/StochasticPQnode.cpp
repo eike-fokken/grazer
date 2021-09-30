@@ -61,9 +61,7 @@ namespace Model::Networkproblem::Power {
       Eigen::Ref<Eigen::VectorXd> rootvalues, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state,
-      Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/
+      Eigen::Ref<Eigen::VectorXd const> const &new_state
   ) const {
     auto V_index = get_start_state_index();
     auto phi_index = V_index + 1;
@@ -74,9 +72,7 @@ namespace Model::Networkproblem::Power {
   void StochasticPQnode::prepare_timestep(
       double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
-      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/
+      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/
   ) {
     auto last_P = P(last_state);
     current_P = Aux::euler_maruyama_oup(
@@ -123,9 +119,7 @@ namespace Model::Networkproblem::Power {
       Aux::Matrixhandler *jacobianhandler, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state,
-      Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) const {
+      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     auto first_equation_index = get_start_state_index();
     auto second_equation_index = first_equation_index + 1;
     evaluate_P_derivative(first_equation_index, jacobianhandler, new_state);

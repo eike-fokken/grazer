@@ -9,9 +9,7 @@ namespace Model::Networkproblem {
   void Equationcomponent::prepare_timestep(
       double /*last_time*/, double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) {}
+      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) {}
 
   void Equationcomponent::setup() {}
 

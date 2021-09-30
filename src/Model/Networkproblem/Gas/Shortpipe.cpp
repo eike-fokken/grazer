@@ -13,9 +13,7 @@ namespace Model::Networkproblem::Gas {
   void Shortpipe::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double,
       Eigen::Ref<Eigen::VectorXd const> const &,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state,
-      Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) const {
+      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     rootvalues.segment<2>(get_equation_start_index())
         = get_boundary_state(1, new_state) - get_boundary_state(-1, new_state);
   }
@@ -24,9 +22,7 @@ namespace Model::Networkproblem::Gas {
       Aux::Matrixhandler *jacobianhandler, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) const {
+      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const {
 
     auto start_p_index = get_boundary_state_index(1);
     auto start_q_index = start_p_index + 1;

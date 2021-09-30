@@ -55,9 +55,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
   void Gaspowerconnection::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state,
-      Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) const {
+      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     int p_index = get_start_state_index();
     int q_index = get_start_state_index() + 1;
     rootvalues[q_index]
@@ -71,9 +69,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
   void Gaspowerconnection::d_evalutate_d_new_state(
       Aux::Matrixhandler *jacobianhandler, double, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state,
-      Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) const {
+      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     int p_index = get_start_state_index();
     int q_index = get_start_state_index() + 1;
     double q = new_state[q_index];

@@ -63,39 +63,30 @@ namespace Model {
   void Problem::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state,
-      Eigen::Ref<Eigen::VectorXd const> const &last_control,
-      Eigen::Ref<Eigen::VectorXd const> const &new_control) const {
+      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     for (auto &subproblem : subproblems) {
       subproblem->evaluate(
-          rootvalues, last_time, new_time, last_state, new_state, last_control,
-          new_control);
+          rootvalues, last_time, new_time, last_state, new_state);
     }
   }
 
   void Problem::prepare_timestep(
       double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state,
-      Eigen::Ref<Eigen::VectorXd const> const &last_control,
-      Eigen::Ref<Eigen::VectorXd const> const &new_control) {
+      Eigen::Ref<Eigen::VectorXd const> const &new_state) {
     for (auto &subproblem : subproblems) {
       subproblem->prepare_timestep(
-          last_time, new_time, last_state, new_state, last_control,
-          new_control);
+          last_time, new_time, last_state, new_state);
     }
   }
 
   void Problem::d_evalutate_d_new_state(
       Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state,
-      Eigen::Ref<Eigen::VectorXd const> const &last_control,
-      Eigen::Ref<Eigen::VectorXd const> const &new_control) const {
+      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     for (auto &subproblem : subproblems) {
       subproblem->d_evalutate_d_new_state(
-          jacobianhandler, last_time, new_time, last_state, new_state,
-          last_control, new_control);
+          jacobianhandler, last_time, new_time, last_state, new_state);
     }
   }
 

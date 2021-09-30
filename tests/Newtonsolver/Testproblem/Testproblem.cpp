@@ -8,9 +8,7 @@ namespace GrazerTest {
   void TestProblem::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state,
-      Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) const {
+      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
 
     rootvalues = f(new_state);
   }
@@ -18,9 +16,7 @@ namespace GrazerTest {
   void TestProblem::d_evalutate_d_new_state(
       Aux::Matrixhandler *jacobianhandler, double, double,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state,
-      Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) const {
+      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
 
     Eigen::SparseMatrix<double> mat = df(new_state);
     for (int k = 0; k < mat.outerSize(); ++k)

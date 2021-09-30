@@ -36,8 +36,7 @@ TEST(Newtonsolver, LinearSolveWithRoot_InitialValue1) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd new_control;
   a = Solver.solve(
-      new_state, problem, true, false, last_time, new_time, last_state,
-      last_control, new_control);
+      new_state, problem, true, false, last_time, new_time, last_state);
 
   EXPECT_EQ(a.success, true);
 
@@ -71,8 +70,7 @@ TEST(Newtonsolver, LinearSolveWithRoot_InitialValue2) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd new_control;
   a = Solver.solve(
-      new_state, problem, true, false, last_time, new_time, last_state,
-      last_control, new_control);
+      new_state, problem, true, false, last_time, new_time, last_state);
 
   EXPECT_EQ(a.success, true); // passed
 
@@ -107,8 +105,7 @@ TEST(Newtonsolver, NonlinearSolveWithRoot) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd new_control;
   a = Solver.solve(
-      new_state, problem, true, false, last_time, new_time, last_state,
-      last_control, new_control);
+      new_state, problem, true, false, last_time, new_time, last_state);
 
   EXPECT_EQ(a.success, false);
   EXPECT_EQ(a.used_iterations, max_it);
@@ -141,8 +138,7 @@ TEST(Newtonsolver, NonlinearSolve_simplifiedNewton) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd new_control;
   a = Solver.solve(
-      new_state, problem, true, false, last_time, new_time, last_state,
-      last_control, new_control);
+      new_state, problem, true, false, last_time, new_time, last_state);
 
   EXPECT_EQ(a.success, false);
   EXPECT_EQ(a.used_iterations, max_it);
@@ -172,11 +168,8 @@ TEST(Newtonsolver, SingularJacobian) {
   try {
     // The following are not needed, as the power nodes are not controlled.  But
     // to satisfy the interface, we must provide them.
-    Eigen::VectorXd last_control;
-    Eigen::VectorXd new_control;
     a = Solver.solve(
-        new_state, problem, true, false, last_time, new_time, last_state,
-        last_control, new_control);
+        new_state, problem, true, false, last_time, new_time, last_state);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
