@@ -3,7 +3,8 @@ Equation_base.cpp
 Equationcomponent.cpp
 Valuemap.cpp
 Statecomponent.cpp
-Controlcomponent.cpp)
+Controlcomponent.cpp
+Costcomponent.cpp)
 
 target_link_libraries(componentclasses PUBLIC mathfunctions exception)
 
