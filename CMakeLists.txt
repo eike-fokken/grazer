@@ -160,6 +160,24 @@ include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp/include/")
 include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/CLI11/include/")
 
 
+# IPOPT
+# IPOPT
+if (NOT DEFINED IPOPT_DIRECTORY)
+  set(IPOPT_DIRECTORY "/usr/local/Cellar/ipopt/3.14.4")
+endif()
+
+
+find_library(IPOPT_LIBRARY_PATH
+        NAMES ipopt
+        PATHS "${IPOPT_DIRECTORY}/lib" NO_DEFAULT_PATH)
+
+# Your-external "mylib", (maybe use GLOBAL??? Seems unneccessary)
+add_library(my_ipopt SHARED IMPORTED )
+# You can define two import-locations: one for debug and one for release.
+set_target_properties(my_ipopt PROPERTIES IMPORTED_LOCATION "${IPOPT_LIBRARY_PATH}")
+target_include_directories(my_ipopt INTERFACE "${IPOPT_DIRECTORY}/include/coin-or")
+
+
 # for building latex documentation
 
 find_package(Doxygen)
