@@ -83,17 +83,13 @@ namespace Model {
 
     problem.set_initial_values(last_state, problem_initial_json);
 
-    // // This initializes P and Q-values of P-Q-nodes.
-    // problem.prepare_timestep(last_time, last_time, last_state, last_state);
-    // // save the initial values.
-    // problem.json_save(last_time, last_state);
-
     double new_time = last_time + timedata.get_delta_t();
 
     Eigen::VectorXd new_state = last_state;
 
     solver.evaluate_state_derivative_triplets(
-        problem, last_time, new_time, last_state, new_state);
+        problem, last_time, new_time, last_state, new_state, last_control,
+        new_control);
 
     std::cout << "Number of variables: " << number_of_states << std::endl;
     std::cout << "number of non-zeros in jacobian: "
@@ -122,10 +118,12 @@ namespace Model {
       Eigen::VectorXd new_state_backup = new_state;
       while (not solstruct.success) {
         new_state = new_state_backup;
-        problem.prepare_timestep(last_time, new_time, last_state, new_state);
+        problem.prepare_timestep(
+            last_time, new_time, last_state, new_state, last_control,
+            new_control);
         solstruct = solver.solve(
             new_state, problem, false, use_full_jacobian, last_time, new_time,
-            last_state);
+            last_state, last_control, new_control);
         if (solstruct.success) {
 
           if (use_simplified_newton and retry > 0) {

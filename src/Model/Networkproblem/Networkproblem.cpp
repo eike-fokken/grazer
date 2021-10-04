@@ -1,4 +1,5 @@
 #include "Networkproblem.hpp"
+#include "Controlcomponent.hpp"
 #include "Edge.hpp"
 #include "Equationcomponent.hpp"
 #include "Exception.hpp"
@@ -7,6 +8,7 @@
 #include "Node.hpp"
 #include "Statecomponent.hpp"
 #include <Eigen/Sparse>
+#include <cstddef>
 #include <iostream>
 #include <iterator>
 #include <memory>
@@ -32,6 +34,9 @@ namespace Model::Networkproblem {
       if (auto statecomponent = dynamic_cast<Statecomponent *>(node)) {
         statecomponents.push_back(statecomponent);
       }
+      if (auto controlcomponent = dynamic_cast<Controlcomponent *>(node)) {
+        controlcomponents.push_back(controlcomponent);
+      }
     }
 
     for (Network::Edge *edge : network->get_edges()) {
@@ -41,40 +46,88 @@ namespace Model::Networkproblem {
       if (auto statecomponent = dynamic_cast<Statecomponent *>(edge)) {
         statecomponents.push_back(statecomponent);
       }
+      if (auto controlcomponent = dynamic_cast<Controlcomponent *>(edge)) {
+        controlcomponents.push_back(controlcomponent);
+      }
     }
   }
 
   void Networkproblem::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
+      Eigen::Ref<Eigen::VectorXd const> const &last_control,
+      Eigen::Ref<Eigen::VectorXd const> const &new_control) const {
 
-    for (Model::Networkproblem::Equationcomponent *eqcomponent :
+    for (Model::Networkproblem::Equationcomponent *equationcomponent :
          equationcomponents) {
-      eqcomponent->evaluate(
+      equationcomponent->evaluate(
           rootvalues, last_time, new_time, last_state, new_state);
+    }
+    for (Model::Networkproblem::Controlcomponent *controlcomponent :
+         controlcomponents) {
+      controlcomponent->evaluate(
+          rootvalues, last_time, new_time, last_state, new_state, last_control,
+          new_control);
     }
   }
 
   void Networkproblem::prepare_timestep(
       double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state) {
-    for (Model::Networkproblem::Equationcomponent *eqcomponent :
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
+      Eigen::Ref<Eigen::VectorXd const> const &last_control,
+      Eigen::Ref<Eigen::VectorXd const> const &new_control) {
+    for (Model::Networkproblem::Equationcomponent *equationcomponent :
          equationcomponents) {
-      eqcomponent->prepare_timestep(last_time, new_time, last_state, new_state);
+      equationcomponent->prepare_timestep(
+          last_time, new_time, last_state, new_state);
+    }
+    for (Model::Networkproblem::Controlcomponent *controlcomponent :
+         controlcomponents) {
+      controlcomponent->prepare_timestep(
+          last_time, new_time, last_state, new_state, last_control,
+          new_control);
     }
   }
 
   void Networkproblem::d_evalutate_d_new_state(
       ::Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
+      Eigen::Ref<Eigen::VectorXd const> const &last_control,
+      Eigen::Ref<Eigen::VectorXd const> const &new_control) const {
 
-    for (Model::Networkproblem::Equationcomponent *eqcomponent :
+    for (Model::Networkproblem::Equationcomponent *equationcomponent :
          equationcomponents) {
-      eqcomponent->d_evalutate_d_new_state(
+      equationcomponent->d_evalutate_d_new_state(
           jacobianhandler, last_time, new_time, last_state, new_state);
+    }
+    for (Model::Networkproblem::Controlcomponent *controlcomponent :
+         controlcomponents) {
+      controlcomponent->d_evalutate_d_new_state(
+          jacobianhandler, last_time, new_time, last_state, new_state,
+          last_control, new_control);
+    }
+  }
+
+  void Networkproblem::d_evalutate_d_last_state(
+      ::Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
+      Eigen::Ref<Eigen::VectorXd const> const &last_state,
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
+      Eigen::Ref<Eigen::VectorXd const> const &last_control,
+      Eigen::Ref<Eigen::VectorXd const> const &new_control) const {
+
+    for (Model::Networkproblem::Equationcomponent *equationcomponent :
+         equationcomponents) {
+      equationcomponent->d_evalutate_d_last_state(
+          jacobianhandler, last_time, new_time, last_state, new_state);
+    }
+    for (Model::Networkproblem::Controlcomponent *controlcomponent :
+         controlcomponents) {
+      controlcomponent->d_evalutate_d_last_state(
+          jacobianhandler, last_time, new_time, last_state, new_state,
+          last_control, new_control);
     }
   }
 
@@ -120,8 +173,8 @@ namespace Model::Networkproblem {
               = std::find_if(idcomponents.begin(), idcomponents.end(), find_id);
           if (iterator != idcomponents.end()) {
             auto index = iterator - idcomponents.begin();
-            statecomponents[static_cast<unsigned long>(index)]
-                ->set_initial_values(new_state, componentjson);
+            statecomponents[static_cast<size_t>(index)]->set_initial_values(
+                new_state, componentjson);
           } else {
             std::cout
                 << "Note: Component with id " << component_id

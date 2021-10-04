@@ -10,7 +10,7 @@ namespace Aux {
 namespace Model::Networkproblem {
   class Controlcomponent : public Equation_base {
   public:
-    virtual ~Controlcomponent();
+    virtual ~Controlcomponent(){};
 
     /** \brief evaluates the model equations into rootvalues.
      *
@@ -139,15 +139,6 @@ namespace Model::Networkproblem {
         Eigen::Ref<Eigen::VectorXd const> const &last_control,
         Eigen::Ref<Eigen::VectorXd const> const &new_control) const = 0;
 
-    /** \brief Utility for setup of things that cannot be done during
-     * construction.
-     *
-     * is called by Networkproblems reserve_state_indices.
-     * Usually does nothing, but for example gas nodes
-     * claim indices from their attached gas edges.
-     */
-    virtual void setup();
-
     /** \brief Returns number of controls needed by this component per time
      *  step.
      *
@@ -182,7 +173,7 @@ namespace Model::Networkproblem {
      * values.
      * @param control_json Json object that contains the controls.
      */
-    virtual void set_initial_controls(
+    virtual void set_initial_controls_of_timestep(
         double time, Eigen::Ref<Eigen::VectorXd> controls,
         nlohmann::json const &control_json)
         = 0;

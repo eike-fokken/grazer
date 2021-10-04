@@ -13,14 +13,17 @@ namespace Solver {
   void Newtonsolver<Problemtype>::evaluate_state_derivative_triplets(
       Problemtype &problem, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state) {
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
+      Eigen::Ref<Eigen::VectorXd const> const &last_control,
+      Eigen::Ref<Eigen::VectorXd const> const &new_control) {
 
     {
       jacobian.resize(new_state.size(), new_state.size());
       Aux::Triplethandler handler(jacobian);
 
       problem.d_evalutate_d_new_state(
-          handler, last_time, new_time, last_state, new_state);
+          handler, last_time, new_time, last_state, new_state, last_control,
+          new_control);
       handler.set_matrix();
     }
     lusolver.analyzePattern(jacobian);
@@ -30,10 +33,13 @@ namespace Solver {
   void Newtonsolver<Problemtype>::evaluate_state_derivative_coeffref(
       Problemtype &problem, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state) {
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
+      Eigen::Ref<Eigen::VectorXd const> const &last_control,
+      Eigen::Ref<Eigen::VectorXd const> const &new_control) {
     Aux::Coeffrefhandler handler(jacobian);
     problem.d_evalutate_d_new_state(
-        handler, last_time, new_time, last_state, new_state);
+        handler, last_time, new_time, last_state, new_state, last_control,
+        new_control);
   }
 
   template <typename Problemtype>
@@ -45,13 +51,17 @@ namespace Solver {
   Solutionstruct Newtonsolver<Problemtype>::solve(
       Eigen::Ref<Eigen::VectorXd> new_state, Problemtype &problem, bool newjac,
       bool use_full_jacobian, double last_time, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> const &last_state) {
+      Eigen::Ref<Eigen::VectorXd const> const &last_state,
+      Eigen::Ref<Eigen::VectorXd const> const &last_control,
+      Eigen::Ref<Eigen::VectorXd const> const &new_control) {
     Solutionstruct solstruct;
 
     Eigen::VectorXd rootvalues(new_state.size());
 
     // compute f(x_k);
-    problem.evaluate(rootvalues, last_time, new_time, last_state, new_state);
+    problem.evaluate(
+        rootvalues, last_time, new_time, last_state, new_state, last_control,
+        new_control);
 
     // check if already there:
     if (rootvalues.norm() <= tolerance) {
@@ -64,10 +74,12 @@ namespace Solver {
     // compute f'(x_k) and write it to the jacobian.
     if (newjac) {
       evaluate_state_derivative_triplets(
-          problem, last_time, new_time, last_state, new_state);
+          problem, last_time, new_time, last_state, new_state, last_control,
+          new_control);
     } else {
       evaluate_state_derivative_coeffref(
-          problem, last_time, new_time, last_state, new_state);
+          problem, last_time, new_time, last_state, new_state, last_control,
+          new_control);
     }
     if (not use_full_jacobian) {
       lusolver.factorize(jacobian);
@@ -101,7 +113,8 @@ namespace Solver {
       // f(x_{k+1}
       Eigen::VectorXd candidate_values(new_state.size());
       problem.evaluate(
-          candidate_values, last_time, new_time, last_state, candidate_vector);
+          candidate_values, last_time, new_time, last_state, candidate_vector,
+          last_control, new_control);
 
       // Delta^bar x_k+1
       Eigen::VectorXd delta_x_bar = -lusolver.solve(candidate_values);
@@ -116,8 +129,8 @@ namespace Solver {
         lambda *= 0.5;
         candidate_vector = new_state + lambda * step;
         problem.evaluate(
-            candidate_values, last_time, new_time, last_state,
-            candidate_vector);
+            candidate_values, last_time, new_time, last_state, candidate_vector,
+            last_control, new_control);
         current_norm = (-lusolver.solve(candidate_values)).norm();
       }
       new_state = candidate_vector;

@@ -2,7 +2,8 @@ add_library(componentclasses STATIC
 Equation_base.cpp
 Equationcomponent.cpp
 Valuemap.cpp
-Statecomponent.cpp)
+Statecomponent.cpp
+Controlcomponent.cpp)
 
 target_link_libraries(componentclasses PUBLIC mathfunctions exception)
 

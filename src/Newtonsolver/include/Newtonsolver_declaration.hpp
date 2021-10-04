@@ -35,7 +35,9 @@ namespace Solver {
     void evaluate_state_derivative_triplets(
         Problemtype &problem, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
-        Eigen::Ref<Eigen::VectorXd const> const &new_state);
+        Eigen::Ref<Eigen::VectorXd const> const &new_state,
+        Eigen::Ref<Eigen::VectorXd const> const &last_control,
+        Eigen::Ref<Eigen::VectorXd const> const &new_control);
 
     /// \brief Computes the jacobian with the assumption that the sparsity
     /// pattern has not changed.
@@ -47,7 +49,9 @@ namespace Solver {
     void evaluate_state_derivative_coeffref(
         Problemtype &problem, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
-        Eigen::Ref<Eigen::VectorXd const> const &new_state);
+        Eigen::Ref<Eigen::VectorXd const> const &new_state,
+        Eigen::Ref<Eigen::VectorXd const> const &last_control,
+        Eigen::Ref<Eigen::VectorXd const> const &new_control);
 
     /// \brief Returns the number of structurally non-zero indices of the
     /// jacobian.
@@ -63,7 +67,9 @@ namespace Solver {
     Solutionstruct solve(
         Eigen::Ref<Eigen::VectorXd> new_state, Problemtype &problem,
         bool newjac, bool use_full_jacobian, double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> const &last_state);
+        Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd const> const &last_control,
+        Eigen::Ref<Eigen::VectorXd const> const &new_control);
 
   private:
     /// Holds an instance of the actual solver, to save computation time it
