@@ -58,10 +58,11 @@ namespace Model::Networkproblem {
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state);
 
-    /** \brief derivative of Equationcomponent::evaluate.
+    /** \brief derivative of Equationcomponent::evaluate w.r.t. \p new_state.
      *
      * evaluates the derivative of Equationcomponent::evaluate and hands
      * the result to jacobianhandler, which will fill the Jacobi matrix.
+     *
      * @param jacobianhandler A helper object, that fills a sparse matrix
      * in an efficient way.
      * @param last_time time point of the last time step. Usually important
@@ -74,6 +75,22 @@ namespace Model::Networkproblem {
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
+
+    /** \brief derivative of Equationcomponent::evaluate w.r.t. \p last_state.
+     *
+     * evaluates the derivative of Equationcomponent::evaluate and hands
+     * the result to jacobianhandler, which will fill the Jacobi matrix. The
+     * default implementation is to do nothing because most components do not
+     * depend on the last state.
+     *
+     * @param jacobianhandler A helper object, that fills a sparse matrix
+     * in an efficient way.
+     * @param last_time time point of the last time step. Usually important
+     * for PDEs
+     * @param new_time time point of the current time step.
+     * @param last_state value of the state at last time step.
+     * @param new_state value of the state at current time step.
+     */
 
     virtual void d_evalutate_d_last_state(
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,

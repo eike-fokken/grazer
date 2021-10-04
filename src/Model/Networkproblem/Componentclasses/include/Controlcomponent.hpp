@@ -182,12 +182,11 @@ namespace Model::Networkproblem {
      * values.
      * @param control_json Json object that contains the controls.
      */
-    virtual void set_controls_of_timestep(
+    virtual void set_initial_controls(
         double time, Eigen::Ref<Eigen::VectorXd> controls,
         nlohmann::json const &control_json)
         = 0;
 
-    static std::optional<nlohmann::json> get_boundary_schema();
     static std::optional<nlohmann::json> get_control_schema();
 
   private:
