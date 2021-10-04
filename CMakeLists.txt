@@ -163,7 +163,7 @@ include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/CLI11/include/")
 # IPOPT
 # IPOPT
 if (NOT DEFINED IPOPT_DIRECTORY)
-  set(IPOPT_DIRECTORY "/usr/local/Cellar/ipopt/3.14.4")
+  set(IPOPT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt")
 endif()
 
 
