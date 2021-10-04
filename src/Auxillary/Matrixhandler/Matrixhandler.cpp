@@ -13,15 +13,15 @@ namespace Aux {
   }
 
   void Triplethandler::set_matrix() {
-    matrix->setFromTriplets(tripletlist.begin(), tripletlist.end());
+    matrix.setFromTriplets(tripletlist.begin(), tripletlist.end());
     tripletlist.clear();
   }
 
   void Coeffrefhandler::set_coefficient(int row, int col, double value) {
-    matrix->coeffRef(row, col) = value;
+    matrix.coeffRef(row, col) = value;
   }
   void Coeffrefhandler::add_to_coefficient(int row, int col, double value) {
-    matrix->coeffRef(row, col) += value;
+    matrix.coeffRef(row, col) += value;
   }
 
   void Coeffrefhandler::set_matrix() {}

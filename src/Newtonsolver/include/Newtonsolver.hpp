@@ -17,7 +17,7 @@ namespace Solver {
 
     {
       jacobian.resize(new_state.size(), new_state.size());
-      Aux::Triplethandler handler(&jacobian);
+      Aux::Triplethandler handler(jacobian);
 
       problem.d_evalutate_d_new_state(
           handler, last_time, new_time, last_state, new_state);
@@ -31,7 +31,7 @@ namespace Solver {
       Problemtype &problem, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) {
-    Aux::Coeffrefhandler handler(&jacobian);
+    Aux::Coeffrefhandler handler(jacobian);
     problem.d_evalutate_d_new_state(
         handler, last_time, new_time, last_state, new_state);
   }

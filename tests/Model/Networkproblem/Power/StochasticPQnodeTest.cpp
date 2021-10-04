@@ -165,7 +165,7 @@ TEST_F(stochasticPQnodeTEST, d_evalutate_d_new_state) {
   }
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-  Aux::Triplethandler handler(&J);
+  Aux::Triplethandler handler(J);
   netprob->d_evalutate_d_new_state(
       handler, last_time, new_time, last_state, new_state);
   handler.set_matrix();

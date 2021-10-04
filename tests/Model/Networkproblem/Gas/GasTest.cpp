@@ -145,7 +145,7 @@ TEST_F(GasTEST, Shortpipe_d_evalutate_d_new_state) {
   netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-  Aux::Triplethandler handler(&J);
+  Aux::Triplethandler handler(J);
 
   netprob->d_evalutate_d_new_state(
       handler, last_time, new_time, last_state, new_state);
@@ -302,7 +302,7 @@ TEST_F(GasTEST, Source_d_evalutate_d_new_state) {
   netprob->set_initial_values(new_state, initial_json);
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-  Aux::Triplethandler handler(&J);
+  Aux::Triplethandler handler(J);
 
   // The following are not needed, as the power nodes are not controlled.  But
   // to satisfy the interface, we must provide them.
@@ -490,7 +490,7 @@ TEST_F(GasTEST, Sink_d_evalutate_d_new_state) {
   netprob->set_initial_values(new_state, initial_json);
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-  Aux::Triplethandler handler(&J);
+  Aux::Triplethandler handler(J);
 
   // The following are not needed, as the power nodes are not controlled.  But
   // to satisfy the interface, we must provide them.
@@ -665,7 +665,7 @@ TEST_F(GasTEST, Innode_d_evalutate_d_new_state) {
   netprob->set_initial_values(new_state, initial_json);
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-  Aux::Triplethandler handler(&J);
+  Aux::Triplethandler handler(J);
 
   // The following are not needed, as the power nodes are not controlled.  But
   // to satisfy the interface, we must provide them.
@@ -837,7 +837,7 @@ TEST_F(GasTEST, Pipe_d_evalutate_d_new_state) {
   netprob->set_initial_values(new_state, net_initial);
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-  Aux::Triplethandler handler(&J);
+  Aux::Triplethandler handler(J);
 
   // The following are not needed, as the power nodes are not controlled.  But
   // to satisfy the interface, we must provide them.

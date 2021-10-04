@@ -10,7 +10,7 @@ namespace Aux {
 
   public:
     Matrixhandler() = delete;
-    Matrixhandler(Eigen::SparseMatrix<double> *_matrix) : matrix(_matrix){};
+    Matrixhandler(Eigen::SparseMatrix<double> &_matrix) : matrix(_matrix){};
 
     virtual ~Matrixhandler(){};
 
@@ -36,7 +36,7 @@ namespace Aux {
     virtual void set_matrix() = 0;
 
   protected:
-    Eigen::SparseMatrix<double> *matrix;
+    Eigen::SparseMatrix<double> &matrix;
   };
 
   /// \brief The Triplethandler variety gathers the coefficients in triplets and

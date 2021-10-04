@@ -488,7 +488,7 @@ TEST_F(GaspowerconnectionTEST, d_evalutate_d_new_state_power_driven) {
 
   for (int i = 0; i != 10; ++i) {
     Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-    Aux::Triplethandler handler(&J);
+    Aux::Triplethandler handler(J);
 
     Eigen::Matrix4d DenseJ;
     new_state.setRandom();
@@ -594,7 +594,7 @@ TEST_F(GaspowerconnectionTEST, d_evalutate_d_new_state_gas_driven) {
 
   for (int i = 0; i != 10; ++i) {
     Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-    Aux::Triplethandler handler(&J);
+    Aux::Triplethandler handler(J);
 
     Eigen::Matrix4d DenseJ;
     new_state.setRandom();
