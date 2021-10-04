@@ -4,7 +4,8 @@ Equationcomponent.cpp
 Valuemap.cpp
 Statecomponent.cpp
 Controlcomponent.cpp
-Costcomponent.cpp)
+Costcomponent.cpp
+Inequalitycomponent.cpp)
 
 target_link_libraries(componentclasses PUBLIC mathfunctions exception)
 
