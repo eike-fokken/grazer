@@ -14,32 +14,20 @@ namespace Model::Networkproblem {
 
     virtual void evaluate_inequality(
         Eigen::Ref<Eigen::VectorXd> inequality_values, double last_time,
-        double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
-        Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+        Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
 
-    virtual void d_evaluate_inequality_d_new_state(
+    virtual void d_evaluate_inequality_d_state(
         Aux::Matrixhandler &inequality_new_state_jacobian_handler,
         double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> const &last_state,
-        Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
-
-    virtual void d_evaluate_inequality_d_old_state(
-        Aux::Matrixhandler &inequality_old_state_jacobian_handler,
-        double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> const &last_state,
-        Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
+        Eigen::Ref<Eigen::VectorXd const> const &state,
+        Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
 
     virtual void d_evaluate_inequality_d_control(
         Aux::Matrixhandler &inequality_control_jacobian_handler,
         double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> const &last_state,
-        Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
-
-    virtual void d_evaluate_inequality_d_last_control(
-        Aux::Matrixhandler &inequality_old_control_jacobian_handler,
-        double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> const &last_state,
-        Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
+        Eigen::Ref<Eigen::VectorXd const> const &state,
+        Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
 
     /** \brief Returns number of inequalities set by this component.
      *
