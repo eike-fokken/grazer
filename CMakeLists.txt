@@ -160,53 +160,95 @@ include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp/include/")
 include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/CLI11/include/")
 
 
-# IPOPT
-if (NOT DEFINED IPOPT_DIRECTORY)
-    if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-        set(IPOPT_DIRECTORY "/usr/local/Cellar/ipopt/3.14.4")    
-    else()
-        set(IPOPT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt/dist")
-  endif()
+#fetch ipopt and stuff...
+
+
+
+
+# # IPOPT
+# if (NOT DEFINED IPOPT_DIRECTORY)
+#     if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+#         set(IPOPT_DIRECTORY "/usr/local/Cellar/ipopt/3.14.4")    
+#     else()
+#         set(IPOPT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt/clang_debug_dist")
+#   endif()
+# endif()
+
+if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt/coinbrew")
+execute_process(
+  COMMAND wget https://raw.githubusercontent.com/coin-or/coinbrew/master/coinbrew
+  WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt"
+  )
+execute_process(
+  COMMAND chmod u+x coinbrew
+  WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt"
+  )
+
 endif()
 
-
-find_library(IPOPT_LIBRARY_PATH
-        NAMES ipopt
-        PATHS "${IPOPT_DIRECTORY}/lib" NO_DEFAULT_PATH)
-
-# Your-external "mylib", (maybe use GLOBAL??? Seems unneccessary)
-add_library(my_ipopt SHARED IMPORTED)
-# You can define two import-locations: one for debug and one for release.
-set_target_properties(my_ipopt PROPERTIES IMPORTED_LOCATION "${IPOPT_LIBRARY_PATH}")
-target_include_directories(my_ipopt INTERFACE "${IPOPT_DIRECTORY}/include/coin-or")
-include_directories(SYSTEM "${IPOPT_DIRECTORY}/include/coin-or")
-
-# for building latex documentation
-
-find_package(Doxygen)
-find_package(LATEX COMPONENTS PDFLATEX)
-if(LATEX_FOUND)
-  include(UseLATEX/UseLATEX.cmake)
-endif()
-
-add_subdirectory(docs)
+set(COINBREW_BUILD_args "fetch Ipopt --no-prompt --skip=\'ThirdParty/HSL ThirdParty/ASL\'")
+message(STATUS ${COINBREW_BUILD_COMMAND})
+execute_process(
+  COMMAND ./coinbrew fetch Ipopt --no-prompt
+  WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt"
+  )
 
 
-add_subdirectory(src)
-add_subdirectory(tests)
-add_subdirectory(helper_functions)
+set(ENV{CXX} "clang++")
+set(ENV{CC} "clang")
+set(ENV{ADD_CXXFLAGS} "-stdlib=libc++")
 
-add_custom_target(cclean COMMAND cd ${CMAKE_SOURCE_DIR} && rm -r ${CMAKE_SOURCE_DIR}/build/ && mkdir ${CMAKE_SOURCE_DIR}/build/ && cd ${CMAKE_SOURCE_DIR}/build/
-  USES_TERMINAL
-)
+set(ipopt_library_name ${CMAKE_SHARED_LIBRARY_PREFIX}ipopt${CMAKE_SHARED_LIBRARY_SUFFIX})
+message(STATUS ${ipopt_library_name})
+include(ProcessorCount)
+ProcessorCount(NumberOfProcessors)
+add_custom_target(ipopt_build_gcc_debug ALL
+  COMMAND ADD_CXXFLAGS=-D_GLIBCXX_DEBUG ./coinbrew build Ipopt --build-dir=${CMAKE_BINARY_DIR}/Ipopt --prefix=${CMAKE_BINARY_DIR}/Ipopt/dist --parallel-jobs ${NumberOfProcessors}
+  WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt"
+  BYPRODUCTS ${CMAKE_BINARY_DIR}/Ipopt/dist/lib/${ipopt_library_name}
+  DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt/Ipopt"
+  VERBATIM
+  )
 
-# Installation
 
-install(
-  TARGETS grazer
-  RUNTIME DESTINATION bin # relative to CMAKE_INSTALL_PREFIX (/urs/local -> UNIX, c:/Program Files/${PROJECT_NAME} -> windows)
-  # CONFIGURATIONS Release
-)
-if(WIN32)
-  # figure out how to modify PATH variable: https://stackoverflow.com/q/68683998/6662425
-endif(WIN32)
+
+# find_library(IPOPT_LIBRARY_PATH
+#         NAMES ipopt
+#         PATHS "${IPOPT_DIRECTORY}/lib" NO_DEFAULT_PATH)
+
+# # Your-external "mylib", (maybe use GLOBAL??? Seems unneccessary)
+# add_library(my_ipopt SHARED IMPORTED)
+# # You can define two import-locations: one for debug and one for release.
+# set_target_properties(my_ipopt PROPERTIES IMPORTED_LOCATION "${IPOPT_LIBRARY_PATH}")
+# target_include_directories(my_ipopt INTERFACE "${IPOPT_DIRECTORY}/include/coin-or")
+# include_directories(SYSTEM "${IPOPT_DIRECTORY}/include/coin-or")
+
+# # for building latex documentation
+
+# find_package(Doxygen)
+# find_package(LATEX COMPONENTS PDFLATEX)
+# if(LATEX_FOUND)
+#   include(UseLATEX/UseLATEX.cmake)
+# endif()
+
+# add_subdirectory(docs)
+
+
+# add_subdirectory(src)
+# add_subdirectory(tests)
+# add_subdirectory(helper_functions)
+
+# add_custom_target(cclean COMMAND cd ${CMAKE_SOURCE_DIR} && rm -r ${CMAKE_SOURCE_DIR}/build/ && mkdir ${CMAKE_SOURCE_DIR}/build/ && cd ${CMAKE_SOURCE_DIR}/build/
+#   USES_TERMINAL
+# )
+
+# # Installation
+
+# install(
+#   TARGETS grazer
+#   RUNTIME DESTINATION bin # relative to CMAKE_INSTALL_PREFIX (/urs/local -> UNIX, c:/Program Files/${PROJECT_NAME} -> windows)
+#   # CONFIGURATIONS Release
+# )
+# if(WIN32)
+#   # figure out how to modify PATH variable: https://stackoverflow.com/q/68683998/6662425
+# endif(WIN32)
