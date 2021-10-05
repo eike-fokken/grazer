@@ -165,7 +165,7 @@ if (NOT DEFINED IPOPT_DIRECTORY)
     if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
         set(IPOPT_DIRECTORY "/usr/local/Cellar/ipopt/3.14.4")    
     else()
-        set(IPOPT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt")
+        set(IPOPT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt/dist")
   endif()
 endif()
 
@@ -175,11 +175,11 @@ find_library(IPOPT_LIBRARY_PATH
         PATHS "${IPOPT_DIRECTORY}/lib" NO_DEFAULT_PATH)
 
 # Your-external "mylib", (maybe use GLOBAL??? Seems unneccessary)
-add_library(my_ipopt SHARED IMPORTED )
+add_library(my_ipopt SHARED IMPORTED)
 # You can define two import-locations: one for debug and one for release.
 set_target_properties(my_ipopt PROPERTIES IMPORTED_LOCATION "${IPOPT_LIBRARY_PATH}")
-target_include_directories(my_ipopt SYSTEM INTERFACE "${IPOPT_DIRECTORY}/include/coin-or")
-
+target_include_directories(my_ipopt INTERFACE "${IPOPT_DIRECTORY}/include/coin-or")
+include_directories(SYSTEM "${IPOPT_DIRECTORY}/include/coin-or")
 
 # for building latex documentation
 

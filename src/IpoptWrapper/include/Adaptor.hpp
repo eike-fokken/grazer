@@ -1,9 +1,9 @@
 #ifndef ADAPTOR_HPP
 #define ADAPTOR_HPP
 
-#include "IpIpoptApplication.hpp"
 #include "Wrapper.hpp"
 #include <Eigen/Dense>
+#include <IpIpoptApplication.hpp>
 #include <memory>
 
 using VectorXd = Eigen::VectorXd;

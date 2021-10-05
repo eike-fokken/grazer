@@ -8,7 +8,7 @@
 #include <type_traits>
 #include <vector>
 
-#include "IpTNLP.hpp"
+#include <IpTNLP.hpp>
 
 using VectorXd = Eigen::VectorXd;
 using VectorXi = Eigen::VectorXi;
@@ -140,10 +140,8 @@ public:
 
   /** Method to return the bounds for my problem */
   bool get_bounds_info(
-      Index n, Number *x_l, Number *x_u, Index m, Number *g_l,
+      Index /*n*/, Number *x_l, Number *x_u, Index /*m*/, Number *g_l,
       Number *g_u) override {
-    n = static_cast<Ipopt::Index>(get_num_vars());
-    m = static_cast<Ipopt::Index>(get_num_constraints());
     auto [vars_lb, vars_ub] = get_variable_bounds();
     auto [constrs_lb, constrs_ub] = get_constraint_bounds();
     std::copy(vars_lb.cbegin(), vars_lb.cend(), x_l);

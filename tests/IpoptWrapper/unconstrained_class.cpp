@@ -27,7 +27,7 @@ public:
     return ret;
   }
   std::tuple<VectorXd, VectorXi, VectorXi> static jacobian(
-      Eigen::Ref<VectorXd const> x) {
+      Eigen::Ref<VectorXd const> /*x*/) {
     VectorXd jac_nnz_values(1);
     VectorXi nnz_rows(1), nnz_cols(1);
     jac_nnz_values << 0.0;

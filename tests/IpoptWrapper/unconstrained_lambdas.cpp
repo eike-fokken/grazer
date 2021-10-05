@@ -27,7 +27,7 @@ TEST(testUnconstrained, unconstrained) {
     ret << 0.0;
     return ret;
   };
-  auto jacobian = [](Eigen::Ref<VectorXd const> x)
+  auto jacobian = [](Eigen::Ref<VectorXd const> /*x*/)
       -> std::tuple<VectorXd, VectorXi, VectorXi> {
     VectorXd jac_nnz_values(1);
     VectorXi nnz_rows(1), nnz_cols(1);
