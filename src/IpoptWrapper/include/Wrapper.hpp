@@ -87,7 +87,7 @@ public:
     assert(lower.size() == upper.size());
     _lower_bounds = lower;
     _upper_bounds = upper;
-    _num_vars = lower.size();
+    _num_vars = static_cast<std::size_t>(lower.size());
   }
 
   /**
@@ -110,7 +110,7 @@ public:
     assert(lower.size() == upper.size());
     _constr_lower_bounds = lower;
     _constr_upper_bounds = upper;
-    _num_constraints = upper.size();
+    _num_constraints = static_cast<std::size_t>(upper.size());
   }
 
   std::tuple<VectorXd, VectorXd> get_constraint_bounds() {
@@ -125,14 +125,14 @@ public:
   bool get_nlp_info(
       Index &n, Index &m, Index &nnz_jac_g, Index &nnz_h_lag,
       IndexStyleEnum &index_style) {
-    n = get_num_vars();
-    m = get_num_constraints();
+    n = static_cast<Ipopt::Index>(get_num_vars());
+    m = static_cast<Ipopt::Index>(get_num_constraints());
     // Evaluate the constraints jacobian in the initial point to obtain the
     // number of nonzero values in the jacobian.
     auto x0 = get_initial_point();
     auto [nnz_constrs_jac, nnz_rows, nnz_cols] = _jacobian(x0);
 
-    nnz_jac_g = nnz_constrs_jac.size();
+    nnz_jac_g = static_cast<Ipopt::Index>(nnz_constrs_jac.size());
     nnz_h_lag = 0; // we don't use the hessian, so we can ignore it
     index_style = TNLP::IndexStyleEnum::C_STYLE; // 0-based indexing.
     return true;
@@ -141,8 +141,8 @@ public:
   /** Method to return the bounds for my problem */
   bool get_bounds_info(
       Index n, Number *x_l, Number *x_u, Index m, Number *g_l, Number *g_u) {
-    n = get_num_vars();
-    m = get_num_constraints();
+    n = static_cast<Ipopt::Index>(get_num_vars());
+    m = static_cast<Ipopt::Index>(get_num_constraints());
     auto [vars_lb, vars_ub] = get_variable_bounds();
     auto [constrs_lb, constrs_ub] = get_constraint_bounds();
     std::copy(vars_lb.cbegin(), vars_lb.cend(), x_l);
@@ -154,9 +154,9 @@ public:
 
   /** Method to return the starting point for the algorithm */
   bool get_starting_point(
-      Index n, bool /* init_x */, Number *x, bool /* init_z */,
-      Number /* *z_L */, Number /* *z_U */, Index /*m */,
-      bool /* init_lambda */, Number /* *lambda */) {
+      Index /* n */, bool /* init_x */, Number *x, bool /* init_z */,
+      Number * /* z_L */, Number * /* z_U */, Index /*m */,
+      bool /* init_lambda */, Number * /* lambda */) {
     // initialize to the given starting point
     auto x0 = get_initial_point();
     std::copy(x0.cbegin(), x0.cend(), x);
@@ -227,9 +227,10 @@ public:
    * store/write the solution */
   void finalize_solution(
       SolverReturn /* status */, Index n, const Number *x,
-      const Number /* *z_L */, const Number /* *z_U */, Index /* m */,
-      const Number /* *g */, const Number /* *lambda */, Number obj_value,
-      const IpoptData /* *ip_data */, IpoptCalculatedQuantities *ip_cq) {
+      const Number * /* z_L */, const Number * /* z_U */, Index /* m */,
+      const Number * /* g */, const Number * /* lambda */, Number obj_value,
+      const IpoptData * /* ip_data */,
+      IpoptCalculatedQuantities * /* ip_cq */) {
     VectorXd xx(n);
     std::copy(x, x + n, xx.begin());
     _x_sol = xx;
