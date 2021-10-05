@@ -64,10 +64,10 @@ namespace Model {
       Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
-            Eigen::Ref<Eigen::VectorXd const> const &new_control) const {
+            Eigen::Ref<Eigen::VectorXd const> const &control) const {
     for (auto &subproblem : subproblems) {
       subproblem->evaluate(
-          rootvalues, last_time, new_time, last_state, new_state,   new_control);
+          rootvalues, last_time, new_time, last_state, new_state,   control);
     }
   }
 
@@ -75,10 +75,10 @@ namespace Model {
       double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
-            Eigen::Ref<Eigen::VectorXd const> const &new_control) {
+            Eigen::Ref<Eigen::VectorXd const> const &control) {
     for (auto &subproblem : subproblems) {
       subproblem->prepare_timestep(
-          last_time, new_time, last_state, new_state,   new_control);
+          last_time, new_time, last_state, new_state,   control);
     }
   }
 
@@ -86,11 +86,11 @@ namespace Model {
       Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
-            Eigen::Ref<Eigen::VectorXd const> const &new_control) const {
+            Eigen::Ref<Eigen::VectorXd const> const &control) const {
     for (auto &subproblem : subproblems) {
       subproblem->d_evalutate_d_new_state(
           jacobianhandler, last_time, new_time, last_state, new_state,
-           new_control);
+           control);
     }
   }
 
@@ -98,11 +98,11 @@ namespace Model {
       Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
-            Eigen::Ref<Eigen::VectorXd const> const &new_control) const {
+            Eigen::Ref<Eigen::VectorXd const> const &control) const {
     for (auto &subproblem : subproblems) {
       subproblem->d_evalutate_d_last_state(
           jacobianhandler, last_time, new_time, last_state, new_state,
-           new_control);
+           control);
     }
   }
 

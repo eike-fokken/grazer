@@ -31,25 +31,25 @@ namespace Model::Networkproblem {
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &new_control) const final;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
     void prepare_timestep(
         double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &new_control) override;
+        Eigen::Ref<Eigen::VectorXd const> const &control) override;
 
     void d_evalutate_d_new_state(
         Aux::Matrixhandler &jacobian, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &new_control) const override;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const override;
 
     void d_evalutate_d_last_state(
         Aux::Matrixhandler &jacobian, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &new_control) const override;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const override;
 
     void json_save(
         double time, Eigen::Ref<Eigen::VectorXd const> const &state) final;

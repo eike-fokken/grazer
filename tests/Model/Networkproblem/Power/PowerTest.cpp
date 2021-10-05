@@ -80,10 +80,10 @@ TEST_F(PowerTEST, evaluate_Vphi) {
   // The following are not needed, as the power nodes are not controlled.  But
   // to satisfy the interface, we must provide them.
   Eigen::VectorXd last_control;
-  Eigen::VectorXd new_control;
+  Eigen::VectorXd control;
   netprob->evaluate(
       rootvalues, last_time, new_time, last_state, new_state, 
-      new_control);
+      control);
 
   auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
@@ -108,10 +108,10 @@ TEST_F(PowerTEST, d_evalutate_d_new_state_Vphi) {
   // The following are not needed, as the power nodes are not controlled.  But
   // to satisfy the interface, we must provide them.
   Eigen::VectorXd last_control;
-  Eigen::VectorXd new_control;
+  Eigen::VectorXd control;
   netprob->evaluate(
       rootvalues, last_time, new_time, last_state, new_state, 
-      new_control);
+      control);
 
   auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
@@ -124,7 +124,7 @@ TEST_F(PowerTEST, d_evalutate_d_new_state_Vphi) {
 
   netprob->d_evalutate_d_new_state(
       handler, last_time, new_time, last_state, new_state, 
-      new_control);
+      control);
   handler.set_matrix();
 
   Eigen::Matrix<double, 6, 6> DenseJ = J;
@@ -158,10 +158,10 @@ TEST_F(PowerTEST, evaluate_PQ) {
   // The following are not needed, as the power nodes are not controlled.  But
   // to satisfy the interface, we must provide them.
   Eigen::VectorXd last_control;
-  Eigen::VectorXd new_control;
+  Eigen::VectorXd control;
   netprob->evaluate(
       rootvalues, last_time, new_time, last_state, new_state, 
-      new_control);
+      control);
 
   auto *pq = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
       netprob->get_network().get_node_by_id("pq"));
@@ -190,10 +190,10 @@ TEST_F(PowerTEST, d_evalutate_d_new_state_PQ) {
   // The following are not needed, as the power nodes are not controlled.  But
   // to satisfy the interface, we must provide them.
   Eigen::VectorXd last_control;
-  Eigen::VectorXd new_control;
+  Eigen::VectorXd control;
   netprob->evaluate(
       rootvalues, last_time, new_time, last_state, new_state, 
-      new_control);
+      control);
 
   auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
@@ -216,7 +216,7 @@ TEST_F(PowerTEST, d_evalutate_d_new_state_PQ) {
   Aux::Triplethandler handler(J);
   netprob->d_evalutate_d_new_state(
       handler, last_time, new_time, last_state, new_state, 
-      new_control);
+      control);
   handler.set_matrix();
 
   Eigen::Matrix<double, 6, 6> DenseJ = J;
@@ -280,10 +280,10 @@ TEST_F(PowerTEST, evaluate_PV) {
   // The following are not needed, as the power nodes are not controlled.  But
   // to satisfy the interface, we must provide them.
   Eigen::VectorXd last_control;
-  Eigen::VectorXd new_control;
+  Eigen::VectorXd control;
   netprob->evaluate(
       rootvalues, last_time, new_time, last_state, new_state, 
-      new_control);
+      control);
 
   auto *pv = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
       netprob->get_network().get_node_by_id("pv"));
@@ -309,10 +309,10 @@ TEST_F(PowerTEST, d_evalutate_d_new_state_PV) {
   // The following are not needed, as the power nodes are not controlled.  But
   // to satisfy the interface, we must provide them.
   Eigen::VectorXd last_control;
-  Eigen::VectorXd new_control;
+  Eigen::VectorXd control;
   netprob->evaluate(
       rootvalues, last_time, new_time, last_state, new_state, 
-      new_control);
+      control);
 
   auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
@@ -335,7 +335,7 @@ TEST_F(PowerTEST, d_evalutate_d_new_state_PV) {
   Aux::Triplethandler handler(J);
   netprob->d_evalutate_d_new_state(
       handler, last_time, new_time, last_state, new_state, 
-      new_control);
+      control);
   handler.set_matrix();
 
   Eigen::Matrix<double, 6, 6> DenseJ = J;

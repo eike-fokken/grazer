@@ -34,10 +34,10 @@ TEST(Newtonsolver, LinearSolveWithRoot_InitialValue1) {
   // The following are not needed, as the power nodes are not controlled.  But
   // to satisfy the interface, we must provide them.
   Eigen::VectorXd last_control;
-  Eigen::VectorXd new_control;
+  Eigen::VectorXd control;
   a = Solver.solve(
       new_state, problem, true, false, last_time, new_time, last_state,
-       new_control);
+       control);
 
   EXPECT_EQ(a.success, true);
 
@@ -69,10 +69,10 @@ TEST(Newtonsolver, LinearSolveWithRoot_InitialValue2) {
   // The following are not needed, as the power nodes are not controlled.  But
   // to satisfy the interface, we must provide them.
   Eigen::VectorXd last_control;
-  Eigen::VectorXd new_control;
+  Eigen::VectorXd control;
   a = Solver.solve(
       new_state, problem, true, false, last_time, new_time, last_state,
-       new_control);
+       control);
 
   EXPECT_EQ(a.success, true); // passed
 
@@ -105,10 +105,10 @@ TEST(Newtonsolver, NonlinearSolveWithRoot) {
   // The following are not needed, as the power nodes are not controlled.  But
   // to satisfy the interface, we must provide them.
   Eigen::VectorXd last_control;
-  Eigen::VectorXd new_control;
+  Eigen::VectorXd control;
   a = Solver.solve(
       new_state, problem, true, false, last_time, new_time, last_state,
-       new_control);
+       control);
 
   EXPECT_EQ(a.success, false);
   EXPECT_EQ(a.used_iterations, max_it);
@@ -139,10 +139,10 @@ TEST(Newtonsolver, NonlinearSolve_simplifiedNewton) {
   // The following are not needed, as no control components are used here not
   // controlled.  But to satisfy the interface, we must provide them.
   Eigen::VectorXd last_control;
-  Eigen::VectorXd new_control;
+  Eigen::VectorXd control;
   a = Solver.solve(
       new_state, problem, true, false, last_time, new_time, last_state,
-       new_control);
+       control);
 
   EXPECT_EQ(a.success, false);
   EXPECT_EQ(a.used_iterations, max_it);
@@ -173,10 +173,10 @@ TEST(Newtonsolver, SingularJacobian) {
     // The following are not needed, as no control components are used here not
     // controlled.  But to satisfy the interface, we must provide them.
     Eigen::VectorXd last_control;
-    Eigen::VectorXd new_control;
+    Eigen::VectorXd control;
     a = Solver.solve(
         new_state, problem, true, false, last_time, new_time, last_state,
-         new_control);
+         control);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {

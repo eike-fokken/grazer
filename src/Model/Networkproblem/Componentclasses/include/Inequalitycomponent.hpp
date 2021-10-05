@@ -29,8 +29,8 @@ namespace Model::Networkproblem {
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
 
-    virtual void d_evaluate_inequality_d_new_control(
-        Aux::Matrixhandler &inequality_new_control_jacobian_handler,
+    virtual void d_evaluate_inequality_d_control(
+        Aux::Matrixhandler &inequality_control_jacobian_handler,
         double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;

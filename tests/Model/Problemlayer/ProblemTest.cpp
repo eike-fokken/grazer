@@ -38,7 +38,7 @@ TEST_F(modelTest, Model_evaluate) {
   Eigen::Ref<Eigen::VectorXd> rootref(rootvalues);
 
   Eigen::VectorXd last_control;
-  Eigen::VectorXd new_control;
+  Eigen::VectorXd control;
 
   // expect the call to evaluate on the subproblems.
   // The cast magic is necessary to have the right type at hand...
@@ -48,7 +48,7 @@ TEST_F(modelTest, Model_evaluate) {
           Eigen::Ref<Eigen::VectorXd>(rootvalues), last_time, new_time,
           Eigen::Ref<Eigen::VectorXd const>(v1),
           Eigen::Ref<Eigen::VectorXd const>(v2),
-          Eigen::Ref<Eigen::VectorXd const>(new_control)))
+          Eigen::Ref<Eigen::VectorXd const>(control)))
       .Times(1);
   EXPECT_CALL(
       *dynamic_cast<GrazerTest::MockSubproblem *>(problem.get_subproblems()[1]),
@@ -56,8 +56,8 @@ TEST_F(modelTest, Model_evaluate) {
           Eigen::Ref<Eigen::VectorXd>(rootvalues), last_time, new_time,
           Eigen::Ref<Eigen::VectorXd const>(v1),
           Eigen::Ref<Eigen::VectorXd const>(v2),
-          Eigen::Ref<Eigen::VectorXd const>(new_control)))
+          Eigen::Ref<Eigen::VectorXd const>(control)))
       .Times(1);
 
-  problem.evaluate(rootvalues, last_time, new_time, v1, v2, new_control);
+  problem.evaluate(rootvalues, last_time, new_time, v1, v2, control);
 }

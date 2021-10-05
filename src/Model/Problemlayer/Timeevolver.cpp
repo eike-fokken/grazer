@@ -79,7 +79,7 @@ namespace Model {
         << "#############################################################"
            "#############\n";
     Eigen::VectorXd last_control;
-    Eigen::VectorXd new_control;
+    Eigen::VectorXd control;
 
     problem.set_initial_values(last_state, problem_initial_json);
 
@@ -88,7 +88,7 @@ namespace Model {
     Eigen::VectorXd new_state = last_state;
 
     solver.evaluate_state_derivative_triplets(
-        problem, last_time, new_time, last_state, new_state, new_control);
+        problem, last_time, new_time, last_state, new_state, control);
 
     std::cout << "Number of variables: " << number_of_states << std::endl;
     std::cout << "number of non-zeros in jacobian: "
@@ -118,10 +118,10 @@ namespace Model {
       while (not solstruct.success) {
         new_state = new_state_backup;
         problem.prepare_timestep(
-            last_time, new_time, last_state, new_state,     new_control);
+            last_time, new_time, last_state, new_state,     control);
         solstruct = solver.solve(
             new_state, problem, false, use_full_jacobian, last_time, new_time,
-            last_state,  new_control);
+            last_state,  control);
         if (solstruct.success) {
 
           if (use_simplified_newton and retry > 0) {
