@@ -90,7 +90,7 @@ TEST_F(GasTEST, Shortpipe_evaluate) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd new_control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, last_control,
+      rootvalues, last_time, new_time, last_state, new_state, 
       new_control);
 
   EXPECT_DOUBLE_EQ(rootvalues[1], pressure_start - pressure_end);
@@ -145,14 +145,14 @@ TEST_F(GasTEST, Shortpipe_d_evalutate_d_new_state) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd new_control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, last_control,
+      rootvalues, last_time, new_time, last_state, new_state, 
       new_control);
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
   Aux::Triplethandler handler(J);
 
   netprob->d_evalutate_d_new_state(
-      handler, last_time, new_time, last_state, new_state, last_control,
+      handler, last_time, new_time, last_state, new_state, 
       new_control);
   handler.set_matrix();
 
@@ -234,7 +234,7 @@ TEST_F(GasTEST, Source_evaluate) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd new_control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, last_control,
+      rootvalues, last_time, new_time, last_state, new_state, 
       new_control);
 
   // node0:
@@ -316,7 +316,7 @@ TEST_F(GasTEST, Source_d_evalutate_d_new_state) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd new_control;
   netprob->d_evalutate_d_new_state(
-      handler, last_time, new_time, last_state, new_state, last_control,
+      handler, last_time, new_time, last_state, new_state, 
       new_control);
   handler.set_matrix();
 
@@ -425,7 +425,7 @@ TEST_F(GasTEST, Sink_evaluate) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd new_control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, last_control,
+      rootvalues, last_time, new_time, last_state, new_state, 
       new_control);
 
   // Note that for sinks the boundary conditions should have the opposite signs
@@ -507,7 +507,7 @@ TEST_F(GasTEST, Sink_d_evalutate_d_new_state) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd new_control;
   netprob->d_evalutate_d_new_state(
-      handler, last_time, new_time, last_state, new_state, last_control,
+      handler, last_time, new_time, last_state, new_state, 
       new_control);
   handler.set_matrix();
 
@@ -610,7 +610,7 @@ TEST_F(GasTEST, Innode_evaluate) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd new_control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, last_control,
+      rootvalues, last_time, new_time, last_state, new_state, 
       new_control);
 
   // node0:
@@ -685,7 +685,7 @@ TEST_F(GasTEST, Innode_d_evalutate_d_new_state) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd new_control;
   netprob->d_evalutate_d_new_state(
-      handler, last_time, new_time, last_state, new_state, last_control,
+      handler, last_time, new_time, last_state, new_state, 
       new_control);
   handler.set_matrix();
 
@@ -781,7 +781,7 @@ TEST_F(GasTEST, Pipe_evaluate) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd new_control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, last_control,
+      rootvalues, last_time, new_time, last_state, new_state, 
       new_control);
 
   Eigen::Vector2d last_left = last_state.segment<2>(0);
@@ -860,7 +860,7 @@ TEST_F(GasTEST, Pipe_d_evalutate_d_new_state) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd new_control;
   netprob->d_evalutate_d_new_state(
-      handler, last_time, new_time, last_state, new_state, last_control,
+      handler, last_time, new_time, last_state, new_state, 
       new_control);
   handler.set_matrix();
 

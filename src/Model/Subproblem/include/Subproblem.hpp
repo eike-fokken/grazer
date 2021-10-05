@@ -28,14 +28,12 @@ namespace Model {
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &last_control,
         Eigen::Ref<Eigen::VectorXd const> const &new_control) const = 0;
 
     virtual void prepare_timestep(
         double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &last_control,
         Eigen::Ref<Eigen::VectorXd const> const &new_control)
         = 0;
 
@@ -43,14 +41,12 @@ namespace Model {
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &last_control,
         Eigen::Ref<Eigen::VectorXd const> const &new_control) const = 0;
 
     virtual void d_evalutate_d_last_state(
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &last_control,
         Eigen::Ref<Eigen::VectorXd const> const &new_control) const = 0;
 
     virtual void

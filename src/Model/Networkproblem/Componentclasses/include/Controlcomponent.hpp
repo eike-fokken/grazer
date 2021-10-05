@@ -28,7 +28,6 @@ namespace Model::Networkproblem {
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &last_control,
         Eigen::Ref<Eigen::VectorXd const> const &new_control) const = 0;
 
     /** \brief Carries out steps that need to be taken before the Newton method
@@ -48,7 +47,6 @@ namespace Model::Networkproblem {
         double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &last_control,
         Eigen::Ref<Eigen::VectorXd const> const &new_control);
 
     /** \brief derivative of Controlcomponent::evaluate w.r.t. \p new_state.
@@ -70,7 +68,6 @@ namespace Model::Networkproblem {
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &last_control,
         Eigen::Ref<Eigen::VectorXd const> const &new_control) const = 0;
 
     /** \brief derivative of Controlcomponent::evaluate w.r.t. \p last_state.
@@ -92,7 +89,6 @@ namespace Model::Networkproblem {
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &last_control,
         Eigen::Ref<Eigen::VectorXd const> const &new_control) const = 0;
 
     /** \brief derivative of Controlcomponent::evaluate w.r.t. \p new_control.
@@ -114,7 +110,6 @@ namespace Model::Networkproblem {
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &last_control,
         Eigen::Ref<Eigen::VectorXd const> const &new_control) const = 0;
 
     /** \brief derivative of Controlcomponent::evaluate w.r.t. \p last_control.
@@ -136,7 +131,6 @@ namespace Model::Networkproblem {
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &last_control,
         Eigen::Ref<Eigen::VectorXd const> const &new_control) const = 0;
 
     /** \brief Returns number of controls needed by this component per time

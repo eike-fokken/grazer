@@ -96,9 +96,9 @@ TEST_F(stochasticPQnodeTEST, evaluate) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd new_control;
   netprob->prepare_timestep(
-      last_time, new_time, last_state, new_state, last_control, new_control);
+      last_time, new_time, last_state, new_state,  new_control);
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, last_control,
+      rootvalues, last_time, new_time, last_state, new_state, 
       new_control);
 
   auto *stoch_pq
@@ -147,7 +147,7 @@ TEST_F(stochasticPQnodeTEST, d_evalutate_d_new_state) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd new_control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, last_control,
+      rootvalues, last_time, new_time, last_state, new_state, 
       new_control);
 
   auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
@@ -170,7 +170,7 @@ TEST_F(stochasticPQnodeTEST, d_evalutate_d_new_state) {
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
   Aux::Triplethandler handler(J);
   netprob->d_evalutate_d_new_state(
-      handler, last_time, new_time, last_state, new_state, last_control,
+      handler, last_time, new_time, last_state, new_state, 
       new_control);
   handler.set_matrix();
 

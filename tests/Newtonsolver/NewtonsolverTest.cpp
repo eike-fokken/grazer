@@ -37,7 +37,7 @@ TEST(Newtonsolver, LinearSolveWithRoot_InitialValue1) {
   Eigen::VectorXd new_control;
   a = Solver.solve(
       new_state, problem, true, false, last_time, new_time, last_state,
-      last_control, new_control);
+       new_control);
 
   EXPECT_EQ(a.success, true);
 
@@ -72,7 +72,7 @@ TEST(Newtonsolver, LinearSolveWithRoot_InitialValue2) {
   Eigen::VectorXd new_control;
   a = Solver.solve(
       new_state, problem, true, false, last_time, new_time, last_state,
-      last_control, new_control);
+       new_control);
 
   EXPECT_EQ(a.success, true); // passed
 
@@ -108,7 +108,7 @@ TEST(Newtonsolver, NonlinearSolveWithRoot) {
   Eigen::VectorXd new_control;
   a = Solver.solve(
       new_state, problem, true, false, last_time, new_time, last_state,
-      last_control, new_control);
+       new_control);
 
   EXPECT_EQ(a.success, false);
   EXPECT_EQ(a.used_iterations, max_it);
@@ -142,7 +142,7 @@ TEST(Newtonsolver, NonlinearSolve_simplifiedNewton) {
   Eigen::VectorXd new_control;
   a = Solver.solve(
       new_state, problem, true, false, last_time, new_time, last_state,
-      last_control, new_control);
+       new_control);
 
   EXPECT_EQ(a.success, false);
   EXPECT_EQ(a.used_iterations, max_it);
@@ -176,7 +176,7 @@ TEST(Newtonsolver, SingularJacobian) {
     Eigen::VectorXd new_control;
     a = Solver.solve(
         new_state, problem, true, false, last_time, new_time, last_state,
-        last_control, new_control);
+         new_control);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {

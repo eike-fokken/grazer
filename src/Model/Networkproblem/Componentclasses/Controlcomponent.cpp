@@ -5,7 +5,6 @@ namespace Model::Networkproblem {
       double /*last_time*/, double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*last_control*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*new_control*/) {}
 
   int Controlcomponent::set_control_indices(int const next_free_index) {

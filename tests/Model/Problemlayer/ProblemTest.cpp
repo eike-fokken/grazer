@@ -48,7 +48,6 @@ TEST_F(modelTest, Model_evaluate) {
           Eigen::Ref<Eigen::VectorXd>(rootvalues), last_time, new_time,
           Eigen::Ref<Eigen::VectorXd const>(v1),
           Eigen::Ref<Eigen::VectorXd const>(v2),
-          Eigen::Ref<Eigen::VectorXd const>(last_control),
           Eigen::Ref<Eigen::VectorXd const>(new_control)))
       .Times(1);
   EXPECT_CALL(
@@ -57,10 +56,8 @@ TEST_F(modelTest, Model_evaluate) {
           Eigen::Ref<Eigen::VectorXd>(rootvalues), last_time, new_time,
           Eigen::Ref<Eigen::VectorXd const>(v1),
           Eigen::Ref<Eigen::VectorXd const>(v2),
-          Eigen::Ref<Eigen::VectorXd const>(last_control),
           Eigen::Ref<Eigen::VectorXd const>(new_control)))
       .Times(1);
 
-  problem.evaluate(
-      rootvalues, last_time, new_time, v1, v2, last_control, new_control);
+  problem.evaluate(rootvalues, last_time, new_time, v1, v2, new_control);
 }
