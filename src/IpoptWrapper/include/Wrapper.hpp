@@ -122,7 +122,7 @@ public:
   /**@name Overloaded from TNLP */
   //@{
   /** Method to return some info about the nlp */
-  virtual bool get_nlp_info(
+  bool get_nlp_info(
       Index &n, Index &m, Index &nnz_jac_g, Index &nnz_h_lag,
       IndexStyleEnum &index_style) {
     n = get_num_vars();
@@ -139,7 +139,7 @@ public:
   }
 
   /** Method to return the bounds for my problem */
-  virtual bool get_bounds_info(
+  bool get_bounds_info(
       Index n, Number *x_l, Number *x_u, Index m, Number *g_l, Number *g_u) {
     n = get_num_vars();
     m = get_num_constraints();
@@ -153,9 +153,10 @@ public:
   }
 
   /** Method to return the starting point for the algorithm */
-  virtual bool get_starting_point(
-      Index n, bool init_x, Number *x, bool init_z, Number *z_L, Number *z_U,
-      Index m, bool init_lambda, Number *lambda) {
+  bool get_starting_point(
+      Index n, bool /* init_x */, Number *x, bool /* init_z */,
+      Number /* *z_L */, Number /* *z_U */, Index /*m */,
+      bool /* init_lambda */, Number /* *lambda */) {
     // initialize to the given starting point
     auto x0 = get_initial_point();
     std::copy(x0.cbegin(), x0.cend(), x);
@@ -163,15 +164,14 @@ public:
   }
 
   /** Method to return the objective value */
-  virtual bool eval_f(Index n, const Number *x, bool new_x, Number &obj_value) {
+  bool eval_f(Index n, const Number *x, bool /* new_x */, Number &obj_value) {
     Eigen::Map<VectorXd const> xx(x, n);
     obj_value = _objective(xx);
     return true;
   }
 
   /** Method to return the gradient of the objective */
-  virtual bool
-  eval_grad_f(Index n, const Number *x, bool new_x, Number *grad_f) {
+  bool eval_grad_f(Index n, const Number *x, bool /* new_x */, Number *grad_f) {
     Eigen::Map<VectorXd const> xx(x, n);
     auto grad = _gradient(xx);
     std::copy(grad.cbegin(), grad.cend(), grad_f);
@@ -179,8 +179,7 @@ public:
   }
 
   /** Method to return the constraint residuals */
-  virtual bool
-  eval_g(Index n, const Number *x, bool new_x, Index m, Number *g) {
+  bool eval_g(Index n, const Number *x, bool /* new_x */, Index m, Number *g) {
     Eigen::Map<VectorXd const> xx(x, n);
     auto constrs = _constraints(xx);
     assert(constrs.size() == m);
@@ -192,9 +191,9 @@ public:
    *   1) The structure of the Jacobian (if "values" is NULL)
    *   2) The values of the Jacobian (if "values" is not NULL)
    */
-  virtual bool eval_jac_g(
-      Index n, const Number *x, bool new_x, Index m, Index nele_jac,
-      Index *iRow, Index *jCol, Number *values) {
+  bool eval_jac_g(
+      Index n, const Number *x, bool /* new_x */, Index /* m */,
+      Index /* nele_jac */, Index *iRow, Index *jCol, Number *values) {
     if (values == NULL) {
       // first internal call of this function.
       // set the structure of constraints jacobian.
@@ -226,11 +225,11 @@ public:
 
   /** This method is called when the algorithm is complete so the TNLP can
    * store/write the solution */
-  virtual void finalize_solution(
-      SolverReturn status, Index n, const Number *x, const Number *z_L,
-      const Number *z_U, Index m, const Number *g, const Number *lambda,
-      Number obj_value, const IpoptData *ip_data,
-      IpoptCalculatedQuantities *ip_cq) {
+  void finalize_solution(
+      SolverReturn /* status */, Index n, const Number *x,
+      const Number /* *z_L */, const Number /* *z_U */, Index /* m */,
+      const Number /* *g */, const Number /* *lambda */, Number obj_value,
+      const IpoptData /* *ip_data */, IpoptCalculatedQuantities *ip_cq) {
     VectorXd xx(n);
     std::copy(x, x + n, xx.begin());
     _x_sol = xx;
