@@ -160,7 +160,10 @@ include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp/include/")
 include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/CLI11/include/")
 
 
-
+# IPOPT
+# you can supply your own ipopt directory or build ipopt with cmake.
+# The building in cmake up to now works only, if coinbrew works.
+if (NOT DEFINED IPOPT_DIRECTORY)
 
 ###############################################################
 # Ipopt building:
@@ -224,11 +227,23 @@ include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/CLI11/include/")
   add_custom_target(ipopt_build_target ALL
     DEPENDS ${ipopt_library_file}
     )
-  
+
+else()
+
+  find_library(ipopt_library_file
+    NAMES ipopt
+    PATHS "${IPOPT_DIRECTORY}/lib" NO_DEFAULT_PATH)
+  set(ipopt_library_file )
+  set(ipopt_library_headers "${IPOPT_DIRECTORY}/include/coin-or")
+endif()
+
+
+
+
+
   # The ipopt target, on which we can depend in our own source files.
   add_library(my_ipopt SHARED IMPORTED)
   add_dependencies(my_ipopt ipopt_build_target ${ipopt_library_file})
-
 
   set_target_properties(my_ipopt
       PROPERTIES
@@ -236,11 +251,6 @@ include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/CLI11/include/")
       INTERFACE_INCLUDE_DIRECTORIES ${ipopt_library_headers}
       )
   
-###########################################################################################
-#The rest should work again also with Visual Studio.
-###########################################################################################
-
-
 
 
 # for building latex documentation
