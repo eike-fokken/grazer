@@ -160,95 +160,115 @@ include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp/include/")
 include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/CLI11/include/")
 
 
-#fetch ipopt and stuff...
+
+
+###############################################################
+# Ipopt building:
+###############################################################
+
+  #fetch coinbrew for building ipopt:
+  
+  if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt/coinbrew")
+  execute_process(
+    COMMAND wget https://raw.githubusercontent.com/coin-or/coinbrew/master/coinbrew
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt"
+    )
+  execute_process(
+    COMMAND chmod u+x coinbrew
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt"
+    )
+  endif()
+  
+  
+  
+  execute_process(
+    COMMAND ./coinbrew fetch Ipopt --no-prompt --skip=ThirdParty/ASL
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt"
+    )
+  
+  
+  ######################################
+  # Set up the include directories beforehand, because it seems difficult to supply
+  # include directories that are only generated in a build step.
+  ######################################
+  set(ipopt_library_headers ${CMAKE_CURRENT_BINARY_DIR}/Ipopt/dist/include/coin-or)
+  file(MAKE_DIRECTORY ${ipopt_library_headers})
+    
+  # get the right library name, hopefully cross-platform:
+  set(ipopt_library_name ${CMAKE_SHARED_LIBRARY_PREFIX}ipopt${CMAKE_SHARED_LIBRARY_SUFFIX})
+  set(ipopt_library_file ${CMAKE_CURRENT_BINARY_DIR}/Ipopt/dist/lib/${ipopt_library_name})
+  
+  
+  
+  # run coinbrew in parallel:
+  include(ProcessorCount)
+  ProcessorCount(NumberOfProcessors)
+
+  ########################################################################################################
+  # These hoops have to be jumped in order to stop cmake from inserting bad escape characters into environment variables.
+  ########################################################################################################
+  if (BUILD_WITH_LIBCPP AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    set(STANDARDLIB "-stdlib=libc++")
+  endif()
+  set(DEBUG_FLAGS "-D_GLIBCXX_DEBUG -D_LIBCPP_DEBUG")
+  set(MY_CXX_FLAGS "$<$<CONFIG:DEBUG>:${DEBUG_FLAGS}> ${STANDARDLIB}")
+
+
+  # build ipopt:
+  add_custom_command(OUTPUT  ${ipopt_library_file}
+    COMMAND ${CMAKE_COMMAND} -E env "ADD_CXXFLAGS=${MY_CXX_FLAGS}" "CC=${CMAKE_C_COMPILER}" "CXX=${CMAKE_CXX_COMPILER}" ./coinbrew build Ipopt --no-prompt --skip=ThirdParty/ASL --build-dir=${CMAKE_CURRENT_BINARY_DIR}/Ipopt --prefix=${CMAKE_CURRENT_BINARY_DIR}/Ipopt/dist --parallel-jobs ${NumberOfProcessors}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Ipopt
+    USES_TERMINAL)
+  
+  # create a target out of the ipopt compilation that depends on the generated library:
+  add_custom_target(ipopt_build_target ALL
+    DEPENDS ${ipopt_library_file}
+    )
+  
+  # The ipopt target, on which we can depend in our own source files.
+  add_library(my_ipopt SHARED IMPORTED)
+  add_dependencies(my_ipopt ipopt_build_target ${ipopt_library_file})
+
+
+  set_target_properties(my_ipopt
+      PROPERTIES
+      IMPORTED_LOCATION ${ipopt_library_file}
+      INTERFACE_INCLUDE_DIRECTORIES ${ipopt_library_headers}
+      )
+  
+###########################################################################################
+#The rest should work again also with Visual Studio.
+###########################################################################################
 
 
 
 
-# # IPOPT
-# if (NOT DEFINED IPOPT_DIRECTORY)
-#     if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-#         set(IPOPT_DIRECTORY "/usr/local/Cellar/ipopt/3.14.4")    
-#     else()
-#         set(IPOPT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt/clang_debug_dist")
-#   endif()
-# endif()
+# for building latex documentation
 
-if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt/coinbrew")
-execute_process(
-  COMMAND wget https://raw.githubusercontent.com/coin-or/coinbrew/master/coinbrew
-  WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt"
-  )
-execute_process(
-  COMMAND chmod u+x coinbrew
-  WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt"
-  )
-
+find_package(Doxygen)
+find_package(LATEX COMPONENTS PDFLATEX)
+if(LATEX_FOUND)
+  include(UseLATEX/UseLATEX.cmake)
 endif()
 
-set(COINBREW_BUILD_args "fetch Ipopt --no-prompt --skip=\'ThirdParty/HSL ThirdParty/ASL\'")
-message(STATUS ${COINBREW_BUILD_COMMAND})
-execute_process(
-  COMMAND ./coinbrew fetch Ipopt --no-prompt
-  WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt"
-  )
+add_subdirectory(docs)
 
 
-set(ENV{CXX} "clang++")
-set(ENV{CC} "clang")
-set(ENV{ADD_CXXFLAGS} "-stdlib=libc++")
+add_subdirectory(src)
+add_subdirectory(tests)
+add_subdirectory(helper_functions)
 
-set(ipopt_library_name ${CMAKE_SHARED_LIBRARY_PREFIX}ipopt${CMAKE_SHARED_LIBRARY_SUFFIX})
-message(STATUS ${ipopt_library_name})
-include(ProcessorCount)
-ProcessorCount(NumberOfProcessors)
-add_custom_target(ipopt_build_gcc_debug ALL
-  COMMAND ADD_CXXFLAGS=-D_GLIBCXX_DEBUG ./coinbrew build Ipopt --build-dir=${CMAKE_BINARY_DIR}/Ipopt --prefix=${CMAKE_BINARY_DIR}/Ipopt/dist --parallel-jobs ${NumberOfProcessors}
-  WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt"
-  BYPRODUCTS ${CMAKE_BINARY_DIR}/Ipopt/dist/lib/${ipopt_library_name}
-  DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt/Ipopt"
-  VERBATIM
-  )
+add_custom_target(cclean COMMAND cd ${CMAKE_SOURCE_DIR} && rm -r ${CMAKE_SOURCE_DIR}/build/ && mkdir ${CMAKE_SOURCE_DIR}/build/ && cd ${CMAKE_SOURCE_DIR}/build/
+  USES_TERMINAL
+)
 
+# Installation
 
-
-# find_library(IPOPT_LIBRARY_PATH
-#         NAMES ipopt
-#         PATHS "${IPOPT_DIRECTORY}/lib" NO_DEFAULT_PATH)
-
-# # Your-external "mylib", (maybe use GLOBAL??? Seems unneccessary)
-# add_library(my_ipopt SHARED IMPORTED)
-# # You can define two import-locations: one for debug and one for release.
-# set_target_properties(my_ipopt PROPERTIES IMPORTED_LOCATION "${IPOPT_LIBRARY_PATH}")
-# target_include_directories(my_ipopt INTERFACE "${IPOPT_DIRECTORY}/include/coin-or")
-# include_directories(SYSTEM "${IPOPT_DIRECTORY}/include/coin-or")
-
-# # for building latex documentation
-
-# find_package(Doxygen)
-# find_package(LATEX COMPONENTS PDFLATEX)
-# if(LATEX_FOUND)
-#   include(UseLATEX/UseLATEX.cmake)
-# endif()
-
-# add_subdirectory(docs)
-
-
-# add_subdirectory(src)
-# add_subdirectory(tests)
-# add_subdirectory(helper_functions)
-
-# add_custom_target(cclean COMMAND cd ${CMAKE_SOURCE_DIR} && rm -r ${CMAKE_SOURCE_DIR}/build/ && mkdir ${CMAKE_SOURCE_DIR}/build/ && cd ${CMAKE_SOURCE_DIR}/build/
-#   USES_TERMINAL
-# )
-
-# # Installation
-
-# install(
-#   TARGETS grazer
-#   RUNTIME DESTINATION bin # relative to CMAKE_INSTALL_PREFIX (/urs/local -> UNIX, c:/Program Files/${PROJECT_NAME} -> windows)
-#   # CONFIGURATIONS Release
-# )
-# if(WIN32)
-#   # figure out how to modify PATH variable: https://stackoverflow.com/q/68683998/6662425
-# endif(WIN32)
+install(
+  TARGETS grazer
+  RUNTIME DESTINATION bin # relative to CMAKE_INSTALL_PREFIX (/urs/local -> UNIX, c:/Program Files/${PROJECT_NAME} -> windows)
+  # CONFIGURATIONS Release
+)
+if(WIN32)
+  # figure out how to modify PATH variable: https://stackoverflow.com/q/68683998/6662425
+endif(WIN32)
