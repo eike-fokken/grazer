@@ -151,6 +151,22 @@ namespace Model::Networkproblem {
         nlohmann::json const &control_json)
         = 0;
 
+    /** \brief Sets the lower bounds on the controls of this Component.
+     *
+     * \param[out] lower_bounds This vector is filled at the indices between
+     * #start_control_index and #after_control_index with values for lower box
+     * constraints.
+     */
+    virtual void set_lower_bounds(Eigen::Ref<Eigen::VectorXd> lower_bounds) = 0;
+
+    /** \brief Sets the upper bounds on the controls of this Component.
+     *
+     * \param[out] upper_bounds This vector is filled at the indices between
+     * #start_control_index and #after_control_index with values for upper box
+     * constraints.
+     */
+    virtual void set_upper_bounds(Eigen::Ref<Eigen::VectorXd> upper_bounds) = 0;
+
     static std::optional<nlohmann::json> get_control_schema();
 
   private:
