@@ -248,8 +248,8 @@ endif()
   set_target_properties(my_ipopt
       PROPERTIES
       IMPORTED_LOCATION ${ipopt_library_file}
-      INTERFACE_INCLUDE_DIRECTORIES ${ipopt_library_headers}
       )
+    target_include_directories(my_ipopt SYSTEM INTERFACE ${ipopt_library_headers})
   
 
 
