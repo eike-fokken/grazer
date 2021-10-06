@@ -14,14 +14,14 @@ namespace Solver {
       Problemtype &problem, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
-            Eigen::Ref<Eigen::VectorXd const> const &control) {
+      Eigen::Ref<Eigen::VectorXd const> const &control) {
 
     {
       jacobian.resize(new_state.size(), new_state.size());
       Aux::Triplethandler handler(jacobian);
 
       problem.d_evalutate_d_new_state(
-          handler, last_time, new_time, last_state, new_state,   control);
+          handler, last_time, new_time, last_state, new_state, control);
       handler.set_matrix();
     }
     lusolver.analyzePattern(jacobian);
@@ -32,7 +32,7 @@ namespace Solver {
       Problemtype &problem, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
-            Eigen::Ref<Eigen::VectorXd const> const &control) {
+      Eigen::Ref<Eigen::VectorXd const> const &control) {
     Aux::Coeffrefhandler handler(jacobian);
     problem.d_evalutate_d_new_state(
         handler, last_time, new_time, last_state, new_state, control);
@@ -48,7 +48,7 @@ namespace Solver {
       Eigen::Ref<Eigen::VectorXd> new_state, Problemtype &problem, bool newjac,
       bool use_full_jacobian, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
-            Eigen::Ref<Eigen::VectorXd const> const &control) {
+      Eigen::Ref<Eigen::VectorXd const> const &control) {
     Solutionstruct solstruct;
 
     Eigen::VectorXd rootvalues(new_state.size());
@@ -68,10 +68,10 @@ namespace Solver {
     // compute f'(x_k) and write it to the jacobian.
     if (newjac) {
       evaluate_state_derivative_triplets(
-          problem, last_time, new_time, last_state, new_state,   control);
+          problem, last_time, new_time, last_state, new_state, control);
     } else {
       evaluate_state_derivative_coeffref(
-          problem, last_time, new_time, last_state, new_state,   control);
+          problem, last_time, new_time, last_state, new_state, control);
     }
     if (not use_full_jacobian) {
       lusolver.factorize(jacobian);
@@ -106,7 +106,7 @@ namespace Solver {
       Eigen::VectorXd candidate_values(new_state.size());
       problem.evaluate(
           candidate_values, last_time, new_time, last_state, candidate_vector,
-           control);
+          control);
 
       // Delta^bar x_k+1
       Eigen::VectorXd delta_x_bar = -lusolver.solve(candidate_values);
@@ -122,7 +122,7 @@ namespace Solver {
         candidate_vector = new_state + lambda * step;
         problem.evaluate(
             candidate_values, last_time, new_time, last_state, candidate_vector,
-             control);
+            control);
         current_norm = (-lusolver.solve(candidate_values)).norm();
       }
       new_state = candidate_vector;

@@ -82,8 +82,7 @@ TEST_F(PowerTEST, evaluate_Vphi) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, 
-      control);
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
   auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
@@ -110,8 +109,7 @@ TEST_F(PowerTEST, d_evalutate_d_new_state_Vphi) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, 
-      control);
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
   auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
@@ -123,8 +121,7 @@ TEST_F(PowerTEST, d_evalutate_d_new_state_Vphi) {
   Aux::Triplethandler handler(J);
 
   netprob->d_evalutate_d_new_state(
-      handler, last_time, new_time, last_state, new_state, 
-      control);
+      handler, last_time, new_time, last_state, new_state, control);
   handler.set_matrix();
 
   Eigen::Matrix<double, 6, 6> DenseJ = J;
@@ -160,8 +157,7 @@ TEST_F(PowerTEST, evaluate_PQ) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, 
-      control);
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
   auto *pq = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
       netprob->get_network().get_node_by_id("pq"));
@@ -192,8 +188,7 @@ TEST_F(PowerTEST, d_evalutate_d_new_state_PQ) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, 
-      control);
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
   auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
@@ -215,8 +210,7 @@ TEST_F(PowerTEST, d_evalutate_d_new_state_PQ) {
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
   Aux::Triplethandler handler(J);
   netprob->d_evalutate_d_new_state(
-      handler, last_time, new_time, last_state, new_state, 
-      control);
+      handler, last_time, new_time, last_state, new_state, control);
   handler.set_matrix();
 
   Eigen::Matrix<double, 6, 6> DenseJ = J;
@@ -282,8 +276,7 @@ TEST_F(PowerTEST, evaluate_PV) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, 
-      control);
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
   auto *pv = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
       netprob->get_network().get_node_by_id("pv"));
@@ -311,8 +304,7 @@ TEST_F(PowerTEST, d_evalutate_d_new_state_PV) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, 
-      control);
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
   auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
@@ -334,8 +326,7 @@ TEST_F(PowerTEST, d_evalutate_d_new_state_PV) {
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
   Aux::Triplethandler handler(J);
   netprob->d_evalutate_d_new_state(
-      handler, last_time, new_time, last_state, new_state, 
-      control);
+      handler, last_time, new_time, last_state, new_state, control);
   handler.set_matrix();
 
   Eigen::Matrix<double, 6, 6> DenseJ = J;

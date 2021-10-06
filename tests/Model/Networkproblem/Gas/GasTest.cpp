@@ -90,8 +90,7 @@ TEST_F(GasTEST, Shortpipe_evaluate) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, 
-      control);
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
   EXPECT_DOUBLE_EQ(rootvalues[1], pressure_start - pressure_end);
   EXPECT_DOUBLE_EQ(rootvalues[2], flow_start - flow_end);
@@ -145,15 +144,13 @@ TEST_F(GasTEST, Shortpipe_d_evalutate_d_new_state) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, 
-      control);
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
   Aux::Triplethandler handler(J);
 
   netprob->d_evalutate_d_new_state(
-      handler, last_time, new_time, last_state, new_state, 
-      control);
+      handler, last_time, new_time, last_state, new_state, control);
   handler.set_matrix();
 
   Eigen::Matrix4d DenseJ = J;
@@ -234,8 +231,7 @@ TEST_F(GasTEST, Source_evaluate) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, 
-      control);
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
   // node0:
   EXPECT_DOUBLE_EQ(rootvalues[0], -sp01_pressure_start + sp20_pressure_end);
@@ -316,8 +312,7 @@ TEST_F(GasTEST, Source_d_evalutate_d_new_state) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd control;
   netprob->d_evalutate_d_new_state(
-      handler, last_time, new_time, last_state, new_state, 
-      control);
+      handler, last_time, new_time, last_state, new_state, control);
   handler.set_matrix();
 
   Eigen::MatrixXd DenseJ = J;
@@ -425,8 +420,7 @@ TEST_F(GasTEST, Sink_evaluate) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, 
-      control);
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
   // Note that for sinks the boundary conditions should have the opposite signs
   // compared to sources. node0:
@@ -507,8 +501,7 @@ TEST_F(GasTEST, Sink_d_evalutate_d_new_state) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd control;
   netprob->d_evalutate_d_new_state(
-      handler, last_time, new_time, last_state, new_state, 
-      control);
+      handler, last_time, new_time, last_state, new_state, control);
   handler.set_matrix();
 
   Eigen::MatrixXd DenseJ = J;
@@ -610,8 +603,7 @@ TEST_F(GasTEST, Innode_evaluate) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, 
-      control);
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
   // node0:
   EXPECT_DOUBLE_EQ(rootvalues[0], -sp01_pressure_start + sp20_pressure_end);
@@ -685,8 +677,7 @@ TEST_F(GasTEST, Innode_d_evalutate_d_new_state) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd control;
   netprob->d_evalutate_d_new_state(
-      handler, last_time, new_time, last_state, new_state, 
-      control);
+      handler, last_time, new_time, last_state, new_state, control);
   handler.set_matrix();
 
   Eigen::MatrixXd DenseJ = J;
@@ -781,8 +772,7 @@ TEST_F(GasTEST, Pipe_evaluate) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, 
-      control);
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
   Eigen::Vector2d last_left = last_state.segment<2>(0);
   Eigen::Vector2d last_right = last_state.segment<2>(2);
@@ -860,8 +850,7 @@ TEST_F(GasTEST, Pipe_d_evalutate_d_new_state) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd control;
   netprob->d_evalutate_d_new_state(
-      handler, last_time, new_time, last_state, new_state, 
-      control);
+      handler, last_time, new_time, last_state, new_state, control);
   handler.set_matrix();
 
   Eigen::Matrix4d DenseJ = J;

@@ -118,10 +118,10 @@ namespace Model {
       while (not solstruct.success) {
         new_state = new_state_backup;
         problem.prepare_timestep(
-            last_time, new_time, last_state, new_state,     control);
+            last_time, new_time, last_state, new_state, control);
         solstruct = solver.solve(
             new_state, problem, false, use_full_jacobian, last_time, new_time,
-            last_state,  control);
+            last_state, control);
         if (solstruct.success) {
 
           if (use_simplified_newton and retry > 0) {

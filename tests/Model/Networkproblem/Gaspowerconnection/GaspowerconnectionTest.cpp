@@ -299,8 +299,7 @@ TEST_F(GaspowerconnectionTEST, evaluate_power_controlled) {
   Eigen::VectorXd control;
 
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, 
-      control);
+      rootvalues, last_time, new_time, last_state, new_state, control);
   auto edges = netprob->get_network().get_edges();
   if (edges.size() != 1) {
     FAIL();
@@ -385,8 +384,7 @@ TEST_F(GaspowerconnectionTEST, evaluate_gas_controlled) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, 
-      control);
+      rootvalues, last_time, new_time, last_state, new_state, control);
   auto edges = netprob->get_network().get_edges();
   if (edges.size() != 1) {
     FAIL();
@@ -470,8 +468,7 @@ TEST_F(GaspowerconnectionTEST, d_evalutate_d_new_state_power_driven) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, 
-      control);
+      rootvalues, last_time, new_time, last_state, new_state, control);
   auto edges = netprob->get_network().get_edges();
   if (edges.size() != 1) {
     FAIL();
@@ -578,8 +575,7 @@ TEST_F(GaspowerconnectionTEST, d_evalutate_d_new_state_gas_driven) {
   Eigen::VectorXd last_control;
   Eigen::VectorXd control;
   netprob->evaluate(
-      rootvalues, last_time, new_time, last_state, new_state, 
-      control);
+      rootvalues, last_time, new_time, last_state, new_state, control);
   auto edges = netprob->get_network().get_edges();
   if (edges.size() != 1) {
     FAIL();
