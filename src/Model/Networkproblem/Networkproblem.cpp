@@ -56,7 +56,7 @@ namespace Model::Networkproblem {
       Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
-            Eigen::Ref<Eigen::VectorXd const> const &control) const {
+      Eigen::Ref<Eigen::VectorXd const> const &control) const {
 
     for (Model::Networkproblem::Equationcomponent *equationcomponent :
          equationcomponents) {
@@ -66,7 +66,7 @@ namespace Model::Networkproblem {
     for (Model::Networkproblem::Controlcomponent *controlcomponent :
          controlcomponents) {
       controlcomponent->evaluate(
-          rootvalues, last_time, new_time, last_state, new_state,   control);
+          rootvalues, last_time, new_time, last_state, new_state, control);
     }
   }
 
@@ -74,7 +74,7 @@ namespace Model::Networkproblem {
       double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
-            Eigen::Ref<Eigen::VectorXd const> const &control) {
+      Eigen::Ref<Eigen::VectorXd const> const &control) {
     for (Model::Networkproblem::Equationcomponent *equationcomponent :
          equationcomponents) {
       equationcomponent->prepare_timestep(
@@ -83,7 +83,7 @@ namespace Model::Networkproblem {
     for (Model::Networkproblem::Controlcomponent *controlcomponent :
          controlcomponents) {
       controlcomponent->prepare_timestep(
-          last_time, new_time, last_state, new_state,   control);
+          last_time, new_time, last_state, new_state, control);
     }
   }
 
@@ -91,7 +91,7 @@ namespace Model::Networkproblem {
       ::Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
-            Eigen::Ref<Eigen::VectorXd const> const &control) const {
+      Eigen::Ref<Eigen::VectorXd const> const &control) const {
 
     for (Model::Networkproblem::Equationcomponent *equationcomponent :
          equationcomponents) {
@@ -101,8 +101,7 @@ namespace Model::Networkproblem {
     for (Model::Networkproblem::Controlcomponent *controlcomponent :
          controlcomponents) {
       controlcomponent->d_evalutate_d_new_state(
-          jacobianhandler, last_time, new_time, last_state, new_state,
-           control);
+          jacobianhandler, last_time, new_time, last_state, new_state, control);
     }
   }
 
@@ -110,7 +109,7 @@ namespace Model::Networkproblem {
       ::Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
-            Eigen::Ref<Eigen::VectorXd const> const &control) const {
+      Eigen::Ref<Eigen::VectorXd const> const &control) const {
 
     for (Model::Networkproblem::Equationcomponent *equationcomponent :
          equationcomponents) {
@@ -120,8 +119,7 @@ namespace Model::Networkproblem {
     for (Model::Networkproblem::Controlcomponent *controlcomponent :
          controlcomponents) {
       controlcomponent->d_evalutate_d_last_state(
-          jacobianhandler, last_time, new_time, last_state, new_state,
-           control);
+          jacobianhandler, last_time, new_time, last_state, new_state, control);
     }
   }
 
@@ -189,6 +187,19 @@ namespace Model::Networkproblem {
     }
     for (Equationcomponent *equationcomponent : equationcomponents) {
       equationcomponent->setup();
+    }
+
+    return free_index;
+  }
+
+  int Networkproblem::reserve_control_indices(int const next_free_index) {
+    int free_index = next_free_index;
+    for (Controlcomponent *controlcomponent : controlcomponents) {
+      free_index = controlcomponent->set_control_indices(free_index);
+      // Note that a component, that is a Controlcomponent can never be an
+      // Equationcomponent (this should raise a compile error, see
+      // check_class_hierarchy_properties in Componentfactory).
+      controlcomponent->setup();
     }
 
     return free_index;

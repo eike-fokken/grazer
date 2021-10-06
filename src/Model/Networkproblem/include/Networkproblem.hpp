@@ -69,6 +69,7 @@ namespace Model::Networkproblem {
     std::vector<Controlcomponent *> controlcomponents;
 
     int reserve_state_indices(int const next_free_index) final;
+    int reserve_control_indices(int const next_free_index) final;
   };
 
 } // namespace Model::Networkproblem

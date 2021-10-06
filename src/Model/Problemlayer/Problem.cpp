@@ -54,9 +54,9 @@ namespace Model {
 
   int Problem::set_control_indices() {
     int next_free_index(0);
-    // for (auto &subproblem : subproblems) {
-    //   next_free_index = subproblem->set_state_indices(next_free_index);
-    // }
+    for (auto &subproblem : subproblems) {
+      next_free_index = subproblem->set_control_indices(next_free_index);
+    }
     return next_free_index;
   }
 
@@ -64,10 +64,10 @@ namespace Model {
       Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
-            Eigen::Ref<Eigen::VectorXd const> const &control) const {
+      Eigen::Ref<Eigen::VectorXd const> const &control) const {
     for (auto &subproblem : subproblems) {
       subproblem->evaluate(
-          rootvalues, last_time, new_time, last_state, new_state,   control);
+          rootvalues, last_time, new_time, last_state, new_state, control);
     }
   }
 
@@ -75,10 +75,10 @@ namespace Model {
       double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
-            Eigen::Ref<Eigen::VectorXd const> const &control) {
+      Eigen::Ref<Eigen::VectorXd const> const &control) {
     for (auto &subproblem : subproblems) {
       subproblem->prepare_timestep(
-          last_time, new_time, last_state, new_state,   control);
+          last_time, new_time, last_state, new_state, control);
     }
   }
 
@@ -86,11 +86,10 @@ namespace Model {
       Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
-            Eigen::Ref<Eigen::VectorXd const> const &control) const {
+      Eigen::Ref<Eigen::VectorXd const> const &control) const {
     for (auto &subproblem : subproblems) {
       subproblem->d_evalutate_d_new_state(
-          jacobianhandler, last_time, new_time, last_state, new_state,
-           control);
+          jacobianhandler, last_time, new_time, last_state, new_state, control);
     }
   }
 
@@ -98,11 +97,10 @@ namespace Model {
       Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
-            Eigen::Ref<Eigen::VectorXd const> const &control) const {
+      Eigen::Ref<Eigen::VectorXd const> const &control) const {
     for (auto &subproblem : subproblems) {
       subproblem->d_evalutate_d_last_state(
-          jacobianhandler, last_time, new_time, last_state, new_state,
-           control);
+          jacobianhandler, last_time, new_time, last_state, new_state, control);
     }
   }
 

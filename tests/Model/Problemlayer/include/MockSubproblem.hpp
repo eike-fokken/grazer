@@ -43,6 +43,8 @@ namespace GrazerTest {
     MOCK_METHOD(
         int, reserve_state_indices, (int const next_free_index), (override));
     MOCK_METHOD(
+        int, reserve_control_indices, (int const next_free_index), (override));
+    MOCK_METHOD(
         (void), set_initial_values,
         (Eigen::Ref<Eigen::VectorXd>, nlohmann::json), (override));
     MOCK_METHOD(

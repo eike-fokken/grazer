@@ -42,7 +42,7 @@ int grazer::run(std::filesystem::path directory_path) {
 
     Model::Problem problem(problem_json, output_file);
     auto number_of_states = problem.set_state_indices();
-    auto number_of_controls = problem.set_control_indices();
+    auto number_of_controls_per_time_step = problem.set_control_indices();
     std::cout << "data read" << std::endl;
 
     wall_clock_setup_end = Clock::now();
