@@ -1,10 +1,13 @@
 #include "commands.hpp"
 #include "Aux_json.hpp"
+#include "Full_factory.hpp"
 #include "Input_output.hpp"
-#include "Problem.hpp"
+#include "Netfactory.hpp"
+#include "Networkproblem.hpp"
 #include "Timeevolver.hpp"
 #include <chrono>
 #include <cstdlib>
+#include <fstream>
 #include <iostream>
 
 int grazer::run(std::filesystem::path directory_path) {
@@ -19,7 +22,7 @@ int grazer::run(std::filesystem::path directory_path) {
     auto problem_directory = directory_path / "problem";
     auto problem_data_file = problem_directory / "problem_data.json";
     auto output_file = io::prepare_output_file(directory_path);
-
+    nlohmann::json output_json;
     std::cout << "Using output filename\n" << output_file.string() << std::endl;
 
     // This must be wrapped in exception handling code!
@@ -32,29 +35,49 @@ int grazer::run(std::filesystem::path directory_path) {
     // give the path information of the file:
     problem_json["GRAZER_file_directory"] = problem_directory.string();
 
-    auto initial_value_json = all_json["initial_values"];
-    auto control_value_json = all_json["control_values"];
-    initial_value_json["GRAZER_file_directory"] = problem_directory.string();
-    control_value_json["GRAZER_file_directory"] = problem_directory.string();
+    auto initial_values = aux_json::get_json_from_file_path(
+        problem_directory / std::filesystem::path("initial.json"));
+    auto control_values = aux_json::get_json_from_file_path(
+        problem_directory / std::filesystem::path("control.json"));
     Model::Timedata timedata(time_evolution_json);
 
     auto timeevolver = Model::Timeevolver::make_instance(time_evolution_json);
 
-    Model::Problem problem(problem_json, output_file);
-    auto number_of_states = problem.set_state_indices();
-    auto number_of_controls_per_time_step = problem.set_control_indices();
+    Model::Componentfactory::Full_factory componentfactory(
+        problem_json.value("defaults", R"({})"_json));
+    auto net_ptr
+        = Model::Networkproblem::build_net(problem_json, componentfactory);
+    auto json_ptr
+        = Model::Networkproblem::build_net(problem_json, componentfactory);
+    Model::Networkproblem::Networkproblem problem(std::move(json_ptr));
+    auto number_of_states = problem.set_state_indices(0);
+    auto number_of_controls_per_time_step = problem.set_control_indices(0);
     std::cout << "data read" << std::endl;
 
     wall_clock_setup_end = Clock::now();
 
     // ---------------- actual simulation ------------------------------ //
     timeevolver.simulate(
-        timedata, problem, number_of_states, initial_value_json // ,
+        timedata, problem, number_of_states, initial_values // ,
         // number_of_controls, control_value_json
     );
     // ----------------------------------------------------------------- //
 
     wall_clock_sim_end = Clock::now();
+
+    // output to json:
+    try {
+      // add_results_to_json();
+      problem.add_results_to_json(output_json);
+      std::ofstream o(output_file);
+      o << output_json.dump(1, '\t');
+    } catch (std::exception &e) {
+      std::cout << "Printing to files failed with error message:"
+                << "\n###############################################\n"
+                << e.what()
+                << "\n###############################################\n\n"
+                << std::flush;
+    }
   }
 
   TimePoint wall_clock_end = Clock::now();

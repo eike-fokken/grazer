@@ -146,8 +146,17 @@ namespace Model {
     }
   }
 
-  std::filesystem::path const &Problem::get_output_file() const {
-    return output_file;
+  void Problem::set_initial_controls_of_timestep(
+      double time, Eigen::Ref<Eigen::VectorXd> controls,
+      nlohmann::json const &control_json) {
+    // for (auto &subproblem : subproblems) {
+    //   auto type = subproblem->get_type();
+    //   auto initial_json_iterator = control_json["subproblems"].find(type);
+    //   if (initial_json_iterator == initial_json["subproblems"].end()) {
+    //     gthrow(
+    //         {"Subproblem ", type, " has no initial values in the json
+    //         files!"});
+    //   }
   }
 
 } // namespace Model

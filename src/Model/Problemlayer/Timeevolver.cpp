@@ -1,6 +1,6 @@
 #include "Timeevolver.hpp"
 #include "Exception.hpp"
-#include "Problem.hpp"
+#include "Networkproblem.hpp"
 #include "make_schema.hpp"
 #include "schema_validation.hpp"
 
@@ -66,8 +66,8 @@ namespace Model {
       use_simplified_newton(timeevolver_data["use_simplified_newton"]) {}
 
   void Timeevolver::simulate(
-      Timedata timedata, Model::Problem &problem, int number_of_states,
-      nlohmann::json &problem_initial_json) {
+      Timedata timedata, Networkproblem::Networkproblem &problem,
+      int number_of_states, nlohmann::json &problem_initial_json) {
     double last_time = timedata.get_starttime() - timedata.get_delta_t();
     Eigen::VectorXd last_state(number_of_states);
 

@@ -79,8 +79,6 @@ namespace Model {
 
     void add_results_to_json();
 
-    std::filesystem::path const &get_output_file() const;
-
   private:
     /// collection of sub-problems
     std::vector<std::unique_ptr<Subproblem>> subproblems;
