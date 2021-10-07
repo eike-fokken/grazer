@@ -151,6 +151,31 @@ namespace Model::Networkproblem {
     }
   }
 
+  /////////////////////////////////////////////////////////
+  // cost function methods:
+  /////////////////////////////////////////////////////////
+
+  void Networkproblem::evaluate_cost(
+      Eigen::Ref<Eigen::VectorXd> cost_values, double last_time,
+      double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+      Eigen::Ref<Eigen::VectorXd const> const &control) const {
+    static_assert(false, "implement me!");
+  }
+
+  void Networkproblem::d_evaluate_cost_d_state(
+      Aux::Matrixhandler &cost_new_state_jacobian_handler, double last_time,
+      double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+      Eigen::Ref<Eigen::VectorXd const> const &control) const {
+    static_assert(false, "implement me!");
+  }
+
+  void Networkproblem::d_evaluate_cost_d_control(
+      Aux::Costgradienthandler &cost_control_jacobian_handler, double last_time,
+      double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+      Eigen::Ref<Eigen::VectorXd const> const &control) const {
+    static_assert(false, "implement me!");
+  }
+
   void Networkproblem::json_save(
       double time, Eigen::Ref<Eigen::VectorXd const> const &state) {
     for (Model::Networkproblem::Statecomponent *statecomponent :

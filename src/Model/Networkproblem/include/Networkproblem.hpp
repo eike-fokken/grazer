@@ -4,6 +4,11 @@
 #include <memory>
 #include <vector>
 
+namespace Aux {
+
+  class Costgradienthandler;
+}
+
 namespace Network {
   class Net;
 }
@@ -73,6 +78,50 @@ namespace Model::Networkproblem {
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
         Eigen::Ref<Eigen::VectorXd const> const &control);
+
+    /////////////////////////////////////////////////////////
+    // cost function methods:
+    /////////////////////////////////////////////////////////
+    void evaluate_cost(
+        Eigen::Ref<Eigen::VectorXd> cost_values, double last_time,
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+        Eigen::Ref<Eigen::VectorXd const> const &control) const;
+
+    void d_evaluate_cost_d_state(
+        Aux::Matrixhandler &cost_new_state_jacobian_handler, double last_time,
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+        Eigen::Ref<Eigen::VectorXd const> const &control) const;
+
+    void d_evaluate_cost_d_control(
+        Aux::Costgradienthandler &cost_control_jacobian_handler,
+        double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &state,
+        Eigen::Ref<Eigen::VectorXd const> const &control) const;
+
+    /////////////////////////////////////////////////////////
+    // inequality methods:
+    /////////////////////////////////////////////////////////
+
+    void evaluate_inequality(
+        Eigen::Ref<Eigen::VectorXd> inequality_values, double last_time,
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+        Eigen::Ref<Eigen::VectorXd const> const &control) const;
+
+    void d_evaluate_inequality_d_state(
+        Aux::Matrixhandler &inequality_new_state_jacobian_handler,
+        double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &state,
+        Eigen::Ref<Eigen::VectorXd const> const &control) const;
+
+    void d_evaluate_inequality_d_control(
+        Aux::Matrixhandler &inequality_control_jacobian_handler,
+        double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &state,
+        Eigen::Ref<Eigen::VectorXd const> const &control) const;
+
+    /////////////////////////////////////////////////////////
+    // other methods:
+    /////////////////////////////////////////////////////////
 
     void json_save(
         double time, Eigen::Ref<Eigen::VectorXd const> const &state) final;
