@@ -1,9 +1,11 @@
 #include "Networkproblem.hpp"
 #include "Controlcomponent.hpp"
+#include "Costcomponent.hpp"
 #include "Edge.hpp"
 #include "Equationcomponent.hpp"
 #include "Exception.hpp"
 #include "Idobject.hpp"
+#include "Inequalitycomponent.hpp"
 #include "Net.hpp"
 #include "Node.hpp"
 #include "Statecomponent.hpp"
@@ -37,6 +39,13 @@ namespace Model::Networkproblem {
       if (auto controlcomponent = dynamic_cast<Controlcomponent *>(node)) {
         controlcomponents.push_back(controlcomponent);
       }
+      if (auto costcomponent = dynamic_cast<Costcomponent *>(node)) {
+        costcomponents.push_back(costcomponent);
+      }
+      if (auto inequalitycomponent
+          = dynamic_cast<Inequalitycomponent *>(node)) {
+        inequalitycomponents.push_back(inequalitycomponent);
+      }
     }
 
     for (Network::Edge *edge : network->get_edges()) {
@@ -48,6 +57,13 @@ namespace Model::Networkproblem {
       }
       if (auto controlcomponent = dynamic_cast<Controlcomponent *>(edge)) {
         controlcomponents.push_back(controlcomponent);
+      }
+      if (auto costcomponent = dynamic_cast<Costcomponent *>(edge)) {
+        costcomponents.push_back(costcomponent);
+      }
+      if (auto inequalitycomponent
+          = dynamic_cast<Inequalitycomponent *>(edge)) {
+        inequalitycomponents.push_back(inequalitycomponent);
       }
     }
   }

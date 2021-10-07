@@ -15,6 +15,8 @@ namespace Model::Networkproblem {
   class Equationcomponent;
   class Statecomponent;
   class Controlcomponent;
+  class Costcomponent;
+  class Inequalitycomponent;
 
   // This class implements a Subproblem, that builds the model equations from a
   // network.
@@ -67,6 +69,8 @@ namespace Model::Networkproblem {
     std::vector<Equationcomponent *> equationcomponents;
     std::vector<Statecomponent *> statecomponents;
     std::vector<Controlcomponent *> controlcomponents;
+    std::vector<Costcomponent *> costcomponents;
+    std::vector<Inequalitycomponent *> inequalitycomponents;
 
     int reserve_state_indices(int const next_free_index) final;
     int reserve_control_indices(int const next_free_index) final;
