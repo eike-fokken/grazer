@@ -58,6 +58,12 @@ namespace Model {
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const;
 
+    void d_evalutate_d_control(
+        Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state,
+        Eigen::Ref<Eigen::VectorXd const> const &control) const;
+
     void json_save(double time, Eigen::Ref<Eigen::VectorXd const> const &state);
 
     /// As we have unique pointers, we can only give back a pointer to our
@@ -66,6 +72,10 @@ namespace Model {
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state, nlohmann::json &initialjson);
+
+    void set_initial_controls_of_timestep(
+        double time, Eigen::Ref<Eigen::VectorXd> controls,
+        nlohmann::json const &control_json);
 
     void add_results_to_json();
 

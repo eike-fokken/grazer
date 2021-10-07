@@ -55,18 +55,18 @@ namespace Model {
 
     virtual void add_results_to_json(nlohmann::json &new_output) = 0;
 
-    // Reserves indices from the state vector
-    // @param int next_free_index the first non-reserved index of the state
-    // vector.
-    // @returns int next_free_index the new first non-reserved index of the
-    // state vector.
+    /// Reserves indices from the state vector
+    /// @param int next_free_index the first non-reserved index of the state
+    /// vector.
+    /// @returns int next_free_index the new first non-reserved index of the
+    /// state vector.
     int set_state_indices(int const next_free_index);
 
-    // Reserves indices from the control vector
-    // @param int next_free_index the first non-reserved index of the control
-    // vector.
-    // @returns int next_free_index the new first non-reserved index of the
-    // control vector.
+    /// Reserves indices from the control vector
+    /// @param int next_free_index the first non-reserved index of the control
+    /// vector.
+    /// @returns int next_free_index the new first non-reserved index of the
+    /// control vector.
     int set_control_indices(int const next_free_index);
 
     virtual void set_initial_values(
@@ -80,8 +80,6 @@ namespace Model {
     int get_number_of_controls() const;
     int get_start_control_index() const;
     int get_after_control_index() const;
-
-    // void set_sporadic_state_indices(std::vector<int> indices);
 
   private:
     int start_state_index{0};
