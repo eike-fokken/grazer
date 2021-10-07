@@ -9,32 +9,17 @@
         "end_time": 18000,
         "desired_delta_t": 450
     },
-    "initial_values":{
-        "subproblems":
-        {
-            "Network_problem":
-            {
-                "initial_json":"initial.json"
-            }
-        }
-    },
     "problem_data":
     {
-        "subproblems":
-        {
-            "Network_problem":
-            {
-                "defaults":{
-                    "Pipe":{
-                        "balancelaw": "Isothermaleulerequation",
-                        "scheme": "Implicitboxscheme",
-                        "desired_delta_x": 1000
-                    }
-                },
-                "topology_json":"topology.json",
-                "boundary_json":"boundary.json",
-                "control_json": {}
+        "defaults":{
+            "Pipe":{
+                "balancelaw": "Isothermaleulerequation",
+                "scheme": "Implicitboxscheme",
+                "desired_delta_x": 1000
             }
-        }
+        },
+        "topology_json":"topology.json",
+        "boundary_json":"boundary.json",
+        "control_json": {}
     }
 }
