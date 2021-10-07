@@ -73,6 +73,11 @@ namespace Model {
         Eigen::Ref<Eigen::VectorXd> new_state, nlohmann::json initial_json)
         = 0;
 
+    virtual void set_initial_controls_of_timestep(
+        double time, Eigen::Ref<Eigen::VectorXd> controls,
+        nlohmann::json const &control_json)
+        = 0;
+
     int get_number_of_states() const;
     int get_start_state_index() const;
     int get_after_state_index() const;
