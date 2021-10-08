@@ -110,8 +110,7 @@ namespace Model::Networkproblem {
 
     void set_upper_bounds(Eigen::Ref<Eigen::VectorXd> upper_bounds) override;
 
-  private:
-    int get_number_of_controls() const override;
+    int set_control_indices(int next_free_index) override;
 
     /////////////////////////////////////////////////////////
     // cost function methods:
@@ -154,8 +153,7 @@ namespace Model::Networkproblem {
         Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const override;
 
-  private:
-    int get_number_of_inequalities() const override;
+    int set_inequality_indices(int next_free_index) override;
 
     /////////////////////////////////////////////////////////
     // other methods:

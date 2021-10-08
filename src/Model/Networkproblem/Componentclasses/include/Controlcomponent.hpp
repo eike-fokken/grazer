@@ -6,18 +6,24 @@
 namespace Aux {
   class Matrixhandler;
 }
-
 namespace Model::Networkproblem {
+  class SimpleControlcomponent;
+
   class Controlcomponent : public Equation_base {
+    /** \brief SimpleControlcomponent is a friend of Controlcomponent to
+     * give it access to #start_control_index and #after_control_index.
+     */
+    friend class SimpleControlcomponent;
+
   public:
     virtual ~Controlcomponent(){};
 
     /** \brief evaluates the model equations into rootvalues.
      *
-     * @param[out] rootvalues Results of the model equations, when evaluated on
-     * the other parameters.
-     * @param last_time time point of the last time step. Usually important for
-     * PDEs
+     * @param[out] rootvalues Results of the model equations, when evaluated
+     * on the other parameters.
+     * @param last_time time point of the last time step. Usually important
+     * for PDEs
      * @param new_time time point of the current time step.
      * @param last_state value of the state at last time step.
      * @param new_state value of the state at current time step.
@@ -30,12 +36,12 @@ namespace Model::Networkproblem {
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
 
-    /** \brief Carries out steps that need to be taken before the Newton method
-     * for a time step can start.
+    /** \brief Carries out steps that need to be taken before the Newton
+     * method for a time step can start.
      *
      * For most components does nothing.
-     * @param last_time time point of the last time step. Usually important for
-     * PDEs
+     * @param last_time time point of the last time step. Usually important
+     * for PDEs
      * @param new_time time point of the current time step.
      * @param last_state value of the state at last time step.
      * @param new_state value of the state at current time step.
@@ -70,7 +76,8 @@ namespace Model::Networkproblem {
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
 
-    /** \brief derivative of Controlcomponent::evaluate w.r.t. \p last_state.
+    /** \brief derivative of Controlcomponent::evaluate w.r.t. \p
+     * last_state.
      *
      * evaluates the derivative of Controlcomponent::evaluate and hands
      * the result to jacobianhandler, which will fill the Jacobi matrix.
@@ -119,7 +126,7 @@ namespace Model::Networkproblem {
      * claimed by another component.
      * @returns The new lowest free index.
      */
-    int set_control_indices(int next_free_index);
+    virtual int set_control_indices(int next_free_index) = 0;
 
     /** \brief getter for #start_control_index
      */
@@ -145,37 +152,28 @@ namespace Model::Networkproblem {
     /** \brief Sets the lower bounds on the controls of this Component.
      *
      * \param[out] lower_bounds This vector is filled at the indices between
-     * #start_control_index and #after_control_index with values for lower box
-     * constraints.
+     * #start_control_index and #after_control_index with values for lower
+     * box constraints.
      */
     virtual void set_lower_bounds(Eigen::Ref<Eigen::VectorXd> lower_bounds) = 0;
 
     /** \brief Sets the upper bounds on the controls of this Component.
      *
      * \param[out] upper_bounds This vector is filled at the indices between
-     * #start_control_index and #after_control_index with values for upper box
-     * constraints.
+     * #start_control_index and #after_control_index with values for upper
+     * box constraints.
      */
     virtual void set_upper_bounds(Eigen::Ref<Eigen::VectorXd> upper_bounds) = 0;
 
     static std::optional<nlohmann::json> get_control_schema();
 
   private:
-    /** \brief Returns number of controls needed by this component per time
-     *  step.
-     *
-     *  Often this will be implemented by a function returning a literal
-     *  int like 1.
-     *  @returns number of control variables needed by this component
-     */
-    virtual int get_number_of_controls() const = 0;
-
     /** \brief The first control index, this Controlcomponent "owns".
      */
     int start_control_index{-1};
 
-    /** \brief The first control index after #start_control_index, that is not
-     * "owned" by this Controlcomponent.
+    /** \brief The first control index after #start_control_index, that is
+     * not "owned" by this Controlcomponent.
      */
     int after_control_index{-1};
   };

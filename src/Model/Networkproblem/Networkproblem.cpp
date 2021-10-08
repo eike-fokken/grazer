@@ -270,14 +270,6 @@ namespace Model::Networkproblem {
     }
   }
 
-  int Networkproblem::get_number_of_controls() const {
-    assert(false); // Never call me!
-    gthrow(
-        {"The member function get_number_of_controls() in Networkproblem "
-         "should "
-         "never be called!"});
-  }
-
   void
   Networkproblem::set_lower_bounds(Eigen::Ref<Eigen::VectorXd> lower_bounds) {
     for (Model::Networkproblem::Controlcomponent *controlcomponent :
@@ -293,6 +285,14 @@ namespace Model::Networkproblem {
       controlcomponent->set_upper_bounds(upper_bounds);
     }
   }
+
+  int Networkproblem::set_control_indices(int next_free_index) {
+    for (Controlcomponent *controlcomponent : controlcomponents) {
+      next_free_index = controlcomponent->set_control_indices(next_free_index);
+    }
+    return next_free_index;
+  }
+
   /////////////////////////////////////////////////////////
   // cost function methods:
   /////////////////////////////////////////////////////////
@@ -367,12 +367,12 @@ namespace Model::Networkproblem {
     }
   }
 
-  int Networkproblem::get_number_of_inequalities() const {
-    assert(false); // Never call me!
-    gthrow(
-        {"The member function get_number_of_inequalities() in Networkproblem "
-         "should "
-         "never be called!"});
+  int Networkproblem::set_inequality_indices(int next_free_index) {
+    for (Inequalitycomponent *inequalitycomponent : inequalitycomponents) {
+      next_free_index
+          = inequalitycomponent->set_inequality_indices(next_free_index);
+    }
+    return next_free_index;
   }
 
   /////////////////////////////////////////////////////////

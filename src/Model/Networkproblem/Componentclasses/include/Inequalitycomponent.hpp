@@ -7,7 +7,13 @@ namespace Aux {
 }
 
 namespace Model::Networkproblem {
+  class SimpleInequalitycomponent;
+
   class Inequalitycomponent {
+    /** \brief SimpleInequalitycomponent is a friend of Inequalitycomponent to
+     * give it access to #start_inequality_index and #after_inequality_index.
+     */
+    friend class SimpleInequalitycomponent;
 
   public:
     virtual ~Inequalitycomponent(){};
@@ -32,11 +38,11 @@ namespace Model::Networkproblem {
     /** \brief This function sets the indices #start_inequality_index and
      * #after_inequality_index.
      *
-     * @param next_free_index The first inequality index that is currently not
-     * claimed by another component.
+     * @param next_free_index The first inequality index that is currently
+     * not claimed by another component.
      * @returns The new lowest free index.
      */
-    int set_inequality_indices(int const next_free_index);
+    virtual int set_inequality_indices(int const next_free_index) = 0;
 
     /** \brief getter for #start_inequality_index
      */
@@ -47,16 +53,6 @@ namespace Model::Networkproblem {
     int get_after_inequality_index() const;
 
   private:
-    /** \brief Returns number of inequalities set by this component.
-     *
-     * Often this will be implemented by a function returning a literal
-     * int like 2.  But it may be only known after construction, therefore this
-     * is not done in the constructor.
-     *
-     * @returns number of inequalities set by this component
-     */
-    virtual int get_number_of_inequalities() const = 0;
-
     /** \brief The first index, this Inequalitycomponent "owns".
      */
     int start_inequality_index{-1};
