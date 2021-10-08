@@ -112,6 +112,8 @@ namespace Model::Networkproblem {
 
     int set_control_indices(int next_free_index) override;
 
+    void setup() override;
+
     /////////////////////////////////////////////////////////
     // cost function methods:
     /////////////////////////////////////////////////////////

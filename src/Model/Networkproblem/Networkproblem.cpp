@@ -131,13 +131,6 @@ namespace Model::Networkproblem {
     for (Statecomponent *statecomponent : statecomponents) {
       next_free_index = statecomponent->set_state_indices(next_free_index);
     }
-    for (Equationcomponent *equationcomponent : equationcomponents) {
-      equationcomponent->setup();
-    }
-    for (Controlcomponent *controlcomponent : controlcomponents) {
-      controlcomponent->setup();
-    }
-
     return next_free_index;
   }
 
@@ -291,6 +284,15 @@ namespace Model::Networkproblem {
       next_free_index = controlcomponent->set_control_indices(next_free_index);
     }
     return next_free_index;
+  }
+
+  void Networkproblem::setup() {
+    for (Equationcomponent *equationcomponent : equationcomponents) {
+      equationcomponent->setup();
+    }
+    for (Controlcomponent *controlcomponent : controlcomponents) {
+      controlcomponent->setup();
+    }
   }
 
   /////////////////////////////////////////////////////////

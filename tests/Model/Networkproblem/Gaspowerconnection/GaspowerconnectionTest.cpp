@@ -283,6 +283,7 @@ TEST_F(GaspowerconnectionTEST, evaluate_power_controlled) {
       {{"Gaspowerconnection", {gp_json}}});
   auto netprob = make_Networkproblem(netprob_json);
   auto number_of_variables = netprob->set_state_indices(0);
+netprob->setup();
 
   double last_time = 0.0;
   double new_time = 1.0;
@@ -369,6 +370,7 @@ TEST_F(GaspowerconnectionTEST, evaluate_gas_controlled) {
       {{"Gaspowerconnection", {gp_json}}});
   auto netprob = make_Networkproblem(netprob_json);
   auto number_of_variables = netprob->set_state_indices(0);
+netprob->setup();
 
   double last_time = 0.0;
   double new_time = 1.0;
@@ -453,6 +455,7 @@ TEST_F(GaspowerconnectionTEST, d_evalutate_d_new_state_power_driven) {
       {{"Gaspowerconnection", {gp_json}}});
   auto netprob = make_Networkproblem(netprob_json);
   auto number_of_variables = netprob->set_state_indices(0);
+netprob->setup();
 
   double last_time = 0.0;
   double new_time = 1.0;
@@ -560,6 +563,7 @@ TEST_F(GaspowerconnectionTEST, d_evalutate_d_new_state_gas_driven) {
       {{"Gaspowerconnection", {gp_json}}});
   auto netprob = make_Networkproblem(netprob_json);
   auto number_of_variables = netprob->set_state_indices(0);
+netprob->setup();
 
   double last_time = 0.0;
   double new_time = 1.0;

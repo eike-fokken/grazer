@@ -49,6 +49,7 @@ int grazer::run(std::filesystem::path directory_path) {
         = Model::Networkproblem::build_net(problem_json, componentfactory);
     Model::Networkproblem::Networkproblem problem(std::move(net_ptr));
     auto number_of_states = problem.set_state_indices(0);
+    problem.setup();
     // auto number_of_controls_per_time_step = problem.set_control_indices(0);
     std::cout << "data read" << std::endl;
 

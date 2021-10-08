@@ -395,7 +395,9 @@ PowerTEST::default_setup() {
       {{"Transmissionline", {tl1_json, tl2_json}}});
 
   auto netprob = make_Networkproblem(np_json);
-  int number_of_variables = netprob->set_state_indices(0);
+  auto number_of_variables = netprob->set_state_indices(0);
+
+  netprob->setup();
 
   Eigen::Vector4d cond1(
       std::numeric_limits<double>::quiet_NaN(),
