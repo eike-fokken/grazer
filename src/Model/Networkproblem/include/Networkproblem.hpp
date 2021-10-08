@@ -81,21 +81,6 @@ namespace Model::Networkproblem {
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const override;
 
-    /** \brief derivative of evaluate w.r.t. \p control.
-     *
-     * evaluates the derivative of evaluate and hands
-     * the result to jacobianhandler, which will fill the Jacobi matrix.
-     *
-     * @param jacobianhandler A helper object, that fills a sparse matrix
-     * in an efficient way.
-     * @param last_time time point of the last time step. Usually important
-     * for PDEs
-     * @param new_time time point of the current time step.
-     * @param last_state value of the state at last time step.
-     * @param new_state value of the state at current time step.
-     * @param last_control value of the control at last time step.
-     * @param control value of the control at current time step.
-     */
     void d_evalutate_d_control(
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
