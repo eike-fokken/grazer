@@ -10,6 +10,7 @@
 #include "Node.hpp"
 #include "Statecomponent.hpp"
 #include <Eigen/Sparse>
+#include <cassert>
 #include <cstddef>
 #include <iostream>
 #include <iterator>
@@ -67,6 +68,75 @@ namespace Model::Networkproblem {
       }
     }
   }
+
+  ////////////////////////////////////////////////////////////////////////////
+  // Statecomponent methods
+  ////////////////////////////////////////////////////////////////////////////
+
+  void Networkproblem::json_save(
+      double time, Eigen::Ref<Eigen::VectorXd const> const &state) {
+    for (Model::Networkproblem::Statecomponent *statecomponent :
+         statecomponents) {
+      statecomponent->json_save(time, state);
+    }
+  }
+
+  void Networkproblem::add_results_to_json(nlohmann::json &new_output) {
+    for (Model::Networkproblem::Statecomponent *statecomponent :
+         statecomponents) {
+      statecomponent->add_results_to_json(new_output);
+    }
+  }
+
+  void Networkproblem::set_initial_values(
+      Eigen::Ref<Eigen::VectorXd> new_state,
+      nlohmann::json const &initial_json) {
+
+    std::vector<Network::Idobject *> idcomponents;
+    idcomponents.reserve(statecomponents.size());
+
+    for (Statecomponent *statecomponent : statecomponents) {
+      auto idcomponent = dynamic_cast<Network::Idobject *>(statecomponent);
+      if (idcomponent == nullptr) {
+        gthrow(
+            {"A state component is not of type Idobject, which should "
+             "never happen."});
+      }
+      idcomponents.push_back(idcomponent);
+    }
+
+    for (auto const &component : {"nodes", "connections"}) {
+      for (auto const &componenttype : initial_json[component]) {
+        for (auto const &componentjson : componenttype) {
+          auto component_id = componentjson["id"];
+          auto find_id = [component_id](Network::Idobject const *x) {
+            return component_id == x->get_id();
+          };
+          auto iterator
+              = std::find_if(idcomponents.begin(), idcomponents.end(), find_id);
+          if (iterator != idcomponents.end()) {
+            auto index = iterator - idcomponents.begin();
+            statecomponents[static_cast<size_t>(index)]->set_initial_values(
+                new_state, componentjson);
+          } else {
+            std::cout
+                << "Note: Component with id " << component_id
+                << "appears in the initial values but not in the topology."
+                << std::endl;
+          }
+        }
+      }
+    }
+  }
+
+  int Networkproblem::get_number_of_states() const {
+    assert(false); // implement me!
+    return 0;
+  }
+
+  ////////////////////////////////////////////////////////////////////////////
+  // Controlcomponent methods
+  ////////////////////////////////////////////////////////////////////////////
 
   void Networkproblem::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time, double new_time,
@@ -143,91 +213,11 @@ namespace Model::Networkproblem {
       Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
-      Eigen::Ref<Eigen::VectorXd const> const &control) {
+      Eigen::Ref<Eigen::VectorXd const> const &control) const {
     for (Model::Networkproblem::Controlcomponent *controlcomponent :
          controlcomponents) {
       controlcomponent->d_evalutate_d_control(
           jacobianhandler, last_time, new_time, last_state, new_state, control);
-    }
-  }
-
-  /////////////////////////////////////////////////////////
-  // cost function methods:
-  /////////////////////////////////////////////////////////
-
-  void Networkproblem::evaluate_cost(
-      Eigen::Ref<Eigen::VectorXd> cost_values, double last_time,
-      double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
-      Eigen::Ref<Eigen::VectorXd const> const &control) const {
-    static_assert(false, "implement me!");
-  }
-
-  void Networkproblem::d_evaluate_cost_d_state(
-      Aux::Matrixhandler &cost_new_state_jacobian_handler, double last_time,
-      double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
-      Eigen::Ref<Eigen::VectorXd const> const &control) const {
-    static_assert(false, "implement me!");
-  }
-
-  void Networkproblem::d_evaluate_cost_d_control(
-      Aux::Costgradienthandler &cost_control_jacobian_handler, double last_time,
-      double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
-      Eigen::Ref<Eigen::VectorXd const> const &control) const {
-    static_assert(false, "implement me!");
-  }
-
-  void Networkproblem::json_save(
-      double time, Eigen::Ref<Eigen::VectorXd const> const &state) {
-    for (Model::Networkproblem::Statecomponent *statecomponent :
-         statecomponents) {
-      statecomponent->json_save(time, state);
-    }
-  }
-
-  void Networkproblem::add_results_to_json(nlohmann::json &new_output) {
-    for (Model::Networkproblem::Statecomponent *statecomponent :
-         statecomponents) {
-      statecomponent->add_results_to_json(new_output);
-    }
-  }
-
-  void Networkproblem::set_initial_values(
-      Eigen::Ref<Eigen::VectorXd> new_state, nlohmann::json initial_json) {
-
-    std::vector<Network::Idobject *> idcomponents;
-    idcomponents.reserve(statecomponents.size());
-
-    for (Statecomponent *statecomponent : statecomponents) {
-      auto idcomponent = dynamic_cast<Network::Idobject *>(statecomponent);
-      if (idcomponent == nullptr) {
-        gthrow(
-            {"A state component is not of type Idobject, which should "
-             "never happen."});
-      }
-      idcomponents.push_back(idcomponent);
-    }
-
-    for (auto const &component : {"nodes", "connections"}) {
-      for (auto const &componenttype : initial_json[component]) {
-        for (auto const &componentjson : componenttype) {
-          auto component_id = componentjson["id"];
-          auto find_id = [component_id](Network::Idobject const *x) {
-            return component_id == x->get_id();
-          };
-          auto iterator
-              = std::find_if(idcomponents.begin(), idcomponents.end(), find_id);
-          if (iterator != idcomponents.end()) {
-            auto index = iterator - idcomponents.begin();
-            statecomponents[static_cast<size_t>(index)]->set_initial_values(
-                new_state, componentjson);
-          } else {
-            std::cout
-                << "Note: Component with id " << component_id
-                << "appears in the initial values but not in the topology."
-                << std::endl;
-          }
-        }
-      }
     }
   }
 
@@ -273,9 +263,108 @@ namespace Model::Networkproblem {
     }
   }
 
+  int Networkproblem::get_number_of_controls() const { return -1; }
+
+  void
+  Networkproblem::set_lower_bounds(Eigen::Ref<Eigen::VectorXd> lower_bounds) {
+    for (Model::Networkproblem::Controlcomponent *controlcomponent :
+         controlcomponents) {
+      controlcomponent->set_lower_bounds(lower_bounds);
+    }
+  }
+
+  void
+  Networkproblem::set_upper_bounds(Eigen::Ref<Eigen::VectorXd> upper_bounds) {
+    for (Model::Networkproblem::Controlcomponent *controlcomponent :
+         controlcomponents) {
+      controlcomponent->set_upper_bounds(upper_bounds);
+    }
+  }
+  /////////////////////////////////////////////////////////
+  // cost function methods:
+  /////////////////////////////////////////////////////////
+
+  void Networkproblem::evaluate_cost(
+      Eigen::Ref<Eigen::VectorXd> cost_values, double last_time,
+      double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+      Eigen::Ref<Eigen::VectorXd const> const &control) const {
+    for (Model::Networkproblem::Costcomponent *costcomponent : costcomponents) {
+      costcomponent->evaluate_cost(
+          cost_values, last_time, new_time, state, control);
+    }
+  }
+
+  void Networkproblem::d_evaluate_cost_d_state(
+      Aux::Matrixhandler &cost_new_state_jacobian_handler, double last_time,
+      double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+      Eigen::Ref<Eigen::VectorXd const> const &control) const {
+    for (Model::Networkproblem::Costcomponent *costcomponent : costcomponents) {
+      costcomponent->d_evaluate_cost_d_state(
+          cost_new_state_jacobian_handler, last_time, new_time, state, control);
+    }
+  }
+
+  void Networkproblem::d_evaluate_cost_d_control(
+      Aux::Costgradienthandler &cost_control_jacobian_handler, double last_time,
+      double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+      Eigen::Ref<Eigen::VectorXd const> const &control) const {
+    for (Model::Networkproblem::Costcomponent *costcomponent : costcomponents) {
+      costcomponent->d_evaluate_cost_d_control(
+          cost_control_jacobian_handler, last_time, new_time, state, control);
+    }
+  }
+
+  /////////////////////////////////////////////////////////
+  // inequality methods:
+  /////////////////////////////////////////////////////////
+
+  void Networkproblem::evaluate_inequality(
+      Eigen::Ref<Eigen::VectorXd> inequality_values, double last_time,
+      double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+      Eigen::Ref<Eigen::VectorXd const> const &control) const {
+    for (Model::Networkproblem::Inequalitycomponent *inequalitycomponent :
+         inequalitycomponents) {
+      inequalitycomponent->evaluate_inequality(
+          inequality_values, last_time, new_time, state, control);
+    }
+  }
+
+  void Networkproblem::d_evaluate_inequality_d_state(
+      Aux::Matrixhandler &inequality_new_state_jacobian_handler,
+      double last_time, double new_time,
+      Eigen::Ref<Eigen::VectorXd const> const &state,
+      Eigen::Ref<Eigen::VectorXd const> const &control) const {
+    for (Model::Networkproblem::Inequalitycomponent *inequalitycomponent :
+         inequalitycomponents) {
+      inequalitycomponent->d_evaluate_inequality_d_state(
+          inequality_new_state_jacobian_handler, last_time, new_time, state,
+          control);
+    }
+  }
+
+  void Networkproblem::d_evaluate_inequality_d_control(
+      Aux::Matrixhandler &inequality_control_jacobian_handler, double last_time,
+      double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+      Eigen::Ref<Eigen::VectorXd const> const &control) const {
+    for (Model::Networkproblem::Inequalitycomponent *inequalitycomponent :
+         inequalitycomponents) {
+      inequalitycomponent->d_evaluate_inequality_d_control(
+          inequality_control_jacobian_handler, last_time, new_time, state,
+          control);
+    }
+  }
+
+  int Networkproblem::get_number_of_inequalities() const {
+    assert(false); // implement me!
+  }
+
+  /////////////////////////////////////////////////////////
+  // other methods:
+  /////////////////////////////////////////////////////////
+
   Network::Net const &Networkproblem::get_network() const { return *network; }
 
-  int Networkproblem::reserve_state_indices(int const next_free_index) {
+  int Networkproblem::reserve_state_indices(int next_free_index) {
     int free_index = next_free_index;
     for (Statecomponent *statecomponent : statecomponents) {
       free_index = statecomponent->set_state_indices(free_index);
@@ -287,7 +376,7 @@ namespace Model::Networkproblem {
     return free_index;
   }
 
-  int Networkproblem::reserve_control_indices(int const next_free_index) {
+  int Networkproblem::reserve_control_indices(int next_free_index) {
     int free_index = next_free_index;
     for (Controlcomponent *controlcomponent : controlcomponents) {
       free_index = controlcomponent->set_control_indices(free_index);

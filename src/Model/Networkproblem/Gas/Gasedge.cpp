@@ -66,7 +66,7 @@ namespace Model::Networkproblem::Gas {
   int Gasedge::get_ending_state_index() const {
 
     // This is a hack and should be refactored
-    if (get_number_of_states() == 2) {
+    if (get_after_state_index() - get_start_state_index() == 2) {
       auto *this_idobject = dynamic_cast<Network::Idobject const *>(this);
       if (!this_idobject) {
         gthrow({"This gasedge is not and Idobject, which should never happen!"})

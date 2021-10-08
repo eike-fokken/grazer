@@ -128,7 +128,7 @@ namespace Model::Networkproblem {
      * claimed by another component.
      * @returns The new lowest free index.
      */
-    int set_control_indices(int const next_free_index);
+    int set_control_indices(int next_free_index);
 
     /** \brief getter for #start_control_index
      */

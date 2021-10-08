@@ -6,14 +6,6 @@
 namespace Model::Networkproblem {
   class Statecomponent {
   public:
-    /// \brief Returns number of state variables needed by this component.
-    ///
-    /// Often this will be implemented by a function returning a literal
-    /// int like 2. But for PDES its value is only known after construction.
-    ///
-    /// @returns number of state variables needed by this component
-    virtual int get_number_of_states() const = 0;
-
     static nlohmann::json get_initial_schema();
 
     /// \brief This function sets the indices #start_state_index and
@@ -22,7 +14,7 @@ namespace Model::Networkproblem {
     /// @param next_free_index The first state index that is currently not
     /// claimed by another component.
     /// @returns The new lowest free index.
-    int set_state_indices(int const next_free_index);
+    int set_state_indices(int next_free_index);
 
     /// \brief getter for #start_state_index
     int get_start_state_index() const;
@@ -56,6 +48,14 @@ namespace Model::Networkproblem {
     nlohmann::json &get_output_json_ref();
 
   private:
+    /// \brief Returns number of state variables needed by this component.
+    ///
+    /// Often this will be implemented by a function returning a literal
+    /// int like 2. But for PDES its value is only known after construction.
+    ///
+    /// @returns number of state variables needed by this component
+    virtual int get_number_of_states() const = 0;
+
     /// \brief holds the computed values of this component.
     ///
     /// Contains exactly two keys: "time" and "data"

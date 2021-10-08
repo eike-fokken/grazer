@@ -7,7 +7,7 @@ namespace Model::Networkproblem {
       Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*control*/) {}
 
-  int Controlcomponent::set_control_indices(int const next_free_index) {
+  int Controlcomponent::set_control_indices(int next_free_index) {
     start_control_index = next_free_index;
     int number_of_controls = get_number_of_controls();
     after_control_index = next_free_index + number_of_controls;

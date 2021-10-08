@@ -1,5 +1,8 @@
 #pragma once
-#include "Subproblem.hpp"
+#include "Controlcomponent.hpp"
+#include "Costcomponent.hpp"
+#include "Inequalitycomponent.hpp"
+#include "Statecomponent.hpp"
 #include <Eigen/Sparse>
 #include <memory>
 #include <vector>
@@ -18,27 +21,47 @@ namespace Network {
 namespace Model::Networkproblem {
 
   class Equationcomponent;
-  class Statecomponent;
-  class Controlcomponent;
-  class Costcomponent;
-  class Inequalitycomponent;
 
-  // This class implements a Subproblem, that builds the model equations from a
+  // This class defines a problem, that builds the model equations from a
   // network.
-  class Networkproblem final : public Subproblem {
+  class Networkproblem final :
+      public Statecomponent,
+      public Controlcomponent,
+      public Inequalitycomponent,
+      public Costcomponent {
 
   public:
-    std::string get_type() const override;
+    std::string get_type() const;
 
     ~Networkproblem() override; // override{};
 
     Networkproblem(std::unique_ptr<Network::Net> _network);
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Statecomponent methods
+    ////////////////////////////////////////////////////////////////////////////
+
+    void json_save(
+        double time, Eigen::Ref<Eigen::VectorXd const> const &state) override;
+
+    void add_results_to_json(nlohmann::json &new_output) override;
+
+    void set_initial_values(
+        Eigen::Ref<Eigen::VectorXd> new_state,
+        nlohmann::json const &initial_json) override;
+
+  private:
+    int get_number_of_states() const override;
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Controlcomponent methods
+    ////////////////////////////////////////////////////////////////////////////
+  public:
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const final;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const override;
 
     void prepare_timestep(
         double last_time, double new_time,
@@ -77,7 +100,17 @@ namespace Model::Networkproblem {
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &control);
+        Eigen::Ref<Eigen::VectorXd const> const &control) const override;
+
+    void set_initial_controls_of_timestep(
+        double time, Eigen::Ref<Eigen::VectorXd> controls,
+        nlohmann::json const &control_json) override;
+
+    int get_number_of_controls() const override;
+
+    void set_lower_bounds(Eigen::Ref<Eigen::VectorXd> lower_bounds) override;
+
+    void set_upper_bounds(Eigen::Ref<Eigen::VectorXd> upper_bounds) override;
 
     /////////////////////////////////////////////////////////
     // cost function methods:
@@ -85,18 +118,18 @@ namespace Model::Networkproblem {
     void evaluate_cost(
         Eigen::Ref<Eigen::VectorXd> cost_values, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const override;
 
     void d_evaluate_cost_d_state(
         Aux::Matrixhandler &cost_new_state_jacobian_handler, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const override;
 
     void d_evaluate_cost_d_control(
         Aux::Costgradienthandler &cost_control_jacobian_handler,
         double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const override;
 
     /////////////////////////////////////////////////////////
     // inequality methods:
@@ -105,36 +138,25 @@ namespace Model::Networkproblem {
     void evaluate_inequality(
         Eigen::Ref<Eigen::VectorXd> inequality_values, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const override;
 
     void d_evaluate_inequality_d_state(
         Aux::Matrixhandler &inequality_new_state_jacobian_handler,
         double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const override;
 
     void d_evaluate_inequality_d_control(
         Aux::Matrixhandler &inequality_control_jacobian_handler,
         double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const override;
+
+    int get_number_of_inequalities() const override;
 
     /////////////////////////////////////////////////////////
     // other methods:
     /////////////////////////////////////////////////////////
-
-    void json_save(
-        double time, Eigen::Ref<Eigen::VectorXd const> const &state) final;
-
-    void add_results_to_json(nlohmann::json &new_output) final;
-
-    virtual void set_initial_values(
-        Eigen::Ref<Eigen::VectorXd> new_state,
-        nlohmann::json initial_json) override;
-
-    void set_initial_controls_of_timestep(
-        double time, Eigen::Ref<Eigen::VectorXd> controls,
-        nlohmann::json const &control_json) override;
 
     Network::Net const &get_network() const;
 
@@ -146,8 +168,8 @@ namespace Model::Networkproblem {
     std::vector<Costcomponent *> costcomponents;
     std::vector<Inequalitycomponent *> inequalitycomponents;
 
-    int reserve_state_indices(int const next_free_index) final;
-    int reserve_control_indices(int const next_free_index) final;
+    int reserve_state_indices(int next_free_index);
+    int reserve_control_indices(int next_free_index);
   };
 
 } // namespace Model::Networkproblem

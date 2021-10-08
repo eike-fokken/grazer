@@ -15,7 +15,7 @@ namespace Model::Networkproblem {
     output_json["data"] = nlohmann::json::array();
   }
 
-  int Statecomponent::set_state_indices(int const next_free_index) {
+  int Statecomponent::set_state_indices(int next_free_index) {
     start_state_index = next_free_index;
     int number_of_states = get_number_of_states();
     after_state_index = next_free_index + number_of_states;

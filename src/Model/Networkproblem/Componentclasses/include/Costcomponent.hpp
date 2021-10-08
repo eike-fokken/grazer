@@ -10,6 +10,9 @@ namespace Model::Networkproblem {
   class Costcomponent {
 
   public:
+    Costcomponent(){};
+    Costcomponent(double _cost_weight);
+
     virtual ~Costcomponent(){};
 
     virtual void evaluate_cost(
@@ -31,6 +34,6 @@ namespace Model::Networkproblem {
     double get_cost_weight();
 
   private:
-    double cost_weight;
+    double cost_weight{1.0};
   };
 } // namespace Model::Networkproblem
