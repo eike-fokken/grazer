@@ -23,7 +23,13 @@ git submodule update --init --recursive --depth=1
 
 to fetch dependencies (`--depth=1` is not needed but cuts down the size tremendously).
 
-Next, install the [Ipopt solver](https://github.com/coin-or/Ipopt) into the `Ipopt` directory. Then run
+Note that on macOS it may be necessary to explicitly set the system SDK by
+
+``` bash
+echo "export SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> ~/.bash_profile && source ~/.bash_profile
+```
+
+Then run
 
 ```
 cmake -DCMAKE_BUILD_TYPE=Release -S . -B release
