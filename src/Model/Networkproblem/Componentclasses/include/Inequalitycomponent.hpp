@@ -29,16 +29,6 @@ namespace Model::Networkproblem {
         Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
 
-    /** \brief Returns number of inequalities set by this component.
-     *
-     * Often this will be implemented by a function returning a literal
-     * int like 2.  But it may be only known after construction, therefore this
-     * is not done in the constructor.
-     *
-     * @returns number of inequalities set by this component
-     */
-    virtual int get_number_of_inequalities() const = 0;
-
     /** \brief This function sets the indices #start_inequality_index and
      * #after_inequality_index.
      *
@@ -57,6 +47,16 @@ namespace Model::Networkproblem {
     int get_after_inequality_index() const;
 
   private:
+    /** \brief Returns number of inequalities set by this component.
+     *
+     * Often this will be implemented by a function returning a literal
+     * int like 2.  But it may be only known after construction, therefore this
+     * is not done in the constructor.
+     *
+     * @returns number of inequalities set by this component
+     */
+    virtual int get_number_of_inequalities() const = 0;
+
     /** \brief The first index, this Inequalitycomponent "owns".
      */
     int start_inequality_index{-1};

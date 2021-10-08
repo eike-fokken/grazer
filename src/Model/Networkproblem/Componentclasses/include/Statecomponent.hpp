@@ -4,7 +4,14 @@
 // #include "Equationcomponent.hpp"
 
 namespace Model::Networkproblem {
+  class SimpleStatecomponent;
+
   class Statecomponent {
+    /** \brief SimpleStatecomponent is a friend of Statecomponent to give it
+     * access to #start_state_index and #after_state_index.
+     */
+    friend class SimpleStatecomponent;
+
   public:
     static nlohmann::json get_initial_schema();
 
@@ -14,7 +21,7 @@ namespace Model::Networkproblem {
     /// @param next_free_index The first state index that is currently not
     /// claimed by another component.
     /// @returns The new lowest free index.
-    int set_state_indices(int next_free_index);
+    virtual int set_state_indices(int next_free_index) = 0;
 
     /// \brief getter for #start_state_index
     int get_start_state_index() const;
@@ -48,14 +55,6 @@ namespace Model::Networkproblem {
     nlohmann::json &get_output_json_ref();
 
   private:
-    /// \brief Returns number of state variables needed by this component.
-    ///
-    /// Often this will be implemented by a function returning a literal
-    /// int like 2. But for PDES its value is only known after construction.
-    ///
-    /// @returns number of state variables needed by this component
-    virtual int get_number_of_states() const = 0;
-
     /// \brief holds the computed values of this component.
     ///
     /// Contains exactly two keys: "time" and "data"
@@ -63,6 +62,7 @@ namespace Model::Networkproblem {
     /// Data holds an array of jsons, whose layout depends on the component in
     /// question.
     nlohmann::json component_output;
+
     /// \brief The first index, this Equationcomponent "owns".
     ///
     /// Most equation components write only to their own indices between

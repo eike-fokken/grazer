@@ -112,15 +112,6 @@ namespace Model::Networkproblem {
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
 
-    /** \brief Returns number of controls needed by this component per time
-     *  step.
-     *
-     *  Often this will be implemented by a function returning a literal
-     *  int like 1.
-     *  @returns number of control variables needed by this component
-     */
-    virtual int get_number_of_controls() const = 0;
-
     /** \brief This function sets the indices #start_control_index and
      * #after_control_index.
      *
@@ -170,6 +161,15 @@ namespace Model::Networkproblem {
     static std::optional<nlohmann::json> get_control_schema();
 
   private:
+    /** \brief Returns number of controls needed by this component per time
+     *  step.
+     *
+     *  Often this will be implemented by a function returning a literal
+     *  int like 1.
+     *  @returns number of control variables needed by this component
+     */
+    virtual int get_number_of_controls() const = 0;
+
     /** \brief The first control index, this Controlcomponent "owns".
      */
     int start_control_index{-1};

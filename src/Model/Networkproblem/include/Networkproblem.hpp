@@ -50,9 +50,9 @@ namespace Model::Networkproblem {
         Eigen::Ref<Eigen::VectorXd> new_state,
         nlohmann::json const &initial_json) override;
 
-  private:
-    int get_number_of_states() const override;
+    int set_state_indices(int next_free_index) override;
 
+  private:
     ////////////////////////////////////////////////////////////////////////////
     // Controlcomponent methods
     ////////////////////////////////////////////////////////////////////////////
@@ -106,15 +106,17 @@ namespace Model::Networkproblem {
         double time, Eigen::Ref<Eigen::VectorXd> controls,
         nlohmann::json const &control_json) override;
 
-    int get_number_of_controls() const override;
-
     void set_lower_bounds(Eigen::Ref<Eigen::VectorXd> lower_bounds) override;
 
     void set_upper_bounds(Eigen::Ref<Eigen::VectorXd> upper_bounds) override;
 
+  private:
+    int get_number_of_controls() const override;
+
     /////////////////////////////////////////////////////////
     // cost function methods:
     /////////////////////////////////////////////////////////
+  public:
     void evaluate_cost(
         Eigen::Ref<Eigen::VectorXd> cost_values, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
@@ -152,12 +154,13 @@ namespace Model::Networkproblem {
         Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const override;
 
+  private:
     int get_number_of_inequalities() const override;
 
     /////////////////////////////////////////////////////////
     // other methods:
     /////////////////////////////////////////////////////////
-
+  public:
     Network::Net const &get_network() const;
 
   private:
@@ -168,7 +171,6 @@ namespace Model::Networkproblem {
     std::vector<Costcomponent *> costcomponents;
     std::vector<Inequalitycomponent *> inequalitycomponents;
 
-    int reserve_state_indices(int next_free_index);
     int reserve_control_indices(int next_free_index);
   };
 

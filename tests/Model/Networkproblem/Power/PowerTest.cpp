@@ -415,9 +415,10 @@ PowerTEST::default_setup() {
   auto initial_json3 = make_value_json(id3, "x", init3);
 
   nlohmann::json np_initialjson = make_initial_json(
-      {}, {{"Vphinode", {initial_json1}},
-           {"PQnode", {initial_json2}},
-           {"PVnode", {initial_json3}}});
+      {{"Vphinode", {initial_json1}},
+       {"PQnode", {initial_json2}},
+       {"PVnode", {initial_json3}}},
+      {});
 
   double last_time = 0.0;
   double new_time = 0.0;

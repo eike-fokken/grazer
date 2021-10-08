@@ -2,14 +2,14 @@
 #include "Boundaryvalue.hpp"
 #include "Equationcomponent.hpp"
 #include "Node.hpp"
-#include "Statecomponent.hpp"
+#include "SimpleStatecomponent.hpp"
 #include <Eigen/Sparse>
 
 namespace Model::Networkproblem::Power {
 
   class Powernode :
       public Equationcomponent,
-      public Statecomponent,
+      public SimpleStatecomponent,
       public Network::Node {
 
   public:

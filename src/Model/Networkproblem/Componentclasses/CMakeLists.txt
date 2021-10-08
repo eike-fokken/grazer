@@ -3,6 +3,7 @@ Equation_base.cpp
 Equationcomponent.cpp
 Valuemap.cpp
 Statecomponent.cpp
+SimpleStatecomponent.cpp
 Controlcomponent.cpp
 Costcomponent.cpp
 Inequalitycomponent.cpp)

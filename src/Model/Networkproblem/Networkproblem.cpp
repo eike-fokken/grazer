@@ -1,17 +1,12 @@
 #include "Networkproblem.hpp"
-#include "Controlcomponent.hpp"
-#include "Costcomponent.hpp"
 #include "Edge.hpp"
 #include "Equationcomponent.hpp"
 #include "Exception.hpp"
 #include "Idobject.hpp"
-#include "Inequalitycomponent.hpp"
 #include "Net.hpp"
 #include "Node.hpp"
-#include "Statecomponent.hpp"
 #include <Eigen/Sparse>
 #include <cassert>
-#include <cstddef>
 #include <iostream>
 #include <iterator>
 #include <memory>
@@ -106,6 +101,9 @@ namespace Model::Networkproblem {
     }
 
     for (auto const &component : {"nodes", "connections"}) {
+      if (not initial_json.contains(component)) {
+        continue;
+      }
       for (auto const &componenttype : initial_json[component]) {
         for (auto const &componentjson : componenttype) {
           auto component_id = componentjson["id"];
@@ -129,9 +127,18 @@ namespace Model::Networkproblem {
     }
   }
 
-  int Networkproblem::get_number_of_states() const {
-    assert(false); // implement me!
-    return 0;
+  int Networkproblem::set_state_indices(int next_free_index) {
+    for (Statecomponent *statecomponent : statecomponents) {
+      next_free_index = statecomponent->set_state_indices(next_free_index);
+    }
+    for (Equationcomponent *equationcomponent : equationcomponents) {
+      equationcomponent->setup();
+    }
+    for (Controlcomponent *controlcomponent : controlcomponents) {
+      controlcomponent->setup();
+    }
+
+    return next_free_index;
   }
 
   ////////////////////////////////////////////////////////////////////////////
@@ -263,7 +270,13 @@ namespace Model::Networkproblem {
     }
   }
 
-  int Networkproblem::get_number_of_controls() const { return -1; }
+  int Networkproblem::get_number_of_controls() const {
+    assert(false); // Never call me!
+    gthrow(
+        {"The member function get_number_of_controls() in Networkproblem "
+         "should "
+         "never be called!"});
+  }
 
   void
   Networkproblem::set_lower_bounds(Eigen::Ref<Eigen::VectorXd> lower_bounds) {
@@ -355,7 +368,11 @@ namespace Model::Networkproblem {
   }
 
   int Networkproblem::get_number_of_inequalities() const {
-    assert(false); // implement me!
+    assert(false); // Never call me!
+    gthrow(
+        {"The member function get_number_of_inequalities() in Networkproblem "
+         "should "
+         "never be called!"});
   }
 
   /////////////////////////////////////////////////////////
@@ -364,18 +381,6 @@ namespace Model::Networkproblem {
 
   Network::Net const &Networkproblem::get_network() const { return *network; }
 
-  int Networkproblem::reserve_state_indices(int next_free_index) {
-    int free_index = next_free_index;
-    for (Statecomponent *statecomponent : statecomponents) {
-      free_index = statecomponent->set_state_indices(free_index);
-    }
-    for (Equationcomponent *equationcomponent : equationcomponents) {
-      equationcomponent->setup();
-    }
-
-    return free_index;
-  }
-
   int Networkproblem::reserve_control_indices(int next_free_index) {
     int free_index = next_free_index;
     for (Controlcomponent *controlcomponent : controlcomponents) {
@@ -383,9 +388,7 @@ namespace Model::Networkproblem {
       // Note that a component, that is a Controlcomponent can never be an
       // Equationcomponent (this should raise a compile error, see
       // check_class_hierarchy_properties in Componentfactory).
-      controlcomponent->setup();
     }
-
     return free_index;
   }
 

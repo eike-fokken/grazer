@@ -47,11 +47,9 @@ int grazer::run(std::filesystem::path directory_path) {
         problem_json.value("defaults", R"({})"_json));
     auto net_ptr
         = Model::Networkproblem::build_net(problem_json, componentfactory);
-    auto json_ptr
-        = Model::Networkproblem::build_net(problem_json, componentfactory);
-    Model::Networkproblem::Networkproblem problem(std::move(json_ptr));
+    Model::Networkproblem::Networkproblem problem(std::move(net_ptr));
     auto number_of_states = problem.set_state_indices(0);
-    auto number_of_controls_per_time_step = problem.set_control_indices(0);
+    // auto number_of_controls_per_time_step = problem.set_control_indices(0);
     std::cout << "data read" << std::endl;
 
     wall_clock_setup_end = Clock::now();
