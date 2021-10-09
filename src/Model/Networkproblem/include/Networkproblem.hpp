@@ -37,6 +37,10 @@ namespace Model::Networkproblem {
 
     Networkproblem(std::unique_ptr<Network::Net> _network);
 
+    void init(
+        int &next_free_state_index, int &next_free_control_index,
+        int &next_free_inequality_index);
+
     ////////////////////////////////////////////////////////////////////////////
     // Statecomponent methods
     ////////////////////////////////////////////////////////////////////////////
