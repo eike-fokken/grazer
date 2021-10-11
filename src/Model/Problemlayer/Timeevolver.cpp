@@ -67,8 +67,10 @@ namespace Model {
 
   void Timeevolver::simulate(
       Timedata timedata, Networkproblem::Networkproblem &problem,
-      int number_of_states, nlohmann::json &problem_initial_json) {
+      nlohmann::json &problem_initial_json) {
     double last_time = timedata.get_starttime() - timedata.get_delta_t();
+
+    auto number_of_states = problem.get_number_of_states();
     Eigen::VectorXd last_state(number_of_states);
 
     std::cout

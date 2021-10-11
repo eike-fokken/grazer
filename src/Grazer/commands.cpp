@@ -50,7 +50,6 @@ int grazer::run(std::filesystem::path directory_path) {
     Model::Networkproblem::Networkproblem problem(std::move(net_ptr));
 
     problem.init();
-    auto number_of_states = problem.get_number_of_states();
     // auto number_of_controls_per_time_step = problem.set_control_indices(0);
     std::cout << "data read" << std::endl;
 
@@ -58,7 +57,7 @@ int grazer::run(std::filesystem::path directory_path) {
 
     // ---------------- actual simulation ------------------------------ //
     timeevolver.simulate(
-        timedata, problem, number_of_states, initial_values // ,
+        timedata, problem, initial_values // ,
         // number_of_controls, control_value_json
     );
     // ----------------------------------------------------------------- //

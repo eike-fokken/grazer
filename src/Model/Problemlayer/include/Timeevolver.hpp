@@ -39,7 +39,7 @@ namespace Model {
 
     void simulate(
         Timedata timedata, Networkproblem::Networkproblem &problem,
-        int number_of_states, nlohmann::json &problem_initial_json);
+        nlohmann::json &problem_initial_json);
 
   private:
     Timeevolver(nlohmann::json const &timeevolver_data);
