@@ -284,9 +284,7 @@ stochasticPQnodeTEST::default_setup() {
       {{"Transmissionline", {tl1_json, tl2_json}}});
 
   auto netprob = make_Networkproblem(np_json);
-  auto number_of_variables = netprob->set_state_indices(0);
-
-  netprob->setup();
+  auto [number_of_variables, _, __] = netprob->init();
 
   Eigen::Vector4d cond1(
       std::numeric_limits<double>::quiet_NaN(),

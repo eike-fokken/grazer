@@ -64,14 +64,17 @@ namespace Model::Networkproblem {
     }
   }
 
-  void Networkproblem::init(
-      int &next_free_state_index, int &next_free_control_index,
-      int &next_free_inequality_index) {
+  std::tuple<int, int, int> Networkproblem::init(
+      int next_free_state_index, int next_free_control_index,
+      int next_free_inequality_index) {
     next_free_state_index = set_state_indices(next_free_state_index);
     next_free_control_index = set_control_indices(next_free_control_index);
     next_free_inequality_index
         = set_inequality_indices(next_free_inequality_index);
     setup();
+    return {
+        next_free_state_index, next_free_control_index,
+        next_free_inequality_index};
   }
 
   ////////////////////////////////////////////////////////////////////////////

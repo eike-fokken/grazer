@@ -62,10 +62,7 @@ TEST_F(GasTEST, Shortpipe_evaluate) {
       {{"Shortpipe", {shortpipe_topology}}});
 
   auto netprob = make_Networkproblem(np_json);
-  auto number_of_variables = netprob->set_state_indices(0);
-
-  netprob->setup();
-
+  auto [number_of_variables, _, __] = netprob->init();
   double last_time = 0.0;
   double new_time = 0.0;
   Eigen::VectorXd rootvalues(number_of_variables);
@@ -116,10 +113,7 @@ TEST_F(GasTEST, Shortpipe_d_evalutate_d_new_state) {
 
   auto netprob = make_Networkproblem(np_json);
 
-  auto number_of_variables = netprob->set_state_indices(0);
-
-  netprob->setup();
-
+  auto [number_of_variables, _, __] = netprob->init();
   double last_time = 0.0;
   double new_time = 0.0;
   Eigen::VectorXd rootvalues(number_of_variables);
@@ -193,10 +187,7 @@ TEST_F(GasTEST, Source_evaluate) {
       {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
 
   auto netprob = make_Networkproblem(np_json);
-  auto number_of_variables = netprob->set_state_indices(0);
-
-  netprob->setup();
-
+  auto [number_of_variables, _, __] = netprob->init();
   double sp01_pressure_start = 810;
   double sp01_flow_start = -4;
   double sp01_pressure_end = 125;
@@ -274,10 +265,7 @@ TEST_F(GasTEST, Source_d_evalutate_d_new_state) {
       {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
 
   auto netprob = make_Networkproblem(np_json);
-  auto number_of_variables = netprob->set_state_indices(0);
-
-  netprob->setup();
-
+  auto [number_of_variables, _, __] = netprob->init();
   double sp01_pressure_start = 810;
   double sp01_flow_start = -4;
   double sp01_pressure_end = 125;
@@ -386,10 +374,7 @@ TEST_F(GasTEST, Sink_evaluate) {
       {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
 
   auto netprob = make_Networkproblem(np_json);
-  auto number_of_variables = netprob->set_state_indices(0);
-
-  netprob->setup();
-
+  auto [number_of_variables, _, __] = netprob->init();
   double sp01_pressure_start = 810;
   double sp01_flow_start = -4;
   double sp01_pressure_end = 125;
@@ -467,10 +452,7 @@ TEST_F(GasTEST, Sink_d_evalutate_d_new_state) {
       {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
 
   auto netprob = make_Networkproblem(np_json);
-  auto number_of_variables = netprob->set_state_indices(0);
-
-  netprob->setup();
-
+  auto [number_of_variables, _, __] = netprob->init();
   double sp01_pressure_start = 810;
   double sp01_flow_start = -4;
   double sp01_pressure_end = 125;
@@ -573,10 +555,7 @@ TEST_F(GasTEST, Innode_evaluate) {
       {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
 
   auto netprob = make_Networkproblem(np_json);
-  auto number_of_variables = netprob->set_state_indices(0);
-
-  netprob->setup();
-
+  auto [number_of_variables, _, __] = netprob->init();
   double sp01_pressure_start = 8102;
   double sp01_flow_start = -49;
   double sp01_pressure_end = 1257;
@@ -647,10 +626,7 @@ TEST_F(GasTEST, Innode_d_evalutate_d_new_state) {
       {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
 
   auto netprob = make_Networkproblem(np_json);
-  auto number_of_variables = netprob->set_state_indices(0);
-
-  netprob->setup();
-
+  auto [number_of_variables, _, __] = netprob->init();
   double sp01_pressure_start = 81000;
   double sp01_flow_start = -411;
   double sp01_pressure_end = 12522;
@@ -772,10 +748,7 @@ TEST_F(GasTEST, Pipe_evaluate) {
 
   auto netprob = make_Networkproblem(netprop_json);
 
-  auto number_of_variables = netprob->set_state_indices(0);
-
-  netprob->setup();
-
+  auto [number_of_variables, _, __] = netprob->init();
   double last_time = 0.0;
   double new_time = 10.0;
   Eigen::VectorXd rootvalues(number_of_variables);
@@ -848,10 +821,7 @@ TEST_F(GasTEST, Pipe_d_evalutate_d_new_state) {
 
   auto netprob = make_Networkproblem(netprop_json);
 
-  auto number_of_variables = netprob->set_state_indices(0);
-
-  netprob->setup();
-
+  auto [number_of_variables, _, __] = netprob->init();
   double last_time = 0.0;
   double new_time = 10.0;
   Eigen::VectorXd rootvalues(number_of_variables);

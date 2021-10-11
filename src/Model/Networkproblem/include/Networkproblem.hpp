@@ -37,9 +37,26 @@ namespace Model::Networkproblem {
 
     Networkproblem(std::unique_ptr<Network::Net> _network);
 
-    void init(
-        int &next_free_state_index, int &next_free_control_index,
-        int &next_free_inequality_index);
+    /** \brief Initializes a Networkproblem to a valid state.
+     *
+     * init() calls all of #set_state_indices(), #set_control_indices() and
+     * #set_inequality_indices() on the appropriate components in
+     * #statecomponents, #controlcomponents and #inequalitycomponents. Also, it
+     * calls #setup() on all elements in equationcomponents and
+     * controlcomponents.
+     *
+     * @param next_free_state_index The greatest unclaimed index auf the state
+     * vector (before calling this function), defaulted to 0.
+     * @param next_free_control_index The greatest unclaimed index auf the
+     * control vector (before calling this function), defaulted to 0.
+     * @param next_free_inequality_index The greatest unclaimed index auf the
+     * inequality vector (before calling this function), defaulted to 0.
+     * @returns a tuple of the new values of state, control and inequality
+     * indices in that order.
+     */
+    std::tuple<int, int, int> init(
+        int next_free_state_index = 0, int next_free_control_index = 0,
+        int next_free_inequality_index = 0);
 
     ////////////////////////////////////////////////////////////////////////////
     // Statecomponent methods

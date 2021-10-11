@@ -282,8 +282,7 @@ TEST_F(GaspowerconnectionTEST, evaluate_power_controlled) {
       {{"Innode", {innode_json}}, {"ExternalPowerplant", {extpowerplant_json}}},
       {{"Gaspowerconnection", {gp_json}}});
   auto netprob = make_Networkproblem(netprob_json);
-  auto number_of_variables = netprob->set_state_indices(0);
-netprob->setup();
+  auto [number_of_variables, _, __] = netprob->init();
 
   double last_time = 0.0;
   double new_time = 1.0;
@@ -369,8 +368,7 @@ TEST_F(GaspowerconnectionTEST, evaluate_gas_controlled) {
       {{"Innode", {innode_json}}, {"ExternalPowerplant", {extpowerplant_json}}},
       {{"Gaspowerconnection", {gp_json}}});
   auto netprob = make_Networkproblem(netprob_json);
-  auto number_of_variables = netprob->set_state_indices(0);
-netprob->setup();
+  auto [number_of_variables, _, __] = netprob->init();
 
   double last_time = 0.0;
   double new_time = 1.0;
@@ -454,8 +452,7 @@ TEST_F(GaspowerconnectionTEST, d_evalutate_d_new_state_power_driven) {
       {{"Innode", {innode_json}}, {"ExternalPowerplant", {extpowerplant_json}}},
       {{"Gaspowerconnection", {gp_json}}});
   auto netprob = make_Networkproblem(netprob_json);
-  auto number_of_variables = netprob->set_state_indices(0);
-netprob->setup();
+  auto [number_of_variables, _, __] = netprob->init();
 
   double last_time = 0.0;
   double new_time = 1.0;
@@ -562,8 +559,7 @@ TEST_F(GaspowerconnectionTEST, d_evalutate_d_new_state_gas_driven) {
       {{"Innode", {innode_json}}, {"ExternalPowerplant", {extpowerplant_json}}},
       {{"Gaspowerconnection", {gp_json}}});
   auto netprob = make_Networkproblem(netprob_json);
-  auto number_of_variables = netprob->set_state_indices(0);
-netprob->setup();
+  auto [number_of_variables, _, __] = netprob->init();
 
   double last_time = 0.0;
   double new_time = 1.0;
