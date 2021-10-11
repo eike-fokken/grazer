@@ -32,10 +32,7 @@ namespace Aux::schema {
       nlohmann::json problem_data
           = aux_json::get_json_from_file_path(problem_data_path);
       try {
-        defaults = problem_data.at("problem_data")
-                       .at("subproblems")
-                       .at("Network_problem")
-                       .at("defaults");
+        defaults = problem_data.at("problem_data").at("defaults");
       } catch (nlohmann::json::out_of_range &e) {
         std::cout << "[Warning] The `problem_data.json` does not have the "
                      "expected structure:\n"
