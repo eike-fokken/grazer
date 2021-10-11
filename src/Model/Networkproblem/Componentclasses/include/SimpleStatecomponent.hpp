@@ -12,6 +12,6 @@ namespace Model::Networkproblem {
     /// int like 2. But for PDES its value is only known after construction.
     ///
     /// @returns number of state variables needed by this component
-    virtual int get_number_of_states() const = 0;
+    virtual int needed_number_of_states() const = 0;
   };
 } // namespace Model::Networkproblem

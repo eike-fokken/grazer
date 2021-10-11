@@ -25,7 +25,7 @@ namespace Model::Networkproblem::Power {
 
     void setup() override;
 
-    int get_number_of_states() const final;
+    int needed_number_of_states() const final;
 
     double get_G() const;
     double get_B() const;

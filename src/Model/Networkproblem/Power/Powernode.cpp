@@ -94,7 +94,7 @@ namespace Model::Networkproblem::Power {
     }
   }
 
-  int Powernode::get_number_of_states() const {
+  int Powernode::needed_number_of_states() const {
     return number_of_state_variables;
   }
 

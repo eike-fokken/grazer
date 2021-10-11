@@ -9,7 +9,7 @@ namespace Model::Networkproblem::Gas {
   public:
     using Edge::Edge;
 
-    int get_number_of_states() const final;
+    int needed_number_of_states() const final;
 
     void setup() override;
 

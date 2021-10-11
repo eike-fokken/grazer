@@ -169,7 +169,7 @@ namespace Model::Networkproblem::Gas {
 
   void Pipe::setup() { setup_output_json_helper(get_id()); }
 
-  int Pipe::get_number_of_states() const { return 2 * number_of_points; }
+  int Pipe::needed_number_of_states() const { return 2 * number_of_points; }
 
   void Pipe::add_results_to_json(nlohmann::json &new_output) {
     auto &this_output_json = get_output_json_ref();

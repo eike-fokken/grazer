@@ -16,7 +16,7 @@ namespace Model::Networkproblem::Gas {
 
   void Shortcomponent::setup() { setup_output_json_helper(get_id()); }
 
-  int Shortcomponent::get_number_of_states() const {
+  int Shortcomponent::needed_number_of_states() const {
     return number_of_state_variables;
   }
 

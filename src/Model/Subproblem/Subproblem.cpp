@@ -3,7 +3,7 @@
 
 namespace Model {
 
-  int Subproblem::get_number_of_states() const {
+  int Subproblem::needed_number_of_states() const {
     int int_start = start_state_index;
     int int_after = after_state_index;
 

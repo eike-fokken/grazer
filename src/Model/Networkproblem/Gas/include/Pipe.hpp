@@ -40,7 +40,7 @@ namespace Model::Networkproblem::Gas {
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
     void setup() override;
 
-    int get_number_of_states() const override;
+    int needed_number_of_states() const override;
 
     void add_results_to_json(nlohmann::json &new_output) override;
 

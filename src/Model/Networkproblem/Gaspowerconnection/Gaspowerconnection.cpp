@@ -105,7 +105,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
     powerendnode = powernodeptr;
   }
 
-  int Gaspowerconnection::get_number_of_states() const { return 2; }
+  int Gaspowerconnection::needed_number_of_states() const { return 2; }
 
   void Gaspowerconnection::add_results_to_json(nlohmann::json &new_output) {
     auto &this_output_json = get_output_json_ref();

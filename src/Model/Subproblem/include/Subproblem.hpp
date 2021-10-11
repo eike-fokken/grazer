@@ -78,7 +78,7 @@ namespace Model {
         nlohmann::json const &control_json)
         = 0;
 
-    int get_number_of_states() const;
+    int needed_number_of_states() const;
     int get_start_state_index() const;
     int get_after_state_index() const;
 

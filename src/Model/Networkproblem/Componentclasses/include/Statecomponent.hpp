@@ -23,6 +23,8 @@ namespace Model::Networkproblem {
     /// @returns The new lowest free index.
     virtual int set_state_indices(int next_free_index) = 0;
 
+    int get_number_of_states() const;
+
     /// \brief getter for #start_state_index
     int get_start_state_index() const;
 

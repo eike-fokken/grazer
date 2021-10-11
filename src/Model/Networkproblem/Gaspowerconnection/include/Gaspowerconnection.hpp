@@ -41,7 +41,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
 
     void setup() override;
 
-    int get_number_of_states() const override;
+    int needed_number_of_states() const override;
 
     void add_results_to_json(nlohmann::json &new_output) override;
 
