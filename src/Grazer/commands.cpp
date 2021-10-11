@@ -4,11 +4,13 @@
 #include "Input_output.hpp"
 #include "Netfactory.hpp"
 #include "Networkproblem.hpp"
+#include "Optimizer.hpp"
 #include "Timeevolver.hpp"
 #include <chrono>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <nlohmann/json.hpp>
 
 int grazer::run(std::filesystem::path directory_path) {
   using Clock = std::chrono::high_resolution_clock;
@@ -29,6 +31,11 @@ int grazer::run(std::filesystem::path directory_path) {
 
     auto all_json = aux_json::get_json_from_file_path(problem_data_file);
 
+    nlohmann::json optimization_json;
+    // Extract the optimization data, if it is there
+    if (all_json.contains("optimization_data")) {
+      optimization_json = all_json["optimization_data"];
+    }
     auto time_evolution_json = all_json["time_evolution_data"];
     auto problem_json = all_json["problem_data"];
 
@@ -55,12 +62,19 @@ int grazer::run(std::filesystem::path directory_path) {
 
     wall_clock_setup_end = Clock::now();
 
-    // ---------------- actual simulation ------------------------------ //
+    if (not optimization_json.empty()) {
+      /* ---------------- Optimization ------------------------------ */
+      auto optimizer = Model::Optimizer::make_instance(
+          optimization_json, time_evolution_json);
+
+      /* ----------------------------------------------------------------- */
+    }
+    /* ---------------- actual simulation ------------------------------ */
     timeevolver.simulate(
         timedata, problem, initial_values // ,
         // number_of_controls, control_value_json
     );
-    // ----------------------------------------------------------------- //
+    /* ----------------------------------------------------------------- */
 
     wall_clock_sim_end = Clock::now();
 

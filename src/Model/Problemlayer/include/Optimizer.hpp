@@ -1,3 +1,4 @@
+#pragma once
 #include "Timeevolver.hpp"
 #include <nlohmann/json.hpp>
 
@@ -7,15 +8,21 @@ namespace Model {
 
   public:
     static nlohmann::json get_schema();
-    static Optimizer make_instance(nlohmann::json const &optimizer_data);
+    static Optimizer make_instance(
+        nlohmann::json const &optimization_json,
+        nlohmann::json const &time_evolution_json);
+
+    void optimize();
 
     void simulate(
-        Timedata timedata, Problem &problem, int number_of_states,
+        Timedata timedata, Networkproblem::Networkproblem &problem,
         nlohmann::json &problem_initial_json);
 
   private:
-    Optimizer(nlohmann::json const &optimizer_data);
-    Solver::Newtonsolver<Problem> solver;
+    Optimizer(
+        nlohmann::json const &optimization_json,
+        nlohmann::json const &time_evolution_json);
+    Solver::Newtonsolver<Networkproblem::Networkproblem> solver;
     int retries;
     bool const use_simplified_newton;
   };
