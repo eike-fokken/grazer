@@ -14,6 +14,7 @@ namespace Model::Networkproblem {
      * give it access to #start_inequality_index and #after_inequality_index.
      */
     friend class SimpleInequalitycomponent;
+    friend class Networkproblem;
 
   public:
     virtual ~Inequalitycomponent(){};
@@ -43,6 +44,8 @@ namespace Model::Networkproblem {
      * @returns The new lowest free index.
      */
     virtual int set_inequality_indices(int const next_free_index) = 0;
+
+    int get_number_of_inequalities() const;
 
     /** \brief getter for #start_inequality_index
      */

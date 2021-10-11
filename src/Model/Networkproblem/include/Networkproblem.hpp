@@ -51,10 +51,8 @@ namespace Model::Networkproblem {
      * control vector (before calling this function), defaulted to 0.
      * @param next_free_inequality_index The greatest unclaimed index auf the
      * inequality vector (before calling this function), defaulted to 0.
-     * @returns a tuple of the new values of state, control and inequality
-     * indices in that order.
      */
-    std::tuple<int, int, int> init(
+    void init(
         int next_free_state_index = 0, int next_free_control_index = 0,
         int next_free_inequality_index = 0);
 

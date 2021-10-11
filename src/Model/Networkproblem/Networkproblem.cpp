@@ -64,7 +64,7 @@ namespace Model::Networkproblem {
     }
   }
 
-  std::tuple<int, int, int> Networkproblem::init(
+  void Networkproblem::init(
       int next_free_state_index, int next_free_control_index,
       int next_free_inequality_index) {
     next_free_state_index = set_state_indices(next_free_state_index);
@@ -72,9 +72,6 @@ namespace Model::Networkproblem {
     next_free_inequality_index
         = set_inequality_indices(next_free_inequality_index);
     setup();
-    return {
-        next_free_state_index, next_free_control_index,
-        next_free_inequality_index};
   }
 
   ////////////////////////////////////////////////////////////////////////////
@@ -141,9 +138,11 @@ namespace Model::Networkproblem {
   }
 
   int Networkproblem::set_state_indices(int next_free_index) {
+    start_state_index = next_free_index;
     for (Statecomponent *statecomponent : statecomponents) {
       next_free_index = statecomponent->set_state_indices(next_free_index);
     }
+    after_state_index = next_free_index;
     return next_free_index;
   }
 
@@ -293,9 +292,11 @@ namespace Model::Networkproblem {
   }
 
   int Networkproblem::set_control_indices(int next_free_index) {
+    start_control_index = next_free_index;
     for (Controlcomponent *controlcomponent : controlcomponents) {
       next_free_index = controlcomponent->set_control_indices(next_free_index);
     }
+    after_control_index = next_free_index;
     return next_free_index;
   }
 
@@ -383,10 +384,12 @@ namespace Model::Networkproblem {
   }
 
   int Networkproblem::set_inequality_indices(int next_free_index) {
+    start_inequality_index = next_free_index;
     for (Inequalitycomponent *inequalitycomponent : inequalitycomponents) {
       next_free_index
           = inequalitycomponent->set_inequality_indices(next_free_index);
     }
+    after_inequality_index = next_free_index;
     return next_free_index;
   }
 

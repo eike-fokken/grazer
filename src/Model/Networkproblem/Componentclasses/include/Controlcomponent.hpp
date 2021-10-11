@@ -14,6 +14,7 @@ namespace Model::Networkproblem {
      * give it access to #start_control_index and #after_control_index.
      */
     friend class SimpleControlcomponent;
+    friend class Networkproblem;
 
   public:
     virtual ~Controlcomponent(){};
@@ -127,6 +128,8 @@ namespace Model::Networkproblem {
      * @returns The new lowest free index.
      */
     virtual int set_control_indices(int next_free_index) = 0;
+
+    int get_number_of_controls() const;
 
     /** \brief getter for #start_control_index
      */

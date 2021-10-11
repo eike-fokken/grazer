@@ -11,6 +11,7 @@ namespace Model::Networkproblem {
      * access to #start_state_index and #after_state_index.
      */
     friend class SimpleStatecomponent;
+    friend class Networkproblem;
 
   public:
     static nlohmann::json get_initial_schema();
