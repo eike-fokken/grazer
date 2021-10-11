@@ -216,10 +216,15 @@ if (NOT DEFINED IPOPT_DIRECTORY)
   set(DEBUG_FLAGS "-D_GLIBCXX_DEBUG -D_LIBCPP_DEBUG")
   set(MY_CXX_FLAGS "$<$<CONFIG:DEBUG>:${DEBUG_FLAGS}> ${STANDARDLIB}")
 
+  enable_language(Fortran)
+  message(STATUS "The Fortran compiler is:")
+  message(STATUS "${CMAKE_Fortran_COMPILER}")
+  message(STATUS "If last line was empty, no Fortran compiler was found and the build will fail on Ipopt.")
+  
 
   # build ipopt:
   add_custom_command(OUTPUT  ${ipopt_library_file}
-    COMMAND ${CMAKE_COMMAND} -E env "ADD_CXXFLAGS=${MY_CXX_FLAGS}" "CC=${CMAKE_C_COMPILER}" "CXX=${CMAKE_CXX_COMPILER}" ./coinbrew build Ipopt --no-prompt --skip=ThirdParty/ASL --build-dir=${CMAKE_CURRENT_BINARY_DIR}/Ipopt --prefix=${CMAKE_CURRENT_BINARY_DIR}/Ipopt/dist --parallel-jobs ${NumberOfProcessors}
+    COMMAND ${CMAKE_COMMAND} -E env "ADD_CXXFLAGS=${MY_CXX_FLAGS}" "CC=${CMAKE_C_COMPILER}" "CXX=${CMAKE_CXX_COMPILER}" "FC=${CMAKE_Fortran_COMPILER}" ./coinbrew build Ipopt --no-prompt --skip=ThirdParty/ASL --build-dir=${CMAKE_CURRENT_BINARY_DIR}/Ipopt --prefix=${CMAKE_CURRENT_BINARY_DIR}/Ipopt/dist --parallel-jobs ${NumberOfProcessors}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Ipopt
     USES_TERMINAL)
   
