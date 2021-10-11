@@ -176,8 +176,6 @@ namespace Model::Networkproblem {
     std::vector<Controlcomponent *> controlcomponents;
     std::vector<Costcomponent *> costcomponents;
     std::vector<Inequalitycomponent *> inequalitycomponents;
-
-    int reserve_control_indices(int next_free_index);
   };
 
 } // namespace Model::Networkproblem

@@ -396,15 +396,4 @@ namespace Model::Networkproblem {
 
   Network::Net const &Networkproblem::get_network() const { return *network; }
 
-  int Networkproblem::reserve_control_indices(int next_free_index) {
-    int free_index = next_free_index;
-    for (Controlcomponent *controlcomponent : controlcomponents) {
-      free_index = controlcomponent->set_control_indices(free_index);
-      // Note that a component, that is a Controlcomponent can never be an
-      // Equationcomponent (this should raise a compile error, see
-      // check_class_hierarchy_properties in Componentfactory).
-    }
-    return free_index;
-  }
-
 } // namespace Model::Networkproblem
