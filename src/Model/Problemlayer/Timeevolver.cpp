@@ -1,6 +1,7 @@
 #include "Timeevolver.hpp"
 #include "Exception.hpp"
 #include "Networkproblem.hpp"
+#include "Newtonsolver_declaration.hpp"
 #include "make_schema.hpp"
 #include "schema_validation.hpp"
 
@@ -103,68 +104,81 @@ namespace Model {
 
     for (int i = 0; i != timedata.get_number_of_steps(); ++i) {
       new_time = last_time + timedata.get_delta_t();
-      Solver::Solutionstruct solstruct;
-      int retry = 0;
-      if (use_simplified_newton) {
-        retry = 0;
-      } else {
-        retry = retries;
-      }
-      bool use_full_jacobian = true;
-      if (use_simplified_newton) {
-        use_full_jacobian = false;
-      } else {
-        use_full_jacobian = true;
-      }
-      Eigen::VectorXd new_state_backup = new_state;
-      while (not solstruct.success) {
-        new_state = new_state_backup;
-        problem.prepare_timestep(
-            last_time, new_time, last_state, new_state, control);
-        solstruct = solver.solve(
-            new_state, problem, false, use_full_jacobian, last_time, new_time,
-            last_state, control);
-        if (solstruct.success) {
-
-          if (use_simplified_newton and retry > 0) {
-            std::cout << "succeeded after retries!\n" << std::endl;
-          } else if (not use_simplified_newton and retry > retries) {
-            std::cout << "succeeded after retries!\n" << std::endl;
-          }
-          problem.json_save(new_time, new_state);
-          break;
-        }
-        if (use_simplified_newton and retry == retries) {
-          use_full_jacobian = true;
-          std::cout << "Switching to updated Jacobian in every step."
-                    << std::endl;
-        }
-        if (retry > 2 * retries) {
-          problem.json_save(new_time, new_state);
-          gthrow({"Failed timestep irrevocably!", std::to_string(new_time)});
-        }
-
-        ++retry;
-        if (use_simplified_newton and retry == 1) {
-          std::cout << "\nretrying timestep " << new_time << std::endl;
-        } else if (not use_simplified_newton and retry == retries + 1) {
-          std::cout << "\nretrying timestep " << new_time << std::endl;
-        }
-        if (retry > 0) {
-          std::cout << new_time << ", ";
-          std::cout << solstruct.residual << ", ";
-          std::cout << solstruct.used_iterations << std::endl;
-        }
-      }
+      auto solstruct = make_one_step(
+          last_time, new_time, last_state, new_state, control, problem);
       std::cout << new_time << ", ";
       std::cout << solstruct.residual << ", ";
       std::cout << solstruct.used_iterations << std::endl;
-
-      last_state = new_state;
+      if (not solstruct.success) {
+        gthrow({"Failed timestep irrevocably!", std::to_string(new_time)});
+      }
+      problem.json_save(new_time, new_state);
       last_time = new_time;
+      last_state = new_state;
     }
 
     std::cout << "=== simulation end ===" << std::endl; // provide regex help
+  }
+
+  Solver::Solutionstruct Timeevolver::make_one_step(
+      double last_time, double new_time, Eigen::Ref<Eigen::VectorXd> last_state,
+      Eigen::Ref<Eigen::VectorXd> new_state,
+      Eigen::Ref<Eigen::VectorXd const> const &control,
+      Networkproblem::Networkproblem &problem) {
+    Solver::Solutionstruct solstruct;
+    int retry = 0;
+    if (use_simplified_newton) {
+      retry = 0;
+    } else {
+      retry = retries;
+    }
+    bool use_full_jacobian = true;
+    if (use_simplified_newton) {
+      use_full_jacobian = false;
+    } else {
+      use_full_jacobian = true;
+    }
+    Eigen::VectorXd new_state_backup = new_state;
+    while (not solstruct.success) {
+      new_state = new_state_backup;
+      problem.prepare_timestep(
+          last_time, new_time, last_state, new_state, control);
+      solstruct = solver.solve(
+          new_state, problem, false, use_full_jacobian, last_time, new_time,
+          last_state, control);
+      if (solstruct.success) {
+
+        if (use_simplified_newton and retry > 0) {
+          std::cout << "succeeded after retries!\n" << std::endl;
+        } else if (not use_simplified_newton and retry > retries) {
+          std::cout << "succeeded after retries!\n" << std::endl;
+        }
+        // Found a successful solution, so leave the function!
+        break;
+      }
+      if (use_simplified_newton and retry == retries) {
+        use_full_jacobian = true;
+        std::cout << "Switching to updated Jacobian in every step."
+                  << std::endl;
+      }
+      if (retry > 2 * retries) {
+        problem.json_save(new_time, new_state);
+        gthrow({"Failed timestep irrevocably!", std::to_string(new_time)});
+      }
+
+      ++retry;
+      if (use_simplified_newton and retry == 1) {
+        std::cout << "\nretrying timestep " << new_time << std::endl;
+      } else if (not use_simplified_newton and retry == retries + 1) {
+        std::cout << "\nretrying timestep " << new_time << std::endl;
+      }
+      if (retry > 0) {
+        std::cout << new_time << ", ";
+        std::cout << solstruct.residual << ", ";
+        std::cout << solstruct.used_iterations << std::endl;
+      }
+    }
+    return solstruct;
   }
 
 } // namespace Model

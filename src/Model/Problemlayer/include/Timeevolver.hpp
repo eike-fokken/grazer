@@ -41,6 +41,13 @@ namespace Model {
         Timedata timedata, Networkproblem::Networkproblem &problem,
         nlohmann::json &problem_initial_json);
 
+    Solver::Solutionstruct make_one_step(
+        double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd> last_state,
+        Eigen::Ref<Eigen::VectorXd> new_state,
+        Eigen::Ref<Eigen::VectorXd const> const &control,
+        Networkproblem::Networkproblem &problem);
+
   private:
     Timeevolver(nlohmann::json const &timeevolver_data);
     Solver::Newtonsolver<Networkproblem::Networkproblem> solver;
