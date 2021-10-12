@@ -25,7 +25,7 @@ namespace Model {
 
   int Timedata::init_Number_of_timesteps(double desired_delta_t) const {
     int const _Number_of_timesteps
-        = static_cast<int>(std::ceil(get_timeinterval() / desired_delta_t)) + 1;
+        = static_cast<int>(std::ceil(get_timeinterval() / desired_delta_t));
     return _Number_of_timesteps;
   }
 
@@ -36,7 +36,7 @@ namespace Model {
   int Timedata::get_number_of_steps() const { return Number_of_timesteps; }
 
   double Timedata::init_delta_t() const {
-    return get_timeinterval() / (Number_of_timesteps - 1);
+    return get_timeinterval() / (Number_of_timesteps);
   }
 
   nlohmann::json Timeevolver::get_schema() {
@@ -69,7 +69,7 @@ namespace Model {
   void Timeevolver::simulate(
       Timedata timedata, Networkproblem::Networkproblem &problem,
       nlohmann::json &problem_initial_json) {
-    double last_time = timedata.get_starttime() - timedata.get_delta_t();
+    double last_time = timedata.get_starttime();
 
     auto number_of_states = problem.get_number_of_states();
     Eigen::VectorXd last_state(number_of_states);
@@ -85,7 +85,7 @@ namespace Model {
     Eigen::VectorXd control;
 
     problem.set_initial_values(last_state, problem_initial_json);
-
+    problem.json_save(last_time, last_state);
     double new_time = last_time + timedata.get_delta_t();
 
     Eigen::VectorXd new_state = last_state;
