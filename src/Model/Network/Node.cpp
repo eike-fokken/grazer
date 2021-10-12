@@ -15,6 +15,8 @@ namespace Network {
   Node::Node(nlohmann::json const &data) :
       Idobject(data["id"].get<std::string>()) {}
 
+  Node::~Node() {}
+
   bool Node::remove_edge(Edge *to_remove) {
     for (auto it = attached_edges->starting_edges.begin();
          it != attached_edges->starting_edges.end(); ++it) {

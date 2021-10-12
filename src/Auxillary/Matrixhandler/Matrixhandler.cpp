@@ -3,6 +3,8 @@
 
 namespace Aux {
 
+  Matrixhandler::~Matrixhandler() {}
+
   void Triplethandler::add_to_coefficient(int row, int col, double value) {
     Eigen::Triplet<double> newtriplet(row, col, value);
     tripletlist.push_back(newtriplet);

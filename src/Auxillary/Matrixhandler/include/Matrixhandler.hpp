@@ -12,7 +12,7 @@ namespace Aux {
     Matrixhandler() = delete;
     Matrixhandler(Eigen::SparseMatrix<double> &_matrix) : matrix(_matrix){};
 
-    virtual ~Matrixhandler(){};
+    virtual ~Matrixhandler();
 
     /// \brief Adds to a coefficient.
     ///

@@ -28,7 +28,7 @@ namespace Network {
         nlohmann::json const &edge_json,
         std::vector<std::unique_ptr<Node>> &nodes);
 
-    virtual ~Edge(){};
+    virtual ~Edge();
 
     /// Function returns starting node of Edge object.
     /// @returns Starting node of type std::shared_ptr<Network::Node>

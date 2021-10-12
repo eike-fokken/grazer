@@ -21,7 +21,7 @@ namespace Network {
 
     Node(nlohmann::json const &data);
 
-    virtual ~Node(){};
+    virtual ~Node();
 
     /// This function attaches an edge to object of type node.
     /// Attention: Here object node has to be the starting node in the edge you

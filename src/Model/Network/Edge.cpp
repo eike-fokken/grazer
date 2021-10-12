@@ -36,6 +36,8 @@ namespace Network {
     ending_node->attach_ending_edge(this);
   }
 
+  Edge::~Edge() {}
+
   Node *Edge::get_starting_node() const { return starting_node; }
 
   Node *Edge::get_ending_node() const { return ending_node; }
