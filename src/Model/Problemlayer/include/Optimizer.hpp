@@ -22,8 +22,6 @@ namespace Model {
     Optimizer(
         nlohmann::json const &optimization_json,
         nlohmann::json const &time_evolution_json);
-    Solver::Newtonsolver<Networkproblem::Networkproblem> solver;
-    int retries;
-    bool const use_simplified_newton;
+    Timeevolver timeevolver;
   };
 } // namespace Model
