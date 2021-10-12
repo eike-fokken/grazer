@@ -14,7 +14,7 @@ namespace Model {
   Optimizer::Optimizer(
       nlohmann::json const &optimization_json,
       nlohmann::json const &time_evolution_json) :
-      timeevolver(Timeevolver::make_instance(time_evolution_json)){};
+      timeevolver(Timeevolver::make_instance(time_evolution_json)) {}
 
   Optimizer Optimizer::make_instance(
       nlohmann::json const &optimization_json,
