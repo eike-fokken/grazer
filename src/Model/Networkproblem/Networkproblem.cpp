@@ -233,8 +233,9 @@ namespace Model::Networkproblem {
     }
   }
 
-  void Networkproblem::set_initial_controls_of_timestep(
-      double time, Eigen::Ref<Eigen::VectorXd> controls,
+  void Networkproblem::set_initial_controls(
+      double start_time, double end_time, int number_of_time_steps,
+      Eigen::Ref<Eigen::VectorXd> controls,
       nlohmann::json const &control_json) {
 
     std::vector<Network::Idobject *> idcomponents;
@@ -261,9 +262,9 @@ namespace Model::Networkproblem {
               = std::find_if(idcomponents.begin(), idcomponents.end(), find_id);
           if (iterator != idcomponents.end()) {
             auto index = iterator - idcomponents.begin();
-            controlcomponents[static_cast<size_t>(index)]
-                ->set_initial_controls_of_timestep(
-                    time, controls, componentjson);
+            controlcomponents[static_cast<size_t>(index)]->set_initial_controls(
+                start_time, end_time, number_of_time_steps, controls,
+                control_json);
           } else {
             std::cout
                 << "Note: Component with id " << component_id
@@ -275,19 +276,27 @@ namespace Model::Networkproblem {
     }
   }
 
-  void
-  Networkproblem::set_lower_bounds(Eigen::Ref<Eigen::VectorXd> lower_bounds) {
+  void Networkproblem::set_lower_bounds(
+      double start_time, double end_time, int number_of_time_steps,
+      Eigen::Ref<Eigen::VectorXd> lower_bounds,
+      nlohmann::json const &lower_bound_json) {
     for (Model::Networkproblem::Controlcomponent *controlcomponent :
          controlcomponents) {
-      controlcomponent->set_lower_bounds(lower_bounds);
+      controlcomponent->set_lower_bounds(
+          start_time, end_time, number_of_time_steps, lower_bounds,
+          lower_bound_json);
     }
   }
 
-  void
-  Networkproblem::set_upper_bounds(Eigen::Ref<Eigen::VectorXd> upper_bounds) {
+  void Networkproblem::set_upper_bounds(
+      double start_time, double end_time, int number_of_time_steps,
+      Eigen::Ref<Eigen::VectorXd> upper_bounds,
+      nlohmann::json const &upper_bound_json) {
     for (Model::Networkproblem::Controlcomponent *controlcomponent :
          controlcomponents) {
-      controlcomponent->set_upper_bounds(upper_bounds);
+      controlcomponent->set_upper_bounds(
+          start_time, end_time, number_of_time_steps, upper_bounds,
+          upper_bound_json);
     }
   }
 

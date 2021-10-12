@@ -135,33 +135,24 @@ namespace Model::Networkproblem {
     int get_after_control_index() const;
 
     /** \brief Fills the indices owned by this component with control values
-     * from a json.
-     *
-     * Relies on the exact format of the json.
-     * @param[out] controls control vector, who shall contain the initial
-     * values of the controls.
-     * @param control_json Json object that contains the controls.
      */
-    virtual void set_initial_controls_of_timestep(
-        double time, Eigen::Ref<Eigen::VectorXd> controls,
+    virtual void set_initial_controls(
+        double start_time, double end_time, int number_of_time_steps,
+        Eigen::Ref<Eigen::VectorXd> controls,
         nlohmann::json const &control_json)
         = 0;
 
-    /** \brief Sets the lower bounds on the controls of this Component.
-     *
-     * \param[out] lower_bounds This vector is filled at the indices between
-     * #start_control_index and #after_control_index with values for lower
-     * box constraints.
-     */
-    virtual void set_lower_bounds(Eigen::Ref<Eigen::VectorXd> lower_bounds) = 0;
+    virtual void set_lower_bounds(
+        double start_time, double end_time, int number_of_time_steps,
+        Eigen::Ref<Eigen::VectorXd> lower_bounds,
+        nlohmann::json const &lower_bound_json)
+        = 0;
 
-    /** \brief Sets the upper bounds on the controls of this Component.
-     *
-     * \param[out] upper_bounds This vector is filled at the indices between
-     * #start_control_index and #after_control_index with values for upper
-     * box constraints.
-     */
-    virtual void set_upper_bounds(Eigen::Ref<Eigen::VectorXd> upper_bounds) = 0;
+    virtual void set_upper_bounds(
+        double start_time, double end_time, int number_of_time_steps,
+        Eigen::Ref<Eigen::VectorXd> upper_bounds,
+        nlohmann::json const &upper_bound_json)
+        = 0;
 
     static std::optional<nlohmann::json> get_control_schema();
 

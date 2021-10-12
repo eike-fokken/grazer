@@ -106,13 +106,20 @@ namespace Model::Networkproblem {
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const override;
 
-    void set_initial_controls_of_timestep(
-        double time, Eigen::Ref<Eigen::VectorXd> controls,
+    void set_initial_controls(
+        double start_time, double end_time, int number_of_time_steps,
+        Eigen::Ref<Eigen::VectorXd> controls,
         nlohmann::json const &control_json) override;
 
-    void set_lower_bounds(Eigen::Ref<Eigen::VectorXd> lower_bounds) override;
+    void set_lower_bounds(
+        double start_time, double end_time, int number_of_time_steps,
+        Eigen::Ref<Eigen::VectorXd> lower_bounds,
+        nlohmann::json const &lower_bound_json) override;
 
-    void set_upper_bounds(Eigen::Ref<Eigen::VectorXd> upper_bounds) override;
+    void set_upper_bounds(
+        double start_time, double end_time, int number_of_time_steps,
+        Eigen::Ref<Eigen::VectorXd> upper_bounds,
+        nlohmann::json const &upper_bound_json) override;
 
     int set_control_indices(int next_free_index) override;
 
