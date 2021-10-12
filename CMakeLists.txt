@@ -216,10 +216,13 @@ if (NOT DEFINED IPOPT_DIRECTORY)
   set(DEBUG_FLAGS "-D_GLIBCXX_DEBUG -D_LIBCPP_DEBUG")
   set(MY_CXX_FLAGS "$<$<CONFIG:DEBUG>:${DEBUG_FLAGS}> ${STANDARDLIB}")
 
+  if(CMAKE_CXX_COMPILER_LAUNCHER MATCHES "ccache")
+    set(MY_OWN_CCACHE_VARIABLE "ccache")
+  endif()
 
   # build ipopt:
   add_custom_command(OUTPUT  ${ipopt_library_file}
-    COMMAND ${CMAKE_COMMAND} -E env "ADD_CXXFLAGS=${MY_CXX_FLAGS}" "CC=${CMAKE_C_COMPILER}" "CXX=${CMAKE_CXX_COMPILER}" ./coinbrew build Ipopt --no-prompt --skip=ThirdParty/ASL --build-dir=${CMAKE_CURRENT_BINARY_DIR}/Ipopt --prefix=${CMAKE_CURRENT_BINARY_DIR}/Ipopt/dist --parallel-jobs ${NumberOfProcessors}
+    COMMAND ${CMAKE_COMMAND} -E env "ADD_CXXFLAGS=${MY_CXX_FLAGS}" "CC=${MY_OWN_CCACHE_VARIABLE} ${CMAKE_C_COMPILER}" "CXX=${MY_OWN_CCACHE_VARIABLE} ${CMAKE_CXX_COMPILER}" ./coinbrew build Ipopt --no-prompt --skip=ThirdParty/ASL --build-dir=${CMAKE_CURRENT_BINARY_DIR}/Ipopt --prefix=${CMAKE_CURRENT_BINARY_DIR}/Ipopt/dist --parallel-jobs ${NumberOfProcessors}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Ipopt
     USES_TERMINAL)
   
