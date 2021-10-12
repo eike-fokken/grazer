@@ -80,8 +80,7 @@ namespace Solver {
      * is kept from previous time steps because usually the sparsity
      * pattern will not change.
      */
-    Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>>
-        lusolver;
+    Eigen::SparseLU<Eigen::SparseMatrix<double>> lusolver;
 
     // Later on we may include qr decomposition for badly conditioned
     // jacobians. Eigen::SparseQR<Eigen::SparseMatrix<double>,
