@@ -8,53 +8,53 @@ namespace Aux {
 }
 
 namespace Model::Networkproblem {
-  class SimpleInequalitycomponent;
+  class SimpleConstraintcomponent;
 
-  class Inequalitycomponent {
-    /** \brief SimpleInequalitycomponent is a friend of Inequalitycomponent to
-     * give it access to #start_inequality_index and #after_inequality_index.
+  class Constraintcomponent {
+    /** \brief SimpleConstraintcomponent is a friend of Constraintcomponent to
+     * give it access to #start_constraint_index and #after_constraint_index.
      */
-    friend class SimpleInequalitycomponent;
+    friend class SimpleConstraintcomponent;
     friend class Networkproblem;
 
   public:
-    virtual ~Inequalitycomponent(){};
+    virtual ~Constraintcomponent(){};
 
-    virtual void evaluate_inequality(
-        Eigen::Ref<Eigen::VectorXd> inequality_values, double last_time,
+    virtual void evaluate_constraint(
+        Eigen::Ref<Eigen::VectorXd> constraint_values, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
 
-    virtual void d_evaluate_inequality_d_state(
-        Aux::Matrixhandler &inequality_new_state_jacobian_handler,
+    virtual void d_evaluate_constraint_d_state(
+        Aux::Matrixhandler &constraint_new_state_jacobian_handler,
         double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
 
-    virtual void d_evaluate_inequality_d_control(
-        Aux::Matrixhandler &inequality_control_jacobian_handler,
+    virtual void d_evaluate_constraint_d_control(
+        Aux::Matrixhandler &constraint_control_jacobian_handler,
         double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
 
-    /** \brief This function sets the indices #start_inequality_index and
-     * #after_inequality_index.
+    /** \brief This function sets the indices #start_constraint_index and
+     * #after_constraint_index.
      *
-     * @param next_free_index The first inequality index that is currently
+     * @param next_free_index The first constraint index that is currently
      * not claimed by another component.
      * @returns The new lowest free index.
      */
-    virtual int set_inequality_indices(int const next_free_index) = 0;
+    virtual int set_constraint_indices(int const next_free_index) = 0;
 
     int get_number_of_inequalities_per_timepoint() const;
 
-    /** \brief getter for #start_inequality_index
+    /** \brief getter for #start_constraint_index
      */
-    int get_start_inequality_index() const;
+    int get_start_constraint_index() const;
 
-    /** \brief getter for #after_inequality_index
+    /** \brief getter for #after_constraint_index
      */
-    int get_after_inequality_index() const;
+    int get_after_constraint_index() const;
 
     virtual void set_constraint_lower_bounds(
         double start_time, double end_time, int number_of_time_steps,
@@ -69,13 +69,13 @@ namespace Model::Networkproblem {
         = 0;
 
   private:
-    /** \brief The first index, this Inequalitycomponent "owns".
+    /** \brief The first index, this Constraintcomponent "owns".
      */
-    int start_inequality_index{-1};
+    int start_constraint_index{-1};
 
-    /** \brief The first index after #start_inequality_index, that is not
-     * "owned" by this Inequalitycomponent.
+    /** \brief The first index after #start_constraint_index, that is not
+     * "owned" by this Constraintcomponent.
      */
-    int after_inequality_index{-1};
+    int after_constraint_index{-1};
   };
 } // namespace Model::Networkproblem

@@ -1,7 +1,7 @@
 #pragma once
 #include "Controlcomponent.hpp"
 #include "Costcomponent.hpp"
-#include "Inequalitycomponent.hpp"
+#include "Constraintcomponent.hpp"
 #include "Statecomponent.hpp"
 #include <Eigen/Sparse>
 #include <memory>
@@ -27,7 +27,7 @@ namespace Model::Networkproblem {
   class Networkproblem final :
       public Statecomponent,
       public Controlcomponent,
-      public Inequalitycomponent,
+      public Constraintcomponent,
       public Costcomponent {
 
   public:
@@ -40,8 +40,8 @@ namespace Model::Networkproblem {
     /** \brief Initializes a Networkproblem to a valid state.
      *
      * init() calls all of #set_state_indices(), #set_control_indices() and
-     * #set_inequality_indices() on the appropriate components in
-     * #statecomponents, #controlcomponents and #inequalitycomponents. Also, it
+     * #set_constraint_indices() on the appropriate components in
+     * #statecomponents, #controlcomponents and #constraintcomponents. Also, it
      * calls #setup() on all elements in equationcomponents and
      * controlcomponents.
      *
@@ -49,12 +49,12 @@ namespace Model::Networkproblem {
      * vector (before calling this function), defaulted to 0.
      * @param next_free_control_index The greatest unclaimed index auf the
      * control vector (before calling this function), defaulted to 0.
-     * @param next_free_inequality_index The greatest unclaimed index auf the
-     * inequality vector (before calling this function), defaulted to 0.
+     * @param next_free_constraint_index The greatest unclaimed index auf the
+     * constraint vector (before calling this function), defaulted to 0.
      */
     void init(
         int next_free_state_index = 0, int next_free_control_index = 0,
-        int next_free_inequality_index = 0);
+        int next_free_constraint_index = 0);
 
     ////////////////////////////////////////////////////////////////////////////
     // Statecomponent methods
@@ -146,27 +146,27 @@ namespace Model::Networkproblem {
         Eigen::Ref<Eigen::VectorXd const> const &control) const override;
 
     /////////////////////////////////////////////////////////
-    // inequality methods:
+    // constraint methods:
     /////////////////////////////////////////////////////////
 
-    void evaluate_inequality(
-        Eigen::Ref<Eigen::VectorXd> inequality_values, double last_time,
+    void evaluate_constraint(
+        Eigen::Ref<Eigen::VectorXd> constraint_values, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const override;
 
-    void d_evaluate_inequality_d_state(
-        Aux::Matrixhandler &inequality_new_state_jacobian_handler,
+    void d_evaluate_constraint_d_state(
+        Aux::Matrixhandler &constraint_new_state_jacobian_handler,
         double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const override;
 
-    void d_evaluate_inequality_d_control(
-        Aux::Matrixhandler &inequality_control_jacobian_handler,
+    void d_evaluate_constraint_d_control(
+        Aux::Matrixhandler &constraint_control_jacobian_handler,
         double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const override;
 
-    int set_inequality_indices(int next_free_index) override;
+    int set_constraint_indices(int next_free_index) override;
 
     void set_constraint_lower_bounds(
         double start_time, double end_time, int number_of_time_steps,
@@ -190,7 +190,7 @@ namespace Model::Networkproblem {
     std::vector<Statecomponent *> statecomponents;
     std::vector<Controlcomponent *> controlcomponents;
     std::vector<Costcomponent *> costcomponents;
-    std::vector<Inequalitycomponent *> inequalitycomponents;
+    std::vector<Constraintcomponent *> constraintcomponents;
   };
 
 } // namespace Model::Networkproblem

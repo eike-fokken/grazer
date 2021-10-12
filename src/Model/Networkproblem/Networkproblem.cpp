@@ -45,7 +45,7 @@ namespace Model::Networkproblem {
   /// Nodes actually hold equations to solve
   Networkproblem::Networkproblem(std::unique_ptr<Network::Net> _network) :
       network(std::move(_network)) {
-    for (Network::Node *node : network->get_nodes()) {
+    for (auto *node : network->get_nodes()) {
       if (auto equationcomponent = dynamic_cast<Equationcomponent *>(node)) {
         equationcomponents.push_back(equationcomponent);
       }
@@ -58,13 +58,13 @@ namespace Model::Networkproblem {
       if (auto costcomponent = dynamic_cast<Costcomponent *>(node)) {
         costcomponents.push_back(costcomponent);
       }
-      if (auto inequalitycomponent
-          = dynamic_cast<Inequalitycomponent *>(node)) {
-        inequalitycomponents.push_back(inequalitycomponent);
+      if (auto constraintcomponent
+          = dynamic_cast<Constraintcomponent *>(node)) {
+        constraintcomponents.push_back(constraintcomponent);
       }
     }
 
-    for (Network::Edge *edge : network->get_edges()) {
+    for (auto *edge : network->get_edges()) {
       if (auto equationcomponent = dynamic_cast<Equationcomponent *>(edge)) {
         equationcomponents.push_back(equationcomponent);
       }
@@ -77,20 +77,20 @@ namespace Model::Networkproblem {
       if (auto costcomponent = dynamic_cast<Costcomponent *>(edge)) {
         costcomponents.push_back(costcomponent);
       }
-      if (auto inequalitycomponent
-          = dynamic_cast<Inequalitycomponent *>(edge)) {
-        inequalitycomponents.push_back(inequalitycomponent);
+      if (auto constraintcomponent
+          = dynamic_cast<Constraintcomponent *>(edge)) {
+        constraintcomponents.push_back(constraintcomponent);
       }
     }
   }
 
   void Networkproblem::init(
       int next_free_state_index, int next_free_control_index,
-      int next_free_inequality_index) {
+      int next_free_constraint_index) {
     next_free_state_index = set_state_indices(next_free_state_index);
     next_free_control_index = set_control_indices(next_free_control_index);
-    next_free_inequality_index
-        = set_inequality_indices(next_free_inequality_index);
+    next_free_constraint_index
+        = set_constraint_indices(next_free_constraint_index);
     setup();
   }
 
@@ -100,15 +100,13 @@ namespace Model::Networkproblem {
 
   void Networkproblem::json_save(
       double time, Eigen::Ref<Eigen::VectorXd const> const &state) {
-    for (Model::Networkproblem::Statecomponent *statecomponent :
-         statecomponents) {
+    for (auto *statecomponent : statecomponents) {
       statecomponent->json_save(time, state);
     }
   }
 
   void Networkproblem::add_results_to_json(nlohmann::json &new_output) {
-    for (Model::Networkproblem::Statecomponent *statecomponent :
-         statecomponents) {
+    for (auto *statecomponent : statecomponents) {
       statecomponent->add_results_to_json(new_output);
     }
   }
@@ -148,7 +146,7 @@ namespace Model::Networkproblem {
 
   int Networkproblem::set_state_indices(int next_free_index) {
     start_state_index = next_free_index;
-    for (Statecomponent *statecomponent : statecomponents) {
+    for (auto *statecomponent : statecomponents) {
       next_free_index = statecomponent->set_state_indices(next_free_index);
     }
     after_state_index = next_free_index;
@@ -165,13 +163,11 @@ namespace Model::Networkproblem {
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const {
 
-    for (Model::Networkproblem::Equationcomponent *equationcomponent :
-         equationcomponents) {
+    for (auto *equationcomponent : equationcomponents) {
       equationcomponent->evaluate(
           rootvalues, last_time, new_time, last_state, new_state);
     }
-    for (Model::Networkproblem::Controlcomponent *controlcomponent :
-         controlcomponents) {
+    for (auto *controlcomponent : controlcomponents) {
       controlcomponent->evaluate(
           rootvalues, last_time, new_time, last_state, new_state, control);
     }
@@ -182,13 +178,11 @@ namespace Model::Networkproblem {
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const &control) {
-    for (Model::Networkproblem::Equationcomponent *equationcomponent :
-         equationcomponents) {
+    for (auto *equationcomponent : equationcomponents) {
       equationcomponent->prepare_timestep(
           last_time, new_time, last_state, new_state);
     }
-    for (Model::Networkproblem::Controlcomponent *controlcomponent :
-         controlcomponents) {
+    for (auto *controlcomponent : controlcomponents) {
       controlcomponent->prepare_timestep(
           last_time, new_time, last_state, new_state, control);
     }
@@ -200,13 +194,11 @@ namespace Model::Networkproblem {
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const {
 
-    for (Model::Networkproblem::Equationcomponent *equationcomponent :
-         equationcomponents) {
+    for (auto *equationcomponent : equationcomponents) {
       equationcomponent->d_evalutate_d_new_state(
           jacobianhandler, last_time, new_time, last_state, new_state);
     }
-    for (Model::Networkproblem::Controlcomponent *controlcomponent :
-         controlcomponents) {
+    for (auto *controlcomponent : controlcomponents) {
       controlcomponent->d_evalutate_d_new_state(
           jacobianhandler, last_time, new_time, last_state, new_state, control);
     }
@@ -218,13 +210,11 @@ namespace Model::Networkproblem {
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const {
 
-    for (Model::Networkproblem::Equationcomponent *equationcomponent :
-         equationcomponents) {
+    for (auto *equationcomponent : equationcomponents) {
       equationcomponent->d_evalutate_d_last_state(
           jacobianhandler, last_time, new_time, last_state, new_state);
     }
-    for (Model::Networkproblem::Controlcomponent *controlcomponent :
-         controlcomponents) {
+    for (auto *controlcomponent : controlcomponents) {
       controlcomponent->d_evalutate_d_last_state(
           jacobianhandler, last_time, new_time, last_state, new_state, control);
     }
@@ -235,8 +225,7 @@ namespace Model::Networkproblem {
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const {
-    for (Model::Networkproblem::Controlcomponent *controlcomponent :
-         controlcomponents) {
+    for (auto *controlcomponent : controlcomponents) {
       controlcomponent->d_evalutate_d_control(
           jacobianhandler, last_time, new_time, last_state, new_state, control);
     }
@@ -343,7 +332,7 @@ namespace Model::Networkproblem {
 
   int Networkproblem::set_control_indices(int next_free_index) {
     start_control_index = next_free_index;
-    for (Controlcomponent *controlcomponent : controlcomponents) {
+    for (auto *controlcomponent : controlcomponents) {
       next_free_index = controlcomponent->set_control_indices(next_free_index);
     }
     after_control_index = next_free_index;
@@ -351,10 +340,10 @@ namespace Model::Networkproblem {
   }
 
   void Networkproblem::setup() {
-    for (Equationcomponent *equationcomponent : equationcomponents) {
+    for (auto *equationcomponent : equationcomponents) {
       equationcomponent->setup();
     }
-    for (Controlcomponent *controlcomponent : controlcomponents) {
+    for (auto *controlcomponent : controlcomponents) {
       controlcomponent->setup();
     }
   }
@@ -367,7 +356,7 @@ namespace Model::Networkproblem {
       Eigen::Ref<Eigen::VectorXd> cost_values, double last_time,
       double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const {
-    for (Model::Networkproblem::Costcomponent *costcomponent : costcomponents) {
+    for (auto *costcomponent : costcomponents) {
       costcomponent->evaluate_cost(
           cost_values, last_time, new_time, state, control);
     }
@@ -377,7 +366,7 @@ namespace Model::Networkproblem {
       Aux::Matrixhandler &cost_new_state_jacobian_handler, double last_time,
       double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const {
-    for (Model::Networkproblem::Costcomponent *costcomponent : costcomponents) {
+    for (auto *costcomponent : costcomponents) {
       costcomponent->d_evaluate_cost_d_state(
           cost_new_state_jacobian_handler, last_time, new_time, state, control);
     }
@@ -387,59 +376,56 @@ namespace Model::Networkproblem {
       Aux::Costgradienthandler &cost_control_jacobian_handler, double last_time,
       double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const {
-    for (Model::Networkproblem::Costcomponent *costcomponent : costcomponents) {
+    for (auto *costcomponent : costcomponents) {
       costcomponent->d_evaluate_cost_d_control(
           cost_control_jacobian_handler, last_time, new_time, state, control);
     }
   }
 
   /////////////////////////////////////////////////////////
-  // inequality methods:
+  // constraint methods:
   /////////////////////////////////////////////////////////
 
-  void Networkproblem::evaluate_inequality(
-      Eigen::Ref<Eigen::VectorXd> inequality_values, double last_time,
+  void Networkproblem::evaluate_constraint(
+      Eigen::Ref<Eigen::VectorXd> constraint_values, double last_time,
       double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const {
-    for (Model::Networkproblem::Inequalitycomponent *inequalitycomponent :
-         inequalitycomponents) {
-      inequalitycomponent->evaluate_inequality(
-          inequality_values, last_time, new_time, state, control);
+    for (auto *constraintcomponent : constraintcomponents) {
+      constraintcomponent->evaluate_constraint(
+          constraint_values, last_time, new_time, state, control);
     }
   }
 
-  void Networkproblem::d_evaluate_inequality_d_state(
-      Aux::Matrixhandler &inequality_new_state_jacobian_handler,
+  void Networkproblem::d_evaluate_constraint_d_state(
+      Aux::Matrixhandler &constraint_new_state_jacobian_handler,
       double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const {
-    for (Model::Networkproblem::Inequalitycomponent *inequalitycomponent :
-         inequalitycomponents) {
-      inequalitycomponent->d_evaluate_inequality_d_state(
-          inequality_new_state_jacobian_handler, last_time, new_time, state,
+    for (auto *constraintcomponent : constraintcomponents) {
+      constraintcomponent->d_evaluate_constraint_d_state(
+          constraint_new_state_jacobian_handler, last_time, new_time, state,
           control);
     }
   }
 
-  void Networkproblem::d_evaluate_inequality_d_control(
-      Aux::Matrixhandler &inequality_control_jacobian_handler, double last_time,
+  void Networkproblem::d_evaluate_constraint_d_control(
+      Aux::Matrixhandler &constraint_control_jacobian_handler, double last_time,
       double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const {
-    for (Model::Networkproblem::Inequalitycomponent *inequalitycomponent :
-         inequalitycomponents) {
-      inequalitycomponent->d_evaluate_inequality_d_control(
-          inequality_control_jacobian_handler, last_time, new_time, state,
+    for (auto *constraintcomponent : constraintcomponents) {
+      constraintcomponent->d_evaluate_constraint_d_control(
+          constraint_control_jacobian_handler, last_time, new_time, state,
           control);
     }
   }
 
-  int Networkproblem::set_inequality_indices(int next_free_index) {
-    start_inequality_index = next_free_index;
-    for (Inequalitycomponent *inequalitycomponent : inequalitycomponents) {
+  int Networkproblem::set_constraint_indices(int next_free_index) {
+    start_constraint_index = next_free_index;
+    for (auto *constraintcomponent : constraintcomponents) {
       next_free_index
-          = inequalitycomponent->set_inequality_indices(next_free_index);
+          = constraintcomponent->set_constraint_indices(next_free_index);
     }
-    after_inequality_index = next_free_index;
+    after_constraint_index = next_free_index;
     return next_free_index;
   }
 
@@ -447,7 +433,7 @@ namespace Model::Networkproblem {
       double start_time, double end_time, int number_of_time_steps,
       Eigen::Ref<Eigen::VectorXd> constraint_lower_bounds,
       nlohmann::json const &constraint_lower_bound_json) {
-    auto idcomponents = get_idobjects(inequalitycomponents);
+    auto idcomponents = get_idobjects(constraintcomponents);
 
     for (auto const &component : {"nodes", "connections"}) {
       for (auto const &componenttype : constraint_lower_bound_json[component]) {
@@ -462,7 +448,7 @@ namespace Model::Networkproblem {
               = std::find_if(idcomponents.begin(), idcomponents.end(), find_id);
           if (iterator != idcomponents.end()) {
             auto index = iterator - idcomponents.begin();
-            inequalitycomponents[static_cast<size_t>(index)]
+            constraintcomponents[static_cast<size_t>(index)]
                 ->set_constraint_lower_bounds(
                     start_time, end_time, number_of_time_steps,
                     constraint_lower_bounds, constraint_lower_bound_json);
@@ -482,7 +468,7 @@ namespace Model::Networkproblem {
       Eigen::Ref<Eigen::VectorXd> constraint_upper_bounds,
       nlohmann::json const &constraint_upper_bound_json) {
 
-    auto idcomponents = get_idobjects(inequalitycomponents);
+    auto idcomponents = get_idobjects(constraintcomponents);
 
     for (auto const &component : {"nodes", "connections"}) {
       for (auto const &componenttype : constraint_upper_bound_json[component]) {
@@ -497,7 +483,7 @@ namespace Model::Networkproblem {
               = std::find_if(idcomponents.begin(), idcomponents.end(), find_id);
           if (iterator != idcomponents.end()) {
             auto index = iterator - idcomponents.begin();
-            inequalitycomponents[static_cast<size_t>(index)]
+            constraintcomponents[static_cast<size_t>(index)]
                 ->set_constraint_upper_bounds(
                     start_time, end_time, number_of_time_steps,
                     constraint_upper_bounds, constraint_upper_bound_json);

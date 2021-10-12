@@ -5,8 +5,10 @@ Valuemap.cpp
 Statecomponent.cpp
 SimpleStatecomponent.cpp
 Controlcomponent.cpp
+SimpleControlcomponent.cpp
 Costcomponent.cpp
-Inequalitycomponent.cpp)
+Constraintcomponent.cpp
+SimpleConstraintcomponent.cpp)
 
 target_link_libraries(componentclasses PUBLIC mathfunctions exception)
 

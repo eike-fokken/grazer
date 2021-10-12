@@ -23,7 +23,7 @@ namespace optimization {
    * @param[in] BT_vector vector of matrices that are the transpose of the
    * derivative of the model equations with respect to the new state.
    * @param[in] df_dx_vector derivative of the objective function (or
-   * inequality value) with respect to the new state.
+   * constraint value) with respect to the new state.
    * @param[in] solvers A vector of solvers, that are initialized with the
    * right sparsity pattern for the corresponding matrix in #BT_vector
    */
