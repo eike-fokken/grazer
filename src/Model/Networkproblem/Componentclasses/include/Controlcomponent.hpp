@@ -124,7 +124,7 @@ namespace Model::Networkproblem {
      */
     virtual int set_control_indices(int next_free_index) = 0;
 
-    int get_number_of_controls() const;
+    int get_number_of_controls_per_timepoint() const;
 
     /** \brief getter for #start_control_index
      */

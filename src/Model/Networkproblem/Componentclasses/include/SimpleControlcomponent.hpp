@@ -12,6 +12,6 @@ namespace Model::Networkproblem {
     /// int like 2. But for PDES its value is only known after construction.
     ///
     /// @returns number of control variables needed by this component
-    virtual int needed_number_of_controls() const = 0;
+    virtual int needed_number_of_controls_per_time_point() const = 0;
   };
 } // namespace Model::Networkproblem

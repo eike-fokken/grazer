@@ -3,7 +3,7 @@
 
 namespace Model::Networkproblem {
 
-  int Inequalitycomponent::get_number_of_inequalities() const {
+  int Inequalitycomponent::get_number_of_inequalities_per_timepoint() const {
     if (start_inequality_index < 0) {
       gthrow(
           {"start_inequality_index < 0. Probably get_number_of_inequalitys() "

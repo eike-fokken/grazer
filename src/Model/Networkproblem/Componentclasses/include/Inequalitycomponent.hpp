@@ -45,7 +45,7 @@ namespace Model::Networkproblem {
      */
     virtual int set_inequality_indices(int const next_free_index) = 0;
 
-    int get_number_of_inequalities() const;
+    int get_number_of_inequalities_per_timepoint() const;
 
     /** \brief getter for #start_inequality_index
      */

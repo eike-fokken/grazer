@@ -8,16 +8,16 @@ namespace Model::Networkproblem {
       Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*control*/) {}
 
-  int Controlcomponent::get_number_of_controls() const {
+  int Controlcomponent::get_number_of_controls_per_timepoint() const {
     if (start_control_index < 0) {
       gthrow(
-          {"start_control_index < 0. Probably get_number_of_controls() was "
+          {"start_control_index < 0. Probably get_number_of_controls_per_timepoint() was "
            "called "
            "before calling set_control_indices().\n This is forbidden."});
     }
     if (after_control_index < 0) {
       gthrow(
-          {"after_control_index < 0. Probably get_number_of_controls() was "
+          {"after_control_index < 0. Probably get_number_of_controls_per_timepoint() was "
            "called "
            "before calling set_control_indices().\n This is forbidden."});
     }
