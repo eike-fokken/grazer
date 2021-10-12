@@ -254,7 +254,7 @@ endif()
       )
     target_include_directories(my_ipopt SYSTEM INTERFACE ${ipopt_library_headers})
   
-
+    # include_directories(SYSTEM ${ipopt_library_headers})
 
 # for building latex documentation
 
