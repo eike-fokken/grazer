@@ -27,9 +27,10 @@ namespace Model {
 
   void Optimizer::optimize(
       Timedata timedata, Networkproblem::Networkproblem &problem,
-      nlohmann::json &problem_initial_state_json,
-      nlohmann::json &problem_initial_control_json) {
+      nlohmann::json &initial_state_json, nlohmann::json &initial_control_json,
+      nlohmann::json &lower_bounds_json, nlohmann::json &upper_bounds_json) {
     double last_time = timedata.get_starttime();
+    double new_time = last_time + timedata.get_delta_t();
 
     auto number_of_states = problem.get_number_of_states();
     auto number_of_controls_per_time_point
@@ -37,7 +38,7 @@ namespace Model {
     auto number_of_inequalities_per_time_point
         = problem.get_number_of_inequalities_per_timepoint();
 
-    Eigen::VectorXd control(
+    Eigen::VectorXd controls(
         number_of_controls_per_time_point * timedata.get_number_of_steps());
     Eigen::VectorXd lower_bounds(
         number_of_controls_per_time_point * timedata.get_number_of_steps());
@@ -54,9 +55,15 @@ namespace Model {
     // problem.set_initial_values(last_state, problem_initial_state_json);
     // problem.json_save(last_time, last_state);
 
-    for (int i = 0; i != timedata.get_number_of_steps(); ++i) {
-      double new_time = last_time + timedata.get_delta_t();
-    }
+    problem.set_initial_controls(
+        timedata.get_starttime(), timedata.get_endtime(),
+        timedata.get_number_of_steps(), controls, initial_control_json);
+    problem.set_lower_bounds(
+        timedata.get_starttime(), timedata.get_endtime(),
+        timedata.get_number_of_steps(), lower_bounds, lower_bounds_json);
+    problem.set_upper_bounds(
+        timedata.get_starttime(), timedata.get_endtime(),
+        timedata.get_number_of_steps(), upper_bounds, upper_bounds_json);
   }
 
 } // namespace Model

@@ -14,8 +14,9 @@ namespace Model {
 
     void optimize(
         Timedata timedata, Networkproblem::Networkproblem &problem,
-        nlohmann::json &problem_initial_state_json,
-        nlohmann::json &problem_initial_control_json);
+        nlohmann::json &initial_state_json,
+        nlohmann::json &initial_control_json, nlohmann::json &lower_bounds_json,
+        nlohmann::json &upper_bounds_json);
 
   private:
     Optimizer(
