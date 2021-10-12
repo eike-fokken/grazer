@@ -19,12 +19,12 @@ namespace Model::Networkproblem {
     if (start_state_index < 0) {
       gthrow(
           {"start_state_index < 0. Probably get_number_of_states() was called "
-           "before calling set_state_indices().\n This is forbidden."})
+           "before calling set_state_indices().\n This is forbidden."});
     }
     if (after_state_index < 0) {
       gthrow(
           {"after_state_index < 0. Probably get_number_of_states() was called "
-           "before calling set_state_indices().\n This is forbidden."})
+           "before calling set_state_indices().\n This is forbidden."});
     }
     return after_state_index - start_state_index;
   }

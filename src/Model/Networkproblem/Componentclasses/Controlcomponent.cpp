@@ -13,13 +13,13 @@ namespace Model::Networkproblem {
       gthrow(
           {"start_control_index < 0. Probably get_number_of_controls() was "
            "called "
-           "before calling set_control_indices().\n This is forbidden."})
+           "before calling set_control_indices().\n This is forbidden."});
     }
     if (after_control_index < 0) {
       gthrow(
           {"after_control_index < 0. Probably get_number_of_controls() was "
            "called "
-           "before calling set_control_indices().\n This is forbidden."})
+           "before calling set_control_indices().\n This is forbidden."});
     }
     return after_control_index - start_control_index;
   }

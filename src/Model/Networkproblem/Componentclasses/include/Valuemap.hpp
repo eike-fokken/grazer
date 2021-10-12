@@ -91,7 +91,7 @@ namespace Model::Networkproblem {
       std::vector<std::pair<double, Eigen::Matrix<double, N, 1>>> pair_values;
 
       if (values_json["data"].size() == 0) {
-        gthrow({"data in node with id ", values_json["id"], " is empty!"})
+        gthrow({"data in node with id ", values_json["id"], " is empty!"});
       }
 
       for (auto &datapoint : values_json["data"]) {
@@ -109,7 +109,7 @@ namespace Model::Networkproblem {
         } catch (...) {
           gthrow(
               {"initial/boundary data in node with id ", values_json["id"],
-               " couldn't be assignd in vector, not a double?"})
+               " couldn't be assignd in vector, not a double?"});
         }
         pair_values.push_back({datapoint[key], value});
       }

@@ -69,7 +69,8 @@ namespace Model::Networkproblem::Gas {
     if (get_after_state_index() - get_start_state_index() == 2) {
       auto *this_idobject = dynamic_cast<Network::Idobject const *>(this);
       if (!this_idobject) {
-        gthrow({"This gasedge is not and Idobject, which should never happen!"})
+        gthrow(
+            {"This gasedge is not and Idobject, which should never happen!"});
       }
       gthrow(
           {"Edge: ", this_idobject->get_id(),
@@ -88,7 +89,8 @@ namespace Model::Networkproblem::Gas {
     } else {
       auto *this_idobject = dynamic_cast<Network::Idobject const *>(this);
       if (!this_idobject) {
-        gthrow({"This gasedge is not and Idobject, which should never happen!"})
+        gthrow(
+            {"This gasedge is not and Idobject, which should never happen!"});
       }
       gthrow(
           {"The supplied direction was ", std::to_string(direction),
@@ -116,7 +118,8 @@ namespace Model::Networkproblem::Gas {
     } else {
       auto *this_idobject = dynamic_cast<Network::Idobject const *>(this);
       if (!this_idobject) {
-        gthrow({"This gasedge is not and Idobject, which should never happen!"})
+        gthrow(
+            {"This gasedge is not and Idobject, which should never happen!"});
       }
       gthrow(
           {"The supplied direction was ", std::to_string(direction),

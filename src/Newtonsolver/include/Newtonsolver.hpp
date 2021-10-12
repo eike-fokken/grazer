@@ -80,7 +80,7 @@ namespace Solver {
             {"Couldn't decompose a Jacobian, it may be non-invertible.\n "
              "time: ",
              std::to_string(new_time),
-             "\n Note, that only LU decomposition is implemented."})
+             "\n Note, that only LU decomposition is implemented."});
       }
     }
     while (rootvalues.norm() > tolerance
@@ -92,7 +92,7 @@ namespace Solver {
               {"Couldn't decompose a Jacobian, it may be non-invertible.\n "
                "time: ",
                std::to_string(new_time),
-               "\n Note, that only LU decomposition is implemented."})
+               "\n Note, that only LU decomposition is implemented."});
         }
       }
       // compute Dx_k:

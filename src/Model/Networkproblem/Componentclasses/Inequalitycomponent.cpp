@@ -8,13 +8,13 @@ namespace Model::Networkproblem {
       gthrow(
           {"start_inequality_index < 0. Probably get_number_of_inequalitys() "
            "was called "
-           "before calling set_inequality_indices().\n This is forbidden."})
+           "before calling set_inequality_indices().\n This is forbidden."});
     }
     if (after_inequality_index < 0) {
       gthrow(
           {"after_inequality_index < 0. Probably get_number_of_inequalitys() "
            "was called "
-           "before calling set_inequality_indices().\n This is forbidden."})
+           "before calling set_inequality_indices().\n This is forbidden."});
     }
     return after_inequality_index - start_inequality_index;
   }
