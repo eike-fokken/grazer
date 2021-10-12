@@ -31,8 +31,8 @@ namespace Network {
     /// This function indicates whether an edge between two nodes exists or
     /// not. The order of nodes in the edge is not relevant. Its reverse edge
     /// is thus also checked.
-    /// @param node_id_1 Starting Node of edge
-    /// @param node_id_2 Ending Node of edge
+    /// @param id1 Starting Node of edge
+    /// @param id2 Ending Node of edge
     /// @returns Return True if the given edge or its reverse edge exists and
     /// false if neither exist.
     bool
@@ -49,8 +49,8 @@ namespace Network {
     /// Similiar to Net::get_node_by_id(int) this function returns
     /// a shared pointer of type <Edge> given the corresponding nodes
     /// id. Mind the order!
-    /// @param node_id_1 Nodes id of starting node
-    /// @param node_id_2 Nodes id of ending node
+    /// @param id1 Nodes id of starting node
+    /// @param id2 Nodes id of ending node
     /// @returns Returns shared pointer of type < Edge >
     Edge *
     get_edge_by_node_ids(std::string const id1, std::string const id2) const;

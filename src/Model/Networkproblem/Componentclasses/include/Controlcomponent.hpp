@@ -28,7 +28,6 @@ namespace Model::Networkproblem {
      * @param new_time time point of the current time step.
      * @param last_state value of the state at last time step.
      * @param new_state value of the state at current time step.
-     * @param last_control value of the control at last time step.
      * @param control value of the control at current time step.
      */
     virtual void evaluate(
@@ -46,7 +45,6 @@ namespace Model::Networkproblem {
      * @param new_time time point of the current time step.
      * @param last_state value of the state at last time step.
      * @param new_state value of the state at current time step.
-     * @param last_control value of the control at last time step.
      * @param control value of the control at current time step.
      */
 
@@ -68,7 +66,6 @@ namespace Model::Networkproblem {
      * @param new_time time point of the current time step.
      * @param last_state value of the state at last time step.
      * @param new_state value of the state at current time step.
-     * @param last_control value of the control at last time step.
      * @param control value of the control at current time step.
      */
     virtual void d_evalutate_d_new_state(
@@ -90,7 +87,6 @@ namespace Model::Networkproblem {
      * @param new_time time point of the current time step.
      * @param last_state value of the state at last time step.
      * @param new_state value of the state at current time step.
-     * @param last_control value of the control at last time step.
      * @param control value of the control at current time step.
      */
     virtual void d_evalutate_d_last_state(
@@ -111,7 +107,6 @@ namespace Model::Networkproblem {
      * @param new_time time point of the current time step.
      * @param last_state value of the state at last time step.
      * @param new_state value of the state at current time step.
-     * @param last_control value of the control at last time step.
      * @param control value of the control at current time step.
      */
     virtual void d_evalutate_d_control(
@@ -143,8 +138,8 @@ namespace Model::Networkproblem {
      * from a json.
      *
      * Relies on the exact format of the json.
-     * @param[out] new_state state vector, who shall contain the initial
-     * values.
+     * @param[out] controls control vector, who shall contain the initial
+     * values of the controls.
      * @param control_json Json object that contains the controls.
      */
     virtual void set_initial_controls_of_timestep(
