@@ -168,6 +168,16 @@ namespace Model::Networkproblem {
 
     int set_inequality_indices(int next_free_index) override;
 
+    void set_constraint_lower_bounds(
+        double start_time, double end_time, int number_of_time_steps,
+        Eigen::Ref<Eigen::VectorXd> constraint_lower_bounds,
+        nlohmann::json const &constraint_lower_bound_json) override;
+
+    void set_constraint_upper_bounds(
+        double start_time, double end_time, int number_of_time_steps,
+        Eigen::Ref<Eigen::VectorXd> constraint_upper_bounds,
+        nlohmann::json const &constraint_upper_bound_json) override;
+
     /////////////////////////////////////////////////////////
     // other methods:
     /////////////////////////////////////////////////////////

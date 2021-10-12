@@ -17,6 +17,26 @@
 // #include <execution>
 namespace Model::Networkproblem {
 
+  /** \brief Creates a vector of Idobject pointers from some component type.
+   */
+  template <typename Componenttype>
+  static std::vector<Network::Idobject *>
+  get_idobjects(std::vector<Componenttype *> const &components) {
+
+    std::vector<Network::Idobject *> idcomponents;
+    idcomponents.reserve(components.size());
+    for (auto *component : components) {
+      auto idcomponent = dynamic_cast<Network::Idobject *>(component);
+      if (idcomponent == nullptr) {
+        gthrow(
+            {"Some component stored in Networkproblem is not of type Idobject, "
+             "which should never happen."});
+      }
+      idcomponents.push_back(idcomponent);
+    }
+    return idcomponents;
+  }
+
   std::string Networkproblem::get_type() const { return "Network_problem"; }
 
   Networkproblem::~Networkproblem() {}
@@ -97,18 +117,7 @@ namespace Model::Networkproblem {
       Eigen::Ref<Eigen::VectorXd> new_state,
       nlohmann::json const &initial_json) {
 
-    std::vector<Network::Idobject *> idcomponents;
-    idcomponents.reserve(statecomponents.size());
-
-    for (Statecomponent *statecomponent : statecomponents) {
-      auto idcomponent = dynamic_cast<Network::Idobject *>(statecomponent);
-      if (idcomponent == nullptr) {
-        gthrow(
-            {"A state component is not of type Idobject, which should "
-             "never happen."});
-      }
-      idcomponents.push_back(idcomponent);
-    }
+    auto idcomponents = get_idobjects(statecomponents);
 
     for (auto const &component : {"nodes", "connections"}) {
       if (not initial_json.contains(component)) {
@@ -238,23 +247,14 @@ namespace Model::Networkproblem {
       Eigen::Ref<Eigen::VectorXd> controls,
       nlohmann::json const &control_json) {
 
-    std::vector<Network::Idobject *> idcomponents;
-    idcomponents.reserve(controlcomponents.size());
-
-    for (Controlcomponent *controlcomponent : controlcomponents) {
-      auto idcomponent = dynamic_cast<Network::Idobject *>(controlcomponent);
-      if (idcomponent == nullptr) {
-        gthrow(
-            {"A control component is not of type Idobject, which should "
-             "never happen."});
-      }
-      idcomponents.push_back(idcomponent);
-    }
+    auto idcomponents = get_idobjects(controlcomponents);
 
     for (auto const &component : {"nodes", "connections"}) {
       for (auto const &componenttype : control_json[component]) {
         for (auto const &componentjson : componenttype) {
+
           auto component_id = componentjson["id"];
+
           auto find_id = [component_id](Network::Idobject const *x) {
             return component_id == x->get_id();
           };
@@ -266,10 +266,10 @@ namespace Model::Networkproblem {
                 start_time, end_time, number_of_time_steps, controls,
                 control_json);
           } else {
-            std::cout
-                << "Note: Component with id " << component_id
-                << "appears in the initial values but not in the topology."
-                << std::endl;
+            std::cout << "Note: Component with id " << component_id
+                      << "appears in the control initial values but not in the "
+                         "topology."
+                      << std::endl;
           }
         }
       }
@@ -280,11 +280,32 @@ namespace Model::Networkproblem {
       double start_time, double end_time, int number_of_time_steps,
       Eigen::Ref<Eigen::VectorXd> lower_bounds,
       nlohmann::json const &lower_bound_json) {
-    for (Model::Networkproblem::Controlcomponent *controlcomponent :
-         controlcomponents) {
-      controlcomponent->set_lower_bounds(
-          start_time, end_time, number_of_time_steps, lower_bounds,
-          lower_bound_json);
+
+    auto idcomponents = get_idobjects(controlcomponents);
+
+    for (auto const &component : {"nodes", "connections"}) {
+      for (auto const &componenttype : lower_bound_json[component]) {
+        for (auto const &componentjson : componenttype) {
+
+          auto component_id = componentjson["id"];
+
+          auto find_id = [component_id](Network::Idobject const *x) {
+            return component_id == x->get_id();
+          };
+          auto iterator
+              = std::find_if(idcomponents.begin(), idcomponents.end(), find_id);
+          if (iterator != idcomponents.end()) {
+            auto index = iterator - idcomponents.begin();
+            controlcomponents[static_cast<size_t>(index)]->set_lower_bounds(
+                start_time, end_time, number_of_time_steps, lower_bounds,
+                lower_bound_json);
+          } else {
+            std::cout << "Note: Component with id " << component_id
+                      << "appears in the lower bounds but not in the topology."
+                      << std::endl;
+          }
+        }
+      }
     }
   }
 
@@ -292,11 +313,31 @@ namespace Model::Networkproblem {
       double start_time, double end_time, int number_of_time_steps,
       Eigen::Ref<Eigen::VectorXd> upper_bounds,
       nlohmann::json const &upper_bound_json) {
-    for (Model::Networkproblem::Controlcomponent *controlcomponent :
-         controlcomponents) {
-      controlcomponent->set_upper_bounds(
-          start_time, end_time, number_of_time_steps, upper_bounds,
-          upper_bound_json);
+    auto idcomponents = get_idobjects(controlcomponents);
+
+    for (auto const &component : {"nodes", "connections"}) {
+      for (auto const &componenttype : upper_bound_json[component]) {
+        for (auto const &componentjson : componenttype) {
+
+          auto component_id = componentjson["id"];
+
+          auto find_id = [component_id](Network::Idobject const *x) {
+            return component_id == x->get_id();
+          };
+          auto iterator
+              = std::find_if(idcomponents.begin(), idcomponents.end(), find_id);
+          if (iterator != idcomponents.end()) {
+            auto index = iterator - idcomponents.begin();
+            controlcomponents[static_cast<size_t>(index)]->set_upper_bounds(
+                start_time, end_time, number_of_time_steps, upper_bounds,
+                upper_bound_json);
+          } else {
+            std::cout << "Note: Component with id " << component_id
+                      << "appears in the upper bounds but not in the topology."
+                      << std::endl;
+          }
+        }
+      }
     }
   }
 
@@ -400,6 +441,75 @@ namespace Model::Networkproblem {
     }
     after_inequality_index = next_free_index;
     return next_free_index;
+  }
+
+  void Networkproblem::set_constraint_lower_bounds(
+      double start_time, double end_time, int number_of_time_steps,
+      Eigen::Ref<Eigen::VectorXd> constraint_lower_bounds,
+      nlohmann::json const &constraint_lower_bound_json) {
+    auto idcomponents = get_idobjects(inequalitycomponents);
+
+    for (auto const &component : {"nodes", "connections"}) {
+      for (auto const &componenttype : constraint_lower_bound_json[component]) {
+        for (auto const &componentjson : componenttype) {
+
+          auto component_id = componentjson["id"];
+
+          auto find_id = [component_id](Network::Idobject const *x) {
+            return component_id == x->get_id();
+          };
+          auto iterator
+              = std::find_if(idcomponents.begin(), idcomponents.end(), find_id);
+          if (iterator != idcomponents.end()) {
+            auto index = iterator - idcomponents.begin();
+            inequalitycomponents[static_cast<size_t>(index)]
+                ->set_constraint_lower_bounds(
+                    start_time, end_time, number_of_time_steps,
+                    constraint_lower_bounds, constraint_lower_bound_json);
+          } else {
+            std::cout << "Note: Component with id " << component_id
+                      << "appears in the constraint lower bounds but not in "
+                         "the topology."
+                      << std::endl;
+          }
+        }
+      }
+    }
+  }
+
+  void Networkproblem::set_constraint_upper_bounds(
+      double start_time, double end_time, int number_of_time_steps,
+      Eigen::Ref<Eigen::VectorXd> constraint_upper_bounds,
+      nlohmann::json const &constraint_upper_bound_json) {
+
+    auto idcomponents = get_idobjects(inequalitycomponents);
+
+    for (auto const &component : {"nodes", "connections"}) {
+      for (auto const &componenttype : constraint_upper_bound_json[component]) {
+        for (auto const &componentjson : componenttype) {
+
+          auto component_id = componentjson["id"];
+
+          auto find_id = [component_id](Network::Idobject const *x) {
+            return component_id == x->get_id();
+          };
+          auto iterator
+              = std::find_if(idcomponents.begin(), idcomponents.end(), find_id);
+          if (iterator != idcomponents.end()) {
+            auto index = iterator - idcomponents.begin();
+            inequalitycomponents[static_cast<size_t>(index)]
+                ->set_constraint_upper_bounds(
+                    start_time, end_time, number_of_time_steps,
+                    constraint_upper_bounds, constraint_upper_bound_json);
+          } else {
+            std::cout << "Note: Component with id " << component_id
+                      << "appears in the constraint upper bounds but not in "
+                         "the topology."
+                      << std::endl;
+          }
+        }
+      }
+    }
   }
 
   /////////////////////////////////////////////////////////

@@ -1,5 +1,6 @@
 #pragma once
 #include "Eigen/Sparse"
+#include <nlohmann/json.hpp>
 
 namespace Aux {
 
@@ -54,6 +55,18 @@ namespace Model::Networkproblem {
     /** \brief getter for #after_inequality_index
      */
     int get_after_inequality_index() const;
+
+    virtual void set_constraint_lower_bounds(
+        double start_time, double end_time, int number_of_time_steps,
+        Eigen::Ref<Eigen::VectorXd> constraint_lower_bounds,
+        nlohmann::json const &constraint_lower_bound_json)
+        = 0;
+
+    virtual void set_constraint_upper_bounds(
+        double start_time, double end_time, int number_of_time_steps,
+        Eigen::Ref<Eigen::VectorXd> constraint_upper_bounds,
+        nlohmann::json const &constraint_upper_bound_json)
+        = 0;
 
   private:
     /** \brief The first index, this Inequalitycomponent "owns".
