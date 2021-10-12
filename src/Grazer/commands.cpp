@@ -62,13 +62,13 @@ int grazer::run(std::filesystem::path directory_path) {
 
     wall_clock_setup_end = Clock::now();
 
-    if (not optimization_json.empty()) {
-      /* ---------------- Optimization ------------------------------ */
-      auto optimizer = Model::Optimizer::make_instance(
-          optimization_json, time_evolution_json);
+    // if (not optimization_json.empty()) {
+    //   /* ---------------- Optimization ------------------------------ */
+    //   auto optimizer = Model::Optimizer::make_instance(
+    //       optimization_json, time_evolution_json);
 
-      /* ----------------------------------------------------------------- */
-    }
+    //   /* ----------------------------------------------------------------- */
+    // }
     /* ---------------- actual simulation ------------------------------ */
     timeevolver.simulate(
         timedata, problem, initial_values // ,
