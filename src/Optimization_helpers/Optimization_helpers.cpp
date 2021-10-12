@@ -22,5 +22,15 @@ namespace optimization {
 
     // Use solver[index].factorize(BT_vector[index]) here and then
     // solver[index].solve( .... )
+
+    int kk = multipliers.size() - 1;
+    solvers[kk].factorize(BT_vector[kk]);
+    solvers[kk].solve(-1 * df_dx_vector[kk]);
+
+    for (int k = multipliers.size() - 2; k >= 0; --k) {
+      solvers[k].factorize(BT_vector[k]);
+      multipliers[k] = solvers[k].solve(
+          -1 * (df_dx_vector[k] + AT_vector[k + 1] * multipliers[k + 1]));
+    }
   }
 } // namespace optimization
