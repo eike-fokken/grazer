@@ -1,6 +1,10 @@
 #include <Eigen/Sparse>
 #include <vector>
 
+namespace Model::Networkproblem {
+  class Networkproblem;
+}
+
 namespace optimization {
 
   /** \brief initializes the solvers with the sparsity pattern of the respective
@@ -33,4 +37,12 @@ namespace optimization {
       std::vector<Eigen::SparseMatrix<double>> const &BT_vector,
       std::vector<Eigen::VectorXd> const &df_dx_vector,
       std::vector<Eigen::SparseLU<Eigen::SparseMatrix<double>>> &solvers);
+
+  /** \brief compute the states from given controls.
+   */
+  void compute_state_from_controls(
+      Model::Networkproblem::Networkproblem &problem,
+      std::vector<Eigen::VectorXd> states,
+      Eigen::Ref<Eigen::VectorXd const> const &controls);
+
 } // namespace optimization

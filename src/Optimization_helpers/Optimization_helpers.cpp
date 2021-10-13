@@ -23,4 +23,10 @@ namespace optimization {
     // Use solver[index].factorize(BT_vector[index]) here and then
     // solver[index].solve( .... )
   }
+
+  void compute_state_from_controls(
+      Model::Networkproblem::Networkproblem &problem,
+      std::vector<Eigen::VectorXd> states,
+      Eigen::Ref<Eigen::VectorXd const> const &controls) {}
+
 } // namespace optimization
