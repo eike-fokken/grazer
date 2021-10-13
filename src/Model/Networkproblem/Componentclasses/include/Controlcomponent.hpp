@@ -5,8 +5,10 @@
 #include <nlohmann/json.hpp>
 
 namespace Aux {
+  class Controller;
   class Matrixhandler;
-}
+} // namespace Aux
+
 namespace Model {
   class SimpleControlcomponent;
 
@@ -137,8 +139,9 @@ namespace Model {
 
     /** \brief Fills the indices owned by this component with control values
      */
+
     virtual void set_initial_controls(
-        Timedata timedata, Eigen::Ref<Eigen::VectorXd> controls,
+        Timedata timedata, Aux::Controller &controller,
         nlohmann::json const &control_json)
         = 0;
 
