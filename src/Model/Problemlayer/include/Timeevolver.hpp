@@ -2,6 +2,10 @@
 #include "Newtonsolver.hpp"
 #include <nlohmann/json.hpp>
 
+namespace Aux {
+  class Controller;
+}
+
 namespace Model {
 
   class Networkproblem;
@@ -36,9 +40,15 @@ namespace Model {
     static nlohmann::json get_schema();
     static Timeevolver make_instance(nlohmann::json const &timeevolver_data);
 
+    void initialize(
+        Timedata timedata, Eigen::Ref<Eigen::VectorXd> initialstate,
+        Aux::Controller &controller, Networkproblem &problem,
+        nlohmann::json &problem_initial_json, nlohmann::json &control_json);
+
     void simulate(
         Timedata timedata, Networkproblem &problem,
-        nlohmann::json &problem_initial_json);
+        Eigen::Ref<Eigen::VectorXd const> const &initialstate,
+        Aux::Controller const &controls);
 
     Solver::Solutionstruct make_one_step(
         double last_time, double new_time,
