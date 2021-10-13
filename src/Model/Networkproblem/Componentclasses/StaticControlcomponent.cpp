@@ -13,14 +13,16 @@ namespace Model {
      */
     Control<N> controlmap(control_json);
     auto starttime = timedata.get_starttime();
-    auto endtime = timedata.get_endtime();
+    auto delta_t = timedata.get_delta_t();
     auto number_of_timesteps = timedata.get_number_of_steps();
     auto number_of_controls_per_timepoint
         = needed_number_of_controls_per_time_point();
 
     double new_time = starttime;
     for (int timeindex = 0; timeindex != number_of_timesteps; ++timeindex) {
-      assert(false);
+      new_time += delta_t;
+      controller.mut_timestep(timeindex).segment<N>(get_start_control_index())
+          = controlmap(new_time);
     }
   }
 
@@ -39,5 +41,5 @@ namespace Model {
       const {
     return N;
   }
-
+  template class StaticControlcomponent<1>;
 } // namespace Model

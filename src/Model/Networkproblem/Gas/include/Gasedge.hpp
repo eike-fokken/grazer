@@ -6,7 +6,7 @@
 namespace Model::Gas {
 
   /// @brief This class is a base class for all Gas edges with a 2x2 balance law
-  class Gasedge : public Equationcomponent, public SimpleStatecomponent {
+  class Gasedge : public SimpleStatecomponent {
 
   public:
     static int init_vals_per_interpol_point();

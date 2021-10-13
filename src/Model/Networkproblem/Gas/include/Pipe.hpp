@@ -1,5 +1,6 @@
 #pragma once
 #include "Edge.hpp"
+#include "Equationcomponent.hpp"
 #include "Gasedge.hpp"
 
 namespace Model::Balancelaw {
@@ -12,7 +13,10 @@ namespace Model::Scheme {
 
 namespace Model::Gas {
 
-  class Pipe final : public Gasedge, public Network::Edge {
+  class Pipe final :
+      public Equationcomponent,
+      public Gasedge,
+      public Network::Edge {
   public:
     static std::string get_type();
     std::string get_gas_type() const override;

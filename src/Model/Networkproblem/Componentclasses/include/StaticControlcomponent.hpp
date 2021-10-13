@@ -1,5 +1,4 @@
 #pragma once
-
 #include "SimpleControlcomponent.hpp"
 
 namespace Model {
@@ -23,5 +22,7 @@ namespace Model {
   private:
     int needed_number_of_controls_per_time_point() const final;
   };
+
+  extern template class StaticControlcomponent<1>;
 
 } // namespace Model

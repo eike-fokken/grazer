@@ -1,5 +1,6 @@
 #pragma once
 #include "Edge.hpp"
+#include "Equationcomponent.hpp"
 #include "Gasedge.hpp"
 
 namespace Model::Gas {
@@ -10,8 +11,6 @@ namespace Model::Gas {
     using Edge::Edge;
 
     int needed_number_of_states() const final;
-
-    void setup() override;
 
     void new_print_helper(
         nlohmann::json &new_output, std::string const &component_type,

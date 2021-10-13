@@ -46,9 +46,7 @@ namespace Optimization {
       Eigen::Ref<Eigen::VectorXd> constraints_upper_bounds,
       nlohmann::json const &constraints_upper_bounds_json) {
     problem.set_initial_values(init_state, initial_json);
-    Eigen::VectorXd controls(controller.get_number_of_controls());
-    problem.set_initial_controls(timedata, controls, control_json);
-    controller.set_controls(controls);
+    problem.set_initial_controls(timedata, controller, control_json);
     problem.set_lower_bounds(timedata, lower_bounds, lower_bounds_json);
     problem.set_upper_bounds(timedata, upper_bounds, upper_bounds_json);
     problem.set_constraint_lower_bounds(

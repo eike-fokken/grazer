@@ -232,7 +232,7 @@ namespace Model {
   }
 
   void Networkproblem::set_initial_controls(
-      Timedata timedata, Eigen::Ref<Eigen::VectorXd> controls,
+      Timedata timedata, Aux::Controller &controller,
       nlohmann::json const &control_json) {
 
     auto idcomponents = get_idobjects(controlcomponents);
@@ -254,7 +254,7 @@ namespace Model {
           if (iterator != idcomponents.end()) {
             auto index = iterator - idcomponents.begin();
             controlcomponents[static_cast<size_t>(index)]->set_initial_controls(
-                timedata, controls, control_json);
+                timedata, controller, control_json);
           } else {
             std::cout << "Note: Component with id " << component_id
                       << "appears in the control initial values but not in the "

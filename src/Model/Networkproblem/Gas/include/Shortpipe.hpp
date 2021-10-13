@@ -3,12 +3,14 @@
 
 namespace Model::Gas {
 
-  class Shortpipe : public Shortcomponent {
+  class Shortpipe : public Equationcomponent, public Shortcomponent {
 
   public:
     static std::string get_type();
     std::string get_gas_type() const override;
     using Shortcomponent::Shortcomponent;
+
+    void setup() override;
 
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
