@@ -1,3 +1,3 @@
 add_library(optimization_helpers STATIC Optimization_helpers.cpp)
-target_link_libraries(optimization_helpers PRIVATE exception)
+target_link_libraries(optimization_helpers PRIVATE exception problemlayer networkproblem)
 target_include_directories(optimization_helpers PUBLIC include)

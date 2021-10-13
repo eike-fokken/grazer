@@ -1,9 +1,12 @@
 #include <Eigen/Sparse>
+#include <nlohmann/json.hpp>
 #include <vector>
 
 namespace Model {
+  struct Timedata;
+  class Timeevolver;
   class Networkproblem;
-}
+} // namespace Model
 
 namespace optimization {
 
@@ -41,7 +44,24 @@ namespace optimization {
   /** \brief compute the states from given controls.
    */
   void compute_state_from_controls(
-      Model::Networkproblem &problem, std::vector<Eigen::VectorXd> states,
+      Model::Timeevolver &timeevolver, Model::Networkproblem &problem,
+      std::vector<Eigen::VectorXd> states,
       Eigen::Ref<Eigen::VectorXd const> const &controls);
+
+  /** \brief Takes care of all initialization
+   */
+  void initialize(
+      Model::Timedata timedata, Model::Networkproblem &problem,
+      Eigen::Ref<Eigen::VectorXd> controls, nlohmann::json const &control_json,
+      Eigen::Ref<Eigen::VectorXd> init_state,
+      nlohmann::json const &initial_json,
+      Eigen::Ref<Eigen::VectorXd> lower_bounds,
+      nlohmann::json const &lower_bounds_json,
+      Eigen::Ref<Eigen::VectorXd> upper_bounds,
+      nlohmann::json const &upper_bounds_json,
+      Eigen::Ref<Eigen::VectorXd> constraints_lower_bounds,
+      nlohmann::json const &constraints_lower_bounds_json,
+      Eigen::Ref<Eigen::VectorXd> constraints_upper_bounds,
+      nlohmann::json const &constraints_upper_bounds_json);
 
 } // namespace optimization

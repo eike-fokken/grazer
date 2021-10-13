@@ -1,5 +1,7 @@
 #include "Optimization_helpers.hpp"
 #include "Exception.hpp"
+#include "Networkproblem.hpp"
+#include "Timeevolver.hpp"
 #include <cassert>
 
 namespace optimization {
@@ -25,7 +27,24 @@ namespace optimization {
   }
 
   void compute_state_from_controls(
-      Model::Networkproblem &problem, std::vector<Eigen::VectorXd> states,
+      Model::Timeevolver &timeevolver, Model::Networkproblem &problem,
+      std::vector<Eigen::VectorXd> states,
       Eigen::Ref<Eigen::VectorXd const> const &controls) {}
+
+  void initialize(
+      Model::Timedata timedata, Model::Networkproblem &problem,
+      Eigen::Ref<Eigen::VectorXd> controls, nlohmann::json const &control_json,
+      Eigen::Ref<Eigen::VectorXd> init_state,
+      nlohmann::json const &initial_json,
+      Eigen::Ref<Eigen::VectorXd> lower_bounds,
+      nlohmann::json const &lower_bounds_json,
+      Eigen::Ref<Eigen::VectorXd> upper_bounds,
+      nlohmann::json const &upper_bounds_json,
+      Eigen::Ref<Eigen::VectorXd> constraints_lower_bounds,
+      nlohmann::json const &constraints_lower_bounds_json,
+      Eigen::Ref<Eigen::VectorXd> constraints_upper_bounds,
+      nlohmann::json const &constraints_upper_bounds_json) {
+    problem.set_initial_values(init_state, initial_json);
+  }
 
 } // namespace optimization
