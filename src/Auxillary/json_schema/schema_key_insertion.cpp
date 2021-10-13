@@ -18,8 +18,9 @@ namespace Aux::schema {
       std::filesystem::create_directory(problem_dir);
     }
 
-    for (std::string const &type :
-         {"boundary", "control", "initial", "topology", "problem_data"}) {
+    std::vector<std::string> types
+        = {"boundary", "control", "initial", "topology", "problem_data"};
+    for (std::string const &type : types) {
       if (std::filesystem::exists(schemas / (type + "_schema.json"))) {
         path file = problem_dir / (type + ".json");
         ordered_json old_json;
