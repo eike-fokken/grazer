@@ -1,10 +1,11 @@
 #include "Optimization_helpers.hpp"
+#include "Controlhelpers.hpp"
 #include "Exception.hpp"
 #include "Networkproblem.hpp"
 #include "Timeevolver.hpp"
 #include <cassert>
 
-namespace optimization {
+namespace Optimization {
 
   void initialize_solvers(
       std::vector<Eigen::SparseMatrix<double>> const &BT_vector,
@@ -33,7 +34,7 @@ namespace optimization {
 
   void initialize(
       Model::Timedata timedata, Model::Networkproblem &problem,
-      Eigen::Ref<Eigen::VectorXd> controls, nlohmann::json const &control_json,
+      Aux::Controller &controller, nlohmann::json const &control_json,
       Eigen::Ref<Eigen::VectorXd> init_state,
       nlohmann::json const &initial_json,
       Eigen::Ref<Eigen::VectorXd> lower_bounds,
@@ -45,6 +46,15 @@ namespace optimization {
       Eigen::Ref<Eigen::VectorXd> constraints_upper_bounds,
       nlohmann::json const &constraints_upper_bounds_json) {
     problem.set_initial_values(init_state, initial_json);
+    Eigen::VectorXd controls(controller.get_number_of_controls());
+    problem.set_initial_controls(timedata, controls, control_json);
+    controller.set_controls(controls);
+    problem.set_lower_bounds(timedata, lower_bounds, lower_bounds_json);
+    problem.set_upper_bounds(timedata, upper_bounds, upper_bounds_json);
+    problem.set_constraint_lower_bounds(
+        timedata, constraints_lower_bounds, constraints_lower_bounds_json);
+    problem.set_constraint_upper_bounds(
+        timedata, constraints_upper_bounds, constraints_upper_bounds_json);
   }
 
-} // namespace optimization
+} // namespace Optimization

@@ -2,13 +2,17 @@
 #include <nlohmann/json.hpp>
 #include <vector>
 
+namespace Aux {
+  class Controller;
+}
+
 namespace Model {
   struct Timedata;
   class Timeevolver;
   class Networkproblem;
 } // namespace Model
 
-namespace optimization {
+namespace Optimization {
 
   /** \brief initializes the solvers with the sparsity pattern of the respective
    * matrices.
@@ -52,7 +56,7 @@ namespace optimization {
    */
   void initialize(
       Model::Timedata timedata, Model::Networkproblem &problem,
-      Eigen::Ref<Eigen::VectorXd> controls, nlohmann::json const &control_json,
+      Aux::Controller &controller, nlohmann::json const &control_json,
       Eigen::Ref<Eigen::VectorXd> init_state,
       nlohmann::json const &initial_json,
       Eigen::Ref<Eigen::VectorXd> lower_bounds,
@@ -64,4 +68,4 @@ namespace optimization {
       Eigen::Ref<Eigen::VectorXd> constraints_upper_bounds,
       nlohmann::json const &constraints_upper_bounds_json);
 
-} // namespace optimization
+} // namespace Optimization

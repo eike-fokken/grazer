@@ -1,9 +1,11 @@
 #include "commands.hpp"
 #include "Aux_json.hpp"
+#include "Controlhelpers.hpp"
 #include "Full_factory.hpp"
 #include "Input_output.hpp"
 #include "Netfactory.hpp"
 #include "Networkproblem.hpp"
+#include "Optimization_helpers.hpp"
 #include "Optimizer.hpp"
 #include "Timeevolver.hpp"
 #include <chrono>
@@ -42,10 +44,21 @@ int grazer::run(std::filesystem::path directory_path) {
     // give the path information of the file:
     problem_json["GRAZER_file_directory"] = problem_directory.string();
 
-    auto initial_values = aux_json::get_json_from_file_path(
+    auto initial_json = aux_json::get_json_from_file_path(
         problem_directory / std::filesystem::path("initial.json"));
-    auto control_values = aux_json::get_json_from_file_path(
+    auto control_json = aux_json::get_json_from_file_path(
         problem_directory / std::filesystem::path("control.json"));
+    auto lower_bounds_json = aux_json::get_json_from_file_path(
+        problem_directory / std::filesystem::path("lower_bounds.json"));
+    auto upper_bounds_json = aux_json::get_json_from_file_path(
+        problem_directory / std::filesystem::path("upper_bounds.json"));
+    auto constraints_lower_bounds_json = aux_json::get_json_from_file_path(
+        problem_directory
+        / std::filesystem::path("constraints_lower_bounds.json"));
+    auto constraints_upper_bounds_json = aux_json::get_json_from_file_path(
+        problem_directory
+        / std::filesystem::path("constraints_upper_bounds.json"));
+
     Model::Timedata timedata(time_evolution_json);
 
     auto timeevolver = Model::Timeevolver::make_instance(time_evolution_json);
@@ -56,7 +69,31 @@ int grazer::run(std::filesystem::path directory_path) {
     Model::Networkproblem problem(std::move(net_ptr));
 
     problem.init();
-    // auto number_of_controls_per_time_step = problem.set_control_indices(0);
+
+    Aux::Controller controller(
+        problem.get_number_of_controls_per_timepoint(),
+        timedata.get_number_of_steps());
+    Eigen::VectorXd initial_state(problem.get_number_of_states());
+    Eigen::VectorXd lower_bounds(
+        problem.get_number_of_controls_per_timepoint()
+        * timedata.get_number_of_steps());
+    Eigen::VectorXd upper_bounds(
+        problem.get_number_of_controls_per_timepoint()
+        * timedata.get_number_of_steps());
+    Eigen::VectorXd constraints_lower_bounds(
+        problem.get_number_of_inequalities_per_timepoint()
+        * timedata.get_number_of_steps());
+    Eigen::VectorXd constraints_upper_bounds(
+        problem.get_number_of_inequalities_per_timepoint()
+        * timedata.get_number_of_steps());
+
+    Optimization::initialize(
+        timedata, problem, controller, control_json, initial_state,
+        initial_json, lower_bounds, lower_bounds_json, upper_bounds,
+        upper_bounds_json, constraints_lower_bounds,
+        constraints_lower_bounds_json, constraints_upper_bounds,
+        constraints_upper_bounds_json);
+
     std::cout << "data read" << std::endl;
 
     wall_clock_setup_end = Clock::now();
@@ -70,7 +107,7 @@ int grazer::run(std::filesystem::path directory_path) {
     // }
     /* ---------------- actual simulation ------------------------------ */
     timeevolver.simulate(
-        timedata, problem, initial_values // ,
+        timedata, problem, initial_json // ,
         // number_of_controls, control_value_json
     );
     /* ----------------------------------------------------------------- */
