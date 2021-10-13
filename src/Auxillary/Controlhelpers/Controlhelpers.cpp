@@ -19,7 +19,7 @@ namespace Aux {
     return allcontrols.size();
   }
 
-  Eigen::Ref<Eigen::VectorXd>
+  Eigen::Ref<Eigen::VectorXd const> const
   Controller::operator()(int current_timestep) const {
     auto start_index = number_of_controls_per_timepoint * current_timestep;
     auto after_index = start_index + number_of_controls_per_timepoint;

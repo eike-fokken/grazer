@@ -10,7 +10,8 @@ namespace Aux {
 
     Eigen::Index get_number_of_controls() const;
 
-    Eigen::Ref<Eigen::VectorXd> operator()(int current_timestep) const;
+    Eigen::Ref<Eigen::VectorXd const> const
+    operator()(int current_timestep) const;
 
   private:
     Eigen::VectorXd allcontrols;
