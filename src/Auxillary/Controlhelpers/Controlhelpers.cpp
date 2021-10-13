@@ -39,4 +39,21 @@ namespace Aux {
     }
     return allcontrols.segment(start_index, number_of_controls_per_timepoint);
   }
+
+  Eigen::Ref<Eigen::VectorXd const> const Controller::get_allcontrols() const {
+    return allcontrols;
+  }
+
+  Eigen::Ref<Eigen::VectorXd> Controller::mut_timestep(int current_timestep) {
+    if (current_timestep < 0) {
+      gthrow({"You request controls at negative time steps!"});
+    }
+    auto start_index = number_of_controls_per_timepoint * current_timestep;
+    auto after_index = start_index + number_of_controls_per_timepoint;
+    if (after_index > allcontrols.size()) {
+      gthrow({"You request controls at a higher index than possible!"});
+    }
+    return allcontrols.segment(start_index, number_of_controls_per_timepoint);
+  }
+
 } // namespace Aux

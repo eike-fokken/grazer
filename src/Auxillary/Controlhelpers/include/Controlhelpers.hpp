@@ -13,6 +13,10 @@ namespace Aux {
     Eigen::Ref<Eigen::VectorXd const> const
     operator()(int current_timestep) const;
 
+    Eigen::Ref<Eigen::VectorXd const> const get_allcontrols() const;
+
+    Eigen::Ref<Eigen::VectorXd> mut_timestep(int current_timestep);
+
   private:
     Eigen::VectorXd allcontrols;
     int const number_of_controls_per_timepoint;

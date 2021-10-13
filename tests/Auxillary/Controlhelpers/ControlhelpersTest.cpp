@@ -144,3 +144,24 @@ TEST(Controller, evaluate_controls_invalid_low_index) {
         testing::HasSubstr("You request controls at negative time steps!"));
   }
 }
+
+TEST(Controller, mut_timestep_happy_path) {
+
+  int number_of_controls_per_timestep = 4;
+  int number_of_timesteps = 8;
+
+  Controller controller(number_of_controls_per_timestep, number_of_timesteps);
+
+  Eigen::VectorXd controls(controller.get_number_of_controls());
+
+  for (int index = 0; index != controls.size(); ++index) {
+    controls[index] = index;
+  }
+  controller.set_controls(controls);
+
+  for (int i = 0; i != number_of_timesteps; ++i) {
+    controller.mut_timestep(i) = controls.segment(
+        i * number_of_controls_per_timestep, number_of_controls_per_timestep);
+  }
+  EXPECT_EQ(controller.get_allcontrols(), controls);
+}
