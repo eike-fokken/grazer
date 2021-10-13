@@ -1,7 +1,7 @@
 #pragma once
 #include <Gasnode.hpp>
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Gas {
 
   /// This class represents an inner node of the gas network, that neither
   /// injects gas nor takes gas out.
@@ -25,4 +25,4 @@ namespace Model::Networkproblem::Gas {
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
   };
 
-} // namespace Model::Networkproblem::Gas
+} // namespace Model::Gas

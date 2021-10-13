@@ -64,11 +64,11 @@ public:
   double V3 = 5.0;
   double phi3 = 89.0;
 
-  std::unique_ptr<Model::Networkproblem::Networkproblem>
+  std::unique_ptr<Model::Networkproblem>
   make_Networkproblem(nlohmann::json &netproblem);
 
   std::tuple<
-      std::unique_ptr<Model::Networkproblem::Networkproblem>, double, double,
+      std::unique_ptr<Model::Networkproblem>, double, double,
       Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd>
   default_setup();
 };
@@ -84,7 +84,7 @@ TEST_F(PowerTEST, evaluate_Vphi) {
   netprob->evaluate(
       rootvalues, last_time, new_time, last_state, new_state, control);
 
-  auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *vphi = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
 
   if (not vphi) {
@@ -111,7 +111,7 @@ TEST_F(PowerTEST, d_evalutate_d_new_state_Vphi) {
   netprob->evaluate(
       rootvalues, last_time, new_time, last_state, new_state, control);
 
-  auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *vphi = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
   if (not vphi) {
     FAIL();
@@ -159,7 +159,7 @@ TEST_F(PowerTEST, evaluate_PQ) {
   netprob->evaluate(
       rootvalues, last_time, new_time, last_state, new_state, control);
 
-  auto *pq = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *pq = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("pq"));
 
   if (not pq) {
@@ -190,17 +190,17 @@ TEST_F(PowerTEST, d_evalutate_d_new_state_PQ) {
   netprob->evaluate(
       rootvalues, last_time, new_time, last_state, new_state, control);
 
-  auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *vphi = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
   if (not vphi) {
     FAIL();
   }
-  auto *pq = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *pq = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("pq"));
   if (not pq) {
     FAIL();
   }
-  auto *pv = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *pv = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("pv"));
 
   if (not pv) {
@@ -278,7 +278,7 @@ TEST_F(PowerTEST, evaluate_PV) {
   netprob->evaluate(
       rootvalues, last_time, new_time, last_state, new_state, control);
 
-  auto *pv = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *pv = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("pv"));
 
   if (not pv) {
@@ -306,17 +306,17 @@ TEST_F(PowerTEST, d_evalutate_d_new_state_PV) {
   netprob->evaluate(
       rootvalues, last_time, new_time, last_state, new_state, control);
 
-  auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *vphi = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
   if (not vphi) {
     FAIL();
   }
-  auto *pq = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *pq = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("pq"));
   if (not pq) {
     FAIL();
   }
-  auto *pv = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *pv = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("pv"));
 
   if (not pv) {
@@ -368,13 +368,13 @@ TEST_F(PowerTEST, d_evalutate_d_new_state_PV) {
 // Here come the definitions of the fixture methods:
 /////////////////////////////////////////////////////
 
-std::unique_ptr<Model::Networkproblem::Networkproblem>
+std::unique_ptr<Model::Networkproblem>
 PowerTEST::make_Networkproblem(nlohmann::json &netproblem) {
   return EqcomponentTEST::make_Networkproblem(netproblem, factory);
 }
 
 std::tuple<
-    std::unique_ptr<Model::Networkproblem::Networkproblem>, double, double,
+    std::unique_ptr<Model::Networkproblem>, double, double,
     Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd>
 PowerTEST::default_setup() {
 

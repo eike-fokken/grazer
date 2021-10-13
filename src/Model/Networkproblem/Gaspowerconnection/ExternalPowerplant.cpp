@@ -5,7 +5,7 @@
 #include "make_schema.hpp"
 #include <fstream>
 
-namespace Model::Networkproblem::Gaspowerconnection {
+namespace Model::Gaspowerconnection {
 
   std::string ExternalPowerplant::get_type() { return "ExternalPowerplant"; }
   std::string ExternalPowerplant::get_power_type() const { return get_type(); }
@@ -74,4 +74,4 @@ namespace Model::Networkproblem::Gaspowerconnection {
     json_save_power(time, state, P_val, Q_val);
   }
 
-} // namespace Model::Networkproblem::Gaspowerconnection
+} // namespace Model::Gaspowerconnection

@@ -1,7 +1,7 @@
 #pragma once
 #include <nlohmann/json.hpp>
 #include <optional>
-namespace Model::Networkproblem {
+namespace Model  {
 
   /** Base class for Equationcomponent and Controlcomponent
    *
@@ -23,4 +23,4 @@ namespace Model::Networkproblem {
     static std::optional<nlohmann::json> get_boundary_schema();
   };
 
-} // namespace Model::Networkproblem
+} // namespace Model 

@@ -5,7 +5,7 @@
 #include "Shortcomponent.hpp"
 #include <nlohmann/json.hpp>
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Gas {
 
   class Controlvalve final : public Shortcomponent {
   public:
@@ -37,4 +37,4 @@ namespace Model::Networkproblem::Gas {
     Control<1> const control_values;
   };
 
-} // namespace Model::Networkproblem::Gas
+} // namespace Model::Gas

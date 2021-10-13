@@ -2,7 +2,7 @@
 #include <Vphinode.hpp>
 #include <iostream>
 
-namespace Model::Networkproblem::Power {
+namespace Model::Power {
 
   std::string Vphinode::get_type() { return "Vphinode"; }
   std::string Vphinode::get_power_type() const { return get_type(); }
@@ -37,4 +37,4 @@ namespace Model::Networkproblem::Power {
     json_save_power(time, state, P_val, Q_val);
   }
 
-} // namespace Model::Networkproblem::Power
+} // namespace Model::Power

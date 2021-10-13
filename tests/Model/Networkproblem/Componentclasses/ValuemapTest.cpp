@@ -27,7 +27,7 @@ TEST(OperatorTEST, interpolation) {
            {{"x", 2.0}, {"values", {b(0), b(1)}}},
            {{"x", 3.0}, {"values", {c(0), c(1)}}}}}};
 
-  Model::Networkproblem::Valuemap<2> valuemap_obj(values_json, "x");
+  Model::Valuemap<2> valuemap_obj(values_json, "x");
 
   {
     Eigen::Vector2d v2;
@@ -81,7 +81,7 @@ TEST(set_conditionTEST, check_order) {
 
   EXPECT_EQ(
       control,
-      Model::Networkproblem::Valuemap<2>::set_condition(values_json, "x"));
+      Model::Valuemap<2>::set_condition(values_json, "x"));
 }
 
 TEST(set_conditionTEST, duplicate_x_value) {
@@ -96,7 +96,7 @@ TEST(set_conditionTEST, duplicate_x_value) {
            {{"x", 3.0}, {"values", {2.0, 3.0}}}}}};
 
   try {
-    Model::Networkproblem::Valuemap<2>::set_condition(values_json, "x");
+    Model::Valuemap<2>::set_condition(values_json, "x");
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {

@@ -20,7 +20,7 @@ public:
   Model::Componentfactory::Full_factory factory{R"({})"_json};
 
 public:
-  std::unique_ptr<Model::Networkproblem::Networkproblem>
+  std::unique_ptr<Model::Networkproblem>
   make_Networkproblem(nlohmann::json &netproblem) {
     return EqcomponentTEST::make_Networkproblem(netproblem, factory);
   }
@@ -61,7 +61,7 @@ TEST_F(GaspowerconnectionTEST, smoothing_polynomial) {
     FAIL();
   }
   auto gp = dynamic_cast<
-      Model::Networkproblem::Gaspowerconnection::Gaspowerconnection const *>(
+      Model::Gaspowerconnection::Gaspowerconnection const *>(
       edges.front());
   if (not gp) {
     FAIL();
@@ -120,7 +120,7 @@ TEST_F(GaspowerconnectionTEST, dsmoothing_polynomial) {
     FAIL();
   }
   auto gp = dynamic_cast<
-      Model::Networkproblem::Gaspowerconnection::Gaspowerconnection const *>(
+      Model::Gaspowerconnection::Gaspowerconnection const *>(
       edges.front());
   if (not gp) {
     FAIL();
@@ -192,7 +192,7 @@ TEST_F(GaspowerconnectionTEST, generated_power) {
     FAIL();
   }
   auto gp = dynamic_cast<
-      Model::Networkproblem::Gaspowerconnection::Gaspowerconnection const *>(
+      Model::Gaspowerconnection::Gaspowerconnection const *>(
       edges.front());
   if (not gp) {
     FAIL();
@@ -241,7 +241,7 @@ TEST_F(GaspowerconnectionTEST, dgenerated_power_dq) {
     FAIL();
   }
   auto gp = dynamic_cast<
-      Model::Networkproblem::Gaspowerconnection::Gaspowerconnection const *>(
+      Model::Gaspowerconnection::Gaspowerconnection const *>(
       edges.front());
   if (not gp) {
     FAIL();
@@ -312,14 +312,14 @@ TEST_F(GaspowerconnectionTEST, evaluate_power_controlled) {
   }
 
   auto gp = dynamic_cast<
-      Model::Networkproblem::Gaspowerconnection::Gaspowerconnection const *>(
+      Model::Gaspowerconnection::Gaspowerconnection const *>(
       edges.front());
   if (not gp) {
     FAIL();
   }
 
   auto endpowernode
-      = dynamic_cast<Model::Networkproblem::Power::Powernode const *>(
+      = dynamic_cast<Model::Power::Powernode const *>(
           gp->get_ending_node());
   if (not endpowernode) {
     FAIL();
@@ -398,14 +398,14 @@ TEST_F(GaspowerconnectionTEST, evaluate_gas_controlled) {
   }
 
   auto gp = dynamic_cast<
-      Model::Networkproblem::Gaspowerconnection::Gaspowerconnection const *>(
+      Model::Gaspowerconnection::Gaspowerconnection const *>(
       edges.front());
   if (not gp) {
     FAIL();
   }
 
   auto endpowernode
-      = dynamic_cast<Model::Networkproblem::Power::Powernode const *>(
+      = dynamic_cast<Model::Power::Powernode const *>(
           gp->get_ending_node());
   if (not endpowernode) {
     FAIL();
@@ -483,14 +483,14 @@ TEST_F(GaspowerconnectionTEST, d_evalutate_d_new_state_power_driven) {
   }
 
   auto gp = dynamic_cast<
-      Model::Networkproblem::Gaspowerconnection::Gaspowerconnection const *>(
+      Model::Gaspowerconnection::Gaspowerconnection const *>(
       edges.front());
   if (not gp) {
     FAIL();
   }
 
   auto endpowernode
-      = dynamic_cast<Model::Networkproblem::Power::Powernode const *>(
+      = dynamic_cast<Model::Power::Powernode const *>(
           gp->get_ending_node());
   if (not endpowernode) {
     FAIL();
@@ -591,14 +591,14 @@ TEST_F(GaspowerconnectionTEST, d_evalutate_d_new_state_gas_driven) {
   }
 
   auto gp = dynamic_cast<
-      Model::Networkproblem::Gaspowerconnection::Gaspowerconnection const *>(
+      Model::Gaspowerconnection::Gaspowerconnection const *>(
       edges.front());
   if (not gp) {
     FAIL();
   }
 
   auto endpowernode
-      = dynamic_cast<Model::Networkproblem::Power::Powernode const *>(
+      = dynamic_cast<Model::Power::Powernode const *>(
           gp->get_ending_node());
   if (not endpowernode) {
     FAIL();

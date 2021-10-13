@@ -26,7 +26,7 @@ namespace Model {
   }
 
   void Optimizer::optimize(
-      Timedata timedata, Networkproblem::Networkproblem &problem,
+      Timedata timedata, Networkproblem &problem,
       nlohmann::json &initial_state_json, nlohmann::json &initial_control_json,
       nlohmann::json &lower_bounds_json, nlohmann::json &upper_bounds_json) {
     double last_time = timedata.get_starttime();

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <map>
 
-namespace Model::Networkproblem {
+namespace Model  {
 
   void Equationcomponent::prepare_timestep(
       double /*last_time*/, double /*new_time*/,
@@ -21,4 +21,4 @@ namespace Model::Networkproblem {
     return std::nullopt;
   }
 
-} // namespace Model::Networkproblem
+} // namespace Model 

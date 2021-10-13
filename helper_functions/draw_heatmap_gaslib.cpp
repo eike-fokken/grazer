@@ -79,8 +79,8 @@ int main(int argc, char **argv) {
     resultsstream >> results;
   }
 
-  Model::Networkproblem::sort_json_vectors_by_id(results, "results");
-  Model::Networkproblem::sort_json_vectors_by_id(topology, "topology");
+  Model::sort_json_vectors_by_id(results, "results");
+  Model::sort_json_vectors_by_id(topology, "topology");
 
   std::vector<std::string> nodetypes{"Source", "Innode"};
   std::vector<std::string> edgetypes
@@ -90,7 +90,7 @@ int main(int argc, char **argv) {
   std::cout << "min:" << min << std::endl;
   std::cout << "max:" << max << std::endl;
 
-  Model::Networkproblem::insert_second_json_in_topology_json(
+  Model::insert_second_json_in_topology_json(
       topology, results, "results");
 
   double divideby = 1.0;

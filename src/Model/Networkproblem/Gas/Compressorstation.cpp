@@ -3,7 +3,7 @@
 #include "Get_base_component.hpp"
 #include "make_schema.hpp"
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Gas {
 
   std::string Compressorstation::get_type() { return "Compressorstation"; }
   std::string Compressorstation::get_gas_type() const { return get_type(); }
@@ -17,4 +17,4 @@ namespace Model::Networkproblem::Gas {
     new_print_helper(new_output, comp_type, get_type());
   }
 
-} // namespace Model::Networkproblem::Gas
+} // namespace Model::Gas

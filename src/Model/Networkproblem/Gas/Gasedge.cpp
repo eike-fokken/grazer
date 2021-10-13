@@ -3,7 +3,7 @@
 #include <Gasedge.hpp>
 #include <make_schema.hpp>
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Gas {
 
   int Gasedge::init_vals_per_interpol_point() { return 2; }
 
@@ -126,4 +126,4 @@ namespace Model::Networkproblem::Gas {
            ", which is not +1 or -1! Edge id is: ", this_idobject->get_id()});
     }
   }
-} // namespace Model::Networkproblem::Gas
+} // namespace Model::Gas

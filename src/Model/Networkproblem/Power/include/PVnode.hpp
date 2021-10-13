@@ -1,7 +1,7 @@
 #pragma once
 #include <Powernode.hpp>
 
-namespace Model::Networkproblem::Power {
+namespace Model::Power {
 
   class PVnode final : public Powernode {
 
@@ -26,4 +26,4 @@ namespace Model::Networkproblem::Power {
         double time, Eigen::Ref<Eigen::VectorXd const> const &state) override;
   };
 
-} // namespace Model::Networkproblem::Power
+} // namespace Model::Power

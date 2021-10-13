@@ -15,7 +15,7 @@
 #include <utility>
 #include <vector>
 // #include <execution>
-namespace Model::Networkproblem {
+namespace Model {
 
   /** \brief Creates a vector of Idobject pointers from some component type.
    */
@@ -504,4 +504,4 @@ namespace Model::Networkproblem {
 
   Network::Net const &Networkproblem::get_network() const { return *network; }
 
-} // namespace Model::Networkproblem
+} // namespace Model 

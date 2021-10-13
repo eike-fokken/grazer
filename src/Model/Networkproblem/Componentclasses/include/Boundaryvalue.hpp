@@ -8,7 +8,7 @@
 #include <nlohmann/json.hpp>
 #include <vector>
 
-namespace Model::Networkproblem {
+namespace Model  {
   template <int N> class Boundaryvalue {
 
   public:
@@ -28,5 +28,5 @@ namespace Model::Networkproblem {
   private:
     Valuemap<N> const valuemap;
 
-  }; // namespace Model::Networkproblem
-} // namespace Model::Networkproblem
+  }; // namespace Model 
+} // namespace Model 

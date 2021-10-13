@@ -79,11 +79,11 @@ public:
   double V3 = 5.0;
   double phi3 = 89.0;
 
-  std::unique_ptr<Model::Networkproblem::Networkproblem>
+  std::unique_ptr<Model::Networkproblem>
   make_Networkproblem(nlohmann::json &netproblem);
 
   std::tuple<
-      std::unique_ptr<Model::Networkproblem::Networkproblem>, double, double,
+      std::unique_ptr<Model::Networkproblem>, double, double,
       Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd>
   default_setup();
 };
@@ -101,18 +101,18 @@ TEST_F(stochasticPQnodeTEST, evaluate) {
       rootvalues, last_time, new_time, last_state, new_state, control);
 
   auto *stoch_pq
-      = dynamic_cast<Model::Networkproblem::Power::StochasticPQnode *>(
+      = dynamic_cast<Model::Power::StochasticPQnode *>(
           netprob->get_network().get_node_by_id("stochpq"));
   if (not stoch_pq) {
     FAIL();
   }
 
-  auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *vphi = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
   if (not vphi) {
     FAIL();
   }
-  auto *pv = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *pv = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("pv"));
   if (not pv) {
     FAIL();
@@ -148,17 +148,17 @@ TEST_F(stochasticPQnodeTEST, d_evalutate_d_new_state) {
   netprob->evaluate(
       rootvalues, last_time, new_time, last_state, new_state, control);
 
-  auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *vphi = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
   if (not vphi) {
     FAIL();
   }
-  auto *pq = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *pq = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("stochpq"));
   if (not pq) {
     FAIL();
   }
-  auto *pv = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *pv = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("pv"));
 
   if (not pv) {
@@ -251,13 +251,13 @@ nlohmann::json stochpq_json(
   return stochpq_json;
 }
 
-std::unique_ptr<Model::Networkproblem::Networkproblem>
+std::unique_ptr<Model::Networkproblem>
 stochasticPQnodeTEST::make_Networkproblem(nlohmann::json &netproblem) {
   return EqcomponentTEST::make_Networkproblem(netproblem, factory);
 }
 
 std::tuple<
-    std::unique_ptr<Model::Networkproblem::Networkproblem>, double, double,
+    std::unique_ptr<Model::Networkproblem>, double, double,
     Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd>
 stochasticPQnodeTEST::default_setup() {
 

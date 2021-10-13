@@ -3,7 +3,7 @@
 #include "SimpleStatecomponent.hpp"
 #include <Eigen/Sparse>
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Gas {
 
   /// @brief This class is a base class for all Gas edges with a 2x2 balance law
   class Gasedge : public Equationcomponent, public SimpleStatecomponent {
@@ -56,4 +56,4 @@ namespace Model::Networkproblem::Gas {
     int get_ending_state_index() const;
   };
 
-} // namespace Model::Networkproblem::Gas
+} // namespace Model::Gas

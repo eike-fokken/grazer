@@ -3,9 +3,9 @@
 #include <nlohmann/json.hpp>
 
 namespace Model {
-  namespace Networkproblem {
+  
     class Networkproblem;
-  }
+
 
   struct Timedata {
 
@@ -38,7 +38,7 @@ namespace Model {
     static Timeevolver make_instance(nlohmann::json const &timeevolver_data);
 
     void simulate(
-        Timedata timedata, Networkproblem::Networkproblem &problem,
+        Timedata timedata, Networkproblem &problem,
         nlohmann::json &problem_initial_json);
 
     Solver::Solutionstruct make_one_step(
@@ -46,11 +46,11 @@ namespace Model {
         Eigen::Ref<Eigen::VectorXd> last_state,
         Eigen::Ref<Eigen::VectorXd> new_state,
         Eigen::Ref<Eigen::VectorXd const> const &control,
-        Networkproblem::Networkproblem &problem);
+        Networkproblem &problem);
 
   private:
     Timeevolver(nlohmann::json const &timeevolver_data);
-    Solver::Newtonsolver<Networkproblem::Networkproblem> solver;
+    Solver::Newtonsolver<Networkproblem> solver;
     int retries;
     bool const use_simplified_newton;
   };

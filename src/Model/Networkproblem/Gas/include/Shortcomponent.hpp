@@ -2,7 +2,7 @@
 #include "Edge.hpp"
 #include "Gasedge.hpp"
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Gas {
 
   class Shortcomponent : public Network::Edge, public Gasedge {
 
@@ -43,4 +43,4 @@ namespace Model::Networkproblem::Gas {
     static constexpr int number_of_state_variables{4};
   };
 
-} // namespace Model::Networkproblem::Gas
+} // namespace Model::Gas

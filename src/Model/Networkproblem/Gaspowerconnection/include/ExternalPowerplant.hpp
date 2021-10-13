@@ -1,7 +1,7 @@
 #pragma once
 #include "Powernode.hpp"
 
-namespace Model::Networkproblem::Gaspowerconnection {
+namespace Model::Gaspowerconnection {
   class Gaspowerconnection;
 
   /** \brief A Powernode to be connected to an edge that leads out of the power
@@ -34,4 +34,4 @@ namespace Model::Networkproblem::Gaspowerconnection {
   private:
     Gaspowerconnection *connection{nullptr};
   };
-} // namespace Model::Networkproblem::Gaspowerconnection
+} // namespace Model::Gaspowerconnection

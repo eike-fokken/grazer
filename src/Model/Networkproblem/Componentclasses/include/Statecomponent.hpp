@@ -3,7 +3,7 @@
 #include <nlohmann/json.hpp>
 // #include "Equationcomponent.hpp"
 
-namespace Model::Networkproblem {
+namespace Model  {
   class SimpleStatecomponent;
 
   class Statecomponent {
@@ -71,7 +71,7 @@ namespace Model::Networkproblem {
     /// Most equation components write only to their own indices between
     /// #start_state_index (inclusive) and #after_state_index (exclusive).
     /// There are exceptions though, e.g. instances of \ref
-    /// Model::Networkproblem::Gas::Gasnode "Gasnode".
+    /// Model::Gas::Gasnode "Gasnode".
     int start_state_index{-1};
 
     /// \brief The first index after #start_state_index, that is not "owned" by
@@ -80,7 +80,7 @@ namespace Model::Networkproblem {
     /// Most equation components write only to their own indices between
     /// #start_state_index (inclusive) and #after_state_index (exclusive).
     /// There are exceptions though, e.g. instances of
-    /// \ref Model::Networkproblem::Gas::Gasnode "Gasnode".
+    /// \ref Model::Gas::Gasnode "Gasnode".
     int after_state_index{-1};
   };
-} // namespace Model::Networkproblem
+} // namespace Model 

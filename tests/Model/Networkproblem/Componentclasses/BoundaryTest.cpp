@@ -23,7 +23,7 @@ TEST(Boundaryvalue, Operator) {
            {{"time", 2.0}, {"values", {b(0), b(1)}}},
            {{"time", 3.0}, {"values", {c(0), c(1)}}}}}};
 
-  Model::Networkproblem::Boundaryvalue<2> boundary_object(boundary_value_map);
+  Model::Boundaryvalue<2> boundary_object(boundary_value_map);
 
   try {
     boundary_object(3.5);

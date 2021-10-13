@@ -66,8 +66,8 @@ namespace Model::Componentfactory {
     constexpr void check_class_hierarchy_properties() const {
       static_assert(
           not(std::is_base_of_v<
-                  Networkproblem::Equationcomponent,
-                  Component> and std::is_base_of_v<Networkproblem::Controlcomponent, Component>),
+                  Equationcomponent,
+                  Component> and std::is_base_of_v<Controlcomponent, Component>),
           "\n\n\nYou have a Component type that inherits both from "
           "Equationcomponent and Controlcomponent! This is forbidden, as their "
           "evaluate methods share the same functionality.\n\nPLEASE ONLY "
@@ -194,7 +194,7 @@ namespace Model::Componentfactory {
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
       if constexpr (std::is_base_of<
-                        Networkproblem::Equation_base, ConcreteNode>::value) {
+                        Equation_base, ConcreteNode>::value) {
 
         auto opt_boundary_schema = ConcreteNode::get_boundary_schema();
         if (opt_boundary_schema.has_value()) {
@@ -218,7 +218,7 @@ namespace Model::Componentfactory {
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
       if constexpr (std::is_base_of<
-                        Networkproblem::Equationcomponent,
+                        Equationcomponent,
                         ConcreteNode>::value) {
         auto opt_control_schema = ConcreteNode::get_control_schema();
         if (opt_control_schema.has_value()) {
@@ -242,7 +242,7 @@ namespace Model::Componentfactory {
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
       if constexpr (std::is_base_of<
-                        Networkproblem::Statecomponent, ConcreteNode>::value) {
+                        Statecomponent, ConcreteNode>::value) {
         auto initial_schema = ConcreteNode::get_initial_schema();
         Aux::schema::add_defaults(
             initial_schema,
@@ -328,7 +328,7 @@ namespace Model::Componentfactory {
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
       if constexpr (std::is_base_of<
-                        Networkproblem::Equation_base, ConcreteEdge>::value) {
+                        Equation_base, ConcreteEdge>::value) {
         auto opt_boundary_schema = ConcreteEdge::get_boundary_schema();
         if (opt_boundary_schema.has_value()) {
           auto boundary_schema = opt_boundary_schema.value();
@@ -351,7 +351,7 @@ namespace Model::Componentfactory {
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
       if constexpr (std::is_base_of<
-                        Networkproblem::Equationcomponent,
+                        Equationcomponent,
                         ConcreteEdge>::value) {
         auto opt_control_schema = ConcreteEdge::get_control_schema();
         if (opt_control_schema.has_value()) {
@@ -375,7 +375,7 @@ namespace Model::Componentfactory {
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
       if constexpr (std::is_base_of<
-                        Networkproblem::Equationcomponent,
+                        Equationcomponent,
                         ConcreteEdge>::value) {
         auto initial_schema = ConcreteEdge::get_initial_schema();
         Aux::schema::add_defaults(

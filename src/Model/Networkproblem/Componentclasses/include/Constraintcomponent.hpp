@@ -7,7 +7,7 @@ namespace Aux {
   class Matrixhandler;
 }
 
-namespace Model::Networkproblem {
+namespace Model  {
   class SimpleConstraintcomponent;
 
   class Constraintcomponent {
@@ -78,4 +78,4 @@ namespace Model::Networkproblem {
      */
     int after_constraint_index{-1};
   };
-} // namespace Model::Networkproblem
+} // namespace Model 

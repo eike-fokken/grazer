@@ -67,7 +67,7 @@ namespace Model {
       use_simplified_newton(timeevolver_data["use_simplified_newton"]) {}
 
   void Timeevolver::simulate(
-      Timedata timedata, Networkproblem::Networkproblem &problem,
+      Timedata timedata, Networkproblem &problem,
       nlohmann::json &problem_initial_json) {
     double last_time = timedata.get_starttime();
 
@@ -124,7 +124,7 @@ namespace Model {
       double last_time, double new_time, Eigen::Ref<Eigen::VectorXd> last_state,
       Eigen::Ref<Eigen::VectorXd> new_state,
       Eigen::Ref<Eigen::VectorXd const> const &control,
-      Networkproblem::Networkproblem &problem) {
+      Networkproblem &problem) {
     Solver::Solutionstruct solstruct;
     int retry = 0;
     if (use_simplified_newton) {

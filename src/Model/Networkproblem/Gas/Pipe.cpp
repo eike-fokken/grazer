@@ -23,7 +23,7 @@
 #include <string>
 #include <type_traits>
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Gas {
 
   std::string Pipe::get_type() { return "Pipe"; }
   std::string Pipe::get_gas_type() const { return get_type(); }
@@ -253,4 +253,4 @@ namespace Model::Networkproblem::Gas {
 
   double Pipe::get_length() { return (number_of_points - 1) * Delta_x; }
 
-} // namespace Model::Networkproblem::Gas
+} // namespace Model::Gas

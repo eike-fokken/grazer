@@ -4,7 +4,7 @@
 #include <Flowboundarynode.hpp>
 #include <iostream>
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Gas {
 
   std::optional<nlohmann::json> Flowboundarynode::get_boundary_schema() {
     return Aux::schema::make_boundary_schema(1);
@@ -36,4 +36,4 @@ namespace Model::Networkproblem::Gas {
     evaluate_flow_node_derivative(jacobianhandler, new_state);
   }
 
-} // namespace Model::Networkproblem::Gas
+} // namespace Model::Gas

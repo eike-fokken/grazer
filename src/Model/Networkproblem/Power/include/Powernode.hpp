@@ -5,7 +5,7 @@
 #include "SimpleStatecomponent.hpp"
 #include <Eigen/Sparse>
 
-namespace Model::Networkproblem::Power {
+namespace Model::Power {
 
   class Powernode :
       public Equationcomponent,
@@ -64,4 +64,4 @@ namespace Model::Networkproblem::Power {
         attached_component_data;
   };
 
-} // namespace Model::Networkproblem::Power
+} // namespace Model::Power

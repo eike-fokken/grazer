@@ -7,7 +7,7 @@
 #include <fstream>
 #include <iostream>
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Gas {
   std::string Controlvalve::get_type() { return "Controlvalve"; }
   std::string Controlvalve::get_gas_type() const { return get_type(); }
 
@@ -61,4 +61,4 @@ namespace Model::Networkproblem::Gas {
     new_print_helper(new_output, comp_type, get_type());
   }
 
-} // namespace Model::Networkproblem::Gas
+} // namespace Model::Gas

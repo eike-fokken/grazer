@@ -1,7 +1,7 @@
 #include <Eigen/Sparse>
 #include <vector>
 
-namespace Model::Networkproblem {
+namespace Model  {
   class Networkproblem;
 }
 
@@ -41,7 +41,7 @@ namespace optimization {
   /** \brief compute the states from given controls.
    */
   void compute_state_from_controls(
-      Model::Networkproblem::Networkproblem &problem,
+      Model::Networkproblem &problem,
       std::vector<Eigen::VectorXd> states,
       Eigen::Ref<Eigen::VectorXd const> const &controls);
 

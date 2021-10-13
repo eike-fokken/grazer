@@ -39,7 +39,7 @@ class GasTEST : public EqcomponentTEST {
   Model::Componentfactory::Gas_factory factory{R"({})"_json};
 
 public:
-  std::unique_ptr<Model::Networkproblem::Networkproblem>
+  std::unique_ptr<Model::Networkproblem>
   make_Networkproblem(nlohmann::json &netproblem) {
     return EqcomponentTEST::make_Networkproblem(netproblem, factory);
   }

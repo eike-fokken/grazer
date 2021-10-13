@@ -1,7 +1,7 @@
 #include <Innode.hpp>
 #include <iostream>
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Gas {
 
   std::string Innode::get_type() { return "Innode"; }
 
@@ -18,4 +18,4 @@ namespace Model::Networkproblem::Gas {
     evaluate_flow_node_derivative(jacobianhandler, new_state);
   }
 
-} // namespace Model::Networkproblem::Gas
+} // namespace Model::Gas

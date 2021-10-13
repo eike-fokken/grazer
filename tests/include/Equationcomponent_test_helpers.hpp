@@ -95,7 +95,7 @@ public:
   Directory_creator d;
   Path_changer p{d.get_path()};
 
-  std::unique_ptr<Model::Networkproblem::Networkproblem> make_Networkproblem(
+  std::unique_ptr<Model::Networkproblem> make_Networkproblem(
       nlohmann::json &netproblem,
       Model::Componentfactory::Componentfactory const &factory);
 };

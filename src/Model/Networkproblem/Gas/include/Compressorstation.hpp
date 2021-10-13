@@ -1,7 +1,7 @@
 #pragma once
 #include "Shortpipe.hpp"
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Gas {
 
   class Compressorstation final : public Shortpipe {
   public:
@@ -11,4 +11,4 @@ namespace Model::Networkproblem::Gas {
     static std::optional<nlohmann::json> get_control_schema();
     void add_results_to_json(nlohmann::json &new_output) override;
   };
-} // namespace Model::Networkproblem::Gas
+} // namespace Model::Gas

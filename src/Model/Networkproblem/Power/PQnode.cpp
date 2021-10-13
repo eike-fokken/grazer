@@ -5,7 +5,7 @@
 #include <iostream>
 #include <math.h>
 
-namespace Model::Networkproblem::Power {
+namespace Model::Power {
 
   std::string PQnode::get_type() { return "PQnode"; }
   std::string PQnode::get_power_type() const { return get_type(); }
@@ -40,4 +40,4 @@ namespace Model::Networkproblem::Power {
     json_save_power(time, state, P_val, Q_val);
   }
 
-} // namespace Model::Networkproblem::Power
+} // namespace Model::Power

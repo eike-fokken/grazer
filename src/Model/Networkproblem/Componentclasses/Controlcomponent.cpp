@@ -1,7 +1,7 @@
 #include "Controlcomponent.hpp"
 #include "Exception.hpp"
 
-namespace Model::Networkproblem {
+namespace Model  {
   void Controlcomponent::prepare_timestep(
       double /*last_time*/, double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
@@ -30,4 +30,4 @@ namespace Model::Networkproblem {
   int Controlcomponent::get_after_control_index() const {
     return after_control_index;
   }
-} // namespace Model::Networkproblem
+} // namespace Model 

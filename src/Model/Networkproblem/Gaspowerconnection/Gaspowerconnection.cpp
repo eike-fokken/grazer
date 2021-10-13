@@ -12,7 +12,7 @@
 #include <fstream>
 #include <iostream>
 
-namespace Model::Networkproblem::Gaspowerconnection {
+namespace Model::Gaspowerconnection {
 
   std::string Gaspowerconnection::get_type() { return "Gaspowerconnection"; }
   std::string Gaspowerconnection::get_gas_type() const { return get_type(); }
@@ -93,7 +93,7 @@ namespace Model::Networkproblem::Gaspowerconnection {
       std::cout << "You are calling setup a second time!" << std::endl;
     }
     auto powernodeptr = dynamic_cast<
-        Model::Networkproblem::Gaspowerconnection::ExternalPowerplant *>(
+        Model::Gaspowerconnection::ExternalPowerplant *>(
         get_ending_node());
     if (powernodeptr == nullptr) {
       gthrow(
@@ -228,4 +228,4 @@ namespace Model::Networkproblem::Gaspowerconnection {
     }
   }
 
-} // namespace Model::Networkproblem::Gaspowerconnection
+} // namespace Model::Gaspowerconnection

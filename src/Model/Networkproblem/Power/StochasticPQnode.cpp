@@ -4,7 +4,7 @@
 #include "make_schema.hpp"
 #include <fstream>
 
-namespace Model::Networkproblem::Power {
+namespace Model::Power {
 
   std::string StochasticPQnode::get_type() { return "StochasticPQnode"; }
   std::string StochasticPQnode::get_power_type() const { return get_type(); }
@@ -148,4 +148,4 @@ namespace Model::Networkproblem::Power {
   double StochasticPQnode::get_current_P() const { return current_P; }
   double StochasticPQnode::get_current_Q() const { return current_Q; }
 
-} // namespace Model::Networkproblem::Power
+} // namespace Model::Power

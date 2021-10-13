@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-namespace Model::Networkproblem {
+namespace Model  {
 
   /// \brief This exception class returns information on whether too high or too
   /// low a value was requested.
@@ -150,4 +150,4 @@ namespace Model::Networkproblem {
   extern template class Valuemap<2>;
   extern template class Valuemap<4>;
 
-} // namespace Model::Networkproblem
+} // namespace Model 

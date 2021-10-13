@@ -13,7 +13,7 @@ namespace Model {
         nlohmann::json const &time_evolution_json);
 
     void optimize(
-        Timedata timedata, Networkproblem::Networkproblem &problem,
+        Timedata timedata, Networkproblem &problem,
         nlohmann::json &initial_state_json,
         nlohmann::json &initial_control_json, nlohmann::json &lower_bounds_json,
         nlohmann::json &upper_bounds_json);

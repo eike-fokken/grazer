@@ -7,7 +7,7 @@
 #include <nlohmann/json.hpp>
 #include <vector>
 
-namespace Model::Networkproblem {
+namespace Model  {
   template <int N> class Control {
 
   public:
@@ -31,4 +31,4 @@ namespace Model::Networkproblem {
     Valuemap<N> const valuemap;
   };
 
-} // namespace Model::Networkproblem
+} // namespace Model 

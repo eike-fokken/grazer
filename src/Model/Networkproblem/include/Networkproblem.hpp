@@ -18,7 +18,7 @@ namespace Network {
 
 // This namespace holds all data relating to problems that construct the model
 // equations from a network from the namespace Network.
-namespace Model::Networkproblem {
+namespace Model {
 
   class Equationcomponent;
 
@@ -193,4 +193,4 @@ namespace Model::Networkproblem {
     std::vector<Constraintcomponent *> constraintcomponents;
   };
 
-} // namespace Model::Networkproblem
+} // namespace Model 

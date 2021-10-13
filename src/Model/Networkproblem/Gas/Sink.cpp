@@ -1,7 +1,7 @@
 #include "Sink.hpp"
 #include "Exception.hpp"
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Gas {
 
   std::string Sink::get_type() { return "Sink"; }
 
@@ -27,4 +27,4 @@ namespace Model::Networkproblem::Gas {
     return reverted_boundary_json;
   }
 
-} // namespace Model::Networkproblem::Gas
+} // namespace Model::Gas

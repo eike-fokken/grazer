@@ -1,6 +1,6 @@
 #pragma once
 #include "Controlcomponent.hpp"
-namespace Model::Networkproblem {
+namespace Model  {
   class SimpleControlcomponent : public Controlcomponent {
   public:
     int set_control_indices(int next_free_index) final;
@@ -14,4 +14,4 @@ namespace Model::Networkproblem {
     /// @returns number of control variables needed by this component
     virtual int needed_number_of_controls_per_time_point() const = 0;
   };
-} // namespace Model::Networkproblem
+} // namespace Model 

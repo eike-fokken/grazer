@@ -8,7 +8,7 @@ static_assert(
     "StochasticPQnode uses signaling_NaN. If you don't have that, replace the "
     "initialization of current_P and current_Q by something else.");
 
-namespace Model::Networkproblem::Power {
+namespace Model::Power {
 
   class StochasticPQnode final : public Powernode {
   public:
@@ -87,4 +87,4 @@ namespace Model::Networkproblem::Power {
     double current_Q{std::numeric_limits<double>::signaling_NaN()};
     std::unique_ptr<StochasticData> stochasticdata;
   };
-} // namespace Model::Networkproblem::Power
+} // namespace Model::Power

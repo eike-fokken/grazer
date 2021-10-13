@@ -5,7 +5,7 @@
 #include <fstream>
 #include <iostream>
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Gas {
 
   void Shortcomponent::new_print_helper(
       nlohmann::json &new_output, std::string const &component_type,
@@ -90,4 +90,4 @@ namespace Model::Networkproblem::Gas {
         rootvalues_index, q_index, function_derivative[1]);
   }
 
-} // namespace Model::Networkproblem::Gas
+} // namespace Model::Gas

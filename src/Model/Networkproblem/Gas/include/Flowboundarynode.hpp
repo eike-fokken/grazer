@@ -6,7 +6,7 @@
 #include <nlohmann/json.hpp>
 #include <string>
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Gas {
 
   class Flowboundarynode : public Gasnode {
 
@@ -32,4 +32,4 @@ namespace Model::Networkproblem::Gas {
     Boundaryvalue<1> const boundaryvalue;
   };
 
-} // namespace Model::Networkproblem::Gas
+} // namespace Model::Gas

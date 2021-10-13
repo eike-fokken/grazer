@@ -14,7 +14,7 @@
 #include <tuple>
 #include <utility>
 
-namespace Model::Networkproblem::Power {
+namespace Model::Power {
 
   nlohmann::json Powernode::get_schema() {
     nlohmann::json schema = Network::Node::get_schema();
@@ -250,4 +250,4 @@ namespace Model::Networkproblem::Power {
     }
   }
 
-} // namespace Model::Networkproblem::Power
+} // namespace Model::Power

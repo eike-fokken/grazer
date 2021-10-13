@@ -6,7 +6,7 @@
 namespace Aux {
   class Matrixhandler;
 }
-namespace Model::Networkproblem {
+namespace Model  {
   class SimpleControlcomponent;
 
   class Controlcomponent : public Equation_base {
@@ -166,4 +166,4 @@ namespace Model::Networkproblem {
      */
     int after_control_index{-1};
   };
-} // namespace Model::Networkproblem
+} // namespace Model 

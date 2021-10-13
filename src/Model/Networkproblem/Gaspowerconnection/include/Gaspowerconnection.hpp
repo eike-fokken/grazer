@@ -4,7 +4,7 @@
 #include "Edge.hpp"
 #include "Gasedge.hpp"
 
-namespace Model::Networkproblem::Gaspowerconnection {
+namespace Model::Gaspowerconnection {
 
   class ExternalPowerplant;
   /** \brief an edge connecting a gasnode to a powernode and modelling a
@@ -86,4 +86,4 @@ namespace Model::Networkproblem::Gaspowerconnection {
     double const gas2power_q_coefficient;
     double const power2gas_q_coefficient;
   };
-} // namespace Model::Networkproblem::Gaspowerconnection
+} // namespace Model::Gaspowerconnection

@@ -5,7 +5,7 @@
 #include <iostream>
 #include <tuple>
 
-namespace Model::Networkproblem::Power {
+namespace Model::Power {
 
   nlohmann::json Transmissionline::get_schema() {
     nlohmann::json schema = Network::Edge::get_schema();
@@ -34,4 +34,4 @@ namespace Model::Networkproblem::Power {
     return dynamic_cast<Powernode *>(get_ending_node());
   }
 
-} // namespace Model::Networkproblem::Power
+} // namespace Model::Power

@@ -6,7 +6,7 @@
 #include "Matrixhandler.hpp"
 #include <iostream>
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Gas {
 
   void Gasnode::evaluate_flow_node_balance(
       Eigen::Ref<Eigen::VectorXd> rootvalues,
@@ -157,4 +157,4 @@ namespace Model::Networkproblem::Gas {
     }
   }
 
-} // namespace Model::Networkproblem::Gas
+} // namespace Model::Gas

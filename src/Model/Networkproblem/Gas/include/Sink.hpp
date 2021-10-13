@@ -1,7 +1,7 @@
 #pragma once
 #include "Flowboundarynode.hpp"
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Gas {
 
   class Sink final : public Flowboundarynode {
 
@@ -15,4 +15,4 @@ namespace Model::Networkproblem::Gas {
     revert_boundary_conditions(nlohmann::json const &data);
   };
 
-} // namespace Model::Networkproblem::Gas
+} // namespace Model::Gas

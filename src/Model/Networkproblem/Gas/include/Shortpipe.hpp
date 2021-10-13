@@ -1,7 +1,7 @@
 #pragma once
 #include "Shortcomponent.hpp"
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Gas {
 
   class Shortpipe : public Shortcomponent {
 
@@ -26,4 +26,4 @@ namespace Model::Networkproblem::Gas {
 
     void add_results_to_json(nlohmann::json &new_output) override;
   };
-} // namespace Model::Networkproblem::Gas
+} // namespace Model::Gas

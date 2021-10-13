@@ -3,7 +3,7 @@
 #include "Gasedge.hpp"
 #include "Node.hpp"
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Gas {
 
   class Gasnode : public Equationcomponent, public Network::Node {
 
@@ -29,4 +29,4 @@ namespace Model::Networkproblem::Gas {
     /// \brief number of state variables, this component needs.
     static constexpr int number_of_state_variables{0};
   };
-} // namespace Model::Networkproblem::Gas
+} // namespace Model::Gas

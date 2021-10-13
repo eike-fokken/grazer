@@ -11,7 +11,7 @@ namespace Aux {
   class Matrixhandler;
 }
 
-namespace Model::Networkproblem {
+namespace Model  {
 
   /** \brief A base class for network components that supply model equations to
    * be solved.
@@ -100,4 +100,4 @@ namespace Model::Networkproblem {
     static std::optional<nlohmann::json> get_control_schema();
   };
 
-} // namespace Model::Networkproblem
+} // namespace Model 

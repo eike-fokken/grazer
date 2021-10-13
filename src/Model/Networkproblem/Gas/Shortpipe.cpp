@@ -5,7 +5,7 @@
 #include <fstream>
 #include <iostream>
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Gas {
 
   std::string Shortpipe::get_type() { return "Shortpipe"; }
   std::string Shortpipe::get_gas_type() const { return get_type(); }
@@ -49,4 +49,4 @@ namespace Model::Networkproblem::Gas {
     initial_values_helper(new_state, initial_json);
   }
 
-} // namespace Model::Networkproblem::Gas
+} // namespace Model::Gas

@@ -1,6 +1,6 @@
 #include "Equation_base.hpp"
 
-namespace Model::Networkproblem {
+namespace Model  {
 
   void Equation_base::setup() {}
 
@@ -8,4 +8,4 @@ namespace Model::Networkproblem {
     return std::nullopt;
   }
 
-} // namespace Model::Networkproblem
+} // namespace Model 

@@ -10,7 +10,7 @@ namespace Model::Scheme {
   class Threepointscheme;
 }
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Gas {
 
   class Pipe final : public Gasedge, public Network::Edge {
   public:
@@ -69,4 +69,4 @@ namespace Model::Networkproblem::Gas {
     std::unique_ptr<Scheme::Threepointscheme const> scheme;
   };
 
-} // namespace Model::Networkproblem::Gas
+} // namespace Model::Gas

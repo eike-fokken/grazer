@@ -22,7 +22,7 @@ TEST(Control, Operator) {
            {{"time", 2.0}, {"values", {b(0), b(1)}}},
            {{"time", 3.0}, {"values", {c(0), c(1)}}}}}};
 
-  Model::Networkproblem::Control<2> control_object(control_value_map);
+  Model::Control<2> control_object(control_value_map);
 
   try {
     control_object(3.5);

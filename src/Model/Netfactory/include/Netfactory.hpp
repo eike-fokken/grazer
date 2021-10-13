@@ -20,7 +20,7 @@ namespace Model::Componentfactory {
   struct AbstractEdgeType;
 } // namespace Model::Componentfactory
 
-namespace Model::Networkproblem {
+namespace Model  {
 
   /// \brief Constructs the full networkproblem json from file paths for the
   /// respective files and fills all component jsons with their boundary and
@@ -91,4 +91,4 @@ namespace Model::Networkproblem {
       nlohmann::json &networkproblem_json,
       Componentfactory::Componentfactory const &factory);
 
-} // namespace Model::Networkproblem
+} // namespace Model 

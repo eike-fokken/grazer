@@ -12,17 +12,17 @@ namespace Model::Componentfactory {
   void add_power_components(
       Componentfactory &factory, nlohmann::json const &defaults) {
     factory.add_node_type(
-        std::make_unique<NodeType<Networkproblem::Power::Vphinode>>(defaults));
+        std::make_unique<NodeType<Power::Vphinode>>(defaults));
     factory.add_node_type(
-        std::make_unique<NodeType<Networkproblem::Power::PVnode>>(defaults));
+        std::make_unique<NodeType<Power::PVnode>>(defaults));
     factory.add_node_type(
-        std::make_unique<NodeType<Networkproblem::Power::PQnode>>(defaults));
+        std::make_unique<NodeType<Power::PQnode>>(defaults));
     factory.add_node_type(
-        std::make_unique<NodeType<Networkproblem::Power::StochasticPQnode>>(
+        std::make_unique<NodeType<Power::StochasticPQnode>>(
             defaults));
 
     factory.add_edge_type(
-        std::make_unique<EdgeType<Networkproblem::Power::Transmissionline>>(
+        std::make_unique<EdgeType<Power::Transmissionline>>(
             defaults));
   }
 
