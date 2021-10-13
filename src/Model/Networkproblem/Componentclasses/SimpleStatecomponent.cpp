@@ -1,5 +1,5 @@
 #include "SimpleStatecomponent.hpp"
-namespace Model  {
+namespace Model {
 
   int SimpleStatecomponent::set_state_indices(int next_free_index) {
     start_state_index = next_free_index;
@@ -9,4 +9,4 @@ namespace Model  {
     return after_state_index;
   }
 
-} // namespace Model 
+} // namespace Model

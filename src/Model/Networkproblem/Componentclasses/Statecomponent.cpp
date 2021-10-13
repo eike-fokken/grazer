@@ -1,7 +1,7 @@
 #include "Statecomponent.hpp"
 #include "Exception.hpp"
 
-namespace Model  {
+namespace Model {
 
   nlohmann::json Statecomponent::get_initial_schema() {
     gthrow(
@@ -40,4 +40,4 @@ namespace Model  {
     return component_output;
   }
 
-} // namespace Model 
+} // namespace Model

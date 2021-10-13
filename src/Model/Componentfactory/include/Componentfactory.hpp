@@ -193,8 +193,7 @@ namespace Model::Componentfactory {
       // should really be `requires` (cf.
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
-      if constexpr (std::is_base_of<
-                        Equation_base, ConcreteNode>::value) {
+      if constexpr (std::is_base_of<Equation_base, ConcreteNode>::value) {
 
         auto opt_boundary_schema = ConcreteNode::get_boundary_schema();
         if (opt_boundary_schema.has_value()) {
@@ -217,9 +216,7 @@ namespace Model::Componentfactory {
       // should really be `requires` (cf.
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
-      if constexpr (std::is_base_of<
-                        Equationcomponent,
-                        ConcreteNode>::value) {
+      if constexpr (std::is_base_of<Equationcomponent, ConcreteNode>::value) {
         auto opt_control_schema = ConcreteNode::get_control_schema();
         if (opt_control_schema.has_value()) {
           auto control_schema = opt_control_schema.value();
@@ -241,8 +238,7 @@ namespace Model::Componentfactory {
       // should really be `requires` (cf.
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
-      if constexpr (std::is_base_of<
-                        Statecomponent, ConcreteNode>::value) {
+      if constexpr (std::is_base_of<Statecomponent, ConcreteNode>::value) {
         auto initial_schema = ConcreteNode::get_initial_schema();
         Aux::schema::add_defaults(
             initial_schema,
@@ -327,8 +323,7 @@ namespace Model::Componentfactory {
       // should really be `requires` (cf.
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
-      if constexpr (std::is_base_of<
-                        Equation_base, ConcreteEdge>::value) {
+      if constexpr (std::is_base_of<Equation_base, ConcreteEdge>::value) {
         auto opt_boundary_schema = ConcreteEdge::get_boundary_schema();
         if (opt_boundary_schema.has_value()) {
           auto boundary_schema = opt_boundary_schema.value();
@@ -350,9 +345,7 @@ namespace Model::Componentfactory {
       // should really be `requires` (cf.
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
-      if constexpr (std::is_base_of<
-                        Equationcomponent,
-                        ConcreteEdge>::value) {
+      if constexpr (std::is_base_of<Equationcomponent, ConcreteEdge>::value) {
         auto opt_control_schema = ConcreteEdge::get_control_schema();
         if (opt_control_schema.has_value()) {
           auto control_schema = opt_control_schema.value();
@@ -374,9 +367,7 @@ namespace Model::Componentfactory {
       // should really be `requires` (cf.
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
-      if constexpr (std::is_base_of<
-                        Equationcomponent,
-                        ConcreteEdge>::value) {
+      if constexpr (std::is_base_of<Equationcomponent, ConcreteEdge>::value) {
         auto initial_schema = ConcreteEdge::get_initial_schema();
         Aux::schema::add_defaults(
             initial_schema,

@@ -52,8 +52,7 @@ int grazer::run(std::filesystem::path directory_path) {
 
     Model::Componentfactory::Full_factory componentfactory(
         problem_json.value("defaults", R"({})"_json));
-    auto net_ptr
-        = Model::build_net(problem_json, componentfactory);
+    auto net_ptr = Model::build_net(problem_json, componentfactory);
     Model::Networkproblem problem(std::move(net_ptr));
 
     problem.init();

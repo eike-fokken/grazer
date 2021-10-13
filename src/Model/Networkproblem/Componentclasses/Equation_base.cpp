@@ -1,6 +1,6 @@
 #include "Equation_base.hpp"
 
-namespace Model  {
+namespace Model {
 
   void Equation_base::setup() {}
 
@@ -8,4 +8,4 @@ namespace Model  {
     return std::nullopt;
   }
 
-} // namespace Model 
+} // namespace Model

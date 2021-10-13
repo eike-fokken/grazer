@@ -1,7 +1,7 @@
 #pragma once
+#include "Constraintcomponent.hpp"
 #include "Controlcomponent.hpp"
 #include "Costcomponent.hpp"
-#include "Constraintcomponent.hpp"
 #include "Statecomponent.hpp"
 #include <Eigen/Sparse>
 #include <memory>
@@ -193,4 +193,4 @@ namespace Model {
     std::vector<Constraintcomponent *> constraintcomponents;
   };
 
-} // namespace Model 
+} // namespace Model

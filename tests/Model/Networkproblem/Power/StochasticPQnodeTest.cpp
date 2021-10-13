@@ -83,8 +83,8 @@ public:
   make_Networkproblem(nlohmann::json &netproblem);
 
   std::tuple<
-      std::unique_ptr<Model::Networkproblem>, double, double,
-      Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd>
+      std::unique_ptr<Model::Networkproblem>, double, double, Eigen::VectorXd,
+      Eigen::VectorXd, Eigen::VectorXd>
   default_setup();
 };
 
@@ -100,9 +100,8 @@ TEST_F(stochasticPQnodeTEST, evaluate) {
   netprob->evaluate(
       rootvalues, last_time, new_time, last_state, new_state, control);
 
-  auto *stoch_pq
-      = dynamic_cast<Model::Power::StochasticPQnode *>(
-          netprob->get_network().get_node_by_id("stochpq"));
+  auto *stoch_pq = dynamic_cast<Model::Power::StochasticPQnode *>(
+      netprob->get_network().get_node_by_id("stochpq"));
   if (not stoch_pq) {
     FAIL();
   }
@@ -257,8 +256,8 @@ stochasticPQnodeTEST::make_Networkproblem(nlohmann::json &netproblem) {
 }
 
 std::tuple<
-    std::unique_ptr<Model::Networkproblem>, double, double,
-    Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd>
+    std::unique_ptr<Model::Networkproblem>, double, double, Eigen::VectorXd,
+    Eigen::VectorXd, Eigen::VectorXd>
 stochasticPQnodeTEST::default_setup() {
 
   Eigen::Vector2d bdcond1{V1_bd, phi1_bd};

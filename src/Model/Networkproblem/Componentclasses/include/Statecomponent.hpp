@@ -3,7 +3,7 @@
 #include <nlohmann/json.hpp>
 // #include "Equationcomponent.hpp"
 
-namespace Model  {
+namespace Model {
   class SimpleStatecomponent;
 
   class Statecomponent {
@@ -83,4 +83,4 @@ namespace Model  {
     /// \ref Model::Gas::Gasnode "Gasnode".
     int after_state_index{-1};
   };
-} // namespace Model 
+} // namespace Model

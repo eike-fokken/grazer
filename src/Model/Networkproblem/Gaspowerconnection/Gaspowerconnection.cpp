@@ -92,9 +92,9 @@ namespace Model::Gaspowerconnection {
     if (powerendnode != nullptr) {
       std::cout << "You are calling setup a second time!" << std::endl;
     }
-    auto powernodeptr = dynamic_cast<
-        Model::Gaspowerconnection::ExternalPowerplant *>(
-        get_ending_node());
+    auto powernodeptr
+        = dynamic_cast<Model::Gaspowerconnection::ExternalPowerplant *>(
+            get_ending_node());
     if (powernodeptr == nullptr) {
       gthrow(
           {"An edge of type \"Gaspowerconnection\" can only end at an "

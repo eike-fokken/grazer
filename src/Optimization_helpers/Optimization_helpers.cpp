@@ -25,8 +25,7 @@ namespace optimization {
   }
 
   void compute_state_from_controls(
-      Model::Networkproblem &problem,
-      std::vector<Eigen::VectorXd> states,
+      Model::Networkproblem &problem, std::vector<Eigen::VectorXd> states,
       Eigen::Ref<Eigen::VectorXd const> const &controls) {}
 
 } // namespace optimization

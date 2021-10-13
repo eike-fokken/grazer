@@ -60,8 +60,7 @@ TEST_F(GaspowerconnectionTEST, smoothing_polynomial) {
   if (edges.size() != 1) {
     FAIL();
   }
-  auto gp = dynamic_cast<
-      Model::Gaspowerconnection::Gaspowerconnection const *>(
+  auto gp = dynamic_cast<Model::Gaspowerconnection::Gaspowerconnection const *>(
       edges.front());
   if (not gp) {
     FAIL();
@@ -119,8 +118,7 @@ TEST_F(GaspowerconnectionTEST, dsmoothing_polynomial) {
   if (edges.size() != 1) {
     FAIL();
   }
-  auto gp = dynamic_cast<
-      Model::Gaspowerconnection::Gaspowerconnection const *>(
+  auto gp = dynamic_cast<Model::Gaspowerconnection::Gaspowerconnection const *>(
       edges.front());
   if (not gp) {
     FAIL();
@@ -191,8 +189,7 @@ TEST_F(GaspowerconnectionTEST, generated_power) {
   if (edges.size() != 1) {
     FAIL();
   }
-  auto gp = dynamic_cast<
-      Model::Gaspowerconnection::Gaspowerconnection const *>(
+  auto gp = dynamic_cast<Model::Gaspowerconnection::Gaspowerconnection const *>(
       edges.front());
   if (not gp) {
     FAIL();
@@ -240,8 +237,7 @@ TEST_F(GaspowerconnectionTEST, dgenerated_power_dq) {
   if (edges.size() != 1) {
     FAIL();
   }
-  auto gp = dynamic_cast<
-      Model::Gaspowerconnection::Gaspowerconnection const *>(
+  auto gp = dynamic_cast<Model::Gaspowerconnection::Gaspowerconnection const *>(
       edges.front());
   if (not gp) {
     FAIL();
@@ -311,16 +307,14 @@ TEST_F(GaspowerconnectionTEST, evaluate_power_controlled) {
     FAIL();
   }
 
-  auto gp = dynamic_cast<
-      Model::Gaspowerconnection::Gaspowerconnection const *>(
+  auto gp = dynamic_cast<Model::Gaspowerconnection::Gaspowerconnection const *>(
       edges.front());
   if (not gp) {
     FAIL();
   }
 
   auto endpowernode
-      = dynamic_cast<Model::Power::Powernode const *>(
-          gp->get_ending_node());
+      = dynamic_cast<Model::Power::Powernode const *>(gp->get_ending_node());
   if (not endpowernode) {
     FAIL();
   }
@@ -397,16 +391,14 @@ TEST_F(GaspowerconnectionTEST, evaluate_gas_controlled) {
     FAIL();
   }
 
-  auto gp = dynamic_cast<
-      Model::Gaspowerconnection::Gaspowerconnection const *>(
+  auto gp = dynamic_cast<Model::Gaspowerconnection::Gaspowerconnection const *>(
       edges.front());
   if (not gp) {
     FAIL();
   }
 
   auto endpowernode
-      = dynamic_cast<Model::Power::Powernode const *>(
-          gp->get_ending_node());
+      = dynamic_cast<Model::Power::Powernode const *>(gp->get_ending_node());
   if (not endpowernode) {
     FAIL();
   }
@@ -482,16 +474,14 @@ TEST_F(GaspowerconnectionTEST, d_evalutate_d_new_state_power_driven) {
     FAIL();
   }
 
-  auto gp = dynamic_cast<
-      Model::Gaspowerconnection::Gaspowerconnection const *>(
+  auto gp = dynamic_cast<Model::Gaspowerconnection::Gaspowerconnection const *>(
       edges.front());
   if (not gp) {
     FAIL();
   }
 
   auto endpowernode
-      = dynamic_cast<Model::Power::Powernode const *>(
-          gp->get_ending_node());
+      = dynamic_cast<Model::Power::Powernode const *>(gp->get_ending_node());
   if (not endpowernode) {
     FAIL();
   }
@@ -590,16 +580,14 @@ TEST_F(GaspowerconnectionTEST, d_evalutate_d_new_state_gas_driven) {
     FAIL();
   }
 
-  auto gp = dynamic_cast<
-      Model::Gaspowerconnection::Gaspowerconnection const *>(
+  auto gp = dynamic_cast<Model::Gaspowerconnection::Gaspowerconnection const *>(
       edges.front());
   if (not gp) {
     FAIL();
   }
 
   auto endpowernode
-      = dynamic_cast<Model::Power::Powernode const *>(
-          gp->get_ending_node());
+      = dynamic_cast<Model::Power::Powernode const *>(gp->get_ending_node());
   if (not endpowernode) {
     FAIL();
   }

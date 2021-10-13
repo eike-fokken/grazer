@@ -1,6 +1,6 @@
 #pragma once
 #include "Constraintcomponent.hpp"
-namespace Model  {
+namespace Model {
   class SimpleConstraintcomponent : public Constraintcomponent {
   public:
     int set_constraint_indices(int next_free_index) final;
@@ -14,4 +14,4 @@ namespace Model  {
     /// @returns number of constraint variables needed by this component
     virtual int needed_number_of_inequalities_per_time_point() const = 0;
   };
-} // namespace Model 
+} // namespace Model

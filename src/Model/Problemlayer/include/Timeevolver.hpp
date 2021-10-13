@@ -3,9 +3,8 @@
 #include <nlohmann/json.hpp>
 
 namespace Model {
-  
-    class Networkproblem;
 
+  class Networkproblem;
 
   struct Timedata {
 

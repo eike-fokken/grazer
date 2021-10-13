@@ -64,8 +64,7 @@ TEST(sort_json_vectors_by_idTEST, not_sorted) {
              {{"id", "TL_2_3"}, {"B", 30}},
              {{"id", "TL_3_6"}, {"B", 50}}}}}}};
 
-  Model::sort_json_vectors_by_id(
-      topology_not_sorted, "topology_key");
+  Model::sort_json_vectors_by_id(topology_not_sorted, "topology_key");
   EXPECT_EQ(topology_not_sorted, topology_sorted);
 }
 
@@ -85,8 +84,7 @@ TEST(check_for_duplicatesTEST, duplicate_id_in_same_vector) {
              {{"id", "node_6"}, {"x", 13.000000}}}}}}};
 
   try {
-    Model::check_for_duplicates(
-        id_duplicate_json, "topology_key");
+    Model::check_for_duplicates(id_duplicate_json, "topology_key");
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
@@ -112,8 +110,7 @@ TEST(check_for_duplicatesTEST, duplicate_id_in_neighbour_vector) {
           {{"id", "node_6"}, {"x", 13.000000}}}}}}};
 
   try {
-    Model::check_for_duplicates(
-        id_duplicate_json, "topology_key");
+    Model::check_for_duplicates(id_duplicate_json, "topology_key");
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
@@ -205,12 +202,9 @@ TEST(build_node_vectorTEST, evaluate) {
   std::vector<std::unique_ptr<Network::Node>> nodes;
   nodes = Model::build_node_vector(node_topology, nodetypemap);
 
-  EXPECT_TRUE(
-      dynamic_cast<Model::Power::PQnode *>(nodes[0].get()));
-  EXPECT_TRUE(
-      dynamic_cast<Model::Power::PVnode *>(nodes[1].get()));
-  EXPECT_TRUE(
-      dynamic_cast<Model::Power::Vphinode *>(nodes[2].get()));
+  EXPECT_TRUE(dynamic_cast<Model::Power::PQnode *>(nodes[0].get()));
+  EXPECT_TRUE(dynamic_cast<Model::Power::PVnode *>(nodes[1].get()));
+  EXPECT_TRUE(dynamic_cast<Model::Power::Vphinode *>(nodes[2].get()));
 }
 
 TEST(build_edge_vectorTEST, edge_type_not_known) {
@@ -334,9 +328,7 @@ TEST(build_edge_vectorTEST, evaluate) {
             {"gas2power_q_coeff", 0.5}}}}};
 
   std::vector<std::unique_ptr<Network::Edge>> edges;
-  edges = Model::build_edge_vector(
-      edge_topology, nodes, edgetypemap);
+  edges = Model::build_edge_vector(edge_topology, nodes, edgetypemap);
 
-  EXPECT_TRUE(dynamic_cast<Model::Power::Transmissionline *>(
-      edges[0].get()));
+  EXPECT_TRUE(dynamic_cast<Model::Power::Transmissionline *>(edges[0].get()));
 }

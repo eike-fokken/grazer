@@ -6,7 +6,7 @@ namespace Aux {
   class Matrixhandler;
 } // namespace Aux
 
-namespace Model  {
+namespace Model {
   class Costcomponent {
 
   public:
@@ -36,4 +36,4 @@ namespace Model  {
   private:
     double cost_weight{1.0};
   };
-} // namespace Model 
+} // namespace Model

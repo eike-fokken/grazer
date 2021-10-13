@@ -1,5 +1,5 @@
 #include "SimpleConstraintcomponent.hpp"
-namespace Model  {
+namespace Model {
 
   int SimpleConstraintcomponent::set_constraint_indices(int next_free_index) {
     start_constraint_index = next_free_index;
@@ -9,4 +9,4 @@ namespace Model  {
     return after_constraint_index;
   }
 
-} // namespace Model 
+} // namespace Model

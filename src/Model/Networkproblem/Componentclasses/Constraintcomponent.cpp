@@ -1,7 +1,7 @@
 #include "Constraintcomponent.hpp"
 #include "Exception.hpp"
 
-namespace Model  {
+namespace Model {
 
   int Constraintcomponent::get_number_of_inequalities_per_timepoint() const {
     if (start_constraint_index < 0) {
@@ -28,4 +28,4 @@ namespace Model  {
   int Constraintcomponent::get_after_constraint_index() const {
     return after_constraint_index;
   }
-} // namespace Model 
+} // namespace Model

@@ -68,8 +68,8 @@ public:
   make_Networkproblem(nlohmann::json &netproblem);
 
   std::tuple<
-      std::unique_ptr<Model::Networkproblem>, double, double,
-      Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd>
+      std::unique_ptr<Model::Networkproblem>, double, double, Eigen::VectorXd,
+      Eigen::VectorXd, Eigen::VectorXd>
   default_setup();
 };
 
@@ -374,8 +374,8 @@ PowerTEST::make_Networkproblem(nlohmann::json &netproblem) {
 }
 
 std::tuple<
-    std::unique_ptr<Model::Networkproblem>, double, double,
-    Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd>
+    std::unique_ptr<Model::Networkproblem>, double, double, Eigen::VectorXd,
+    Eigen::VectorXd, Eigen::VectorXd>
 PowerTEST::default_setup() {
 
   Eigen::Vector2d bdcond1{V1_bd, phi1_bd};

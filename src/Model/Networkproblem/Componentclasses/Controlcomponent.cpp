@@ -1,7 +1,7 @@
 #include "Controlcomponent.hpp"
 #include "Exception.hpp"
 
-namespace Model  {
+namespace Model {
   void Controlcomponent::prepare_timestep(
       double /*last_time*/, double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
@@ -11,13 +11,15 @@ namespace Model  {
   int Controlcomponent::get_number_of_controls_per_timepoint() const {
     if (start_control_index < 0) {
       gthrow(
-          {"start_control_index < 0. Probably get_number_of_controls_per_timepoint() was "
+          {"start_control_index < 0. Probably "
+           "get_number_of_controls_per_timepoint() was "
            "called "
            "before calling set_control_indices().\n This is forbidden."});
     }
     if (after_control_index < 0) {
       gthrow(
-          {"after_control_index < 0. Probably get_number_of_controls_per_timepoint() was "
+          {"after_control_index < 0. Probably "
+           "get_number_of_controls_per_timepoint() was "
            "called "
            "before calling set_control_indices().\n This is forbidden."});
     }
@@ -30,4 +32,4 @@ namespace Model  {
   int Controlcomponent::get_after_control_index() const {
     return after_control_index;
   }
-} // namespace Model 
+} // namespace Model

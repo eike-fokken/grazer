@@ -14,7 +14,7 @@
 #include <string>
 #include <vector>
 
-namespace Model  {
+namespace Model {
 
   void check_for_duplicates(nlohmann::json &components, std::string key) {
 
@@ -269,4 +269,4 @@ namespace Model  {
 
     return network;
   }
-} // namespace Model 
+} // namespace Model

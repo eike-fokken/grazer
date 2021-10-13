@@ -23,12 +23,10 @@ namespace Model::Componentfactory {
     add_power_components(factory, defaults);
     add_gas_components(factory, defaults);
     factory.add_edge_type(
-        std::make_unique<
-            EdgeType<Gaspowerconnection::Gaspowerconnection>>(
+        std::make_unique<EdgeType<Gaspowerconnection::Gaspowerconnection>>(
             defaults));
     factory.add_node_type(
-        std::make_unique<
-            NodeType<Gaspowerconnection::ExternalPowerplant>>(
+        std::make_unique<NodeType<Gaspowerconnection::ExternalPowerplant>>(
             defaults));
   }
 

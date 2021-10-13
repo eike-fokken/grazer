@@ -1,6 +1,6 @@
 #pragma once
 #include "Statecomponent.hpp"
-namespace Model  {
+namespace Model {
   class SimpleStatecomponent : public Statecomponent {
   public:
     int set_state_indices(int next_free_index) final;
@@ -14,4 +14,4 @@ namespace Model  {
     /// @returns number of state variables needed by this component
     virtual int needed_number_of_states() const = 0;
   };
-} // namespace Model 
+} // namespace Model

@@ -504,4 +504,4 @@ namespace Model {
 
   Network::Net const &Networkproblem::get_network() const { return *network; }
 
-} // namespace Model 
+} // namespace Model

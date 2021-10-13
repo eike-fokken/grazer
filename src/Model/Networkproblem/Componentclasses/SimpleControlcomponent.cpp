@@ -1,5 +1,5 @@
 #include "SimpleControlcomponent.hpp"
-namespace Model  {
+namespace Model {
 
   int SimpleControlcomponent::set_control_indices(int next_free_index) {
     start_control_index = next_free_index;
@@ -9,4 +9,4 @@ namespace Model  {
     return after_control_index;
   }
 
-} // namespace Model 
+} // namespace Model
