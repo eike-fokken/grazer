@@ -1,6 +1,7 @@
 #include "commands.hpp"
 #include "Aux_json.hpp"
 #include "Controlhelpers.hpp"
+#include "Exception.hpp"
 #include "Full_factory.hpp"
 #include "Input_output.hpp"
 #include "Netfactory.hpp"
@@ -9,7 +10,6 @@
 #include "Optimizer.hpp"
 #include "Timeevolver.hpp"
 #include <chrono>
-#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <nlohmann/json.hpp>
@@ -44,20 +44,30 @@ int grazer::run(std::filesystem::path directory_path) {
     // give the path information of the file:
     problem_json["GRAZER_file_directory"] = problem_directory.string();
 
+    std::cout << "\n" << __FILE__ << ":" << __LINE__ << std::endl;
+    std::cout << "FIX FILE HANDLING!!!\n" << std::endl;
+
     auto initial_json = aux_json::get_json_from_file_path(
         problem_directory / std::filesystem::path("initial.json"));
     auto control_json = aux_json::get_json_from_file_path(
         problem_directory / std::filesystem::path("control.json"));
-    auto lower_bounds_json = aux_json::get_json_from_file_path(
-        problem_directory / std::filesystem::path("lower_bounds.json"));
-    auto upper_bounds_json = aux_json::get_json_from_file_path(
-        problem_directory / std::filesystem::path("upper_bounds.json"));
-    auto constraints_lower_bounds_json = aux_json::get_json_from_file_path(
-        problem_directory
-        / std::filesystem::path("constraints_lower_bounds.json"));
-    auto constraints_upper_bounds_json = aux_json::get_json_from_file_path(
-        problem_directory
-        / std::filesystem::path("constraints_upper_bounds.json"));
+    // auto lower_bounds_json = aux_json::get_json_from_file_path(
+    //     problem_directory / std::filesystem::path("lower_bounds.json"));
+    // auto upper_bounds_json = aux_json::get_json_from_file_path(
+    //     problem_directory / std::filesystem::path("upper_bounds.json"));
+    // auto constraints_lower_bounds_json = aux_json::get_json_from_file_path(
+    //     problem_directory
+    //     / std::filesystem::path("constraints_lower_bounds.json"));
+    // auto constraints_upper_bounds_json = aux_json::get_json_from_file_path(
+    //     problem_directory
+    //     / std::filesystem::path("constraints_upper_bounds.json"));
+
+    nlohmann::json lower_bounds_json;
+    nlohmann::json upper_bounds_json;
+    nlohmann::json constraints_lower_bounds_json;
+    nlohmann::json constraints_upper_bounds_json;
+
+    nlohmann::json new_control_json;
 
     Model::Timedata timedata(time_evolution_json);
 
@@ -88,7 +98,7 @@ int grazer::run(std::filesystem::path directory_path) {
         * timedata.get_number_of_steps());
 
     Optimization::initialize(
-        timedata, problem, controller, control_json, initial_state,
+        timedata, problem, controller, new_control_json, initial_state,
         initial_json, lower_bounds, lower_bounds_json, upper_bounds,
         upper_bounds_json, constraints_lower_bounds,
         constraints_lower_bounds_json, constraints_upper_bounds,
@@ -98,18 +108,22 @@ int grazer::run(std::filesystem::path directory_path) {
 
     wall_clock_setup_end = Clock::now();
 
-    // if (not optimization_json.empty()) {
-    //   /* ---------------- Optimization ------------------------------ */
-    //   auto optimizer = Model::Optimizer::make_instance(
-    //       optimization_json, time_evolution_json);
+    std::vector<double> saved_times;
+    std::vector<Eigen::VectorXd> saved_states;
 
-    //   /* ----------------------------------------------------------------- */
-    // }
-    /* ---------------- actual simulation ------------------------------ */
     timeevolver.simulate(
-        timedata, problem, initial_json // ,
-        // number_of_controls, control_value_json
-    );
+        initial_state, controller, timedata, problem, saved_times,
+        saved_states);
+
+    if (saved_times.size() != saved_states.size()) {
+      gthrow({"size wrong!"});
+    }
+    for (std::size_t index = 0; index != saved_times.size(); ++index) {
+      problem.json_save(saved_times[index], saved_states[index]);
+    }
+
+    // number_of_controls, control_value_json
+
     /* ----------------------------------------------------------------- */
 
     wall_clock_sim_end = Clock::now();

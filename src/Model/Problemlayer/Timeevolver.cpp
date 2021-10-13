@@ -1,4 +1,5 @@
 #include "Timeevolver.hpp"
+#include "Controlhelpers.hpp"
 #include "Exception.hpp"
 #include "Networkproblem.hpp"
 #include "Newtonsolver_declaration.hpp"
@@ -40,52 +41,39 @@ namespace Model {
       use_simplified_newton(timeevolver_data["use_simplified_newton"]) {}
 
   void Timeevolver::simulate(
-      Timedata timedata, Networkproblem &problem,
-      nlohmann::json &problem_initial_json) {
+      Eigen::Ref<Eigen::VectorXd const> const &initial_state,
+      Aux::Controller &controller, Timedata timedata, Networkproblem &problem,
+      std::vector<double> &saved_times,
+      std::vector<Eigen::VectorXd> &saved_states) {
     double last_time = timedata.get_starttime();
-
-    auto number_of_states = problem.get_number_of_states();
-    Eigen::VectorXd last_state(number_of_states);
-
-    std::cout
-        << "#############################################################"
-           "#############\n"
-        << "FOLLOWING LINE " << __LINE__ << " IN FILE " << __FILE__
-        << "\nEMPTY CONTROLS ARE SET. MUST BE REPLACED BY ACTUAL CONTROLS!\n"
-        << "#############################################################"
-           "#############\n";
-    Eigen::VectorXd last_control;
-    Eigen::VectorXd control;
-
-    problem.set_initial_values(last_state, problem_initial_json);
-    problem.json_save(last_time, last_state);
     double new_time = last_time + timedata.get_delta_t();
 
+    Eigen::VectorXd last_state = initial_state;
     Eigen::VectorXd new_state = last_state;
 
+    saved_states.push_back(new_state);
+    saved_times.push_back(new_time);
+
     solver.evaluate_state_derivative_triplets(
-        problem, last_time, new_time, last_state, new_state, control);
+        problem, last_time, new_time, last_state, new_state, controller(0));
 
-    std::cout << "Number of variables: " << number_of_states << std::endl;
-    std::cout << "number of non-zeros in jacobian: "
-              << solver.get_number_non_zeros_jacobian() << std::endl;
-
-    // provide regex help (cf. helper_functions/csv_from_log.py)
-    std::cout << "=== simulation start ===" << std::endl;
-    // csv heading:
-    std::cout << "t, residual, used_iterations" << std::endl;
+    // // provide regex help (cf. helper_functions/csv_from_log.py)
+    // std::cout << "=== simulation start ===" << std::endl;
+    // // csv heading:
+    // std::cout << "t, residual, used_iterations" << std::endl;
 
     for (int i = 0; i != timedata.get_number_of_steps(); ++i) {
       new_time = last_time + timedata.get_delta_t();
       auto solstruct = make_one_step(
-          last_time, new_time, last_state, new_state, control, problem);
-      std::cout << new_time << ", ";
-      std::cout << solstruct.residual << ", ";
-      std::cout << solstruct.used_iterations << std::endl;
+          last_time, new_time, last_state, new_state, controller(i), problem);
+      // std::cout << new_time << ", ";
+      // std::cout << solstruct.residual << ", ";
+      // std::cout << solstruct.used_iterations << std::endl;
       if (not solstruct.success) {
         gthrow({"Failed timestep irrevocably!", std::to_string(new_time)});
       }
-      problem.json_save(new_time, new_state);
+      saved_states.push_back(new_state);
+      saved_times.push_back(new_time);
       last_time = new_time;
       last_state = new_state;
     }

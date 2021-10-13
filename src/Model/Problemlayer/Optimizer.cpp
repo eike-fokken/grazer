@@ -54,16 +54,6 @@ namespace Model {
 
     // problem.set_initial_values(last_state, problem_initial_state_json);
     // problem.json_save(last_time, last_state);
-
-    problem.set_initial_controls(
-        timedata.get_starttime(), timedata.get_endtime(),
-        timedata.get_number_of_steps(), controls, initial_control_json);
-    problem.set_lower_bounds(
-        timedata.get_starttime(), timedata.get_endtime(),
-        timedata.get_number_of_steps(), lower_bounds, lower_bounds_json);
-    problem.set_upper_bounds(
-        timedata.get_starttime(), timedata.get_endtime(),
-        timedata.get_number_of_steps(), upper_bounds, upper_bounds_json);
   }
 
 } // namespace Model

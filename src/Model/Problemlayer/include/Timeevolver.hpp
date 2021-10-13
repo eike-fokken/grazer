@@ -23,9 +23,10 @@ namespace Model {
         nlohmann::json &problem_initial_json, nlohmann::json &control_json);
 
     void simulate(
-        Timedata timedata, Networkproblem &problem,
-        Eigen::Ref<Eigen::VectorXd const> const &initialstate,
-        Aux::Controller const &controls);
+        Eigen::Ref<Eigen::VectorXd const> const &initial_state,
+        Aux::Controller &controller, Timedata timedata, Networkproblem &problem,
+        std::vector<double> &saved_times,
+        std::vector<Eigen::VectorXd> &saved_states);
 
     Solver::Solutionstruct make_one_step(
         double last_time, double new_time,

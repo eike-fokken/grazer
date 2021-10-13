@@ -238,6 +238,9 @@ namespace Model {
     auto idcomponents = get_idobjects(controlcomponents);
 
     for (auto const &component : {"nodes", "connections"}) {
+      if (not control_json.contains(component)) {
+        continue;
+      }
       for (auto const &componenttype : control_json[component]) {
         for (auto const &componentjson : componenttype) {
 
@@ -270,6 +273,9 @@ namespace Model {
     auto idcomponents = get_idobjects(controlcomponents);
 
     for (auto const &component : {"nodes", "connections"}) {
+      if (not lower_bound_json.contains(component)) {
+        continue;
+      }
       for (auto const &componenttype : lower_bound_json[component]) {
         for (auto const &componentjson : componenttype) {
 
@@ -300,6 +306,9 @@ namespace Model {
     auto idcomponents = get_idobjects(controlcomponents);
 
     for (auto const &component : {"nodes", "connections"}) {
+      if (not upper_bound_json.contains(component)) {
+        continue;
+      }
       for (auto const &componenttype : upper_bound_json[component]) {
         for (auto const &componentjson : componenttype) {
 
@@ -429,6 +438,9 @@ namespace Model {
     auto idcomponents = get_idobjects(constraintcomponents);
 
     for (auto const &component : {"nodes", "connections"}) {
+      if (not constraint_lower_bound_json.contains(component)) {
+        continue;
+      }
       for (auto const &componenttype : constraint_lower_bound_json[component]) {
         for (auto const &componentjson : componenttype) {
 
@@ -463,6 +475,9 @@ namespace Model {
     auto idcomponents = get_idobjects(constraintcomponents);
 
     for (auto const &component : {"nodes", "connections"}) {
+      if (not constraint_upper_bound_json.contains(component)) {
+        continue;
+      }
       for (auto const &componenttype : constraint_upper_bound_json[component]) {
         for (auto const &componentjson : componenttype) {
 
