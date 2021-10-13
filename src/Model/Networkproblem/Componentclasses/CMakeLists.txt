@@ -10,6 +10,6 @@ Costcomponent.cpp
 Constraintcomponent.cpp
 SimpleConstraintcomponent.cpp)
 
-target_link_libraries(componentclasses PUBLIC mathfunctions exception)
+target_link_libraries(componentclasses PUBLIC mathfunctions exception timedata)
 
 target_include_directories(componentclasses PUBLIC include)

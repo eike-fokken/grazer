@@ -1,5 +1,6 @@
 #pragma once
 #include "Eigen/Sparse"
+#include "Timedata.hpp"
 #include <nlohmann/json.hpp>
 
 namespace Aux {
@@ -57,14 +58,12 @@ namespace Model {
     int get_after_constraint_index() const;
 
     virtual void set_constraint_lower_bounds(
-        double start_time, double end_time, int number_of_time_steps,
-        Eigen::Ref<Eigen::VectorXd> constraint_lower_bounds,
+        Timedata timedata, Eigen::Ref<Eigen::VectorXd> constraint_lower_bounds,
         nlohmann::json const &constraint_lower_bound_json)
         = 0;
 
     virtual void set_constraint_upper_bounds(
-        double start_time, double end_time, int number_of_time_steps,
-        Eigen::Ref<Eigen::VectorXd> constraint_upper_bounds,
+        Timedata timedata, Eigen::Ref<Eigen::VectorXd> constraint_upper_bounds,
         nlohmann::json const &constraint_upper_bound_json)
         = 0;
 

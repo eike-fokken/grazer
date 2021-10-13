@@ -1,5 +1,6 @@
 #pragma once
 #include "Equation_base.hpp"
+#include "Timedata.hpp"
 #include <Eigen/Dense>
 #include <nlohmann/json.hpp>
 
@@ -137,20 +138,17 @@ namespace Model {
     /** \brief Fills the indices owned by this component with control values
      */
     virtual void set_initial_controls(
-        double start_time, double end_time, int number_of_time_steps,
-        Eigen::Ref<Eigen::VectorXd> controls,
+        Timedata timedata, Eigen::Ref<Eigen::VectorXd> controls,
         nlohmann::json const &control_json)
         = 0;
 
     virtual void set_lower_bounds(
-        double start_time, double end_time, int number_of_time_steps,
-        Eigen::Ref<Eigen::VectorXd> lower_bounds,
+        Timedata timedata, Eigen::Ref<Eigen::VectorXd> lower_bounds,
         nlohmann::json const &lower_bound_json)
         = 0;
 
     virtual void set_upper_bounds(
-        double start_time, double end_time, int number_of_time_steps,
-        Eigen::Ref<Eigen::VectorXd> upper_bounds,
+        Timedata timedata, Eigen::Ref<Eigen::VectorXd> upper_bounds,
         nlohmann::json const &upper_bound_json)
         = 0;
 

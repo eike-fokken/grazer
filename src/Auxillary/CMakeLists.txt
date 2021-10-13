@@ -1,3 +1,4 @@
+add_subdirectory(Timedata)
 add_subdirectory(Controlhelpers)
 add_subdirectory(Exception)
 add_subdirectory(Matrixhandler)

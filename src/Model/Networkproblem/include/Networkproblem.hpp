@@ -3,6 +3,7 @@
 #include "Controlcomponent.hpp"
 #include "Costcomponent.hpp"
 #include "Statecomponent.hpp"
+#include "Timedata.hpp"
 #include <Eigen/Sparse>
 #include <memory>
 #include <vector>
@@ -107,18 +108,15 @@ namespace Model {
         Eigen::Ref<Eigen::VectorXd const> const &control) const override;
 
     void set_initial_controls(
-        double start_time, double end_time, int number_of_time_steps,
-        Eigen::Ref<Eigen::VectorXd> controls,
+        Timedata timedata, Eigen::Ref<Eigen::VectorXd> controls,
         nlohmann::json const &control_json) override;
 
     void set_lower_bounds(
-        double start_time, double end_time, int number_of_time_steps,
-        Eigen::Ref<Eigen::VectorXd> lower_bounds,
+        Timedata timedata, Eigen::Ref<Eigen::VectorXd> lower_bounds,
         nlohmann::json const &lower_bound_json) override;
 
     void set_upper_bounds(
-        double start_time, double end_time, int number_of_time_steps,
-        Eigen::Ref<Eigen::VectorXd> upper_bounds,
+        Timedata timedata, Eigen::Ref<Eigen::VectorXd> upper_bounds,
         nlohmann::json const &upper_bound_json) override;
 
     int set_control_indices(int next_free_index) override;
@@ -169,13 +167,11 @@ namespace Model {
     int set_constraint_indices(int next_free_index) override;
 
     void set_constraint_lower_bounds(
-        double start_time, double end_time, int number_of_time_steps,
-        Eigen::Ref<Eigen::VectorXd> constraint_lower_bounds,
+        Timedata timedata, Eigen::Ref<Eigen::VectorXd> constraint_lower_bounds,
         nlohmann::json const &constraint_lower_bound_json) override;
 
     void set_constraint_upper_bounds(
-        double start_time, double end_time, int number_of_time_steps,
-        Eigen::Ref<Eigen::VectorXd> constraint_upper_bounds,
+        Timedata timedata, Eigen::Ref<Eigen::VectorXd> constraint_upper_bounds,
         nlohmann::json const &constraint_upper_bound_json) override;
 
     /////////////////////////////////////////////////////////
