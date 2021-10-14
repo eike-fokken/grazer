@@ -5,8 +5,6 @@
 #include "Matrixhandler.hpp"
 #include "Shortcomponent.hpp"
 #include "make_schema.hpp"
-#include <fstream>
-#include <iostream>
 
 namespace Model::Gas {
   std::string Controlvalve::get_type() { return "Controlvalve"; }
@@ -33,7 +31,7 @@ namespace Model::Gas {
 
     rootvalues.segment<2>(get_equation_start_index())
         = get_boundary_state(1, new_state) - get_boundary_state(-1, new_state)
-          - pressure_control;
+          + pressure_control;
   }
 
   void Controlvalve::d_evalutate_d_new_state(
@@ -73,7 +71,7 @@ namespace Model::Gas {
     auto pressure_control_index = get_start_control_index();
 
     jacobianhandler.set_coefficient(
-        start_equation_index, pressure_control_index, -1.0);
+        start_equation_index, pressure_control_index, 1.0);
   }
 
   void Controlvalve::set_initial_values(
