@@ -3,7 +3,7 @@
 // These macros make colorful output but probably only on Linux and Mac.
 
 // Usage:
-// std::cout << RED << "My red text" << RESET << "\n";
+// std::cout << RED << "My red text" << RESET << std::endl;
 
 #define RESET "\033[0m"
 #define BLACK "\033[30m"              /* Black */

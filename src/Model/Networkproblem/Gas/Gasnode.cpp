@@ -36,7 +36,7 @@ namespace Model::Gas {
     rootvalues[last_equation_index] += dir0 * q0;
 
     // std::cout << "number of gas edges: " <<
-    // directed_attached_gas_edges.size() <<"\n";
+    // directed_attached_gas_edges.size() <<std::endl;
     for (auto it = std::next(directed_attached_gas_edges.begin());
          it != directed_attached_gas_edges.end(); ++it) {
       int direction = it->first;
@@ -120,19 +120,19 @@ namespace Model::Gas {
 
     if (directed_attached_gas_edges.size() != 0) {
       std::cout << YELLOW << "You are calling setup a second time!" << RESET
-                << "\n";
+                << std::endl;
     }
     directed_attached_gas_edges.clear();
     // std::cout << "number of start edges: " << get_starting_edges().size()
-    // <<"\n"; std::cout << "number of end edges: " <<
-    // get_ending_edges().size() <<"\n";
+    // <<std::endl; std::cout << "number of end edges: " <<
+    // get_ending_edges().size() <<std::endl;
     for (auto &startedge : get_starting_edges()) {
       auto startgasedge = dynamic_cast<Gasedge *>(startedge);
       if (!startgasedge) {
         std::cout << __FILE__ << ":" << __LINE__ << " Warning: The non-gasedge"
                   << startedge->get_id() << " is attached at node " << get_id()
-                  << "\n";
-        std::cout << "node id: " << get_id() << "\n";
+                  << std::endl;
+        std::cout << "node id: " << get_id() << std::endl;
         continue;
       }
       directed_attached_gas_edges.push_back({1, startgasedge});
@@ -142,8 +142,8 @@ namespace Model::Gas {
       if (!endgasedge) {
         std::cout << __FILE__ << ":" << __LINE__ << " Warning: The non-gasedge"
                   << endedge->get_id() << " is attached at node " << get_id()
-                  << "\n";
-        std::cout << "node id: " << get_id() << "\n";
+                  << std::endl;
+        std::cout << "node id: " << get_id() << std::endl;
         continue;
       }
       directed_attached_gas_edges.push_back({-1, endgasedge});
@@ -152,7 +152,7 @@ namespace Model::Gas {
     // Notify the user of unconnected nodes:
     if (directed_attached_gas_edges.empty()) {
       std::cout << "Node " << get_id() << " has no attached gas edges!"
-                << "\n";
+                << std::endl;
       return;
     }
   }

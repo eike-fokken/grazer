@@ -87,7 +87,7 @@ namespace Model::Power {
         new_time - last_time, stochasticdata->sigma_Q,
         stochasticdata->distribution,
         stochasticdata->number_of_stochastic_steps);
-    // std::cout << current_P << "\n";
+    // std::cout << current_P << std::endl;
   }
 
   // // Version for deterministic power factor:

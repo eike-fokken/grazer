@@ -9,9 +9,9 @@ namespace Model {
       Number_of_timesteps(init_Number_of_timesteps(
           time_evolution_data["desired_delta_t"].get<double>())),
       delta_t(init_delta_t()) {
-    std::cout << "Start_time: " << starttime << "\n";
-    std::cout << "end_time: " << endtime << "\n";
-    std::cout << "delta_t: " << delta_t << "\n";
+    std::cout << "Start_time: " << starttime << std::endl;
+    std::cout << "end_time: " << endtime << std::endl;
+    std::cout << "delta_t: " << delta_t << std::endl;
   }
 
   int Timedata::init_Number_of_timesteps(double desired_delta_t) const {

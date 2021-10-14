@@ -66,18 +66,13 @@ int main(int argc, char **argv) {
     try {
       app.parse(argc, argv);
       return 0;
-    } catch (const CLI::ParseError &e) {
-      std::cout.flush();
-      return app.exit(e);
-    }
+    } catch (const CLI::ParseError &e) { return app.exit(e); }
   } catch (std::exception const &ex) {
-    std::cout.flush();
-    std::cout << "\n[Error]: " << ex.what() << "\n";
+    std::cout << "\n[Error]: " << ex.what() << std::endl;
   } catch (...) {
-    std::cout.flush();
     std::cout << "An unkown type of exception was thrown.\n\n"
                  "This is a bug and must be fixed!\n\n"
-              << "\n";
+              << std::endl;
   }
   return 1;
 }
