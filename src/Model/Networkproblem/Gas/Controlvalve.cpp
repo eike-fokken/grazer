@@ -25,21 +25,23 @@ namespace Model::Gas {
 
   void Controlvalve::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
-      const Eigen::Ref<const Eigen::VectorXd> &last_state,
+      const Eigen::Ref<const Eigen::VectorXd> & /*last_state*/,
       const Eigen::Ref<const Eigen::VectorXd> &new_state,
       const Eigen::Ref<const Eigen::VectorXd> &control) const {
 
-    Eigen::Vector2d pressure_control(control_values(new_time)[0], 0.0);
+    Eigen::Vector2d pressure_control(control[get_start_control_index()], 0.0);
+
     rootvalues.segment<2>(get_equation_start_index())
         = get_boundary_state(1, new_state) - get_boundary_state(-1, new_state)
           - pressure_control;
   }
 
   void Controlvalve::d_evalutate_d_new_state(
-      Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
-      const Eigen::Ref<const Eigen::VectorXd> &last_state,
-      const Eigen::Ref<const Eigen::VectorXd> &new_state,
-      const Eigen::Ref<const Eigen::VectorXd> &control) const {
+      Aux::Matrixhandler &jacobianhandler, double /*last_time*/,
+      double /*new_time*/,
+      const Eigen::Ref<const Eigen::VectorXd> & /*last_state*/,
+      const Eigen::Ref<const Eigen::VectorXd> & /*new_state*/,
+      const Eigen::Ref<const Eigen::VectorXd> & /*control*/) const {
     auto start_p_index = get_boundary_state_index(1);
     auto start_q_index = start_p_index + 1;
     auto end_p_index = get_boundary_state_index(-1);
@@ -55,23 +57,29 @@ namespace Model::Gas {
   }
 
   void Controlvalve::d_evalutate_d_last_state(
-      Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
-      const Eigen::Ref<const Eigen::VectorXd> &last_state,
-      const Eigen::Ref<const Eigen::VectorXd> &new_state,
-      const Eigen::Ref<const Eigen::VectorXd> &control) const {}
+      Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
+      double /*new_time*/,
+      const Eigen::Ref<const Eigen::VectorXd> & /*last_state*/,
+      const Eigen::Ref<const Eigen::VectorXd> & /*new_state*/,
+      const Eigen::Ref<const Eigen::VectorXd> & /*control*/) const {}
+
+  void Controlvalve::d_evalutate_d_control(
+      Aux::Matrixhandler &jacobianhandler, double /*last_time*/,
+      double /*new_time*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {
+    auto start_equation_index = get_equation_start_index();
+    auto pressure_control_index = get_start_control_index();
+
+    jacobianhandler.set_coefficient(
+        start_equation_index, pressure_control_index, -1.0);
+  }
 
   void Controlvalve::set_initial_values(
       Eigen::Ref<Eigen::VectorXd> new_state,
       nlohmann::json const &initial_json) {
     initial_values_helper(new_state, initial_json);
-  }
-
-  void Controlvalve::d_evalutate_d_control(
-      Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> const &last_state,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state,
-      Eigen::Ref<Eigen::VectorXd const> const &control) const {
-    assert(false);
   }
 
   void Controlvalve::add_results_to_json(nlohmann::json &new_output) {
