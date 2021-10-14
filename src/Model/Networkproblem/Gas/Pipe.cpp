@@ -213,9 +213,9 @@ namespace Model::Gas {
       } catch (...) {
         std::cout << "could not set initial value of pipe " << get_id() << ".\n"
                   << "Requested point was " << i * Delta_x << ". \n"
-                  << "Length of line is " << get_length() << std::endl;
+                  << "Length of line is " << get_length() << "\n";
         std::cout << "requested - length: " << (i * Delta_x - get_length())
-                  << std::endl;
+                  << "\n";
         throw;
       }
     }

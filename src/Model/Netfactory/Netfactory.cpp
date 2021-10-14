@@ -154,7 +154,8 @@ namespace Model {
         }
       } else {
         std::cout << "Node type " << nodetypename
-                  << " not present in the topology file." << std::endl;
+                  << " not present in the topology file."
+                  << "\n";
       }
     }
 
@@ -194,7 +195,8 @@ namespace Model {
         }
       } else {
         std::cout << "Edge type " << edgetypename
-                  << " not present in the topology file." << std::endl;
+                  << " not present in the topology file."
+                  << "\n";
       }
     }
 
@@ -214,7 +216,8 @@ namespace Model {
           std::cout << "Note: Topology json does not contain " << component
                     << " of type " << key << ", but the "
                     << name_of_inserted_json << " json does contain such "
-                    << component << "." << std::endl;
+                    << component << "."
+                    << "\n";
           continue;
         }
         auto &second_json_vector_json = second_json[component][key];
@@ -237,7 +240,7 @@ namespace Model {
                       << " has an entry in the " << name_of_inserted_json
                       << " json but is not given in the "
                          "topology json."
-                      << std::endl;
+                      << "\n";
             ++secjson_it;
           } else if (id_compare_less(*top_it, *secjson_it)) {
             gthrow(

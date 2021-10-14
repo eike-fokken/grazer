@@ -27,7 +27,7 @@ int grazer::run(std::filesystem::path directory_path) {
     auto problem_data_file = problem_directory / "problem_data.json";
     auto output_file = io::prepare_output_file(directory_path);
     nlohmann::json output_json;
-    std::cout << "Using output filename\n" << output_file.string() << std::endl;
+    std::cout << "Using output filename\n" << output_file.string() << "\n";
 
     // This must be wrapped in exception handling code!
 
@@ -44,8 +44,9 @@ int grazer::run(std::filesystem::path directory_path) {
     // give the path information of the file:
     problem_json["GRAZER_file_directory"] = problem_directory.string();
 
-    std::cout << "\n" << __FILE__ << ":" << __LINE__ << std::endl;
-    std::cout << "FIX FILE HANDLING!!!\n" << std::endl;
+    std::cout << "\n" << __FILE__ << ":" << __LINE__ << "\n";
+    std::cout << "FIX FILE HANDLING!!!\n"
+              << "\n";
 
     auto initial_json = aux_json::get_json_from_file_path(
         problem_directory / std::filesystem::path("initial.json"));
@@ -104,7 +105,8 @@ int grazer::run(std::filesystem::path directory_path) {
         constraints_lower_bounds_json, constraints_upper_bounds,
         constraints_upper_bounds_json);
 
-    std::cout << "data read" << std::endl;
+    std::cout << "data read"
+              << "\n";
 
     wall_clock_setup_end = Clock::now();
 
@@ -162,11 +164,15 @@ int grazer::run(std::filesystem::path directory_path) {
   auto total_duration = duration_in_seconds_with_mus_accuracy(
       wall_clock_end - wall_clock_start);
 
-  std::cout << "setup took:      " << setup_duration << " seconds" << std::endl;
-  std::cout << "simulation took: " << sim_duration << " seconds" << std::endl;
+  std::cout << "setup took:      " << setup_duration << " seconds"
+            << "\n";
+  std::cout << "simulation took: " << sim_duration << " seconds"
+            << "\n";
   std::cout << "teardown took:   " << teardown_duration << " seconds"
-            << std::endl;
-  std::cout << "-----------------------------" << std::endl;
-  std::cout << "total:           " << total_duration << " seconds" << std::endl;
+            << "\n";
+  std::cout << "-----------------------------"
+            << "\n";
+  std::cout << "total:           " << total_duration << " seconds"
+            << "\n";
   return EXIT_SUCCESS;
 }

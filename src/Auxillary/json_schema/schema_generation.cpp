@@ -38,11 +38,13 @@ namespace Aux::schema {
                      "expected structure:\n"
                   << "  problem_data.subproblems.Network_problem.defaults\n"
                   << "  " << e.what() << "\n"
-                  << "Generating Schemas without defaults!" << std::endl;
+                  << "Generating Schemas without defaults!"
+                  << "\n";
       }
     } else {
       std::cout << "[Warning] The `problem_data.json` does not exist\n"
-                << "Generating Schemas without defaults!" << std::endl;
+                << "Generating Schemas without defaults!"
+                << "\n";
     }
     Model::Componentfactory::Full_factory full_factory(defaults);
     make_schemas(full_factory, grazer_dir / "schemas");

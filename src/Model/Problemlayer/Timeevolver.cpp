@@ -57,18 +57,20 @@ namespace Model {
     solver.evaluate_state_derivative_triplets(
         problem, last_time, new_time, last_state, new_state, controller(0));
 
-    // // provide regex help (cf. helper_functions/csv_from_log.py)
-    // std::cout << "=== simulation start ===" << std::endl;
-    // // csv heading:
-    // std::cout << "t, residual, used_iterations" << std::endl;
+    // provide regex help (cf. helper_functions/csv_from_log.py)
+    std::cout << "=== simulation start ==="
+              << "\n";
+    // csv heading:
+    std::cout << "t, residual, used_iterations"
+              << "\n";
 
     for (int i = 0; i != timedata.get_number_of_steps(); ++i) {
       new_time = last_time + timedata.get_delta_t();
       auto solstruct = make_one_step(
           last_time, new_time, last_state, new_state, controller(i), problem);
-      // std::cout << new_time << ", ";
-      // std::cout << solstruct.residual << ", ";
-      // std::cout << solstruct.used_iterations << std::endl;
+      std::cout << new_time << ", ";
+      std::cout << solstruct.residual << ", ";
+      std::cout << solstruct.used_iterations << "\n";
       if (not solstruct.success) {
         gthrow({"Failed timestep irrevocably!", std::to_string(new_time)});
       }
@@ -78,7 +80,8 @@ namespace Model {
       last_state = new_state;
     }
 
-    std::cout << "=== simulation end ===" << std::endl; // provide regex help
+    std::cout << "=== simulation end ==="
+              << "\n"; // provide regex help
   }
 
   Solver::Solutionstruct Timeevolver::make_one_step(
@@ -110,9 +113,11 @@ namespace Model {
       if (solstruct.success) {
 
         if (use_simplified_newton and retry > 0) {
-          std::cout << "succeeded after retries!\n" << std::endl;
+          std::cout << "succeeded after retries!\n"
+                    << "\n";
         } else if (not use_simplified_newton and retry > retries) {
-          std::cout << "succeeded after retries!\n" << std::endl;
+          std::cout << "succeeded after retries!\n"
+                    << "\n";
         }
         // Found a successful solution, so leave the function!
         break;
@@ -120,7 +125,7 @@ namespace Model {
       if (use_simplified_newton and retry == retries) {
         use_full_jacobian = true;
         std::cout << "Switching to updated Jacobian in every step."
-                  << std::endl;
+                  << "\n";
       }
       if (retry > 2 * retries) {
         problem.json_save(new_time, new_state);
@@ -129,14 +134,14 @@ namespace Model {
 
       ++retry;
       if (use_simplified_newton and retry == 1) {
-        std::cout << "\nretrying timestep " << new_time << std::endl;
+        std::cout << "\nretrying timestep " << new_time << "\n";
       } else if (not use_simplified_newton and retry == retries + 1) {
-        std::cout << "\nretrying timestep " << new_time << std::endl;
+        std::cout << "\nretrying timestep " << new_time << "\n";
       }
       if (retry > 0) {
         std::cout << new_time << ", ";
         std::cout << solstruct.residual << ", ";
-        std::cout << solstruct.used_iterations << std::endl;
+        std::cout << solstruct.used_iterations << "\n";
       }
     }
     return solstruct;

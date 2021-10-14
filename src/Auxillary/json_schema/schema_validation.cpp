@@ -81,7 +81,7 @@ void Aux::schema::validate_json(json const &data, json const &schema) {
 
   // debugging
   // std::cout << "Validated Schema \"" << schema["title"].get<std::string>()<<
-  // "\"" << std::endl;
+  // "\"" << "\n";
   return;
 }
 

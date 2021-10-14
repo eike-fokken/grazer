@@ -137,7 +137,7 @@ namespace Model {
             std::cout
                 << "Note: Component with id " << component_id
                 << "appears in the initial values but not in the topology."
-                << std::endl;
+                << "\n";
           }
         }
       }
@@ -259,7 +259,7 @@ namespace Model {
             std::cout << "Note: Component with id " << component_id
                       << "appears in the control initial values but not in the "
                          "topology."
-                      << std::endl;
+                      << "\n";
           }
         }
       }
@@ -293,7 +293,7 @@ namespace Model {
           } else {
             std::cout << "Note: Component with id " << component_id
                       << "appears in the lower bounds but not in the topology."
-                      << std::endl;
+                      << "\n";
           }
         }
       }
@@ -326,7 +326,7 @@ namespace Model {
           } else {
             std::cout << "Note: Component with id " << component_id
                       << "appears in the upper bounds but not in the topology."
-                      << std::endl;
+                      << "\n";
           }
         }
       }
@@ -461,7 +461,7 @@ namespace Model {
             std::cout << "Note: Component with id " << component_id
                       << "appears in the constraint lower bounds but not in "
                          "the topology."
-                      << std::endl;
+                      << "\n";
           }
         }
       }
@@ -498,7 +498,7 @@ namespace Model {
             std::cout << "Note: Component with id " << component_id
                       << "appears in the constraint upper bounds but not in "
                          "the topology."
-                      << std::endl;
+                      << "\n";
           }
         }
       }

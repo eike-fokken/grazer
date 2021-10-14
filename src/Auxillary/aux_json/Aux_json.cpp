@@ -61,7 +61,7 @@ namespace aux_json {
       jsonfilestream >> json_object;
     } catch (...) {
       std::cout << __FILE__ << ":" << __LINE__
-                << ": Couldn't load json from file: " << file_path << std::endl;
+                << ": Couldn't load json from file: " << file_path << "\n";
       throw;
     }
     return json_object;
@@ -80,7 +80,7 @@ namespace aux_json {
       jsonfilestream >> json_object;
     } catch (...) {
       std::cout << __FILE__ << ":" << __LINE__
-                << ": Couldn't load json from file: " << file_path << std::endl;
+                << ": Couldn't load json from file: " << file_path << "\n";
       throw;
     }
     return json_object;
@@ -109,13 +109,15 @@ namespace aux_json {
       ofs.close();
     } catch (...) {
       std::cout << "something went wrong writing the modified json to file"
-                << std::endl;
+                << "\n";
       if (had_existed) {
         if (std::filesystem::exists(backup_path)) {
-          std::cout << "rolling back to old version" << std::endl;
+          std::cout << "rolling back to old version"
+                    << "\n";
           std::filesystem::rename(backup_path, file_path);
         } else {
-          std::cout << "backup file is missing!" << std::endl;
+          std::cout << "backup file is missing!"
+                    << "\n";
         }
       }
     }

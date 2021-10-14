@@ -37,7 +37,7 @@ namespace Aux::schema {
         aux_json::overwrite_json(file, result);
       } else {
         std::cout << "Mising schema for: " << type << ", skipping!"
-                  << std::endl;
+                  << "\n";
       }
     }
     return 0;

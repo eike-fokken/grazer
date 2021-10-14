@@ -90,7 +90,8 @@ namespace Model::Gaspowerconnection {
     setup_output_json_helper(get_id());
 
     if (powerendnode != nullptr) {
-      std::cout << "You are calling setup a second time!" << std::endl;
+      std::cout << "You are calling setup a second time!"
+                << "\n";
     }
     auto powernodeptr
         = dynamic_cast<Model::Gaspowerconnection::ExternalPowerplant *>(
@@ -153,7 +154,7 @@ namespace Model::Gaspowerconnection {
     } catch (...) {
       std::cout << __FILE__ << ":" << __LINE__
                 << ": failed to read in initial values in gaspowerconnection!"
-                << std::endl;
+                << "\n";
       throw;
     }
   }
