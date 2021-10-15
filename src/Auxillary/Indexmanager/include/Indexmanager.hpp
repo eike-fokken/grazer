@@ -7,6 +7,12 @@
 #include <nlohmann/json.hpp>
 namespace Aux {
 
+  template <int Values_per_step>
+  Eigen::Matrix<double, Values_per_step, 1>
+  identity_converter(Eigen::Matrix<double, Values_per_step, 1> x) {
+    return x;
+  }
+
   class Indexmanager {
   protected:
     Indexmanager(){};
@@ -24,12 +30,6 @@ namespace Aux {
   };
 
   template <int Values_per_step>
-  Eigen::Matrix<double, Values_per_step, 1>
-  identity(Eigen::Matrix<double, Values_per_step, 1> x) {
-    return x;
-  }
-
-  template <int Values_per_step>
   class Timeless_Indexmanager final : public Indexmanager {
   public:
     void set_initial_values(
@@ -39,7 +39,7 @@ namespace Aux {
         std::function<Eigen::Matrix<double, Values_per_step, 1>(
             Eigen::Matrix<double, Values_per_step, 1>)>
             converter_function
-        = identity);
+        = identity_converter<Values_per_step>);
   };
   extern template class Timeless_Indexmanager<1>;
   extern template class Timeless_Indexmanager<2>;

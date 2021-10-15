@@ -2,6 +2,7 @@
 #include "Initialvalue.hpp"
 #include "schema_validation.hpp"
 #include <functional>
+#include <string>
 
 namespace Aux {
 
@@ -28,6 +29,15 @@ namespace Aux {
   }
   int Indexmanager::set_indices(
       int next_free_index, int number_of_needed_indices) {
+    if (next_free_index < 0) {
+      gthrow(
+          {"Tried to set negative index: ", std::to_string(next_free_index)});
+    }
+    if (number_of_needed_indices <= 0) {
+      gthrow(
+          {"Tried to reserve zero or less number of indices: ",
+           std::to_string(number_of_needed_indices)});
+    }
     startindex = next_free_index;
     afterindex = next_free_index + number_of_needed_indices;
     return afterindex;
