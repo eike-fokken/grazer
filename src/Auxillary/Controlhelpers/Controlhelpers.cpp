@@ -86,8 +86,10 @@ namespace Aux {
         = allcontrols.segment(next_index, number_of_controls_per_timepoint);
     Eigen::VectorXd value_prev
         = allcontrols.segment(prev_index, number_of_controls_per_timepoint);
-    return value_prev
-           + (t - t_prev) * (value_next - value_prev) / (t_next - t_prev);
+
+    auto lambda = (t - t_prev) / (t_next - t_prev);
+
+    return (1 - lambda) * value_prev + lambda * value_next;
   }
 
   Eigen::Ref<Eigen::VectorXd const> const Controller::get_allcontrols() const {
