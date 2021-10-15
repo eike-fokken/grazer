@@ -7,10 +7,24 @@ namespace Aux {
 
   Indexmanager::~Indexmanager() {}
 
-  int Indexmanager::get_startindex() const { return startindex; }
-  int Indexmanager::get_afterindex() const { return afterindex; }
+  int Indexmanager::get_startindex() const {
+    if (startindex < 0) {
+      gthrow(
+          {"startindex < 0. Probably get_startindex() was called "
+           "before calling set_indices().\n This is forbidden."});
+    }
+    return startindex;
+  }
+  int Indexmanager::get_afterindex() const {
+    if (afterindex < 0) {
+      gthrow(
+          {"afterindex < 0. Probably get_afterindex() was called "
+           "before calling set_indices().\n This is forbidden."});
+    }
+    return afterindex;
+  }
   int Indexmanager::get_number_of_indices() const {
-    return afterindex - startindex;
+    return get_afterindex() - get_startindex();
   }
   int Indexmanager::set_indices(
       int next_free_index, int number_of_needed_indices) {
