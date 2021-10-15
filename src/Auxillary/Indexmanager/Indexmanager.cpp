@@ -1,6 +1,7 @@
 #include "Indexmanager.hpp"
 #include "Initialvalue.hpp"
 #include "schema_validation.hpp"
+#include <functional>
 
 namespace Aux {
 
@@ -20,24 +21,19 @@ namespace Aux {
 
   template <int Values_per_step>
   void Timeless_Indexmanager<Values_per_step>::set_initial_values(
-      Eigen::Ref<Eigen::VectorXd> vector_to_be_filled,
-      nlohmann::json const &initial_json,
-      nlohmann::json const &initial_schema) {
+      Eigen::Ref<Eigen::VectorXd> vector_to_be_filled, int number_of_points,
+      nlohmann::json const &initial_json, nlohmann::json const &initial_schema,
+      std::function<Eigen::Matrix<double, Values_per_step, 1>(
+          Eigen::Matrix<double, Values_per_step, 1>)>
+          converter_function) {
 
     Aux::schema::validate_json(initial_json, initial_schema);
     Initialvalue<Values_per_step> initialvalues(initial_json);
+    int current_index = get_startindex();
     for (int i = 0; i != number_of_points; ++i) {
-      try {
-        new_state.segment<2>(get_start_state_index() + 2 * i)
-            = bl->state(bl->p_qvol_from_p_qvol_bar(initialvalues(i * Delta_x)));
-      } catch (...) {
-        std::cout << "could not set initial value of pipe " << get_id() << ".\n"
-                  << "Requested point was " << i * Delta_x << ". \n"
-                  << "Length of line is " << get_length() << std::endl;
-        std::cout << "requested - length: " << (i * Delta_x - get_length())
-                  << std::endl;
-        throw;
-      }
+      vector_to_be_filled.segment<Values_per_step>(current_index)
+          = converter_function(initialvalues(i));
+      current_index += number_of_points;
     }
   }
 

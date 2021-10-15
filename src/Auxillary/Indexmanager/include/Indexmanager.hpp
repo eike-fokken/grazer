@@ -24,12 +24,22 @@ namespace Aux {
   };
 
   template <int Values_per_step>
+  Eigen::Matrix<double, Values_per_step, 1>
+  identity(Eigen::Matrix<double, Values_per_step, 1> x) {
+    return x;
+  }
+
+  template <int Values_per_step>
   class Timeless_Indexmanager final : public Indexmanager {
   public:
     void set_initial_values(
-        Eigen::Ref<Eigen::VectorXd> vector_to_be_filled,
-        int number_of_points_per_step, nlohmann::json const &initial_json,
-        nlohmann::json const &initial_schema);
+        Eigen::Ref<Eigen::VectorXd> vector_to_be_filled, int number_of_points,
+        nlohmann::json const &initial_json,
+        nlohmann::json const &initial_schema,
+        std::function<Eigen::Matrix<double, Values_per_step, 1>(
+            Eigen::Matrix<double, Values_per_step, 1>)>
+            converter_function
+        = identity);
   };
   extern template class Timeless_Indexmanager<1>;
   extern template class Timeless_Indexmanager<2>;
