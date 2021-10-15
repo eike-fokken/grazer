@@ -18,12 +18,13 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
-# for debug builds use the debug configuration of the standard libraries:
-# Unfortunately MacOS doesn't ship the debug versions of standard types,
-# therefore we forego the debug macro for Apple's Clang.
-if(NOT (CMAKE_CXX_COMPILER_ID MATCHES "AppleClang"))
-  add_compile_definitions("$<$<CONFIG:DEBUG>:_GLIBCXX_DEBUG;_LIBCPP_DEBUG>")
-endif()
+# for debug builds with gcc use the debug configuration of the standard libraries:
+
+# We don't do that with Clang, although there is _LIBCPP_DEBUG, because
+# this fails with some part of our json dependencies.
+# Also MacOS doesn't ship the debug versions of standard types,
+# therefore we would forego the debug macro for Apple's Clang.
+add_compile_definitions("$<$<CONFIG:DEBUG>:_GLIBCXX_DEBUG>")
 
 option(BUILD_WITH_LIBCPP "Build with libc++ instead of libstdc++, if the compiler is clang." OFF)
 # include the googletest project for tests:
@@ -213,10 +214,8 @@ if (NOT DEFINED IPOPT_DIRECTORY)
   if (BUILD_WITH_LIBCPP AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(STANDARDLIB "-stdlib=libc++")
   endif()
-  if(NOT (CMAKE_CXX_COMPILER_ID MATCHES "AppleClang"))
-    set(DEBUG_FLAGS "-D_GLIBCXX_DEBUG -D_LIBCPP_DEBUG")
-  endif()
-  set(MY_CXX_FLAGS "$<$<CONFIG:DEBUG>:${DEBUG_FLAGS}> ${STANDARDLIB}")
+    set(DEBUG_FLAGS "-D_GLIBCXX_DEBUG")
+    set(MY_CXX_FLAGS "$<$<CONFIG:DEBUG>:${DEBUG_FLAGS}> ${STANDARDLIB}")
 
   if(CMAKE_CXX_COMPILER_LAUNCHER MATCHES "ccache")
     set(MY_OWN_CCACHE_VARIABLE "ccache")
