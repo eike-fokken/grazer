@@ -5,6 +5,7 @@
 #include "Indexmanager.hpp"
 #include "make_schema.hpp"
 #include "schema_validation.hpp"
+#include <functional>
 
 using namespace Aux;
 
@@ -113,4 +114,22 @@ TEST(Timeless_Indexmanager, set_initial_values_happy) {
 
   EXPECT_EQ(a, vector_to_be_filled.segment<2>(0));
   EXPECT_EQ(b, vector_to_be_filled.segment<2>(2));
+
+  class Testpipe {
+  public:
+    Eigen::Vector2d test_conversion(Eigen::Vector2d x) {
+      Eigen::Vector2d y;
+      y << x[1], x[0];
+      return y;
+    }
+  } testpipe;
+
+  auto func
+      = std::bind(&Testpipe::test_conversion, testpipe, std::placeholders::_1);
+  manager.set_initial_values(
+      vector_to_be_filled, number_of_points, initial_json, initial_schema,
+      func);
+
+  EXPECT_EQ(testpipe.test_conversion(a), vector_to_be_filled.segment<2>(0));
+  EXPECT_EQ(testpipe.test_conversion(b), vector_to_be_filled.segment<2>(2));
 }
