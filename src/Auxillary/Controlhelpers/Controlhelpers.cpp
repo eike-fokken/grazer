@@ -1,10 +1,31 @@
 #include "Controlhelpers.hpp"
 #include "Exception.hpp"
+#include "Mathfunctions.hpp"
+#include "Timedata.hpp"
+#include <algorithm>
+#include <stdexcept>
 
 namespace Aux {
 
+  static std::vector<double> set_timevector(Model::Timedata timedata) {
+    auto starttime = timedata.get_starttime();
+    auto delta_t = timedata.get_delta_t();
+    auto number_of_entries
+        = static_cast<size_t>(1 + timedata.get_number_of_steps());
+    std::vector<double> times(number_of_entries);
+    auto currenttime = starttime;
+    for (size_t index = 0; index != number_of_entries; ++index) {
+      times.push_back(currenttime);
+      currenttime += delta_t;
+    }
+    assert(currenttime == timedata.get_endtime() + delta_t);
+    return times;
+  }
+
   Controller::Controller(
-      int _number_of_controls_per_timepoint, int _number_of_timesteps) :
+      Model::Timedata timedata, Eigen::Index _number_of_controls_per_timepoint,
+      Eigen::Index _number_of_timesteps) :
+      times(set_timevector(timedata)),
       number_of_controls_per_timepoint(_number_of_controls_per_timepoint) {
     if (number_of_controls_per_timepoint < 0) {
       gthrow({"You can't have less than 0 controls per time step!"});
@@ -28,16 +49,45 @@ namespace Aux {
   }
 
   Eigen::Ref<Eigen::VectorXd const> const
-  Controller::operator()(int current_timestep) const {
-    if (current_timestep < 0) {
-      gthrow({"You request controls at negative time steps!"});
+  Controller::operator()(double t) const {
+
+    if (t >= times.back()) {
+      if (t > times.back() + Aux::EPSILON) {
+        std::ostringstream error_message;
+        error_message << "Requested value " << t
+                      << " is higher than the last valid value: "
+                      << times.back() << "\n";
+        throw std::runtime_error(error_message.str());
+      }
+
+      return allcontrols.segment(
+          static_cast<Eigen::Index>(times.size() - 1)
+              * number_of_controls_per_timepoint,
+          number_of_controls_per_timepoint);
     }
-    auto start_index = number_of_controls_per_timepoint * current_timestep;
-    auto after_index = start_index + number_of_controls_per_timepoint;
-    if (after_index > allcontrols.size()) {
-      gthrow({"You request controls at a higher index than possible!"});
+    if (t >= times.front()) {
+      if (t > times.front() + Aux::EPSILON) {
+        std::ostringstream error_message;
+        error_message << "Requested value " << t
+                      << " is lower than the first valid value: "
+                      << times.front() << "\n";
+        throw std::runtime_error(error_message.str());
+      }
+
+      return allcontrols.segment(0, number_of_controls_per_timepoint);
     }
-    return allcontrols.segment(start_index, number_of_controls_per_timepoint);
+    auto it = std::lower_bound(times.begin(), times.end(), t);
+    auto t_next = *it;
+    auto t_prev = *std::prev(it);
+    auto next_index = (it - times.begin()) * number_of_controls_per_timepoint;
+    auto prev_index = next_index - number_of_controls_per_timepoint;
+
+    Eigen::VectorXd value_next
+        = allcontrols.segment(next_index, number_of_controls_per_timepoint);
+    Eigen::VectorXd value_prev
+        = allcontrols.segment(prev_index, number_of_controls_per_timepoint);
+    return value_prev
+           + (t - t_prev) * (value_next - value_prev) / (t_next - t_prev);
   }
 
   Eigen::Ref<Eigen::VectorXd const> const Controller::get_allcontrols() const {
