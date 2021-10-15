@@ -25,3 +25,18 @@ add_test(
   NAME valuemap_test
   COMMAND valuemap_test
   )
+
+add_test(
+  NAME initial_test
+  COMMAND initial_test
+  )
+
+add_test(
+  NAME boundary_test
+  COMMAND boundary_test
+  )
+
+add_test(
+  NAME control_test
+  COMMAND control_test
+  )
