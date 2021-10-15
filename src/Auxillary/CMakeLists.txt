@@ -1,4 +1,5 @@
 add_subdirectory(Indexmanager)
+add_subdirectory(Valuemaps)
 add_subdirectory(Timedata)
 add_subdirectory(Controlhelpers)
 add_subdirectory(Exception)

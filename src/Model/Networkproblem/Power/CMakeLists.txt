@@ -13,7 +13,8 @@ target_include_directories(power PUBLIC
 target_link_libraries(power PUBLIC
   componentclasses
   network
-  stochastics)
+  stochastics
+  valuemap)
 target_link_libraries(power PRIVATE
   matrixhandler
   exception

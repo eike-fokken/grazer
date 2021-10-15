@@ -97,7 +97,7 @@ namespace Model {
       for (auto &datapoint : values_json["data"]) {
         if (datapoint["values"].size() != N) {
           gthrow(
-              {"Wrong number of initial/boundary/control values in node ",
+              {"Wrong number of initial/boundary/control values in component ",
                values_json["id"]});
         }
         Eigen::Matrix<double, N, 1> value;
@@ -140,9 +140,6 @@ namespace Model {
     }
 
   private:
-    // nlohmann::json values;
-
-    // std::map<double, Eigen::Matrix<double, N, 1>> const values;
     std::vector<std::pair<double, Eigen::Matrix<double, N, 1>>> const values;
   };
 

@@ -15,7 +15,8 @@ target_link_libraries(gaspowerconnection PRIVATE
 target_link_libraries(gaspowerconnection PUBLIC
   mathfunctions
   componentclasses
-  gas)
+  gas
+  valuemap)
 
 target_include_directories(gaspowerconnection PUBLIC
   include)

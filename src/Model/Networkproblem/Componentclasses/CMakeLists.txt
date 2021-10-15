@@ -1,7 +1,6 @@
 add_library(componentclasses STATIC
 Equation_base.cpp
 Equationcomponent.cpp
-Valuemap.cpp
 Statecomponent.cpp
 SimpleStatecomponent.cpp
 Controlcomponent.cpp

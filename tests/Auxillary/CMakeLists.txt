@@ -1,4 +1,5 @@
 add_subdirectory(Controlhelpers)
+add_subdirectory(Valuemaps)
 add_subdirectory(Stochastics)
 add_subdirectory(Input_Output)
 add_subdirectory(aux_json)
