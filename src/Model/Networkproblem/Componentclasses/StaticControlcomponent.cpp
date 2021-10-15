@@ -1,5 +1,4 @@
 #include "StaticControlcomponent.hpp"
-#include "Control.hpp"
 #include "Controlhelpers.hpp"
 namespace Model {
 
@@ -8,22 +7,7 @@ namespace Model {
       Timedata timedata, Aux::Controller &controller,
       nlohmann::json const &control_json) {
 
-    /*
-     *Man muss mit dem Controller arbeiten, sonst geht das nicht!
-     */
-
     assert(false); // Not sure this function works as intended!
-
-    Control<N> controlmap(control_json);
-    auto starttime = timedata.get_starttime();
-    auto delta_t = timedata.get_delta_t();
-    auto number_of_timesteps = timedata.get_number_of_steps();
-    double new_time = starttime;
-    for (int timeindex = 0; timeindex != number_of_timesteps; ++timeindex) {
-      new_time += delta_t;
-      controller.mut_timestep(timeindex).segment<N>(get_start_control_index())
-          = controlmap(new_time);
-    }
   }
 
   template <int N>
