@@ -50,7 +50,7 @@ namespace Model::Power {
         double time, Eigen::Ref<Eigen::VectorXd const> const &state,
         double P_val, double Q_val);
 
-    Boundaryvalue<2> const boundaryvalue;
+    Aux::Boundaryvalue<2> const boundaryvalue;
     /// Real part of the admittance of this node
     double G;
     /// Imaginary part of the admittance of this node

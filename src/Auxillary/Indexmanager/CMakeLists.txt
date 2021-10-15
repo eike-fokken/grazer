@@ -1,4 +1,4 @@
 add_library(indexmanager STATIC Indexmanager.cpp)
 
-target_link_libraries(indexmanager PRIVATE aux_schema_validation controlhelpers timedata)
+target_link_libraries(indexmanager PRIVATE aux_schema_validation controlhelpers timedata valuemap)
 target_include_directories(indexmanager PUBLIC include)

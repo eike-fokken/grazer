@@ -22,7 +22,7 @@ TEST(Initialvalue, Operator) {
            {{"x", 2.0}, {"values", {b(0), b(1)}}},
            {{"x", 3.0}, {"values", {c(0), c(1)}}}}}};
 
-  Model::Initialvalue<2> initial_object(initial_value_map);
+  Aux::Initialvalue<2> initial_object(initial_value_map);
 
   try {
     initial_object(3.5);

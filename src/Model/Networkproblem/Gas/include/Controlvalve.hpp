@@ -55,7 +55,7 @@ namespace Model::Gas {
     void add_results_to_json(nlohmann::json &new_output) final;
 
   private:
-    Control<1> const control_values;
+    Aux::Control<1> const control_values;
   };
 
 } // namespace Model::Gas

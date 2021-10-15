@@ -255,6 +255,9 @@ namespace Model {
             auto index = iterator - idcomponents.begin();
             controlcomponents[static_cast<size_t>(index)]->set_initial_controls(
                 timedata, controller, control_json);
+            std::cout << component_id << "\n";
+            std::cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                      << "\n";
           } else {
             std::cout << "Note: Component with id " << component_id
                       << "appears in the control initial values but not in the "

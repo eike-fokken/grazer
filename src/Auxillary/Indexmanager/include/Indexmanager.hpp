@@ -23,14 +23,19 @@ namespace Aux {
     int afterindex{-1};
   };
 
+  template <int Values_per_step>
   class Timeless_Indexmanager final : public Indexmanager {
   public:
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> vector_to_be_filled,
-        nlohmann::json const &initial_json,
+        int number_of_points_per_step, nlohmann::json const &initial_json,
         nlohmann::json const &initial_schema);
   };
+  extern template class Timeless_Indexmanager<1>;
+  extern template class Timeless_Indexmanager<2>;
+  extern template class Timeless_Indexmanager<4>;
 
+  template <int Values_per_step>
   class Timed_Indexmanager final : public Indexmanager {
   public:
     void set_initial_values(
@@ -39,5 +44,6 @@ namespace Aux {
         nlohmann::json const &initial_json,
         nlohmann::json const &initial_schema);
   };
+  extern template class Timed_Indexmanager<1>;
 
 } // namespace Aux

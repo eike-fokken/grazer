@@ -147,7 +147,7 @@ namespace Model::Gaspowerconnection {
     auto start_q_index = start_p_index + 1;
     try {
 
-      Initialvalue<2> initialvalues(initial_json);
+      Aux::Initialvalue<2> initialvalues(initial_json);
       new_state[start_p_index] = initialvalues(0)[0];
       new_state[start_q_index] = initialvalues(0)[1];
     } catch (...) {

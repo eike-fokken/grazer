@@ -63,7 +63,7 @@ namespace Model::Gas {
     auto end_p_index = get_boundary_state_index(-1);
     auto end_q_index = end_p_index + 1;
 
-    Initialvalue<2> initialvalues(initial_json);
+    Aux::Initialvalue<2> initialvalues(initial_json);
     new_state[start_p_index] = initialvalues(0)[0];
     new_state[start_q_index] = initialvalues(0)[1];
     new_state[end_p_index] = initialvalues(1)[0];

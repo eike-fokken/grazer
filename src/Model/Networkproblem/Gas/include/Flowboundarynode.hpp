@@ -29,7 +29,7 @@ namespace Model::Gas {
         const override final;
 
   private:
-    Boundaryvalue<1> const boundaryvalue;
+    Aux::Boundaryvalue<1> const boundaryvalue;
   };
 
 } // namespace Model::Gas

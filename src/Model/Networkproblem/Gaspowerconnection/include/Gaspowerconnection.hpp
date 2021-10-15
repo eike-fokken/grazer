@@ -79,12 +79,12 @@ namespace Model::Gaspowerconnection {
     /** \brief is non-zero, if the connection is gas-controlled and zero, if
      * power-controlled.
      */
-    Control<1> control;
+    Aux::Control<1> control;
 
     /** The set pressure for periods of gas-controlled operation. Values in
      * power-controlled periods are ignored.
      */
-    Boundaryvalue<1> boundaryvalue;
+    Aux::Boundaryvalue<1> boundaryvalue;
     ExternalPowerplant *powerendnode{nullptr};
 
     double const gas2power_q_coefficient;

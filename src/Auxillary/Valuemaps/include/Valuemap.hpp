@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-namespace Model {
+namespace Aux {
 
   /// \brief This exception class returns information on whether too high or too
   /// low a value was requested.
@@ -147,4 +147,4 @@ namespace Model {
   extern template class Valuemap<2>;
   extern template class Valuemap<4>;
 
-} // namespace Model
+} // namespace Aux

@@ -98,7 +98,7 @@ int grazer::run(std::filesystem::path directory_path) {
         * timedata.get_number_of_steps());
 
     Optimization::initialize(
-        timedata, problem, controller, new_control_json, initial_state,
+        timedata, problem, controller, control_json, initial_state,
         initial_json, lower_bounds, lower_bounds_json, upper_bounds,
         upper_bounds_json, constraints_lower_bounds,
         constraints_lower_bounds_json, constraints_upper_bounds,

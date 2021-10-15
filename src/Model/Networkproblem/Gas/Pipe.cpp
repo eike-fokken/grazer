@@ -205,7 +205,7 @@ namespace Model::Gas {
   void Pipe::set_initial_values(
       Eigen::Ref<Eigen::VectorXd> new_state,
       nlohmann::json const &initial_json) {
-    Initialvalue<2> initialvalues(initial_json);
+    Aux::Initialvalue<2> initialvalues(initial_json);
     for (int i = 0; i != number_of_points; ++i) {
       try {
         new_state.segment<2>(get_start_state_index() + 2 * i)

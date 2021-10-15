@@ -7,7 +7,7 @@
 #include <nlohmann/json.hpp>
 #include <vector>
 
-namespace Model {
+namespace Aux {
   template <int N> class Initialvalue {
 
   public:
@@ -32,4 +32,4 @@ namespace Model {
     Valuemap<N> const valuemap;
   };
 
-} // namespace Model
+} // namespace Aux
