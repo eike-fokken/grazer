@@ -35,7 +35,7 @@ namespace Aux {
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> vector_to_be_filled, int number_of_points,
         nlohmann::json const &initial_json,
-        nlohmann::json const &initial_schema,
+        nlohmann::json const &initial_schema, double Delta_x = 1.0,
         std::function<Eigen::Matrix<double, Values_per_step, 1>(
             Eigen::Matrix<double, Values_per_step, 1>)>
             converter_function

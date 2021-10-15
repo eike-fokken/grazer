@@ -85,7 +85,7 @@ TEST(Indexmanager, set_indices_negative_number) {
   }
 }
 
-TEST(Timeless_Indexmanager, set_initial_values_happy) {
+TEST(Timeless_Indexmanager, set_initial_values_happy_simple) {
 
   Timeless_Indexmanager<2> manager;
   manager.set_indices(0, 4);
@@ -114,6 +114,31 @@ TEST(Timeless_Indexmanager, set_initial_values_happy) {
 
   EXPECT_EQ(a, vector_to_be_filled.segment<2>(0));
   EXPECT_EQ(b, vector_to_be_filled.segment<2>(2));
+}
+
+TEST(Timeless_Indexmanager, set_initial_values_happy_delta_x) {
+
+  Timeless_Indexmanager<2> manager;
+  manager.set_indices(0, 4);
+
+  Eigen::Vector2d a(0.0, 1.0);
+  Eigen::Vector2d b(1.0, 2.0);
+
+  Eigen::Vector4d vector_to_be_filled;
+  int number_of_points = 2;
+
+  nlohmann::json initial_json
+      = {{"id", "N213"},
+         {"data",
+          {{{"x", 0.0}, {"values", {a(0), a(1)}}},
+           {{"x", 0.5}, {"values", {b(0), b(1)}}}}}};
+
+  std::vector<nlohmann::json> contains_x
+      = {R"({"minimum": 0, "maximum": 0})"_json,
+         R"({"minimum": 0.5, "maximum": 0.5})"_json};
+
+  nlohmann::json initial_schema
+      = Aux::schema::make_initial_schema(2, 2, contains_x);
 
   class Testpipe {
   public:
@@ -127,7 +152,7 @@ TEST(Timeless_Indexmanager, set_initial_values_happy) {
   auto func
       = std::bind(&Testpipe::test_conversion, testpipe, std::placeholders::_1);
   manager.set_initial_values(
-      vector_to_be_filled, number_of_points, initial_json, initial_schema,
+      vector_to_be_filled, number_of_points, initial_json, initial_schema, 0.5,
       func);
 
   EXPECT_EQ(testpipe.test_conversion(a), vector_to_be_filled.segment<2>(0));

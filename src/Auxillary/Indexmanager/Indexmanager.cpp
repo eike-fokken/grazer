@@ -47,6 +47,7 @@ namespace Aux {
   void Timeless_Indexmanager<Values_per_step>::set_initial_values(
       Eigen::Ref<Eigen::VectorXd> vector_to_be_filled, int number_of_points,
       nlohmann::json const &initial_json, nlohmann::json const &initial_schema,
+      double Delta_x,
       std::function<Eigen::Matrix<double, Values_per_step, 1>(
           Eigen::Matrix<double, Values_per_step, 1>)>
           converter_function) {
@@ -56,7 +57,7 @@ namespace Aux {
     int current_index = get_startindex();
     for (int i = 0; i != number_of_points; ++i) {
       vector_to_be_filled.segment<Values_per_step>(current_index)
-          = converter_function(initialvalues(i));
+          = converter_function(initialvalues(i * Delta_x));
       current_index += number_of_points;
     }
   }
