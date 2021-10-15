@@ -15,6 +15,38 @@ Before you can use grazer, you must build it (You can also download a prebuilt v
 Supported compilers are clang-9, gcc-9 and Microsofts Visual Studio 2019 as well as later versions.
 Other compilers may work and probably do as we strive for full standard compliance to C++17.
 
+### Installing all dependencies
+
+#### macOS
+
+On macOS, the most convenient way to install all of Grazer's dependencies is by
+using [Homebrew](https://brew.sh/). After Homebrew is installed, entering
+
+``` 
+brew install bash git gfortran metis cmake
+```
+
+inside a terminal window will install a required dependencies. On macOS it may 
+also be necessary to explicitly set the system SDK by executing
+
+``` bash
+echo "export SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> ~/.bash_profile && source ~/.bash_profile
+```
+
+inside a terminal window.
+
+#### Linux-based OSes
+
+On linux distributions like Ubuntu, we only need the metis library and a Fortran compiler.
+Both can be installed by
+
+```
+sudo apt-get install libmetis-dev gfortran
+```
+
+
+## Installing grazer
+
 To build grazer, clone this git repository, change into it and run
 
 ```
@@ -22,12 +54,6 @@ git submodule update --init --recursive --depth=1
 ```
 
 to fetch dependencies (`--depth=1` is not needed but cuts down the size tremendously).
-
-Note that on macOS it may be necessary to explicitly set the system SDK by
-
-``` bash
-echo "export SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> ~/.bash_profile && source ~/.bash_profile
-```
 
 Then run
 
