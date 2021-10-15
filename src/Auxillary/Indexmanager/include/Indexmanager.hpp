@@ -55,5 +55,6 @@ namespace Aux {
         nlohmann::json const &initial_schema);
   };
   extern template class Timed_Indexmanager<1>;
+  extern template class Timed_Indexmanager<2>;
 
 } // namespace Aux

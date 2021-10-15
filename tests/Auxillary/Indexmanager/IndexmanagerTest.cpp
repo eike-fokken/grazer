@@ -2,7 +2,9 @@
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 
+#include "Controlhelpers.hpp"
 #include "Indexmanager.hpp"
+#include "Timedata.hpp"
 #include "make_schema.hpp"
 #include "schema_validation.hpp"
 #include <functional>
@@ -157,4 +159,50 @@ TEST(Timeless_Indexmanager, set_initial_values_happy_delta_x) {
 
   EXPECT_EQ(testpipe.test_conversion(a), vector_to_be_filled.segment<2>(0));
   EXPECT_EQ(testpipe.test_conversion(b), vector_to_be_filled.segment<2>(2));
+}
+
+TEST(Timed_Indexmanager, set_initial_values_happy) {
+
+  nlohmann::json timedata_json = R"(    {
+        "use_simplified_newton": true,
+        "maximal_number_of_newton_iterations": 100,
+        "tolerance": 1e-8,
+        "retries": 0,
+        "start_time": 0,
+        "end_time": 10,
+        "desired_delta_t": 0.5
+    }
+)"_json;
+
+  Model::Timedata timedata(timedata_json);
+
+  Timed_Indexmanager<2> manager;
+
+  manager.set_indices(0, 38);
+
+  nlohmann::json control_schema = Aux::schema::make_boundary_schema(2);
+  nlohmann::json control_json = R"({
+				"id": "testid",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							0.0,
+              0.0
+						]
+					},
+					{
+						"time": 10,
+						"values": [
+							10,
+              20
+						]
+					}
+				]
+			})"_json;
+
+  Aux::Controller controller(2, 19);
+
+  manager.set_initial_values(
+      timedata, controller, control_json, control_schema);
 }

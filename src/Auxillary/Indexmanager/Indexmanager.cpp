@@ -1,4 +1,5 @@
 #include "Indexmanager.hpp"
+#include "Control.hpp"
 #include "Initialvalue.hpp"
 #include "schema_validation.hpp"
 #include <functional>
@@ -52,7 +53,10 @@ namespace Aux {
           Eigen::Matrix<double, Values_per_step, 1>)>
           converter_function) {
 
+    // first validate the json!
     Aux::schema::validate_json(initial_json, initial_schema);
+
+    // Create a value map and fill the vector segment per segment.
     Initialvalue<Values_per_step> initialvalues(initial_json);
     int current_index = get_startindex();
     for (int i = 0; i != number_of_points; ++i) {
@@ -68,10 +72,25 @@ namespace Aux {
       nlohmann::json const &initial_json,
       nlohmann::json const &initial_schema) {
     Aux::schema::validate_json(initial_json, initial_schema);
+
+    auto starttime = timedata.get_starttime();
+    auto delta_t = timedata.get_delta_t();
+    auto no_timesteps = timedata.get_number_of_steps();
+
+    // careful: no controls at t= starttime, because initial values are fixed!
+    Control<Values_per_step> initialvalues(initial_json);
+    for (int time_index = 1; time_index != no_timesteps; ++time_index) {
+      vector_controller_to_be_filled.mut_timestep(time_index - 1)
+          .segment(get_startindex(), Values_per_step)
+          = initialvalues(starttime + time_index * delta_t);
+    }
   }
 
   template class Timeless_Indexmanager<1>;
   template class Timeless_Indexmanager<2>;
   template class Timeless_Indexmanager<4>;
+
+  template class Timed_Indexmanager<1>;
+  template class Timed_Indexmanager<2>;
 
 } // namespace Aux
