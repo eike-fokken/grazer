@@ -79,10 +79,12 @@ int grazer::run(std::filesystem::path directory_path) {
     Model::Networkproblem problem(std::move(net_ptr));
 
     problem.init();
-
-    Aux::Controller controller(
-        problem.get_number_of_controls_per_timepoint(),
+    auto control_timehelper = Aux::interpolation_points_helper(
+        timedata.get_starttime(), timedata.get_delta_t(),
         timedata.get_number_of_steps());
+    Aux::Vector_interpolator controller(
+        control_timehelper, problem.get_number_of_controls_per_timepoint());
+
     Eigen::VectorXd initial_state(problem.get_number_of_states());
     Eigen::VectorXd lower_bounds(
         problem.get_number_of_controls_per_timepoint()

@@ -7,25 +7,25 @@
 
 using namespace Aux;
 
-TEST(Controller, Construction_happy_path) {
+TEST(Vector_interpolator, Construction_happy_path) {
 
   int number_of_controls_per_timestep = 4;
   int number_of_timesteps = 8;
 
-  Controller controller(number_of_controls_per_timestep, number_of_timesteps);
+  Vector_interpolator controller(number_of_controls_per_timestep, number_of_timesteps);
 
   EXPECT_EQ(
       controller.get_number_of_controls(),
       number_of_controls_per_timestep * number_of_timesteps);
 }
 
-TEST(Controller, Construction_negative_number_of_controls) {
+TEST(Vector_interpolator, Construction_negative_number_of_controls) {
 
   int number_of_controls_per_timestep = -1;
   int number_of_timesteps = 8;
 
   try {
-    Controller controller(number_of_controls_per_timestep, number_of_timesteps);
+    Vector_interpolator controller(number_of_controls_per_timestep, number_of_timesteps);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
@@ -35,13 +35,13 @@ TEST(Controller, Construction_negative_number_of_controls) {
   }
 }
 
-TEST(Controller, Construction_nonpositive_number_steps) {
+TEST(Vector_interpolator, Construction_nonpositive_number_steps) {
 
   int number_of_controls_per_timestep = 4;
   int number_of_timesteps = 0;
 
   try {
-    Controller controller(number_of_controls_per_timestep, number_of_timesteps);
+    Vector_interpolator controller(number_of_controls_per_timestep, number_of_timesteps);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
@@ -50,12 +50,12 @@ TEST(Controller, Construction_nonpositive_number_steps) {
   }
 }
 
-TEST(Controller, set_and_evaluate_controls_happy_path) {
+TEST(Vector_interpolator, set_and_evaluate_controls_happy_path) {
 
   int number_of_controls_per_timestep = 4;
   int number_of_timesteps = 8;
 
-  Controller controller(number_of_controls_per_timestep, number_of_timesteps);
+  Vector_interpolator controller(number_of_controls_per_timestep, number_of_timesteps);
 
   Eigen::VectorXd controls(controller.get_number_of_controls());
 
@@ -75,11 +75,11 @@ TEST(Controller, set_and_evaluate_controls_happy_path) {
       controller(number_of_timesteps - 1)[number_of_controls_per_timestep - 1]);
 }
 
-TEST(Controller, set_controls_invalid) {
+TEST(Vector_interpolator, set_controls_invalid) {
   int number_of_controls_per_timestep = 4;
   int number_of_timesteps = 8;
 
-  Controller controller(number_of_controls_per_timestep, number_of_timesteps);
+  Vector_interpolator controller(number_of_controls_per_timestep, number_of_timesteps);
 
   Eigen::VectorXd controls(controller.get_number_of_controls() - 1);
 
@@ -95,12 +95,12 @@ TEST(Controller, set_controls_invalid) {
   }
 }
 
-TEST(Controller, evaluate_controls_invalid_high_index) {
+TEST(Vector_interpolator, evaluate_controls_invalid_high_index) {
 
   int number_of_controls_per_timestep = 8;
   int number_of_timesteps = 88;
 
-  Controller controller(number_of_controls_per_timestep, number_of_timesteps);
+  Vector_interpolator controller(number_of_controls_per_timestep, number_of_timesteps);
 
   Eigen::VectorXd controls(controller.get_number_of_controls());
 
@@ -120,12 +120,12 @@ TEST(Controller, evaluate_controls_invalid_high_index) {
   }
 }
 
-TEST(Controller, evaluate_controls_invalid_low_index) {
+TEST(Vector_interpolator, evaluate_controls_invalid_low_index) {
 
   int number_of_controls_per_timestep = 8;
   int number_of_timesteps = 88;
 
-  Controller controller(number_of_controls_per_timestep, number_of_timesteps);
+  Vector_interpolator controller(number_of_controls_per_timestep, number_of_timesteps);
 
   Eigen::VectorXd controls(controller.get_number_of_controls());
 
@@ -145,12 +145,12 @@ TEST(Controller, evaluate_controls_invalid_low_index) {
   }
 }
 
-TEST(Controller, mut_timestep_happy_path) {
+TEST(Vector_interpolator, mut_timestep_happy_path) {
 
   int number_of_controls_per_timestep = 4;
   int number_of_timesteps = 8;
 
-  Controller controller(number_of_controls_per_timestep, number_of_timesteps);
+  Vector_interpolator controller(number_of_controls_per_timestep, number_of_timesteps);
 
   Eigen::VectorXd controls(controller.get_number_of_controls());
 

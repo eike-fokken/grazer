@@ -4,11 +4,27 @@
 #include <vector>
 
 namespace Aux {
-  class Controller {
+
+  struct Interpolation_data {
+    double first_point;
+    double delta;
+    size_t number_of_entries;
+  };
+  Interpolation_data interpolation_points_helper(
+      double first_point, double delta, int number_of_entries);
+
+  Interpolation_data interpolation_points_helper(
+      double first_point, double desired_delta, double last_point);
+
+  class Vector_interpolator {
   public:
-    Controller(
-        Model::Timedata timedata, Eigen::Index number_of_controls_per_timepoint,
-        Eigen::Index number_of_timesteps);
+    static nlohmann::json get_schema();
+
+    Vector_interpolator(Interpolation_data data, Eigen::Index _inner_length);
+    Vector_interpolator(
+        std::vector<double> _interpolation_points, Eigen::Index inner_length);
+
+    static Vector_interpolator construct_from_json(nlohmann::json const &json);
 
     void set_controls(Eigen::Ref<Eigen::VectorXd> values);
 
@@ -21,8 +37,8 @@ namespace Aux {
     Eigen::Ref<Eigen::VectorXd> mut_timestep(int time);
 
   private:
-    std::vector<double> const times;
+    std::vector<double> const interpolation_points;
+    Eigen::Index const inner_length;
     Eigen::VectorXd allcontrols;
-    Eigen::Index const number_of_controls_per_timepoint;
   };
 } // namespace Aux

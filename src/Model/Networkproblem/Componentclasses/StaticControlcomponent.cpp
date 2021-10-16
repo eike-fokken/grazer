@@ -4,7 +4,7 @@ namespace Model {
 
   template <int N>
   void StaticControlcomponent<N>::set_initial_controls(
-      Timedata timedata, Aux::Controller &controller,
+      Timedata timedata, Aux::Vector_interpolator &controller,
       nlohmann::json const &control_json) {
 
     assert(false); // Not sure this function works as intended!

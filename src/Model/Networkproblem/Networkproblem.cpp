@@ -232,7 +232,7 @@ namespace Model {
   }
 
   void Networkproblem::set_initial_controls(
-      Timedata timedata, Aux::Controller &controller,
+      Timedata timedata, Aux::Vector_interpolator &controller,
       nlohmann::json const &control_json) {
 
     auto idcomponents = get_idobjects(controlcomponents);

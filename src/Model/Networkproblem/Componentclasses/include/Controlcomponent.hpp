@@ -5,7 +5,7 @@
 #include <nlohmann/json.hpp>
 
 namespace Aux {
-  class Controller;
+  class Vector_interpolator;
   class Matrixhandler;
 } // namespace Aux
 
@@ -141,7 +141,7 @@ namespace Model {
      */
 
     virtual void set_initial_controls(
-        Timedata timedata, Aux::Controller &controller,
+        Timedata timedata, Aux::Vector_interpolator &controller,
         nlohmann::json const &control_json)
         = 0;
 

@@ -3,7 +3,7 @@
 #include <vector>
 
 namespace Aux {
-  class Controller;
+  class Vector_interpolator;
 }
 
 namespace Model {
@@ -56,7 +56,7 @@ namespace Optimization {
    */
   void initialize(
       Model::Timedata timedata, Model::Networkproblem &problem,
-      Aux::Controller &controller, nlohmann::json const &control_json,
+      Aux::Vector_interpolator &controller, nlohmann::json const &control_json,
       Eigen::Ref<Eigen::VectorXd> init_state,
       nlohmann::json const &initial_json,
       Eigen::Ref<Eigen::VectorXd> lower_bounds,

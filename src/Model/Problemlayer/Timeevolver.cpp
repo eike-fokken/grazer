@@ -42,7 +42,7 @@ namespace Model {
 
   void Timeevolver::simulate(
       Eigen::Ref<Eigen::VectorXd const> const &initial_state,
-      Aux::Controller &controller, Timedata timedata, Networkproblem &problem,
+      Aux::Vector_interpolator &controller, Timedata timedata, Networkproblem &problem,
       std::vector<double> &saved_times,
       std::vector<Eigen::VectorXd> &saved_states) {
     double last_time = timedata.get_starttime();

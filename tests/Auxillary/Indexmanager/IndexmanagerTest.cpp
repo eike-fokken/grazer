@@ -201,7 +201,7 @@ TEST(Timed_Indexmanager, set_initial_values_happy) {
 				]
 			})"_json;
 
-  Aux::Controller controller(2, 19);
+  Aux::Vector_interpolator controller(2, 19);
 
   manager.set_initial_values(
       timedata, controller, control_json, control_schema);
