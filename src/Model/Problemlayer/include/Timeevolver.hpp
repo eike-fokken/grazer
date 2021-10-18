@@ -4,7 +4,7 @@
 #include <nlohmann/json.hpp>
 
 namespace Aux {
-  class Vector_interpolator;
+  class InterpolatingVector;
 }
 
 namespace Model {
@@ -19,13 +19,13 @@ namespace Model {
 
     void initialize(
         Timedata timedata, Eigen::Ref<Eigen::VectorXd> initialstate,
-        Aux::Vector_interpolator &controller, Networkproblem &problem,
+        Aux::InterpolatingVector &controller, Networkproblem &problem,
         nlohmann::json &problem_initial_json, nlohmann::json &control_json);
 
     void simulate(
         Eigen::Ref<Eigen::VectorXd const> const &initial_state,
-        Aux::Vector_interpolator &controller, Timedata timedata, Networkproblem &problem,
-        std::vector<double> &saved_times,
+        Aux::InterpolatingVector &controller, Timedata timedata,
+        Networkproblem &problem, std::vector<double> &saved_times,
         std::vector<Eigen::VectorXd> &saved_states);
 
     Solver::Solutionstruct make_one_step(

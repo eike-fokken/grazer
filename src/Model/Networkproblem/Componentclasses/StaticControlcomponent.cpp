@@ -1,10 +1,10 @@
 #include "StaticControlcomponent.hpp"
-#include "Controlhelpers.hpp"
+#include "InterpolatingVector.hpp"
 namespace Model {
 
   template <int N>
   void StaticControlcomponent<N>::set_initial_controls(
-      Timedata timedata, Aux::Vector_interpolator &controller,
+      Timedata timedata, Aux::InterpolatingVector &controller,
       nlohmann::json const &control_json) {
 
     assert(false); // Not sure this function works as intended!

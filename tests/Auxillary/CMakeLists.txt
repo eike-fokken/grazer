@@ -1,5 +1,5 @@
 add_subdirectory(Indexmanager)
-add_subdirectory(Controlhelpers)
+add_subdirectory(InterpolatingVector)
 add_subdirectory(Valuemaps)
 add_subdirectory(Stochastics)
 add_subdirectory(Input_Output)

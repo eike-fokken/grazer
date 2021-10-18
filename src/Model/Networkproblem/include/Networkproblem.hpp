@@ -108,7 +108,7 @@ namespace Model {
         Eigen::Ref<Eigen::VectorXd const> const &control) const override;
 
     void set_initial_controls(
-        Timedata timedata, Aux::Vector_interpolator &controller,
+        Timedata timedata, Aux::InterpolatingVector &controller,
         nlohmann::json const &control_json) override;
 
     void set_lower_bounds(

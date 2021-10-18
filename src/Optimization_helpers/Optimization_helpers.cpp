@@ -1,6 +1,6 @@
 #include "Optimization_helpers.hpp"
-#include "Controlhelpers.hpp"
 #include "Exception.hpp"
+#include "InterpolatingVector.hpp"
 #include "Networkproblem.hpp"
 #include "Timeevolver.hpp"
 #include <cassert>
@@ -34,7 +34,7 @@ namespace Optimization {
 
   void initialize(
       Model::Timedata timedata, Model::Networkproblem &problem,
-      Aux::Vector_interpolator &controller, nlohmann::json const &control_json,
+      Aux::InterpolatingVector &controller, nlohmann::json const &control_json,
       Eigen::Ref<Eigen::VectorXd> init_state,
       nlohmann::json const &initial_json,
       Eigen::Ref<Eigen::VectorXd> lower_bounds,

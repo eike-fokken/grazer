@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Controlhelpers.hpp"
+#include "InterpolatingVector.hpp"
 #include "Timedata.hpp"
 
 #include <Eigen/Sparse>
@@ -50,7 +50,7 @@ namespace Aux {
   public:
     void set_initial_values(
         Model::Timedata timedata,
-        Aux::Vector_interpolator &vector_controller_to_be_filled,
+        Aux::InterpolatingVector &vector_controller_to_be_filled,
         nlohmann::json const &initial_json,
         nlohmann::json const &initial_schema);
   };

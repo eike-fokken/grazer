@@ -1,4 +1,4 @@
-#include "Controlhelpers.hpp"
+#include "InterpolatingVector.hpp"
 #include "Exception.hpp"
 #include "Mathfunctions.hpp"
 #include "Timedata.hpp"
@@ -41,12 +41,12 @@ namespace Aux {
     return interpolation_points;
   }
 
-  nlohmann::json Vector_interpolator::get_schema() {
+  nlohmann::json InterpolatingVector::get_schema() {
     assert(false); // implement me!
     return nlohmann::json();
   }
 
-  Vector_interpolator::Vector_interpolator(
+  InterpolatingVector::InterpolatingVector(
       Interpolation_data data, Eigen::Index _inner_length) :
       interpolation_points(set_equidistant_interpolation_points(data)),
       inner_length(_inner_length) {
@@ -60,7 +60,7 @@ namespace Aux {
         _inner_length * static_cast<Eigen::Index>(data.number_of_entries));
   }
 
-  Vector_interpolator::Vector_interpolator(
+  InterpolatingVector::InterpolatingVector(
       std::vector<double> _interpolation_points, Eigen::Index _inner_length) :
       interpolation_points(_interpolation_points),
       inner_length(_inner_length),
@@ -68,8 +68,8 @@ namespace Aux {
           _inner_length
           * static_cast<Eigen::Index>(interpolation_points.size())) {}
 
-  Vector_interpolator
-  Vector_interpolator::construct_from_json(nlohmann::json const &json) {
+  InterpolatingVector
+  InterpolatingVector::construct_from_json(nlohmann::json const &json) {
     Aux::schema::validate_json(json, get_schema());
 
     std::vector<double> interpolation_points;
@@ -86,22 +86,27 @@ namespace Aux {
 
     auto inner_length
         = static_cast<Eigen::Index>(json.front()["values"].size());
-    return Vector_interpolator(interpolation_points, inner_length);
+    return InterpolatingVector(interpolation_points, inner_length);
   }
 
-  void Vector_interpolator::set_controls(Eigen::Ref<Eigen::VectorXd> values) {
+  void InterpolatingVector::set_controls(Eigen::Ref<Eigen::VectorXd> values) {
     if (values.size() != allcontrols.size()) {
       gthrow({"You are trying to assign the wrong number of controls."});
     }
     allcontrols = values;
   }
 
-  Eigen::Index Vector_interpolator::get_number_of_controls() const {
+  Eigen::Index InterpolatingVector::get_number_of_controls() const {
     return allcontrols.size();
   }
 
+  std::vector<double> const &
+  InterpolatingVector::get_interpolation_points() const {
+    return interpolation_points;
+  }
+
   Eigen::Ref<Eigen::VectorXd const> const
-  Vector_interpolator::operator()(double t) const {
+  InterpolatingVector::operator()(double t) const {
     if (t >= interpolation_points.back()) {
       if (t > interpolation_points.back() + Aux::EPSILON) {
         std::ostringstream error_message;
@@ -143,12 +148,12 @@ namespace Aux {
   }
 
   Eigen::Ref<Eigen::VectorXd const> const
-  Vector_interpolator::get_allcontrols() const {
+  InterpolatingVector::get_allcontrols() const {
     return allcontrols;
   }
 
   Eigen::Ref<Eigen::VectorXd>
-  Vector_interpolator::mut_timestep(int current_timestep) {
+  InterpolatingVector::mut_timestep(Eigen::Index current_timestep) {
     if (current_timestep < 0) {
       gthrow({"You request controls at negative time steps!"});
     }

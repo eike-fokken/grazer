@@ -2,8 +2,8 @@
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 
-#include "Controlhelpers.hpp"
 #include "Indexmanager.hpp"
+#include "InterpolatingVector.hpp"
 #include "Timedata.hpp"
 #include "make_schema.hpp"
 #include "schema_validation.hpp"

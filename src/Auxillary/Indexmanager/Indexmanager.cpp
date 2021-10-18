@@ -68,7 +68,8 @@ namespace Aux {
 
   template <int Values_per_step>
   void Timed_Indexmanager<Values_per_step>::set_initial_values(
-      Model::Timedata timedata, Aux::Vector_interpolator &vector_controller_to_be_filled,
+      Model::Timedata timedata,
+      Aux::InterpolatingVector &vector_controller_to_be_filled,
       nlohmann::json const &initial_json,
       nlohmann::json const &initial_schema) {
     Aux::schema::validate_json(initial_json, initial_schema);

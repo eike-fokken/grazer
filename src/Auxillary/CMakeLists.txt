@@ -1,7 +1,7 @@
 add_subdirectory(Indexmanager)
 add_subdirectory(Valuemaps)
 add_subdirectory(Timedata)
-add_subdirectory(Controlhelpers)
+add_subdirectory(InterpolatingVector)
 add_subdirectory(Exception)
 add_subdirectory(Matrixhandler)
 add_subdirectory(Mathfunctions)

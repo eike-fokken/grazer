@@ -1,9 +1,9 @@
 #include "commands.hpp"
 #include "Aux_json.hpp"
-#include "Controlhelpers.hpp"
 #include "Exception.hpp"
 #include "Full_factory.hpp"
 #include "Input_output.hpp"
+#include "InterpolatingVector.hpp"
 #include "Netfactory.hpp"
 #include "Networkproblem.hpp"
 #include "Optimization_helpers.hpp"
@@ -82,7 +82,7 @@ int grazer::run(std::filesystem::path directory_path) {
     auto control_timehelper = Aux::interpolation_points_helper(
         timedata.get_starttime(), timedata.get_delta_t(),
         timedata.get_number_of_steps());
-    Aux::Vector_interpolator controller(
+    Aux::InterpolatingVector controller(
         control_timehelper, problem.get_number_of_controls_per_timepoint());
 
     Eigen::VectorXd initial_state(problem.get_number_of_states());
@@ -170,5 +170,7 @@ int grazer::run(std::filesystem::path directory_path) {
             << std::endl;
   std::cout << "-----------------------------" << std::endl;
   std::cout << "total:           " << total_duration << " seconds" << std::endl;
+  if (true)
+    throw "aaa";
   return EXIT_SUCCESS;
 }

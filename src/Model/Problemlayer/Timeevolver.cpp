@@ -1,6 +1,6 @@
 #include "Timeevolver.hpp"
-#include "Controlhelpers.hpp"
 #include "Exception.hpp"
+#include "InterpolatingVector.hpp"
 #include "Networkproblem.hpp"
 #include "Newtonsolver_declaration.hpp"
 #include "make_schema.hpp"
@@ -42,8 +42,8 @@ namespace Model {
 
   void Timeevolver::simulate(
       Eigen::Ref<Eigen::VectorXd const> const &initial_state,
-      Aux::Vector_interpolator &controller, Timedata timedata, Networkproblem &problem,
-      std::vector<double> &saved_times,
+      Aux::InterpolatingVector &controller, Timedata timedata,
+      Networkproblem &problem, std::vector<double> &saved_times,
       std::vector<Eigen::VectorXd> &saved_states) {
     double last_time = timedata.get_starttime();
     double new_time = last_time + timedata.get_delta_t();
