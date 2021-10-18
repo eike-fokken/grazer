@@ -1,6 +1,7 @@
 #include "Indexmanager.hpp"
 #include "Control.hpp"
 #include "Initialvalue.hpp"
+#include "InterpolatingVector.hpp"
 #include "schema_validation.hpp"
 #include <functional>
 #include <string>
@@ -79,7 +80,8 @@ namespace Aux {
     auto no_timepoints = timedata.get_number_of_time_points();
 
     // careful: no controls at t= starttime, because initial values are fixed!
-    Control<Values_per_step> initialvalues(initial_json);
+    auto initialvalues
+        = Aux::InterpolatingVector::construct_from_json(initial_json);
     for (int time_index = 0; time_index != no_timepoints; ++time_index) {
       vector_controller_to_be_filled.mut_timestep(time_index)
           .segment(get_startindex(), Values_per_step)

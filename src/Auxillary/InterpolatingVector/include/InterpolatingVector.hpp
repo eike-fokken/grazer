@@ -23,9 +23,13 @@ namespace Aux {
 
     InterpolatingVector(Interpolation_data data, Eigen::Index _inner_length);
     InterpolatingVector(
-        std::vector<double> _interpolation_points, Eigen::Index inner_length);
+        std::vector<double> interpolation_points, Eigen::Index inner_length);
 
     static InterpolatingVector construct_from_json(nlohmann::json const &json);
+    static InterpolatingVector
+    construct_from_json(Interpolation_data data, nlohmann::json const &json);
+    static InterpolatingVector construct_from_json(
+        std::vector<double> interpolation_points, nlohmann::json const &json);
 
     void set_values_in_bulk(Eigen::Ref<Eigen::VectorXd> values);
 

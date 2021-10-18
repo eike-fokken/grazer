@@ -157,6 +157,11 @@ namespace Aux {
          "The json was: ", json.dump(1, '\t')});
   }
 
+  InterpolatingVector InterpolatingVector::construct_from_json(
+      Interpolation_data data, nlohmann::json const &json) {}
+  InterpolatingVector InterpolatingVector::construct_from_json(
+      std::vector<double> interpolation_points, nlohmann::json const &json) {}
+
   void
   InterpolatingVector::set_values_in_bulk(Eigen::Ref<Eigen::VectorXd> values) {
     if (values.size() != allvalues.size()) {
