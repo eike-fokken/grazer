@@ -2,11 +2,14 @@
 #include "Exception.hpp"
 #include "Mathfunctions.hpp"
 #include "Timedata.hpp"
+#include "make_schema.hpp"
 #include "schema_validation.hpp"
+
 #include <Eigen/src/Core/util/Meta.h>
 #include <algorithm>
 #include <cstddef>
 #include <exception>
+#include <iostream>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
 #include <string>
@@ -68,9 +71,26 @@ namespace Aux {
     return interpolation_points;
   }
 
-  nlohmann::json InterpolatingVector::get_schema() {
-    assert(false); // implement me!
-    return nlohmann::json();
+  nlohmann::json
+  InterpolatingVector::get_schema(size_t number_of_values_per_point) {
+    nlohmann::json element_schema;
+    element_schema["type"] = "object";
+    // This doesn't prohibit to have interchanging "x" and "time" properties,
+    // but hopefully noone will try that...
+    element_schema["additionalProperties"] = false;
+    Aux::schema::add_property(element_schema, "x", Aux::schema::type::number());
+    Aux::schema::add_property(
+        element_schema, "time", Aux::schema::type::number());
+    Aux::schema::add_required(
+        element_schema, "values",
+        Aux::schema::make_list_schema_of(
+            Aux::schema::type::number(),
+            {{"description", "Initial Values at an interpolation point"},
+             {"minItems", number_of_values_per_point},
+             {"maxItems", number_of_values_per_point}}));
+
+    auto schema = Aux::schema::make_list_schema_of(element_schema);
+    return schema;
   }
 
   InterpolatingVector::InterpolatingVector(
@@ -97,23 +117,44 @@ namespace Aux {
 
   InterpolatingVector
   InterpolatingVector::construct_from_json(nlohmann::json const &json) {
-    Aux::schema::validate_json(json, get_schema());
+    if (json.is_array() and json.size() >= 1 and json[0].contains("values")
+        and json[0]["values"].is_array()) {
+      auto number_of_entries = json[0]["values"].size();
+      Aux::schema::validate_json(json, get_schema(number_of_entries));
 
-    std::vector<double> interpolation_points;
+      std::vector<double> interpolation_points;
 
-    std::string name;
-    if (json.front().contains("x")) {
-      name = "x";
-    } else {
-      name = "time";
+      std::string name;
+      if (json.front().contains("x")) {
+        name = "x";
+      } else {
+        name = "time";
+      }
+      for (auto const &[index, entry] : json.items()) {
+        interpolation_points.push_back(entry[name]);
+      }
+
+      auto inner_length
+          = static_cast<Eigen::Index>(json.front()["values"].size());
+      InterpolatingVector interpolatingVector(
+          interpolation_points, inner_length);
+
+      auto size = interpolation_points.size();
+      for (size_t i = 0; i != size; ++i) {
+        Eigen::VectorXd a(json[i]["values"].size());
+        for (size_t index = 0; index != json[i]["values"].size(); ++index) {
+          a[static_cast<Eigen::Index>(index)]
+              = json[i]["values"][index].get<double>();
+        }
+        interpolatingVector.mut_timestep(static_cast<Eigen::Index>(i)) = a;
+      }
+      return interpolatingVector;
     }
-    for (auto const &[index, entry] : json.items()) {
-      interpolation_points.push_back(entry["name"]);
-    }
 
-    auto inner_length
-        = static_cast<Eigen::Index>(json.front()["values"].size());
-    return InterpolatingVector(interpolation_points, inner_length);
+    gthrow(
+        {"Couldn't determine the right number of entries in "
+         "InterpolatingVectors passed json.\n",
+         "The json was: ", json.dump(1, '\t')});
   }
 
   void
@@ -133,8 +174,7 @@ namespace Aux {
     return interpolation_points;
   }
 
-  Eigen::Ref<Eigen::VectorXd const> const
-  InterpolatingVector::operator()(double t) const {
+  Eigen::VectorXd InterpolatingVector::operator()(double t) const {
     if (t >= interpolation_points.back()) {
       if (t > interpolation_points.back() + Aux::EPSILON) {
         std::ostringstream error_message;

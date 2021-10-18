@@ -188,3 +188,46 @@ TEST(InterpolatingVector, mut_timestep_happy_path) {
   }
   EXPECT_EQ(interpolatingvector.get_allvalues(), controls);
 }
+
+TEST(InterpolatingVector, construct_from_json) {
+  nlohmann::json values = R"(
+[
+{
+  "x": 0,
+"values": [ 1,2,3]
+},
+{
+  "x": 1,
+"values": [ 10,20,30]
+}
+])"_json;
+
+  auto interpolatingVector = InterpolatingVector::construct_from_json(values);
+  auto points = interpolatingVector.get_interpolation_points();
+  std::vector<double> expected_points{0, 1};
+  EXPECT_EQ(points, expected_points);
+
+  Eigen::Vector3d expected_first{{1, 2, 3}};
+  Eigen::Vector3d expected_second{{10, 20, 30}};
+
+  Eigen::Vector3d first = interpolatingVector.mut_timestep(0);
+  Eigen::Vector3d second = interpolatingVector.mut_timestep(1);
+
+  EXPECT_EQ(first, expected_first);
+  EXPECT_EQ(second, expected_second);
+
+  for (Eigen::Index i = 0; i != 3; ++i) {
+    EXPECT_DOUBLE_EQ(interpolatingVector(0)[i], expected_first[i]);
+    EXPECT_DOUBLE_EQ(interpolatingVector(1)[i], expected_second[i]);
+  }
+
+  double lambda = 0.3;
+
+  auto interpolated = interpolatingVector(lambda);
+  auto expected_interpolated
+      = (1 - lambda) * expected_first + lambda * expected_second;
+
+  for (Eigen::Index i = 0; i != first.size(); ++i) {
+    EXPECT_DOUBLE_EQ(interpolated[i], expected_interpolated[i]);
+  }
+}

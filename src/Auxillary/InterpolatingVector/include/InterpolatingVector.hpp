@@ -1,6 +1,7 @@
 #pragma once
 #include "Timedata.hpp"
 #include <Eigen/Sparse>
+#include <cstddef>
 #include <vector>
 
 namespace Aux {
@@ -18,7 +19,7 @@ namespace Aux {
 
   class InterpolatingVector {
   public:
-    static nlohmann::json get_schema();
+    static nlohmann::json get_schema(size_t number_of_values_per_point);
 
     InterpolatingVector(Interpolation_data data, Eigen::Index _inner_length);
     InterpolatingVector(
@@ -31,7 +32,7 @@ namespace Aux {
     Eigen::Index get_total_number_of_values() const;
     std::vector<double> const &get_interpolation_points() const;
 
-    Eigen::Ref<Eigen::VectorXd const> const operator()(double time) const;
+    Eigen::VectorXd operator()(double time) const;
 
     Eigen::Ref<Eigen::VectorXd const> const get_allvalues() const;
 
