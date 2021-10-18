@@ -1,175 +1,190 @@
 #include "InterpolatingVector.hpp"
 
 #include "Exception.hpp"
+#include <Eigen/src/Core/Matrix.h>
+#include <cstddef>
 #include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 
 using namespace Aux;
 
-TEST(Vector_interpolator, Construction_happy_path) {
+TEST(InterpolatingVector, Construction_happy_path) {
 
-  int number_of_controls_per_timestep = 4;
-  int number_of_timesteps = 8;
-
-  Vector_interpolator controller(
-      number_of_controls_per_timestep, number_of_timesteps);
+  int number_of_values_per_point = 4;
+  int number_of_points = 8;
+  double start = 0;
+  double delta = 0.5;
+  auto data = Aux::interpolation_points_helper(start, delta, number_of_points);
+  InterpolatingVector interpolatingvector(data, number_of_values_per_point);
 
   EXPECT_EQ(
-      controller.get_number_of_controls(),
-      number_of_controls_per_timestep * number_of_timesteps);
+      interpolatingvector.get_total_number_of_values(),
+      number_of_values_per_point * number_of_points);
 }
 
-TEST(Vector_interpolator, Construction_negative_number_of_controls) {
+TEST(InterpolatingVector, Construction_negative_number_of_controls) {
 
-  int number_of_controls_per_timestep = -1;
-  int number_of_timesteps = 8;
+  int number_of_values_per_point = -1;
+  int number_of_points = 8;
+  double start = 0;
+  double delta = 0.5;
+  auto data = Aux::interpolation_points_helper(start, delta, number_of_points);
 
   try {
-    Vector_interpolator controller(
-        number_of_controls_per_timestep, number_of_timesteps);
-    FAIL() << "Test FAILED: The statement ABOVE\n"
-           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::runtime_error &e) {
-    EXPECT_THAT(
-        e.what(), testing::HasSubstr(
-                      "You can't have less than 0 controls per time step!"));
-  }
-}
-
-TEST(Vector_interpolator, Construction_nonpositive_number_steps) {
-
-  int number_of_controls_per_timestep = 4;
-  int number_of_timesteps = 0;
-
-  try {
-    Vector_interpolator controller(
-        number_of_controls_per_timestep, number_of_timesteps);
-    FAIL() << "Test FAILED: The statement ABOVE\n"
-           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::runtime_error &e) {
-    EXPECT_THAT(
-        e.what(), testing::HasSubstr("You can't have less than 1 time step!"));
-  }
-}
-
-TEST(Vector_interpolator, set_and_evaluate_controls_happy_path) {
-
-  int number_of_controls_per_timestep = 4;
-  int number_of_timesteps = 8;
-
-  Vector_interpolator controller(
-      number_of_controls_per_timestep, number_of_timesteps);
-
-  Eigen::VectorXd controls(controller.get_number_of_controls());
-
-  for (int index = 0; index != controls.size(); ++index) {
-    controls[index] = index;
-  }
-  controller.set_controls(controls);
-
-  for (int i = 0; i != number_of_timesteps; ++i) {
-    EXPECT_EQ(
-        controller(i), controls.segment(
-                           i * number_of_controls_per_timestep,
-                           number_of_controls_per_timestep));
-  }
-  EXPECT_EQ(
-      controls[controls.size() - 1],
-      controller(number_of_timesteps - 1)[number_of_controls_per_timestep - 1]);
-}
-
-TEST(Vector_interpolator, set_controls_invalid) {
-  int number_of_controls_per_timestep = 4;
-  int number_of_timesteps = 8;
-
-  Vector_interpolator controller(
-      number_of_controls_per_timestep, number_of_timesteps);
-
-  Eigen::VectorXd controls(controller.get_number_of_controls() - 1);
-
-  try {
-    controller.set_controls(controls);
+    InterpolatingVector interpolatingvector(data, number_of_values_per_point);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
     EXPECT_THAT(
         e.what(),
         testing::HasSubstr(
-            "You are trying to assign the wrong number of controls."));
+            "You can't have less than 0 entries per interpolation point"));
   }
 }
 
-TEST(Vector_interpolator, evaluate_controls_invalid_high_index) {
+// Must become test of Interpolation_data
+// TEST(InterpolatingVector, Construction_nonpositive_number_steps) {
 
-  int number_of_controls_per_timestep = 8;
-  int number_of_timesteps = 88;
+//   int number_of_values_per_point = -1;
+//   int number_of_points = 8;
+//   double start = 0;
+//   double delta = 0.5;
+//   auto data = Aux::interpolation_points_helper(start, delta,
+//   number_of_points);
 
-  Vector_interpolator controller(
-      number_of_controls_per_timestep, number_of_timesteps);
+//   try {
+//     InterpolatingVector interpolatingvector(data,
+//     number_of_values_per_point);
+//       FAIL() << "Test FAILED: The statement ABOVE\n"
+//              << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
+//     } catch (std::runtime_error &e) {
+//       EXPECT_THAT(
+//           e.what(),
+//           testing::HasSubstr("You can't have less than 1 time step!"));
+//     }
+//   }
 
-  Eigen::VectorXd controls(controller.get_number_of_controls());
+TEST(InterpolatingVector, set_and_evaluate_controls_happy_path) {
+
+  int number_of_values_per_point = 4;
+  int number_of_points = 8;
+  double start = 0;
+  double delta = 0.5;
+  auto data = Aux::interpolation_points_helper(start, delta, number_of_points);
+  InterpolatingVector interpolatingvector(data, number_of_values_per_point);
+  Eigen::VectorXd controls(interpolatingvector.get_total_number_of_values());
 
   for (int index = 0; index != controls.size(); ++index) {
     controls[index] = index;
   }
-  controller.set_controls(controls);
+  interpolatingvector.set_values_in_bulk(controls);
 
-  try {
-    controller(number_of_controls_per_timestep * number_of_timesteps);
-    FAIL() << "Test FAILED: The statement ABOVE\n"
-           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::runtime_error &e) {
-    EXPECT_THAT(
-        e.what(), testing::HasSubstr(
-                      "You request controls at a higher index than possible!"));
+  EXPECT_EQ(interpolatingvector.get_allvalues(), controls);
+
+  for (Eigen::Index i = 0; i != number_of_points; ++i) {
+    Eigen::VectorXd a
+        = interpolatingvector(start + static_cast<double>(i) * delta);
+    for (Eigen::Index j = 0; j != a.size(); ++j) {
+      EXPECT_DOUBLE_EQ(a[j], controls[i * number_of_values_per_point + j]);
+    }
   }
 }
 
-TEST(Vector_interpolator, evaluate_controls_invalid_low_index) {
+// TEST(InterpolatingVector, set_controls_invalid) {
+//   int number_of_values_per_point = 4;
+//   int number_of_entries = 8;
 
-  int number_of_controls_per_timestep = 8;
-  int number_of_timesteps = 88;
+//   InterpolatingVector interpolatingvector(
+//       number_of_values_per_point, number_of_entries);
 
-  Vector_interpolator controller(
-      number_of_controls_per_timestep, number_of_timesteps);
+//   Eigen::VectorXd controls(
+//       interpolatingvector.get_total_number_of_values() - 1);
 
-  Eigen::VectorXd controls(controller.get_number_of_controls());
+//   try {
+//     interpolatingvector.set_values_in_bulk(controls);
+//     FAIL() << "Test FAILED: The statement ABOVE\n"
+//            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
+//   } catch (std::runtime_error &e) {
+//     EXPECT_THAT(
+//         e.what(),
+//         testing::HasSubstr(
+//             "You are trying to assign the wrong number of controls."));
+//   }
+// }
+
+// TEST(InterpolatingVector, evaluate_controls_invalid_high_index) {
+
+//   int number_of_values_per_point = 8;
+//   int number_of_entries = 88;
+
+//   InterpolatingVector interpolatingvector(
+//       number_of_values_per_point, number_of_entries);
+
+//   Eigen::VectorXd controls(interpolatingvector.get_total_number_of_values());
+
+//   for (int index = 0; index != controls.size(); ++index) {
+//     controls[index] = index;
+//   }
+//   interpolatingvector.set_values_in_bulk(controls);
+
+//   try {
+//     interpolatingvector(number_of_values_per_point * number_of_entries);
+//     FAIL() << "Test FAILED: The statement ABOVE\n"
+//            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
+//   } catch (std::runtime_error &e) {
+//     EXPECT_THAT(
+//         e.what(), testing::HasSubstr(
+//                       "You request controls at a higher index than
+//                       possible!"));
+//   }
+// }
+
+// TEST(InterpolatingVector, evaluate_controls_invalid_low_index) {
+
+//   int number_of_values_per_point = 8;
+//   int number_of_entries = 88;
+
+//   InterpolatingVector interpolatingvector(
+//       number_of_values_per_point, number_of_entries);
+
+//   Eigen::VectorXd controls(interpolatingvector.get_total_number_of_values());
+
+//   for (int index = 0; index != controls.size(); ++index) {
+//     controls[index] = index;
+//   }
+//   interpolatingvector.set_values_in_bulk(controls);
+
+//   try {
+//     interpolatingvector(-1);
+//     FAIL() << "Test FAILED: The statement ABOVE\n"
+//            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
+//   } catch (std::runtime_error &e) {
+//     EXPECT_THAT(
+//         e.what(),
+//         testing::HasSubstr("You request controls at negative time steps!"));
+//   }
+// }
+
+TEST(InterpolatingVector, mut_timestep_happy_path) {
+
+  int number_of_values_per_point = 4;
+  int number_of_points = 8;
+  double start = 0;
+  double delta = 0.5;
+  auto data = Aux::interpolation_points_helper(start, delta, number_of_points);
+  InterpolatingVector interpolatingvector(data, number_of_values_per_point);
+
+  Eigen::VectorXd controls(interpolatingvector.get_total_number_of_values());
 
   for (int index = 0; index != controls.size(); ++index) {
     controls[index] = index;
   }
-  controller.set_controls(controls);
+  interpolatingvector.set_values_in_bulk(controls);
 
-  try {
-    controller(-1);
-    FAIL() << "Test FAILED: The statement ABOVE\n"
-           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::runtime_error &e) {
-    EXPECT_THAT(
-        e.what(),
-        testing::HasSubstr("You request controls at negative time steps!"));
+  for (int i = 0; i != number_of_points; ++i) {
+    interpolatingvector.mut_timestep(i) = controls.segment(
+        i * number_of_values_per_point, number_of_values_per_point);
   }
-}
-
-TEST(Vector_interpolator, mut_timestep_happy_path) {
-
-  int number_of_controls_per_timestep = 4;
-  int number_of_timesteps = 8;
-
-  Vector_interpolator controller(
-      number_of_controls_per_timestep, number_of_timesteps);
-
-  Eigen::VectorXd controls(controller.get_number_of_controls());
-
-  for (int index = 0; index != controls.size(); ++index) {
-    controls[index] = index;
-  }
-  controller.set_controls(controls);
-
-  for (int i = 0; i != number_of_timesteps; ++i) {
-    controller.mut_timestep(i) = controls.segment(
-        i * number_of_controls_per_timestep, number_of_controls_per_timestep);
-  }
-  EXPECT_EQ(controller.get_allcontrols(), controls);
+  EXPECT_EQ(interpolatingvector.get_allvalues(), controls);
 }

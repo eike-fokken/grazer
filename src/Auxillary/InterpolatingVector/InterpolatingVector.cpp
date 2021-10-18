@@ -33,7 +33,7 @@ namespace Aux {
       double first_point, double desired_delta, double last_point) {
     if (last_point <= first_point) {
       gthrow(
-          {"You can't have negative or zero number of entries in an "
+          {"You can't have negative or zero number of entries in an ",
            "InterpolatingVector.\n",
            "Supplied first point: ", std::to_string(first_point), "\n",
            "Supplied last point: ", std::to_string(last_point), "\n"});
@@ -59,7 +59,7 @@ namespace Aux {
     auto startpoint = data.first_point;
     auto delta = data.delta;
     auto number_of_entries = data.number_of_entries;
-    std::vector<double> interpolation_points(number_of_entries);
+    std::vector<double> interpolation_points;
     auto currentpoint = startpoint;
     for (size_t index = 0; index != number_of_entries; ++index) {
       interpolation_points.push_back(currentpoint);
