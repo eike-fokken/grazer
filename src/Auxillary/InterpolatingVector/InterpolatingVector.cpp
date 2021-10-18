@@ -9,15 +9,42 @@
 #include <exception>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
+#include <string>
 
 namespace Aux {
 
   Interpolation_data interpolation_points_helper(
       double first_point, double delta, int number_of_entries) {
+    if (number_of_entries <= 0) {
+      gthrow(
+          {"You can't have negative or zero number of entries in an "
+           "InterpolatingVector.\n",
+           "Supplied number of entries: ", std::to_string(number_of_entries)});
+    }
+    if (delta <= 0) {
+      gthrow(
+          {"You can't have negative or zero step size in an "
+           "InterpolatingVector.\n",
+           "Supplied stepsize: ", std::to_string(delta)});
+    }
     return {first_point, delta, static_cast<size_t>(number_of_entries)};
   }
   Interpolation_data interpolation_points_helper(
       double first_point, double desired_delta, double last_point) {
+    if (last_point <= first_point) {
+      gthrow(
+          {"You can't have negative or zero number of entries in an "
+           "InterpolatingVector.\n",
+           "Supplied first point: ", std::to_string(first_point), "\n",
+           "Supplied last point: ", std::to_string(last_point), "\n"});
+    }
+    if (desired_delta <= 0) {
+      gthrow(
+          {"You can't have negative or zero step size in an "
+           "InterpolatingVector.\n",
+           "Supplied desired stepsize: ", std::to_string(desired_delta)});
+    }
+
     auto number_of_entries = static_cast<size_t>(std::ceil(
                                  (last_point - first_point) / desired_delta))
                              + 1;
@@ -33,10 +60,10 @@ namespace Aux {
     auto delta = data.delta;
     auto number_of_entries = data.number_of_entries;
     std::vector<double> interpolation_points(number_of_entries);
-    auto currenttime = startpoint;
+    auto currentpoint = startpoint;
     for (size_t index = 0; index != number_of_entries; ++index) {
-      interpolation_points.push_back(currenttime);
-      currenttime += delta;
+      interpolation_points.push_back(currentpoint);
+      currentpoint += delta;
     }
     return interpolation_points;
   }
@@ -51,12 +78,12 @@ namespace Aux {
       interpolation_points(set_equidistant_interpolation_points(data)),
       inner_length(_inner_length) {
     if (inner_length < 0) {
-      gthrow({"You can't have less than 0 controls per time step!"});
+      gthrow({"You can't have less than 0 entries per interpolation point!"});
     }
     if (data.number_of_entries < 1) {
-      gthrow({"You can't have less than 1 time step!"});
+      gthrow({"You can't have less than 1 interpolation point!"});
     }
-    allcontrols = Eigen::VectorXd(
+    allvalues = Eigen::VectorXd(
         _inner_length * static_cast<Eigen::Index>(data.number_of_entries));
   }
 
@@ -64,7 +91,7 @@ namespace Aux {
       std::vector<double> _interpolation_points, Eigen::Index _inner_length) :
       interpolation_points(_interpolation_points),
       inner_length(_inner_length),
-      allcontrols(
+      allvalues(
           _inner_length
           * static_cast<Eigen::Index>(interpolation_points.size())) {}
 
@@ -89,15 +116,16 @@ namespace Aux {
     return InterpolatingVector(interpolation_points, inner_length);
   }
 
-  void InterpolatingVector::set_controls(Eigen::Ref<Eigen::VectorXd> values) {
-    if (values.size() != allcontrols.size()) {
-      gthrow({"You are trying to assign the wrong number of controls."});
+  void
+  InterpolatingVector::set_values_in_bulk(Eigen::Ref<Eigen::VectorXd> values) {
+    if (values.size() != allvalues.size()) {
+      gthrow({"You are trying to assign the wrong number of values."});
     }
-    allcontrols = values;
+    allvalues = values;
   }
 
-  Eigen::Index InterpolatingVector::get_number_of_controls() const {
-    return allcontrols.size();
+  Eigen::Index InterpolatingVector::get_total_number_of_values() const {
+    return allvalues.size();
   }
 
   std::vector<double> const &
@@ -116,13 +144,13 @@ namespace Aux {
         throw std::runtime_error(error_message.str());
       }
 
-      return allcontrols.segment(
+      return allvalues.segment(
           static_cast<Eigen::Index>(interpolation_points.size() - 1)
               * inner_length,
           inner_length);
     }
-    if (t >= interpolation_points.front()) {
-      if (t > interpolation_points.front() + Aux::EPSILON) {
+    if (t <= interpolation_points.front()) {
+      if (t < interpolation_points.front() - Aux::EPSILON) {
         std::ostringstream error_message;
         error_message << "Requested value " << t
                       << " is lower than the first valid value: "
@@ -130,7 +158,7 @@ namespace Aux {
         throw std::runtime_error(error_message.str());
       }
 
-      return allcontrols.segment(0, inner_length);
+      return allvalues.segment(0, inner_length);
     }
     auto it = std::lower_bound(
         interpolation_points.begin(), interpolation_points.end(), t);
@@ -139,8 +167,8 @@ namespace Aux {
     auto next_index = (it - interpolation_points.begin()) * inner_length;
     auto prev_index = next_index - inner_length;
 
-    Eigen::VectorXd value_next = allcontrols.segment(next_index, inner_length);
-    Eigen::VectorXd value_prev = allcontrols.segment(prev_index, inner_length);
+    Eigen::VectorXd value_next = allvalues.segment(next_index, inner_length);
+    Eigen::VectorXd value_prev = allvalues.segment(prev_index, inner_length);
 
     auto lambda = (t - t_prev) / (t_next - t_prev);
 
@@ -148,21 +176,23 @@ namespace Aux {
   }
 
   Eigen::Ref<Eigen::VectorXd const> const
-  InterpolatingVector::get_allcontrols() const {
-    return allcontrols;
+  InterpolatingVector::get_allvalues() const {
+    return allvalues;
   }
 
   Eigen::Ref<Eigen::VectorXd>
   InterpolatingVector::mut_timestep(Eigen::Index current_timestep) {
     if (current_timestep < 0) {
-      gthrow({"You request controls at negative time steps!"});
+      gthrow({"You try to set this InterpolatingVector at a negative index!"});
     }
     auto start_index = inner_length * current_timestep;
     auto after_index = start_index + inner_length;
-    if (after_index > allcontrols.size()) {
-      gthrow({"You request controls at a higher index than possible!"});
+    if (after_index > allvalues.size()) {
+      gthrow(
+          {"You try to set this InterpolatingVector at a higher index than "
+           "possible!"});
     }
-    return allcontrols.segment(start_index, inner_length);
+    return allvalues.segment(start_index, inner_length);
   }
 
 } // namespace Aux

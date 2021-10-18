@@ -62,10 +62,11 @@ namespace Model {
     // // csv heading:
     // std::cout << "t, residual, used_iterations" << std::endl;
 
-    for (int i = 0; i != timedata.get_number_of_steps(); ++i) {
+    for (int i = 0; i != timedata.get_number_of_time_points() - 1; ++i) {
       new_time = last_time + timedata.get_delta_t();
       auto solstruct = make_one_step(
-          last_time, new_time, last_state, new_state, controller(i), problem);
+          last_time, new_time, last_state, new_state, controller(new_time),
+          problem);
       // std::cout << new_time << ", ";
       // std::cout << solstruct.residual << ", ";
       // std::cout << solstruct.used_iterations << std::endl;

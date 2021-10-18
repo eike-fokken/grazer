@@ -76,12 +76,12 @@ namespace Aux {
 
     auto starttime = timedata.get_starttime();
     auto delta_t = timedata.get_delta_t();
-    auto no_timesteps = timedata.get_number_of_steps();
+    auto no_timepoints = timedata.get_number_of_time_points();
 
     // careful: no controls at t= starttime, because initial values are fixed!
     Control<Values_per_step> initialvalues(initial_json);
-    for (int time_index = 1; time_index != no_timesteps; ++time_index) {
-      vector_controller_to_be_filled.mut_timestep(time_index - 1)
+    for (int time_index = 0; time_index != no_timepoints; ++time_index) {
+      vector_controller_to_be_filled.mut_timestep(time_index)
           .segment(get_startindex(), Values_per_step)
           = initialvalues(starttime + time_index * delta_t);
     }

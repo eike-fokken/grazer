@@ -12,7 +12,7 @@ namespace Model {
     double get_endtime() const;
     double get_delta_t() const;
     double get_timeinterval() const;
-    int get_number_of_steps() const;
+    int get_number_of_time_points() const;
 
   private:
     double const starttime;

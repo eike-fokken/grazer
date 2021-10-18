@@ -39,18 +39,24 @@ namespace Model {
         = problem.get_number_of_inequalities_per_timepoint();
 
     Eigen::VectorXd controls(
-        number_of_controls_per_time_point * timedata.get_number_of_steps());
+        number_of_controls_per_time_point
+        * timedata.get_number_of_time_points());
     Eigen::VectorXd lower_bounds(
-        number_of_controls_per_time_point * timedata.get_number_of_steps());
+        number_of_controls_per_time_point
+        * timedata.get_number_of_time_points());
     Eigen::VectorXd upper_bounds(
-        number_of_controls_per_time_point * timedata.get_number_of_steps());
+        number_of_controls_per_time_point
+        * timedata.get_number_of_time_points());
 
     Eigen::VectorXd inequalities(
-        number_of_inequalities_per_time_point * timedata.get_number_of_steps());
+        number_of_inequalities_per_time_point
+        * timedata.get_number_of_time_points());
     Eigen::VectorXd inequalities_lower_bounds(
-        number_of_inequalities_per_time_point * timedata.get_number_of_steps());
+        number_of_inequalities_per_time_point
+        * timedata.get_number_of_time_points());
     Eigen::VectorXd inequalities_upper_bounds(
-        number_of_inequalities_per_time_point * timedata.get_number_of_steps());
+        number_of_inequalities_per_time_point
+        * timedata.get_number_of_time_points());
 
     // problem.set_initial_values(last_state, problem_initial_state_json);
     // problem.json_save(last_time, last_state);

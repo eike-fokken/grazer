@@ -26,20 +26,20 @@ namespace Aux {
 
     static InterpolatingVector construct_from_json(nlohmann::json const &json);
 
-    void set_controls(Eigen::Ref<Eigen::VectorXd> values);
+    void set_values_in_bulk(Eigen::Ref<Eigen::VectorXd> values);
 
-    Eigen::Index get_number_of_controls() const;
+    Eigen::Index get_total_number_of_values() const;
     std::vector<double> const &get_interpolation_points() const;
 
     Eigen::Ref<Eigen::VectorXd const> const operator()(double time) const;
 
-    Eigen::Ref<Eigen::VectorXd const> const get_allcontrols() const;
+    Eigen::Ref<Eigen::VectorXd const> const get_allvalues() const;
 
     Eigen::Ref<Eigen::VectorXd> mut_timestep(Eigen::Index index);
 
   private:
     std::vector<double> const interpolation_points;
     Eigen::Index const inner_length;
-    Eigen::VectorXd allcontrols;
+    Eigen::VectorXd allvalues;
   };
 } // namespace Aux

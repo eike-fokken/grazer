@@ -16,7 +16,7 @@ namespace Model {
 
   int Timedata::init_Number_of_timesteps(double desired_delta_t) const {
     int const _Number_of_timesteps
-        = static_cast<int>(std::ceil(get_timeinterval() / desired_delta_t));
+        = static_cast<int>(std::ceil(get_timeinterval() / desired_delta_t)) + 1;
     return _Number_of_timesteps;
   }
 
@@ -24,10 +24,12 @@ namespace Model {
   double Timedata::get_endtime() const { return endtime; }
   double Timedata::get_delta_t() const { return delta_t; }
   double Timedata::get_timeinterval() const { return endtime - starttime; }
-  int Timedata::get_number_of_steps() const { return Number_of_timesteps; }
+  int Timedata::get_number_of_time_points() const {
+    return Number_of_timesteps;
+  }
 
   double Timedata::init_delta_t() const {
-    return get_timeinterval() / (Number_of_timesteps);
+    return get_timeinterval() / (Number_of_timesteps - 1);
   }
 
 } // namespace Model
