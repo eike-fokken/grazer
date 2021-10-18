@@ -4,9 +4,9 @@
 
 TEST(AdjoinEquationsSolver, system1) {
   // Set up problem data
-  std::vector<Eigen::SparseMatrix<double>> AT_vector;
-  std::vector<Eigen::SparseMatrix<double>> BT_vector;
-  std::vector<Eigen::VectorXd> df_dx_vector;
+  std::vector<Eigen::SparseMatrix<double>> AT_vector(3);
+  std::vector<Eigen::SparseMatrix<double>> BT_vector(3);
+  std::vector<Eigen::VectorXd> df_dx_vector(3);
 
   // left hand side
   Eigen::Matrix<double, 3, 3> A1t;
@@ -17,21 +17,21 @@ TEST(AdjoinEquationsSolver, system1) {
   A2t << 4, 1, 7, 2, 4, 9, 0, 4, 9;
   B1t << 5, 4, 0, 7, 3, 8, 9, 1, 0;
   B2t << 8, 4, 0, 2, 2, 0, 5, 2, 4;
-  AT_vector.push_back(Eigen::SparseMatrix<double>(A1t.sparseView()));
-  AT_vector.push_back(Eigen::SparseMatrix<double>(A2t.sparseView()));
-  BT_vector.push_back(Eigen::SparseMatrix<double>(B1t.sparseView()));
-  BT_vector.push_back(Eigen::SparseMatrix<double>(B2t.sparseView()));
+  AT_vector[1] = Eigen::SparseMatrix<double>(A1t.sparseView());
+  AT_vector[2] = Eigen::SparseMatrix<double>(A2t.sparseView());
+  BT_vector[1] = Eigen::SparseMatrix<double>(B1t.sparseView());
+  BT_vector[2] = Eigen::SparseMatrix<double>(B2t.sparseView());
 
   // right hand side
-  Eigen::VectorXd df_dx_f1;
-  Eigen::VectorXd df_dx_f2;
-  Eigen::VectorXd df_dx_f3;
-  df_dx_f1 << -0.5, -0.5, -0.5;
-  df_dx_f2 << -0.5, -0.5, -0.5;
-  df_dx_f3 << -0.5, -0.5, -0.5;
-  df_dx_vector.push_back(df_dx_f1);
-  df_dx_vector.push_back(df_dx_f2);
-  df_dx_vector.push_back(df_dx_f3);
+  Eigen::VectorXd df_dx_f1(3);
+  Eigen::VectorXd df_dx_f2(3);
+  Eigen::VectorXd df_dx_f3(3);
+  df_dx_f1 << 0.5, 0.5, 0.5;
+  df_dx_f2 << 0.5, 0.5, 0.5;
+  df_dx_f3 << 0.5, 0.5, 0.5;
+  df_dx_vector[0] = df_dx_f1;
+  df_dx_vector[1] = df_dx_f2;
+  df_dx_vector[2] = df_dx_f3;
 
   // solution vector
   std::vector<Eigen::VectorXd> multipliers(3);
@@ -44,13 +44,13 @@ TEST(AdjoinEquationsSolver, system1) {
   optimization::compute_multiplier(
       multipliers, AT_vector, BT_vector, df_dx_vector, solvers);
 
-  EXPECT_DOUBLE_EQ(multipliers[0][0], -0.13256048);
-  EXPECT_DOUBLE_EQ(multipliers[0][1], -1.04889113);
-  EXPECT_DOUBLE_EQ(multipliers[0][2], 0.10987903);
-  EXPECT_DOUBLE_EQ(multipliers[1][0], 0.23689516);
-  EXPECT_DOUBLE_EQ(multipliers[1][1], -0.28830645);
-  EXPECT_DOUBLE_EQ(multipliers[1][2], 0.1000504);
-  EXPECT_DOUBLE_EQ(multipliers[2][0], 0.125);
-  EXPECT_DOUBLE_EQ(multipliers[2][1], -0.375);
-  EXPECT_DOUBLE_EQ(multipliers[2][2], 0.09375);
+  EXPECT_NEAR(multipliers[0][0], -0.13256048, 1.0e-5);
+  EXPECT_NEAR(multipliers[0][1], -1.04889113, 1.0e-5);
+  EXPECT_NEAR(multipliers[0][2], 0.10987903, 1.0e-5);
+  EXPECT_NEAR(multipliers[1][0], 0.23689516, 1.0e-5);
+  EXPECT_NEAR(multipliers[1][1], -0.28830645, 1.0e-5);
+  EXPECT_NEAR(multipliers[1][2], 0.1000504, 1.0e-5);
+  EXPECT_NEAR(multipliers[2][0], 0.125, 1.0e-5);
+  EXPECT_NEAR(multipliers[2][1], -0.375, 1.0e-5);
+  EXPECT_NEAR(multipliers[2][2], -0.09375, 1.0e-5);
 }
