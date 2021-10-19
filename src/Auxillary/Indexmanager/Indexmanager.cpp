@@ -65,6 +65,13 @@ namespace Aux {
     auto number_of_indices_per_step = initialvalues.get_inner_length();
 
     int current_index = get_startindex();
+    if (number_of_indices_per_step * number_of_points
+        > get_number_of_indices()) {
+      gthrow(
+          {"You try to set more initial values than are reserved for "
+           "component\n",
+           ">>>", initial_json["id"], "<<<\n"});
+    }
     for (int i = 0; i != number_of_points; ++i) {
       vector_to_be_filled.segment(current_index, number_of_indices_per_step)
           = converter_function(initialvalues(i * Delta_x));
