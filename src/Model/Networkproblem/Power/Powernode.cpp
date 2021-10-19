@@ -28,7 +28,7 @@ namespace Model::Power {
     return Aux::schema::make_boundary_schema(2);
   }
 
-  int Powernode::init_vals_per_interpol_point() { return 4; }
+  int Powernode::init_vals_per_interpol_point() { return 2; }
 
   nlohmann::json Powernode::get_initial_schema() {
     int interpol_points = 1;
