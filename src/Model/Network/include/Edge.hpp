@@ -13,7 +13,6 @@ namespace Network {
   class Edge : public Idobject {
 
   public:
-    static std::string get_type();
     static nlohmann::json get_schema();
 
     // The edge holds a shared pointer to its start and end nodes.

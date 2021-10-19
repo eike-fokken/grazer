@@ -6,11 +6,6 @@
 #include <string>
 
 namespace Network {
-  std::string Edge::get_type() {
-    gthrow(
-        {"This static method must be implemented in the class inheriting "
-         "from edge!"});
-  }
 
   nlohmann::json Edge::get_schema() {
     nlohmann::json schema = Idobject::get_schema();
