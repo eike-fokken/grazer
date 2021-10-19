@@ -128,7 +128,7 @@ namespace Aux::schema {
       data["allOf"].push_back(all_of_elmt);
     }
 
-    initial_schema["properties"]["data"] = data;
+    add_property(initial_schema, "data", data);
 
     return initial_schema;
   }
@@ -144,11 +144,13 @@ namespace Aux::schema {
     })"_json;
 
     nlohmann::json data_element;
-    data_element["time"] = type::number();
-    data_element["values"] = make_list_schema_of(
-        type::number(), {{"minItems", num_values}, {"maxItems", num_values}});
-
-    schema["properties"]["data"] = make_list_schema_of(data_element);
+    add_property(data_element, "time", type::number());
+    add_property(
+        data_element, "values",
+        make_list_schema_of(
+            type::number(),
+            {{"minItems", num_values}, {"maxItems", num_values}}));
+    add_property(schema, "data", make_list_schema_of(data_element));
     return schema;
   }
 

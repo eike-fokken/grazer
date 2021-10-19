@@ -67,9 +67,9 @@ void Aux::schema::validate_json(json const &data, json const &schema) {
     std::ostringstream o;
     std::string helper;
     if (data.contains("id")) {
-      o << "The json of the following object with id "
+      o << "The json of the following object with id\n >>>"
         << data["id"].get<std::string>()
-        << " does not conform to its schema!\n\n\n";
+        << "<<<\ndoes not conform to its schema!\n\n\n";
     } else {
       o << "The json of the following object json does not "
            "conform to its schema.\n"
