@@ -24,13 +24,13 @@ namespace Model {
     /// @returns The new lowest free index.
     virtual int set_state_indices(int next_free_index) = 0;
 
-    int get_number_of_states() const;
+    virtual int get_number_of_states() const;
 
     /// \brief getter for #start_state_index
-    int get_start_state_index() const;
+    virtual int get_start_state_index() const;
 
     /// \brief getter for #after_state_index
-    int get_after_state_index() const;
+    virtual int get_after_state_index() const;
 
     virtual void add_results_to_json(nlohmann::json &) = 0;
 
@@ -61,7 +61,7 @@ namespace Model {
     /// \brief holds the computed values of this component.
     ///
     /// Contains exactly two keys: "time" and "data"
-    /// Time holds a number representing the time in secondes.
+    /// Time holds a number representing the time in seconds.
     /// Data holds an array of jsons, whose layout depends on the component in
     /// question.
     nlohmann::json component_output;

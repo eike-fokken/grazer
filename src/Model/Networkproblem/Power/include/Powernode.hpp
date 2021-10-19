@@ -1,15 +1,16 @@
 #pragma once
-#include "Boundaryvalue.hpp"
 #include "Equationcomponent.hpp"
+#include "Indexmanager.hpp"
+#include "InterpolatingVector.hpp"
 #include "Node.hpp"
-#include "SimpleStatecomponent.hpp"
+#include "Statecomponent.hpp"
 #include <Eigen/Sparse>
 
 namespace Model::Power {
 
   class Powernode :
       public Equationcomponent,
-      public SimpleStatecomponent,
+      public Statecomponent,
       public Network::Node {
 
   public:
@@ -20,17 +21,20 @@ namespace Model::Power {
     static int init_vals_per_interpol_point();
 
     Powernode(nlohmann::json const &topology);
-
     ~Powernode() override{};
 
     void setup() override;
-
-    int needed_number_of_states() const final;
 
     double get_G() const;
     double get_B() const;
 
     void add_results_to_json(nlohmann::json &new_output) override;
+
+    int get_number_of_states() const override;
+    int get_start_state_index() const override;
+    int get_after_state_index() const override;
+
+    int set_state_indices(int next_free_index) final;
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,
@@ -50,13 +54,14 @@ namespace Model::Power {
         double time, Eigen::Ref<Eigen::VectorXd const> const &state,
         double P_val, double Q_val);
 
-    Aux::Boundaryvalue<2> const boundaryvalue;
+    Aux::InterpolatingVector const boundaryvalue;
     /// Real part of the admittance of this node
     double G;
     /// Imaginary part of the admittance of this node
     double B;
 
   private:
+    Aux::Timeless_Indexmanager statemanager;
     /// \brief number of state variables, this component needs.
     static constexpr int number_of_state_variables{2};
 

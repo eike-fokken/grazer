@@ -14,7 +14,8 @@ target_link_libraries(power PUBLIC
   componentclasses
   network
   stochastics
-  valuemap)
+    indexmanager
+  interpolatingVector)
 target_link_libraries(power PRIVATE
   matrixhandler
   exception

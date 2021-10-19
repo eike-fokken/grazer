@@ -1,8 +1,7 @@
 #include "Powernode.hpp"
-#include "Boundaryvalue.hpp"
 #include "Exception.hpp"
 #include "Get_base_component.hpp"
-#include "Initialvalue.hpp"
+#include "InterpolatingVector.hpp"
 #include "Matrixhandler.hpp"
 #include "Transmissionline.hpp"
 #include "make_schema.hpp"
@@ -11,6 +10,7 @@
 #include <iostream>
 #include <map>
 #include <nlohmann/json.hpp>
+#include <optional>
 #include <tuple>
 #include <utility>
 
@@ -40,29 +40,33 @@ namespace Model::Power {
 
   Powernode::Powernode(nlohmann::json const &topology) :
       Node(topology),
-      boundaryvalue(topology["boundary_values"]),
+      boundaryvalue(Aux::InterpolatingVector::construct_from_json(
+          topology["boundary_values"], get_boundary_schema().value())),
       G(topology["G"]),
       B(topology["B"]) {}
+
+  int Powernode::get_number_of_states() const {
+    return statemanager.get_number_of_indices();
+  }
+  int Powernode::get_start_state_index() const {
+    return statemanager.get_startindex();
+  }
+  int Powernode::get_after_state_index() const {
+    return statemanager.get_afterindex();
+  }
+
+  int Powernode::set_state_indices(int next_free_index) {
+    return statemanager.set_indices(next_free_index, number_of_state_variables);
+  }
 
   void Powernode::set_initial_values(
       Eigen::Ref<Eigen::VectorXd> new_state,
       nlohmann::json const &initial_json) {
-
-    if (get_start_state_index() == -1) {
-      gthrow(
-          {"This function may only be called if set_state_indices  has been "
-           "called beforehand!"});
-    }
-
-    Aux::Initialvalue<4> initialvalues(initial_json);
-    int V_index = get_start_state_index();
-    int phi_index = V_index + 1;
-    new_state[V_index] = initialvalues(0)[2];
-    new_state[phi_index] = initialvalues(0)[3];
+    statemanager.set_initial_values(
+        new_state, 1, initial_json, get_initial_schema());
   }
 
   void Powernode::setup() {
-
     setup_output_json_helper(get_id());
 
     attached_component_data.clear();
@@ -94,12 +98,6 @@ namespace Model::Power {
     }
   }
 
-  int Powernode::needed_number_of_states() const {
-    return number_of_state_variables;
-  }
-
-  // int Powernode::get_number_of_printout_states() const { return 4;}
-
   double Powernode::get_G() const { return G; }
 
   double Powernode::get_B() const { return B; }
@@ -114,7 +112,6 @@ namespace Model::Power {
   void Powernode::json_save_power(
       double time, Eigen::Ref<Eigen::VectorXd const> const &state, double P_val,
       double Q_val) {
-
     nlohmann::json current_value;
     current_value["time"] = time;
     current_value["P"] = P_val;
@@ -151,7 +148,6 @@ namespace Model::Power {
   }
 
   double Powernode::Q(Eigen::Ref<Eigen::VectorXd const> const &state) const {
-
     int V_index = get_start_state_index();
     int phi_index = V_index + 1;
     double B_i = get_B();
