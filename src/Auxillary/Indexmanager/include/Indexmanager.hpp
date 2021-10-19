@@ -7,11 +7,8 @@
 #include <nlohmann/json.hpp>
 namespace Aux {
 
-  template <int Values_per_step>
-  Eigen::Matrix<double, Values_per_step, 1>
-  identity_converter(Eigen::Matrix<double, Values_per_step, 1> x) {
-    return x;
-  }
+  Eigen::VectorXd
+  identity_converter(Eigen::Ref<Eigen::VectorXd const> const &x);
 
   class Indexmanager {
   protected:
@@ -29,23 +26,18 @@ namespace Aux {
     int afterindex{-1};
   };
 
-  template <int Values_per_step>
   class Timeless_Indexmanager final : public Indexmanager {
   public:
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> vector_to_be_filled, int number_of_points,
         nlohmann::json const &initial_json,
         nlohmann::json const &initial_schema, double Delta_x = 1.0,
-        std::function<Eigen::Matrix<double, Values_per_step, 1>(
-            Eigen::Matrix<double, Values_per_step, 1>)>
+        std::function<
+            Eigen::VectorXd(Eigen::Ref<Eigen::VectorXd const> const &)>
             converter_function
-        = identity_converter<Values_per_step>);
+        = identity_converter);
   };
-  extern template class Timeless_Indexmanager<1>;
-  extern template class Timeless_Indexmanager<2>;
-  extern template class Timeless_Indexmanager<4>;
 
-  template <int Values_per_step>
   class Timed_Indexmanager final : public Indexmanager {
   public:
     void set_initial_values(
@@ -54,7 +46,5 @@ namespace Aux {
         nlohmann::json const &initial_json,
         nlohmann::json const &initial_schema);
   };
-  extern template class Timed_Indexmanager<1>;
-  extern template class Timed_Indexmanager<2>;
 
 } // namespace Aux

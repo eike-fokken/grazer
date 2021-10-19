@@ -2,6 +2,7 @@
 #include "Timedata.hpp"
 #include <Eigen/Sparse>
 #include <cstddef>
+#include <nlohmann/json.hpp>
 #include <vector>
 
 namespace Aux {
@@ -25,16 +26,15 @@ namespace Aux {
     InterpolatingVector(
         std::vector<double> interpolation_points, Eigen::Index inner_length);
 
-    static InterpolatingVector construct_from_json(nlohmann::json const &json);
-    static InterpolatingVector
-    construct_from_json(Interpolation_data data, nlohmann::json const &json);
     static InterpolatingVector construct_from_json(
-        std::vector<double> interpolation_points, nlohmann::json const &json);
+        nlohmann::json const &json, nlohmann::json const &schema);
 
     void set_values_in_bulk(Eigen::Ref<Eigen::VectorXd> values);
 
     Eigen::Index get_total_number_of_values() const;
     std::vector<double> const &get_interpolation_points() const;
+
+    Eigen::Index get_inner_length() const;
 
     Eigen::VectorXd operator()(double time) const;
 

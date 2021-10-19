@@ -115,52 +115,44 @@ namespace Aux {
           _inner_length
           * static_cast<Eigen::Index>(interpolation_points.size())) {}
 
-  InterpolatingVector
-  InterpolatingVector::construct_from_json(nlohmann::json const &json) {
-    if (json.is_array() and json.size() >= 1 and json[0].contains("values")
-        and json[0]["values"].is_array()) {
-      auto number_of_entries = json[0]["values"].size();
-      Aux::schema::validate_json(json, get_schema(number_of_entries));
+  InterpolatingVector InterpolatingVector::construct_from_json(
+      nlohmann::json const &json, nlohmann::json const &schema) {
+    Aux::schema::validate_json(json, schema);
 
-      std::vector<double> interpolation_points;
+    std::vector<double> interpolation_points;
 
-      std::string name;
-      if (json.front().contains("x")) {
-        name = "x";
-      } else {
-        name = "time";
-      }
-      for (auto const &[index, entry] : json.items()) {
-        interpolation_points.push_back(entry[name]);
-      }
-
-      auto inner_length
-          = static_cast<Eigen::Index>(json.front()["values"].size());
-      InterpolatingVector interpolatingVector(
-          interpolation_points, inner_length);
-
-      auto size = interpolation_points.size();
-      for (size_t i = 0; i != size; ++i) {
-        Eigen::VectorXd a(json[i]["values"].size());
-        for (size_t index = 0; index != json[i]["values"].size(); ++index) {
-          a[static_cast<Eigen::Index>(index)]
-              = json[i]["values"][index].get<double>();
-        }
-        interpolatingVector.mut_timestep(static_cast<Eigen::Index>(i)) = a;
-      }
-      return interpolatingVector;
+    std::string name;
+    if (json["data"].front().contains("x")) {
+      name = "x";
+    } else {
+      name = "time";
+    }
+    for (auto const &[index, entry] : json["data"].items()) {
+      interpolation_points.push_back(entry[name]);
     }
 
+    auto inner_length
+        = static_cast<Eigen::Index>(json["data"].front()["values"].size());
+    InterpolatingVector interpolatingVector(interpolation_points, inner_length);
+
+    auto size = interpolation_points.size();
+    for (size_t i = 0; i != size; ++i) {
+      Eigen::VectorXd a(json["data"][i]["values"].size());
+      for (size_t index = 0; index != json["data"][i]["values"].size();
+           ++index) {
+        a[static_cast<Eigen::Index>(index)]
+            = json["data"][i]["values"][index].get<double>();
+      }
+      interpolatingVector.mut_timestep(static_cast<Eigen::Index>(i)) = a;
+    }
+    return interpolatingVector;
+
     gthrow(
-        {"Couldn't determine the right number of entries in "
-         "InterpolatingVectors passed json.\n",
+        {"Couldn't determine the right number of entries in ",
+         "InterpolatingVectors passed json in component ",
+         json["id"].get<std::string>(), ".\n",
          "The json was: ", json.dump(1, '\t')});
   }
-
-  InterpolatingVector InterpolatingVector::construct_from_json(
-      Interpolation_data data, nlohmann::json const &json) {}
-  InterpolatingVector InterpolatingVector::construct_from_json(
-      std::vector<double> interpolation_points, nlohmann::json const &json) {}
 
   void
   InterpolatingVector::set_values_in_bulk(Eigen::Ref<Eigen::VectorXd> values) {
@@ -172,6 +164,10 @@ namespace Aux {
 
   Eigen::Index InterpolatingVector::get_total_number_of_values() const {
     return allvalues.size();
+  }
+
+  Eigen::Index InterpolatingVector::get_inner_length() const {
+    return inner_length;
   }
 
   std::vector<double> const &

@@ -1,6 +1,7 @@
 #include "InterpolatingVector.hpp"
 
 #include "Exception.hpp"
+#include "make_schema.hpp"
 #include <Eigen/src/Core/Matrix.h>
 #include <cstddef>
 #include <gmock/gmock-matchers.h>
@@ -191,6 +192,8 @@ TEST(InterpolatingVector, mut_timestep_happy_path) {
 
 TEST(InterpolatingVector, construct_from_json) {
   nlohmann::json values = R"(
+{"id": "superid",
+"data":
 [
 {
   "x": 0,
@@ -200,9 +203,15 @@ TEST(InterpolatingVector, construct_from_json) {
   "x": 1,
 "values": [ 10,20,30]
 }
-])"_json;
+]
+})"_json;
+  std::vector<nlohmann::json> contains_x
+      = {R"({"minimum": 0, "maximum": 0})"_json};
 
-  auto interpolatingVector = InterpolatingVector::construct_from_json(values);
+  auto schema = Aux::schema::make_initial_schema(2, 3, contains_x);
+
+  auto interpolatingVector
+      = InterpolatingVector::construct_from_json(values, schema);
   auto points = interpolatingVector.get_interpolation_points();
   std::vector<double> expected_points{0, 1};
   EXPECT_EQ(points, expected_points);

@@ -8,6 +8,11 @@
 
 namespace Aux {
 
+  Eigen::VectorXd
+  identity_converter(Eigen::Ref<Eigen::VectorXd const> const &x) {
+    return x;
+  }
+
   Indexmanager::~Indexmanager() {}
 
   int Indexmanager::get_startindex() const {
@@ -45,55 +50,49 @@ namespace Aux {
     return afterindex;
   }
 
-  template <int Values_per_step>
-  void Timeless_Indexmanager<Values_per_step>::set_initial_values(
+  void Timeless_Indexmanager::set_initial_values(
       Eigen::Ref<Eigen::VectorXd> vector_to_be_filled, int number_of_points,
       nlohmann::json const &initial_json, nlohmann::json const &initial_schema,
       double Delta_x,
-      std::function<Eigen::Matrix<double, Values_per_step, 1>(
-          Eigen::Matrix<double, Values_per_step, 1>)>
+      std::function<Eigen::VectorXd(Eigen::Ref<Eigen::VectorXd const> const &)>
           converter_function) {
 
-    // first validate the json!
     Aux::schema::validate_json(initial_json, initial_schema);
 
-    // Create a value map and fill the vector segment per segment.
-    Initialvalue<Values_per_step> initialvalues(initial_json);
+    // Create an InterpolatingVector it segment per segment.
+    auto initialvalues = Aux::InterpolatingVector::construct_from_json(
+        initial_json, initial_schema);
+    auto number_of_indices_per_step = initialvalues.get_inner_length();
+
     int current_index = get_startindex();
     for (int i = 0; i != number_of_points; ++i) {
-      vector_to_be_filled.segment<Values_per_step>(current_index)
+      vector_to_be_filled.segment(current_index, number_of_indices_per_step)
           = converter_function(initialvalues(i * Delta_x));
       current_index += number_of_points;
     }
   }
 
-  template <int Values_per_step>
-  void Timed_Indexmanager<Values_per_step>::set_initial_values(
+  void Timed_Indexmanager::set_initial_values(
       Model::Timedata timedata,
       Aux::InterpolatingVector &vector_controller_to_be_filled,
       nlohmann::json const &initial_json,
       nlohmann::json const &initial_schema) {
-    Aux::schema::validate_json(initial_json, initial_schema);
 
     auto starttime = timedata.get_starttime();
     auto delta_t = timedata.get_delta_t();
     auto no_timepoints = timedata.get_number_of_time_points();
 
     // careful: no controls at t= starttime, because initial values are fixed!
-    auto initialvalues
-        = Aux::InterpolatingVector::construct_from_json(initial_json);
+    auto initialvalues = Aux::InterpolatingVector::construct_from_json(
+        initial_json, initial_schema);
+
+    auto number_of_indices_per_step = initialvalues.get_inner_length();
+
     for (int time_index = 0; time_index != no_timepoints; ++time_index) {
       vector_controller_to_be_filled.mut_timestep(time_index)
-          .segment(get_startindex(), Values_per_step)
+          .segment(get_startindex(), number_of_indices_per_step)
           = initialvalues(starttime + time_index * delta_t);
     }
   }
-
-  template class Timeless_Indexmanager<1>;
-  template class Timeless_Indexmanager<2>;
-  template class Timeless_Indexmanager<4>;
-
-  template class Timed_Indexmanager<1>;
-  template class Timed_Indexmanager<2>;
 
 } // namespace Aux
