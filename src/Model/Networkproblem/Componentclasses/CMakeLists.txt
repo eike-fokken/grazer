@@ -9,7 +9,10 @@ StaticControlcomponent.cpp
 
 Costcomponent.cpp
 Constraintcomponent.cpp
-SimpleConstraintcomponent.cpp)
+SimpleConstraintcomponent.cpp
+
+Boundaryvaluecomponent.cpp
+)
 
 target_link_libraries(componentclasses PUBLIC mathfunctions exception timedata)
 target_link_libraries(componentclasses PRIVATE interpolatingVector)
