@@ -8,6 +8,6 @@ namespace Model {
     Boundaryvaluecomponent(){};
 
   public:
-    static nlohmann::json get_boundary_schema();
+    static nlohmann::json get_boundary_schema() = delete;
   };
 } // namespace Model

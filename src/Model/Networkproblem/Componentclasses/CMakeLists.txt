@@ -10,8 +10,6 @@ StaticControlcomponent.cpp
 Costcomponent.cpp
 Constraintcomponent.cpp
 SimpleConstraintcomponent.cpp
-
-Boundaryvaluecomponent.cpp
 )
 
 target_link_libraries(componentclasses PUBLIC mathfunctions exception timedata)
