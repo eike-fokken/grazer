@@ -1,3 +1,4 @@
+#include <exception>
 #include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
@@ -114,8 +115,8 @@ TEST(Timeless_Indexmanager, set_initial_values_happy_simple) {
   manager.set_initial_values(
       vector_to_be_filled, number_of_points, initial_json, initial_schema);
 
-  // EXPECT_EQ(a, vector_to_be_filled.segment<2>(0));
-  // EXPECT_EQ(b, vector_to_be_filled.segment<2>(2));
+  EXPECT_EQ(a, vector_to_be_filled.segment<2>(0));
+  EXPECT_EQ(b, vector_to_be_filled.segment<2>(2));
 }
 
 TEST(Timeless_Indexmanager, set_initial_values_happy_delta_x) {
@@ -204,9 +205,76 @@ TEST(Timed_Indexmanager, set_initial_values_happy) {
   auto schema = Aux::schema::make_boundary_schema(2);
 
   auto data = Aux::interpolation_points_helper(0, 0.5, 10.0);
-  Aux::InterpolatingVector::construct_from_json(control_json, schema);
-  Aux::InterpolatingVector controller(data, 2);
+  Aux::InterpolatingVector vector_to_be_filled(data, 2);
 
   manager.set_initial_values(
-      timedata, controller, control_json, control_schema);
+      timedata, vector_to_be_filled, control_json, control_schema);
+
+  Eigen::Vector2d a(0, 0);
+  Eigen::Vector2d b(10, 20);
+
+  for (int index = 0; index != 21; ++index) {
+    double lambda = static_cast<double>(index) / 20;
+    EXPECT_DOUBLE_EQ(
+        ((1 - lambda) * a + lambda * b)[0],
+        vector_to_be_filled(10 * lambda)[0]);
+
+    EXPECT_DOUBLE_EQ(
+        ((1 - lambda) * a + lambda * b)[1],
+        vector_to_be_filled(10 * lambda)[1]);
+  }
+}
+
+TEST(Timed_Indexmanager, set_initial_values_invalid_json) {
+
+  nlohmann::json timedata_json = R"(    {
+        "use_simplified_newton": true,
+        "maximal_number_of_newton_iterations": 100,
+        "tolerance": 1e-8,
+        "retries": 0,
+        "start_time": 0,
+        "end_time": 10,
+        "desired_delta_t": 0.5
+    }
+)"_json;
+
+  Model::Timedata timedata(timedata_json);
+
+  Timed_Indexmanager manager;
+
+  manager.set_indices(0, 40);
+
+  nlohmann::json control_schema = Aux::schema::make_boundary_schema(2);
+  nlohmann::json control_json = R"({
+				"id": "testid",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							0.0,
+              0.0,
+              0.0
+						]
+					},
+					{
+						"time": 10,
+						"values": [
+							10,
+              20
+						]
+					}
+				]
+			})"_json;
+
+  auto data = Aux::interpolation_points_helper(0, 0.5, 10.0);
+  Aux::InterpolatingVector vector_to_be_filled(data, 2);
+
+  try {
+    manager.set_initial_values(
+        timedata, vector_to_be_filled, control_json, control_schema);
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
+  } catch (std::exception &e) {
+    EXPECT_THAT(e.what(), testing::HasSubstr("conform to its schema"));
+  }
 }
