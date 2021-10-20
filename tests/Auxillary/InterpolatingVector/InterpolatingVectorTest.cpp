@@ -2,7 +2,7 @@
 
 #include "Exception.hpp"
 #include "make_schema.hpp"
-#include <Eigen/src/Core/Matrix.h>
+#include <Eigen/Sparse>
 #include <cstddef>
 #include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
