@@ -5,7 +5,6 @@ Statecomponent.cpp
 SimpleStatecomponent.cpp
 Controlcomponent.cpp
 SimpleControlcomponent.cpp
-StaticControlcomponent.cpp
 
 Costcomponent.cpp
 Constraintcomponent.cpp

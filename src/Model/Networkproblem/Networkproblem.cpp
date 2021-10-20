@@ -232,8 +232,8 @@ namespace Model {
   }
 
   void Networkproblem::set_initial_controls(
-      Timedata timedata, Aux::InterpolatingVector &controller,
-      nlohmann::json const &control_json) {
+      Aux::InterpolatingVector &controller,
+      nlohmann::json const &control_json) const {
 
     auto idcomponents = get_idobjects(controlcomponents);
 
@@ -254,10 +254,7 @@ namespace Model {
           if (iterator != idcomponents.end()) {
             auto index = iterator - idcomponents.begin();
             controlcomponents[static_cast<size_t>(index)]->set_initial_controls(
-                timedata, controller, control_json);
-            std::cout << component_id << "\n";
-            std::cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                      << "\n";
+                controller, control_json);
           } else {
             std::cout << "Note: Component with id " << component_id
                       << "appears in the control initial values but not in the "
@@ -270,8 +267,8 @@ namespace Model {
   }
 
   void Networkproblem::set_lower_bounds(
-      Timedata timedata, Eigen::Ref<Eigen::VectorXd> lower_bounds,
-      nlohmann::json const &lower_bound_json) {
+      Aux::InterpolatingVector &full_lower_bound_vector,
+      nlohmann::json const &lower_bound_json) const {
 
     auto idcomponents = get_idobjects(controlcomponents);
 
@@ -292,7 +289,7 @@ namespace Model {
           if (iterator != idcomponents.end()) {
             auto index = iterator - idcomponents.begin();
             controlcomponents[static_cast<size_t>(index)]->set_lower_bounds(
-                timedata, lower_bounds, lower_bound_json);
+                full_lower_bound_vector, lower_bound_json);
           } else {
             std::cout << "Note: Component with id " << component_id
                       << "appears in the lower bounds but not in the topology."
@@ -302,10 +299,10 @@ namespace Model {
       }
     }
   }
-
   void Networkproblem::set_upper_bounds(
-      Timedata timedata, Eigen::Ref<Eigen::VectorXd> upper_bounds,
-      nlohmann::json const &upper_bound_json) {
+      Aux::InterpolatingVector &full_upper_bound_vector,
+      nlohmann::json const &upper_bound_json) const {
+
     auto idcomponents = get_idobjects(controlcomponents);
 
     for (auto const &component : {"nodes", "connections"}) {
@@ -325,7 +322,7 @@ namespace Model {
           if (iterator != idcomponents.end()) {
             auto index = iterator - idcomponents.begin();
             controlcomponents[static_cast<size_t>(index)]->set_upper_bounds(
-                timedata, upper_bounds, upper_bound_json);
+                full_upper_bound_vector, upper_bound_json);
           } else {
             std::cout << "Note: Component with id " << component_id
                       << "appears in the upper bounds but not in the topology."

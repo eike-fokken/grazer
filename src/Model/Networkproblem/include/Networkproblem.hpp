@@ -108,16 +108,16 @@ namespace Model {
         Eigen::Ref<Eigen::VectorXd const> const &control) const override;
 
     void set_initial_controls(
-        Timedata timedata, Aux::InterpolatingVector &controller,
-        nlohmann::json const &control_json) override;
+        Aux::InterpolatingVector &full_control_vector,
+        nlohmann::json const &control_json) const override;
 
     void set_lower_bounds(
-        Timedata timedata, Eigen::Ref<Eigen::VectorXd> lower_bounds,
-        nlohmann::json const &lower_bound_json) override;
+        Aux::InterpolatingVector &full_control_vector,
+        nlohmann::json const &control_json) const override;
 
     void set_upper_bounds(
-        Timedata timedata, Eigen::Ref<Eigen::VectorXd> upper_bounds,
-        nlohmann::json const &upper_bound_json) override;
+        Aux::InterpolatingVector &full_control_vector,
+        nlohmann::json const &control_json) const override;
 
     int set_control_indices(int next_free_index) override;
 

@@ -141,19 +141,16 @@ namespace Model {
      */
 
     virtual void set_initial_controls(
-        Timedata timedata, Aux::InterpolatingVector &controller,
-        nlohmann::json const &control_json)
-        = 0;
+        Aux::InterpolatingVector &full_control_vector,
+        nlohmann::json const &control_json) const = 0;
 
     virtual void set_lower_bounds(
-        Timedata timedata, Eigen::Ref<Eigen::VectorXd> lower_bounds,
-        nlohmann::json const &lower_bound_json)
-        = 0;
+        Aux::InterpolatingVector &full_lower_bound_vector,
+        nlohmann::json const &lower_bound_json) const = 0;
 
     virtual void set_upper_bounds(
-        Timedata timedata, Eigen::Ref<Eigen::VectorXd> upper_bounds,
-        nlohmann::json const &upper_bound_json)
-        = 0;
+        Aux::InterpolatingVector &full_upper_bound_vector,
+        nlohmann::json const &upper_bound_json) const = 0;
 
     static std::optional<nlohmann::json> get_control_schema();
 

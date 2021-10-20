@@ -4,13 +4,13 @@
 #include "Edge.hpp"
 #include "Gasedge.hpp"
 #include "Shortcomponent.hpp"
-#include "StaticControlcomponent.hpp"
+#include "SimpleControlcomponent.hpp"
 #include <nlohmann/json.hpp>
 
 namespace Model::Gas {
 
   class Controlvalve final :
-      public StaticControlcomponent<1>,
+      public SimpleControlcomponent,
       public Shortcomponent {
   public:
     static std::string get_type();
@@ -48,6 +48,11 @@ namespace Model::Gas {
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const override;
 
+    void set_initial_controls(
+        Aux::InterpolatingVector &full_control_vector,
+        nlohmann::json const &control_json) const override;
+
+    int needed_number_of_controls_per_time_point() const override;
     void add_results_to_json(nlohmann::json &new_output) final;
 
   private:

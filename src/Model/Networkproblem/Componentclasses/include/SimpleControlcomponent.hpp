@@ -2,9 +2,9 @@
 #include "Controlcomponent.hpp"
 namespace Model {
 
-  void set_simple_initial_controls(
-      Controlcomponent &controlcomponent,
-      Aux::InterpolatingVector &vector_controller_to_be_filled,
+  void set_simple_time_dependent_values(
+      Controlcomponent const *controlcomponent,
+      Aux::InterpolatingVector &full_control_vector,
       nlohmann::json const &initial_json, nlohmann::json const &initial_schema);
 
   class SimpleControlcomponent : public Controlcomponent {

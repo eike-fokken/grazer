@@ -12,7 +12,7 @@ namespace Model {
   }
 
   void set_simple_initial_values(
-      Statecomponent *component,
+      Statecomponent const *component,
       Eigen::Ref<Eigen::VectorXd> vector_to_be_filled,
       nlohmann::json const &initial_json, nlohmann::json const &initial_schema,
       int number_of_points, double Delta_x,

@@ -2,14 +2,13 @@
 #include "InterpolatingVector.hpp"
 namespace Model {
 
-  void set_simple_initial_controls(
-      Controlcomponent &controlcomponent,
-      Aux::InterpolatingVector &vector_controller_to_be_filled,
+  void set_simple_time_dependent_values(
+      Controlcomponent const *controlcomponent,
+      Aux::InterpolatingVector &full_control_vector,
       nlohmann::json const &initial_json,
       nlohmann::json const &initial_schema) {
 
-    auto &timepoints
-        = vector_controller_to_be_filled.get_interpolation_points();
+    auto &timepoints = full_control_vector.get_interpolation_points();
 
     // careful: no controls at t= starttime, because initial values are fixed!
     auto initialvalues = Aux::InterpolatingVector::construct_from_json(
@@ -19,8 +18,9 @@ namespace Model {
 
     Eigen::Index index = 0;
     for (auto timepoint : timepoints) {
-      vector_controller_to_be_filled.mut_timestep(index).segment(
-          controlcomponent.get_control_startindex(), number_of_indices_per_step)
+      full_control_vector.mut_timestep(index).segment(
+          controlcomponent->get_control_startindex(),
+          number_of_indices_per_step)
           = initialvalues(timepoint);
       ++index;
     }
