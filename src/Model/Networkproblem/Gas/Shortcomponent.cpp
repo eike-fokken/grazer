@@ -52,7 +52,7 @@ namespace Model::Gas {
   void Shortcomponent::initial_values_helper(
       Eigen::Ref<Eigen::VectorXd> new_state,
       nlohmann::json const &initial_json) {
-    if (get_start_state_index() == -1 or get_after_state_index() == -1) {
+    if (get_startindex() == -1 or get_afterindex() == -1) {
       gthrow(
           {"This function may only be called if set_state_indices  has been "
            "called beforehand!"});

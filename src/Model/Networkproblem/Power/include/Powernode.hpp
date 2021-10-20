@@ -3,14 +3,14 @@
 #include "Indexmanager.hpp"
 #include "InterpolatingVector.hpp"
 #include "Node.hpp"
-#include "Statecomponent.hpp"
+#include "SimpleStatecomponent.hpp"
 #include <Eigen/Sparse>
 
 namespace Model::Power {
 
   class Powernode :
       public Equationcomponent,
-      public Statecomponent,
+      public SimpleStatecomponent,
       public Network::Node {
 
   public:
@@ -30,11 +30,7 @@ namespace Model::Power {
 
     void add_results_to_json(nlohmann::json &new_output) override;
 
-    int get_number_of_states() const override;
-    int get_start_state_index() const override;
-    int get_after_state_index() const override;
-
-    int set_state_indices(int next_free_index) final;
+    int needed_number_of_states() const override;
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,
@@ -61,7 +57,6 @@ namespace Model::Power {
     double B;
 
   private:
-    Aux::Timeless_Indexmanager statemanager;
     /// \brief number of state variables, this component needs.
     static constexpr int number_of_state_variables{2};
 

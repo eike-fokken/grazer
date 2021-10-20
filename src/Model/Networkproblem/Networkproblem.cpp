@@ -145,11 +145,11 @@ namespace Model {
   }
 
   int Networkproblem::set_state_indices(int next_free_index) {
-    start_state_index = next_free_index;
+    startindex = next_free_index;
     for (auto *statecomponent : statecomponents) {
       next_free_index = statecomponent->set_state_indices(next_free_index);
     }
-    after_state_index = next_free_index;
+    afterindex = next_free_index;
     return next_free_index;
   }
 

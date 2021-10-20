@@ -45,25 +45,18 @@ namespace Model::Power {
       G(topology["G"]),
       B(topology["B"]) {}
 
-  int Powernode::get_number_of_states() const {
-    return statemanager.get_number_of_indices();
-  }
-  int Powernode::get_start_state_index() const {
-    return statemanager.get_startindex();
-  }
-  int Powernode::get_after_state_index() const {
-    return statemanager.get_afterindex();
-  }
-
-  int Powernode::set_state_indices(int next_free_index) {
-    return statemanager.set_indices(next_free_index, number_of_state_variables);
+  int Powernode::needed_number_of_states() const {
+    return number_of_state_variables;
   }
 
   void Powernode::set_initial_values(
       Eigen::Ref<Eigen::VectorXd> new_state,
       nlohmann::json const &initial_json) {
-    statemanager.set_initial_values(
-        new_state, 1, initial_json, get_initial_schema());
+
+    auto initialvalues = Aux::InterpolatingVector::construct_from_json(
+        initial_json, get_initial_schema());
+    int V_index = get_startindex();
+    new_state.segment<2>(V_index) = initialvalues(0);
   }
 
   void Powernode::setup() {
@@ -116,15 +109,15 @@ namespace Model::Power {
     current_value["time"] = time;
     current_value["P"] = P_val;
     current_value["Q"] = Q_val;
-    current_value["V"] = state[get_start_state_index()];
-    current_value["phi"] = state[get_start_state_index() + 1];
+    current_value["V"] = state[get_startindex()];
+    current_value["phi"] = state[get_startindex() + 1];
 
     auto &output_json = get_output_json_ref();
     output_json["data"].push_back(std::move(current_value));
   }
 
   double Powernode::P(Eigen::Ref<Eigen::VectorXd const> const &state) const {
-    int V_index = get_start_state_index();
+    int V_index = get_startindex();
     int phi_index = V_index + 1;
     double G_i = get_G();
 
@@ -137,7 +130,7 @@ namespace Model::Power {
       double G_ik = std::get<0>(triple);
       double B_ik = std::get<1>(triple);
       Powernode *othernode = std::get<2>(triple);
-      int V_index_k = othernode->get_start_state_index();
+      int V_index_k = othernode->get_startindex();
       int phi_index_k = V_index_k + 1;
       double V_k = state[V_index_k];
       double phi_k = state[phi_index_k];
@@ -148,7 +141,7 @@ namespace Model::Power {
   }
 
   double Powernode::Q(Eigen::Ref<Eigen::VectorXd const> const &state) const {
-    int V_index = get_start_state_index();
+    int V_index = get_startindex();
     int phi_index = V_index + 1;
     double B_i = get_B();
     double V_i = state[V_index];
@@ -161,7 +154,7 @@ namespace Model::Power {
       double G_ik = std::get<0>(triple);
       double B_ik = std::get<1>(triple);
       Powernode *othernode = std::get<2>(triple);
-      int V_index_k = othernode->get_start_state_index();
+      int V_index_k = othernode->get_startindex();
       int phi_index_k = V_index_k + 1;
       double V_k = state[V_index_k];
       double phi_k = state[phi_index_k];
@@ -174,7 +167,7 @@ namespace Model::Power {
   void Powernode::evaluate_P_derivative(
       int equationindex, Aux::Matrixhandler &jacobianhandler,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
-    int V_index = get_start_state_index();
+    int V_index = get_startindex();
     int phi_index = V_index + 1;
     double G_i = get_G();
     double V_i = new_state[V_index];
@@ -187,7 +180,7 @@ namespace Model::Power {
       double G_ik = std::get<0>(triple);
       double B_ik = std::get<1>(triple);
       Powernode *othernode = std::get<2>(triple);
-      int V_index_k = othernode->get_start_state_index();
+      int V_index_k = othernode->get_startindex();
       int phi_index_k = V_index_k + 1;
       double V_k = new_state[V_index_k];
       double phi_k = new_state[phi_index_k];
@@ -212,7 +205,7 @@ namespace Model::Power {
   void Powernode::evaluate_Q_derivative(
       int equationindex, Aux::Matrixhandler &jacobianhandler,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
-    int V_index = get_start_state_index();
+    int V_index = get_startindex();
     int phi_index = V_index + 1;
     double B_i = get_B();
     double V_i = new_state[V_index];
@@ -225,7 +218,7 @@ namespace Model::Power {
       double G_ik = std::get<0>(triple);
       double B_ik = std::get<1>(triple);
       Powernode *othernode = std::get<2>(triple);
-      int V_index_k = othernode->get_start_state_index();
+      int V_index_k = othernode->get_startindex();
       int phi_index_k = V_index_k + 1;
       double V_k = new_state[V_index_k];
       double phi_k = new_state[phi_index_k];

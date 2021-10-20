@@ -16,24 +16,24 @@ namespace Model {
   }
 
   int Statecomponent::get_number_of_states() const {
-    if (start_state_index < 0) {
-      gthrow(
-          {"start_state_index < 0. Probably get_number_of_states() was called "
-           "before calling set_state_indices().\n This is forbidden."});
-    }
-    if (after_state_index < 0) {
-      gthrow(
-          {"after_state_index < 0. Probably get_number_of_states() was called "
-           "before calling set_state_indices().\n This is forbidden."});
-    }
-    return after_state_index - start_state_index;
+    return get_afterindex() - get_startindex();
   }
 
-  int Statecomponent::get_start_state_index() const {
-    return start_state_index;
+  int Statecomponent::get_startindex() const {
+    if (startindex < 0) {
+      gthrow(
+          {"startindex < 0. Probably get_startindex() was called "
+           "before calling set_indices().\n This is forbidden."});
+    }
+    return startindex;
   }
-  int Statecomponent::get_after_state_index() const {
-    return after_state_index;
+  int Statecomponent::get_afterindex() const {
+    if (afterindex < 0) {
+      gthrow(
+          {"afterindex < 0. Probably get_afterindex() was called "
+           "before calling set_indices().\n This is forbidden."});
+    }
+    return afterindex;
   }
 
   nlohmann::json &Statecomponent::get_output_json_ref() {

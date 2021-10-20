@@ -17,23 +17,23 @@ namespace Model::Gas {
   }
 
   int Gasedge::give_away_start_index() const {
-    if (get_start_state_index() < 0 or get_after_state_index() < 0) {
+    if (get_startindex() < 0 or get_afterindex()) {
       gthrow(
           {"This function: ", __FUNCTION__,
            " can only be called after set_state_indices(...) has been "
            "called."});
     }
-    return get_start_state_index();
+    return get_startindex();
   }
 
   int Gasedge::give_away_end_index() const {
-    if (get_start_state_index() < 0 or get_after_state_index() < 0) {
+    if (get_startindex() < 0 or get_afterindex()) {
       gthrow(
           {"This function: ", __FUNCTION__,
            " can only be called after set_state_indices(...) has been "
            "called."});
     }
-    return (get_after_state_index() - 1);
+    return (get_afterindex() - 1);
   }
   int Gasedge::boundary_equation_index(int direction) const {
     if (direction == 1) {
@@ -56,17 +56,15 @@ namespace Model::Gas {
     return get_starting_state_index() + 1; // Nofstates/2;
   }
   int Gasedge::get_equation_after_index() const {
-    return get_after_state_index() - 1; // - Nofstates / 2 + 1 ;
+    return get_afterindex() - 1; // - Nofstates / 2 + 1 ;
   }
 
-  int Gasedge::get_starting_state_index() const {
-    return get_start_state_index();
-  }
+  int Gasedge::get_starting_state_index() const { return get_startindex(); }
 
   int Gasedge::get_ending_state_index() const {
 
     // This is a hack and should be refactored
-    if (get_after_state_index() - get_start_state_index() == 2) {
+    if (get_afterindex() - get_startindex() == 2) {
       auto *this_idobject = dynamic_cast<Network::Idobject const *>(this);
       if (!this_idobject) {
         gthrow(
@@ -78,7 +76,7 @@ namespace Model::Gas {
            "been called!"});
     }
 
-    return get_after_state_index() - 2;
+    return get_afterindex() - 2;
   }
 
   int Gasedge::get_boundary_state_index(int direction) const {

@@ -184,7 +184,7 @@ namespace Model::Gas {
     current_value["time"] = time;
     for (int i = 0; i != number_of_points; ++i) {
       Eigen::Vector2d current_state
-          = state.segment<2>(get_start_state_index() + 2 * i);
+          = state.segment<2>(get_startindex() + 2 * i);
       double current_rho = current_state[0];
       double current_p_bar = bl->p_bar_from_p_pascal(bl->p(current_rho));
       double current_q = current_state[1];
@@ -208,7 +208,7 @@ namespace Model::Gas {
     Aux::Initialvalue<2> initialvalues(initial_json);
     for (int i = 0; i != number_of_points; ++i) {
       try {
-        new_state.segment<2>(get_start_state_index() + 2 * i)
+        new_state.segment<2>(get_startindex() + 2 * i)
             = bl->state(bl->p_qvol_from_p_qvol_bar(initialvalues(i * Delta_x)));
       } catch (...) {
         std::cout << "could not set initial value of pipe " << get_id() << ".\n"

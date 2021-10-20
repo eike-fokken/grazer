@@ -56,12 +56,12 @@ namespace Model::Gaspowerconnection {
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
-    int p_index = get_start_state_index();
-    int q_index = get_start_state_index() + 1;
+    int p_index = get_startindex();
+    int q_index = get_startindex() + 1;
     rootvalues[q_index]
         = powerendnode->P(new_state) - generated_power(new_state[q_index]);
     if (is_gas_driven(new_time)) {
-      rootvalues[powerendnode->get_start_state_index()]
+      rootvalues[powerendnode->get_startindex()]
           = new_state[p_index] - boundaryvalue(new_time)[0];
     }
   }
@@ -70,18 +70,18 @@ namespace Model::Gaspowerconnection {
       Aux::Matrixhandler &jacobianhandler, double, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
-    int p_index = get_start_state_index();
-    int q_index = get_start_state_index() + 1;
+    int p_index = get_startindex();
+    int q_index = get_startindex() + 1;
     double q = new_state[q_index];
     jacobianhandler.set_coefficient(q_index, q_index, -dgenerated_power_dq(q));
     powerendnode->evaluate_P_derivative(q_index, jacobianhandler, new_state);
 
     if (is_gas_driven(new_time)) {
       jacobianhandler.set_coefficient(
-          powerendnode->get_start_state_index(), p_index, 1.0);
+          powerendnode->get_startindex(), p_index, 1.0);
     } else {
       jacobianhandler.set_coefficient(
-          powerendnode->get_start_state_index(), p_index, 0.0);
+          powerendnode->get_startindex(), p_index, 0.0);
     }
   }
 
@@ -137,7 +137,7 @@ namespace Model::Gaspowerconnection {
   void Gaspowerconnection::set_initial_values(
       Eigen::Ref<Eigen::VectorXd> new_state,
       nlohmann::json const &initial_json) {
-    if (get_start_state_index() == -1 or get_after_state_index() == -1) {
+    if (get_startindex() == -1 or get_afterindex() == -1) {
       gthrow(
           {"This function may only be called if set_state_indices  has been "
            "called beforehand!"});
