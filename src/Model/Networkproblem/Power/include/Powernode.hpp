@@ -18,7 +18,6 @@ namespace Model::Power {
     static nlohmann::json get_schema();
     static std::optional<nlohmann::json> get_boundary_schema();
     static nlohmann::json get_initial_schema();
-    static int init_vals_per_interpol_point();
 
     Powernode(nlohmann::json const &topology);
     ~Powernode() override{};

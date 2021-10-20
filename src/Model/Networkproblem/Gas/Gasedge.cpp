@@ -17,7 +17,7 @@ namespace Model::Gas {
   }
 
   int Gasedge::give_away_start_index() const {
-    if (get_startindex() < 0 or get_afterindex()) {
+    if (get_startindex() < 0 or get_afterindex() < 0) {
       gthrow(
           {"This function: ", __FUNCTION__,
            " can only be called after set_state_indices(...) has been "
@@ -27,7 +27,7 @@ namespace Model::Gas {
   }
 
   int Gasedge::give_away_end_index() const {
-    if (get_startindex() < 0 or get_afterindex()) {
+    if (get_startindex() < 0 or get_afterindex() < 0) {
       gthrow(
           {"This function: ", __FUNCTION__,
            " can only be called after set_state_indices(...) has been "
