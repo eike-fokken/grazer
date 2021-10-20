@@ -22,10 +22,6 @@ namespace Model::Gas {
         Eigen::Ref<Eigen::VectorXd const> const &,
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const final;
 
-    void set_initial_values(
-        Eigen::Ref<Eigen::VectorXd> new_state,
-        nlohmann::json const &initial_json) final;
-
     void add_results_to_json(nlohmann::json &new_output) override;
   };
 } // namespace Model::Gas

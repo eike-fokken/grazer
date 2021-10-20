@@ -48,10 +48,6 @@ namespace Model::Gas {
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const override;
 
-    void set_initial_values(
-        Eigen::Ref<Eigen::VectorXd> new_state,
-        nlohmann::json const &initial_json) override;
-
     void add_results_to_json(nlohmann::json &new_output) final;
 
   private:

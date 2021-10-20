@@ -18,9 +18,9 @@ namespace Model::Gas {
 
     void json_save(double, Eigen::Ref<Eigen::VectorXd const> const &) override;
 
-    void initial_values_helper(
+    void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,
-        nlohmann::json const &initial_json);
+        const nlohmann::json &initial_json) final;
 
     /// Shortcomponents just use pressure and volumetric flow as their
     /// variables, so that this function simply returns the corresponding

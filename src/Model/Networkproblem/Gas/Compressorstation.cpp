@@ -74,12 +74,6 @@ namespace Model::Gas {
         start_equation_index, pressure_control_index, -1.0);
   }
 
-  void Compressorstation::set_initial_values(
-      Eigen::Ref<Eigen::VectorXd> new_state,
-      nlohmann::json const &initial_json) {
-    initial_values_helper(new_state, initial_json);
-  }
-
   void Compressorstation::add_results_to_json(nlohmann::json &new_output) {
     std::string comp_type = Aux::component_class(*this);
     new_print_helper(new_output, comp_type, get_type());

@@ -22,7 +22,7 @@ namespace Model::Gas {
   void Controlvalve::setup() { setup_output_json_helper(get_id()); }
 
   void Controlvalve::evaluate(
-      Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
+      Eigen::Ref<Eigen::VectorXd> rootvalues, double, double /*new_time*/,
       const Eigen::Ref<const Eigen::VectorXd> & /*last_state*/,
       const Eigen::Ref<const Eigen::VectorXd> &new_state,
       const Eigen::Ref<const Eigen::VectorXd> &control) const {
@@ -72,12 +72,6 @@ namespace Model::Gas {
 
     jacobianhandler.set_coefficient(
         start_equation_index, pressure_control_index, 1.0);
-  }
-
-  void Controlvalve::set_initial_values(
-      Eigen::Ref<Eigen::VectorXd> new_state,
-      nlohmann::json const &initial_json) {
-    initial_values_helper(new_state, initial_json);
   }
 
   void Controlvalve::add_results_to_json(nlohmann::json &new_output) {

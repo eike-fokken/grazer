@@ -45,10 +45,4 @@ namespace Model::Gas {
     new_print_helper(new_output, comp_type, get_type());
   }
 
-  void Shortpipe::set_initial_values(
-      Eigen::Ref<Eigen::VectorXd> new_state,
-      nlohmann::json const &initial_json) {
-    initial_values_helper(new_state, initial_json);
-  }
-
 } // namespace Model::Gas

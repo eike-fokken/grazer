@@ -49,25 +49,11 @@ namespace Model::Gas {
     output_json["data"].push_back(std::move(current_value));
   }
 
-  void Shortcomponent::initial_values_helper(
+  void Shortcomponent::set_initial_values(
       Eigen::Ref<Eigen::VectorXd> new_state,
-      nlohmann::json const &initial_json) {
-    if (get_startindex() == -1 or get_afterindex() == -1) {
-      gthrow(
-          {"This function may only be called if set_state_indices  has been "
-           "called beforehand!"});
-    }
-
-    auto start_p_index = get_boundary_state_index(1);
-    auto start_q_index = start_p_index + 1;
-    auto end_p_index = get_boundary_state_index(-1);
-    auto end_q_index = end_p_index + 1;
-
-    Aux::Initialvalue<2> initialvalues(initial_json);
-    new_state[start_p_index] = initialvalues(0)[0];
-    new_state[start_q_index] = initialvalues(0)[1];
-    new_state[end_p_index] = initialvalues(1)[0];
-    new_state[end_q_index] = initialvalues(1)[1];
+      const nlohmann::json &initial_json) {
+    set_simple_initial_values(
+        this, new_state, initial_json, get_initial_schema(), 2);
   }
 
   Eigen::Vector2d Shortcomponent::get_boundary_p_qvol_bar(
