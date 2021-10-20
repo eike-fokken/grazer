@@ -26,7 +26,7 @@ namespace Model {
         initial_json, initial_schema);
     auto number_of_indices_per_step = initialvalues.get_inner_length();
 
-    int current_index = component->get_startindex();
+    int current_index = component->get_state_startindex();
     if (number_of_indices_per_step * number_of_points
         > component->get_number_of_states()) {
       gthrow(
@@ -42,11 +42,11 @@ namespace Model {
   }
 
   int SimpleStatecomponent::set_state_indices(int next_free_index) {
-    startindex = next_free_index;
+    state_startindex = next_free_index;
     int number_of_states = needed_number_of_states();
-    afterindex = next_free_index + number_of_states;
+    state_afterindex = next_free_index + number_of_states;
 
-    return afterindex;
+    return state_afterindex;
   }
 
 } // namespace Model

@@ -122,14 +122,14 @@ TEST_F(stochasticPQnodeTEST, evaluate) {
   // to work well and is hopefully sufficient to catch regressions.
 
   EXPECT_NEAR(
-      rootvalues[stoch_pq->get_startindex()],
+      rootvalues[stoch_pq->get_state_startindex()],
       -stoch_pq->get_current_P() + G2 * V2 * V2
           + V2 * V1 * (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 - phi1))
           + V2 * V3 * (Gt2 * cos(phi2 - phi3) + Bt2 * sin(phi2 - phi3)),
       1e-12);
 
   EXPECT_NEAR(
-      rootvalues[stoch_pq->get_startindex() + 1],
+      rootvalues[stoch_pq->get_state_startindex() + 1],
       -stoch_pq->get_current_Q() - B2 * V2 * V2
           + V2 * V1 * (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 - phi1))
           + V2 * V3 * (Gt2 * sin(phi2 - phi3) - Bt2 * cos(phi2 - phi3)),
@@ -171,12 +171,12 @@ TEST_F(stochasticPQnodeTEST, d_evalutate_d_new_state) {
   handler.set_matrix();
 
   Eigen::Matrix<double, 6, 6> DenseJ = J;
-  auto index0_vphi = vphi->get_startindex();
-  auto index1_vphi = vphi->get_startindex() + 1;
-  auto index0_pq = pq->get_startindex();
-  auto index1_pq = pq->get_startindex() + 1;
-  auto index0_pv = pv->get_startindex();
-  auto index1_pv = pv->get_startindex() + 1;
+  auto index0_vphi = vphi->get_state_startindex();
+  auto index1_vphi = vphi->get_state_startindex() + 1;
+  auto index0_pq = pq->get_state_startindex();
+  auto index1_pq = pq->get_state_startindex() + 1;
+  auto index0_pv = pv->get_state_startindex();
+  auto index1_pv = pv->get_state_startindex() + 1;
 
   // derivatives of P in the PQ node:
   EXPECT_DOUBLE_EQ(

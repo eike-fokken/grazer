@@ -14,7 +14,7 @@ namespace Model {
     friend class Networkproblem;
 
   public:
-    static nlohmann::json get_initial_schema();
+    static nlohmann::json get_initial_schema() = delete;
 
     /// \brief This function sets the indices #start_state_index and
     /// #after_state_index.
@@ -27,10 +27,10 @@ namespace Model {
     int get_number_of_states() const;
 
     /// \brief getter for #start_state_index
-    int get_startindex() const;
+    int get_state_startindex() const;
 
     /// \brief getter for #after_state_index
-    int get_afterindex() const;
+    int get_state_afterindex() const;
 
     virtual void add_results_to_json(nlohmann::json &) = 0;
 
@@ -72,7 +72,7 @@ namespace Model {
     /// #start_state_index (inclusive) and #after_state_index (exclusive).
     /// There are exceptions though, e.g. instances of \ref
     /// Model::Gas::Gasnode "Gasnode".
-    int startindex{-1};
+    int state_startindex{-1};
 
     /// \brief The first index after #start_state_index, that is not "owned" by
     /// this Equationcomponent.
@@ -81,6 +81,6 @@ namespace Model {
     /// #start_state_index (inclusive) and #after_state_index (exclusive).
     /// There are exceptions though, e.g. instances of
     /// \ref Model::Gas::Gasnode "Gasnode".
-    int afterindex{-1};
+    int state_afterindex{-1};
   };
 } // namespace Model

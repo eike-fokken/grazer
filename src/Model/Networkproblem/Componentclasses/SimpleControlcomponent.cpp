@@ -1,12 +1,37 @@
 #include "SimpleControlcomponent.hpp"
+#include "InterpolatingVector.hpp"
 namespace Model {
 
-  int SimpleControlcomponent::set_control_indices(int next_free_index) {
-    start_control_index = next_free_index;
-    int number_of_controls = needed_number_of_controls_per_time_point();
-    after_control_index = next_free_index + number_of_controls;
+  void set_simple_initial_controls(
+      Controlcomponent &controlcomponent,
+      Aux::InterpolatingVector &vector_controller_to_be_filled,
+      nlohmann::json const &initial_json,
+      nlohmann::json const &initial_schema) {
 
-    return after_control_index;
+    auto &timepoints
+        = vector_controller_to_be_filled.get_interpolation_points();
+
+    // careful: no controls at t= starttime, because initial values are fixed!
+    auto initialvalues = Aux::InterpolatingVector::construct_from_json(
+        initial_json, initial_schema);
+
+    auto number_of_indices_per_step = initialvalues.get_inner_length();
+
+    Eigen::Index index = 0;
+    for (auto timepoint : timepoints) {
+      vector_controller_to_be_filled.mut_timestep(index).segment(
+          controlcomponent.get_control_startindex(), number_of_indices_per_step)
+          = initialvalues(timepoint);
+      ++index;
+    }
+  }
+
+  int SimpleControlcomponent::set_control_indices(int next_free_index) {
+    control_startindex = next_free_index;
+    int number_of_controls = needed_number_of_controls_per_time_point();
+    control_afterindex = next_free_index + number_of_controls;
+
+    return control_afterindex;
   }
 
 } // namespace Model

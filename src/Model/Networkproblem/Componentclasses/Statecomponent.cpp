@@ -3,12 +3,6 @@
 
 namespace Model {
 
-  nlohmann::json Statecomponent::get_initial_schema() {
-    gthrow(
-        {"This static method must be implemented in the class inheriting "
-         "from Equationcomponent!"});
-  }
-
   void Statecomponent::setup_output_json_helper(std::string const &id) {
     auto &output_json = get_output_json_ref();
     output_json["id"] = id;
@@ -16,24 +10,25 @@ namespace Model {
   }
 
   int Statecomponent::get_number_of_states() const {
-    return get_afterindex() - get_startindex();
+    return get_state_afterindex() - get_state_startindex();
   }
 
-  int Statecomponent::get_startindex() const {
-    if (startindex < 0) {
+  int Statecomponent::get_state_startindex() const {
+    if (state_startindex < 0) {
       gthrow(
-          {"startindex < 0. Probably get_startindex() was called "
+          {"state_startindex < 0. Probably ", __func__, " was called ",
            "before calling set_indices().\n This is forbidden."});
     }
-    return startindex;
+    return state_startindex;
   }
-  int Statecomponent::get_afterindex() const {
-    if (afterindex < 0) {
+  int Statecomponent::get_state_afterindex() const {
+    if (state_afterindex < 0) {
       gthrow(
-          {"afterindex < 0. Probably get_afterindex() was called "
+          {"state_afterindex < 0. Probably ", __func__,
+           " was called "
            "before calling set_indices().\n This is forbidden."});
     }
-    return afterindex;
+    return state_afterindex;
   }
 
   nlohmann::json &Statecomponent::get_output_json_ref() {

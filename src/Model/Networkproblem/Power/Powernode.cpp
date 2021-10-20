@@ -106,15 +106,15 @@ namespace Model::Power {
     current_value["time"] = time;
     current_value["P"] = P_val;
     current_value["Q"] = Q_val;
-    current_value["V"] = state[get_startindex()];
-    current_value["phi"] = state[get_startindex() + 1];
+    current_value["V"] = state[get_state_startindex()];
+    current_value["phi"] = state[get_state_startindex() + 1];
 
     auto &output_json = get_output_json_ref();
     output_json["data"].push_back(std::move(current_value));
   }
 
   double Powernode::P(Eigen::Ref<Eigen::VectorXd const> const &state) const {
-    int V_index = get_startindex();
+    int V_index = get_state_startindex();
     int phi_index = V_index + 1;
     double G_i = get_G();
 
@@ -127,7 +127,7 @@ namespace Model::Power {
       double G_ik = std::get<0>(triple);
       double B_ik = std::get<1>(triple);
       Powernode *othernode = std::get<2>(triple);
-      int V_index_k = othernode->get_startindex();
+      int V_index_k = othernode->get_state_startindex();
       int phi_index_k = V_index_k + 1;
       double V_k = state[V_index_k];
       double phi_k = state[phi_index_k];
@@ -138,7 +138,7 @@ namespace Model::Power {
   }
 
   double Powernode::Q(Eigen::Ref<Eigen::VectorXd const> const &state) const {
-    int V_index = get_startindex();
+    int V_index = get_state_startindex();
     int phi_index = V_index + 1;
     double B_i = get_B();
     double V_i = state[V_index];
@@ -151,7 +151,7 @@ namespace Model::Power {
       double G_ik = std::get<0>(triple);
       double B_ik = std::get<1>(triple);
       Powernode *othernode = std::get<2>(triple);
-      int V_index_k = othernode->get_startindex();
+      int V_index_k = othernode->get_state_startindex();
       int phi_index_k = V_index_k + 1;
       double V_k = state[V_index_k];
       double phi_k = state[phi_index_k];
@@ -164,7 +164,7 @@ namespace Model::Power {
   void Powernode::evaluate_P_derivative(
       int equationindex, Aux::Matrixhandler &jacobianhandler,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
-    int V_index = get_startindex();
+    int V_index = get_state_startindex();
     int phi_index = V_index + 1;
     double G_i = get_G();
     double V_i = new_state[V_index];
@@ -177,7 +177,7 @@ namespace Model::Power {
       double G_ik = std::get<0>(triple);
       double B_ik = std::get<1>(triple);
       Powernode *othernode = std::get<2>(triple);
-      int V_index_k = othernode->get_startindex();
+      int V_index_k = othernode->get_state_startindex();
       int phi_index_k = V_index_k + 1;
       double V_k = new_state[V_index_k];
       double phi_k = new_state[phi_index_k];
@@ -202,7 +202,7 @@ namespace Model::Power {
   void Powernode::evaluate_Q_derivative(
       int equationindex, Aux::Matrixhandler &jacobianhandler,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
-    int V_index = get_startindex();
+    int V_index = get_state_startindex();
     int phi_index = V_index + 1;
     double B_i = get_B();
     double V_i = new_state[V_index];
@@ -215,7 +215,7 @@ namespace Model::Power {
       double G_ik = std::get<0>(triple);
       double B_ik = std::get<1>(triple);
       Powernode *othernode = std::get<2>(triple);
-      int V_index_k = othernode->get_startindex();
+      int V_index_k = othernode->get_state_startindex();
       int phi_index_k = V_index_k + 1;
       double V_k = new_state[V_index_k];
       double phi_k = new_state[phi_index_k];

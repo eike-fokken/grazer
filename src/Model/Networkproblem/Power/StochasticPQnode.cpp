@@ -62,7 +62,7 @@ namespace Model::Power {
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
-    auto V_index = get_startindex();
+    auto V_index = get_state_startindex();
     auto phi_index = V_index + 1;
     rootvalues[V_index] = P(new_state) - current_P;
     rootvalues[phi_index] = Q(new_state) - current_Q;
@@ -119,7 +119,7 @@ namespace Model::Power {
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
-    auto first_equation_index = get_startindex();
+    auto first_equation_index = get_state_startindex();
     auto second_equation_index = first_equation_index + 1;
     evaluate_P_derivative(first_equation_index, jacobianhandler, new_state);
     evaluate_Q_derivative(second_equation_index, jacobianhandler, new_state);
@@ -136,8 +136,8 @@ namespace Model::Power {
     current_value["time"] = time;
     current_value["P"] = P_val;
     current_value["Q"] = Q_val;
-    current_value["V"] = state[get_startindex()];
-    current_value["phi"] = state[get_startindex() + 1];
+    current_value["V"] = state[get_state_startindex()];
+    current_value["phi"] = state[get_state_startindex() + 1];
     current_value["P_deviation"] = P_deviation;
     current_value["Q_deviation"] = Q_deviation;
 

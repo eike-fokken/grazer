@@ -185,7 +185,7 @@ namespace Model::Gas {
     current_value["time"] = time;
     for (int i = 0; i != number_of_points; ++i) {
       Eigen::Vector2d current_state
-          = state.segment<2>(get_startindex() + 2 * i);
+          = state.segment<2>(get_state_startindex() + 2 * i);
       double current_rho = current_state[0];
       double current_p_bar
           = balancelaw->p_bar_from_p_pascal(balancelaw->p(current_rho));

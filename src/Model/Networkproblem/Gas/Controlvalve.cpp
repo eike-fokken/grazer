@@ -27,7 +27,7 @@ namespace Model::Gas {
       const Eigen::Ref<const Eigen::VectorXd> &new_state,
       const Eigen::Ref<const Eigen::VectorXd> &control) const {
 
-    Eigen::Vector2d pressure_control(control[get_start_control_index()], 0.0);
+    Eigen::Vector2d pressure_control(control[get_control_startindex()], 0.0);
 
     rootvalues.segment<2>(get_equation_start_index())
         = get_boundary_state(1, new_state) - get_boundary_state(-1, new_state)
@@ -68,7 +68,7 @@ namespace Model::Gas {
       Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {
     auto start_equation_index = get_equation_start_index();
-    auto pressure_control_index = get_start_control_index();
+    auto pressure_control_index = get_control_startindex();
 
     jacobianhandler.set_coefficient(
         start_equation_index, pressure_control_index, 1.0);

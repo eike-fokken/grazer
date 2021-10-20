@@ -324,19 +324,19 @@ TEST_F(GaspowerconnectionTEST, evaluate_power_controlled) {
     netprob->evaluate(
         rootvalues, last_time, new_time, last_state, new_state, control);
     EXPECT_DOUBLE_EQ(
-        rootvalues[gp->get_startindex() + 1],
+        rootvalues[gp->get_state_startindex() + 1],
         endpowernode->P(new_state)
-            - gp->generated_power(new_state[gp->get_startindex() + 1]));
+            - gp->generated_power(new_state[gp->get_state_startindex() + 1]));
 
     // The following checks that the equations of the powernode are indeed
     // those of a Vphi-node. This must be true in Power-controlled mode of the
     // Gaspowerconnection.
     EXPECT_DOUBLE_EQ(
-        rootvalues[endpowernode->get_startindex()],
-        new_state[endpowernode->get_startindex()] - cond1(0));
+        rootvalues[endpowernode->get_state_startindex()],
+        new_state[endpowernode->get_state_startindex()] - cond1(0));
     EXPECT_DOUBLE_EQ(
-        rootvalues[endpowernode->get_startindex() + 1],
-        new_state[endpowernode->get_startindex() + 1] - cond1(1));
+        rootvalues[endpowernode->get_state_startindex() + 1],
+        new_state[endpowernode->get_state_startindex() + 1] - cond1(1));
   }
 }
 
@@ -408,19 +408,19 @@ TEST_F(GaspowerconnectionTEST, evaluate_gas_controlled) {
     netprob->evaluate(
         rootvalues, last_time, new_time, last_state, new_state, control);
     EXPECT_DOUBLE_EQ(
-        rootvalues[gp->get_startindex() + 1],
+        rootvalues[gp->get_state_startindex() + 1],
         endpowernode->P(new_state)
-            - gp->generated_power(new_state[gp->get_startindex() + 1]));
+            - gp->generated_power(new_state[gp->get_state_startindex() + 1]));
 
     // The following makes sure that the the equations of the endpowernode set
     // the pressure to the connection boundary condition and the voltage to the
     // voltage boundary condition.
     EXPECT_DOUBLE_EQ(
-        rootvalues[endpowernode->get_startindex()],
-        new_state[gp->get_startindex()] - pressure1);
+        rootvalues[endpowernode->get_state_startindex()],
+        new_state[gp->get_state_startindex()] - pressure1);
     EXPECT_DOUBLE_EQ(
-        rootvalues[endpowernode->get_startindex() + 1],
-        new_state[endpowernode->get_startindex()] - cond1(0));
+        rootvalues[endpowernode->get_state_startindex() + 1],
+        new_state[endpowernode->get_state_startindex()] - cond1(0));
   }
 }
 
@@ -497,24 +497,32 @@ TEST_F(GaspowerconnectionTEST, d_evalutate_d_new_state_power_driven) {
     handler.set_matrix();
     DenseJ = J;
     EXPECT_DOUBLE_EQ(
-        DenseJ(gp->get_startindex() + 1, endpowernode->get_startindex()),
+        DenseJ(
+            gp->get_state_startindex() + 1,
+            endpowernode->get_state_startindex()),
         2 * G * new_state[0]);
     EXPECT_DOUBLE_EQ(
-        DenseJ(gp->get_startindex() + 1, endpowernode->get_startindex() + 1),
+        DenseJ(
+            gp->get_state_startindex() + 1,
+            endpowernode->get_state_startindex() + 1),
         0);
-    EXPECT_DOUBLE_EQ(DenseJ(gp->get_startindex() + 1, gp->get_startindex()), 0);
     EXPECT_DOUBLE_EQ(
-        DenseJ(gp->get_startindex() + 1, gp->get_startindex() + 1),
-        -gp->dgenerated_power_dq(new_state[gp->get_startindex() + 1]));
+        DenseJ(gp->get_state_startindex() + 1, gp->get_state_startindex()), 0);
+    EXPECT_DOUBLE_EQ(
+        DenseJ(gp->get_state_startindex() + 1, gp->get_state_startindex() + 1),
+        -gp->dgenerated_power_dq(new_state[gp->get_state_startindex() + 1]));
 
     EXPECT_DOUBLE_EQ(
-        DenseJ(endpowernode->get_startindex(), endpowernode->get_startindex()),
+        DenseJ(
+            endpowernode->get_state_startindex(),
+            endpowernode->get_state_startindex()),
         1.0);
     for (int index = 0; index != 4; ++index) {
-      if (index == endpowernode->get_startindex()) {
+      if (index == endpowernode->get_state_startindex()) {
         continue;
       }
-      EXPECT_DOUBLE_EQ(DenseJ(endpowernode->get_startindex(), index), 0.0);
+      EXPECT_DOUBLE_EQ(
+          DenseJ(endpowernode->get_state_startindex(), index), 0.0);
     }
   }
 }
@@ -593,23 +601,31 @@ TEST_F(GaspowerconnectionTEST, d_evalutate_d_new_state_gas_driven) {
     handler.set_matrix();
     DenseJ = J;
     EXPECT_DOUBLE_EQ(
-        DenseJ(gp->get_startindex() + 1, endpowernode->get_startindex()),
+        DenseJ(
+            gp->get_state_startindex() + 1,
+            endpowernode->get_state_startindex()),
         2 * G * new_state[0]);
     EXPECT_DOUBLE_EQ(
-        DenseJ(gp->get_startindex() + 1, endpowernode->get_startindex() + 1),
+        DenseJ(
+            gp->get_state_startindex() + 1,
+            endpowernode->get_state_startindex() + 1),
         0);
-    EXPECT_DOUBLE_EQ(DenseJ(gp->get_startindex() + 1, gp->get_startindex()), 0);
     EXPECT_DOUBLE_EQ(
-        DenseJ(gp->get_startindex() + 1, gp->get_startindex() + 1),
-        -gp->dgenerated_power_dq(new_state[gp->get_startindex() + 1]));
+        DenseJ(gp->get_state_startindex() + 1, gp->get_state_startindex()), 0);
+    EXPECT_DOUBLE_EQ(
+        DenseJ(gp->get_state_startindex() + 1, gp->get_state_startindex() + 1),
+        -gp->dgenerated_power_dq(new_state[gp->get_state_startindex() + 1]));
 
     EXPECT_DOUBLE_EQ(
-        DenseJ(endpowernode->get_startindex(), gp->get_startindex()), 1.0);
+        DenseJ(
+            endpowernode->get_state_startindex(), gp->get_state_startindex()),
+        1.0);
     for (int index = 0; index != 4; ++index) {
-      if (index == gp->get_startindex()) {
+      if (index == gp->get_state_startindex()) {
         continue;
       }
-      EXPECT_DOUBLE_EQ(DenseJ(endpowernode->get_startindex(), index), 0.0);
+      EXPECT_DOUBLE_EQ(
+          DenseJ(endpowernode->get_state_startindex(), index), 0.0);
     }
   }
 }

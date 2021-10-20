@@ -131,11 +131,11 @@ namespace Model {
 
     /** \brief getter for #start_control_index
      */
-    int get_start_control_index() const;
+    int get_control_startindex() const;
 
     /** \brief getter for #after_control_index
      */
-    int get_after_control_index() const;
+    int get_control_afterindex() const;
 
     /** \brief Fills the indices owned by this component with control values
      */
@@ -160,11 +160,11 @@ namespace Model {
   private:
     /** \brief The first control index, this Controlcomponent "owns".
      */
-    int start_control_index{-1};
+    int control_startindex{-1};
 
     /** \brief The first control index after #start_control_index, that is
      * not "owned" by this Controlcomponent.
      */
-    int after_control_index{-1};
+    int control_afterindex{-1};
   };
 } // namespace Model

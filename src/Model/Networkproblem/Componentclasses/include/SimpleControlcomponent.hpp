@@ -1,6 +1,12 @@
 #pragma once
 #include "Controlcomponent.hpp"
 namespace Model {
+
+  void set_simple_initial_controls(
+      Controlcomponent &controlcomponent,
+      Aux::InterpolatingVector &vector_controller_to_be_filled,
+      nlohmann::json const &initial_json, nlohmann::json const &initial_schema);
+
   class SimpleControlcomponent : public Controlcomponent {
   public:
     int set_control_indices(int next_free_index) final;
