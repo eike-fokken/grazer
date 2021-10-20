@@ -69,7 +69,7 @@ namespace Model::Gas {
     int const number_of_points;
     double const Delta_x;
 
-    std::unique_ptr<Balancelaw::Pipe_Balancelaw const> bl;
+    std::unique_ptr<Balancelaw::Pipe_Balancelaw const> balancelaw;
     std::unique_ptr<Scheme::Threepointscheme const> scheme;
   };
 
