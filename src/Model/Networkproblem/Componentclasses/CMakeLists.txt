@@ -13,6 +13,6 @@ SimpleConstraintcomponent.cpp
 )
 
 target_link_libraries(componentclasses PUBLIC mathfunctions exception timedata)
-target_link_libraries(componentclasses PRIVATE interpolatingVector)
+target_link_libraries(componentclasses PRIVATE interpolatingVector aux_schema_validation interpolatingVector)
 
 target_include_directories(componentclasses PUBLIC include)

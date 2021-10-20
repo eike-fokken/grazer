@@ -3,6 +3,8 @@
 #include "Get_base_component.hpp"
 #include "InterpolatingVector.hpp"
 #include "Matrixhandler.hpp"
+#include "SimpleStatecomponent.hpp"
+#include "Statecomponent.hpp"
 #include "Transmissionline.hpp"
 #include "make_schema.hpp"
 #include <algorithm>
@@ -50,11 +52,8 @@ namespace Model::Power {
   void Powernode::set_initial_values(
       Eigen::Ref<Eigen::VectorXd> new_state,
       nlohmann::json const &initial_json) {
-
-    auto initialvalues = Aux::InterpolatingVector::construct_from_json(
-        initial_json, get_initial_schema());
-    int V_index = get_startindex();
-    new_state.segment<2>(V_index) = initialvalues(0);
+    set_simple_initial_values(
+        this, new_state, initial_json, get_initial_schema());
   }
 
   void Powernode::setup() {
