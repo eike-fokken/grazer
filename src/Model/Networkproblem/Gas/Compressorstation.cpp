@@ -4,6 +4,7 @@
 #include "Get_base_component.hpp"
 #include "Matrixhandler.hpp"
 #include "Shortcomponent.hpp"
+#include "SimpleControlcomponent.hpp"
 #include "make_schema.hpp"
 
 namespace Model::Gas {
@@ -72,6 +73,33 @@ namespace Model::Gas {
 
     jacobianhandler.set_coefficient(
         start_equation_index, pressure_control_index, -1.0);
+  }
+
+  void Compressorstation::set_initial_controls(
+      Aux::InterpolatingVector &full_control_vector,
+      nlohmann::json const &control_json) const {
+    set_simple_time_dependent_values(
+        this, full_control_vector, control_json, get_control_schema().value());
+  }
+
+  void Compressorstation::set_lower_bounds(
+      Aux::InterpolatingVector &full_lower_bound_vector,
+      nlohmann::json const &lower_bound_json) const {
+    set_simple_time_dependent_values(
+        this, full_lower_bound_vector, lower_bound_json,
+        get_control_schema().value());
+  }
+
+  void Compressorstation::set_upper_bounds(
+      Aux::InterpolatingVector &full_upper_bound_vector,
+      nlohmann::json const &upper_bound_json) const {
+    set_simple_time_dependent_values(
+        this, full_upper_bound_vector, upper_bound_json,
+        get_control_schema().value());
+  }
+
+  int Compressorstation::needed_number_of_controls_per_time_point() const {
+    return 1;
   }
 
   void Compressorstation::add_results_to_json(nlohmann::json &new_output) {

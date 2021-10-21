@@ -82,16 +82,15 @@ int grazer::run(std::filesystem::path directory_path) {
     auto control_timehelper = Aux::interpolation_points_helper(
         timedata.get_starttime(), timedata.get_delta_t(),
         timedata.get_number_of_time_points());
+
     Aux::InterpolatingVector controller(
         control_timehelper, problem.get_number_of_controls_per_timepoint());
 
     Eigen::VectorXd initial_state(problem.get_number_of_states());
-    Eigen::VectorXd lower_bounds(
-        problem.get_number_of_controls_per_timepoint()
-        * timedata.get_number_of_time_points());
-    Eigen::VectorXd upper_bounds(
-        problem.get_number_of_controls_per_timepoint()
-        * timedata.get_number_of_time_points());
+    Aux::InterpolatingVector lower_bounds(
+        control_timehelper, problem.get_number_of_controls_per_timepoint());
+    Aux::InterpolatingVector upper_bounds(
+        control_timehelper, problem.get_number_of_controls_per_timepoint());
     Eigen::VectorXd constraints_lower_bounds(
         problem.get_number_of_inequalities_per_timepoint()
         * timedata.get_number_of_time_points());

@@ -3,6 +3,7 @@
 #include "InterpolatingVector.hpp"
 #include "Statecomponent.hpp"
 #include "schema_validation.hpp"
+#include <iostream>
 
 namespace Model {
 
@@ -26,7 +27,6 @@ namespace Model {
         initial_json, initial_schema);
     auto number_of_indices_per_step = initialvalues.get_inner_length();
 
-    int current_index = component->get_state_startindex();
     if (number_of_indices_per_step * number_of_points
         > component->get_number_of_states()) {
       gthrow(
@@ -34,10 +34,11 @@ namespace Model {
            "component\n",
            ">>>", initial_json["id"], "<<<\n"});
     }
+    int current_index = component->get_state_startindex();
     for (int i = 0; i != number_of_points; ++i) {
       vector_to_be_filled.segment(current_index, number_of_indices_per_step)
           = converter_function(initialvalues(i * Delta_x));
-      current_index += number_of_points;
+      current_index += number_of_indices_per_step;
     }
   }
 

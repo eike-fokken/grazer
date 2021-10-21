@@ -37,18 +37,18 @@ namespace Optimization {
       Aux::InterpolatingVector &controller, nlohmann::json const &control_json,
       Eigen::Ref<Eigen::VectorXd> init_state,
       nlohmann::json const &initial_json,
-      Eigen::Ref<Eigen::VectorXd> lower_bounds,
+      Aux::InterpolatingVector &lower_bounds,
       nlohmann::json const &lower_bounds_json,
-      Eigen::Ref<Eigen::VectorXd> upper_bounds,
+      Aux::InterpolatingVector &upper_bounds,
       nlohmann::json const &upper_bounds_json,
       Eigen::Ref<Eigen::VectorXd> constraints_lower_bounds,
       nlohmann::json const &constraints_lower_bounds_json,
       Eigen::Ref<Eigen::VectorXd> constraints_upper_bounds,
       nlohmann::json const &constraints_upper_bounds_json) {
     problem.set_initial_values(init_state, initial_json);
-    problem.set_initial_controls(timedata, controller, control_json);
-    problem.set_lower_bounds(timedata, lower_bounds, lower_bounds_json);
-    problem.set_upper_bounds(timedata, upper_bounds, upper_bounds_json);
+    problem.set_initial_controls(controller, control_json);
+    problem.set_lower_bounds(lower_bounds, lower_bounds_json);
+    problem.set_upper_bounds(upper_bounds, upper_bounds_json);
     problem.set_constraint_lower_bounds(
         timedata, constraints_lower_bounds, constraints_lower_bounds_json);
     problem.set_constraint_upper_bounds(

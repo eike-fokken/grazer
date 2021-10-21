@@ -212,7 +212,8 @@ namespace Model::Gas {
     // Unfortunately the argument and return types do not match.
     // Therefore we declare a lambda, that takes a VectorXd and returns a
     // VectorXd for passing to set_simple_initial_values.
-    auto transform = [this](Eigen::Ref<Eigen::VectorXd const> const &vector)
+    Balancelaw::Pipe_Balancelaw const *bl = balancelaw.get();
+    auto transform = [bl](Eigen::Ref<Eigen::VectorXd const> const &vector)
         -> Eigen::VectorXd {
       if (vector.size() != 2) {
         gthrow(
@@ -221,8 +222,9 @@ namespace Model::Gas {
              "The right size is 2."});
       }
       Eigen::Vector2d argument = vector;
-      Eigen::VectorXd result
-          = this->balancelaw->p_qvol_bar_from_p_qvol(argument);
+      // Eigen::VectorXd result =
+      // bl->state(bl->p_qvol_from_p_qvol_bar(argument));
+      Eigen::VectorXd result = bl->state(bl->p_qvol_from_p_qvol_bar(argument));
       return result;
     };
 
