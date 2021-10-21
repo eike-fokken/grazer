@@ -64,8 +64,13 @@ namespace Model::Gas {
         Eigen::RowVector2d function_derivative, int rootvalues_index,
         Eigen::Ref<Eigen::VectorXd const> const &state) const override;
 
+    Balancelaw::Pipe_Balancelaw const *get_balancelaw() const;
+
+    int get_number_of_points() const;
+    double get_Delta_x() const;
+
   private:
-    double get_length();
+    double get_length() const;
     int const number_of_points;
     double const Delta_x;
 

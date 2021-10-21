@@ -4,6 +4,7 @@
 #include "Gas_factory.hpp"
 #include "Implicitboxscheme.hpp"
 #include "Innode.hpp"
+#include "InterpolatingVector.hpp"
 #include "Isothermaleulerequation.hpp"
 #include "Matrixhandler.hpp"
 #include "Netfactory.hpp"
@@ -740,8 +741,8 @@ TEST_F(GasTEST, Pipe_evaluate) {
   std::vector<std::pair<double, Eigen::Matrix<double, 2, 1>>> initialvalues;
   using E2d = Eigen::Matrix<double, 2, 1>;
   double initial_Delta_x = 3812.5;
-  initialvalues.push_back({0, E2d(75.046978, 58.290215)});
-  initialvalues.push_back({initial_Delta_x, E2d(75.032557, 58.105963)});
+  initialvalues.push_back({0 * initial_Delta_x, E2d(75.046978, 58.290215)});
+  initialvalues.push_back({1 * initial_Delta_x, E2d(75.032557, 58.105963)});
   initialvalues.push_back({2 * initial_Delta_x, E2d(75.01822, 57.921692)});
   initialvalues.push_back({3 * initial_Delta_x, E2d(75.003966, 57.737405)});
   initialvalues.push_back({4 * initial_Delta_x, E2d(74.989795, 57.553105)});
@@ -792,6 +793,68 @@ TEST_F(GasTEST, Pipe_evaluate) {
 
   EXPECT_DOUBLE_EQ(expected_result[0], rootvalues.segment<2>(1)[0]);
   EXPECT_DOUBLE_EQ(expected_result[1], rootvalues.segment<2>(1)[1]);
+}
+
+TEST_F(GasTEST, Pipe_set_initial_conditions) {
+
+  nlohmann::json node0;
+  nlohmann::json node1;
+  node0["id"] = "node0";
+  node1["id"] = "node1";
+
+  std::string id = "pipe";
+  double length = 15250;
+  double diameter = 0.9144;
+  double roughness = 8;
+  double desired_delta_x = 20000;
+
+  nlohmann::json pipe_topology = pipe_json(
+      id, node0, node1, length, "m", diameter, "m", roughness, "m",
+      desired_delta_x, "Isothermaleulerequation", "Implicitboxscheme");
+
+  std::vector<std::pair<double, Eigen::Matrix<double, 2, 1>>> initialvalues;
+  using E2d = Eigen::Matrix<double, 2, 1>;
+  double initial_Delta_x = 3812.5;
+  initialvalues.push_back({0 * initial_Delta_x, E2d(75.046978, 58.290215)});
+  initialvalues.push_back({1 * initial_Delta_x, E2d(75.032557, 58.105963)});
+  initialvalues.push_back({2 * initial_Delta_x, E2d(75.01822, 57.921692)});
+  initialvalues.push_back({3 * initial_Delta_x, E2d(75.003966, 57.737405)});
+  initialvalues.push_back({4 * initial_Delta_x, E2d(74.989795, 57.553105)});
+
+  nlohmann::json pipe_initial = make_value_json(id, "x", initialvalues);
+
+  nlohmann::json net_initial
+      = make_initial_json({}, {{"Pipe", {pipe_initial}}});
+
+  auto netprop_json = make_full_json(
+      {{"Innode", {node0, node1}}}, {{"Pipe", {pipe_topology}}});
+
+  auto netprob = make_Networkproblem(netprop_json);
+
+  netprob->init();
+  auto number_of_variables = netprob->get_number_of_states();
+  Eigen::VectorXd new_state(number_of_variables);
+
+  netprob->set_initial_values(new_state, net_initial);
+
+  auto &net = netprob->get_network();
+  auto edges = net.get_edges();
+  auto pipe = dynamic_cast<Model::Gas::Pipe const *>(edges.front());
+  auto bl = pipe->get_balancelaw();
+  auto vals_per_point = pipe->init_vals_per_interpol_point();
+
+  Eigen::VectorXd expected_state(number_of_variables);
+
+  auto expected_values = Aux::InterpolatingVector::construct_from_json(
+      pipe_initial, pipe->get_initial_schema());
+
+  for (int ipoint = 0; ipoint != pipe->get_number_of_points(); ++ipoint) {
+    Eigen::Vector2d point = bl->state(bl->p_qvol_from_p_qvol_bar(
+        expected_values(ipoint * pipe->get_Delta_x())));
+    for (int ivar = 0; ivar != vals_per_point; ++ivar) {
+      EXPECT_DOUBLE_EQ(point[ivar], new_state[ipoint * vals_per_point + ivar]);
+    }
+  }
 }
 
 TEST_F(GasTEST, Pipe_d_evalutate_d_new_state) {

@@ -222,8 +222,6 @@ namespace Model::Gas {
              "The right size is 2."});
       }
       Eigen::Vector2d argument = vector;
-      // Eigen::VectorXd result =
-      // bl->state(bl->p_qvol_from_p_qvol_bar(argument));
       Eigen::VectorXd result = bl->state(bl->p_qvol_from_p_qvol_bar(argument));
       return result;
     };
@@ -263,6 +261,13 @@ namespace Model::Gas {
     jacobianhandler.set_coefficient(rootvalues_index, q_index, derivative[1]);
   }
 
-  double Pipe::get_length() { return (number_of_points - 1) * Delta_x; }
+  Balancelaw::Pipe_Balancelaw const *Pipe::get_balancelaw() const {
+    return balancelaw.get();
+  }
+
+  int Pipe::get_number_of_points() const { return number_of_points; }
+  double Pipe::get_Delta_x() const { return Delta_x; }
+
+  double Pipe::get_length() const { return (number_of_points - 1) * Delta_x; }
 
 } // namespace Model::Gas
