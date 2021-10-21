@@ -22,6 +22,9 @@ namespace Model::Componentfactory {
 
 namespace Model::Networkproblem {
 
+  void sort_json_vectors_by_id(nlohmann::json &components, std::string key);
+  void check_for_duplicates(nlohmann::json &components, std::string key);
+
   /// \brief Constructs the full networkproblem json from file paths for the
   /// respective files and fills all component jsons with their boundary and
   /// control data.
@@ -33,10 +36,6 @@ namespace Model::Networkproblem {
   /// Contains topology, boundary and control data, possibly in form of file
   /// paths to the respective json files.
   /// @returns the topology json enriched with control and boundary data.
-
-  void sort_json_vectors_by_id(nlohmann::json &components, std::string key);
-  void check_for_duplicates(nlohmann::json &components, std::string key);
-
   nlohmann::json
   build_full_networkproblem_json(nlohmann::json &networkproblem_json);
 
@@ -76,11 +75,11 @@ namespace Model::Networkproblem {
 
   /// \brief Constructs a \ref Network::Net "Net" object from the given json.
   ///
-  /// @tparam Componentfactory Chooses the \ref
+  /// @param networkproblem_json A json containing complete jsons to all
+  /// components that shall be constructed for the net.
+  /// @param factory Chooses the \ref
   /// Model::Componentfactory::Componentfactory_interface "Componentfactory"
   /// class and with that the types of components that are recognized.
-  /// @param network_json A json containing complete jsons to all components
-  /// that shall be constructed for the net.
   /// @return A unique pointer to an instance of \ref Network::Net "Net"
   /// containing all nodes and edges declared in networkproblem_json.
   /// @throw std::runtime_error if a component type is found in the topology

@@ -13,8 +13,8 @@ namespace fs = std::filesystem;
 /** \brief Adds a pressure value on all existing pressure values in the initial
  * value file in the problem folder. Can also be used with negative numbers.
  *
- * @param problem_folder
- * @param pressure_value given in bar.
+ * @param argc number of input arguments
+ * @param argv input arguments, inputfile and pressure difference
  */
 
 int main(int argc, char **argv) {

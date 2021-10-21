@@ -31,7 +31,7 @@ namespace io {
    * whether the given filename doesn't exist yet.
    *
    * @param filename filename to modify to get a unique filename.
-   * @param generator
+   * @param generator TODO: ...
    */
   std::filesystem::path create_new_output_file(
       std::filesystem::path const &filename, filename_generator generator);

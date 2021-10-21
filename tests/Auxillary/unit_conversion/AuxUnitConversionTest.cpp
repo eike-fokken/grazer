@@ -93,13 +93,13 @@ TEST(unitParser, mostUsedUnits) {
  * @param required_hint string with the required error hints
  *
  */
-void test_validation_in_parsing(json malformed_data, std::string required_hit);
+void test_validation_in_parsing(json malformed_data, std::string required_hint);
 
 /**
  * @brief finds required_hint in error_message and returns true if found
  *
- * @param error_message
- * @param required_hint
+ * @param error_message the error message
+ * @param required_hint the hint we want to search for in the error message
  * @return true
  * @return false
  */

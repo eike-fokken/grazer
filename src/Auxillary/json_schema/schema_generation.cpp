@@ -14,8 +14,8 @@ namespace Aux::schema {
 
   /**
    * @brief directory validation (directory may only include known schema files)
-   * @param directory
-   * @param schemas
+   * @param directory the path to the directory
+   * @param schemas the json schemas
    */
   void assert_only_known_schemas(
       path directory, std::map<std::string, json> schemas);

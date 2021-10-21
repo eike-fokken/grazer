@@ -14,8 +14,8 @@ namespace Model::Componentfactory {
       Componentfactory &factory, nlohmann::json const &defaults);
 
   /// \brief This class provides a Componentfactory of all Power components.
-  /// \param defaults a json with defaults for the individual components
   struct Power_factory : public Componentfactory {
+    /// \param defaults a json with defaults for the individual components
     Power_factory(nlohmann::json const &defaults);
   };
 } // namespace Model::Componentfactory

@@ -12,9 +12,11 @@ namespace fs = std::filesystem;
  *
  * The parameters are space-separated strings given as commandline options in
  * the following order.
- * @param from The exact name of the type the component is currently in
- * @param to The exact name of the type the component is to be moved to.
- * @param id the id of the component to be moved.
+ *
+ * @param argc number of arguments
+ * @param argv The exact name of the type the component is currently in, the
+ * exact name of the type the component is to be moved to and the id of the
+ * component to be moved.
  */
 
 int main(int argc, char **argv) {
