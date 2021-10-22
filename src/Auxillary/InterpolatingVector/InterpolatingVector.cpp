@@ -1,15 +1,16 @@
 #include "InterpolatingVector.hpp"
+
 #include "Exception.hpp"
 #include "Mathfunctions.hpp"
 #include "Timedata.hpp"
 #include "make_schema.hpp"
 #include "schema_validation.hpp"
 
-#include <Eigen/src/Core/util/Meta.h>
 #include <algorithm>
 #include <cstddef>
 #include <exception>
 #include <iostream>
+#include <limits>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
 #include <string>
@@ -48,9 +49,29 @@ namespace Aux {
            "Supplied desired stepsize: ", std::to_string(desired_delta)});
     }
 
-    auto number_of_entries = static_cast<size_t>(std::ceil(
-                                 (last_point - first_point) / desired_delta))
-                             + 1;
+    auto number_of_entries_double
+        = (std::ceil((last_point - first_point) / desired_delta)) + 1;
+
+    size_t number_of_entries = 0;
+    if (static_cast<double>(static_cast<size_t>(number_of_entries_double))
+        != number_of_entries_double) {
+      gthrow(
+          {"The number of interpolation points is too big and cannot fit into "
+           "an "
+           "Eigen::VectorXd! Its size is greater than the maximimum of "
+           "Eigen::Index"});
+    } else {
+      number_of_entries = static_cast<size_t>(number_of_entries_double);
+      if (number_of_entries > std::numeric_limits<Eigen::Index>::max()) {
+        gthrow(
+            {"The number of interpolation points is too big and cannot fit "
+             "into "
+             "an "
+             "Eigen::VectorXd! Its size is greater than the maximimum of "
+             "Eigen::Index"});
+      }
+    }
+
     auto delta
         = ((last_point - first_point)
            / (static_cast<double>(number_of_entries - 1)));
@@ -67,6 +88,13 @@ namespace Aux {
     for (size_t index = 0; index != number_of_entries; ++index) {
       interpolation_points.push_back(currentpoint);
       currentpoint += delta;
+    }
+    if (interpolation_points.size()
+        > std::numeric_limits<Eigen::Index>::max()) {
+      gthrow(
+          {"The interpolation point vector is too big and cannot fit into an "
+           "Eigen::VectorXd! Its size is greater than the maximimum of "
+           "Eigen::Index"});
     }
     return interpolation_points;
   }
@@ -105,6 +133,12 @@ namespace Aux {
     }
     allvalues = Eigen::VectorXd(
         _inner_length * static_cast<Eigen::Index>(data.number_of_entries));
+    if (interpolation_points.size()
+        > std::numeric_limits<Eigen::Index>::max()) {
+      gthrow(
+          {"The vector index of inner_length too big to fit into "
+           "Eigen::Index."});
+    }
   }
 
   InterpolatingVector::InterpolatingVector(
@@ -205,7 +239,8 @@ namespace Aux {
         interpolation_points.begin(), interpolation_points.end(), t);
     auto t_next = *it;
     auto t_prev = *std::prev(it);
-    auto next_index = (it - interpolation_points.begin()) * inner_length;
+    auto next_index = static_cast<Eigen::Index>(
+        (it - interpolation_points.begin()) * inner_length);
     auto prev_index = next_index - inner_length;
 
     Eigen::VectorXd value_next = allvalues.segment(next_index, inner_length);
@@ -222,11 +257,26 @@ namespace Aux {
   }
 
   Eigen::Ref<Eigen::VectorXd>
-  InterpolatingVector::mut_timestep(Eigen::Index current_timestep) {
-    if (current_timestep < 0) {
+  InterpolatingVector::mut_timestep(Eigen::Index current_index) {
+    if (current_index < 0) {
       gthrow({"You try to set this InterpolatingVector at a negative index!"});
     }
-    auto start_index = inner_length * current_timestep;
+    auto start_index = inner_length * current_index;
+    auto after_index = start_index + inner_length;
+    if (after_index > allvalues.size()) {
+      gthrow(
+          {"You try to set this InterpolatingVector at a higher index than "
+           "possible!"});
+    }
+    return allvalues.segment(start_index, inner_length);
+  }
+
+  Eigen::Ref<Eigen::VectorXd const>
+  InterpolatingVector::const_timestep(Eigen::Index current_index) const {
+    if (current_index < 0) {
+      gthrow({"You try to set this InterpolatingVector at a negative index!"});
+    }
+    auto start_index = inner_length * current_index;
     auto after_index = start_index + inner_length;
     if (after_index > allvalues.size()) {
       gthrow(
