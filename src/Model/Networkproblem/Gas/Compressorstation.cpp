@@ -18,7 +18,7 @@ namespace Model::Gas {
   Compressorstation::Compressorstation(
       nlohmann::json const &data,
       std::vector<std::unique_ptr<Network::Node>> &nodes) :
-      Shortcomponent(data, nodes), control_values(data["control_values"]) {}
+      Shortcomponent(data, nodes) {}
 
   void Compressorstation::setup() { setup_output_json_helper(get_id()); }
 

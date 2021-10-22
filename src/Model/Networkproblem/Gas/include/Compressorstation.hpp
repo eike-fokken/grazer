@@ -1,5 +1,4 @@
 #pragma once
-#include "Control.hpp"
 #include "Controlcomponent.hpp"
 #include "Edge.hpp"
 #include "Gasedge.hpp"
@@ -63,9 +62,6 @@ namespace Model::Gas {
     Eigen::Index needed_number_of_controls_per_time_point() const override;
 
     void add_results_to_json(nlohmann::json &new_output) final;
-
-  private:
-    Aux::Control<1> const control_values;
   };
 
 } // namespace Model::Gas

@@ -1,6 +1,5 @@
 #include "Shortcomponent.hpp"
 #include "Exception.hpp"
-#include "Initialvalue.hpp"
 #include "Matrixhandler.hpp"
 #include <fstream>
 #include <iostream>

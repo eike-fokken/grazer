@@ -1,5 +1,5 @@
 #pragma once
-#include <Boundaryvalue.hpp>
+#include "InterpolatingVector.hpp"
 #include <Equationcomponent.hpp>
 #include <Gasnode.hpp>
 #include <Node.hpp>
@@ -29,7 +29,7 @@ namespace Model::Gas {
         const override final;
 
   private:
-    Aux::Boundaryvalue<1> const boundaryvalue;
+    Aux::InterpolatingVector const boundaryvalue;
   };
 
 } // namespace Model::Gas

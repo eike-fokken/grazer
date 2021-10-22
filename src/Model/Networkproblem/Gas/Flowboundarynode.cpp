@@ -11,7 +11,9 @@ namespace Model::Gas {
   }
 
   Flowboundarynode::Flowboundarynode(nlohmann::json const &data) :
-      Gasnode(data), boundaryvalue(data["boundary_values"]) {}
+      Gasnode(data),
+      boundaryvalue(Aux::InterpolatingVector::construct_from_json(
+          data["boundary_values"], get_boundary_schema().value())) {}
 
   void Flowboundarynode::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
