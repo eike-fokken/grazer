@@ -13,6 +13,6 @@ namespace Model {
     ///
     /// @returns number of constraint variables needed by this component
     virtual Eigen::Index
-    needed_number_of_inequalities_per_time_point() const = 0;
+    needed_number_of_constraints_per_time_point() const = 0;
   };
 } // namespace Model
