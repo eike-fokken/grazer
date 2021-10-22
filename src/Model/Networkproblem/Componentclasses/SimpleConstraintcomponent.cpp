@@ -1,9 +1,11 @@
 #include "SimpleConstraintcomponent.hpp"
 namespace Model {
 
-  int SimpleConstraintcomponent::set_constraint_indices(int next_free_index) {
+  Eigen::Index SimpleConstraintcomponent::set_constraint_indices(
+      Eigen::Index next_free_index) {
     start_constraint_index = next_free_index;
-    int number_of_inequalities = needed_number_of_inequalities_per_time_point();
+    auto number_of_inequalities
+        = needed_number_of_inequalities_per_time_point();
     after_constraint_index = next_free_index + number_of_inequalities;
 
     return after_constraint_index;

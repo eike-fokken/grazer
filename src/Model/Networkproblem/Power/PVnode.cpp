@@ -12,8 +12,8 @@ namespace Model::Power {
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
-    int V_index = get_state_startindex();
-    int phi_index = V_index + 1;
+    auto V_index = get_state_startindex();
+    auto phi_index = V_index + 1;
     rootvalues[V_index] = P(new_state) - boundaryvalue(new_time)[0];
 
     rootvalues[phi_index] = new_state[V_index] - boundaryvalue(new_time)[1];
@@ -27,8 +27,8 @@ namespace Model::Power {
       ,
       Eigen::Ref<Eigen::VectorXd const> const &,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
-    int V_index = get_state_startindex();
-    int phi_index = V_index + 1;
+    auto V_index = get_state_startindex();
+    auto phi_index = V_index + 1;
     evaluate_P_derivative(V_index, jacobianhandler, new_state);
     jacobianhandler.set_coefficient(phi_index, V_index, 1.0);
   }

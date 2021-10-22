@@ -98,7 +98,8 @@ namespace Model::Gas {
         get_control_schema().value());
   }
 
-  int Compressorstation::needed_number_of_controls_per_time_point() const {
+  Eigen::Index
+  Compressorstation::needed_number_of_controls_per_time_point() const {
     return 1;
   }
 

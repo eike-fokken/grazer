@@ -78,7 +78,7 @@ namespace Model::Gas {
       Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
-    for (int i = get_equation_start_index(); i != get_equation_after_index();
+    for (auto i = get_equation_start_index(); i != get_equation_after_index();
          i += 2) {
 
       auto rootvalue_segment = rootvalues.segment<2>(i);
@@ -98,7 +98,7 @@ namespace Model::Gas {
       Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
-    for (int i = get_equation_start_index(); i != get_equation_after_index();
+    for (auto i = get_equation_start_index(); i != get_equation_after_index();
          i += 2) {
       // maybe use Eigen::Ref here to avoid copies.
       auto last_left = last_state.segment<2>(i - 1);
@@ -135,7 +135,7 @@ namespace Model::Gas {
       Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
-    for (int i = get_equation_start_index(); i != get_equation_after_index();
+    for (auto i = get_equation_start_index(); i != get_equation_after_index();
          i += 2) {
       // maybe use Eigen::Ref here to avoid copies.
       auto last_left = last_state.segment<2>(i - 1);
@@ -170,7 +170,9 @@ namespace Model::Gas {
 
   void Pipe::setup() { setup_output_json_helper(get_id()); }
 
-  int Pipe::needed_number_of_states() const { return 2 * number_of_points; }
+  Eigen::Index Pipe::needed_number_of_states() const {
+    return 2 * number_of_points;
+  }
 
   void Pipe::add_results_to_json(nlohmann::json &new_output) {
     auto &this_output_json = get_output_json_ref();
@@ -240,7 +242,7 @@ namespace Model::Gas {
 
   void Pipe::dboundary_p_qvol_dstate(
       int direction, Aux::Matrixhandler &jacobianhandler,
-      Eigen::RowVector2d function_derivative, int rootvalues_index,
+      Eigen::RowVector2d function_derivative, Eigen::Index rootvalues_index,
       Eigen::Ref<Eigen::VectorXd const> const &state) const {
     Eigen::Vector2d boundary_state = get_boundary_state(direction, state);
 
@@ -255,8 +257,8 @@ namespace Model::Gas {
     Eigen::RowVector2d derivative;
     derivative = function_derivative * dpqvol_bar_dstate;
 
-    int rho_index = get_boundary_state_index(direction);
-    int q_index = rho_index + 1;
+    auto rho_index = get_boundary_state_index(direction);
+    auto q_index = rho_index + 1;
     jacobianhandler.set_coefficient(rootvalues_index, rho_index, derivative[0]);
     jacobianhandler.set_coefficient(rootvalues_index, q_index, derivative[1]);
   }

@@ -16,7 +16,7 @@ namespace Model {
       Statecomponent const *component,
       Eigen::Ref<Eigen::VectorXd> vector_to_be_filled,
       nlohmann::json const &initial_json, nlohmann::json const &initial_schema,
-      int number_of_points, double Delta_x,
+      Eigen::Index number_of_points, double Delta_x,
       std::function<Eigen::VectorXd(Eigen::Ref<Eigen::VectorXd const> const &)>
           converter_function) {
 
@@ -34,17 +34,18 @@ namespace Model {
            "component\n",
            ">>>", initial_json["id"], "<<<\n"});
     }
-    int current_index = component->get_state_startindex();
-    for (int i = 0; i != number_of_points; ++i) {
+    auto current_index = component->get_state_startindex();
+    for (Eigen::Index i = 0; i != number_of_points; ++i) {
       vector_to_be_filled.segment(current_index, number_of_indices_per_step)
-          = converter_function(initialvalues(i * Delta_x));
+          = converter_function(initialvalues(static_cast<double>(i) * Delta_x));
       current_index += number_of_indices_per_step;
     }
   }
 
-  int SimpleStatecomponent::set_state_indices(int next_free_index) {
+  Eigen::Index
+  SimpleStatecomponent::set_state_indices(Eigen::Index next_free_index) {
     state_startindex = next_free_index;
-    int number_of_states = needed_number_of_states();
+    auto number_of_states = needed_number_of_states();
     state_afterindex = next_free_index + number_of_states;
 
     return state_afterindex;

@@ -29,7 +29,7 @@ namespace Model::Power {
 
     void add_results_to_json(nlohmann::json &new_output) override;
 
-    int needed_number_of_states() const override;
+    Eigen::Index needed_number_of_states() const override;
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,
@@ -38,10 +38,10 @@ namespace Model::Power {
     double P(Eigen::Ref<Eigen::VectorXd const> const &state) const;
     double Q(Eigen::Ref<Eigen::VectorXd const> const &state) const;
     void evaluate_P_derivative(
-        int equationindex, Aux::Matrixhandler &jacobianhandler,
+        Eigen::Index equationindex, Aux::Matrixhandler &jacobianhandler,
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
     void evaluate_Q_derivative(
-        int equationindex, Aux::Matrixhandler &jacobianhandler,
+        Eigen::Index equationindex, Aux::Matrixhandler &jacobianhandler,
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
 
   protected:
@@ -57,7 +57,7 @@ namespace Model::Power {
 
   private:
     /// \brief number of state variables, this component needs.
-    static constexpr int number_of_state_variables{2};
+    static constexpr Eigen::Index number_of_state_variables{2};
 
     std::vector<std::tuple<double, double, Powernode *>>
         attached_component_data;

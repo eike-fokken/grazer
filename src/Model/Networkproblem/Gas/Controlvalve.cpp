@@ -97,7 +97,7 @@ namespace Model::Gas {
         get_control_schema().value());
   }
 
-  int Controlvalve::needed_number_of_controls_per_time_point() const {
+  Eigen::Index Controlvalve::needed_number_of_controls_per_time_point() const {
     return 1;
   }
 

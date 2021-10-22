@@ -9,11 +9,11 @@ namespace Model {
     output_json["data"] = nlohmann::json::array();
   }
 
-  int Statecomponent::get_number_of_states() const {
+  Eigen::Index Statecomponent::get_number_of_states() const {
     return get_state_afterindex() - get_state_startindex();
   }
 
-  int Statecomponent::get_state_startindex() const {
+  Eigen::Index Statecomponent::get_state_startindex() const {
     if (state_startindex < 0) {
       gthrow(
           {"state_startindex < 0. Probably ", __func__, " was called ",
@@ -21,7 +21,7 @@ namespace Model {
     }
     return state_startindex;
   }
-  int Statecomponent::get_state_afterindex() const {
+  Eigen::Index Statecomponent::get_state_afterindex() const {
     if (state_afterindex < 0) {
       gthrow(
           {"state_afterindex < 0. Probably ", __func__,

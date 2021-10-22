@@ -9,7 +9,7 @@ namespace Model {
 
   class SimpleControlcomponent : public Controlcomponent {
   public:
-    int set_control_indices(int next_free_index) final;
+    Eigen::Index set_control_indices(Eigen::Index next_free_index) final;
 
   private:
     /// \brief Returns number of control variables needed by this component.
@@ -18,6 +18,6 @@ namespace Model {
     /// int like 2.
     ///
     /// @returns number of control variables needed by this component
-    virtual int needed_number_of_controls_per_time_point() const = 0;
+    virtual Eigen::Index needed_number_of_controls_per_time_point() const = 0;
   };
 } // namespace Model

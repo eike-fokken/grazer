@@ -56,8 +56,8 @@ namespace Model::Gaspowerconnection {
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
-    int p_index = get_state_startindex();
-    int q_index = get_state_startindex() + 1;
+    auto p_index = get_state_startindex();
+    auto q_index = get_state_startindex() + 1;
     rootvalues[q_index]
         = powerendnode->P(new_state) - generated_power(new_state[q_index]);
     if (is_gas_driven(new_time)) {
@@ -70,9 +70,9 @@ namespace Model::Gaspowerconnection {
       Aux::Matrixhandler &jacobianhandler, double, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
-    int p_index = get_state_startindex();
-    int q_index = get_state_startindex() + 1;
-    double q = new_state[q_index];
+    auto p_index = get_state_startindex();
+    auto q_index = get_state_startindex() + 1;
+    auto q = new_state[q_index];
     jacobianhandler.set_coefficient(q_index, q_index, -dgenerated_power_dq(q));
     powerendnode->evaluate_P_derivative(q_index, jacobianhandler, new_state);
 
@@ -105,7 +105,7 @@ namespace Model::Gaspowerconnection {
     powerendnode = powernodeptr;
   }
 
-  int Gaspowerconnection::needed_number_of_states() const { return 2; }
+  Eigen::Index Gaspowerconnection::needed_number_of_states() const { return 2; }
 
   void Gaspowerconnection::add_results_to_json(nlohmann::json &new_output) {
     auto &this_output_json = get_output_json_ref();
@@ -165,10 +165,10 @@ namespace Model::Gaspowerconnection {
 
   void Gaspowerconnection::dboundary_p_qvol_dstate(
       int direction, Aux::Matrixhandler &jacobianhandler,
-      Eigen::RowVector2d function_derivative, int rootvalues_index,
+      Eigen::RowVector2d function_derivative, Eigen::Index rootvalues_index,
       Eigen::Ref<Eigen::VectorXd const> const &) const {
-    int p_index = get_boundary_state_index(direction);
-    int q_index = p_index + 1;
+    auto p_index = get_boundary_state_index(direction);
+    auto q_index = p_index + 1;
     jacobianhandler.set_coefficient(
         rootvalues_index, p_index, function_derivative[0]);
     jacobianhandler.set_coefficient(

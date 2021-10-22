@@ -5,12 +5,14 @@ namespace Aux {
 
   Matrixhandler::~Matrixhandler() {}
 
-  void Triplethandler::add_to_coefficient(int row, int col, double value) {
-    Eigen::Triplet<double> newtriplet(row, col, value);
+  void Triplethandler::add_to_coefficient(
+      Eigen::Index row, Eigen::Index col, double value) {
+    Eigen::Triplet<double, Eigen::Index> newtriplet(row, col, value);
     tripletlist.push_back(newtriplet);
   }
 
-  void Triplethandler::set_coefficient(int row, int col, double value) {
+  void Triplethandler::set_coefficient(
+      Eigen::Index row, Eigen::Index col, double value) {
     add_to_coefficient(row, col, value);
   }
 
@@ -19,10 +21,12 @@ namespace Aux {
     tripletlist.clear();
   }
 
-  void Coeffrefhandler::set_coefficient(int row, int col, double value) {
+  void Coeffrefhandler::set_coefficient(
+      Eigen::Index row, Eigen::Index col, double value) {
     matrix.coeffRef(row, col) = value;
   }
-  void Coeffrefhandler::add_to_coefficient(int row, int col, double value) {
+  void Coeffrefhandler::add_to_coefficient(
+      Eigen::Index row, Eigen::Index col, double value) {
     matrix.coeffRef(row, col) += value;
   }
 

@@ -45,17 +45,19 @@ namespace Model {
      * not claimed by another component.
      * @returns The new lowest free index.
      */
-    virtual int set_constraint_indices(int const next_free_index) = 0;
+    virtual Eigen::Index
+    set_constraint_indices(Eigen::Index const next_free_index)
+        = 0;
 
-    int get_number_of_inequalities_per_timepoint() const;
+    Eigen::Index get_number_of_inequalities_per_timepoint() const;
 
     /** \brief getter for #start_constraint_index
      */
-    int get_start_constraint_index() const;
+    Eigen::Index get_start_constraint_index() const;
 
     /** \brief getter for #after_constraint_index
      */
-    int get_after_constraint_index() const;
+    Eigen::Index get_after_constraint_index() const;
 
     virtual void set_constraint_lower_bounds(
         Timedata timedata, Eigen::Ref<Eigen::VectorXd> constraint_lower_bounds,
@@ -70,11 +72,11 @@ namespace Model {
   private:
     /** \brief The first index, this Constraintcomponent "owns".
      */
-    int start_constraint_index{-1};
+    Eigen::Index start_constraint_index{-1};
 
     /** \brief The first index after #start_constraint_index, that is not
      * "owned" by this Constraintcomponent.
      */
-    int after_constraint_index{-1};
+    Eigen::Index after_constraint_index{-1};
   };
 } // namespace Model

@@ -19,7 +19,9 @@ namespace Aux {
     /// @param row The row index of the coefficient.
     /// @param col The column index of the coefficient.
     /// @param value The value to be added to the already present coefficient.
-    virtual void add_to_coefficient(int row, int col, double value) = 0;
+    virtual void
+    add_to_coefficient(Eigen::Index row, Eigen::Index col, double value)
+        = 0;
 
     /// \brief Sets a coefficient. For #Triplethandler this actually behaves
     /// like #add_to_coefficient.
@@ -27,7 +29,9 @@ namespace Aux {
     /// @param row The row index of the coefficient.
     /// @param col The column index of the coefficient.
     /// @param value The value to be inserted.
-    virtual void set_coefficient(int row, int col, double value) = 0;
+    virtual void
+    set_coefficient(Eigen::Index row, Eigen::Index col, double value)
+        = 0;
 
     /// For #Triplethandler: Builds the matrix from the gathered coefficients
     /// and then forgets the coefficients.
@@ -47,13 +51,15 @@ namespace Aux {
     using Matrixhandler::Matrixhandler;
     ~Triplethandler() override{};
 
-    void add_to_coefficient(int row, int col, double value) final;
-    void set_coefficient(int row, int col, double value) final;
+    void
+    add_to_coefficient(Eigen::Index row, Eigen::Index col, double value) final;
+    void
+    set_coefficient(Eigen::Index row, Eigen::Index col, double value) final;
 
     void set_matrix() final;
 
   private:
-    std::vector<Eigen::Triplet<double>> tripletlist;
+    std::vector<Eigen::Triplet<double, Eigen::Index>> tripletlist;
   };
 
   /// \brief The Coeffrefhandler variety directly sets the coefficients and
@@ -65,8 +71,10 @@ namespace Aux {
 
     ~Coeffrefhandler() override{};
 
-    void add_to_coefficient(int row, int col, double value) final;
-    void set_coefficient(int row, int col, double value) final;
+    void
+    add_to_coefficient(Eigen::Index row, Eigen::Index col, double value) final;
+    void
+    set_coefficient(Eigen::Index row, Eigen::Index col, double value) final;
     void set_matrix() final;
   };
 

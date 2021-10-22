@@ -26,9 +26,10 @@ namespace Model {
     }
   }
 
-  int SimpleControlcomponent::set_control_indices(int next_free_index) {
+  Eigen::Index
+  SimpleControlcomponent::set_control_indices(Eigen::Index next_free_index) {
     control_startindex = next_free_index;
-    int number_of_controls = needed_number_of_controls_per_time_point();
+    auto number_of_controls = needed_number_of_controls_per_time_point();
     control_afterindex = next_free_index + number_of_controls;
 
     return control_afterindex;

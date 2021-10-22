@@ -8,11 +8,11 @@ namespace Model {
       Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*control*/) {}
 
-  int Controlcomponent::get_number_of_controls_per_timepoint() const {
+  Eigen::Index Controlcomponent::get_number_of_controls_per_timepoint() const {
     return get_control_afterindex() - get_control_startindex();
   }
 
-  int Controlcomponent::get_control_startindex() const {
+  Eigen::Index Controlcomponent::get_control_startindex() const {
     if (control_startindex < 0) {
       gthrow(
           {"control_startindex < 0. Probably ", __func__, " was called ",
@@ -20,7 +20,7 @@ namespace Model {
     }
     return control_startindex;
   }
-  int Controlcomponent::get_control_afterindex() const {
+  Eigen::Index Controlcomponent::get_control_afterindex() const {
     if (control_afterindex < 0) {
       gthrow(
           {"control_afterindex < 0. Probably ", __func__,

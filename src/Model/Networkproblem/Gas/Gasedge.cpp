@@ -16,7 +16,7 @@ namespace Model::Gas {
         interpol_points, Gasedge::init_vals_per_interpol_point(), contains_x);
   }
 
-  int Gasedge::give_away_start_index() const {
+  Eigen::Index Gasedge::give_away_start_index() const {
     if (get_state_startindex() < 0 or get_state_afterindex() < 0) {
       gthrow(
           {"This function: ", __FUNCTION__,
@@ -26,7 +26,7 @@ namespace Model::Gas {
     return get_state_startindex();
   }
 
-  int Gasedge::give_away_end_index() const {
+  Eigen::Index Gasedge::give_away_end_index() const {
     if (get_state_startindex() < 0 or get_state_afterindex() < 0) {
       gthrow(
           {"This function: ", __FUNCTION__,
@@ -35,7 +35,7 @@ namespace Model::Gas {
     }
     return (get_state_afterindex() - 1);
   }
-  int Gasedge::boundary_equation_index(int direction) const {
+  Eigen::Index Gasedge::boundary_equation_index(int direction) const {
     if (direction == 1) {
       return give_away_start_index();
     } else if (direction == -1) {
@@ -52,18 +52,18 @@ namespace Model::Gas {
     }
   }
 
-  int Gasedge::get_equation_start_index() const {
+  Eigen::Index Gasedge::get_equation_start_index() const {
     return get_starting_state_index() + 1; // Nofstates/2;
   }
-  int Gasedge::get_equation_after_index() const {
+  Eigen::Index Gasedge::get_equation_after_index() const {
     return get_state_afterindex() - 1; // - Nofstates / 2 + 1 ;
   }
 
-  int Gasedge::get_starting_state_index() const {
+  Eigen::Index Gasedge::get_starting_state_index() const {
     return get_state_startindex();
   }
 
-  int Gasedge::get_ending_state_index() const {
+  Eigen::Index Gasedge::get_ending_state_index() const {
 
     // This is a hack and should be refactored
     if (get_state_afterindex() - get_state_startindex() == 2) {
@@ -81,7 +81,7 @@ namespace Model::Gas {
     return get_state_afterindex() - 2;
   }
 
-  int Gasedge::get_boundary_state_index(int direction) const {
+  Eigen::Index Gasedge::get_boundary_state_index(int direction) const {
     if (direction == 1) {
       return get_starting_state_index();
     } else if (direction == -1) {

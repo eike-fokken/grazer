@@ -60,7 +60,7 @@ namespace Model::Gas {
         Aux::InterpolatingVector &full_upper_bound_vector,
         nlohmann::json const &upper_bound_json) const override;
 
-    int needed_number_of_controls_per_time_point() const override;
+    Eigen::Index needed_number_of_controls_per_time_point() const override;
 
     void add_results_to_json(nlohmann::json &new_output) final;
 

@@ -85,8 +85,8 @@ namespace Model {
   }
 
   void Networkproblem::init(
-      int next_free_state_index, int next_free_control_index,
-      int next_free_constraint_index) {
+      Eigen::Index next_free_state_index, Eigen::Index next_free_control_index,
+      Eigen::Index next_free_constraint_index) {
     next_free_state_index = set_state_indices(next_free_state_index);
     next_free_control_index = set_control_indices(next_free_control_index);
     next_free_constraint_index
@@ -144,7 +144,7 @@ namespace Model {
     }
   }
 
-  int Networkproblem::set_state_indices(int next_free_index) {
+  Eigen::Index Networkproblem::set_state_indices(Eigen::Index next_free_index) {
     state_startindex = next_free_index;
     for (auto *statecomponent : statecomponents) {
       next_free_index = statecomponent->set_state_indices(next_free_index);
@@ -333,7 +333,8 @@ namespace Model {
     }
   }
 
-  int Networkproblem::set_control_indices(int next_free_index) {
+  Eigen::Index
+  Networkproblem::set_control_indices(Eigen::Index next_free_index) {
     control_startindex = next_free_index;
     for (auto *controlcomponent : controlcomponents) {
       next_free_index = controlcomponent->set_control_indices(next_free_index);
@@ -422,7 +423,8 @@ namespace Model {
     }
   }
 
-  int Networkproblem::set_constraint_indices(int next_free_index) {
+  Eigen::Index
+  Networkproblem::set_constraint_indices(Eigen::Index next_free_index) {
     start_constraint_index = next_free_index;
     for (auto *constraintcomponent : constraintcomponents) {
       next_free_index

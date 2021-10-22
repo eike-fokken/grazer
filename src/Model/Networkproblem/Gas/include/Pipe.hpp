@@ -44,7 +44,7 @@ namespace Model::Gas {
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
     void setup() override;
 
-    int needed_number_of_states() const override;
+    Eigen::Index needed_number_of_states() const override;
 
     void add_results_to_json(nlohmann::json &new_output) override;
 
@@ -61,7 +61,7 @@ namespace Model::Gas {
 
     void dboundary_p_qvol_dstate(
         int direction, Aux::Matrixhandler &jacobianhandler,
-        Eigen::RowVector2d function_derivative, int rootvalues_index,
+        Eigen::RowVector2d function_derivative, Eigen::Index rootvalues_index,
         Eigen::Ref<Eigen::VectorXd const> const &state) const override;
 
     Balancelaw::Pipe_Balancelaw const *get_balancelaw() const;

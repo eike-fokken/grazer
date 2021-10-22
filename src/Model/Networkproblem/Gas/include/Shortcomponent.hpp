@@ -10,7 +10,7 @@ namespace Model::Gas {
   public:
     using Edge::Edge;
 
-    int needed_number_of_states() const final;
+    Eigen::Index needed_number_of_states() const final;
 
     void new_print_helper(
         nlohmann::json &new_output, std::string const &component_type,
@@ -34,12 +34,12 @@ namespace Model::Gas {
     /// jacobianhandler.
     void dboundary_p_qvol_dstate(
         int direction, Aux::Matrixhandler &jacobianhandler,
-        Eigen::RowVector2d function_derivative, int rootvalues_index,
+        Eigen::RowVector2d function_derivative, Eigen::Index rootvalues_index,
         Eigen::Ref<Eigen::VectorXd const> const &state) const final;
 
   private:
     /// \brief number of state variables, this component needs.
-    static constexpr int number_of_state_variables{4};
+    static constexpr Eigen::Index number_of_state_variables{4};
   };
 
 } // namespace Model::Gas

@@ -45,7 +45,7 @@ namespace Model::Gaspowerconnection {
 
     void setup() override;
 
-    int needed_number_of_states() const override;
+    Eigen::Index needed_number_of_states() const override;
 
     void add_results_to_json(nlohmann::json &new_output) override;
 
@@ -62,7 +62,7 @@ namespace Model::Gaspowerconnection {
 
     void dboundary_p_qvol_dstate(
         int direction, Aux::Matrixhandler &jacobianhandler,
-        Eigen::RowVector2d function_derivative, int rootvalues_index,
+        Eigen::RowVector2d function_derivative, Eigen::Index rootvalues_index,
         Eigen::Ref<Eigen::VectorXd const> const &state) const override;
 
     double smoothing_polynomial(double q) const;

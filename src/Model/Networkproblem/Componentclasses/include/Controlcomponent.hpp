@@ -125,17 +125,17 @@ namespace Model {
      * claimed by another component.
      * @returns The new lowest free index.
      */
-    virtual int set_control_indices(int next_free_index) = 0;
+    virtual Eigen::Index set_control_indices(Eigen::Index next_free_index) = 0;
 
-    int get_number_of_controls_per_timepoint() const;
+    Eigen::Index get_number_of_controls_per_timepoint() const;
 
     /** \brief getter for #start_control_index
      */
-    int get_control_startindex() const;
+    Eigen::Index get_control_startindex() const;
 
     /** \brief getter for #after_control_index
      */
-    int get_control_afterindex() const;
+    Eigen::Index get_control_afterindex() const;
 
     /** \brief Fills the indices owned by this component with control values
      */
@@ -157,11 +157,11 @@ namespace Model {
   private:
     /** \brief The first control index, this Controlcomponent "owns".
      */
-    int control_startindex{-1};
+    Eigen::Index control_startindex{-1};
 
     /** \brief The first control index after #start_control_index, that is
      * not "owned" by this Controlcomponent.
      */
-    int control_afterindex{-1};
+    Eigen::Index control_afterindex{-1};
   };
 } // namespace Model

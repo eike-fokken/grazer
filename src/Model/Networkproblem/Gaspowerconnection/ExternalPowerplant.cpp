@@ -39,8 +39,8 @@ namespace Model::Gaspowerconnection {
       Eigen::Ref<Eigen::VectorXd const> const &,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
 
-    int V_index = get_state_startindex();
-    int phi_index = V_index + 1;
+    auto V_index = get_state_startindex();
+    auto phi_index = V_index + 1;
 
     if (connection->is_gas_driven(new_time)) {
       // If the gas drives the power output, this node has only one equations.
@@ -55,8 +55,8 @@ namespace Model::Gaspowerconnection {
       Aux::Matrixhandler &jacobianhandler, double /*last_time*/,
       double new_time, Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const {
-    int V_index = get_state_startindex();
-    int phi_index = V_index + 1;
+    auto V_index = get_state_startindex();
+    auto phi_index = V_index + 1;
 
     if (connection->is_gas_driven(new_time)) {
       jacobianhandler.set_coefficient(V_index, V_index, 0.0);

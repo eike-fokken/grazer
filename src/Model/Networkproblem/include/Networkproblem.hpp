@@ -54,8 +54,9 @@ namespace Model {
      * constraint vector (before calling this function), defaulted to 0.
      */
     void init(
-        int next_free_state_index = 0, int next_free_control_index = 0,
-        int next_free_constraint_index = 0);
+        Eigen::Index next_free_state_index = 0,
+        Eigen::Index next_free_control_index = 0,
+        Eigen::Index next_free_constraint_index = 0);
 
     ////////////////////////////////////////////////////////////////////////////
     // Statecomponent methods
@@ -70,7 +71,7 @@ namespace Model {
         Eigen::Ref<Eigen::VectorXd> new_state,
         nlohmann::json const &initial_json) override;
 
-    int set_state_indices(int next_free_index) override;
+    Eigen::Index set_state_indices(Eigen::Index next_free_index) override;
 
   private:
     ////////////////////////////////////////////////////////////////////////////
@@ -119,7 +120,7 @@ namespace Model {
         Aux::InterpolatingVector &full_control_vector,
         nlohmann::json const &control_json) const override;
 
-    int set_control_indices(int next_free_index) override;
+    Eigen::Index set_control_indices(Eigen::Index next_free_index) override;
 
     void setup() override;
 
@@ -164,7 +165,7 @@ namespace Model {
         Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const override;
 
-    int set_constraint_indices(int next_free_index) override;
+    Eigen::Index set_constraint_indices(Eigen::Index next_free_index) override;
 
     void set_constraint_lower_bounds(
         Timedata timedata, Eigen::Ref<Eigen::VectorXd> constraint_lower_bounds,
