@@ -1,5 +1,0 @@
-add_library(indexmanager STATIC Indexmanager.cpp)
-
-target_link_libraries(indexmanager PRIVATE aux_schema_validation valuemap)
-target_link_libraries(indexmanager PUBLIC interpolatingVector  timedata)
-target_include_directories(indexmanager PUBLIC include)

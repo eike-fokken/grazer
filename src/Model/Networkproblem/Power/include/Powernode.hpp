@@ -1,6 +1,5 @@
 #pragma once
 #include "Equationcomponent.hpp"
-#include "Indexmanager.hpp"
 #include "InterpolatingVector.hpp"
 #include "Node.hpp"
 #include "SimpleStatecomponent.hpp"

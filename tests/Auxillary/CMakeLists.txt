@@ -1,6 +1,4 @@
-add_subdirectory(Indexmanager)
 add_subdirectory(InterpolatingVector)
-add_subdirectory(Valuemaps)
 add_subdirectory(Stochastics)
 add_subdirectory(Input_Output)
 add_subdirectory(aux_json)
