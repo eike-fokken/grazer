@@ -1,12 +1,19 @@
 add_library(gas STATIC
-  Gasnode.cpp Flowboundarynode.cpp
-  Source.cpp Sink.cpp Innode.cpp
-  ConstraintSink.cpp
-  Gasedge.cpp 
-  Shortcomponent.cpp Shortpipe.cpp Controlvalve.cpp Compressorstation.cpp
-  Pipe.cpp
-  )
+  Gasedge.cpp
+  Gasnode.cpp
+  Flowboundarynode.cpp
 
+  Source.cpp
+  Sink.cpp
+  Innode.cpp
+  ConstraintSink.cpp
+
+  Shortcomponent.cpp
+  Shortpipe.cpp
+  Controlvalve.cpp
+  Compressorstation.cpp
+
+  Pipe.cpp)
 
 target_link_libraries(gas PRIVATE
 matrixhandler
