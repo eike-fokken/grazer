@@ -1,6 +1,7 @@
 #include "Gas_factory.hpp"
 
 #include "Compressorstation.hpp"
+#include "ConstraintSink.hpp"
 #include "Controlvalve.hpp"
 #include "Innode.hpp"
 #include "Pipe.hpp"
@@ -15,6 +16,8 @@ namespace Model::Componentfactory {
     factory.add_node_type(std::make_unique<NodeType<Gas::Source>>(defaults));
     factory.add_node_type(std::make_unique<NodeType<Gas::Sink>>(defaults));
     factory.add_node_type(std::make_unique<NodeType<Gas::Innode>>(defaults));
+    factory.add_node_type(
+        std::make_unique<NodeType<Gas::ConstraintSink>>(defaults));
 
     factory.add_edge_type(std::make_unique<EdgeType<Gas::Pipe>>(defaults));
     factory.add_edge_type(std::make_unique<EdgeType<Gas::Shortpipe>>(defaults));

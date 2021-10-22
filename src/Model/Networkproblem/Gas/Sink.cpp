@@ -3,12 +3,7 @@
 
 namespace Model::Gas {
 
-  std::string Sink::get_type() { return "Sink"; }
-
-  Sink::Sink(nlohmann::json const &data) :
-      Flowboundarynode(revert_boundary_conditions(data)) {}
-
-  nlohmann::json Sink::revert_boundary_conditions(nlohmann::json const &data) {
+  nlohmann::json revert_boundary_conditions(nlohmann::json const &data) {
 
     nlohmann::json reverted_boundary_json = data;
     if (not reverted_boundary_json.contains("boundary_values")) {
@@ -26,5 +21,10 @@ namespace Model::Gas {
 
     return reverted_boundary_json;
   }
+
+  std::string Sink::get_type() { return "Sink"; }
+
+  Sink::Sink(nlohmann::json const &data) :
+      Flowboundarynode(revert_boundary_conditions(data)) {}
 
 } // namespace Model::Gas
