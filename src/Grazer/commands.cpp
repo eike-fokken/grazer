@@ -79,7 +79,7 @@ int grazer::run(std::filesystem::path directory_path) {
     Model::Networkproblem problem(std::move(net_ptr));
 
     problem.init();
-    auto control_timehelper = Aux::interpolation_points_helper(
+    auto control_timehelper = Aux::make_from_start_delta_number(
         timedata.get_starttime(), timedata.get_delta_t(),
         timedata.get_number_of_time_points());
 

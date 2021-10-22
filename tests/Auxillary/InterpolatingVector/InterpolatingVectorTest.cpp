@@ -16,7 +16,7 @@ TEST(InterpolatingVector, Construction_happy_path) {
   int number_of_points = 8;
   double start = 0;
   double delta = 0.5;
-  auto data = Aux::interpolation_points_helper(start, delta, number_of_points);
+  auto data = Aux::make_from_start_delta_number(start, delta, number_of_points);
   InterpolatingVector interpolatingvector(data, number_of_values_per_point);
 
   EXPECT_EQ(
@@ -30,7 +30,7 @@ TEST(InterpolatingVector, Construction_negative_number_of_controls) {
   int number_of_points = 8;
   double start = 0;
   double delta = 0.5;
-  auto data = Aux::interpolation_points_helper(start, delta, number_of_points);
+  auto data = Aux::make_from_start_delta_number(start, delta, number_of_points);
 
   try {
     InterpolatingVector interpolatingvector(data, number_of_values_per_point);
@@ -72,7 +72,7 @@ TEST(InterpolatingVector, set_and_evaluate_controls_happy_path) {
   int number_of_points = 8;
   double start = 0;
   double delta = 0.5;
-  auto data = Aux::interpolation_points_helper(start, delta, number_of_points);
+  auto data = Aux::make_from_start_delta_number(start, delta, number_of_points);
   InterpolatingVector interpolatingvector(data, number_of_values_per_point);
   Eigen::VectorXd controls(interpolatingvector.get_total_number_of_values());
 
@@ -173,7 +173,7 @@ TEST(InterpolatingVector, mut_timestep_happy_path) {
   int number_of_points = 8;
   double start = 0;
   double delta = 0.5;
-  auto data = Aux::interpolation_points_helper(start, delta, number_of_points);
+  auto data = Aux::make_from_start_delta_number(start, delta, number_of_points);
   InterpolatingVector interpolatingvector(data, number_of_values_per_point);
 
   Eigen::VectorXd controls(interpolatingvector.get_total_number_of_values());

@@ -17,7 +17,27 @@
 
 namespace Aux {
 
-  Interpolation_data interpolation_points_helper(
+  Interpolation_data make_from_start_number_end(
+      double first_point, double last_point, int number_of_entries) {
+    if (number_of_entries <= 0) {
+      gthrow(
+          {"You can't have negative or zero number of entries in an "
+           "InterpolatingVector.\n",
+           "Supplied number of entries: ", std::to_string(number_of_entries)});
+    }
+    size_t number = static_cast<size_t>(number_of_entries);
+    if (last_point <= first_point) {
+      gthrow(
+          {"You can't have negative or zero number of entries in an ",
+           "InterpolatingVector.\n",
+           "Supplied first point: ", std::to_string(first_point), "\n",
+           "Supplied last point: ", std::to_string(last_point), "\n"});
+    }
+    auto delta = last_point - first_point / number_of_entries;
+    return {first_point, delta, number};
+  }
+
+  Interpolation_data make_from_start_delta_number(
       double first_point, double delta, int number_of_entries) {
     if (number_of_entries <= 0) {
       gthrow(
@@ -33,7 +53,7 @@ namespace Aux {
     }
     return {first_point, delta, static_cast<size_t>(number_of_entries)};
   }
-  Interpolation_data interpolation_points_helper(
+  Interpolation_data make_from_start_end_delta(
       double first_point, double desired_delta, double last_point) {
     if (last_point <= first_point) {
       gthrow(
@@ -57,8 +77,7 @@ namespace Aux {
         != number_of_entries_double) {
       gthrow(
           {"The number of interpolation points is too big and cannot fit into "
-           "an "
-           "Eigen::VectorXd! Its size is greater than the maximimum of "
+           "an Eigen::VectorXd! Its size is greater than the maximimum of "
            "Eigen::Index"});
     } else {
       number_of_entries = static_cast<size_t>(number_of_entries_double);

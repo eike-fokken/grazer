@@ -12,11 +12,14 @@ namespace Aux {
     double delta;
     size_t number_of_entries;
   };
-  Interpolation_data interpolation_points_helper(
+  Interpolation_data make_from_start_delta_number(
       double first_point, double delta, int number_of_entries);
 
-  Interpolation_data interpolation_points_helper(
+  Interpolation_data make_from_start_end_delta(
       double first_point, double desired_delta, double last_point);
+
+  Interpolation_data make_from_start_number_end(
+      double first_point, double last_point, int number_of_entries);
 
   class InterpolatingVector {
   public:
