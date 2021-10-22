@@ -1,9 +1,8 @@
 #pragma once
-#include "Boundaryvalue.hpp"
-#include "Control.hpp"
 #include "Edge.hpp"
 #include "Equationcomponent.hpp"
 #include "Gasedge.hpp"
+#include "InterpolatingVector.hpp"
 
 namespace Model::Gaspowerconnection {
 
@@ -26,8 +25,6 @@ namespace Model::Gaspowerconnection {
     static std::string get_type();
     std::string get_gas_type() const override;
     static nlohmann::json get_schema();
-    static std::optional<nlohmann::json> get_boundary_schema();
-    static std::optional<nlohmann::json> get_control_schema();
     static nlohmann::json get_initial_schema();
 
     Gaspowerconnection(
@@ -41,6 +38,11 @@ namespace Model::Gaspowerconnection {
     void d_evalutate_d_new_state(
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
+
+    void d_evalutate_d_last_state(
+        Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
 
     void setup() override;
@@ -73,18 +75,7 @@ namespace Model::Gaspowerconnection {
 
     static constexpr double kappa{60};
 
-    bool is_gas_driven(double time) const;
-
   private:
-    /** \brief is non-zero, if the connection is gas-controlled and zero, if
-     * power-controlled.
-     */
-    Aux::Control<1> control;
-
-    /** The set pressure for periods of gas-controlled operation. Values in
-     * power-controlled periods are ignored.
-     */
-    Aux::Boundaryvalue<1> boundaryvalue;
     ExternalPowerplant *powerendnode{nullptr};
 
     double const gas2power_q_coefficient;

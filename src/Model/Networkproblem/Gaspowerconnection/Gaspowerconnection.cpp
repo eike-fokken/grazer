@@ -27,13 +27,6 @@ namespace Model::Gaspowerconnection {
     return schema;
   }
 
-  std::optional<nlohmann::json> Gaspowerconnection::get_control_schema() {
-    return Aux::schema::make_boundary_schema(1);
-  }
-  std::optional<nlohmann::json> Gaspowerconnection::get_boundary_schema() {
-    return Aux::schema::make_boundary_schema(1);
-  }
-
   nlohmann::json Gaspowerconnection::get_initial_schema() {
     std::vector<nlohmann::json> contains_x
         = {R"({"minimum": 0, "maximum": 0})"_json};
@@ -47,27 +40,20 @@ namespace Model::Gaspowerconnection {
       nlohmann::json const &topology,
       std::vector<std::unique_ptr<Network::Node>> &nodes) :
       Network::Edge(topology, nodes),
-      control(topology["control_values"]),
-      boundaryvalue(topology["boundary_values"]),
       gas2power_q_coefficient(topology["gas2power_q_coeff"].get<double>()),
       power2gas_q_coefficient(topology["power2gas_q_coeff"].get<double>()) {}
 
   void Gaspowerconnection::evaluate(
-      Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> const &,
+      Eigen::Ref<Eigen::VectorXd> rootvalues, double /*last_time*/,
+      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const &,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
-    auto p_index = get_state_startindex();
     auto q_index = get_state_startindex() + 1;
     rootvalues[q_index]
         = powerendnode->P(new_state) - generated_power(new_state[q_index]);
-    if (is_gas_driven(new_time)) {
-      rootvalues[powerendnode->get_state_startindex()]
-          = new_state[p_index] - boundaryvalue(new_time)[0];
-    }
   }
 
   void Gaspowerconnection::d_evalutate_d_new_state(
-      Aux::Matrixhandler &jacobianhandler, double, double new_time,
+      Aux::Matrixhandler &jacobianhandler, double, double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const &,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     auto p_index = get_state_startindex();
@@ -75,15 +61,15 @@ namespace Model::Gaspowerconnection {
     auto q = new_state[q_index];
     jacobianhandler.set_coefficient(q_index, q_index, -dgenerated_power_dq(q));
     powerendnode->evaluate_P_derivative(q_index, jacobianhandler, new_state);
-
-    if (is_gas_driven(new_time)) {
-      jacobianhandler.set_coefficient(
-          powerendnode->get_state_startindex(), p_index, 1.0);
-    } else {
-      jacobianhandler.set_coefficient(
-          powerendnode->get_state_startindex(), p_index, 0.0);
-    }
+    jacobianhandler.set_coefficient(
+        powerendnode->get_state_startindex(), p_index, 0.0);
   }
+
+  void Gaspowerconnection::d_evalutate_d_last_state(
+      Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
+      double /*new_time*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const {}
 
   void Gaspowerconnection::setup() {
 
@@ -217,14 +203,6 @@ namespace Model::Gaspowerconnection {
       return power2gas_q_coefficient;
     } else {
       return dsmoothing_polynomial_dq(q);
-    }
-  }
-
-  bool Gaspowerconnection::is_gas_driven(double time) const {
-    if (control(time)[0] > 0.0) {
-      return true;
-    } else {
-      return false;
     }
   }
 
