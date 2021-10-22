@@ -36,7 +36,7 @@ namespace Model {
     auto number_of_controls_per_time_point
         = problem.get_number_of_controls_per_timepoint();
     auto number_of_inequalities_per_time_point
-        = problem.get_number_of_inequalities_per_timepoint();
+        = problem.get_number_of_constraints_per_timepoint();
 
     Eigen::VectorXd controls(
         number_of_controls_per_time_point

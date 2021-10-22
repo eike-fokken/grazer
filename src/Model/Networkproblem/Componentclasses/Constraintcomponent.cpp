@@ -4,7 +4,7 @@
 namespace Model {
 
   Eigen::Index
-  Constraintcomponent::get_number_of_inequalities_per_timepoint() const {
+  Constraintcomponent::get_number_of_constraints_per_timepoint() const {
     return get_after_constraint_index() - get_start_constraint_index();
   }
 

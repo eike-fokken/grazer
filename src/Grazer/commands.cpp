@@ -92,10 +92,10 @@ int grazer::run(std::filesystem::path directory_path) {
     Aux::InterpolatingVector upper_bounds(
         control_timehelper, problem.get_number_of_controls_per_timepoint());
     Eigen::VectorXd constraints_lower_bounds(
-        problem.get_number_of_inequalities_per_timepoint()
+        problem.get_number_of_constraints_per_timepoint()
         * timedata.get_number_of_time_points());
     Eigen::VectorXd constraints_upper_bounds(
-        problem.get_number_of_inequalities_per_timepoint()
+        problem.get_number_of_constraints_per_timepoint()
         * timedata.get_number_of_time_points());
 
     Optimization::initialize(

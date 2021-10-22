@@ -49,7 +49,7 @@ namespace Model {
     set_constraint_indices(Eigen::Index const next_free_index)
         = 0;
 
-    Eigen::Index get_number_of_inequalities_per_timepoint() const;
+    Eigen::Index get_number_of_constraints_per_timepoint() const;
 
     /** \brief getter for #start_constraint_index
      */
