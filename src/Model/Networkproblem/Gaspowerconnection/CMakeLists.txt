@@ -16,7 +16,7 @@ target_link_libraries(gaspowerconnection PUBLIC
   mathfunctions
   componentclasses
   gas
-  valuemap)
+  interpolatingVector)
 
 target_include_directories(gaspowerconnection PUBLIC
   include)

@@ -2,7 +2,6 @@
 #include "Exception.hpp"
 #include "ExternalPowerplant.hpp"
 #include "Get_base_component.hpp"
-#include "Initialvalue.hpp"
 #include "Mathfunctions.hpp"
 #include "Matrixhandler.hpp"
 #include "Misc.hpp"
@@ -123,25 +122,8 @@ namespace Model::Gaspowerconnection {
   void Gaspowerconnection::set_initial_values(
       Eigen::Ref<Eigen::VectorXd> new_state,
       nlohmann::json const &initial_json) {
-    if (get_state_startindex() == -1 or get_state_afterindex() == -1) {
-      gthrow(
-          {"This function may only be called if set_state_indices  has been "
-           "called beforehand!"});
-    }
-    // This tests whether the json is in the right format:
-    auto start_p_index = get_boundary_state_index(1);
-    auto start_q_index = start_p_index + 1;
-    try {
-
-      Aux::Initialvalue<2> initialvalues(initial_json);
-      new_state[start_p_index] = initialvalues(0)[0];
-      new_state[start_q_index] = initialvalues(0)[1];
-    } catch (...) {
-      std::cout << __FILE__ << ":" << __LINE__
-                << ": failed to read in initial values in gaspowerconnection!"
-                << std::endl;
-      throw;
-    }
+    set_simple_initial_values(
+        this, new_state, initial_json, get_initial_schema());
   }
 
   Eigen::Vector2d Gaspowerconnection::get_boundary_p_qvol_bar(
