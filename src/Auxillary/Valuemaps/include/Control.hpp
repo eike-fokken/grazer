@@ -8,7 +8,7 @@
 #include <vector>
 
 namespace Aux {
-  template <int N> class Control {
+  template <Eigen::Index N> class Control {
 
   public:
     Control(nlohmann::json const &control_json) :

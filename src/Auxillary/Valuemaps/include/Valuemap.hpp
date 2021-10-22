@@ -2,6 +2,7 @@
 #include "Eigen/Sparse"
 #include "Exception.hpp"
 #include "Mathfunctions.hpp"
+#include <cstddef>
 #include <functional>
 #include <iostream>
 #include <map>
@@ -22,7 +23,7 @@ namespace Aux {
     Valuemap_out_of_range(std::string message) : std::out_of_range(message) {}
   };
 
-  template <int N> class Valuemap {
+  template <Eigen::Index N> class Valuemap {
 
   public:
     Valuemap(nlohmann::json const &value_json, std::string key) :
@@ -102,9 +103,9 @@ namespace Aux {
         }
         Eigen::Matrix<double, N, 1> value;
         try {
-          for (unsigned int i = 0; i < N; ++i) {
+          for (Eigen::Index index = 0; index < N; ++index) {
             // auto ijson= static_cast<nlohmann::basic_json::size_type>(i);
-            value[i] = datapoint["values"][i];
+            value[index] = datapoint["values"][static_cast<size_t>(index)];
           }
         } catch (...) {
           gthrow(

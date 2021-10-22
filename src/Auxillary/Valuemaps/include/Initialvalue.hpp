@@ -8,7 +8,7 @@
 #include <vector>
 
 namespace Aux {
-  template <int N> class Initialvalue {
+  template <Eigen::Index N> class Initialvalue {
 
   public:
     Initialvalue(nlohmann::json const &initial_json) :

@@ -9,7 +9,7 @@
 #include <vector>
 
 namespace Aux {
-  template <int N> class Boundaryvalue {
+  template <Eigen::Index N> class Boundaryvalue {
 
   public:
     Boundaryvalue(nlohmann::json const &boundary_json) :
