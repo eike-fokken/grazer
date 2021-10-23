@@ -30,6 +30,12 @@ namespace Model::Power {
         Eigen::Ref<Eigen::VectorXd const> const &,
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
 
+    void d_evalutate_d_last_state(
+        Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
+        double /*new_time*/,
+        Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+        Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const override;
+
     void prepare_timestep(
         double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,

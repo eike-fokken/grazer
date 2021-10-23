@@ -22,6 +22,11 @@ namespace Model::Gas {
         Eigen::Ref<Eigen::VectorXd const> const &,
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const final;
 
+    void d_evalutate_d_last_state(
+        Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
+        double /*new_time*/,
+        Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+        Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const override;
     void add_results_to_json(nlohmann::json &new_output) override;
   };
 } // namespace Model::Gas

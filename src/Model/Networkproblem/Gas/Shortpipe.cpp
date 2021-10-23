@@ -40,6 +40,12 @@ namespace Model::Gas {
     jacobianhandler.set_coefficient(end_equation_index, end_q_index, -1.0);
   }
 
+  void Shortpipe::d_evalutate_d_last_state(
+      Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
+      double /*new_time*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const {}
+
   void Shortpipe::add_results_to_json(nlohmann::json &new_output) {
     std::string comp_type = Aux::component_class(*this);
     new_print_helper(new_output, comp_type, get_type());

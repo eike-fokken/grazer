@@ -125,6 +125,12 @@ namespace Model::Power {
     evaluate_Q_derivative(second_equation_index, jacobianhandler, new_state);
   }
 
+  void StochasticPQnode::d_evalutate_d_last_state(
+      Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
+      double /*new_time*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const {}
+
   void StochasticPQnode::json_save(
       double time, Eigen::Ref<Eigen::VectorXd const> const &state) {
     auto P_val = current_P;

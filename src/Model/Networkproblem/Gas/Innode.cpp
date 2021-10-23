@@ -18,4 +18,10 @@ namespace Model::Gas {
     evaluate_flow_node_derivative(jacobianhandler, new_state);
   }
 
+  void Innode::d_evalutate_d_last_state(
+      Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
+      double /*new_time*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const {}
+
 } // namespace Model::Gas
