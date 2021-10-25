@@ -118,28 +118,6 @@ namespace Aux {
     return interpolation_points;
   }
 
-  nlohmann::json
-  InterpolatingVector::get_schema(size_t number_of_values_per_point) {
-    nlohmann::json element_schema;
-    element_schema["type"] = "object";
-    // This doesn't prohibit to have interchanging "x" and "time" properties,
-    // but hopefully noone will try that...
-    element_schema["additionalProperties"] = false;
-    Aux::schema::add_property(element_schema, "x", Aux::schema::type::number());
-    Aux::schema::add_property(
-        element_schema, "time", Aux::schema::type::number());
-    Aux::schema::add_required(
-        element_schema, "values",
-        Aux::schema::make_list_schema_of(
-            Aux::schema::type::number(),
-            {{"description", "Initial Values at an interpolation point"},
-             {"minItems", number_of_values_per_point},
-             {"maxItems", number_of_values_per_point}}));
-
-    auto schema = Aux::schema::make_list_schema_of(element_schema);
-    return schema;
-  }
-
   InterpolatingVector::InterpolatingVector(
       Interpolation_data data, Eigen::Index _inner_length) :
       interpolation_points(set_equidistant_interpolation_points(data)),

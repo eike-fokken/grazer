@@ -23,8 +23,6 @@ namespace Aux {
 
   class InterpolatingVector {
   public:
-    static nlohmann::json get_schema(size_t number_of_values_per_point);
-
     InterpolatingVector(Interpolation_data data, Eigen::Index _inner_length);
     InterpolatingVector(
         std::vector<double> interpolation_points, Eigen::Index inner_length);
