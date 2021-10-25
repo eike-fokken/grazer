@@ -24,7 +24,8 @@ json gasinitial(json datapoint);
  * The function expects the following command line arguments:
  *
  * - the json file containing the results of a grazer computation
- * - the output file name of the output file to be written to
+ * - the output file name of this executable. E.g. a json file with initial
+ * conditions for a problem.
  * - the time at which the initial value should be extracted
  */
 int main(int argc, char **argv) {

@@ -10,13 +10,14 @@
 using json = nlohmann::ordered_json;
 namespace fs = std::filesystem;
 
-/** \brief Adds a pressure value on all existing pressure values in the initial
- * value file in the problem folder. Can also be used with negative numbers.
+/** \brief Increases the pressure value on all existing pressure values in the
+ * initial value file in the problem folder. Can also be used with negative
+ * numbers to decrease the pressure.
  *
  * The function expects the following command line arguments:
  *
  * - the input file
- * - the pressure difference
+ * - the pressure to be added
  */
 
 int main(int argc, char **argv) {

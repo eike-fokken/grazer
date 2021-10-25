@@ -22,29 +22,44 @@ namespace Model::Componentfactory {
 
 namespace Model::Networkproblem {
 
+  /** \brief Sort all components in all their respective categories and checks
+   * whether any id appears twice (in which case an exception is thrown.)
+   *
+   * @param components The json to be sorted.
+   * @param key The key inside the Networkproblem json, e.g. topology or
+   * boundary.
+   */
   void sort_json_vectors_by_id(nlohmann::json &components, std::string key);
+
+  /** \brief Throws an exception if an id is used more than once
+   * @param components The json to be checked.
+   * @param key The key inside the Networkproblem json, e.g. topology or
+   * boundary.
+   */
   void check_for_duplicates(nlohmann::json &components, std::string key);
 
-  /// \brief Constructs the full networkproblem json from file paths for the
-  /// respective files and fills all component jsons with their boundary and
-  /// control data.
-  ///
-  /// This function returns a json object which contains individual component
-  /// jsons that contain all information neccessary for constructing the
-  /// components.
-  /// @param networkproblem_json A json describing the networkproblem.
-  /// Contains topology, boundary and control data, possibly in form of file
-  /// paths to the respective json files.
-  /// @returns the topology json enriched with control and boundary data.
+  /** \brief Constructs the full networkproblem json from file paths for the
+   * respective files and fills all component jsons with their boundary and
+   * control data.
+   *
+   * This function returns a json object which contains individual component
+   * jsons that contain all information neccessary for constructing the
+   * components.
+   * @param networkproblem_json A json describing the networkproblem.
+   * Contains topology, boundary and control data, possibly in form of file
+   * paths to the respective json files.
+   * @returns the topology json enriched with control and boundary data.
+   */
   nlohmann::json
   build_full_networkproblem_json(nlohmann::json &networkproblem_json);
 
-  /// \brief construct Nodes of types given by the json input and put their
-  /// pointers in a vector
-  ///
-  /// This helper function constructs Nodes of specific (final) types.
-  /// @return a vector of unique pointers to Node to the newly constructed
-  /// nodes.
+  /** \brief construct Nodes of types given by the json input and put their
+   * pointers in a vector
+   *
+   * This helper function constructs Nodes of specific (final) types.
+   * @return a vector of unique pointers to Node to the newly constructed
+   * nodes.
+   */
   std::vector<std::unique_ptr<Network::Node>> build_node_vector(
       nlohmann::json const &node_topology,
       std::map<
@@ -52,12 +67,13 @@ namespace Model::Networkproblem {
           std::unique_ptr<Componentfactory::AbstractNodeType>> const
           &nodetypemap);
 
-  /// \brief construct Edges of types given by the json input and put their
-  /// pointers in a vector
-  ///
-  /// This helper function constructs Edges of specific (final) types.
-  /// @return a vector of unique pointers to Edge to the newly constructed
-  /// edges.
+  /** \brief construct Edges of types given by the json input and put their
+   * pointers in a vector
+   *
+   * This helper function constructs Edges of specific (final) types.
+   * @return a vector of unique pointers to Edge to the newly constructed
+   * edges.
+   */
   std::vector<std::unique_ptr<Network::Edge>> build_edge_vector(
       nlohmann::json const &edge_topology,
       std::vector<std::unique_ptr<Network::Node>> &nodes,
@@ -66,26 +82,27 @@ namespace Model::Networkproblem {
           std::unique_ptr<Componentfactory::AbstractEdgeType>> const
           &edgetypemap);
 
-  /// \brief Enters entries from a second json object into the topology json.
-  ///
-  /// Used for boundary and control jsons.
+  /** \brief Enters entries from a second json object into the topology json.
+   *
+   * Used for boundary and control jsons.
+   */
   void insert_second_json_in_topology_json(
       nlohmann::json &topology, nlohmann::json &boundary,
       std::string const &name_of_inserted_json);
 
-  /// \brief Constructs a \ref Network::Net "Net" object from the given json.
-  ///
-  /// @param networkproblem_json A json containing complete jsons to all
-  /// components that shall be constructed for the net.
-  /// @param factory Chooses the \ref
-  /// Model::Componentfactory::Componentfactory_interface "Componentfactory"
-  /// class and with that the types of components that are recognized.
-  /// @return A unique pointer to an instance of \ref Network::Net "Net"
-  /// containing all nodes and edges declared in networkproblem_json.
-  /// @throw std::runtime_error if a component type is found in the topology
-  /// that is not constructible in the Componentfactory.
-  /// @throw std::runtime_error if the passed json has errors.
-
+  /** \brief Constructs a \ref Network::Net "Net" object from the given json.
+   *
+   * @param networkproblem_json A json containing complete jsons to all
+   * components that shall be constructed for the net.
+   * @param factory Chooses the \ref
+   * Model::Componentfactory::Componentfactory_interface "Componentfactory"
+   * class and with that the types of components that are recognized.
+   * @return A unique pointer to an instance of \ref Network::Net "Net"
+   * containing all nodes and edges declared in networkproblem_json.
+   * @throw std::runtime_error if a component type is found in the topology
+   * that is not constructible in the Componentfactory.
+   * @throw std::runtime_error if the passed json has errors.
+   */
   std::unique_ptr<Network::Net> build_net(
       nlohmann::json &networkproblem_json,
       Componentfactory::Componentfactory const &factory);

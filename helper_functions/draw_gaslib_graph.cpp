@@ -16,7 +16,7 @@ static std::string colorchooser(std::string const &type);
  * The function expects the following command line arguments:
  *
  * - the file name of the topology file (json)
- * - the file name of the textfile to be written
+ * - the file name of the tex-file to be written
  * - the scale factor (optional, defaults to 10)
  *
  * The scale factor is possibly needed

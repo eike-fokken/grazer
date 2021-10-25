@@ -8,7 +8,7 @@
 using json = nlohmann::ordered_json;
 namespace fs = std::filesystem;
 
-/** @brief A helper function to move a component from one type to another
+/** @brief A helper function to move a component from one type to another.
  *
  * The parameters are space-separated strings given as commandline options in
  * the following order.

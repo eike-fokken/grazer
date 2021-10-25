@@ -5,6 +5,8 @@
 #include <tuple>
 #include <vector>
 
+/** \brief Namespace concerned with preparing files for writing to.
+ */
 namespace io {
 
   /** Checks whether the given path filepath is inside of problem_root_path.
@@ -22,7 +24,8 @@ namespace io {
   std::filesystem::path
   attach_epoch_count(std::filesystem::path const &filename);
 
-  /** Function pointer type for a function like attach_epoch_count.
+  /** Function pointer type for a function like attach_epoch_count,
+   * returns possible filenames, usually differing ones.
    */
   using filename_generator = std::filesystem::path (*)(
       std::filesystem::path const &original_filename);
@@ -31,7 +34,7 @@ namespace io {
    * whether the given filename doesn't exist yet.
    *
    * @param filename filename to modify to get a unique filename.
-   * @param generator TODO: ...
+   * @param generator A function of type \ref io::filename_generator
    */
   std::filesystem::path create_new_output_file(
       std::filesystem::path const &filename, filename_generator generator);

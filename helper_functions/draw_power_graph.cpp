@@ -17,7 +17,7 @@ std::string colorchooser(std::string const &type);
  * The function expects the following command line arguments:
  *
  * - the topology file
- * - the file name of the texfile to be written to
+ * - the file name of the tex-file to be written to
  * - the scaling factor (optional, defaults to 10)
  *
  * The scaling factor is possibly needed because tex cannot work with dimensions
