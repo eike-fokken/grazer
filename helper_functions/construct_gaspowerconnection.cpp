@@ -8,13 +8,16 @@
 using json = nlohmann::ordered_json;
 namespace fs = std::filesystem;
 
-/** @brief A helper function to move a component from one type to another
+/** @brief A helper function to construct a gaspowerconnection from one Gasnode
+ * to a Powernode
  *
  * The parameters are space-separated strings given as commandline options in
  * the following order.
- * @param from The exact name of the type the component is currently in
- * @param to The exact name of the type the component is to be moved to.
- * @param id the id of the component to be moved.
+ *
+ * The function expects the following command line arguments:
+ *
+ * - the starting node id of the Gaspowerconnection to be constructed.
+ * - the ending node id of the Gaspowerconnection to be constructed.
  */
 
 int main(int argc, char **argv) {
@@ -23,8 +26,6 @@ int main(int argc, char **argv) {
               << std::endl;
     return 1;
   }
-  std::string from_category = "Vphinode";
-  std::string to_category = "ExternalPowerplant";
   std::string startid = argv[1];
   std::string endid = argv[2];
   std::string fullstartid = "node_" + startid;
