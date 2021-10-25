@@ -12,9 +12,11 @@ namespace fs = std::filesystem;
  *
  * The parameters are space-separated strings given as commandline options in
  * the following order.
- * @param argc number of arguments (should be 3)
- * @param argv contains starting node id of the type the component is currently
- * in and ending node id where the component is to be moved to.
+ *
+ * The function expects the following command line arguments:
+ *
+ * - the starting node id of the type the component is currently in
+ * - the ending node id where the component is to be moved to
  */
 
 int main(int argc, char **argv) {
