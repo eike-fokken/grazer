@@ -53,7 +53,7 @@ namespace Optimization {
     }
     multipliers[N] = solvers[N].solve(-1 * df_dx_vector[N]);
 
-    for (std::size_t k = N - 1; k >= 1; --k) {
+    for (auto k = N - 1; k >= 1; --k) {
       if (not already_factorized) {
         solvers[k].factorize(BT_vector[k]);
       }
