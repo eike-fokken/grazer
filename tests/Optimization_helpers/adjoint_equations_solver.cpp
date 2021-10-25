@@ -40,8 +40,8 @@ TEST(AdjoinEquationsSolver, system1) {
   std::vector<Eigen::SparseLU<Eigen::SparseMatrix<double>>> solvers(3);
 
   // solve the adjoint equations system
-  optimization::initialize_solvers(BT_vector, solvers);
-  optimization::compute_multiplier(
+  Optimization::initialize_solvers(BT_vector, solvers);
+  Optimization::compute_multiplier(
       multipliers, AT_vector, BT_vector, df_dx_vector, solvers);
 
   EXPECT_NEAR(multipliers[0][0], -0.13256048, 1.0e-5);
