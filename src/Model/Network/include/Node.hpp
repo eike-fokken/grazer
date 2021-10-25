@@ -15,8 +15,6 @@ namespace Network {
   class Node : public Idobject {
 
   public:
-    static std::string get_type() = delete;
-
     Node() = delete;
 
     Node(nlohmann::json const &data);

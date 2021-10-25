@@ -15,7 +15,7 @@ namespace Network {
   public:
     static nlohmann::json get_schema();
 
-    // The edge holds a shared pointer to its start and end nodes.
+    // The edge holds a  pointer to its start and end nodes.
     // Creating an edge without also providing its start and
     // end node is prohibited:
     Edge() = delete;
@@ -30,11 +30,9 @@ namespace Network {
     virtual ~Edge();
 
     /// Function returns starting node of Edge object.
-    /// @returns Starting node of type std::shared_ptr<Network::Node>
     Node *get_starting_node() const;
 
     /// Function returns ending node of Edge object.
-    /// @returns Ending node of type std::shared_ptr<Network::Node>
     Node *get_ending_node() const;
 
   private:
