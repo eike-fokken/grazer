@@ -8,7 +8,7 @@ namespace Model::Gas {
   class Innode final : public Gasnode {
 
   public:
-    static char const constexpr *get_type() { return "Innode"; }
+    static std::string get_type();
 
     // Maybe we should incorporate the min and max pressure later on...
     using Gasnode::Gasnode;

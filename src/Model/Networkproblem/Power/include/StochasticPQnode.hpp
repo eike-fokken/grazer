@@ -12,8 +12,7 @@ namespace Model::Power {
 
   class StochasticPQnode final : public Powernode {
   public:
-    static char const constexpr *get_type() { return "StochasticPQnode"; }
-
+    static std::string get_type();
     std::string get_power_type() const override;
 
     static nlohmann::json get_schema();

@@ -22,8 +22,7 @@ namespace Model::Gaspowerconnection {
       public Gas::Gasedge,
       public Network::Edge {
   public:
-    static char const constexpr *get_type() { return "Gaspowerconnection"; }
-
+    static std::string get_type();
     std::string get_gas_type() const override;
     static nlohmann::json get_schema();
     static nlohmann::json get_initial_schema();

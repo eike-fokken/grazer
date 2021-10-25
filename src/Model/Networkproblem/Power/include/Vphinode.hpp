@@ -6,8 +6,7 @@ namespace Model::Power {
   class Vphinode final : public Powernode {
 
   public:
-    static char const constexpr *get_type() { return "Vphinode"; }
-
+    static std::string get_type();
     std::string get_power_type() const override;
 
     using Powernode::Powernode;

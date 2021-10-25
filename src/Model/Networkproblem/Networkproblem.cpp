@@ -37,9 +37,7 @@ namespace Model {
     return idcomponents;
   }
 
-  char const constexpr *Networkproblem::get_type() const {
-    return "Network_problem";
-  }
+  std::string Networkproblem::get_type() const { return "Network_problem"; }
 
   Networkproblem::~Networkproblem() {}
 

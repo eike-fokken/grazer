@@ -7,6 +7,7 @@
 
 namespace Model::Power {
 
+  std::string PQnode::get_type() { return "PQnode"; }
   std::string PQnode::get_power_type() const { return get_type(); }
   void PQnode::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,

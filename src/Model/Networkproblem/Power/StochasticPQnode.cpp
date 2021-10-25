@@ -6,6 +6,7 @@
 
 namespace Model::Power {
 
+  std::string StochasticPQnode::get_type() { return "StochasticPQnode"; }
   std::string StochasticPQnode::get_power_type() const { return get_type(); }
 
   nlohmann::json StochasticPQnode::get_schema() {

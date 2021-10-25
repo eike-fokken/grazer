@@ -6,8 +6,7 @@ namespace Model::Gas {
   class Shortpipe : public Equationcomponent, public Shortcomponent {
 
   public:
-    static char const constexpr *get_type() { return "Shortpipe"; }
-
+    static std::string get_type();
     std::string get_gas_type() const override;
     using Shortcomponent::Shortcomponent;
 

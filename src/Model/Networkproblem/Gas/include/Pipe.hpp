@@ -18,8 +18,7 @@ namespace Model::Gas {
       public Gasedge,
       public Network::Edge {
   public:
-    static char const constexpr *get_type() { return "Pipe"; }
-
+    static std::string get_type();
     std::string get_gas_type() const override;
     static int init_vals_per_interpol_point();
     static nlohmann::json get_schema();

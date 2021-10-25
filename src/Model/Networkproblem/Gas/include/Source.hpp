@@ -6,7 +6,7 @@ namespace Model::Gas {
   class Source final : public Flowboundarynode {
 
   public:
-    static char const constexpr *get_type() { return "Source"; }
+    static std::string get_type();
 
     using Flowboundarynode::Flowboundarynode;
   };

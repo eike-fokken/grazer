@@ -13,6 +13,7 @@
 
 namespace Model::Gaspowerconnection {
 
+  std::string Gaspowerconnection::get_type() { return "Gaspowerconnection"; }
   std::string Gaspowerconnection::get_gas_type() const { return get_type(); }
   nlohmann::json Gaspowerconnection::get_schema() {
     nlohmann::json schema = Network::Edge::get_schema();

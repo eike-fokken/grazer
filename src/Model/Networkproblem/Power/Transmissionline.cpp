@@ -15,6 +15,8 @@ namespace Model::Power {
     return schema;
   }
 
+  std::string Transmissionline::get_type() { return "Transmissionline"; }
+
   Transmissionline::Transmissionline(
       nlohmann::json const &topology,
       std::vector<std::unique_ptr<Network::Node>> &nodes) :

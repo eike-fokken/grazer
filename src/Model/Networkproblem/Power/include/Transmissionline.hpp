@@ -9,8 +9,7 @@ namespace Model::Power {
   class Transmissionline final : public Network::Edge {
 
   public:
-    static char const constexpr *get_type() { return "Transmissionline"; }
-
+    static std::string get_type();
     static nlohmann::json get_schema();
 
     Transmissionline(

@@ -5,6 +5,7 @@
 
 namespace Model::Power {
 
+  std::string PVnode::get_type() { return "PVnode"; }
   std::string PVnode::get_power_type() const { return get_type(); }
 
   void PVnode::evaluate(

@@ -4,6 +4,7 @@
 
 namespace Model::Power {
 
+  std::string Vphinode::get_type() { return "Vphinode"; }
   std::string Vphinode::get_power_type() const { return get_type(); }
 
   void Vphinode::evaluate(
