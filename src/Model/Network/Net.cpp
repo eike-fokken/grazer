@@ -88,7 +88,7 @@ namespace Network {
     return raw_edges;
   }
 
-  Node *Net::get_node_by_id(std::string const id) const {
+  Node *Net::get_node_by_id(std::string const &id) const {
     for (auto itr = nodes.begin(); itr != nodes.end(); itr++) {
       if ((*itr)->get_id() == id) {
         return (*itr).get();
@@ -116,7 +116,7 @@ namespace Network {
   }
 
   Edge *Net::get_edge_by_node_ids(
-      std::string const id1, std::string const id2) const {
+      std::string const &id1, std::string const &id2) const {
     for (auto itr = edges.begin(); itr != edges.end(); itr++) {
       if (((*itr)->get_starting_node()->get_id() == id1)
           && ((*itr)->get_ending_node()->get_id() == id2)) {
@@ -127,7 +127,7 @@ namespace Network {
     return nullptr;
   }
 
-  Edge *Net::get_edge_by_id(std::string const id) const {
+  Edge *Net::get_edge_by_id(std::string const &id) const {
 
     for (auto &edge : edges) {
       if (edge->get_id() == id) {
@@ -138,8 +138,8 @@ namespace Network {
     return nullptr;
   }
 
-  bool
-  Net::exists_edge_between(std::string const id1, std::string const id2) const {
+  bool Net::exists_edge_between(
+      std::string const &id1, std::string const &id2) const {
 
     auto find_endpoints = [id1, id2](std::unique_ptr<Edge> const &edge) {
       if ((edge->get_starting_node()->get_id() == id1)
