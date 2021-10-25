@@ -42,7 +42,7 @@ TEST(AdjoinEquationsSolver, system1) {
   // solve the adjoint equations system
   Optimization::initialize_solvers(BT_vector, solvers);
   Optimization::compute_multiplier(
-      multipliers, AT_vector, BT_vector, df_dx_vector, solvers);
+      false, multipliers, AT_vector, BT_vector, df_dx_vector, solvers);
 
   EXPECT_NEAR(multipliers[0][0], -0.13256048, 1.0e-5);
   EXPECT_NEAR(multipliers[0][1], -1.04889113, 1.0e-5);

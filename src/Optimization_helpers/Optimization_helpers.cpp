@@ -4,6 +4,8 @@
 #include "Networkproblem.hpp"
 #include "Timeevolver.hpp"
 #include <cassert>
+#include <cstddef>
+#include <iostream>
 
 namespace Optimization {
 
@@ -30,19 +32,31 @@ namespace Optimization {
    * @param    solvers              vector of Eigen solver objects
    */
   void compute_multiplier(
-      std::vector<Eigen::VectorXd> &multipliers,
+      bool already_factorized, std::vector<Eigen::VectorXd> &multipliers,
       std::vector<Eigen::SparseMatrix<double>> const &AT_vector,
       std::vector<Eigen::SparseMatrix<double>> const &BT_vector,
       std::vector<Eigen::VectorXd> const &df_dx_vector,
       std::vector<Eigen::SparseLU<Eigen::SparseMatrix<double>>> &solvers) {
 
-    // first iteration j = N
-    std::size_t N = multipliers.size() - 1;
-    solvers[N].factorize(BT_vector[N]);
+    // The algorithm needs at least the starting and ending time step:
+    assert(multipliers.size() >= 2);
+
+    // The following is just a sanity check.
+    assert(multipliers.size() == AT_vector.size());
+    assert(multipliers.size() == BT_vector.size());
+    assert(multipliers.size() == df_dx_vector.size());
+    assert(multipliers.size() == solvers.size());
+
+    auto N = multipliers.size() - 1;
+    if (not already_factorized) {
+      solvers[N].factorize(BT_vector.back());
+    }
     multipliers[N] = solvers[N].solve(-1 * df_dx_vector[N]);
 
     for (std::size_t k = N - 1; k >= 1; --k) {
-      solvers[k].factorize(BT_vector[k]);
+      if (not already_factorized) {
+        solvers[k].factorize(BT_vector[k]);
+      }
       multipliers[k] = solvers[k].solve(
           -1 * (df_dx_vector[k] + AT_vector[k + 1] * multipliers[k + 1]));
     }

@@ -39,7 +39,7 @@ namespace Optimization {
    * right sparsity pattern for the corresponding matrix in #BT_vector
    */
   void compute_multiplier(
-      std::vector<Eigen::VectorXd> &multipliers,
+      bool already_factorized, std::vector<Eigen::VectorXd> &multipliers,
       std::vector<Eigen::SparseMatrix<double>> const &AT_vector,
       std::vector<Eigen::SparseMatrix<double>> const &BT_vector,
       std::vector<Eigen::VectorXd> const &df_dx_vector,
