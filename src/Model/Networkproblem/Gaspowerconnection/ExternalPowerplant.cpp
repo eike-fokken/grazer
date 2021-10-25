@@ -8,7 +8,6 @@
 
 namespace Model::Gaspowerconnection {
 
-  std::string ExternalPowerplant::get_type() { return "ExternalPowerplant"; }
   std::string ExternalPowerplant::get_power_type() const { return get_type(); }
 
   void ExternalPowerplant::setup() {

@@ -6,7 +6,7 @@ namespace Network {
   /// \brief Provides a unified "name" to inheriting classes.
   class Idobject {
   public:
-    static std::string get_type() = delete;
+    static char const constexpr *get_type() = delete;
 
     static nlohmann::json get_schema();
 

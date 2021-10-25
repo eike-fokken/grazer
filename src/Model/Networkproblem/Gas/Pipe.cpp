@@ -25,7 +25,6 @@
 
 namespace Model::Gas {
 
-  std::string Pipe::get_type() { return "Pipe"; }
   std::string Pipe::get_gas_type() const { return get_type(); }
 
   int Pipe::init_vals_per_interpol_point() { return 2; }

@@ -3,8 +3,6 @@
 
 namespace Model::Gas {
 
-  std::string ConstraintSink::get_type() { return "ConstraintSink"; }
-
   void ConstraintSink::evaluate_constraint(
       Eigen::Ref<Eigen::VectorXd> constraint_values, double last_time,
       double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,

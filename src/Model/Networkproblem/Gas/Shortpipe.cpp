@@ -7,7 +7,6 @@
 
 namespace Model::Gas {
 
-  std::string Shortpipe::get_type() { return "Shortpipe"; }
   std::string Shortpipe::get_gas_type() const { return get_type(); }
 
   void Shortpipe::setup() { setup_output_json_helper(get_id()); }

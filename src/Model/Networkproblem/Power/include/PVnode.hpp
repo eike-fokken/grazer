@@ -6,7 +6,8 @@ namespace Model::Power {
   class PVnode final : public Powernode {
 
   public:
-    static std::string get_type();
+    static char const constexpr *get_type() { return "PVnode"; }
+
     std::string get_power_type() const override;
     using Powernode::Powernode;
 

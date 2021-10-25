@@ -7,7 +7,7 @@
 #include "make_schema.hpp"
 
 namespace Model::Gas {
-  std::string Controlvalve::get_type() { return "Controlvalve"; }
+
   std::string Controlvalve::get_gas_type() const { return get_type(); }
 
   std::optional<nlohmann::json> Controlvalve::get_control_schema() {

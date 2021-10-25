@@ -8,7 +8,7 @@
 #include "make_schema.hpp"
 
 namespace Model::Gas {
-  std::string Compressorstation::get_type() { return "Compressorstation"; }
+
   std::string Compressorstation::get_gas_type() const { return get_type(); }
 
   std::optional<nlohmann::json> Compressorstation::get_control_schema() {

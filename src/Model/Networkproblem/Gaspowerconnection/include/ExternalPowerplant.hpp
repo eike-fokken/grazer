@@ -11,7 +11,8 @@ namespace Model::Gaspowerconnection {
   class ExternalPowerplant final : public Power::Powernode {
 
   public:
-    static std::string get_type();
+    static char const constexpr *get_type() { return "ExternalPowerplant"; }
+
     std::string get_power_type() const override;
 
     using Powernode::Powernode;

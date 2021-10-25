@@ -7,7 +7,7 @@ namespace Model::Gas {
   class ConstraintSink final : public Sink, public SimpleConstraintcomponent {
 
   public:
-    static std::string get_type();
+    static char const constexpr *get_type() { return "ConstraintSink"; }
 
     using Sink::Sink;
 

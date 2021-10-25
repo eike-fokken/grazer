@@ -8,7 +8,7 @@ namespace Model::Gas {
   class Sink : public Flowboundarynode {
 
   public:
-    static std::string get_type();
+    static char const constexpr *get_type() { return "Sink"; }
 
     Sink(nlohmann::json const &data);
   };

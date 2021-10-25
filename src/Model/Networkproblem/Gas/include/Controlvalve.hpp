@@ -12,7 +12,8 @@ namespace Model::Gas {
       public SimpleControlcomponent,
       public Shortcomponent {
   public:
-    static std::string get_type();
+    static char const constexpr *get_type() { return "Controlvalve"; }
+
     std::string get_gas_type() const override;
 
     static std::optional<nlohmann::json> get_control_schema();

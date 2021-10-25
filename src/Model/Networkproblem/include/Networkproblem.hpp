@@ -32,7 +32,7 @@ namespace Model {
       public Costcomponent {
 
   public:
-    std::string get_type() const;
+    char const constexpr *get_type() const;
 
     ~Networkproblem() override; // override{};
 
