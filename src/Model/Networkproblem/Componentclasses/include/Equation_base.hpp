@@ -19,7 +19,7 @@ namespace Model {
      * Usually does nothing, but for example gas nodes
      * claim indices from their attached gas edges.
      */
-    virtual void setup();
+    virtual void setup() = 0;
     static std::optional<nlohmann::json> get_boundary_schema();
   };
 
