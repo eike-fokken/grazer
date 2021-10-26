@@ -16,7 +16,7 @@ namespace Model::Power {
     std::string get_power_type() const override;
 
     static nlohmann::json get_schema();
-    static std::optional<nlohmann::json> get_boundary_schema();
+    static nlohmann::json get_boundary_schema();
 
     StochasticPQnode(nlohmann::json const &topology);
 

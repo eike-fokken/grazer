@@ -6,14 +6,14 @@
 
 namespace Model::Gas {
 
-  std::optional<nlohmann::json> Flowboundarynode::get_boundary_schema() {
+  nlohmann::json Flowboundarynode::get_boundary_schema() {
     return Aux::schema::make_boundary_schema(1);
   }
 
   Flowboundarynode::Flowboundarynode(nlohmann::json const &data) :
       Gasnode(data),
       boundaryvalue(Aux::InterpolatingVector::construct_from_json(
-          data["boundary_values"], get_boundary_schema().value())) {}
+          data["boundary_values"], get_boundary_schema())) {}
 
   void Flowboundarynode::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,

@@ -17,7 +17,7 @@ namespace Model::Power {
   public:
     virtual std::string get_power_type() const = 0;
     static nlohmann::json get_schema();
-    static std::optional<nlohmann::json> get_boundary_schema();
+    static nlohmann::json get_boundary_schema();
     static nlohmann::json get_initial_schema();
 
     Powernode(nlohmann::json const &topology);

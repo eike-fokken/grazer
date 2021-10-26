@@ -25,7 +25,7 @@ namespace Model::Power {
     return schema;
   }
 
-  std::optional<nlohmann::json> StochasticPQnode::get_boundary_schema() {
+  nlohmann::json StochasticPQnode::get_boundary_schema() {
     auto boundary_schema = Aux::schema::make_boundary_schema(2);
     auto seed_schema
         = Aux::schema::make_list_schema_of(Aux::schema::type::number());

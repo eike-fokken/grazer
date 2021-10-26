@@ -12,7 +12,7 @@ namespace Model::Gas {
   class Flowboundarynode : public Gasnode, public Boundaryvaluecomponent {
 
   public:
-    static std::optional<nlohmann::json> get_boundary_schema();
+    static nlohmann::json get_boundary_schema();
 
     Flowboundarynode(nlohmann::json const &data);
 
