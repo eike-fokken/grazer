@@ -20,7 +20,6 @@ namespace Model {
      * claim indices from their attached gas edges.
      */
     virtual void setup() = 0;
-    static std::optional<nlohmann::json> get_boundary_schema();
   };
 
 } // namespace Model

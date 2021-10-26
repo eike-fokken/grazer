@@ -1,4 +1,5 @@
 #pragma once
+#include "Boundaryvaluecomponent.hpp"
 #include "Equationcomponent.hpp"
 #include "InterpolatingVector.hpp"
 #include "Node.hpp"
@@ -10,7 +11,8 @@ namespace Model::Power {
   class Powernode :
       public Equationcomponent,
       public SimpleStatecomponent,
-      public Network::Node {
+      public Network::Node,
+      public Boundaryvaluecomponent {
 
   public:
     virtual std::string get_power_type() const = 0;

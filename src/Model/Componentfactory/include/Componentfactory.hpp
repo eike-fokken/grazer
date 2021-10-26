@@ -1,4 +1,5 @@
 #pragma once
+#include "Boundaryvaluecomponent.hpp"
 #include "Controlcomponent.hpp"
 #include "Edge.hpp"
 #include "Equation_base.hpp"
@@ -169,13 +170,13 @@ namespace Model::Componentfactory {
         bool allow_required_defaults, bool include_external) const override {
       auto schema = ConcreteNode::get_schema();
       if (include_external) {
-        auto optional_boundary = get_boundary_schema(allow_required_defaults);
-        if (optional_boundary.has_value()) {
+        if constexpr (std::is_base_of_v<Boundaryvaluecomponent, ConcreteNode>) {
+          auto optional_boundary = get_boundary_schema(allow_required_defaults);
           Aux::schema::add_required(
               schema, "boundary_values", optional_boundary.value());
         }
-        auto optional_control = get_control_schema(allow_required_defaults);
-        if (optional_control.has_value()) {
+        if constexpr (std::is_base_of_v<Controlcomponent, ConcreteNode>) {
+          auto optional_control = get_control_schema(allow_required_defaults);
           Aux::schema::add_required(
               schema, "control_values", optional_control.value());
         }
@@ -192,17 +193,15 @@ namespace Model::Componentfactory {
       // should really be `requires` (cf.
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
-      if constexpr (std::is_base_of<Equation_base, ConcreteNode>::value) {
-
+      if constexpr (std::is_base_of<
+                        Boundaryvaluecomponent, ConcreteNode>::value) {
         auto opt_boundary_schema = ConcreteNode::get_boundary_schema();
-        if (opt_boundary_schema.has_value()) {
-          auto boundary_schema = opt_boundary_schema.value();
-          Aux::schema::add_defaults(
-              boundary_schema,
-              this->defaults.value("boundary_values", R"({})"_json));
-          if (not allow_required_defaults) {
-            Aux::schema::remove_defaults_from_required(boundary_schema);
-          }
+        auto boundary_schema = opt_boundary_schema.value();
+        Aux::schema::add_defaults(
+            boundary_schema,
+            this->defaults.value("boundary_values", R"({})"_json));
+        if (not allow_required_defaults) {
+          Aux::schema::remove_defaults_from_required(boundary_schema);
         }
         return opt_boundary_schema;
       } else {
@@ -215,16 +214,14 @@ namespace Model::Componentfactory {
       // should really be `requires` (cf.
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
-      if constexpr (std::is_base_of<Equationcomponent, ConcreteNode>::value) {
+      if constexpr (std::is_base_of<Controlcomponent, ConcreteNode>::value) {
         auto opt_control_schema = ConcreteNode::get_control_schema();
-        if (opt_control_schema.has_value()) {
-          auto control_schema = opt_control_schema.value();
-          Aux::schema::add_defaults(
-              control_schema,
-              this->defaults.value("control_values", R"({})"_json));
-          if (not allow_required_defaults) {
-            Aux::schema::remove_defaults_from_required(control_schema);
-          }
+        auto control_schema = opt_control_schema.value();
+        Aux::schema::add_defaults(
+            control_schema,
+            this->defaults.value("control_values", R"({})"_json));
+        if (not allow_required_defaults) {
+          Aux::schema::remove_defaults_from_required(control_schema);
         }
         return opt_control_schema;
       } else {
@@ -266,7 +263,8 @@ namespace Model::Componentfactory {
 
   /**
    * @brief A EdgeType is an instantiation of the class of a (concrete) edge.
-   * It allows the passing and storage of EdgeTypes which are all subclasses of
+   * It allows the passing and storage of EdgeTypes which are all subclasses
+   of
    * AbstractEdgeType. And the AbstractEdgeType interface provides dynamic
    * access to the static methods of (concrete) edges.
    *
@@ -324,16 +322,15 @@ namespace Model::Componentfactory {
       // should really be `requires` (cf.
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
-      if constexpr (std::is_base_of<Equation_base, ConcreteEdge>::value) {
+      if constexpr (std::is_base_of<
+                        Boundaryvaluecomponent, ConcreteEdge>::value) {
         auto opt_boundary_schema = ConcreteEdge::get_boundary_schema();
-        if (opt_boundary_schema.has_value()) {
-          auto boundary_schema = opt_boundary_schema.value();
-          Aux::schema::add_defaults(
-              boundary_schema,
-              this->defaults.value("boundary_values", R"({})"_json));
-          if (not allow_required_defaults) {
-            Aux::schema::remove_defaults_from_required(boundary_schema);
-          }
+        auto boundary_schema = opt_boundary_schema.value();
+        Aux::schema::add_defaults(
+            boundary_schema,
+            this->defaults.value("boundary_values", R"({})"_json));
+        if (not allow_required_defaults) {
+          Aux::schema::remove_defaults_from_required(boundary_schema);
         }
         return opt_boundary_schema;
       } else {
@@ -346,16 +343,14 @@ namespace Model::Componentfactory {
       // should really be `requires` (cf.
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
-      if constexpr (std::is_base_of<Equationcomponent, ConcreteEdge>::value) {
+      if constexpr (std::is_base_of<Controlcomponent, ConcreteEdge>::value) {
         auto opt_control_schema = ConcreteEdge::get_control_schema();
-        if (opt_control_schema.has_value()) {
-          auto control_schema = opt_control_schema.value();
-          Aux::schema::add_defaults(
-              control_schema,
-              this->defaults.value("control_values", R"({})"_json));
-          if (not allow_required_defaults) {
-            Aux::schema::remove_defaults_from_required(control_schema);
-          }
+        auto control_schema = opt_control_schema.value();
+        Aux::schema::add_defaults(
+            control_schema,
+            this->defaults.value("control_values", R"({})"_json));
+        if (not allow_required_defaults) {
+          Aux::schema::remove_defaults_from_required(control_schema);
         }
         return opt_control_schema;
       } else {
@@ -404,15 +399,15 @@ namespace Model::Componentfactory {
     /// @brief A map of Node types.
     ///
     /// The keys in this map are names of the node types as given in the
-    /// topology json. The values are factory objects that can construct a node
-    /// of the specific type.
+    /// topology json. The values are factory objects that can construct a
+    /// node of the specific type.
     std::map<std::string, std::unique_ptr<AbstractNodeType>> node_type_map;
 
     /// @brief A map of Edge types.
     ///
     /// The keys in this map are names of the edge types as given in the
-    /// topology json. The values are factory objects that can construct a edge
-    /// of the specific type.
+    /// topology json. The values are factory objects that can construct a
+    /// edge of the specific type.
     std::map<std::string, std::unique_ptr<AbstractEdgeType>> edge_type_map;
 
     void add_node_type(std::unique_ptr<AbstractNodeType> nodeType);
@@ -432,7 +427,8 @@ namespace Model::Componentfactory {
         bool allow_required_defaults, bool include_external) const;
 
     /**
-     * @brief Return the Full JSON Schema for the Boundary Behaviour Description
+     * @brief Return the Full JSON Schema for the Boundary Behaviour
+     * Description
      *
      * @return nlohmann::json
      */

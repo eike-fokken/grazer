@@ -1,14 +1,15 @@
 #pragma once
+#include "Boundaryvaluecomponent.hpp"
+#include "Equationcomponent.hpp"
+#include "Gasnode.hpp"
 #include "InterpolatingVector.hpp"
-#include <Equationcomponent.hpp>
-#include <Gasnode.hpp>
-#include <Node.hpp>
+#include "Node.hpp"
 #include <nlohmann/json.hpp>
 #include <string>
 
 namespace Model::Gas {
 
-  class Flowboundarynode : public Gasnode {
+  class Flowboundarynode : public Gasnode, public Boundaryvaluecomponent {
 
   public:
     static std::optional<nlohmann::json> get_boundary_schema();
