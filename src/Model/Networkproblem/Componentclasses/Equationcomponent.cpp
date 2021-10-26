@@ -11,8 +11,4 @@ namespace Model {
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) {}
 
-  std::optional<nlohmann::json> Equationcomponent::get_control_schema() {
-    return std::nullopt;
-  }
-
 } // namespace Model

@@ -96,8 +96,6 @@ namespace Model {
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
-
-    static std::optional<nlohmann::json> get_control_schema();
   };
 
 } // namespace Model
