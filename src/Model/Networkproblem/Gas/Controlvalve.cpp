@@ -10,7 +10,7 @@ namespace Model::Gas {
   std::string Controlvalve::get_type() { return "Controlvalve"; }
   std::string Controlvalve::get_gas_type() const { return get_type(); }
 
-  std::optional<nlohmann::json> Controlvalve::get_control_schema() {
+  nlohmann::json Controlvalve::get_control_schema() {
     return Aux::schema::make_boundary_schema(1);
   }
 
@@ -78,23 +78,21 @@ namespace Model::Gas {
       Aux::InterpolatingVector &full_control_vector,
       nlohmann::json const &control_json) const {
     set_simple_time_dependent_values(
-        this, full_control_vector, control_json, get_control_schema().value());
+        this, full_control_vector, control_json, get_control_schema());
   }
 
   void Controlvalve::set_lower_bounds(
       Aux::InterpolatingVector &full_lower_bound_vector,
       nlohmann::json const &lower_bound_json) const {
     set_simple_time_dependent_values(
-        this, full_lower_bound_vector, lower_bound_json,
-        get_control_schema().value());
+        this, full_lower_bound_vector, lower_bound_json, get_control_schema());
   }
 
   void Controlvalve::set_upper_bounds(
       Aux::InterpolatingVector &full_upper_bound_vector,
       nlohmann::json const &upper_bound_json) const {
     set_simple_time_dependent_values(
-        this, full_upper_bound_vector, upper_bound_json,
-        get_control_schema().value());
+        this, full_upper_bound_vector, upper_bound_json, get_control_schema());
   }
 
   Eigen::Index Controlvalve::needed_number_of_controls_per_time_point() const {

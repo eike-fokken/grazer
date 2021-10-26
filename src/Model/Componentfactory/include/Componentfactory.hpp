@@ -230,18 +230,17 @@ namespace Model::Componentfactory {
       auto schema = ConcreteNode::get_schema();
       if (include_external) {
         if constexpr (std::is_base_of_v<Boundaryvaluecomponent, ConcreteNode>) {
-          auto optional_boundary = get_component_boundary_schema<ConcreteNode>(
+          auto boundary_schema = get_component_boundary_schema<ConcreteNode>(
               defaults, allow_required_defaults);
-          Aux::schema::add_required(
-              schema, "boundary_values", optional_boundary);
+          Aux::schema::add_required(schema, "boundary_values", boundary_schema);
         }
         if constexpr (std::is_base_of_v<Controlcomponent, ConcreteNode>) {
-          auto optional_control = get_control_schema(allow_required_defaults);
-          Aux::schema::add_required(
-              schema, "control_values", optional_control.value());
+          auto control_schema = get_component_control_schema<ConcreteNode>(
+              defaults, allow_required_defaults);
+          Aux::schema::add_required(schema, "control_values", control_schema);
         }
       }
-      Aux::schema::add_defaults(schema, this->defaults);
+      Aux::schema::add_defaults(schema, defaults);
       if (not allow_required_defaults) {
         Aux::schema::remove_defaults_from_required(schema);
       }
@@ -324,6 +323,28 @@ namespace Model::Componentfactory {
 
     std::string get_name() const override { return ConcreteEdge::get_type(); };
 
+    nlohmann::json get_schema(
+        bool allow_required_defaults, bool include_external) const override {
+      auto schema = ConcreteEdge::get_schema();
+      if (include_external) {
+        if constexpr (std::is_base_of_v<Boundaryvaluecomponent, ConcreteEdge>) {
+          auto boundary_schema = get_component_boundary_schema<ConcreteEdge>(
+              defaults, allow_required_defaults);
+          Aux::schema::add_required(schema, "boundary_values", boundary_schema);
+        }
+        if constexpr (std::is_base_of_v<Controlcomponent, ConcreteEdge>) {
+          auto control_schema = get_component_control_schema<ConcreteEdge>(
+              defaults, allow_required_defaults);
+          Aux::schema::add_required(schema, "control_values", control_schema);
+        }
+      }
+      Aux::schema::add_defaults(schema, defaults);
+      if (not allow_required_defaults) {
+        Aux::schema::remove_defaults_from_required(schema);
+      }
+      return schema;
+    };
+
     std::optional<nlohmann::json>
     get_boundary_schema(bool allow_required_defaults) const override {
       if constexpr (std::is_base_of_v<Boundaryvaluecomponent, ConcreteEdge>) {
@@ -333,29 +354,6 @@ namespace Model::Componentfactory {
         return std::nullopt;
       }
     }
-
-    nlohmann::json get_schema(
-        bool allow_required_defaults, bool include_external) const override {
-      auto schema = ConcreteEdge::get_schema();
-      if (include_external) {
-        if constexpr (std::is_base_of_v<Boundaryvaluecomponent, ConcreteEdge>) {
-          auto optional_boundary = get_component_boundary_schema<ConcreteEdge>(
-              defaults, allow_required_defaults);
-          Aux::schema::add_required(
-              schema, "boundary_values", optional_boundary);
-        }
-        if constexpr (std::is_base_of_v<Controlcomponent, ConcreteEdge>) {
-          auto optional_control = get_control_schema(allow_required_defaults);
-          Aux::schema::add_required(
-              schema, "control_values", optional_control.value());
-        }
-      }
-      Aux::schema::add_defaults(schema, this->defaults);
-      if (not allow_required_defaults) {
-        Aux::schema::remove_defaults_from_required(schema);
-      }
-      return schema;
-    };
 
     std::optional<nlohmann::json>
     get_control_schema(bool allow_required_defaults) const override {
@@ -372,7 +370,7 @@ namespace Model::Componentfactory {
       // should really be `requires` (cf.
       // https://stackoverflow.com/a/22014784/6662425) but that would require
       // C++20
-      if constexpr (std::is_base_of_v<Equationcomponent, ConcreteEdge>) {
+      if constexpr (std::is_base_of_v<Statecomponent, ConcreteEdge>) {
         auto initial_schema = ConcreteEdge::get_initial_schema();
         Aux::schema::add_defaults(
             initial_schema,

@@ -152,7 +152,7 @@ namespace Model {
         Aux::InterpolatingVector &full_upper_bound_vector,
         nlohmann::json const &upper_bound_json) const = 0;
 
-    static std::optional<nlohmann::json> get_control_schema();
+    static nlohmann::json get_control_schema();
 
   private:
     /** \brief The first control index, this Controlcomponent "owns".

@@ -15,7 +15,7 @@ namespace Model::Gas {
     static std::string get_type();
     std::string get_gas_type() const override;
 
-    static std::optional<nlohmann::json> get_control_schema();
+    static nlohmann::json get_control_schema();
 
     Controlvalve(
         nlohmann::json const &edge_json,
