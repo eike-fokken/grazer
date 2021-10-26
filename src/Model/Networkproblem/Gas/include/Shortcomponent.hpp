@@ -11,6 +11,7 @@ namespace Model::Gas {
     using Edge::Edge;
 
     Eigen::Index needed_number_of_states() const final;
+    static nlohmann::json get_initial_schema();
 
     void new_print_helper(
         nlohmann::json &new_output, std::string const &component_type,
@@ -29,8 +30,8 @@ namespace Model::Gas {
         int direction,
         Eigen::Ref<Eigen::VectorXd const> const &state) const final;
 
-    /// Because Shortcomponents use pressure and volumetric flow as their state
-    /// variables, this function just hands `function_derivative` to
+    /// Because Shortcomponents use pressure and volumetric flow as their
+    /// state variables, this function just hands `function_derivative` to
     /// jacobianhandler.
     void dboundary_p_qvol_dstate(
         int direction, Aux::Matrixhandler &jacobianhandler,

@@ -1,11 +1,20 @@
 #include "Shortcomponent.hpp"
 #include "Exception.hpp"
 #include "Matrixhandler.hpp"
+#include "make_schema.hpp"
 #include <fstream>
 #include <iostream>
 
 namespace Model::Gas {
 
+  nlohmann::json Shortcomponent::get_initial_schema() {
+    int interpol_points = 2;
+    std::vector<nlohmann::json> contains_x
+        = {R"({"minimum": 0, "maximum": 0})"_json,
+           R"({"minimum": 1, "maximum": 1})"_json};
+    return Aux::schema::make_initial_schema(
+        interpol_points, Gasedge::init_vals_per_interpol_point(), contains_x);
+  }
   void Shortcomponent::new_print_helper(
       nlohmann::json &new_output, std::string const &component_type,
       std::string const &type) {

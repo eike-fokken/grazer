@@ -51,7 +51,7 @@ namespace Model::Componentfactory {
         "This function can only be called with a class deriving from "
         "Boundaryvaluecomponent!");
 
-    auto boundary_schema = Component::get_boundary_schema();
+    nlohmann::json boundary_schema = Component::get_boundary_schema();
     Aux::schema::add_defaults(
         boundary_schema, defaults.value("boundary_values", R"({})"_json));
     if (not allow_required_defaults) {
@@ -68,7 +68,7 @@ namespace Model::Componentfactory {
         "This function can only be called with a class deriving from "
         "Boundaryvaluecomponent!");
 
-    auto control_schema = Component::get_control_schema();
+    nlohmann::json control_schema = Component::get_control_schema();
     Aux::schema::add_defaults(
         control_schema, defaults.value("control_values", R"({})"_json));
     if (not allow_required_defaults) {
@@ -76,13 +76,23 @@ namespace Model::Componentfactory {
     }
     return control_schema;
   }
-  // template <typename Component>
-  // std::optional<nlohmann::json>
-  // get_control_schema(bool allow_required_defaults) {}
 
-  // template <typename Component>
-  // std::optional<nlohmann::json>
-  // get_initial_schema(bool allow_requred_defaults) {}
+  template <typename Component>
+  nlohmann::json get_component_initial_schema(
+      nlohmann::json const &defaults, bool allow_required_defaults) {
+    static_assert(
+        std::is_base_of_v<Statecomponent, Component>,
+        "This function can only be called with a class deriving from "
+        "Boundaryvaluecomponent!");
+
+    nlohmann::json initial_schema = Component::get_initial_schema();
+    Aux::schema::add_defaults(
+        initial_schema, defaults.value("initial_values", R"({})"_json));
+    if (not allow_required_defaults) {
+      Aux::schema::remove_defaults_from_required(initial_schema);
+    }
+    return initial_schema;
+  }
 
   /**
    * @brief Common attributes of AbstractNodeTypes and AbstractEdgeTypes
@@ -227,16 +237,18 @@ namespace Model::Componentfactory {
 
     nlohmann::json get_schema(
         bool allow_required_defaults, bool include_external) const override {
-      auto schema = ConcreteNode::get_schema();
+      nlohmann::json schema = ConcreteNode::get_schema();
       if (include_external) {
         if constexpr (std::is_base_of_v<Boundaryvaluecomponent, ConcreteNode>) {
-          auto boundary_schema = get_component_boundary_schema<ConcreteNode>(
-              defaults, allow_required_defaults);
+          nlohmann::json boundary_schema
+              = get_component_boundary_schema<ConcreteNode>(
+                  defaults, allow_required_defaults);
           Aux::schema::add_required(schema, "boundary_values", boundary_schema);
         }
         if constexpr (std::is_base_of_v<Controlcomponent, ConcreteNode>) {
-          auto control_schema = get_component_control_schema<ConcreteNode>(
-              defaults, allow_required_defaults);
+          nlohmann::json control_schema
+              = get_component_control_schema<ConcreteNode>(
+                  defaults, allow_required_defaults);
           Aux::schema::add_required(schema, "control_values", control_schema);
         }
       }
@@ -259,18 +271,11 @@ namespace Model::Componentfactory {
 
     std::optional<nlohmann::json>
     get_initial_schema(bool allow_required_defaults) const override {
-      // should really be `requires` (cf.
-      // https://stackoverflow.com/a/22014784/6662425) but that would require
-      // C++20
       if constexpr (std::is_base_of_v<Statecomponent, ConcreteNode>) {
-        auto initial_schema = ConcreteNode::get_initial_schema();
-        Aux::schema::add_defaults(
-            initial_schema,
-            this->defaults.value("initial_values", R"({})"_json));
-        if (not allow_required_defaults) {
-          Aux::schema::remove_defaults_from_required(initial_schema);
-        }
-        return std::optional<nlohmann::json>(initial_schema);
+        nlohmann::json initial_schema
+            = get_component_initial_schema<ConcreteNode>(
+                defaults, allow_required_defaults);
+        return initial_schema;
       } else {
         return std::nullopt;
       }
@@ -278,7 +283,7 @@ namespace Model::Componentfactory {
 
     std::unique_ptr<Network::Node>
     make_instance(nlohmann::json &topology) const override {
-      auto topology_schema = this->get_schema(
+      nlohmann::json topology_schema = get_schema(
           /*allow_required_defaults=*/true, /*include_external=*/true);
       Aux::schema::apply_defaults(topology, topology_schema);
       // order is important (defaults can be required!)
@@ -325,16 +330,18 @@ namespace Model::Componentfactory {
 
     nlohmann::json get_schema(
         bool allow_required_defaults, bool include_external) const override {
-      auto schema = ConcreteEdge::get_schema();
+      nlohmann::json schema = ConcreteEdge::get_schema();
       if (include_external) {
         if constexpr (std::is_base_of_v<Boundaryvaluecomponent, ConcreteEdge>) {
-          auto boundary_schema = get_component_boundary_schema<ConcreteEdge>(
-              defaults, allow_required_defaults);
+          nlohmann::json boundary_schema
+              = get_component_boundary_schema<ConcreteEdge>(
+                  defaults, allow_required_defaults);
           Aux::schema::add_required(schema, "boundary_values", boundary_schema);
         }
         if constexpr (std::is_base_of_v<Controlcomponent, ConcreteEdge>) {
-          auto control_schema = get_component_control_schema<ConcreteEdge>(
-              defaults, allow_required_defaults);
+          nlohmann::json control_schema
+              = get_component_control_schema<ConcreteEdge>(
+                  defaults, allow_required_defaults);
           Aux::schema::add_required(schema, "control_values", control_schema);
         }
       }
@@ -367,19 +374,11 @@ namespace Model::Componentfactory {
 
     std::optional<nlohmann::json>
     get_initial_schema(bool allow_required_defaults) const override {
-      // should really be `requires` (cf.
-      // https://stackoverflow.com/a/22014784/6662425) but that would require
-      // C++20
       if constexpr (std::is_base_of_v<Statecomponent, ConcreteEdge>) {
-        auto initial_schema = ConcreteEdge::get_initial_schema();
-        Aux::schema::add_defaults(
-            initial_schema,
-            this->defaults.value("initial_values", R"({})"_json));
-        if (not allow_required_defaults) {
-          Aux::schema::remove_defaults_from_required(initial_schema);
-        }
-
-        return std::optional<nlohmann::json>(initial_schema);
+        nlohmann::json initial_schema
+            = get_component_initial_schema<ConcreteEdge>(
+                defaults, allow_required_defaults);
+        return initial_schema;
       } else {
         return std::nullopt;
       }
@@ -388,7 +387,7 @@ namespace Model::Componentfactory {
     std::unique_ptr<Network::Edge> make_instance(
         nlohmann::json &topology,
         std::vector<std::unique_ptr<Network::Node>> &nodes) const override {
-      auto topology_schema = this->get_schema(
+      nlohmann::json topology_schema = get_schema(
           /*allow_required_defaults=*/true, /*include_external=*/true);
       Aux::schema::apply_defaults(topology, topology_schema);
       // order is important (defaults can be required!)

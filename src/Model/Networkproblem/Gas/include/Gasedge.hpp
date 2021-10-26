@@ -10,7 +10,6 @@ namespace Model::Gas {
 
   public:
     static int init_vals_per_interpol_point();
-    static nlohmann::json get_initial_schema();
 
     virtual std::string get_gas_type() const = 0;
     Eigen::Index boundary_equation_index(int direction) const;
