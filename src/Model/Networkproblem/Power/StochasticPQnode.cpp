@@ -33,6 +33,8 @@ namespace Model::Power {
     return boundary_schema;
   }
 
+  void StochasticPQnode::setup() { Powernode::setup_helper(); }
+
   StochasticPQnode::StochasticPQnode(nlohmann::json const &topology) :
       Powernode(topology) {
     std::array<uint32_t, Aux::pcg_seed_count> used_seed;

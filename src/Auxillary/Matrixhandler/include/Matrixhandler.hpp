@@ -49,7 +49,7 @@ namespace Aux {
 
   public:
     using Matrixhandler::Matrixhandler;
-    ~Triplethandler() override{};
+    ~Triplethandler(){};
 
     void
     add_to_coefficient(Eigen::Index row, Eigen::Index col, double value) final;
@@ -69,7 +69,7 @@ namespace Aux {
   public:
     using Matrixhandler::Matrixhandler;
 
-    ~Coeffrefhandler() override{};
+    ~Coeffrefhandler(){};
 
     void
     add_to_coefficient(Eigen::Index row, Eigen::Index col, double value) final;

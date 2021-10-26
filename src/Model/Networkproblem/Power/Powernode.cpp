@@ -56,9 +56,8 @@ namespace Model::Power {
         this, new_state, initial_json, get_initial_schema());
   }
 
-  void Powernode::setup() {
+  void Powernode::setup_helper() {
     setup_output_json_helper(get_id());
-
     attached_component_data.clear();
 
     for (auto &start_edge : get_starting_edges()) {
@@ -66,10 +65,10 @@ namespace Model::Power {
       if (!line) {
         continue;
       }
-      Powernode *endnode = line->get_ending_powernode();
+      auto *endnode = line->get_ending_powernode();
 
-      double line_G = line->get_G();
-      double line_B = line->get_B();
+      auto line_G = line->get_G();
+      auto line_B = line->get_B();
 
       attached_component_data.push_back({line_G, line_B, endnode});
     }
@@ -79,10 +78,10 @@ namespace Model::Power {
       if (!line) {
         continue;
       }
-      Powernode *startnode = line->get_starting_powernode();
+      auto *startnode = line->get_starting_powernode();
 
-      double line_G = line->get_G();
-      double line_B = line->get_B();
+      auto line_G = line->get_G();
+      auto line_B = line->get_B();
 
       attached_component_data.push_back({line_G, line_B, startnode});
     }

@@ -12,30 +12,30 @@ namespace Model::Gaspowerconnection {
 
   public:
     static std::string get_type();
-    std::string get_power_type() const override;
+    std::string get_power_type() const final;
 
     using Powernode::Powernode;
 
-    void setup() override;
+    void setup() final;
 
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
-        Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const final;
 
     void d_evalutate_d_new_state(
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &,
-        Eigen::Ref<Eigen::VectorXd const> const &new_state) const override;
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const final;
 
     void d_evalutate_d_last_state(
         Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
         double /*new_time*/,
         Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-        Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const override;
+        Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const final;
 
     void json_save(
-        double time, Eigen::Ref<Eigen::VectorXd const> const &state) override;
+        double time, Eigen::Ref<Eigen::VectorXd const> const &state) final;
 
   private:
     Gaspowerconnection *connection{nullptr};

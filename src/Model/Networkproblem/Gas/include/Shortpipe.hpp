@@ -7,10 +7,10 @@ namespace Model::Gas {
 
   public:
     static std::string get_type();
-    std::string get_gas_type() const override;
+    std::string get_gas_type() const final;
     using Shortcomponent::Shortcomponent;
 
-    void setup() override;
+    void setup() final;
 
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
@@ -26,7 +26,7 @@ namespace Model::Gas {
         Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
         double /*new_time*/,
         Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-        Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const override;
-    void add_results_to_json(nlohmann::json &new_output) override;
+        Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const final;
+    void add_results_to_json(nlohmann::json &new_output) final;
   };
 } // namespace Model::Gas

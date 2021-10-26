@@ -34,7 +34,7 @@ namespace Model {
   public:
     std::string get_type() const;
 
-    ~Networkproblem() override; // override{};
+    ~Networkproblem();
 
     Networkproblem(std::unique_ptr<Network::Net> _network);
 
@@ -63,15 +63,15 @@ namespace Model {
     ////////////////////////////////////////////////////////////////////////////
 
     void json_save(
-        double time, Eigen::Ref<Eigen::VectorXd const> const &state) override;
+        double time, Eigen::Ref<Eigen::VectorXd const> const &state) final;
 
-    void add_results_to_json(nlohmann::json &new_output) override;
+    void add_results_to_json(nlohmann::json &new_output) final;
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,
-        nlohmann::json const &initial_json) override;
+        nlohmann::json const &initial_json) final;
 
-    Eigen::Index set_state_indices(Eigen::Index next_free_index) override;
+    Eigen::Index set_state_indices(Eigen::Index next_free_index) final;
 
   private:
     ////////////////////////////////////////////////////////////////////////////
@@ -82,47 +82,47 @@ namespace Model {
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const override;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
     void prepare_timestep(
         double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) override;
+        Eigen::Ref<Eigen::VectorXd const> const &control) final;
 
     void d_evalutate_d_new_state(
         Aux::Matrixhandler &jacobian, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const override;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
     void d_evalutate_d_last_state(
         Aux::Matrixhandler &jacobian, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const override;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
     void d_evalutate_d_control(
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const override;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
     void set_initial_controls(
         Aux::InterpolatingVector &full_control_vector,
-        nlohmann::json const &control_json) const override;
+        nlohmann::json const &control_json) const final;
 
     void set_lower_bounds(
         Aux::InterpolatingVector &full_control_vector,
-        nlohmann::json const &control_json) const override;
+        nlohmann::json const &control_json) const final;
 
     void set_upper_bounds(
         Aux::InterpolatingVector &full_control_vector,
-        nlohmann::json const &control_json) const override;
+        nlohmann::json const &control_json) const final;
 
-    Eigen::Index set_control_indices(Eigen::Index next_free_index) override;
+    Eigen::Index set_control_indices(Eigen::Index next_free_index) final;
 
-    void setup() override;
+    void setup() final;
 
     /////////////////////////////////////////////////////////
     // cost function methods:
@@ -131,18 +131,18 @@ namespace Model {
     void evaluate_cost(
         Eigen::Ref<Eigen::VectorXd> cost_values, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const override;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
     void d_evaluate_cost_d_state(
         Aux::Matrixhandler &cost_new_state_jacobian_handler, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const override;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
     void d_evaluate_cost_d_control(
         Aux::Costgradienthandler &cost_control_jacobian_handler,
         double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const override;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
     /////////////////////////////////////////////////////////
     // constraint methods:
@@ -151,29 +151,29 @@ namespace Model {
     void evaluate_constraint(
         Eigen::Ref<Eigen::VectorXd> constraint_values, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const override;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
     void d_evaluate_constraint_d_state(
         Aux::Matrixhandler &constraint_new_state_jacobian_handler,
         double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const override;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
     void d_evaluate_constraint_d_control(
         Aux::Matrixhandler &constraint_control_jacobian_handler,
         double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const override;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
-    Eigen::Index set_constraint_indices(Eigen::Index next_free_index) override;
+    Eigen::Index set_constraint_indices(Eigen::Index next_free_index) final;
 
     void set_constraint_lower_bounds(
         Timedata timedata, Eigen::Ref<Eigen::VectorXd> constraint_lower_bounds,
-        nlohmann::json const &constraint_lower_bound_json) override;
+        nlohmann::json const &constraint_lower_bound_json) final;
 
     void set_constraint_upper_bounds(
         Timedata timedata, Eigen::Ref<Eigen::VectorXd> constraint_upper_bounds,
-        nlohmann::json const &constraint_upper_bound_json) override;
+        nlohmann::json const &constraint_upper_bound_json) final;
 
     /////////////////////////////////////////////////////////
     // other methods:

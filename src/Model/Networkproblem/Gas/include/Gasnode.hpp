@@ -11,7 +11,7 @@ namespace Model::Gas {
     using Node::Node;
 
     /// Claims outer indices of attached edges.
-    void setup() override;
+    void setup() final;
 
   protected:
     void evaluate_flow_node_balance(

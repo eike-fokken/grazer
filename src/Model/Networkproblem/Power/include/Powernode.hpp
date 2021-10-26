@@ -21,16 +21,14 @@ namespace Model::Power {
     static nlohmann::json get_initial_schema();
 
     Powernode(nlohmann::json const &topology);
-    ~Powernode() override{};
-
-    void setup() override;
+    ~Powernode(){};
 
     double get_G() const;
     double get_B() const;
 
-    void add_results_to_json(nlohmann::json &new_output) override;
+    void add_results_to_json(nlohmann::json &new_output) final;
 
-    Eigen::Index needed_number_of_states() const override;
+    Eigen::Index needed_number_of_states() const final;
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,
@@ -46,6 +44,7 @@ namespace Model::Power {
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
 
   protected:
+    void setup_helper();
     void json_save_power(
         double time, Eigen::Ref<Eigen::VectorXd const> const &state,
         double P_val, double Q_val);

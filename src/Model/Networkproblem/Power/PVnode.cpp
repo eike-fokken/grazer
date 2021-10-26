@@ -19,6 +19,8 @@ namespace Model::Power {
     rootvalues[phi_index] = new_state[V_index] - boundaryvalue(new_time)[1];
   }
 
+  void PVnode::setup() { Powernode::setup_helper(); }
+
   void PVnode::d_evalutate_d_new_state(
       Aux::Matrixhandler &jacobianhandler,
       double // last_time

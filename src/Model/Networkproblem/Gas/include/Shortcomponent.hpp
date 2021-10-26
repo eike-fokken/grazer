@@ -17,7 +17,7 @@ namespace Model::Gas {
         nlohmann::json &new_output, std::string const &component_type,
         std::string const &type);
 
-    void json_save(double, Eigen::Ref<Eigen::VectorXd const> const &) override;
+    void json_save(double, Eigen::Ref<Eigen::VectorXd const> const &) final;
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,

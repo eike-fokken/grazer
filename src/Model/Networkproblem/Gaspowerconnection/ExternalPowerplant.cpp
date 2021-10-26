@@ -12,7 +12,7 @@ namespace Model::Gaspowerconnection {
   std::string ExternalPowerplant::get_power_type() const { return get_type(); }
 
   void ExternalPowerplant::setup() {
-    Powernode::setup();
+    Powernode::setup_helper();
     for (auto &start_edge : get_starting_edges()) {
       auto line = dynamic_cast<Gaspowerconnection *>(start_edge);
       if (!line) {

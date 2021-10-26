@@ -7,6 +7,8 @@ namespace Model::Power {
   std::string Vphinode::get_type() { return "Vphinode"; }
   std::string Vphinode::get_power_type() const { return get_type(); }
 
+  void Vphinode::setup() { Powernode::setup_helper(); }
+
   void Vphinode::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double /*last_time*/,
       double new_time, Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
