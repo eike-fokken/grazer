@@ -14,7 +14,7 @@ TEST(Newtonsolver, LinearSolveWithRoot_InitialValue1) {
   double tol = 1e-12;
   int max_it = 10000;
 
-  Solver::Newtonsolver<GrazerTest::TestProblem> Solver(tol, max_it);
+  Solver::Newtonsolver Solver(tol, max_it);
   Eigen::VectorXd new_state(2), last_state(2), solution(2);
   new_state(0) = 5; // Wähle Funktionswert, der etwas weiter weg liegt
   new_state(1) = 3;
@@ -49,7 +49,7 @@ TEST(Newtonsolver, LinearSolveWithRoot_InitialValue2) {
   double tol = 1e-12;
   int max_it = 10000;
 
-  Solver::Newtonsolver<GrazerTest::TestProblem> Solver(tol, max_it);
+  Solver::Newtonsolver Solver(tol, max_it);
   Eigen::VectorXd new_state(2), last_state(2), solution(2);
   new_state(0) = -0.5; // Wähle Funktionswert, der nah an der Lösung ist
   new_state(1) = 0.;
@@ -85,7 +85,7 @@ TEST(Newtonsolver, NonlinearSolveWithRoot) {
   double tol = 1e-12;
   int max_it = 100;
 
-  Solver::Newtonsolver<GrazerTest::TestProblem> Solver(tol, max_it);
+  Solver::Newtonsolver Solver(tol, max_it);
   Eigen::VectorXd new_state(2), last_state(2), solution(2);
 
   last_state(0) = 0;
@@ -118,7 +118,7 @@ TEST(Newtonsolver, NonlinearSolve_simplifiedNewton) {
   double tol = 1e-12;
   int max_it = 100;
 
-  Solver::Newtonsolver<GrazerTest::TestProblem> Solver(tol, max_it);
+  Solver::Newtonsolver Solver(tol, max_it);
   Eigen::VectorXd new_state(2), last_state(2), solution(2);
 
   last_state(0) = 0;
@@ -152,7 +152,7 @@ TEST(Newtonsolver, SingularJacobian) {
   double tol = 1e-12;
   int max_it = 100;
 
-  Solver::Newtonsolver<GrazerTest::TestProblem> Solver(tol, max_it);
+  Solver::Newtonsolver Solver(tol, max_it);
   Eigen::VectorXd new_state(2), last_state(2), solution(2);
 
   last_state(0) = 0;

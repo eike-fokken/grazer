@@ -37,7 +37,7 @@ namespace Model {
 
   private:
     Timeevolver(nlohmann::json const &timeevolver_data);
-    Solver::Newtonsolver<Networkproblem> solver;
+    Solver::Newtonsolver solver;
     int retries;
     bool const use_simplified_newton;
   };

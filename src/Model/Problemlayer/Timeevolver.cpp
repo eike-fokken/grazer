@@ -2,7 +2,7 @@
 #include "Exception.hpp"
 #include "InterpolatingVector.hpp"
 #include "Networkproblem.hpp"
-#include "Newtonsolver_declaration.hpp"
+#include "Newtonsolver.hpp"
 #include "make_schema.hpp"
 #include "schema_validation.hpp"
 
