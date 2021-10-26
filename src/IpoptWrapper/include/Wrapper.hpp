@@ -125,7 +125,7 @@ public:
   /** Method to return some info about the nlp */
   bool get_nlp_info(
       Index &n, Index &m, Index &nnz_jac_g, Index &nnz_h_lag,
-      IndexStyleEnum &index_style) override {
+      IndexStyleEnum &index_style) final {
     n = static_cast<Ipopt::Index>(get_num_vars());
     m = static_cast<Ipopt::Index>(get_num_constraints());
     // Evaluate the constraints jacobian in the initial point to obtain the
@@ -142,7 +142,7 @@ public:
   /** Method to return the bounds for my problem */
   bool get_bounds_info(
       Index /*n*/, Number *x_l, Number *x_u, Index /*m*/, Number *g_l,
-      Number *g_u) override {
+      Number *g_u) final {
     auto [vars_lb, vars_ub] = get_variable_bounds();
     auto [constrs_lb, constrs_ub] = get_constraint_bounds();
     std::copy(vars_lb.cbegin(), vars_lb.cend(), x_l);
@@ -156,7 +156,7 @@ public:
   bool get_starting_point(
       Index /* n */, bool /* init_x */, Number *x, bool /* init_z */,
       Number * /* z_L */, Number * /* z_U */, Index /*m */,
-      bool /* init_lambda */, Number * /* lambda */) override {
+      bool /* init_lambda */, Number * /* lambda */) final {
     // initialize to the given starting point
     auto x0 = get_initial_point();
     std::copy(x0.cbegin(), x0.cend(), x);
@@ -165,7 +165,7 @@ public:
 
   /** Method to return the objective value */
   bool eval_f(
-      Index n, const Number *x, bool /* new_x */, Number &obj_value) override {
+      Index n, const Number *x, bool /* new_x */, Number &obj_value) final {
     Eigen::Map<VectorXd const> xx(x, n);
     obj_value = _objective(xx);
     return true;
@@ -173,7 +173,7 @@ public:
 
   /** Method to return the gradient of the objective */
   bool eval_grad_f(
-      Index n, const Number *x, bool /* new_x */, Number *grad_f) override {
+      Index n, const Number *x, bool /* new_x */, Number *grad_f) final {
     Eigen::Map<VectorXd const> xx(x, n);
     auto grad = _gradient(xx);
     std::copy(grad.cbegin(), grad.cend(), grad_f);
@@ -182,7 +182,7 @@ public:
 
   /** Method to return the constraint residuals */
   bool eval_g(
-      Index n, const Number *x, bool /* new_x */, Index m, Number *g) override {
+      Index n, const Number *x, bool /* new_x */, Index m, Number *g) final {
     Eigen::Map<VectorXd const> xx(x, n);
     auto constrs = _constraints(xx);
     assert(constrs.size() == m);
@@ -196,7 +196,7 @@ public:
    */
   bool eval_jac_g(
       Index n, const Number *x, bool /* new_x */, Index /* m */,
-      Index /* nele_jac */, Index *iRow, Index *jCol, Number *values) override {
+      Index /* nele_jac */, Index *iRow, Index *jCol, Number *values) final {
     if (values == NULL) {
       // first internal call of this function.
       // set the structure of constraints jacobian.
@@ -233,7 +233,7 @@ public:
       const Number * /* z_L */, const Number * /* z_U */, Index /* m */,
       const Number * /* g */, const Number * /* lambda */, Number obj_value,
       const IpoptData * /* ip_data */,
-      IpoptCalculatedQuantities * /* ip_cq */) override {
+      IpoptCalculatedQuantities * /* ip_cq */) final {
     VectorXd xx(n);
     std::copy(x, x + n, xx.begin());
     _x_sol = xx;
