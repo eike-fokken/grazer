@@ -10,15 +10,12 @@ namespace Solver {
   /** \brief This struct holds info on the solution of a solve-execution.
    */
   struct Solutionstruct {
-    /**@brief success is true, if solve found a solution.
-     */
-    bool success{false};
-    /**@brief residual is the absolute value of f(new_state) after solve.
-     */
-    double residual{1000000.0};
+    bool success{false}; //! is true, if solve found a solution.
+    double residual{
+        1000000.0}; //! is the absolute value of f(new_state) after solve.
+    int used_iterations{0}; //! the number of needed Newton steps
     /** \brief the number of Newton steps needed.
      */
-    int used_iterations{0};
   };
 
   /** \brief Manages solving non-linear systems and (to be implemented)

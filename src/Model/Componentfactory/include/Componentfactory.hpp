@@ -116,8 +116,6 @@ namespace Model::Componentfactory {
    *
    * Preconfigured Componentfactories are found in Full_factory, Gas_factory
    * and Power_factory
-   *
-   * @tparam ConcreteEdge
    */
   struct AbstractEdgeType : public AbstractComponentType {
     virtual ~AbstractEdgeType(){};
@@ -149,7 +147,8 @@ namespace Model::Componentfactory {
    * Preconfigured Componentfactories are found in Full_factory, Gas_factory
    * and Power_factory
    *
-   * @tparam ConcreteNode
+   * @tparam ConcreteNode The type of the actual node. E.g. "Sink" in the gas
+   * network or "Vphinode" in the power network.
    */
   template <typename ConcreteNode>
   struct NodeType final : public AbstractNodeType {
@@ -279,7 +278,9 @@ namespace Model::Componentfactory {
    * Preconfigured Componentfactories are found in Full_factory, Gas_factory
    * and Power_factory
    *
-   * @tparam ConcreteEdge
+   * @tparam ConcreteEdge The type of the actual edge. E.g. "Pipe" in the gas
+   * network or "Transmissionline" in the power network.
+
    */
   template <typename ConcreteEdge>
   struct EdgeType final : public AbstractEdgeType {

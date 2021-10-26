@@ -13,9 +13,12 @@ namespace Model::Componentfactory {
   void add_power_components(
       Componentfactory &factory, nlohmann::json const &defaults);
 
-  /// \brief This class provides a Componentfactory of all Power components.
-  /// \param defaults a json with defaults for the individual components
+  /** \brief This class provides a Componentfactory of all Power components.
+   */
   struct Power_factory : public Componentfactory {
+    /** \brief Constructs a factory of all power types
+     *  \param defaults a json with defaults for the individual components
+     */
     Power_factory(nlohmann::json const &defaults);
   };
 } // namespace Model::Componentfactory

@@ -80,8 +80,8 @@ public:
   /**
    * @brief Set the bounds on the variables, i.e. lower <= x <= upper.
    *
-   * @param lower
-   * @param upper
+   * @param lower Vector of lower bounds for the variables.
+   * @param upper Vector of upper bounds for the variables.
    */
   void set_variable_bounds(VectorXd &lower, VectorXd &upper) {
     assert(lower.size() == upper.size());
@@ -93,7 +93,8 @@ public:
   /**
    * @brief Get a tuple of the lower and upper bounds on the variables
    *
-   * @return std::tuple<VectorXd, VectorXd>
+   * @return std::tuple<VectorXd, VectorXd> Contains the lower and upper bounds
+   * in that order.
    */
   std::tuple<VectorXd, VectorXd> get_variable_bounds() {
     return {_lower_bounds, _upper_bounds};
@@ -103,8 +104,8 @@ public:
    * @brief Set the lower and upper bounds on the constraint function, i.e.
    *        lower <= constraints(x) <= upper.
    *
-   * @param lower
-   * @param upper
+   * @param lower Vector of lower bounds for the constraints.
+   * @param upper Vector of upper bounds for the constraints.
    */
   void set_constraint_bounds(VectorXd &lower, VectorXd &upper) {
     assert(lower.size() == upper.size());
@@ -119,8 +120,8 @@ public:
 
   // Internal Ipopt methods
 
-  /**@name Overloaded from TNLP */
-  //@{
+  /** @name Overloaded from TNLP */
+
   /** Method to return some info about the nlp */
   bool get_nlp_info(
       Index &n, Index &m, Index &nnz_jac_g, Index &nnz_h_lag,

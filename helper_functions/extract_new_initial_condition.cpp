@@ -20,9 +20,13 @@ json gasinitial(json datapoint);
  * The first time step after the given time is used,
  * if the time doesn't appear in the output file.  If too great a time is
  * passed, the last time step is used.
- * @param results_file json containing results of a grazer computation.
- * @param output_file name of the outputfile to be written.
- * @param time The time at which the initial value should be extracted.
+ *
+ * The function expects the following command line arguments:
+ *
+ * - the json file containing the results of a grazer computation
+ * - the output file name of this executable. E.g. a json file with initial
+ * conditions for a problem.
+ * - the time at which the initial value should be extracted
  */
 int main(int argc, char **argv) {
   std::filesystem::path inputfile;

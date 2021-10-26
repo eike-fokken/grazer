@@ -96,7 +96,6 @@ namespace Aux {
      *
      * Uses 0 as mean.
      * @returns sample with lower_bound <= sample <= upper_bound.
-     * @param mean Mean of the UNtruncated normal distribution.
      * @param standard_deviation Standard_deviation of the UNtruncated normal
      * distribution.
      * @param lower_bound Lower bound of accepted samples.
@@ -111,7 +110,6 @@ namespace Aux {
      * Uses 0 as mean.
      * Uses mean +- 2 * standard_deviation as lower and upper bound.
      * @returns sample with lower_bound <= sample <= upper_bound.
-     * @param mean Mean of the UNtruncated normal distribution.
      * @param standard_deviation Standard_deviation of the UNtruncated normal
      * distribution.
      */
