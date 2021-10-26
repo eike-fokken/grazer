@@ -164,8 +164,8 @@ public:
   }
 
   /** Method to return the objective value */
-  bool eval_f(
-      Index n, const Number *x, bool /* new_x */, Number &obj_value) final {
+  bool
+  eval_f(Index n, const Number *x, bool /* new_x */, Number &obj_value) final {
     Eigen::Map<VectorXd const> xx(x, n);
     obj_value = _objective(xx);
     return true;
@@ -181,8 +181,8 @@ public:
   }
 
   /** Method to return the constraint residuals */
-  bool eval_g(
-      Index n, const Number *x, bool /* new_x */, Index m, Number *g) final {
+  bool
+  eval_g(Index n, const Number *x, bool /* new_x */, Index m, Number *g) final {
     Eigen::Map<VectorXd const> xx(x, n);
     auto constrs = _constraints(xx);
     assert(constrs.size() == m);

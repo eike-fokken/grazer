@@ -10,23 +10,19 @@ namespace Model::Balancelaw {
   public:
     Isothermaleulerequation(nlohmann::json const &json);
 
-    Eigen::Vector2d
-    flux(Eigen::Ref<Eigen::Vector2d const> state) const final;
+    Eigen::Vector2d flux(Eigen::Ref<Eigen::Vector2d const> state) const final;
     Eigen::Matrix2d
     dflux_dstate(Eigen::Ref<Eigen::Vector2d const> state) const final;
 
-    Eigen::Vector2d
-    source(Eigen::Ref<Eigen::Vector2d const> state) const final;
+    Eigen::Vector2d source(Eigen::Ref<Eigen::Vector2d const> state) const final;
     Eigen::Matrix2d
     dsource_dstate(Eigen::Ref<Eigen::Vector2d const> state) const final;
 
-    Eigen::Vector2d
-    p_qvol(Eigen::Ref<Eigen::Vector2d const> state) const final;
+    Eigen::Vector2d p_qvol(Eigen::Ref<Eigen::Vector2d const> state) const final;
     Eigen::Matrix2d
     dp_qvol_dstate(Eigen::Ref<Eigen::Vector2d const> state) const final;
 
-    Eigen::Vector2d
-    state(Eigen::Ref<Eigen::Vector2d const> p_qvol) const final;
+    Eigen::Vector2d state(Eigen::Ref<Eigen::Vector2d const> p_qvol) const final;
     double p_pascal_from_p_bar(double p) const final;
     Eigen::Vector2d p_qvol_from_p_qvol_bar(
         Eigen::Ref<Eigen::Vector2d const> p_qvol_bar) const final;
