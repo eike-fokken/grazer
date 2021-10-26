@@ -225,16 +225,6 @@ namespace Model::Componentfactory {
 
     std::string get_name() const final { return ConcreteNode::get_type(); };
 
-    std::optional<nlohmann::json>
-    get_boundary_schema(bool allow_required_defaults) const final {
-      if constexpr (std::is_base_of_v<Boundaryvaluecomponent, ConcreteNode>) {
-        return get_component_boundary_schema<ConcreteNode>(
-            defaults, allow_required_defaults);
-      } else {
-        return std::nullopt;
-      }
-    }
-
     nlohmann::json get_schema(
         bool allow_required_defaults, bool include_external) const final {
       nlohmann::json schema = ConcreteNode::get_schema();
@@ -258,9 +248,18 @@ namespace Model::Componentfactory {
       }
       return schema;
     };
+    std::optional<nlohmann::json> get_boundary_schema(
+        [[maybe_unused]] bool allow_required_defaults) const final {
+      if constexpr (std::is_base_of_v<Boundaryvaluecomponent, ConcreteNode>) {
+        return get_component_boundary_schema<ConcreteNode>(
+            defaults, allow_required_defaults);
+      } else {
+        return std::nullopt;
+      }
+    }
 
-    std::optional<nlohmann::json>
-    get_control_schema(bool allow_required_defaults) const final {
+    std::optional<nlohmann::json> get_control_schema(
+        [[maybe_unused]] bool allow_required_defaults) const final {
       if constexpr (std::is_base_of_v<Controlcomponent, ConcreteNode>) {
         return get_component_control_schema<ConcreteNode>(
             defaults, allow_required_defaults);
@@ -269,8 +268,8 @@ namespace Model::Componentfactory {
       }
     };
 
-    std::optional<nlohmann::json>
-    get_initial_schema(bool allow_required_defaults) const final {
+    std::optional<nlohmann::json> get_initial_schema(
+        [[maybe_unused]] bool allow_required_defaults) const final {
       if constexpr (std::is_base_of_v<Statecomponent, ConcreteNode>) {
         nlohmann::json initial_schema
             = get_component_initial_schema<ConcreteNode>(
@@ -352,8 +351,8 @@ namespace Model::Componentfactory {
       return schema;
     };
 
-    std::optional<nlohmann::json>
-    get_boundary_schema(bool allow_required_defaults) const final {
+    std::optional<nlohmann::json> get_boundary_schema(
+        [[maybe_unused]] bool allow_required_defaults) const final {
       if constexpr (std::is_base_of_v<Boundaryvaluecomponent, ConcreteEdge>) {
         return get_component_boundary_schema<ConcreteEdge>(
             defaults, allow_required_defaults);
@@ -362,8 +361,8 @@ namespace Model::Componentfactory {
       }
     }
 
-    std::optional<nlohmann::json>
-    get_control_schema(bool allow_required_defaults) const final {
+    std::optional<nlohmann::json> get_control_schema(
+        [[maybe_unused]] bool allow_required_defaults) const final {
       if constexpr (std::is_base_of_v<Controlcomponent, ConcreteEdge>) {
         return get_component_control_schema<ConcreteEdge>(
             defaults, allow_required_defaults);
@@ -372,8 +371,8 @@ namespace Model::Componentfactory {
       }
     };
 
-    std::optional<nlohmann::json>
-    get_initial_schema(bool allow_required_defaults) const final {
+    std::optional<nlohmann::json> get_initial_schema(
+        [[maybe_unused]] bool allow_required_defaults) const final {
       if constexpr (std::is_base_of_v<Statecomponent, ConcreteEdge>) {
         nlohmann::json initial_schema
             = get_component_initial_schema<ConcreteEdge>(
