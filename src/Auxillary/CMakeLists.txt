@@ -1,3 +1,4 @@
+add_subdirectory(ComponentJsonHelpers)
 add_subdirectory(Timedata)
 add_subdirectory(InterpolatingVector)
 add_subdirectory(Exception)

@@ -1,4 +1,5 @@
 #include "Networkproblem.hpp"
+#include "ComponentJsonHelpers.hpp"
 #include "Edge.hpp"
 #include "Equationcomponent.hpp"
 #include "Exception.hpp"
@@ -7,6 +8,7 @@
 #include "Node.hpp"
 #include <Eigen/Sparse>
 #include <cassert>
+#include <cstddef>
 #include <iostream>
 #include <iterator>
 #include <memory>
@@ -35,6 +37,38 @@ namespace Model {
       ids.push_back(idcomponent->get_id());
     }
     return ids;
+  }
+
+  template <typename Componenttype>
+  static void check_components_in_json(
+      std::vector<Componenttype *> const &components, nlohmann::json json,
+      std::string const &key) {
+
+    auto ids = get_ids_of_objects(components);
+    std::sort(ids.begin(), ids.end());
+    auto json_ids = Aux::get_sorted_ids_of_json(json, key);
+
+    size_t json_index = 0;
+    for (auto const &id : ids) {
+      if (json_index >= json_ids.size()) {
+        gthrow(
+            {"Component with id ", id,
+             " appears in the topology and needs an entry in the json ", key,
+             " but has none there."});
+      }
+      if (id > json_ids[json_index]) {
+        std::cout << "Component with id " << json_ids[json_index]
+                  << " appears in json " << key << ", but not in the topology!"
+                  << std::endl;
+      }
+      if (id < json_ids[json_index]) {
+        gthrow(
+            {"Component with id ", id,
+             " appears in the topology and needs an entry in the json ", key,
+             " but has none there."});
+      }
+      ++json_index;
+    }
   }
 
   std::string Networkproblem::get_type() { return "Network_problem"; }
@@ -116,22 +150,23 @@ namespace Model {
       nlohmann::json const &initial_json) {
 
     auto ids = get_ids_of_objects(statecomponents);
-
+    check_components_in_json(statecomponents, initial_json, "initial.json");
     for (auto const &component : {"nodes", "connections"}) {
       if (not initial_json.contains(component)) {
         continue;
       }
       for (auto const &componenttype : initial_json[component]) {
         for (auto const &componentjson : componenttype) {
-          auto iterator
-              = std::find(ids.begin(), ids.end(), componentjson["id"]);
+          auto iterator = std::find(
+              ids.begin(), ids.end(), componentjson["id"].get<std::string>());
           if (iterator != ids.end()) {
             auto index = iterator - ids.begin();
             statecomponents[static_cast<size_t>(index)]->set_initial_values(
                 new_state, componentjson);
           } else {
             std::cout
-                << "Note: Component with id " << componentjson["id"]
+                << "Note: Component with id "
+                << componentjson["id"].get<std::string>()
                 << "appears in the initial values but not in the topology."
                 << std::endl;
           }
@@ -232,7 +267,7 @@ namespace Model {
       nlohmann::json const &control_json) const {
 
     auto ids = get_ids_of_objects(controlcomponents);
-
+    check_components_in_json(controlcomponents, control_json, "control.json");
     for (auto const &component : {"nodes", "connections"}) {
       if (not control_json.contains(component)) {
         continue;
@@ -240,15 +275,16 @@ namespace Model {
       for (auto const &componenttype : control_json[component]) {
         for (auto const &componentjson : componenttype) {
 
-          auto iterator
-              = std::find(ids.begin(), ids.end(), componentjson["id"]);
+          auto iterator = std::find(
+              ids.begin(), ids.end(), componentjson["id"].get<std::string>());
           if (iterator != ids.end()) {
             auto index = iterator - ids.begin();
             controlcomponents[static_cast<size_t>(index)]->set_initial_controls(
                 controller, componentjson);
           } else {
-            std::cout << "Note: Component with id " << componentjson["id"]
-                      << "appears in the control initial values but not in the "
+            std::cout << "Note: Component with id "
+                      << componentjson["id"].get<std::string>()
+                      << "appears in the control values but not in the "
                          "topology."
                       << std::endl;
           }
@@ -262,7 +298,8 @@ namespace Model {
       nlohmann::json const &lower_bound_json) const {
 
     auto ids = get_ids_of_objects(controlcomponents);
-
+    check_components_in_json(
+        controlcomponents, lower_bound_json, "lower_bound.json");
     for (auto const &component : {"nodes", "connections"}) {
       if (not lower_bound_json.contains(component)) {
         continue;
@@ -270,14 +307,15 @@ namespace Model {
       for (auto const &componenttype : lower_bound_json[component]) {
         for (auto const &componentjson : componenttype) {
 
-          auto iterator
-              = std::find(ids.begin(), ids.end(), componentjson["id"]);
+          auto iterator = std::find(
+              ids.begin(), ids.end(), componentjson["id"].get<std::string>());
           if (iterator != ids.end()) {
             auto index = iterator - ids.begin();
             controlcomponents[static_cast<size_t>(index)]->set_lower_bounds(
                 full_lower_bound_vector, lower_bound_json);
           } else {
-            std::cout << "Note: Component with id " << componentjson["id"]
+            std::cout << "Note: Component with id "
+                      << componentjson["id"].get<std::string>()
                       << "appears in the lower bounds but not in the topology."
                       << std::endl;
           }
@@ -290,7 +328,8 @@ namespace Model {
       nlohmann::json const &upper_bound_json) const {
 
     auto ids = get_ids_of_objects(controlcomponents);
-
+    check_components_in_json(
+        controlcomponents, upper_bound_json, "upper_bound.json");
     for (auto const &component : {"nodes", "connections"}) {
       if (not upper_bound_json.contains(component)) {
         continue;
@@ -298,14 +337,15 @@ namespace Model {
       for (auto const &componenttype : upper_bound_json[component]) {
         for (auto const &componentjson : componenttype) {
 
-          auto iterator
-              = std::find(ids.begin(), ids.end(), componentjson["id"]);
+          auto iterator = std::find(
+              ids.begin(), ids.end(), componentjson["id"].get<std::string>());
           if (iterator != ids.end()) {
             auto index = iterator - ids.begin();
             controlcomponents[static_cast<size_t>(index)]->set_upper_bounds(
                 full_upper_bound_vector, upper_bound_json);
           } else {
-            std::cout << "Note: Component with id " << componentjson["id"]
+            std::cout << "Note: Component with id "
+                      << componentjson["id"].get<std::string>()
                       << "appears in the upper bounds but not in the topology."
                       << std::endl;
           }
@@ -420,6 +460,9 @@ namespace Model {
       Aux::InterpolatingVector &full_lower_bounds_vector,
       nlohmann::json const &constraint_lower_bounds_json) const {
     auto ids = get_ids_of_objects(constraintcomponents);
+    check_components_in_json(
+        constraintcomponents, constraint_lower_bounds_json,
+        "constraint_lower_bound.json");
 
     for (auto const &component : {"nodes", "connections"}) {
       if (not constraint_lower_bounds_json.contains(component)) {
@@ -429,15 +472,16 @@ namespace Model {
            constraint_lower_bounds_json[component]) {
         for (auto const &componentjson : componenttype) {
 
-          auto iterator
-              = std::find(ids.begin(), ids.end(), componentjson["id"]);
+          auto iterator = std::find(
+              ids.begin(), ids.end(), componentjson["id"].get<std::string>());
           if (iterator != ids.end()) {
             auto index = iterator - ids.begin();
             constraintcomponents[static_cast<size_t>(index)]
                 ->set_constraint_lower_bounds(
                     full_lower_bounds_vector, constraint_lower_bounds_json);
           } else {
-            std::cout << "Note: Component with id " << componentjson["id"]
+            std::cout << "Note: Component with id "
+                      << componentjson["id"].get<std::string>()
                       << "appears in the constraint lower bounds but not in "
                          "the topology."
                       << std::endl;
@@ -452,6 +496,9 @@ namespace Model {
       nlohmann::json const &constraint_upper_bounds_json) const {
 
     auto ids = get_ids_of_objects(constraintcomponents);
+    check_components_in_json(
+        constraintcomponents, constraint_upper_bounds_json,
+        "constraint_upper_bound.json");
 
     for (auto const &component : {"nodes", "connections"}) {
       if (not constraint_upper_bounds_json.contains(component)) {
@@ -461,15 +508,16 @@ namespace Model {
            constraint_upper_bounds_json[component]) {
         for (auto const &componentjson : componenttype) {
 
-          auto iterator
-              = std::find(ids.begin(), ids.end(), componentjson["id"]);
+          auto iterator = std::find(
+              ids.begin(), ids.end(), componentjson["id"].get<std::string>());
           if (iterator != ids.end()) {
             auto index = iterator - ids.begin();
             constraintcomponents[static_cast<size_t>(index)]
                 ->set_constraint_upper_bounds(
                     full_upper_bound_vector, constraint_upper_bounds_json);
           } else {
-            std::cout << "Note: Component with id " << componentjson["id"]
+            std::cout << "Note: Component with id "
+                      << componentjson["id"].get<std::string>()
                       << "appears in the constraint upper bounds but not in "
                          "the topology."
                       << std::endl;

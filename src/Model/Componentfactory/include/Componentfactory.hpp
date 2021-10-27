@@ -235,12 +235,13 @@ namespace Model::Componentfactory {
                   defaults, allow_required_defaults);
           Aux::schema::add_required(schema, "boundary_values", boundary_schema);
         }
-        if constexpr (std::is_base_of_v<Controlcomponent, ConcreteNode>) {
-          nlohmann::json control_schema
-              = get_component_control_schema<ConcreteNode>(
-                  defaults, allow_required_defaults);
-          Aux::schema::add_required(schema, "control_values", control_schema);
-        }
+        // if constexpr (std::is_base_of_v<Controlcomponent, ConcreteNode>) {
+        //   nlohmann::json control_schema
+        //       = get_component_control_schema<ConcreteNode>(
+        //           defaults, allow_required_defaults);
+        //   Aux::schema::add_required(schema, "control_values",
+        //   control_schema);
+        // }
       }
       Aux::schema::add_defaults(schema, defaults);
       if (not allow_required_defaults) {
@@ -337,12 +338,13 @@ namespace Model::Componentfactory {
                   defaults, allow_required_defaults);
           Aux::schema::add_required(schema, "boundary_values", boundary_schema);
         }
-        if constexpr (std::is_base_of_v<Controlcomponent, ConcreteEdge>) {
-          nlohmann::json control_schema
-              = get_component_control_schema<ConcreteEdge>(
-                  defaults, allow_required_defaults);
-          Aux::schema::add_required(schema, "control_values", control_schema);
-        }
+        // if constexpr (std::is_base_of_v<Controlcomponent, ConcreteEdge>) {
+        //   nlohmann::json control_schema
+        //       = get_component_control_schema<ConcreteEdge>(
+        //           defaults, allow_required_defaults);
+        //   Aux::schema::add_required(schema, "control_values",
+        //   control_schema);
+        // }
       }
       Aux::schema::add_defaults(schema, defaults);
       if (not allow_required_defaults) {

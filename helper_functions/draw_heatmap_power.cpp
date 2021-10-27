@@ -1,6 +1,6 @@
 
+#include "ComponentJsonHelpers.hpp"
 #include "Netfactory.hpp"
-
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -65,8 +65,8 @@ int main(int argc, char **argv) {
     resultsstream >> results;
   }
 
-  Model::sort_json_vectors_by_id(results, "results");
-  Model::sort_json_vectors_by_id(topology, "topology");
+  Aux::sort_json_vectors_by_id(results, "results");
+  Aux::sort_json_vectors_by_id(topology, "topology");
 
   std::vector<std::string> nodetypes{
       "PQnode", "PVnode", "Vphinode", "StochasticPQnode", "ExternalPowerplant"};

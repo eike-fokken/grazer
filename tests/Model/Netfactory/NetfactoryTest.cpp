@@ -1,4 +1,5 @@
 #include "Netfactory.hpp"
+#include "ComponentJsonHelpers.hpp"
 #include "PQnode.hpp"
 #include "PVnode.hpp"
 #include "Power_factory.hpp"
@@ -64,7 +65,7 @@ TEST(sort_json_vectors_by_idTEST, not_sorted) {
              {{"id", "TL_2_3"}, {"B", 30}},
              {{"id", "TL_3_6"}, {"B", 50}}}}}}};
 
-  Model::sort_json_vectors_by_id(topology_not_sorted, "topology_key");
+  Aux::sort_json_vectors_by_id(topology_not_sorted, "topology_key");
   EXPECT_EQ(topology_not_sorted, topology_sorted);
 }
 
@@ -84,7 +85,7 @@ TEST(check_for_duplicatesTEST, duplicate_id_in_same_vector) {
              {{"id", "node_6"}, {"x", 13.000000}}}}}}};
 
   try {
-    Model::check_for_duplicates(id_duplicate_json, "topology_key");
+    Aux::check_for_duplicates(id_duplicate_json, "topology_key");
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
@@ -110,7 +111,7 @@ TEST(check_for_duplicatesTEST, duplicate_id_in_neighbour_vector) {
           {{"id", "node_6"}, {"x", 13.000000}}}}}}};
 
   try {
-    Model::check_for_duplicates(id_duplicate_json, "topology_key");
+    Aux::check_for_duplicates(id_duplicate_json, "topology_key");
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
