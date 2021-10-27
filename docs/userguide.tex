@@ -6,6 +6,7 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{tabularx}
+\usepackage{longtable}
 
 
 \definecolor{eclipseStrings}{RGB}{42,0.0,255}
@@ -263,12 +264,10 @@ These handle the evaluation. The Networkproblem also hands \emph{evaluate} to it
 \subsubsection{Helper functions}
 \label{sec:helper-functions}
 
-\begin{table}[ht]
-  \centering
-  \begin{tabularx}{\textwidth}{lX}
+\begin{longtable}{p{5.1cm}p{6cm}}
     \toprule
     name (-.cpp) & explanation \\
-   \midrule
+    \midrule
     boundaryprettyfy & - \\
     change\sco inflow & Linearly scales the first two flux inputs in a boundary values file to sum to the given value. Only makes sense for constant influx \\
     compute\sco reference\sco discrepance & Computes maximal discrepance between a given reference output of a grazer problem and a collection of grazer outputs for the same topology \\
@@ -294,10 +293,9 @@ These handle the evaluation. The Networkproblem also hands \emph{evaluate} to it
     transform\sco boundary & - \\
     transform\sco initial & - \\
     \bottomrule
-  \end{tabularx}
-  \caption{All helper functions. For a more detailed description use the technical documentation.}
+    \caption{All helper functions. For a more detailed description use the technical documentation.}
   \label{tab:helper_functions}
-\end{table}
+\end{longtable}
 
 \subsubsection*{evaluate}
 
