@@ -2,7 +2,6 @@
 
 #include "Exception.hpp"
 #include "Mathfunctions.hpp"
-#include "Misc.pp"
 #include "Timedata.hpp"
 #include "make_schema.hpp"
 #include "schema_validation.hpp"
@@ -70,8 +69,29 @@ namespace Aux {
            "Supplied desired stepsize: ", std::to_string(desired_delta)});
     }
 
-    std::size_t number_of_entries = Aux::narrow<std::size_t>(
-        std::ceil((last_point - first_point) / desired_delta) + 1);
+    auto number_of_entries_double
+        = (std::ceil((last_point - first_point) / desired_delta)) + 1;
+
+    auto number_of_entries = static_cast<size_t>(number_of_entries_double);
+    // if (number_of_entries_double - static_cast<double>(number_of_entries)
+    //     != 0) {
+    //   gthrow(
+    //       {"The computed number of entries for this vector is too great to
+    //       fit "
+    //        "into an index type."});
+    // }
+    // static_assert(
+    //     sizeof(size_t) >= sizeof(Eigen::Index),
+    //     "Grazer's range checks only work if Eigen::Index is not a wider type
+    //     " "than size_t!");
+    // if (number_of_entries > size_t(std::numeric_limits<Eigen::Index>::max()))
+    // {
+    //   gthrow(
+    //       {"The number of interpolation points is too big and cannot fit into
+    //       "
+    //        "an Eigen::VectorXd! Its size is greater than the maximimum of "
+    //        "Eigen::Index"});
+    // }
 
     auto delta
         = ((last_point - first_point)
