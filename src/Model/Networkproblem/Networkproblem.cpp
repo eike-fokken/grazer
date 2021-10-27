@@ -20,11 +20,11 @@ namespace Model {
   /** \brief Creates a vector of Idobject pointers from some component type.
    */
   template <typename Componenttype>
-  static std::vector<Network::Idobject *>
-  get_idobjects(std::vector<Componenttype *> const &components) {
+  static std::vector<std::string>
+  get_ids_of_objects(std::vector<Componenttype *> const &components) {
 
-    std::vector<Network::Idobject *> idcomponents;
-    idcomponents.reserve(components.size());
+    std::vector<std::string> ids;
+    ids.reserve(components.size());
     for (auto *component : components) {
       auto idcomponent = dynamic_cast<Network::Idobject *>(component);
       if (idcomponent == nullptr) {
@@ -32,9 +32,9 @@ namespace Model {
             {"Some component stored in Networkproblem is not of type Idobject, "
              "which should never happen."});
       }
-      idcomponents.push_back(idcomponent);
+      ids.push_back(idcomponent->get_id());
     }
-    return idcomponents;
+    return ids;
   }
 
   std::string Networkproblem::get_type() { return "Network_problem"; }
@@ -115,7 +115,7 @@ namespace Model {
       Eigen::Ref<Eigen::VectorXd> new_state,
       nlohmann::json const &initial_json) {
 
-    auto idcomponents = get_idobjects(statecomponents);
+    auto ids = get_ids_of_objects(statecomponents);
 
     for (auto const &component : {"nodes", "connections"}) {
       if (not initial_json.contains(component)) {
@@ -123,19 +123,15 @@ namespace Model {
       }
       for (auto const &componenttype : initial_json[component]) {
         for (auto const &componentjson : componenttype) {
-          auto component_id = componentjson["id"];
-          auto find_id = [component_id](Network::Idobject const *x) {
-            return component_id == x->get_id();
-          };
           auto iterator
-              = std::find_if(idcomponents.begin(), idcomponents.end(), find_id);
-          if (iterator != idcomponents.end()) {
-            auto index = iterator - idcomponents.begin();
+              = std::find(ids.begin(), ids.end(), componentjson["id"]);
+          if (iterator != ids.end()) {
+            auto index = iterator - ids.begin();
             statecomponents[static_cast<size_t>(index)]->set_initial_values(
                 new_state, componentjson);
           } else {
             std::cout
-                << "Note: Component with id " << component_id
+                << "Note: Component with id " << componentjson["id"]
                 << "appears in the initial values but not in the topology."
                 << std::endl;
           }
@@ -235,7 +231,7 @@ namespace Model {
       Aux::InterpolatingVector &controller,
       nlohmann::json const &control_json) const {
 
-    auto idcomponents = get_idobjects(controlcomponents);
+    auto ids = get_ids_of_objects(controlcomponents);
 
     for (auto const &component : {"nodes", "connections"}) {
       if (not control_json.contains(component)) {
@@ -244,19 +240,14 @@ namespace Model {
       for (auto const &componenttype : control_json[component]) {
         for (auto const &componentjson : componenttype) {
 
-          auto component_id = componentjson["id"];
-
-          auto find_id = [component_id](Network::Idobject const *x) {
-            return component_id == x->get_id();
-          };
           auto iterator
-              = std::find_if(idcomponents.begin(), idcomponents.end(), find_id);
-          if (iterator != idcomponents.end()) {
-            auto index = iterator - idcomponents.begin();
+              = std::find(ids.begin(), ids.end(), componentjson["id"]);
+          if (iterator != ids.end()) {
+            auto index = iterator - ids.begin();
             controlcomponents[static_cast<size_t>(index)]->set_initial_controls(
                 controller, componentjson);
           } else {
-            std::cout << "Note: Component with id " << component_id
+            std::cout << "Note: Component with id " << componentjson["id"]
                       << "appears in the control initial values but not in the "
                          "topology."
                       << std::endl;
@@ -270,7 +261,7 @@ namespace Model {
       Aux::InterpolatingVector &full_lower_bound_vector,
       nlohmann::json const &lower_bound_json) const {
 
-    auto idcomponents = get_idobjects(controlcomponents);
+    auto ids = get_ids_of_objects(controlcomponents);
 
     for (auto const &component : {"nodes", "connections"}) {
       if (not lower_bound_json.contains(component)) {
@@ -279,19 +270,14 @@ namespace Model {
       for (auto const &componenttype : lower_bound_json[component]) {
         for (auto const &componentjson : componenttype) {
 
-          auto component_id = componentjson["id"];
-
-          auto find_id = [component_id](Network::Idobject const *x) {
-            return component_id == x->get_id();
-          };
           auto iterator
-              = std::find_if(idcomponents.begin(), idcomponents.end(), find_id);
-          if (iterator != idcomponents.end()) {
-            auto index = iterator - idcomponents.begin();
+              = std::find(ids.begin(), ids.end(), componentjson["id"]);
+          if (iterator != ids.end()) {
+            auto index = iterator - ids.begin();
             controlcomponents[static_cast<size_t>(index)]->set_lower_bounds(
                 full_lower_bound_vector, lower_bound_json);
           } else {
-            std::cout << "Note: Component with id " << component_id
+            std::cout << "Note: Component with id " << componentjson["id"]
                       << "appears in the lower bounds but not in the topology."
                       << std::endl;
           }
@@ -303,7 +289,7 @@ namespace Model {
       Aux::InterpolatingVector &full_upper_bound_vector,
       nlohmann::json const &upper_bound_json) const {
 
-    auto idcomponents = get_idobjects(controlcomponents);
+    auto ids = get_ids_of_objects(controlcomponents);
 
     for (auto const &component : {"nodes", "connections"}) {
       if (not upper_bound_json.contains(component)) {
@@ -312,19 +298,14 @@ namespace Model {
       for (auto const &componenttype : upper_bound_json[component]) {
         for (auto const &componentjson : componenttype) {
 
-          auto component_id = componentjson["id"];
-
-          auto find_id = [component_id](Network::Idobject const *x) {
-            return component_id == x->get_id();
-          };
           auto iterator
-              = std::find_if(idcomponents.begin(), idcomponents.end(), find_id);
-          if (iterator != idcomponents.end()) {
-            auto index = iterator - idcomponents.begin();
+              = std::find(ids.begin(), ids.end(), componentjson["id"]);
+          if (iterator != ids.end()) {
+            auto index = iterator - ids.begin();
             controlcomponents[static_cast<size_t>(index)]->set_upper_bounds(
                 full_upper_bound_vector, upper_bound_json);
           } else {
-            std::cout << "Note: Component with id " << component_id
+            std::cout << "Note: Component with id " << componentjson["id"]
                       << "appears in the upper bounds but not in the topology."
                       << std::endl;
           }
@@ -438,7 +419,7 @@ namespace Model {
   void Networkproblem::set_constraint_lower_bounds(
       Aux::InterpolatingVector &full_lower_bounds_vector,
       nlohmann::json const &constraint_lower_bounds_json) const {
-    auto idcomponents = get_idobjects(constraintcomponents);
+    auto ids = get_ids_of_objects(constraintcomponents);
 
     for (auto const &component : {"nodes", "connections"}) {
       if (not constraint_lower_bounds_json.contains(component)) {
@@ -448,20 +429,15 @@ namespace Model {
            constraint_lower_bounds_json[component]) {
         for (auto const &componentjson : componenttype) {
 
-          auto component_id = componentjson["id"];
-
-          auto find_id = [component_id](Network::Idobject const *x) {
-            return component_id == x->get_id();
-          };
           auto iterator
-              = std::find_if(idcomponents.begin(), idcomponents.end(), find_id);
-          if (iterator != idcomponents.end()) {
-            auto index = iterator - idcomponents.begin();
+              = std::find(ids.begin(), ids.end(), componentjson["id"]);
+          if (iterator != ids.end()) {
+            auto index = iterator - ids.begin();
             constraintcomponents[static_cast<size_t>(index)]
                 ->set_constraint_lower_bounds(
                     full_lower_bounds_vector, constraint_lower_bounds_json);
           } else {
-            std::cout << "Note: Component with id " << component_id
+            std::cout << "Note: Component with id " << componentjson["id"]
                       << "appears in the constraint lower bounds but not in "
                          "the topology."
                       << std::endl;
@@ -475,7 +451,7 @@ namespace Model {
       Aux::InterpolatingVector &full_upper_bound_vector,
       nlohmann::json const &constraint_upper_bounds_json) const {
 
-    auto idcomponents = get_idobjects(constraintcomponents);
+    auto ids = get_ids_of_objects(constraintcomponents);
 
     for (auto const &component : {"nodes", "connections"}) {
       if (not constraint_upper_bounds_json.contains(component)) {
@@ -485,20 +461,15 @@ namespace Model {
            constraint_upper_bounds_json[component]) {
         for (auto const &componentjson : componenttype) {
 
-          auto component_id = componentjson["id"];
-
-          auto find_id = [component_id](Network::Idobject const *x) {
-            return component_id == x->get_id();
-          };
           auto iterator
-              = std::find_if(idcomponents.begin(), idcomponents.end(), find_id);
-          if (iterator != idcomponents.end()) {
-            auto index = iterator - idcomponents.begin();
+              = std::find(ids.begin(), ids.end(), componentjson["id"]);
+          if (iterator != ids.end()) {
+            auto index = iterator - ids.begin();
             constraintcomponents[static_cast<size_t>(index)]
                 ->set_constraint_upper_bounds(
                     full_upper_bound_vector, constraint_upper_bounds_json);
           } else {
-            std::cout << "Note: Component with id " << component_id
+            std::cout << "Note: Component with id " << componentjson["id"]
                       << "appears in the constraint upper bounds but not in "
                          "the topology."
                       << std::endl;
