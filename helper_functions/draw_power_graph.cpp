@@ -14,13 +14,15 @@ std::string colorchooser(std::string const &type);
 /** @brief A helper function to write out a latex file which draws a graph of
  * the power part of a topology file.
  *
- * @param topology.json The topology file.
- * @param tex_file Filename of the texfile to be written. Careful: Files are
- * silently overwritten.
- * @param scale_factor Optional parameter, defaults to 10. Possibly needed
- * because tex cannot work with dimensions larger than some value often attained
- * with large structures like the gaslib data. Higher value means smaller
- * picture.
+ * The function expects the following command line arguments:
+ *
+ * - the topology file
+ * - the file name of the tex-file to be written to
+ * - the scaling factor (optional, defaults to 10)
+ *
+ * The scaling factor is possibly needed because tex cannot work with dimensions
+ * larger than some value often attained with large structures like the gaslib
+ * data. Higher value means smaller picture.
  */
 
 int main(int argc, char **argv) {

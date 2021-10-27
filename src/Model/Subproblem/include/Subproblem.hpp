@@ -69,7 +69,7 @@ namespace Model {
 
     /// This function should reserve indices, e.g. by setting start and end
     /// indices of subobjects
-    /// @param The current smallest non-reserved index.
+    /// @param next_free_index The current smallest non-reserved index.
     /// @returns new smallest non-reserved index.
     virtual int reserve_indices(int const next_free_index) = 0;
 
