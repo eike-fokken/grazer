@@ -356,14 +356,15 @@ namespace Model {
   // cost function methods:
   /////////////////////////////////////////////////////////
 
-  void Networkproblem::evaluate_cost(
-      Eigen::Ref<Eigen::VectorXd> cost_values, double last_time,
-      double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+  double Networkproblem::evaluate_cost(
+      double last_time, double new_time,
+      Eigen::Ref<Eigen::VectorXd const> const &state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const {
+    double cost = 0;
     for (auto *costcomponent : costcomponents) {
-      costcomponent->evaluate_cost(
-          cost_values, last_time, new_time, state, control);
+      cost += costcomponent->evaluate_cost(last_time, new_time, state, control);
     }
+    return get_cost_weight() * cost;
   }
 
   void Networkproblem::d_evaluate_cost_d_state(
@@ -377,7 +378,7 @@ namespace Model {
   }
 
   void Networkproblem::d_evaluate_cost_d_control(
-      Aux::Costgradienthandler &cost_control_jacobian_handler, double last_time,
+      Aux::Matrixhandler &cost_control_jacobian_handler, double last_time,
       double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const {
     for (auto *costcomponent : costcomponents) {

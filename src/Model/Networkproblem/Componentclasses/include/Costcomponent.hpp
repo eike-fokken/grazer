@@ -2,7 +2,6 @@
 #include "Eigen/Sparse"
 
 namespace Aux {
-  class Costgradienthandler;
   class Matrixhandler;
 } // namespace Aux
 
@@ -10,14 +9,14 @@ namespace Model {
   class Costcomponent {
 
   public:
-    Costcomponent(){};
-    Costcomponent(double _cost_weight);
+    Costcomponent();
+    Costcomponent(double cost_weight);
 
     virtual ~Costcomponent(){};
 
-    virtual void evaluate_cost(
-        Eigen::Ref<Eigen::VectorXd> cost_values, double last_time,
-        double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+    virtual double evaluate_cost(
+        double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
 
     virtual void d_evaluate_cost_d_state(
@@ -26,12 +25,11 @@ namespace Model {
         Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
 
     virtual void d_evaluate_cost_d_control(
-        Aux::Costgradienthandler &cost_control_jacobian_handler,
-        double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> const &state,
+        Aux::Matrixhandler &cost_control_jacobian_handler, double last_time,
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
 
-    double get_cost_weight();
+    double get_cost_weight() const;
 
   private:
     double cost_weight{1.0};

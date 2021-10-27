@@ -128,9 +128,9 @@ namespace Model {
     // cost function methods:
     /////////////////////////////////////////////////////////
   public:
-    void evaluate_cost(
-        Eigen::Ref<Eigen::VectorXd> cost_values, double last_time,
-        double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+    double evaluate_cost(
+        double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
     void d_evaluate_cost_d_state(
@@ -139,9 +139,8 @@ namespace Model {
         Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
     void d_evaluate_cost_d_control(
-        Aux::Costgradienthandler &cost_control_jacobian_handler,
-        double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> const &state,
+        Aux::Matrixhandler &cost_control_jacobian_handler, double last_time,
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
     /////////////////////////////////////////////////////////

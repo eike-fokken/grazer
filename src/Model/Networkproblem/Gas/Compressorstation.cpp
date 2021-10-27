@@ -11,14 +11,18 @@ namespace Model::Gas {
   std::string Compressorstation::get_type() { return "Compressorstation"; }
   std::string Compressorstation::get_gas_type() const { return get_type(); }
 
-  nlohmann::json Compressorstation::get_control_schema() {
-    return Aux::schema::make_boundary_schema(1);
-  }
-
   Compressorstation::Compressorstation(
       nlohmann::json const &data,
       std::vector<std::unique_ptr<Network::Node>> &nodes) :
       Shortcomponent(data, nodes) {}
+
+  ///////////////////////////////////////////////////////////
+  // Controlcomponent methods:
+  ///////////////////////////////////////////////////////////
+
+  nlohmann::json Compressorstation::get_control_schema() {
+    return Aux::schema::make_boundary_schema(1);
+  }
 
   void Compressorstation::setup() { setup_output_json_helper(get_id()); }
 
@@ -101,9 +105,40 @@ namespace Model::Gas {
     return 1;
   }
 
+  ///////////////////////////////////////////////////////////
+  // Statecomponent methods:
+  ///////////////////////////////////////////////////////////
+
   void Compressorstation::add_results_to_json(nlohmann::json &new_output) {
     std::string comp_type = Aux::component_class(*this);
     new_print_helper(new_output, comp_type, get_type());
+  }
+
+  ///////////////////////////////////////////////////////////
+  // Costcomponent methods:
+  ///////////////////////////////////////////////////////////
+
+  double Compressorstation::evaluate_cost(
+      double /*last_time*/, double /*new_time*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*state*/,
+      Eigen::Ref<Eigen::VectorXd const> const &control) const {
+    auto current_control = control[get_control_startindex()];
+    return get_cost_weight() * current_control * current_control;
+  }
+
+  void Compressorstation::d_evaluate_cost_d_state(
+      Aux::Matrixhandler & /*cost_new_state_jacobian_handler*/,
+      double /*last_time*/, double /*new_time*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {}
+
+  void Compressorstation::d_evaluate_cost_d_control(
+      Aux::Matrixhandler &cost_control_jacobian_handler, double /*last_time*/,
+      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const & /*state*/,
+      Eigen::Ref<Eigen::VectorXd const> const &control) const {
+    auto current_control = control[get_control_startindex()];
+    cost_control_jacobian_handler.set_coefficient(
+        0, get_control_startindex(), 2 * get_cost_weight() * current_control);
   }
 
 } // namespace Model::Gas

@@ -1,4 +1,5 @@
 #pragma once
+#include "Costcomponent.hpp"
 #include "Edge.hpp"
 #include "Gasedge.hpp"
 #include "Shortcomponent.hpp"
@@ -9,16 +10,21 @@ namespace Model::Gas {
 
   class Compressorstation final :
       public SimpleControlcomponent,
+      public Costcomponent,
       public Shortcomponent {
   public:
     static std::string get_type();
     std::string get_gas_type() const final;
 
-    static nlohmann::json get_control_schema();
-
     Compressorstation(
         nlohmann::json const &edge_json,
         std::vector<std::unique_ptr<Network::Node>> &nodes);
+
+    ///////////////////////////////////////////////////////////
+    // Controlcomponent methods:
+    ///////////////////////////////////////////////////////////
+
+    static nlohmann::json get_control_schema();
 
     void setup() final;
 
@@ -59,8 +65,29 @@ namespace Model::Gas {
         nlohmann::json const &upper_bound_json) const final;
 
     Eigen::Index needed_number_of_controls_per_time_point() const final;
+    ///////////////////////////////////////////////////////////
+    // Statecomponent methods:
+    ///////////////////////////////////////////////////////////
 
     void add_results_to_json(nlohmann::json &new_output) final;
+    ///////////////////////////////////////////////////////////
+    // Costcomponent methods:
+    ///////////////////////////////////////////////////////////
+
+    double evaluate_cost(
+        double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &state,
+        Eigen::Ref<Eigen::VectorXd const> const &control) const final;
+
+    void d_evaluate_cost_d_state(
+        Aux::Matrixhandler &cost_new_state_jacobian_handler, double last_time,
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+        Eigen::Ref<Eigen::VectorXd const> const &control) const final;
+
+    void d_evaluate_cost_d_control(
+        Aux::Matrixhandler &cost_control_jacobian_handler, double last_time,
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+        Eigen::Ref<Eigen::VectorXd const> const &control) const final;
   };
 
 } // namespace Model::Gas
