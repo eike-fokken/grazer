@@ -78,21 +78,21 @@ namespace Model::Gas {
   void Compressorstation::set_initial_controls(
       Aux::InterpolatingVector &full_control_vector,
       nlohmann::json const &control_json) const {
-    set_simple_time_dependent_values(
+    set_simple_control_values(
         this, full_control_vector, control_json, get_control_schema());
   }
 
   void Compressorstation::set_lower_bounds(
       Aux::InterpolatingVector &full_lower_bound_vector,
       nlohmann::json const &lower_bound_json) const {
-    set_simple_time_dependent_values(
+    set_simple_control_values(
         this, full_lower_bound_vector, lower_bound_json, get_control_schema());
   }
 
   void Compressorstation::set_upper_bounds(
       Aux::InterpolatingVector &full_upper_bound_vector,
       nlohmann::json const &upper_bound_json) const {
-    set_simple_time_dependent_values(
+    set_simple_control_values(
         this, full_upper_bound_vector, upper_bound_json, get_control_schema());
   }
 

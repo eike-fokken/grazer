@@ -9,6 +9,8 @@
 
 namespace Model::Gas {
 
+  nlohmann::json revert_boundary_conditions(nlohmann::json const &data);
+
   class Flowboundarynode : public Gasnode, public Boundaryvaluecomponent {
 
   public:

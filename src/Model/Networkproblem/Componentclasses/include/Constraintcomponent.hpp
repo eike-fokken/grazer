@@ -4,9 +4,9 @@
 #include <nlohmann/json.hpp>
 
 namespace Aux {
-
+  class InterpolatingVector;
   class Matrixhandler;
-}
+} // namespace Aux
 
 namespace Model {
   class SimpleConstraintcomponent;
@@ -19,6 +19,8 @@ namespace Model {
     friend class Networkproblem;
 
   public:
+    static nlohmann::json get_constraint_schema() = delete;
+
     virtual ~Constraintcomponent(){};
 
     virtual void evaluate_constraint(
@@ -53,30 +55,28 @@ namespace Model {
 
     /** \brief getter for #start_constraint_index
      */
-    Eigen::Index get_start_constraint_index() const;
+    Eigen::Index get_constraint_startindex() const;
 
     /** \brief getter for #after_constraint_index
      */
-    Eigen::Index get_after_constraint_index() const;
+    Eigen::Index get_constraint_afterindex() const;
 
     virtual void set_constraint_lower_bounds(
-        Timedata timedata, Eigen::Ref<Eigen::VectorXd> constraint_lower_bounds,
-        nlohmann::json const &constraint_lower_bound_json)
-        = 0;
+        Aux::InterpolatingVector &full_control_vector,
+        nlohmann::json const &constraint_lower_bounds_json) const = 0;
 
     virtual void set_constraint_upper_bounds(
-        Timedata timedata, Eigen::Ref<Eigen::VectorXd> constraint_upper_bounds,
-        nlohmann::json const &constraint_upper_bound_json)
-        = 0;
+        Aux::InterpolatingVector &full_control_vector,
+        nlohmann::json const &constraint_upper_bounds_json) const = 0;
 
   private:
     /** \brief The first index, this Constraintcomponent "owns".
      */
-    Eigen::Index start_constraint_index{-1};
+    Eigen::Index constraint_startindex{-1};
 
     /** \brief The first index after #start_constraint_index, that is not
      * "owned" by this Constraintcomponent.
      */
-    Eigen::Index after_constraint_index{-1};
+    Eigen::Index constraint_afterindex{-1};
   };
 } // namespace Model

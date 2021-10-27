@@ -32,7 +32,7 @@ namespace Model {
       public Costcomponent {
 
   public:
-    std::string get_type() const;
+    static std::string get_type();
 
     ~Networkproblem();
 
@@ -168,12 +168,12 @@ namespace Model {
     Eigen::Index set_constraint_indices(Eigen::Index next_free_index) final;
 
     void set_constraint_lower_bounds(
-        Timedata timedata, Eigen::Ref<Eigen::VectorXd> constraint_lower_bounds,
-        nlohmann::json const &constraint_lower_bound_json) final;
+        Aux::InterpolatingVector &full_control_vector,
+        nlohmann::json const &constraint_lower_bounds_json) const final;
 
     void set_constraint_upper_bounds(
-        Timedata timedata, Eigen::Ref<Eigen::VectorXd> constraint_upper_bounds,
-        nlohmann::json const &constraint_upper_bound_json) final;
+        Aux::InterpolatingVector &full_control_vector,
+        nlohmann::json const &constraint_upper_bounds_json) const final;
 
     /////////////////////////////////////////////////////////
     // other methods:

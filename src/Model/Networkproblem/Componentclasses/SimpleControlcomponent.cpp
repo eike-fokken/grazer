@@ -2,7 +2,7 @@
 #include "InterpolatingVector.hpp"
 namespace Model {
 
-  void set_simple_time_dependent_values(
+  void set_simple_control_values(
       Controlcomponent const *controlcomponent,
       Aux::InterpolatingVector &full_control_vector,
       nlohmann::json const &initial_json,

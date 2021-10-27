@@ -1,5 +1,4 @@
 #pragma once
-#include "Controlcomponent.hpp"
 #include "Edge.hpp"
 #include "Gasedge.hpp"
 #include "Shortcomponent.hpp"

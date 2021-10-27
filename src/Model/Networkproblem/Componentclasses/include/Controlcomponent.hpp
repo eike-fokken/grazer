@@ -20,6 +20,8 @@ namespace Model {
     friend class Networkproblem;
 
   public:
+    static nlohmann::json get_control_schema() = delete;
+
     virtual ~Controlcomponent(){};
 
     /** \brief evaluates the model equations into rootvalues.
@@ -151,8 +153,6 @@ namespace Model {
     virtual void set_upper_bounds(
         Aux::InterpolatingVector &full_upper_bound_vector,
         nlohmann::json const &upper_bound_json) const = 0;
-
-    static nlohmann::json get_control_schema();
 
   private:
     /** \brief The first control index, this Controlcomponent "owns".

@@ -1,15 +1,19 @@
 #pragma once
+#include "Constraintcomponent.hpp"
+#include "Flowboundarynode.hpp"
 #include "SimpleConstraintcomponent.hpp"
-#include "Sink.hpp"
 
 namespace Model::Gas {
 
-  class ConstraintSink final : public Sink, public SimpleConstraintcomponent {
+  class ConstraintSink final :
+      public Flowboundarynode,
+      public SimpleConstraintcomponent {
 
   public:
+    static nlohmann::json get_constraint_schema();
     static std::string get_type();
 
-    using Sink::Sink;
+    ConstraintSink(nlohmann::json const &data);
 
     void evaluate_constraint(
         Eigen::Ref<Eigen::VectorXd> constraint_values, double last_time,
@@ -29,12 +33,12 @@ namespace Model::Gas {
         Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
     void set_constraint_lower_bounds(
-        Timedata timedata, Eigen::Ref<Eigen::VectorXd> constraint_lower_bounds,
-        nlohmann::json const &constraint_lower_bound_json) final;
+        Aux::InterpolatingVector &full_control_vector,
+        const nlohmann::json &constraint_lower_bounds_json) const final;
 
     void set_constraint_upper_bounds(
-        Timedata timedata, Eigen::Ref<Eigen::VectorXd> constraint_upper_bounds,
-        nlohmann::json const &constraint_upper_bound_json) final;
+        Aux::InterpolatingVector &full_control_vector,
+        const nlohmann::json &constraint_upper_bounds_json) const final;
 
     Eigen::Index needed_number_of_constraints_per_time_point() const final;
   };

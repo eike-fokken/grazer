@@ -91,19 +91,16 @@ int grazer::run(std::filesystem::path directory_path) {
         control_timehelper, problem.get_number_of_controls_per_timepoint());
     Aux::InterpolatingVector upper_bounds(
         control_timehelper, problem.get_number_of_controls_per_timepoint());
-    Eigen::VectorXd constraints_lower_bounds(
-        problem.get_number_of_constraints_per_timepoint()
-        * timedata.get_number_of_time_points());
-    Eigen::VectorXd constraints_upper_bounds(
-        problem.get_number_of_constraints_per_timepoint()
-        * timedata.get_number_of_time_points());
+    Aux::InterpolatingVector constraints_lower_bounds(
+        control_timehelper, problem.get_number_of_constraints_per_timepoint());
+    Aux::InterpolatingVector constraints_upper_bounds(
+        control_timehelper, problem.get_number_of_constraints_per_timepoint());
 
     Optimization::initialize(
-        timedata, problem, controller, control_json, initial_state,
-        initial_json, lower_bounds, lower_bounds_json, upper_bounds,
-        upper_bounds_json, constraints_lower_bounds,
-        constraints_lower_bounds_json, constraints_upper_bounds,
-        constraints_upper_bounds_json);
+        problem, controller, control_json, initial_state, initial_json,
+        lower_bounds, lower_bounds_json, upper_bounds, upper_bounds_json,
+        constraints_lower_bounds, constraints_lower_bounds_json,
+        constraints_upper_bounds, constraints_upper_bounds_json);
 
     std::cout << "data read" << std::endl;
 

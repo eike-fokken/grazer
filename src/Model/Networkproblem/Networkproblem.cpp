@@ -37,7 +37,7 @@ namespace Model {
     return idcomponents;
   }
 
-  std::string Networkproblem::get_type() const { return "Network_problem"; }
+  std::string Networkproblem::get_type() { return "Network_problem"; }
 
   Networkproblem::~Networkproblem() {}
 
@@ -425,25 +425,26 @@ namespace Model {
 
   Eigen::Index
   Networkproblem::set_constraint_indices(Eigen::Index next_free_index) {
-    start_constraint_index = next_free_index;
+    constraint_startindex = next_free_index;
     for (auto *constraintcomponent : constraintcomponents) {
       next_free_index
           = constraintcomponent->set_constraint_indices(next_free_index);
     }
-    after_constraint_index = next_free_index;
+    constraint_afterindex = next_free_index;
     return next_free_index;
   }
 
   void Networkproblem::set_constraint_lower_bounds(
-      Timedata timedata, Eigen::Ref<Eigen::VectorXd> constraint_lower_bounds,
-      nlohmann::json const &constraint_lower_bound_json) {
+      Aux::InterpolatingVector &full_lower_bounds_vector,
+      nlohmann::json const &constraint_lower_bounds_json) const {
     auto idcomponents = get_idobjects(constraintcomponents);
 
     for (auto const &component : {"nodes", "connections"}) {
-      if (not constraint_lower_bound_json.contains(component)) {
+      if (not constraint_lower_bounds_json.contains(component)) {
         continue;
       }
-      for (auto const &componenttype : constraint_lower_bound_json[component]) {
+      for (auto const &componenttype :
+           constraint_lower_bounds_json[component]) {
         for (auto const &componentjson : componenttype) {
 
           auto component_id = componentjson["id"];
@@ -457,8 +458,7 @@ namespace Model {
             auto index = iterator - idcomponents.begin();
             constraintcomponents[static_cast<size_t>(index)]
                 ->set_constraint_lower_bounds(
-                    timedata, constraint_lower_bounds,
-                    constraint_lower_bound_json);
+                    full_lower_bounds_vector, constraint_lower_bounds_json);
           } else {
             std::cout << "Note: Component with id " << component_id
                       << "appears in the constraint lower bounds but not in "
@@ -471,16 +471,17 @@ namespace Model {
   }
 
   void Networkproblem::set_constraint_upper_bounds(
-      Timedata timedata, Eigen::Ref<Eigen::VectorXd> constraint_upper_bounds,
-      nlohmann::json const &constraint_upper_bound_json) {
+      Aux::InterpolatingVector &full_upper_bound_vector,
+      nlohmann::json const &constraint_upper_bounds_json) const {
 
     auto idcomponents = get_idobjects(constraintcomponents);
 
     for (auto const &component : {"nodes", "connections"}) {
-      if (not constraint_upper_bound_json.contains(component)) {
+      if (not constraint_upper_bounds_json.contains(component)) {
         continue;
       }
-      for (auto const &componenttype : constraint_upper_bound_json[component]) {
+      for (auto const &componenttype :
+           constraint_upper_bounds_json[component]) {
         for (auto const &componentjson : componenttype) {
 
           auto component_id = componentjson["id"];
@@ -494,8 +495,7 @@ namespace Model {
             auto index = iterator - idcomponents.begin();
             constraintcomponents[static_cast<size_t>(index)]
                 ->set_constraint_upper_bounds(
-                    timedata, constraint_upper_bounds,
-                    constraint_upper_bound_json);
+                    full_upper_bound_vector, constraint_upper_bounds_json);
           } else {
             std::cout << "Note: Component with id " << component_id
                       << "appears in the constraint upper bounds but not in "
