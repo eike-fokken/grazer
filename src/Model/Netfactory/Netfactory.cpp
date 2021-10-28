@@ -21,14 +21,11 @@ namespace Model {
   build_full_networkproblem_json(nlohmann::json &networkproblem_json) {
     std::string topology_key = "topology_json";
     std::string boundary_key = "boundary_json";
-    std::string control_key = "control_json";
 
     aux_json::replace_entry_with_json_from_file(
         networkproblem_json, topology_key);
     aux_json::replace_entry_with_json_from_file(
         networkproblem_json, boundary_key);
-    aux_json::replace_entry_with_json_from_file(
-        networkproblem_json, control_key);
 
     // Sorting the component vectors by ID
     nlohmann::json &topology = networkproblem_json[topology_key];
@@ -36,9 +33,6 @@ namespace Model {
 
     nlohmann::json &boundary = networkproblem_json[boundary_key];
     Aux::sort_json_vectors_by_id(boundary, boundary_key);
-
-    nlohmann::json &control = networkproblem_json[control_key];
-    Aux::sort_json_vectors_by_id(control, control_key);
 
     // build the node vector.
     insert_second_json_in_topology_json(topology, boundary, "boundary_values");

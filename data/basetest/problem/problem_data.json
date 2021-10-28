@@ -28,7 +28,6 @@
             }
         },
         "topology_json":"topology.json",
-        "boundary_json":"boundary.json",
-        "control_json":"control.json"
+        "boundary_json":"boundary.json"
     }
 }

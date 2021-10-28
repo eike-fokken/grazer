@@ -13,7 +13,6 @@
     {
         "topology_json":"topology.json",
         "boundary_json":"boundary.json",
-        "control_json":"control.json",
         "defaults" : {
             "StochasticPQnode": {
                 "number_of_stochastic_steps": 1000,
