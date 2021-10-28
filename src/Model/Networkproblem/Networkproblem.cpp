@@ -13,6 +13,7 @@
 #include <iterator>
 #include <memory>
 #include <nlohmann/json.hpp>
+#include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
@@ -49,25 +50,57 @@ namespace Model {
     auto json_ids = Aux::get_sorted_ids_of_json(json, key);
 
     size_t json_index = 0;
-    for (auto const &id : ids) {
+    size_t id_index = 0;
+    std::ostringstream errormessage;
+    std::ostringstream warningmessage;
+    while (true) {
       if (json_index >= json_ids.size()) {
-        gthrow(
-            {"Component with id ", id,
-             " appears in the topology and needs an entry in the json ", key,
-             " but has none there."});
+        for (auto additional_id_index = id_index;
+             additional_id_index < ids.size(); ++additional_id_index) {
+          errormessage
+              << "Component with id " << ids[additional_id_index]
+              << " appears in the topology and needs an entry in the json "
+              << key << " but has none there.\n";
+        }
+        break;
       }
-      if (id > json_ids[json_index]) {
-        std::cout << "Component with id " << json_ids[json_index]
-                  << " appears in json " << key << ", but not in the topology!"
-                  << std::endl;
+      if (id_index >= ids.size()) {
+        for (auto additional_json_index = json_index;
+             additional_json_index < json_ids.size(); ++additional_json_index) {
+          warningmessage << "Component with id "
+                         << json_ids[additional_json_index]
+                         << " appears in json " << key
+                         << ", but not in the topology!\n";
+        }
+        break;
       }
-      if (id < json_ids[json_index]) {
-        gthrow(
-            {"Component with id ", id,
-             " appears in the topology and needs an entry in the json ", key,
-             " but has none there."});
+
+      if (ids[id_index] > json_ids[json_index]) {
+        warningmessage << "Component with id " << json_ids[json_index]
+                       << " appears in json " << key
+                       << ", but not in the topology!\n";
+        ++json_index;
+        continue;
+      } else if (ids[id_index] < json_ids[json_index]) {
+        errormessage
+            << "Component with id " << ids[id_index]
+            << " appears in the topology and needs an entry in the json " << key
+            << " but has none there.\n";
+        ++id_index;
+        continue;
+      } else { // ids[id_index] == json_ids[json_index]
+        ++id_index;
+        ++json_index;
       }
-      ++json_index;
+    }
+    if (not warningmessage.str().empty()) {
+      std::cout << warningmessage.str() << std::endl;
+    }
+    if (not errormessage.str().empty()) {
+      gthrow(
+          {"\n", errormessage.str(),
+           "\nNote that these may not be the only problems with the input json "
+           "files.\nTry again after fixing these."});
     }
   }
 
@@ -163,12 +196,6 @@ namespace Model {
             auto index = iterator - ids.begin();
             statecomponents[static_cast<size_t>(index)]->set_initial_values(
                 new_state, componentjson);
-          } else {
-            std::cout
-                << "Note: Component with id "
-                << componentjson["id"].get<std::string>()
-                << "appears in the initial values but not in the topology."
-                << std::endl;
           }
         }
       }
@@ -281,12 +308,6 @@ namespace Model {
             auto index = iterator - ids.begin();
             controlcomponents[static_cast<size_t>(index)]->set_initial_controls(
                 controller, componentjson);
-          } else {
-            std::cout << "Note: Component with id "
-                      << componentjson["id"].get<std::string>()
-                      << "appears in the control values but not in the "
-                         "topology."
-                      << std::endl;
           }
         }
       }
@@ -313,11 +334,6 @@ namespace Model {
             auto index = iterator - ids.begin();
             controlcomponents[static_cast<size_t>(index)]->set_lower_bounds(
                 full_lower_bound_vector, lower_bound_json);
-          } else {
-            std::cout << "Note: Component with id "
-                      << componentjson["id"].get<std::string>()
-                      << "appears in the lower bounds but not in the topology."
-                      << std::endl;
           }
         }
       }
@@ -343,11 +359,6 @@ namespace Model {
             auto index = iterator - ids.begin();
             controlcomponents[static_cast<size_t>(index)]->set_upper_bounds(
                 full_upper_bound_vector, upper_bound_json);
-          } else {
-            std::cout << "Note: Component with id "
-                      << componentjson["id"].get<std::string>()
-                      << "appears in the upper bounds but not in the topology."
-                      << std::endl;
           }
         }
       }
@@ -479,12 +490,6 @@ namespace Model {
             constraintcomponents[static_cast<size_t>(index)]
                 ->set_constraint_lower_bounds(
                     full_lower_bounds_vector, constraint_lower_bounds_json);
-          } else {
-            std::cout << "Note: Component with id "
-                      << componentjson["id"].get<std::string>()
-                      << "appears in the constraint lower bounds but not in "
-                         "the topology."
-                      << std::endl;
           }
         }
       }
@@ -515,12 +520,6 @@ namespace Model {
             constraintcomponents[static_cast<size_t>(index)]
                 ->set_constraint_upper_bounds(
                     full_upper_bound_vector, constraint_upper_bounds_json);
-          } else {
-            std::cout << "Note: Component with id "
-                      << componentjson["id"].get<std::string>()
-                      << "appears in the constraint upper bounds but not in "
-                         "the topology."
-                      << std::endl;
           }
         }
       }
