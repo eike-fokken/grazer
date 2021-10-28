@@ -1,3 +1,3 @@
-add_library(ipoptwrapper INTERFACE)
-target_link_libraries(ipoptwrapper INTERFACE my_ipopt)
-target_include_directories(ipoptwrapper INTERFACE include)
+add_library(ipoptwrapper STATIC Wrapper.cpp)
+target_link_libraries(ipoptwrapper PUBLIC my_ipopt)
+target_include_directories(ipoptwrapper PUBLIC include)

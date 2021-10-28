@@ -10,45 +10,42 @@
 
 #include <IpTNLP.hpp>
 
-using VectorXd = Eigen::VectorXd;
-using VectorXi = Eigen::VectorXi;
-
-using namespace Ipopt;
-
 template <
     typename ObjFun, typename ObjGradFun, typename ConstrsFun,
     typename ConstrsJacFun>
-class IpoptWrapper : public TNLP {
+class IpoptWrapper : public Ipopt::TNLP {
   static_assert(
-      std::is_invocable_r_v<double, ObjFun, Eigen::Ref<VectorXd const>>,
+      std::is_invocable_r_v<double, ObjFun, Eigen::Ref<Eigen::VectorXd const>>,
       "The objective function must be a callable with "
-      "VectorXd& argument and return a double");
-  static_assert(
-      std::is_invocable_r_v<VectorXd, ObjGradFun, Eigen::Ref<VectorXd const>>,
-      "The gradient function must be a callable with "
-      "VectorXd& argument and return type VectorXd");
-  static_assert(
-      std::is_invocable_r_v<VectorXd, ConstrsFun, Eigen::Ref<VectorXd const>>,
-      "The constraints function must be a callable with "
-      "VectorXd& argument and return type VectorXd");
+      "Eigen::VectorXd& argument and return a double");
   static_assert(
       std::is_invocable_r_v<
-          std::tuple<VectorXd, VectorXi, VectorXi>, ConstrsJacFun,
-          Eigen::Ref<VectorXd const>>,
-      "The Jacobian function must be a callable with VectorXd "
-      "argument and return type std::tuple<VectorXd, "
-      "VectorXi, VectorXi>");
+          Eigen::VectorXd, ObjGradFun, Eigen::Ref<Eigen::VectorXd const>>,
+      "The gradient function must be a callable with "
+      "Eigen::VectorXd& argument and return type Eigen::VectorXd");
+  static_assert(
+      std::is_invocable_r_v<
+          Eigen::VectorXd, ConstrsFun, Eigen::Ref<Eigen::VectorXd const>>,
+      "The constraints function must be a callable with "
+      "Eigen::VectorXd& argument and return type Eigen::VectorXd");
+  static_assert(
+      std::is_invocable_r_v<
+          std::tuple<Eigen::VectorXd, Eigen::VectorXi, Eigen::VectorXi>,
+          ConstrsJacFun, Eigen::Ref<Eigen::VectorXd const>>,
+      "The Jacobian function must be a callable with Eigen::VectorXd "
+      "argument and return type std::tuple<Eigen::VectorXd, "
+      "Eigen::VectorXi, Eigen::VectorXi>");
 
 private:
   std::size_t _num_vars;
   std::size_t _num_constraints;
-  VectorXd _initial_point;
-  VectorXd _lower_bounds;
-  VectorXd _upper_bounds;
-  VectorXd _constr_lower_bounds;
-  VectorXd _constr_upper_bounds;
+  Eigen::VectorXd _initial_point;
+  Eigen::VectorXd _lower_bounds;
+  Eigen::VectorXd _upper_bounds;
+  Eigen::VectorXd _constr_lower_bounds;
+  Eigen::VectorXd _constr_upper_bounds;
   //
-  VectorXd _x_sol;
+  Eigen::VectorXd _x_sol;
   double _sol_obj_value;
 
   // Functions
@@ -70,11 +67,11 @@ public:
   IpoptWrapper &operator=(const IpoptWrapper &) = delete;
 
   // Setters and getters
-  void set_initial_point(VectorXd &x0) { _initial_point = x0; }
-  VectorXd get_initial_point() { return _initial_point; }
+  void set_initial_point(Eigen::VectorXd &x0) { _initial_point = x0; }
+  Eigen::VectorXd get_initial_point() { return _initial_point; }
   std::size_t get_num_vars() { return _num_vars; }
   std::size_t get_num_constraints() { return _num_constraints; }
-  VectorXd get_solution() { return _x_sol; }
+  Eigen::VectorXd get_solution() { return _x_sol; }
   double get_obj_value() { return _sol_obj_value; }
 
   /**
@@ -83,7 +80,7 @@ public:
    * @param lower Vector of lower bounds for the variables.
    * @param upper Vector of upper bounds for the variables.
    */
-  void set_variable_bounds(VectorXd &lower, VectorXd &upper) {
+  void set_variable_bounds(Eigen::VectorXd &lower, Eigen::VectorXd &upper) {
     assert(lower.size() == upper.size());
     _lower_bounds = lower;
     _upper_bounds = upper;
@@ -93,10 +90,10 @@ public:
   /**
    * @brief Get a tuple of the lower and upper bounds on the variables
    *
-   * @return std::tuple<VectorXd, VectorXd> Contains the lower and upper bounds
-   * in that order.
+   * @return std::tuple<Eigen::VectorXd, Eigen::VectorXd> Contains the lower and
+   * upper bounds in that order.
    */
-  std::tuple<VectorXd, VectorXd> get_variable_bounds() {
+  std::tuple<Eigen::VectorXd, Eigen::VectorXd> get_variable_bounds() {
     return {_lower_bounds, _upper_bounds};
   }
 
@@ -107,14 +104,14 @@ public:
    * @param lower Vector of lower bounds for the constraints.
    * @param upper Vector of upper bounds for the constraints.
    */
-  void set_constraint_bounds(VectorXd &lower, VectorXd &upper) {
+  void set_constraint_bounds(Eigen::VectorXd &lower, Eigen::VectorXd &upper) {
     assert(lower.size() == upper.size());
     _constr_lower_bounds = lower;
     _constr_upper_bounds = upper;
     _num_constraints = static_cast<std::size_t>(upper.size());
   }
 
-  std::tuple<VectorXd, VectorXd> get_constraint_bounds() {
+  std::tuple<Eigen::VectorXd, Eigen::VectorXd> get_constraint_bounds() {
     return {_constr_lower_bounds, _constr_upper_bounds};
   }
 
@@ -124,8 +121,8 @@ public:
 
   /** Method to return some info about the nlp */
   bool get_nlp_info(
-      Index &n, Index &m, Index &nnz_jac_g, Index &nnz_h_lag,
-      IndexStyleEnum &index_style) final {
+      Ipopt::Index &n, Ipopt::Index &m, Ipopt::Index &nnz_jac_g,
+      Ipopt::Index &nnz_h_lag, IndexStyleEnum &index_style) final {
     n = static_cast<Ipopt::Index>(get_num_vars());
     m = static_cast<Ipopt::Index>(get_num_constraints());
     // Evaluate the constraints jacobian in the initial point to obtain the
@@ -135,14 +132,14 @@ public:
 
     nnz_jac_g = static_cast<Ipopt::Index>(nnz_constrs_jac.size());
     nnz_h_lag = 0; // we don't use the hessian, so we can ignore it
-    index_style = TNLP::IndexStyleEnum::C_STYLE; // 0-based indexing.
+    index_style = Ipopt::TNLP::IndexStyleEnum::C_STYLE; // 0-based indexing.
     return true;
   }
 
   /** Method to return the bounds for my problem */
   bool get_bounds_info(
-      Index /*n*/, Number *x_l, Number *x_u, Index /*m*/, Number *g_l,
-      Number *g_u) final {
+      Ipopt::Index /*n*/, Ipopt::Number *x_l, Ipopt::Number *x_u,
+      Ipopt::Index /*m*/, Ipopt::Number *g_l, Ipopt::Number *g_u) final {
     auto [vars_lb, vars_ub] = get_variable_bounds();
     auto [constrs_lb, constrs_ub] = get_constraint_bounds();
     std::copy(vars_lb.cbegin(), vars_lb.cend(), x_l);
@@ -154,9 +151,10 @@ public:
 
   /** Method to return the starting point for the algorithm */
   bool get_starting_point(
-      Index /* n */, bool /* init_x */, Number *x, bool /* init_z */,
-      Number * /* z_L */, Number * /* z_U */, Index /*m */,
-      bool /* init_lambda */, Number * /* lambda */) final {
+      Ipopt::Index /* n */, bool /* init_x */, Ipopt::Number *x,
+      bool /* init_z */, Ipopt::Number * /* z_L */, Ipopt::Number * /* z_U */,
+      Ipopt::Index /*m */, bool /* init_lambda */,
+      Ipopt::Number * /* lambda */) final {
     // initialize to the given starting point
     auto x0 = get_initial_point();
     std::copy(x0.cbegin(), x0.cend(), x);
@@ -164,26 +162,29 @@ public:
   }
 
   /** Method to return the objective value */
-  bool
-  eval_f(Index n, const Number *x, bool /* new_x */, Number &obj_value) final {
-    Eigen::Map<VectorXd const> xx(x, n);
+  bool eval_f(
+      Ipopt::Index n, const Ipopt::Number *x, bool /* new_x */,
+      Ipopt::Number &obj_value) final {
+    Eigen::Map<Eigen::VectorXd const> xx(x, n);
     obj_value = _objective(xx);
     return true;
   }
 
   /** Method to return the gradient of the objective */
   bool eval_grad_f(
-      Index n, const Number *x, bool /* new_x */, Number *grad_f) final {
-    Eigen::Map<VectorXd const> xx(x, n);
+      Ipopt::Index n, const Ipopt::Number *x, bool /* new_x */,
+      Ipopt::Number *grad_f) final {
+    Eigen::Map<Eigen::VectorXd const> xx(x, n);
     auto grad = _gradient(xx);
     std::copy(grad.cbegin(), grad.cend(), grad_f);
     return true;
   }
 
   /** Method to return the constraint residuals */
-  bool
-  eval_g(Index n, const Number *x, bool /* new_x */, Index m, Number *g) final {
-    Eigen::Map<VectorXd const> xx(x, n);
+  bool eval_g(
+      Ipopt::Index n, const Ipopt::Number *x, bool /* new_x */, Ipopt::Index m,
+      Ipopt::Number *g) final {
+    Eigen::Map<Eigen::VectorXd const> xx(x, n);
     auto constrs = _constraints(xx);
     assert(constrs.size() == m);
     std::copy(constrs.cbegin(), constrs.cend(), g);
@@ -195,8 +196,9 @@ public:
    *   2) The values of the Jacobian (if "values" is not NULL)
    */
   bool eval_jac_g(
-      Index n, const Number *x, bool /* new_x */, Index /* m */,
-      Index /* nele_jac */, Index *iRow, Index *jCol, Number *values) final {
+      Ipopt::Index n, const Ipopt::Number *x, bool /* new_x */,
+      Ipopt::Index /* m */, Ipopt::Index /* nele_jac */, Ipopt::Index *iRow,
+      Ipopt::Index *jCol, Ipopt::Number *values) final {
     if (values == NULL) {
       // first internal call of this function.
       // set the structure of constraints jacobian.
@@ -206,8 +208,8 @@ public:
       std::copy(nnz_cols.cbegin(), nnz_cols.cend(), jCol);
     } else {
       // evaluate the jacobian of the constraints function
-      // VectorXd xx(Eigen::Map<const VectorXd>(x, n));
-      VectorXd xx(n);
+      // Eigen::VectorXd xx(Eigen::Map<const Eigen::VectorXd>(x, n));
+      Eigen::VectorXd xx(n);
       std::copy(x, x + n, xx.begin());
       auto [jac_nnz_vals, nnz_rows, nnz_cols] = _jacobian(xx);
       std::copy(jac_nnz_vals.cbegin(), jac_nnz_vals.cend(), values);
@@ -229,12 +231,13 @@ public:
   /** This method is called when the algorithm is complete so the TNLP can
    * store/write the solution */
   void finalize_solution(
-      SolverReturn /* status */, Index n, const Number *x,
-      const Number * /* z_L */, const Number * /* z_U */, Index /* m */,
-      const Number * /* g */, const Number * /* lambda */, Number obj_value,
-      const IpoptData * /* ip_data */,
-      IpoptCalculatedQuantities * /* ip_cq */) final {
-    VectorXd xx(n);
+      Ipopt::SolverReturn /* status */, Ipopt::Index n, const Ipopt::Number *x,
+      const Ipopt::Number * /* z_L */, const Ipopt::Number * /* z_U */,
+      Ipopt::Index /* m */, const Ipopt::Number * /* g */,
+      const Ipopt::Number * /* lambda */, Ipopt::Number obj_value,
+      const Ipopt::IpoptData * /* ip_data */,
+      Ipopt::IpoptCalculatedQuantities * /* ip_cq */) final {
+    Eigen::VectorXd xx(n);
     std::copy(x, x + n, xx.begin());
     _x_sol = xx;
     _sol_obj_value = obj_value;
