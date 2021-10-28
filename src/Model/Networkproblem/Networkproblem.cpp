@@ -333,7 +333,7 @@ namespace Model {
           if (iterator != ids.end()) {
             auto index = iterator - ids.begin();
             controlcomponents[static_cast<size_t>(index)]->set_lower_bounds(
-                full_lower_bound_vector, lower_bound_json);
+                full_lower_bound_vector, componentjson);
           }
         }
       }
@@ -358,7 +358,7 @@ namespace Model {
           if (iterator != ids.end()) {
             auto index = iterator - ids.begin();
             controlcomponents[static_cast<size_t>(index)]->set_upper_bounds(
-                full_upper_bound_vector, upper_bound_json);
+                full_upper_bound_vector, componentjson);
           }
         }
       }

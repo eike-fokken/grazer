@@ -51,10 +51,10 @@ int grazer::run(std::filesystem::path directory_path) {
         problem_directory / std::filesystem::path("initial.json"));
     auto control_json = aux_json::get_json_from_file_path(
         problem_directory / std::filesystem::path("control.json"));
-    // auto lower_bounds_json = aux_json::get_json_from_file_path(
-    //     problem_directory / std::filesystem::path("lower_bounds.json"));
-    // auto upper_bounds_json = aux_json::get_json_from_file_path(
-    //     problem_directory / std::filesystem::path("upper_bounds.json"));
+    auto lower_bounds_json = aux_json::get_json_from_file_path(
+        problem_directory / std::filesystem::path("lower_bounds.json"));
+    auto upper_bounds_json = aux_json::get_json_from_file_path(
+        problem_directory / std::filesystem::path("upper_bounds.json"));
     // auto constraints_lower_bounds_json = aux_json::get_json_from_file_path(
     //     problem_directory
     //     / std::filesystem::path("constraints_lower_bounds.json"));
@@ -62,8 +62,6 @@ int grazer::run(std::filesystem::path directory_path) {
     //     problem_directory
     //     / std::filesystem::path("constraints_upper_bounds.json"));
 
-    nlohmann::json lower_bounds_json;
-    nlohmann::json upper_bounds_json;
     nlohmann::json constraints_lower_bounds_json;
     nlohmann::json constraints_upper_bounds_json;
 
