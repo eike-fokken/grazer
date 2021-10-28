@@ -3,7 +3,7 @@
 	"nodes": {
 		"Source": [
 			{
-				"id": "node_1",
+				"id": "source",
 				"data": [
 					{
 						"time": 0,
@@ -22,12 +22,12 @@
 		],
 		"Sink": [
 			{
-				"id": "node_2",
+				"id": "sink",
 				"data": [
 					{
 						"time": 0,
 						"values": [
-							70.993631
+							58.993631
 						]
 					},
 					{

@@ -1,6 +1,28 @@
 {
 	"$schema": "../schemas/initial_schema.json",
-	"connections": {
+	  "connections": {
+        "Compressorstation": [
+			      {
+				        "id": "cs",
+				        "data": [
+					          {
+						            "x": 0.0,
+						            "values": [
+							              75.102826,
+							              58.993631
+						            ]
+					          },
+					          {
+						            "x": 1.0,
+						            "values": [
+							              75.102826,
+							              58.993631
+						            ]
+					          }
+				        ]
+			      }
+		    ],
+
 		"Pipe": [
 			{
 				"id": "p_br1",
