@@ -23,17 +23,55 @@ namespace Model {
 
     virtual ~Constraintcomponent(){};
 
+    /**
+     * @brief evaluates the model constraint equations into constraint_values
+     *
+     * @param[out]  constraint_values    results of the model constraint
+     * equations.
+     * @param       last_time            time point of the last time step.
+     * Usually important for PDEs.
+     * @param       new_time             time point of the current time step.
+     * @param       state                value of the state at the current time
+     * step.
+     * @param       control              value of the control at the current
+     * time step.
+     */
     virtual void evaluate_constraint(
         Eigen::Ref<Eigen::VectorXd> constraint_values, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
 
+    /**
+     * @brief derivative of Constraintcomponent::evaluate_constraint w.r.t. \p
+     * new state.
+     *
+     * @param    constraint_new_state_jacobian_handler  A helper object, that
+     * fills a sparse matrix in an efficient way.
+     * @param    last_time            time point of the last time step. Usually
+     * important for PDEs.
+     * @param    new_time             time point of the current time step.
+     * @param    state                value of the state at the current time
+     * step.
+     * @param    control              value of the control at the current time
+     * step.
+     */
     virtual void d_evaluate_constraint_d_state(
         Aux::Matrixhandler &constraint_new_state_jacobian_handler,
         double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
 
+    /**
+     * @brief derivative of Constraintcomponent::evaluate w.r.t. \p last_state.
+     *
+     * @param    constraint_control_jacobian_handler  A hlper object, that fills
+     * a sparse matrix in an efficient way.
+     * @param    last_time            time point of the last time step. Usually
+     * important for PDEs.
+     * @param    new_time             time point of the current time step.
+     * @param    state                value of the state at current time step.
+     * @param    control              value of the control at current time step.
+     */
     virtual void d_evaluate_constraint_d_control(
         Aux::Matrixhandler &constraint_control_jacobian_handler,
         double last_time, double new_time,
