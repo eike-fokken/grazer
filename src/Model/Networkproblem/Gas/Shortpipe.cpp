@@ -17,7 +17,8 @@ namespace Model::Gas {
       Eigen::Ref<Eigen::VectorXd const> const &,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     rootvalues.segment<2>(get_equation_start_index())
-        = get_boundary_state(1, new_state) - get_boundary_state(-1, new_state);
+        = get_boundary_state(start, new_state)
+          - get_boundary_state(end, new_state);
   }
 
   void Shortpipe::d_evalutate_d_new_state(
@@ -26,9 +27,9 @@ namespace Model::Gas {
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const {
 
-    auto start_p_index = get_boundary_state_index(1);
+    auto start_p_index = get_boundary_state_index(start);
     auto start_q_index = start_p_index + 1;
-    auto end_p_index = get_boundary_state_index(-1);
+    auto end_p_index = get_boundary_state_index(end);
     auto end_q_index = end_p_index + 1;
 
     auto start_equation_index = get_equation_start_index();

@@ -104,7 +104,7 @@ namespace Model::Gaspowerconnection {
     nlohmann::json current_value;
     current_value["time"] = time;
     current_value["pressure"] = nlohmann::json::array();
-    auto start_state = get_boundary_state(1, state);
+    auto start_state = get_boundary_state(Gas::start, state);
     nlohmann::json pressure0_json;
     pressure0_json["x"] = 0.0;
     pressure0_json["value"] = start_state[0];
@@ -127,12 +127,13 @@ namespace Model::Gaspowerconnection {
   }
 
   Eigen::Vector2d Gaspowerconnection::get_boundary_p_qvol_bar(
-      int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const {
+      Gas::Direction direction,
+      Eigen::Ref<Eigen::VectorXd const> const &state) const {
     return get_boundary_state(direction, state);
   }
 
   void Gaspowerconnection::dboundary_p_qvol_dstate(
-      int direction, Aux::Matrixhandler &jacobianhandler,
+      Gas::Direction direction, Aux::Matrixhandler &jacobianhandler,
       Eigen::RowVector2d function_derivative, Eigen::Index rootvalues_index,
       Eigen::Ref<Eigen::VectorXd const> const &) const {
     auto p_index = get_boundary_state_index(direction);

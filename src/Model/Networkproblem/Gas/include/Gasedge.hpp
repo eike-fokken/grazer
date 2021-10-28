@@ -5,6 +5,9 @@
 
 namespace Model::Gas {
 
+  enum Direction { start = 1, end = -1 };
+
+  std::string Direction_string(Direction direction);
   /// @brief This class is a base class for all Gas edges with a 2x2 balance law
   class Gasedge : public SimpleStatecomponent {
 
@@ -12,21 +15,22 @@ namespace Model::Gas {
     static int init_vals_per_interpol_point();
 
     virtual std::string get_gas_type() const = 0;
-    Eigen::Index boundary_equation_index(int direction) const;
+    Eigen::Index boundary_equation_index(Direction direction) const;
 
-    Eigen::Index get_boundary_state_index(int direction) const;
+    Eigen::Index get_boundary_state_index(Direction direction) const;
 
     Eigen::Index get_equation_start_index() const;
     Eigen::Index get_equation_after_index() const;
 
     /// Returns the boundary
     Eigen::Vector2d get_boundary_state(
-        int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const;
+        Direction direction,
+        Eigen::Ref<Eigen::VectorXd const> const &state) const;
 
     /// returns the boundary state expressed in pressure and volumetric flow.
     /// It is the responsibility of the edge to decide what that means.
     virtual Eigen::Vector2d get_boundary_p_qvol_bar(
-        int direction,
+        Direction direction,
         Eigen::Ref<Eigen::VectorXd const> const &state) const = 0;
 
     /// @brief Set the derivatives with respect to the boundary states.
@@ -38,7 +42,7 @@ namespace Model::Gas {
     /// dF/dState[0]); jacobianhandler.set_coefficient(rootvalues_index,
     /// q_index, dF/dState[1]); \endcode
     virtual void dboundary_p_qvol_dstate(
-        int direction, Aux::Matrixhandler &jacobianhandler,
+        Direction direction, Aux::Matrixhandler &jacobianhandler,
         Eigen::RowVector2d function_derivative, Eigen::Index rootvalues_index,
         Eigen::Ref<Eigen::VectorXd const> const &state) const = 0;
 

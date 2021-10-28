@@ -35,8 +35,8 @@ namespace Model::Gas {
     Eigen::Vector2d pressure_control(control[get_control_startindex()], 0.0);
 
     rootvalues.segment<2>(get_equation_start_index())
-        = get_boundary_state(1, new_state) - get_boundary_state(-1, new_state)
-          - pressure_control;
+        = get_boundary_state(end, new_state)
+          - get_boundary_state(start, new_state) - pressure_control;
   }
 
   void Compressorstation::d_evalutate_d_new_state(
@@ -45,18 +45,18 @@ namespace Model::Gas {
       const Eigen::Ref<const Eigen::VectorXd> & /*last_state*/,
       const Eigen::Ref<const Eigen::VectorXd> & /*new_state*/,
       const Eigen::Ref<const Eigen::VectorXd> & /*control*/) const {
-    auto start_p_index = get_boundary_state_index(1);
+    auto start_p_index = get_boundary_state_index(start);
     auto start_q_index = start_p_index + 1;
-    auto end_p_index = get_boundary_state_index(-1);
+    auto end_p_index = get_boundary_state_index(end);
     auto end_q_index = end_p_index + 1;
 
     auto start_equation_index = get_equation_start_index();
     auto end_equation_index = start_equation_index + 1;
 
-    jacobianhandler.set_coefficient(start_equation_index, start_p_index, 1.0);
-    jacobianhandler.set_coefficient(start_equation_index, end_p_index, -1.0);
-    jacobianhandler.set_coefficient(end_equation_index, start_q_index, 1.0);
-    jacobianhandler.set_coefficient(end_equation_index, end_q_index, -1.0);
+    jacobianhandler.set_coefficient(start_equation_index, start_p_index, -1.0);
+    jacobianhandler.set_coefficient(start_equation_index, end_p_index, 1.0);
+    jacobianhandler.set_coefficient(end_equation_index, start_q_index, -1.0);
+    jacobianhandler.set_coefficient(end_equation_index, end_q_index, 1.0);
   }
 
   void Compressorstation::d_evalutate_d_last_state(

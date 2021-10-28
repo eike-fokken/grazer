@@ -233,14 +233,15 @@ namespace Model::Gas {
   }
 
   Eigen::Vector2d Pipe::get_boundary_p_qvol_bar(
-      int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const {
+      Direction direction,
+      Eigen::Ref<Eigen::VectorXd const> const &state) const {
     Eigen::Vector2d b_state = get_boundary_state(direction, state);
     Eigen::Vector2d p_qvol = balancelaw->p_qvol(b_state);
     return balancelaw->p_qvol_bar_from_p_qvol(p_qvol);
   }
 
   void Pipe::dboundary_p_qvol_dstate(
-      int direction, Aux::Matrixhandler &jacobianhandler,
+      Direction direction, Aux::Matrixhandler &jacobianhandler,
       Eigen::RowVector2d function_derivative, Eigen::Index rootvalues_index,
       Eigen::Ref<Eigen::VectorXd const> const &state) const {
     Eigen::Vector2d boundary_state = get_boundary_state(direction, state);

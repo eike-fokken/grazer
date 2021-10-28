@@ -33,7 +33,7 @@ namespace Model::Gas {
     // prescribed boundary condition is like an attached pipe ending at this
     // node...
     rootvalues[last_equation_index] = -1.0 * prescribed_qvol;
-    rootvalues[last_equation_index] += dir0 * q0;
+    rootvalues[last_equation_index] += static_cast<int>(dir0) * q0;
 
     // std::cout << "number of gas edges: " <<
     // directed_attached_gas_edges.size() <<std::endl;
@@ -48,7 +48,8 @@ namespace Model::Gas {
       old_equation_index = edge->boundary_equation_index(direction);
       old_p = current_p;
 
-      rootvalues[last_equation_index] += direction * current_qvol;
+      rootvalues[last_equation_index]
+          += static_cast<int>(direction) * current_qvol;
     }
   }
 
@@ -135,7 +136,7 @@ namespace Model::Gas {
         std::cout << "node id: " << get_id() << std::endl;
         continue;
       }
-      directed_attached_gas_edges.push_back({1, startgasedge});
+      directed_attached_gas_edges.push_back({start, startgasedge});
     }
     for (auto &endedge : get_ending_edges()) {
       auto endgasedge = dynamic_cast<Gasedge *>(endedge);
@@ -146,7 +147,7 @@ namespace Model::Gas {
         std::cout << "node id: " << get_id() << std::endl;
         continue;
       }
-      directed_attached_gas_edges.push_back({-1, endgasedge});
+      directed_attached_gas_edges.push_back({end, endgasedge});
     }
 
     // Notify the user of unconnected nodes:

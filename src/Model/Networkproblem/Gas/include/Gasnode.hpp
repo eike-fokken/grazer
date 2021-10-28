@@ -23,7 +23,7 @@ namespace Model::Gas {
         Aux::Matrixhandler &jacobianhandler,
         Eigen::Ref<Eigen::VectorXd const> const &state) const;
 
-    std::vector<std::pair<int, Gasedge *>> directed_attached_gas_edges;
+    std::vector<std::pair<Direction, Gasedge *>> directed_attached_gas_edges;
 
   private:
     /// \brief number of state variables, this component needs.

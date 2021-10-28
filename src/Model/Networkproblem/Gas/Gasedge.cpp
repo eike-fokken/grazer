@@ -5,6 +5,18 @@
 
 namespace Model::Gas {
 
+  std::string Direction_string(Direction direction) {
+    if (direction == start) {
+      return "start";
+    } else if (direction == end) {
+      return "end";
+    } else {
+      gthrow(
+          {"The enum direction can only be start or end! Someone changed its "
+           "definition!"});
+    }
+  }
+
   int Gasedge::init_vals_per_interpol_point() { return 2; }
 
   Eigen::Index Gasedge::give_away_start_index() const {
@@ -26,10 +38,10 @@ namespace Model::Gas {
     }
     return (get_state_afterindex() - 1);
   }
-  Eigen::Index Gasedge::boundary_equation_index(int direction) const {
-    if (direction == 1) {
+  Eigen::Index Gasedge::boundary_equation_index(Direction direction) const {
+    if (direction == start) {
       return give_away_start_index();
-    } else if (direction == -1) {
+    } else if (direction == end) {
       return give_away_end_index();
     } else {
       auto *this_idobject = dynamic_cast<Network::Idobject const *>(this);
@@ -38,8 +50,9 @@ namespace Model::Gas {
             {"This gasedge is not and Idobject, which should never happen!"});
       }
       gthrow(
-          {"The supplied direction was ", std::to_string(direction),
-           ", which is not +1 or -1! Edge id is: ", this_idobject->get_id()});
+          {"The supplied direction was ", Direction_string(direction),
+           ", which is neither \"start\" nor \"end\"! Edge id is: ",
+           this_idobject->get_id()});
     }
   }
 
@@ -72,10 +85,10 @@ namespace Model::Gas {
     return get_state_afterindex() - 2;
   }
 
-  Eigen::Index Gasedge::get_boundary_state_index(int direction) const {
-    if (direction == 1) {
+  Eigen::Index Gasedge::get_boundary_state_index(Direction direction) const {
+    if (direction == start) {
       return get_starting_state_index();
-    } else if (direction == -1) {
+    } else if (direction == end) {
       return get_ending_state_index();
     } else {
       auto *this_idobject = dynamic_cast<Network::Idobject const *>(this);
@@ -101,10 +114,11 @@ namespace Model::Gas {
     return ending_state;
   }
   Eigen::Vector2d Gasedge::get_boundary_state(
-      int direction, Eigen::Ref<Eigen::VectorXd const> const &state) const {
-    if (direction == 1) {
+      Direction direction,
+      Eigen::Ref<Eigen::VectorXd const> const &state) const {
+    if (direction == start) {
       return get_starting_state(state);
-    } else if (direction == -1) {
+    } else if (direction == end) {
       return get_ending_state(state);
     } else {
       auto *this_idobject = dynamic_cast<Network::Idobject const *>(this);
