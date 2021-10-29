@@ -78,8 +78,8 @@ namespace Model {
         Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
 
-    /** \brief This function sets the indices #start_constraint_index and
-     * #after_constraint_index.
+    /** \brief This function sets the indices #constraint_startindex and
+     * #constraint_afterindex.
      *
      * @param next_free_index The first constraint index that is currently
      * not claimed by another component.
@@ -89,6 +89,8 @@ namespace Model {
     set_constraint_indices(Eigen::Index const next_free_index)
         = 0;
 
+    /** @brief returns #constraint_afterindex - #constraint_startindex.
+     */
     Eigen::Index get_number_of_constraints_per_timepoint() const;
 
     /** \brief getter for #start_constraint_index

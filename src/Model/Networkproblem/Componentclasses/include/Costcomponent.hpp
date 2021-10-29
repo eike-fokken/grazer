@@ -21,7 +21,8 @@ namespace Model {
      * @param    new_time             time point of the current time step.
      * @param    state                value of the state at current time step.
      * @param    control              value of the control at current time step.
-     * @return double
+     * @return   double               The value of the cost of the component at
+     * the current time step.
      */
     virtual double evaluate_cost(
         double last_time, double new_time,
