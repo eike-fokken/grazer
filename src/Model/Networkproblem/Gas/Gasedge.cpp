@@ -2,6 +2,7 @@
 #include "Exception.hpp"
 #include "Idobject.hpp"
 #include "make_schema.hpp"
+#include <string>
 
 namespace Model::Gas {
 
@@ -12,8 +13,9 @@ namespace Model::Gas {
       return "end";
     } else {
       gthrow(
-          {"The enum direction can only be start or end! Someone changed its "
-           "definition!"});
+          {"The enum Direction can only be start (1) or end(-1)! Someone "
+           "changed its definition!\nThe given Direction was:",
+           std::to_string(static_cast<int>(direction))});
     }
   }
 
@@ -97,8 +99,9 @@ namespace Model::Gas {
             {"This gasedge is not and Idobject, which should never happen!"});
       }
       gthrow(
-          {"The supplied direction was ", std::to_string(direction),
-           ", which is not +1 or -1! Edge id is: ", this_idobject->get_id()});
+          {"The supplied direction was ", Direction_string(direction),
+           ", which is not \"start\" or \"end\"! Edge id is: ",
+           this_idobject->get_id()});
     }
   }
   Eigen::Vector2d Gasedge::get_starting_state(
@@ -127,8 +130,9 @@ namespace Model::Gas {
             {"This gasedge is not and Idobject, which should never happen!"});
       }
       gthrow(
-          {"The supplied direction was ", std::to_string(direction),
-           ", which is not +1 or -1! Edge id is: ", this_idobject->get_id()});
+          {"The supplied direction was ", Direction_string(direction),
+           ", which is not \"start\" or \"end\"! Edge id is: ",
+           this_idobject->get_id()});
     }
   }
 } // namespace Model::Gas
