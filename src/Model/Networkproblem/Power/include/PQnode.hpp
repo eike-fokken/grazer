@@ -11,8 +11,16 @@ namespace Model::Power {
     using Powernode::Powernode;
 
     void setup() final;
-    /// In this node  evaluate the equation
-    /// for P and Q.
+
+    /**
+     * @brief Evaluate the equation for P and Q in this node.
+     *
+     * @param    rootvalues           TODO
+     * @param    last_time            TODO
+     * @param    new_time             TODO
+     * @param    last_state           TODO
+     * @param    new_state            TODO
+     */
     virtual void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,

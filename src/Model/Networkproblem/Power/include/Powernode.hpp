@@ -50,13 +50,13 @@ namespace Model::Power {
         double P_val, double Q_val);
 
     Aux::InterpolatingVector const boundaryvalue;
-    /// Real part of the admittance of this node
-    double G;
-    /// Imaginary part of the admittance of this node
-    double B;
+    double G; /**< Real part of the admittance of this node. */
+    double B; /**< Imaginary part of the admittance of this node. */
 
   private:
-    /// \brief number of state variables, this component needs.
+    /**
+     * @brief number of state variables, this component needs.
+     */
     static constexpr Eigen::Index number_of_state_variables{2};
 
     std::vector<std::tuple<double, double, Powernode *>>

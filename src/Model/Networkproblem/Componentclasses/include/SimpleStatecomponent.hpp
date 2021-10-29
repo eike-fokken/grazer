@@ -19,12 +19,14 @@ namespace Model {
     Eigen::Index set_state_indices(Eigen::Index next_free_index) final;
 
   private:
-    /// \brief Returns number of state variables needed by this component.
-    ///
-    /// Often this will be implemented by a function returning a literal
-    /// int like 2. But for PDES its value is only known after construction.
-    ///
-    /// @returns number of state variables needed by this component
+    /**
+     *  @brief Returns number of state variables needed by this component.
+     *
+     * Often this will be implemented by a function returning a literal
+     * int like 2. But for PDES its value is only known after construction.
+     *
+     * @returns number of state variables needed by this component
+     */
     virtual Eigen::Index needed_number_of_states() const = 0;
   };
 } // namespace Model

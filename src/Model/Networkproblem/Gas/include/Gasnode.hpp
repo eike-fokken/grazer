@@ -10,7 +10,10 @@ namespace Model::Gas {
   public:
     using Node::Node;
 
-    /// Claims outer indices of attached edges.
+    /**
+     * @brief Claims outer indices of attached edges.
+     *
+     */
     void setup() final;
 
   protected:
@@ -26,7 +29,6 @@ namespace Model::Gas {
     std::vector<std::pair<int, Gasedge *>> directed_attached_gas_edges;
 
   private:
-    /// \brief number of state variables, this component needs.
-    static constexpr int number_of_state_variables{0};
+    static constexpr int number_of_state_variables{0}; /**< number of state variables, this component needs. */
   };
 } // namespace Model::Gas

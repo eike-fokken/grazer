@@ -23,24 +23,38 @@ namespace Model::Gas {
         Eigen::Ref<Eigen::VectorXd> new_state,
         const nlohmann::json &initial_json) final;
 
-    /// Shortcomponents just use pressure and volumetric flow as their
-    /// variables, so that this function simply returns the corresponding
-    /// boundary state.
+    /**
+     * @brief Shortcomponents just use pressure and volumetric flow as their
+     * variables, so that this function simply returns the corresponding
+     * boundary state.
+     *
+     * @param    direction            TODO
+     * @param    state                TODO
+     * @return Eigen::Vector2d
+     */
     Eigen::Vector2d get_boundary_p_qvol_bar(
         int direction,
         Eigen::Ref<Eigen::VectorXd const> const &state) const final;
 
-    /// Because Shortcomponents use pressure and volumetric flow as their
-    /// state variables, this function just hands `function_derivative` to
-    /// jacobianhandler.
+    /**
+     * @brief Because Shortcomponents use pressure and volumetric flow as their
+     * state variables, this function just hands `function_derivative` to
+     * jacobianhandler.
+     *
+     * @param    direction            TODO
+     * @param    jacobianhandler      TODO
+     * @param    function_derivative  TODO
+     * @param    rootvalues_index     TODO
+     * @param    state                TODO
+     */
     void dboundary_p_qvol_dstate(
         int direction, Aux::Matrixhandler &jacobianhandler,
         Eigen::RowVector2d function_derivative, Eigen::Index rootvalues_index,
         Eigen::Ref<Eigen::VectorXd const> const &state) const final;
 
   private:
-    /// \brief number of state variables, this component needs.
-    static constexpr Eigen::Index number_of_state_variables{4};
+    static constexpr Eigen::Index number_of_state_variables{
+        4}; /**< number of state variables, this component needs. */
   };
 
 } // namespace Model::Gas

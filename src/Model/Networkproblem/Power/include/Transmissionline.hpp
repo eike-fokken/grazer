@@ -19,12 +19,20 @@ namespace Model::Power {
     double get_G() const;
     double get_B() const;
 
-    /// Returns a pointer to the starting powernode.
-    /// The constructor makes sure that this cast is valid.
+    /**
+     * @brief Returns a pointer to the starting powernode. The constructor makes
+     * sure that this cast is valid.
+     *
+     * @return Powernode*
+     */
     Powernode *get_starting_powernode() const;
 
-    /// Returns a pointer to the ending powernode.
-    /// The constructor makes sure that this cast is valid.
+    /**
+     * @brief Returns a pointer to the ending powernode. The constructor makes
+     * sure that this cast is valid.
+     *
+     * @return Powernode*
+     */
     Powernode *get_ending_powernode() const;
 
   private:

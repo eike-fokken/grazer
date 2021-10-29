@@ -12,8 +12,16 @@ namespace Model::Power {
 
     void setup() final;
 
-    /// In this node we set V to its boundary value and evaluate the equation
-    /// for P.
+    /**
+     * @brief  In this node we set V to its boundary value and evaluate the
+     * equation for P.
+     *
+     * @param    rootvalues           TODO
+     * @param    last_time            TODO
+     * @param    new_time             TODO
+     * @param    last_state           TODO
+     * @param    new_state            TODO
+     */
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,

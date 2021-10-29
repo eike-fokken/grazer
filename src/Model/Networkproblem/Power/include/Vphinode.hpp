@@ -13,7 +13,16 @@ namespace Model::Power {
 
     using Powernode::Powernode;
 
-    /// In this node we just set V and phi to their respective boundary values.
+    /**
+     * @brief In this node we just set V and phi to their respective boundary
+     * values.
+     *
+     * @param    rootvalues           TODO
+     * @param    last_time            TODO
+     * @param    new_time             TODO
+     * @param    last_state           TODO
+     * @param    new_state            TODO
+     */
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,

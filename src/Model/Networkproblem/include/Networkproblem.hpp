@@ -23,8 +23,11 @@ namespace Model {
 
   class Equationcomponent;
 
-  // This class defines a problem, that builds the model equations from a
-  // network.
+  /**
+   * @brief This class defines a problem, that builds the model equations from a
+   * network.
+   *
+   */
   class Networkproblem final :
       public Statecomponent,
       public Controlcomponent,

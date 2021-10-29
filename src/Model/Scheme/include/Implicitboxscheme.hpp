@@ -11,7 +11,19 @@ namespace Model::Scheme {
   class Implicitboxscheme : public Threepointscheme {
   public:
     ~Implicitboxscheme() {}
-    /// Computes the implicit box scheme at one point.
+    /**
+     * @brief Computes the implicit box scheme at one point.
+     *
+     * @param    result               TODO
+     * @param    last_time            TODO
+     * @param    new_time             TODO
+     * @param    Delta_x              TODO
+     * @param    last_left            TODO
+     * @param    last_right           TODO
+     * @param    new_left             TODO
+     * @param    new_right            TODO
+     * @param    bl                   TODO
+     */
     void evaluate_point(
         Eigen::Ref<Eigen::Vector2d> result, double last_time, double new_time,
         double Delta_x, Eigen::Ref<Eigen::Vector2d const> last_left,

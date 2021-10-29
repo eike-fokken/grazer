@@ -21,28 +21,42 @@ namespace Network {
 
     virtual ~Node();
 
-    /// This function attaches an edge to object of type node.
-    /// Attention: Here object node has to be the starting node in the edge you
-    /// provide.
-    /// @param to_attach Edge to attach
+    /** @brief This function attaches an edge to object of type node.
+     * Attention: Here object node has to be the starting node in the edge you
+     * provide.
+     *
+     * @param to_attach Edge to attach
+     */
     bool attach_starting_edge(Network::Edge *to_attach);
 
-    /// This function attaches an edge to object of type node.
-    /// Attention: Here object node has to be the ending node in the edge you
-    /// provide.
-    /// @param to_attach Edge to attach
+    /** @brief This function attaches an edge to object of type node.
+     * Attention: Here object node has to be the ending node in the edge you
+     * provide.
+     *
+     * @param to_attach Edge to attach
+     */
     bool attach_ending_edge(Network::Edge *to_attach);
 
-    /// This function removes the edge to_remove from the node.
-    /// If successful it returns true.
-    /// Else it does nothing but returns false.
-    /// @param to_remove Edge that has to be removed
+    /** @brief This function removes the edge to_remove from the node.
+     * If successful it returns true.
+     * Else it does nothing but returns false.
+     *
+     * @param to_remove Edge that has to be removed
+     */
     bool remove_edge(Network::Edge *to_remove);
 
-    /// This function returns vector pointers of starting edges
+    /**
+     * @brief This function returns vector pointers of starting edges
+     *
+     * @return std::vector<Network::Edge *>
+     */
     std::vector<Network::Edge *> get_starting_edges() const;
 
-    /// This function returns vector pointers of ending edges
+    /**
+     * @brief This function returns vector pointers of ending edges
+     *
+     * @return std::vector<Network::Edge *>
+     */
     std::vector<Network::Edge *> get_ending_edges() const;
 
   private:

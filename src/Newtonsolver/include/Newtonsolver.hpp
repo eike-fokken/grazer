@@ -3,8 +3,9 @@
 #include <Eigen/SparseLU>
 #include <Eigen/SparseQR>
 
-/// \brief This namespace holds tools for solving numerical problems, e.g.
-/// finding the root of a non-linear function.
+/** \brief This namespace holds tools for solving numerical problems, e.g.
+ * finding the root of a non-linear function.
+ */
 namespace Model {
   class Controlcomponent;
 }

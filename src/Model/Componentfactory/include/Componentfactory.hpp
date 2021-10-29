@@ -403,18 +403,20 @@ namespace Model::Componentfactory {
     ~Componentfactory() = default;
 
   public:
-    /// @brief A map of Node types.
-    ///
-    /// The keys in this map are names of the node types as given in the
-    /// topology json. The values are factory objects that can construct a
-    /// node of the specific type.
+    /** @brief A map of Node types.
+     *
+     * The keys in this map are names of the node types as given in the
+     * topology json. The values are factory objects that can construct a
+     * node of the specific type.
+     */
     std::map<std::string, std::unique_ptr<AbstractNodeType>> node_type_map;
 
-    /// @brief A map of Edge types.
-    ///
-    /// The keys in this map are names of the edge types as given in the
-    /// topology json. The values are factory objects that can construct a
-    /// edge of the specific type.
+    /** @brief A map of Edge types.
+     *
+     * The keys in this map are names of the edge types as given in the
+     * topology json. The values are factory objects that can construct a
+     * edge of the specific type.
+     */
     std::map<std::string, std::unique_ptr<AbstractEdgeType>> edge_type_map;
 
     void add_node_type(std::unique_ptr<AbstractNodeType> nodeType);

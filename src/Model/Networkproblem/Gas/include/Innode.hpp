@@ -3,8 +3,11 @@
 
 namespace Model::Gas {
 
-  /// This class represents an inner node of the gas network, that neither
-  /// injects gas nor takes gas out.
+  /**
+   * @brief This class represents an inner node of the gas network, that neither
+   * injects gas nor takes gas out.
+   *
+   */
   class Innode final : public Gasnode {
 
   public:
