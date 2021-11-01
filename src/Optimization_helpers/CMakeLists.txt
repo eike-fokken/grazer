@@ -1,3 +1,13 @@
-add_library(optimization_helpers STATIC Optimization_helpers.cpp)
-target_link_libraries(optimization_helpers PRIVATE exception problemlayer networkproblem interpolatingVector)
+add_library(optimization_helpers STATIC
+Optimization_helpers.cpp
+ControlToStates.cpp)
+
+target_link_libraries(optimization_helpers PRIVATE
+exception
+networkproblem)
+
+target_link_libraries(optimization_helpers PUBLIC
+interpolatingVector
+problemlayer)
+
 target_include_directories(optimization_helpers PUBLIC include)

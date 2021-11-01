@@ -106,6 +106,7 @@ int grazer::run(std::filesystem::path directory_path) {
     wall_clock_setup_end = Clock::now();
 
     std::vector<double> saved_times;
+    static_assert(false, "Das hier muss ein Aux::InterpolatingVector werden!");
     std::vector<Eigen::VectorXd> saved_states;
 
     timeevolver.simulate(
