@@ -15,7 +15,7 @@ namespace Aux {
   Interpolation_data make_from_start_delta_number(
       double first_point, double delta, int number_of_entries);
 
-  Interpolation_data make_from_start_end_delta(
+  Interpolation_data make_from_start_delta_end(
       double first_point, double desired_delta, double last_point);
 
   Interpolation_data make_from_start_number_end(
@@ -50,4 +50,9 @@ namespace Aux {
     Eigen::Index const inner_length;
     Eigen::VectorXd allvalues;
   };
+  bool
+  operator==(InterpolatingVector const &lhs, InterpolatingVector const &rhs);
+  bool
+  operator!=(InterpolatingVector const &lhs, InterpolatingVector const &rhs);
+
 } // namespace Aux

@@ -240,3 +240,40 @@ TEST(InterpolatingVector, construct_from_json) {
     EXPECT_DOUBLE_EQ(interpolated[i], expected_interpolated[i]);
   }
 }
+
+TEST(InterpolatingVector, equality_happypath) {
+  auto data = Aux::make_from_start_delta_end(0, 1, 1);
+
+  Aux::InterpolatingVector a(data, 2);
+  Aux::InterpolatingVector b(data, 2);
+  Eigen::VectorXd values{{1, 2, 3, 4}};
+  a.set_values_in_bulk(values);
+  b.set_values_in_bulk(values);
+
+  EXPECT_EQ(a, b);
+}
+
+TEST(InterpolatingVector, equality_different_interpolating_points) {
+  auto adata = Aux::make_from_start_delta_end(0, 1, 1);
+  auto bdata = Aux::make_from_start_delta_end(0, 1, 4);
+
+  Aux::InterpolatingVector a(adata, 2);
+  Aux::InterpolatingVector b(bdata, 2);
+  Eigen::VectorXd values{{1, 2, 3, 4}};
+  a.set_values_in_bulk(values);
+
+  EXPECT_NE(a, b);
+}
+
+TEST(InterpolatingVector, equality_different_inner_lengths) {
+  auto adata = Aux::make_from_start_delta_end(0, 1, 1);
+
+  Aux::InterpolatingVector a(adata, 2);
+  Aux::InterpolatingVector b(adata, 3);
+  Eigen::VectorXd avalues{{1, 2, 3, 4}};
+  Eigen::VectorXd bvalues{{1, 2, 3, 4, 5, 6}};
+  a.set_values_in_bulk(avalues);
+  b.set_values_in_bulk(bvalues);
+
+  EXPECT_NE(a, b);
+}

@@ -53,7 +53,7 @@ namespace Aux {
     }
     return {first_point, delta, static_cast<size_t>(number_of_entries)};
   }
-  Interpolation_data make_from_start_end_delta(
+  Interpolation_data make_from_start_delta_end(
       double first_point, double desired_delta, double last_point) {
     if (last_point <= first_point) {
       gthrow(
@@ -286,6 +286,21 @@ namespace Aux {
            "possible!"});
     }
     return allvalues.segment(start_index, inner_length);
+  }
+  bool
+  operator==(InterpolatingVector const &lhs, InterpolatingVector const &rhs) {
+    if (lhs.get_inner_length() != rhs.get_inner_length()) {
+      return false;
+    }
+    if (lhs.get_interpolation_points() != rhs.get_interpolation_points()) {
+      return false;
+    }
+    return lhs.get_allvalues() == rhs.get_allvalues();
+  }
+
+  bool
+  operator!=(InterpolatingVector const &lhs, InterpolatingVector const &rhs) {
+    return !(lhs == rhs);
   }
 
 } // namespace Aux
