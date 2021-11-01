@@ -23,6 +23,8 @@ namespace Aux {
 
   class InterpolatingVector {
   public:
+    InterpolatingVector();
+    InterpolatingVector(InterpolatingVector const &other) = default;
     InterpolatingVector(Interpolation_data data, Eigen::Index _inner_length);
     InterpolatingVector(
         std::vector<double> interpolation_points, Eigen::Index inner_length);
@@ -46,8 +48,8 @@ namespace Aux {
     Eigen::Ref<Eigen::VectorXd const> const_timestep(Eigen::Index index) const;
 
   private:
-    std::vector<double> const interpolation_points;
-    Eigen::Index const inner_length;
+    std::vector<double> interpolation_points;
+    Eigen::Index inner_length;
     Eigen::VectorXd allvalues;
   };
   bool

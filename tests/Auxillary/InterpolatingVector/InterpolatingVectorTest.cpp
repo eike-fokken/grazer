@@ -10,6 +10,20 @@
 
 using namespace Aux;
 
+TEST(InterpolatingVector, Copy_constructor_happy) {
+  Aux::InterpolatingVector a;
+
+  int number_of_values_per_point = 4;
+  int number_of_points = 8;
+  double start = 0;
+  double delta = 0.5;
+  auto data = Aux::make_from_start_delta_number(start, delta, number_of_points);
+  InterpolatingVector b(data, number_of_values_per_point);
+
+  a = b;
+
+  EXPECT_EQ(a, b);
+}
 TEST(InterpolatingVector, Construction_happy_path) {
 
   int number_of_values_per_point = 4;

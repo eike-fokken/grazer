@@ -73,25 +73,6 @@ namespace Aux {
         = (std::ceil((last_point - first_point) / desired_delta)) + 1;
 
     auto number_of_entries = static_cast<size_t>(number_of_entries_double);
-    // if (number_of_entries_double - static_cast<double>(number_of_entries)
-    //     != 0) {
-    //   gthrow(
-    //       {"The computed number of entries for this vector is too great to
-    //       fit "
-    //        "into an index type."});
-    // }
-    // static_assert(
-    //     sizeof(size_t) >= sizeof(Eigen::Index),
-    //     "Grazer's range checks only work if Eigen::Index is not a wider type
-    //     " "than size_t!");
-    // if (number_of_entries > size_t(std::numeric_limits<Eigen::Index>::max()))
-    // {
-    //   gthrow(
-    //       {"The number of interpolation points is too big and cannot fit into
-    //       "
-    //        "an Eigen::VectorXd! Its size is greater than the maximimum of "
-    //        "Eigen::Index"});
-    // }
 
     auto delta
         = ((last_point - first_point)
@@ -110,18 +91,12 @@ namespace Aux {
       interpolation_points.push_back(currentpoint);
       currentpoint += delta;
     }
-    // if (interpolation_points.size()
-    //     > static_cast<std::vector<double>::size_type>(
-    //         std::numeric_limits<Eigen::Index>::max())) {
-    //   gthrow(
-    //       {"The interpolation point vector is too big and cannot fit into an
-    //       "
-    //        "Eigen::VectorXd! Its size is greater than the maximimum of "
-    //        "Eigen::Index"});
-    // }
     return interpolation_points;
   }
-
+  InterpolatingVector::InterpolatingVector() :
+      interpolation_points(std::vector<double>{0}),
+      inner_length(0),
+      allvalues(0) {}
   InterpolatingVector::InterpolatingVector(
       Interpolation_data data, Eigen::Index _inner_length) :
       interpolation_points(set_equidistant_interpolation_points(data)),
