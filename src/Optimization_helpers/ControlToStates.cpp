@@ -1,4 +1,5 @@
 #include "ControlToStates.hpp"
+#include "Exception.hpp"
 
 namespace Optimization {
 
@@ -14,6 +15,9 @@ namespace Optimization {
     if (controls == cache.first) {
       states = cache.second;
       return true;
+    } else {
+      assert(false);
+      gthrow({"nonono!"});
     }
   }
 } // namespace Optimization
