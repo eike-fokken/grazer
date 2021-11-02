@@ -106,18 +106,19 @@ int grazer::run(std::filesystem::path directory_path) {
     wall_clock_setup_end = Clock::now();
 
     std::vector<double> saved_times;
-    static_assert(false, "Das hier muss ein Aux::InterpolatingVector werden!");
-    std::vector<Eigen::VectorXd> saved_states;
 
-    timeevolver.simulate(
-        initial_state, controller, timedata, problem, saved_times,
-        saved_states);
+    auto states_timehelper = Aux::make_from_start_delta_end(
+        timedata.get_starttime(), timedata.get_delta_t(),
+        timedata.get_endtime());
+    Aux::InterpolatingVector saved_states(
+        states_timehelper, problem.get_number_of_states());
 
-    if (saved_times.size() != saved_states.size()) {
-      gthrow({"size wrong!"});
-    }
-    for (std::size_t index = 0; index != saved_times.size(); ++index) {
-      problem.json_save(saved_times[index], saved_states[index]);
+    timeevolver.simulate(initial_state, controller, problem, saved_states);
+
+    for (Eigen::Index index = 0; index != saved_states.size(); ++index) {
+      problem.json_save(
+          saved_states.interpolation_point_at_index(index),
+          saved_states.vector_at_index(index));
     }
 
     // number_of_controls, control_value_json

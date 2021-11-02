@@ -2,7 +2,6 @@
 
 #include "Exception.hpp"
 #include "Mathfunctions.hpp"
-#include "Timedata.hpp"
 #include "make_schema.hpp"
 #include "schema_validation.hpp"
 
@@ -94,9 +93,7 @@ namespace Aux {
     return interpolation_points;
   }
   InterpolatingVector::InterpolatingVector() :
-      interpolation_points(std::vector<double>{0}),
-      inner_length(0),
-      allvalues(0) {}
+      interpolation_points(), inner_length(0), allvalues() {}
   InterpolatingVector::InterpolatingVector(
       Interpolation_data data, Eigen::Index _inner_length) :
       interpolation_points(set_equidistant_interpolation_points(data)),
@@ -248,10 +245,17 @@ namespace Aux {
     return allvalues.segment(start_index, inner_length);
   }
 
+  void InterpolatingVector::push_to_index(
+      Eigen::Index index, double timepoint, Eigen::VectorXd vector) {
+    mut_timestep(index) = vector;
+    interpolation_points[static_cast<size_t>(index)] = timepoint;
+  }
+
   Eigen::Ref<Eigen::VectorXd const>
-  InterpolatingVector::const_timestep(Eigen::Index current_index) const {
+  InterpolatingVector::vector_at_index(Eigen::Index current_index) const {
     if (current_index < 0) {
-      gthrow({"You try to set this InterpolatingVector at a negative index!"});
+      gthrow(
+          {"You try to access this InterpolatingVector at a negative index!"});
     }
     auto start_index = inner_length * current_index;
     auto after_index = start_index + inner_length;
@@ -262,6 +266,16 @@ namespace Aux {
     }
     return allvalues.segment(start_index, inner_length);
   }
+
+  double
+  InterpolatingVector::interpolation_point_at_index(Eigen::Index index) const {
+    return interpolation_points[static_cast<size_t>(index)];
+  }
+
+  Eigen::Index InterpolatingVector::size() const {
+    return static_cast<Eigen::Index>(interpolation_points.size());
+  }
+
   bool
   operator==(InterpolatingVector const &lhs, InterpolatingVector const &rhs) {
     if (lhs.get_inner_length() != rhs.get_inner_length()) {

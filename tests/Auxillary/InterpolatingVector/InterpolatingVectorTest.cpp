@@ -233,8 +233,8 @@ TEST(InterpolatingVector, construct_from_json) {
   Eigen::Vector3d expected_first{{1, 2, 3}};
   Eigen::Vector3d expected_second{{10, 20, 30}};
 
-  Eigen::Vector3d first = interpolatingVector.const_timestep(0);
-  Eigen::Vector3d second = interpolatingVector.const_timestep(1);
+  Eigen::Vector3d first = interpolatingVector.vector_at_index(0);
+  Eigen::Vector3d second = interpolatingVector.vector_at_index(1);
 
   EXPECT_EQ(first, expected_first);
   EXPECT_EQ(second, expected_second);

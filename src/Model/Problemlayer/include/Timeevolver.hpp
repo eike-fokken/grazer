@@ -24,9 +24,8 @@ namespace Model {
 
     void simulate(
         Eigen::Ref<Eigen::VectorXd const> const &initial_state,
-        Aux::InterpolatingVector &controller, Timedata timedata,
-        Networkproblem &problem, std::vector<double> &saved_times,
-        std::vector<Eigen::VectorXd> &saved_states);
+        Aux::InterpolatingVector &controller, Networkproblem &problem,
+        Aux::InterpolatingVector &saved_states);
 
     Solver::Solutionstruct make_one_step(
         double last_time, double new_time,

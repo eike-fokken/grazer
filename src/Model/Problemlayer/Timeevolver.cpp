@@ -42,17 +42,15 @@ namespace Model {
 
   void Timeevolver::simulate(
       Eigen::Ref<Eigen::VectorXd const> const &initial_state,
-      Aux::InterpolatingVector &controller, Timedata timedata,
-      Networkproblem &problem, std::vector<double> &saved_times,
-      std::vector<Eigen::VectorXd> &saved_states) {
-    double last_time = timedata.get_starttime();
-    double new_time = last_time + timedata.get_delta_t();
+      Aux::InterpolatingVector &controller, Networkproblem &problem,
+      Aux::InterpolatingVector &saved_states) {
+    double last_time = saved_states.interpolation_point_at_index(0);
+    double new_time = saved_states.interpolation_point_at_index(1);
 
     Eigen::VectorXd last_state = initial_state;
     Eigen::VectorXd new_state = last_state;
 
-    saved_states.push_back(new_state);
-    saved_times.push_back(new_time);
+    saved_states.mut_timestep(0) = new_state;
 
     solver.evaluate_state_derivative_triplets(
         problem, last_time, new_time, last_state, new_state, controller(0));
@@ -62,8 +60,8 @@ namespace Model {
     // // csv heading:
     // std::cout << "t, residual, used_iterations" << std::endl;
 
-    for (int i = 0; i != timedata.get_number_of_time_points() - 1; ++i) {
-      new_time = last_time + timedata.get_delta_t();
+    for (int i = 1; i != saved_states.size(); ++i) {
+      new_time = saved_states.interpolation_point_at_index(i);
       auto solstruct = make_one_step(
           last_time, new_time, last_state, new_state, controller(new_time),
           problem);
@@ -73,8 +71,7 @@ namespace Model {
       if (not solstruct.success) {
         gthrow({"Failed timestep irrevocably!", std::to_string(new_time)});
       }
-      saved_states.push_back(new_state);
-      saved_times.push_back(new_time);
+      saved_states.mut_timestep(i) = new_state;
       last_time = new_time;
       last_state = new_state;
     }

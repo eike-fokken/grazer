@@ -45,7 +45,13 @@ namespace Aux {
 
     Eigen::Ref<Eigen::VectorXd> mut_timestep(Eigen::Index index);
 
-    Eigen::Ref<Eigen::VectorXd const> const_timestep(Eigen::Index index) const;
+    void
+    push_to_index(Eigen::Index index, double timepoint, Eigen::VectorXd vector);
+
+    Eigen::Ref<Eigen::VectorXd const> vector_at_index(Eigen::Index index) const;
+    double interpolation_point_at_index(Eigen::Index index) const;
+
+    Eigen::Index size() const;
 
   private:
     std::vector<double> interpolation_points;
