@@ -73,7 +73,7 @@ TEST(testHS071, hs071) {
   constrs_lb << 25, 40;       // bounds on the constraints
   constrs_ub << 2.0e19, 40;   // bounds on the constraints
 
-  // Define the problee
+  // Define the problem
   auto ipopt = IpoptAdaptor(objective, obj_gradient, constraints, jacobian);
   ipopt.set_initial_point(x0);
   ipopt.set_variable_bounds(x_lb, x_ub);
