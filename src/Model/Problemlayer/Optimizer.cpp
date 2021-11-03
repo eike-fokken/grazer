@@ -1,7 +1,6 @@
 #include "Optimizer.hpp"
 #include "Networkproblem.hpp"
 #include "Timeevolver.hpp"
-#include "Wrapper.hpp"
 #include "make_schema.hpp"
 #include "schema_validation.hpp"
 

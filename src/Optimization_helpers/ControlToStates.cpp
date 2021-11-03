@@ -4,13 +4,14 @@
 
 namespace Optimization {
 
-  ControlToStates::ControlToStates(Model::Timeevolver &timeevolver) :
-      evolver(timeevolver) {}
+  ControlToStates::ControlToStates(
+      Model::Timeevolver &timeevolver, Model::Controlcomponent &problem,
+      Eigen::Ref<Eigen::VectorXd const> const &initial_state) :
+      evolver(timeevolver), problem(problem), initial_state(initial_state) {}
 
   bool ControlToStates::get_states(
       Aux::InterpolatingVector const &controls,
-      Aux::InterpolatingVector &states, Eigen::VectorXd const &initial_state,
-      Model::Networkproblem &problem) {
+      Aux::InterpolatingVector &states) {
     if (last_failed == controls) {
       return false;
     }

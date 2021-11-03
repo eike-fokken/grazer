@@ -9,7 +9,7 @@ namespace Aux {
 
 namespace Model {
 
-  class Networkproblem;
+  class Controlcomponent;
 
   class Timeevolver {
 
@@ -19,7 +19,7 @@ namespace Model {
 
     void simulate(
         Eigen::Ref<Eigen::VectorXd const> const &initial_state,
-        Aux::InterpolatingVector const &controls, Networkproblem &problem,
+        Aux::InterpolatingVector const &controls, Controlcomponent &problem,
         Aux::InterpolatingVector &saved_states);
 
     Solver::Solutionstruct make_one_step(
@@ -27,7 +27,7 @@ namespace Model {
         Eigen::Ref<Eigen::VectorXd> last_state,
         Eigen::Ref<Eigen::VectorXd> new_state,
         Eigen::Ref<Eigen::VectorXd const> const &control,
-        Networkproblem &problem);
+        Controlcomponent &problem);
 
   private:
     Timeevolver(nlohmann::json const &timeevolver_data);

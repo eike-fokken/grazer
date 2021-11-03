@@ -3,7 +3,7 @@
 #include <nlohmann/json.hpp>
 
 namespace Model {
-
+  class Networkproblem;
   class Optimizer {
 
   public:

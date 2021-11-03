@@ -1,7 +1,7 @@
 #include "Timeevolver.hpp"
+#include "Controlcomponent.hpp"
 #include "Exception.hpp"
 #include "InterpolatingVector.hpp"
-#include "Networkproblem.hpp"
 #include "Newtonsolver.hpp"
 #include "make_schema.hpp"
 #include "schema_validation.hpp"
@@ -42,7 +42,7 @@ namespace Model {
 
   void Timeevolver::simulate(
       Eigen::Ref<Eigen::VectorXd const> const &initial_state,
-      Aux::InterpolatingVector const &controls, Networkproblem &problem,
+      Aux::InterpolatingVector const &controls, Controlcomponent &problem,
       Aux::InterpolatingVector &saved_states) {
     double last_time = saved_states.interpolation_point_at_index(0);
     double new_time = saved_states.interpolation_point_at_index(1);
@@ -83,7 +83,7 @@ namespace Model {
       double last_time, double new_time, Eigen::Ref<Eigen::VectorXd> last_state,
       Eigen::Ref<Eigen::VectorXd> new_state,
       Eigen::Ref<Eigen::VectorXd const> const &control,
-      Networkproblem &problem) {
+      Controlcomponent &problem) {
     Solver::Solutionstruct solstruct;
     int retry = 0;
     if (use_simplified_newton) {
@@ -121,7 +121,6 @@ namespace Model {
                   << std::endl;
       }
       if (retry > 2 * retries) {
-        problem.json_save(new_time, new_state);
         gthrow({"Failed timestep irrevocably!", std::to_string(new_time)});
       }
 

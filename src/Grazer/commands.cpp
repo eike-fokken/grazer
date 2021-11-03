@@ -9,7 +9,6 @@
 #include "Optimization_helpers.hpp"
 #include "Optimizer.hpp"
 #include "Timeevolver.hpp"
-#include "Wrapper.hpp"
 #include <chrono>
 #include <fstream>
 #include <iostream>
