@@ -17,14 +17,9 @@ namespace Model {
     static nlohmann::json get_schema();
     static Timeevolver make_instance(nlohmann::json const &timeevolver_data);
 
-    void initialize(
-        Timedata timedata, Eigen::Ref<Eigen::VectorXd> initialstate,
-        Aux::InterpolatingVector &controller, Networkproblem &problem,
-        nlohmann::json &problem_initial_json, nlohmann::json &control_json);
-
     void simulate(
         Eigen::Ref<Eigen::VectorXd const> const &initial_state,
-        Aux::InterpolatingVector &controller, Networkproblem &problem,
+        Aux::InterpolatingVector const &controls, Networkproblem &problem,
         Aux::InterpolatingVector &saved_states);
 
     Solver::Solutionstruct make_one_step(
@@ -36,8 +31,9 @@ namespace Model {
 
   private:
     Timeevolver(nlohmann::json const &timeevolver_data);
+
     Solver::Newtonsolver solver;
-    int retries;
+    int const retries;
     bool const use_simplified_newton;
   };
 

@@ -42,7 +42,7 @@ namespace Model {
 
   void Timeevolver::simulate(
       Eigen::Ref<Eigen::VectorXd const> const &initial_state,
-      Aux::InterpolatingVector &controller, Networkproblem &problem,
+      Aux::InterpolatingVector const &controls, Networkproblem &problem,
       Aux::InterpolatingVector &saved_states) {
     double last_time = saved_states.interpolation_point_at_index(0);
     double new_time = saved_states.interpolation_point_at_index(1);
@@ -53,7 +53,7 @@ namespace Model {
     saved_states.mut_timestep(0) = new_state;
 
     solver.evaluate_state_derivative_triplets(
-        problem, last_time, new_time, last_state, new_state, controller(0));
+        problem, last_time, new_time, last_state, new_state, controls(0));
 
     // // provide regex help (cf. helper_functions/csv_from_log.py)
     // std::cout << "=== simulation start ===" << std::endl;
@@ -63,7 +63,7 @@ namespace Model {
     for (int i = 1; i != saved_states.size(); ++i) {
       new_time = saved_states.interpolation_point_at_index(i);
       auto solstruct = make_one_step(
-          last_time, new_time, last_state, new_state, controller(new_time),
+          last_time, new_time, last_state, new_state, controls(new_time),
           problem);
       // std::cout << new_time << ", ";
       // std::cout << solstruct.residual << ", ";
