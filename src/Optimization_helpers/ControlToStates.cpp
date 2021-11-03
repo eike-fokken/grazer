@@ -1,14 +1,16 @@
 #include "ControlToStates.hpp"
 #include "Exception.hpp"
+#include "Timeevolver.hpp"
 
 namespace Optimization {
 
-  ControlToStates::ControlToStates(nlohmann::json const &timeevolver_data) :
-      evolver(Model::Timeevolver::make_instance(timeevolver_data)) {}
+  ControlToStates::ControlToStates(Model::Timeevolver &timeevolver) :
+      evolver(timeevolver) {}
 
   bool ControlToStates::get_states(
       Aux::InterpolatingVector const &controls,
-      Aux::InterpolatingVector &states) {
+      Aux::InterpolatingVector &states, Eigen::VectorXd const &initial_state,
+      Model::Networkproblem &problem) {
     if (last_failed == controls) {
       return false;
     }
@@ -16,8 +18,15 @@ namespace Optimization {
       states = cache.second;
       return true;
     } else {
-      assert(false);
-      gthrow({"nonono!"});
+
+      try {
+        evolver.simulate(initial_state, controls, problem, states);
+      } catch (...) {
+        last_failed = controls;
+        return false;
+      }
+      cache = std::make_pair(controls, states);
+      return true;
     }
   }
 } // namespace Optimization
