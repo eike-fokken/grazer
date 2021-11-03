@@ -2,6 +2,7 @@
 #include <Eigen/Sparse>
 #include <Eigen/SparseLU>
 #include <Eigen/SparseQR>
+#include <stdexcept>
 
 /// \brief This namespace holds tools for solving numerical problems, e.g.
 /// finding the root of a non-linear function.
@@ -9,6 +10,10 @@ namespace Model {
   class Controlcomponent;
 }
 namespace Solver {
+
+  class SolverNumericalProblem : public std::runtime_error {
+    using std::runtime_error::runtime_error;
+  };
 
   /** \brief This struct holds info on the solution of a solve-execution.
    */
@@ -37,8 +42,8 @@ namespace Solver {
      * The jacobian is saved into the data member named "jacobian".
      */
     void evaluate_state_derivative_triplets(
-        Model::Controlcomponent &problem, double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Model::Controlcomponent const &problem, double last_time,
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
         Eigen::Ref<Eigen::VectorXd const> const &control);
 
@@ -51,8 +56,8 @@ namespace Solver {
      */
 
     void evaluate_state_derivative_coeffref(
-        Model::Controlcomponent &problem, double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Model::Controlcomponent const &problem, double last_time,
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
         Eigen::Ref<Eigen::VectorXd const> const &control);
 
@@ -70,8 +75,9 @@ namespace Solver {
      * tolerance).
      */
     Solutionstruct solve(
-        Eigen::Ref<Eigen::VectorXd> new_state, Model::Controlcomponent &problem,
-        bool newjac, bool use_full_jacobian, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd> new_state,
+        Model::Controlcomponent const &problem, bool newjac,
+        bool use_full_jacobian, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &control);
 

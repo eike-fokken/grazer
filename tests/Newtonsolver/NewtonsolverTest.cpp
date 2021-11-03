@@ -179,7 +179,7 @@ TEST(Newtonsolver, SingularJacobian) {
         control);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::runtime_error &e) {
+  } catch (Solver::SolverNumericalProblem &e) {
     EXPECT_THAT(
         e.what(),
         testing::HasSubstr(

@@ -2,6 +2,8 @@
 #include "Controlcomponent.hpp"
 #include "Exception.hpp"
 #include "Matrixhandler.hpp"
+#include <sstream>
+#include <string>
 
 namespace Solver {
 
@@ -9,7 +11,7 @@ namespace Solver {
       tolerance(_tolerance), maximal_iterations(_maximal_iterations) {}
 
   void Newtonsolver::evaluate_state_derivative_triplets(
-      Model::Controlcomponent &problem, double last_time, double new_time,
+      Model::Controlcomponent const &problem, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const &control) {
@@ -26,7 +28,7 @@ namespace Solver {
   }
 
   void Newtonsolver::evaluate_state_derivative_coeffref(
-      Model::Controlcomponent &problem, double last_time, double new_time,
+      Model::Controlcomponent const &problem, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const &control) {
@@ -40,8 +42,9 @@ namespace Solver {
   }
 
   Solutionstruct Newtonsolver::solve(
-      Eigen::Ref<Eigen::VectorXd> new_state, Model::Controlcomponent &problem,
-      bool newjac, bool use_full_jacobian, double last_time, double new_time,
+      Eigen::Ref<Eigen::VectorXd> new_state,
+      Model::Controlcomponent const &problem, bool newjac,
+      bool use_full_jacobian, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &control) {
     Solutionstruct solstruct;
@@ -71,11 +74,11 @@ namespace Solver {
     if (not use_full_jacobian) {
       lusolver.factorize(jacobian);
       if (lusolver.info() != Eigen::Success) {
-        gthrow(
-            {"Couldn't decompose a Jacobian, it may be non-invertible.\n "
-             "time: ",
-             std::to_string(new_time),
-             "\n Note, that only LU decomposition is implemented."});
+        std::ostringstream o;
+        o << "Couldn't decompose a Jacobian, it may be non-invertible.\n "
+          << "time: " << std::to_string(new_time)
+          << "\n Note, that only LU decomposition is implemented.\n";
+        throw SolverNumericalProblem(o.str());
       }
     }
     while (rootvalues.norm() > tolerance
@@ -83,11 +86,11 @@ namespace Solver {
       if (use_full_jacobian) {
         lusolver.factorize(jacobian);
         if (lusolver.info() != Eigen::Success) {
-          gthrow(
-              {"Couldn't decompose a Jacobian, it may be non-invertible.\n "
-               "time: ",
-               std::to_string(new_time),
-               "\n Note, that only LU decomposition is implemented."});
+          std::ostringstream o;
+          o << "Couldn't decompose a Jacobian, it may be non-invertible.\n "
+            << "time: " << std::to_string(new_time)
+            << "\n Note, that only LU decomposition is implemented.\n";
+          throw SolverNumericalProblem(o.str());
         }
       }
       // compute Dx_k:
@@ -111,7 +114,10 @@ namespace Solver {
       double testnorm = step.norm();
       while (current_norm > (1 - 0.5 * lambda) * testnorm) {
         if (current_norm < minimal_stepsize) {
-          gthrow({" Minimal stepsize reached!"});
+          std::ostringstream o;
+          o << " Minimal stepsize reached at time: "
+            << std::to_string(new_time);
+          throw SolverNumericalProblem(o.str());
         }
         lambda *= 0.5;
         candidate_vector = new_state + lambda * step;
