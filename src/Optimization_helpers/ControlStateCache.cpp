@@ -4,12 +4,12 @@
 
 namespace Optimization {
 
-  ControlToStates::ControlToStates(
+  ControlStateCache::ControlStateCache(
       Model::Timeevolver &timeevolver, Model::Controlcomponent &problem,
       Eigen::Ref<Eigen::VectorXd const> const &initial_state) :
       evolver(timeevolver), problem(problem), initial_state(initial_state) {}
 
-  bool ControlToStates::get_states(
+  bool ControlStateCache::get_states(
       Aux::InterpolatingVector const &controls,
       Aux::InterpolatingVector &states) {
     if (last_failed == controls) {

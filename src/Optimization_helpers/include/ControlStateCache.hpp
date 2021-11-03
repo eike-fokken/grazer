@@ -10,9 +10,9 @@ namespace Model {
 
 namespace Optimization {
 
-  class ControlToStates {
+  class ControlStateCache {
   public:
-    ControlToStates(
+    ControlStateCache(
         Model::Timeevolver &timeevolver, Model::Controlcomponent &problem,
         Eigen::Ref<Eigen::VectorXd const> const &initial_state);
 
