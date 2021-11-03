@@ -113,12 +113,12 @@ namespace Model {
         nlohmann::json const &control_json) const final;
 
     void set_lower_bounds(
-        Aux::InterpolatingVector &full_control_vector,
-        nlohmann::json const &control_json) const final;
+        Aux::InterpolatingVector &lower_bounds_vector,
+        nlohmann::json const &lower_bounds_json) const final;
 
     void set_upper_bounds(
-        Aux::InterpolatingVector &full_control_vector,
-        nlohmann::json const &control_json) const final;
+        Aux::InterpolatingVector &upper_bounds_vector,
+        nlohmann::json const &upper_bounds_json) const final;
 
     Eigen::Index set_control_indices(Eigen::Index next_free_index) final;
 
