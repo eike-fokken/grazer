@@ -55,7 +55,7 @@ namespace Optimization {
   /** \brief Takes care of all initialization
    */
   void initialize(
-      Model::Networkproblem &problem, Aux::InterpolatingVector &controller,
+      Model::Networkproblem &problem, Aux::InterpolatingVector &controls,
       nlohmann::json const &control_json,
       Eigen::Ref<Eigen::VectorXd> init_state,
       nlohmann::json const &initial_json,
@@ -63,9 +63,9 @@ namespace Optimization {
       nlohmann::json const &lower_bounds_json,
       Aux::InterpolatingVector &upper_bounds,
       nlohmann::json const &upper_bounds_json,
-      Aux::InterpolatingVector constraints_lower_bounds,
+      Aux::InterpolatingVector &constraints_lower_bounds,
       nlohmann::json const &constraints_lower_bounds_json,
-      Aux::InterpolatingVector constraints_upper_bounds,
+      Aux::InterpolatingVector &constraints_upper_bounds,
       nlohmann::json const &constraints_upper_bounds_json);
 
 } // namespace Optimization

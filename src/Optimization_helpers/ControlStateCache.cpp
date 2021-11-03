@@ -1,17 +1,17 @@
-#include "ControlToStates.hpp"
+#include "ControlStateCache.hpp"
 #include "Exception.hpp"
 #include "Timeevolver.hpp"
 
 namespace Optimization {
 
   ControlStateCache::ControlStateCache(
-      Model::Timeevolver &timeevolver, Model::Controlcomponent &problem,
-      Eigen::Ref<Eigen::VectorXd const> const &initial_state) :
-      evolver(timeevolver), problem(problem), initial_state(initial_state) {}
+      Model::Timeevolver &timeevolver, Model::Controlcomponent &problem) :
+      evolver(timeevolver), problem(problem) {}
 
   bool ControlStateCache::get_states(
       Aux::InterpolatingVector const &controls,
-      Aux::InterpolatingVector &states) {
+      Aux::InterpolatingVector &states,
+      Eigen::Ref<Eigen::VectorXd const> const &initial_state) {
     if (last_failed == controls) {
       return false;
     }

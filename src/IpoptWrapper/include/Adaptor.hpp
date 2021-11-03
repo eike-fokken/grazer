@@ -13,6 +13,7 @@ template <
     typename ObjFun, typename ObjGradFun, typename ConstrsFun,
     typename ConstrsJacFun>
 class IpoptAdaptor {
+private:
   using WrapperType
       = IpoptWrapper<ObjFun, ObjGradFun, ConstrsFun, ConstrsJacFun>;
 
