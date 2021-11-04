@@ -16,19 +16,17 @@ namespace Model::Gas {
     ConstraintSink(nlohmann::json const &data);
 
     void evaluate_constraint(
-        Eigen::Ref<Eigen::VectorXd> constraint_values, double last_time,
-        double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+        Eigen::Ref<Eigen::VectorXd> constraint_values, double time,
+        Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
     void d_evaluate_constraint_d_state(
-        Aux::Matrixhandler &constraint_new_state_jacobian_handler,
-        double last_time, double new_time,
+        Aux::Matrixhandler &constraint_new_state_jacobian_handler, double time,
         Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
     void d_evaluate_constraint_d_control(
-        Aux::Matrixhandler &constraint_control_jacobian_handler,
-        double last_time, double new_time,
+        Aux::Matrixhandler &constraint_control_jacobian_handler, double time,
         Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 

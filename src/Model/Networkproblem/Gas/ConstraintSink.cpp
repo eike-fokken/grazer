@@ -14,8 +14,8 @@ namespace Model::Gas {
       Flowboundarynode(revert_boundary_conditions(data)) {}
 
   void ConstraintSink::evaluate_constraint(
-      Eigen::Ref<Eigen::VectorXd> constraint_values, double /*last_time*/,
-      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const &state,
+      Eigen::Ref<Eigen::VectorXd> constraint_values, double /*time*/,
+      Eigen::Ref<Eigen::VectorXd const> const &state,
       Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {
     auto first_direction = directed_attached_gas_edges[0].first;
     auto sample_gas_edge = directed_attached_gas_edges[0].second;
@@ -27,7 +27,7 @@ namespace Model::Gas {
   }
 
   void ConstraintSink::d_evaluate_constraint_d_state(
-      Aux::Matrixhandler &constraint_new_state_jacobian_handler, double, double,
+      Aux::Matrixhandler &constraint_new_state_jacobian_handler, double,
       Eigen::Ref<Eigen::VectorXd const> const &,
       Eigen::Ref<Eigen::VectorXd const> const &) const {
     auto first_direction = directed_attached_gas_edges[0].first;
@@ -38,8 +38,7 @@ namespace Model::Gas {
   }
 
   void ConstraintSink::d_evaluate_constraint_d_control(
-      Aux::Matrixhandler &, double, double,
-      Eigen::Ref<Eigen::VectorXd const> const &,
+      Aux::Matrixhandler &, double, Eigen::Ref<Eigen::VectorXd const> const &,
       Eigen::Ref<Eigen::VectorXd const> const &) const {}
 
   void ConstraintSink::set_constraint_lower_bounds(
