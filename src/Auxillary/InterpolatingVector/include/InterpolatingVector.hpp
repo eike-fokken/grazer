@@ -51,6 +51,9 @@ namespace Aux {
     Eigen::Ref<Eigen::VectorXd const> vector_at_index(Eigen::Index index) const;
     double interpolation_point_at_index(Eigen::Index index) const;
 
+    /** \brief Returns the number of timepoints or equivalently the number of
+     * inner vectors.
+     */
     Eigen::Index size() const;
 
   private:
