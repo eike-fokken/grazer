@@ -5,8 +5,8 @@
 namespace Optimization {
 
   ControlStateCache::ControlStateCache(
-      Model::Timeevolver &timeevolver, Model::Controlcomponent &problem) :
-      evolver(timeevolver), problem(problem) {}
+      Model::Timeevolver &timeevolver, Model::Controlcomponent &_problem) :
+      evolver(timeevolver), problem(_problem) {}
 
   bool ControlStateCache::get_states(
       Aux::InterpolatingVector const &controls,
