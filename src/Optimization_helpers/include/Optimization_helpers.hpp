@@ -1,4 +1,6 @@
+#include "Constraintcomponent.hpp"
 #include <Eigen/Sparse>
+#include <Eigen/src/SparseCore/SparseMatrix.h>
 #include <nlohmann/json.hpp>
 #include <vector>
 
@@ -67,5 +69,35 @@ namespace Optimization {
       nlohmann::json const &constraints_lower_bounds_json,
       Aux::InterpolatingVector &constraints_upper_bounds,
       nlohmann::json const &constraints_upper_bounds_json);
+
+  /** @brief computes the jacobian of the constraints in every time step and
+   * saves them into a vector of sparse matrices.
+   * @param[out] stepwise_handlers These save the jacobians into matrices.
+   * @param[in] problem The problem for which the jacobians are computed.
+   * @param[in] constraint_times time steps for constraint evaluation.
+   * @param[in] controls Control variables.
+   * @param[in] states State variables.
+   */
+  void d_constraints_d_constraint_time_control(
+      std::vector<Aux::Matrixhandler> &stepwise_handlers,
+      Model::Constraintcomponent &problem,
+      std::vector<double> const &constraint_times,
+      Aux::InterpolatingVector const &controls,
+      Aux::InterpolatingVector const &states);
+
+  /** @brief Computes Indices and weights for the derivative of controls on a
+   *  fine time grid w.r.t. controls on a coarse time grid.
+   *
+   * This assumes that the controls on the fine time grid are linear
+   * interpolations of the controls on the coarse grid.
+   * \todo { Explain the structure in the pdf userguide. }
+   * @param fine_resolution_vector Vector with finer interpoluation steps.
+   * @param coarse_resolution_vector Vector with coarser interpoluation steps.
+   * @returns tuple of row index, column index and value for lambda
+   *
+   */
+  Eigen::SparseMatrix<double> compute_control_conversion(
+      Aux::InterpolatingVector const &fine_resolution_vector,
+      Aux::InterpolatingVector const &coarse_resolution_vector);
 
 } // namespace Optimization
