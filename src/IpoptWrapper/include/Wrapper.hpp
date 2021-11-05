@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ControlStateCache.hpp"
-#include "OptimizableObject.hpp"
 #include "Timedata.hpp"
 #include <Eigen/Sparse>
 #include <limits>

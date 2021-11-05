@@ -1,3 +1,4 @@
-add_library(ipoptwrapper STATIC Wrapper.cpp)
-target_link_libraries(ipoptwrapper PUBLIC my_ipopt optimization_helpers problemlayer networkproblem)
+add_library(ipoptwrapper STATIC Wrapper.cpp Adaptor.cpp)
+target_link_libraries(ipoptwrapper PUBLIC my_ipopt optimization_helpers timedata)
+target_link_libraries(ipoptwrapper PRIVATE my_ipopt problemlayer networkproblem)
 target_include_directories(ipoptwrapper PUBLIC include)
