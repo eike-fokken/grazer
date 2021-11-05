@@ -121,7 +121,12 @@ namespace Aux {
       inner_length(_inner_length),
       allvalues(
           _inner_length
-          * static_cast<Eigen::Index>(interpolation_points.size())) {}
+          * static_cast<Eigen::Index>(interpolation_points.size())) {
+    if (not std::is_sorted(
+            _interpolation_points.begin(), _interpolation_points.end())) {
+      gthrow({"Interpolation points for InterpolatingVector were not sorted!"});
+    }
+  }
 
   InterpolatingVector InterpolatingVector::construct_from_json(
       nlohmann::json const &json, nlohmann::json const &schema) {
