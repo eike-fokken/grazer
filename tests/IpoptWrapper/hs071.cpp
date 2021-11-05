@@ -6,6 +6,7 @@
 
 #include "Adaptor.hpp"
 #include "IpIpoptApplication.hpp"
+#include "Mock_OptimizableObject.hpp"
 #include "Wrapper.hpp"
 #include "gtest/gtest.h"
 
@@ -66,18 +67,19 @@ TEST(testHS071, hs071) {
     return {jac_values, nnz_rows, nnz_cols};
   };
 
-  VectorXd x0(4), x_lb(4), x_ub(4), constrs_lb(2), constrs_ub(2);
-  x0 << 0.0, 0.0, 0.0, 0.0;   // initial point
-  x_lb << 1.0, 1.0, 1.0, 1.0; // lower bound on the variables
-  x_ub << 5.0, 5.0, 5.0, 5.0; // upper bound on the variables
-  constrs_lb << 25, 40;       // bounds on the constraints
-  constrs_ub << 2.0e19, 40;   // bounds on the constraints
+  VectorXd initial_controls(4), lower_bounds(4), upper_bounds(4),
+      constraints_lower_bounds(2), constraints_upper_bounds(2);
+  initial_controls << 0.0, 0.0, 0.0, 0.0; // initial point
+  lower_bounds << 1.0, 1.0, 1.0, 1.0;     // lower bound on the variables
+  upper_bounds << 5.0, 5.0, 5.0, 5.0;     // upper bound on the variables
+  constraints_lower_bounds << 25, 40;     // bounds on the constraints
+  constraints_upper_bounds << 2.0e19, 40; // bounds on the constraints
 
   // Define the problem
-  auto ipopt = IpoptAdaptor(objective, obj_gradient, constraints, jacobian);
-  ipopt.set_initial_point(x0);
-  ipopt.set_variable_bounds(x_lb, x_ub);
-  ipopt.set_constraint_bounds(constrs_lb, constrs_ub);
+  auto ipopt = IpoptAdaptor(
+      evolver, problem, simulation_data, controls_data, constraints_data,
+      initial_state, initial_controls, lower_bounds, upper_bounds,
+      constraints_lower_bounds, constraints_upper_bounds);
   // Solve the problem
   auto status = ipopt.optimize();
 
