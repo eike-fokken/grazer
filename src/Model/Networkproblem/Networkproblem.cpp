@@ -424,35 +424,32 @@ namespace Model {
   /////////////////////////////////////////////////////////
 
   void Networkproblem::evaluate_constraint(
-      Eigen::Ref<Eigen::VectorXd> constraint_values, double last_time,
-      double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+      Eigen::Ref<Eigen::VectorXd> constraint_values, double time,
+      Eigen::Ref<Eigen::VectorXd const> const &state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const {
     for (auto *constraintcomponent : constraintcomponents) {
       constraintcomponent->evaluate_constraint(
-          constraint_values, last_time, new_time, state, control);
+          constraint_values, time, state, control);
     }
   }
 
   void Networkproblem::d_evaluate_constraint_d_state(
-      Aux::Matrixhandler &constraint_new_state_jacobian_handler,
-      double last_time, double new_time,
+      Aux::Matrixhandler &constraint_new_state_jacobian_handler, double time,
       Eigen::Ref<Eigen::VectorXd const> const &state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const {
     for (auto *constraintcomponent : constraintcomponents) {
       constraintcomponent->d_evaluate_constraint_d_state(
-          constraint_new_state_jacobian_handler, last_time, new_time, state,
-          control);
+          constraint_new_state_jacobian_handler, time, state, control);
     }
   }
 
   void Networkproblem::d_evaluate_constraint_d_control(
-      Aux::Matrixhandler &constraint_control_jacobian_handler, double last_time,
-      double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+      Aux::Matrixhandler &constraint_control_jacobian_handler, double time,
+      Eigen::Ref<Eigen::VectorXd const> const &state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const {
     for (auto *constraintcomponent : constraintcomponents) {
       constraintcomponent->d_evaluate_constraint_d_control(
-          constraint_control_jacobian_handler, last_time, new_time, state,
-          control);
+          constraint_control_jacobian_handler, time, state, control);
     }
   }
 
