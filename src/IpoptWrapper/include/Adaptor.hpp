@@ -1,6 +1,4 @@
-#ifndef ADAPTOR_HPP
-#define ADAPTOR_HPP
-
+#pragma once
 #include "Wrapper.hpp"
 #include <Eigen/Dense>
 #include <IpIpoptApplication.hpp>
@@ -14,26 +12,26 @@ template <
     typename ConstrsJacFun>
 class IpoptAdaptor {
 private:
-  using WrapperType
-      = IpoptWrapper<ObjFun, ObjGradFun, ConstrsFun, ConstrsJacFun>;
-
-  Ipopt::SmartPtr<WrapperType> _nlp;
+  Ipopt::SmartPtr<Optimization::IpoptWrapper> _nlp;
   Ipopt::SmartPtr<Ipopt::IpoptApplication> _app;
 
 public:
-  IpoptAdaptor(ObjFun f, ObjGradFun grad, ConstrsFun g, ConstrsJacFun jac) :
-      _nlp(new WrapperType(f, grad, g, jac)), _app(IpoptApplicationFactory()) {}
+  IpoptAdaptor(
+      Model::Timeevolver &evolver, Model::Networkproblem &problem,
+      Model::Timedata simulation_data, Model::Timedata controls_data,
+      Model::Timedata constraints_data,
+      Eigen::Ref<Eigen::VectorXd const> const &initial_state,
+      Aux::InterpolatingVector const &initial_controls,
+      Aux::InterpolatingVector const &lower_bounds,
+      Aux::InterpolatingVector const &upper_bounds,
+      Aux::InterpolatingVector const &constraints_lower_bounds,
+      Aux::InterpolatingVector const &constraints_upper_bounds) :
+      _nlp(new Optimization::IpoptWrapper(
+          evolver, problem, simulation_data, controls_data, constraints_data,
+          initial_state, initial_controls, lower_bounds, upper_bounds,
+          constraints_lower_bounds, constraints_upper_bounds)),
+      _app(IpoptApplicationFactory()) {}
   ~IpoptAdaptor() = default;
-
-  void set_initial_point(VectorXd &x0) { _nlp->set_initial_point(x0); }
-
-  void set_variable_bounds(VectorXd &lb, VectorXd &ub) {
-    _nlp->set_variable_bounds(lb, ub);
-  }
-
-  void set_constraint_bounds(VectorXd &g_lb, VectorXd &g_ub) {
-    _nlp->set_constraint_bounds(g_lb, g_ub);
-  }
 
   auto optimize() const {
     // Approximate the hessian
@@ -50,7 +48,5 @@ public:
   }
 
   VectorXd get_solution() const { return _nlp->get_solution(); }
-  double get_obj_value() const { return _nlp->get_obj_value(); }
+  double get_obj_value() const { return _nlp->get_final_objective_value(); }
 };
-
-#endif /* ADAPTOR_HPP */

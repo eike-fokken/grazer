@@ -3,6 +3,8 @@
 #include "InterpolatingVector.hpp"
 #include "Networkproblem.hpp"
 #include "Timeevolver.hpp"
+#include <IpAlgTypes.hpp>
+#include <stdexcept>
 
 namespace Optimization {
 
@@ -18,6 +20,7 @@ namespace Optimization {
   }
 
   void IpoptWrapper::constraint_jacobian(Ipopt::Number *values) {
+
     assert(false); // "implement me!"
   }
 
@@ -167,16 +170,16 @@ namespace Optimization {
     return true;
   }
   void IpoptWrapper::finalize_solution(
-      Ipopt::SolverReturn /* status */, Ipopt::Index n, const Ipopt::Number *x,
+      Ipopt::SolverReturn status, Ipopt::Index n, const Ipopt::Number *x,
       const Ipopt::Number * /* z_L */, const Ipopt::Number * /* z_U */,
       Ipopt::Index /* m */, const Ipopt::Number * /* g */,
       const Ipopt::Number * /* lambda */, Ipopt::Number obj_value,
       const Ipopt::IpoptData * /* ip_data */,
       Ipopt::IpoptCalculatedQuantities * /* ip_cq */) {
-    // Eigen::VectorXd xx(n);
-    // std::copy(x, x + n, xx.begin());
-    // solution = xx;
-    // final_objective_value = obj_value;
-    assert(false);
+    if (status != Ipopt::SUCCESS) {
+      throw std::runtime_error("The solver failed to find a solution");
+    }
+    solution = Eigen::VectorXd(x, n);
+    final_objective_value = obj_value;
   }
 } // namespace Optimization

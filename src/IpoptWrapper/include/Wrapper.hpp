@@ -3,6 +3,7 @@
 #include "ControlStateCache.hpp"
 #include "Timedata.hpp"
 #include <Eigen/Sparse>
+#include <limits>
 #include <nlohmann/json.hpp>
 
 #include <IpTNLP.hpp>
@@ -18,37 +19,7 @@ namespace Model {
 
 namespace Optimization {
 
-  class IpoptWrapper : public Ipopt::TNLP {
-
-  private:
-    Model::Networkproblem &problem;
-    ControlStateCache cache;
-
-    Model::Timedata const simulation_data;
-    Model::Timedata const controls_data;
-    Model::Timedata const constraints_data;
-
-    Eigen::VectorXd const state_initial_values;
-    Eigen::VectorXd const control_initial_values;
-    Eigen::VectorXd const lower_bounds;
-    Eigen::VectorXd const upper_bounds;
-    Eigen::VectorXd const constraints_lower_bounds;
-    Eigen::VectorXd const constraints_upper_bounds;
-
-    /** \brief returns the number of non-zeros in the constraint
-     * jacobian.
-     */
-    Ipopt::Index nnz_constraint_jacobian();
-    /** \brief fills in the row and column index vectors at the beginning of the
-     * optimization.
-     */
-    void jacobian_structure(
-        Ipopt::Index number_of_nonzeros_in_constraint_jacobian,
-        Ipopt::Index *Rows, Ipopt::Index *Cols);
-
-    /** \brief fills in the value vector for the constraint jacobian.
-     */
-    void constraint_jacobian(Ipopt::Number *values);
+  class IpoptWrapper final : public Ipopt::TNLP {
 
   public:
     IpoptWrapper(
@@ -63,6 +34,9 @@ namespace Optimization {
         Aux::InterpolatingVector const &constraints_upper_bounds);
 
     ~IpoptWrapper() = default;
+
+    Eigen::VectorXd const &get_solution() const { return solution; }
+    double get_final_objective_value() const { return final_objective_value; }
 
     // Internal Ipopt methods
 
@@ -129,5 +103,39 @@ namespace Optimization {
         const Ipopt::Number * /* g */, const Ipopt::Number * /* lambda */,
         Ipopt::Number obj_value, const Ipopt::IpoptData * /* ip_data */,
         Ipopt::IpoptCalculatedQuantities * /* ip_cq */) final;
+
+  private:
+    Model::Networkproblem &problem;
+    ControlStateCache cache;
+
+    Model::Timedata const simulation_data;
+    Model::Timedata const controls_data;
+    Model::Timedata const constraints_data;
+
+    Eigen::VectorXd const state_initial_values;
+    Eigen::VectorXd const control_initial_values;
+    Eigen::VectorXd const lower_bounds;
+    Eigen::VectorXd const upper_bounds;
+    Eigen::VectorXd const constraints_lower_bounds;
+    Eigen::VectorXd const constraints_upper_bounds;
+
+    Eigen::VectorXd solution;
+    double final_objective_value{std::numeric_limits<double>::max()};
+
+    /** \brief returns the number of non-zeros in the constraint
+     * jacobian.
+     */
+    Ipopt::Index nnz_constraint_jacobian();
+    /** \brief fills in the row and column index vectors at the beginning of the
+     * optimization.
+     */
+    void jacobian_structure(
+        Ipopt::Index number_of_nonzeros_in_constraint_jacobian,
+        Ipopt::Index *Rows, Ipopt::Index *Cols);
+
+    /** \brief fills in the value vector for the constraint jacobian.
+     */
+    void constraint_jacobian(Ipopt::Number *values);
   };
+
 } // namespace Optimization
