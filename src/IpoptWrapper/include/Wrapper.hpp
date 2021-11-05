@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ControlStateCache.hpp"
-#include "Timedata.hpp"
+
 #include <Eigen/Sparse>
 #include <limits>
 #include <nlohmann/json.hpp>
@@ -24,8 +24,7 @@ namespace Optimization {
   public:
     IpoptWrapper(
         Model::Timeevolver &evolver, Model::OptimizableObject &problem,
-        Model::Timedata simulation_data, Model::Timedata controls_data,
-        Model::Timedata constraints_data,
+        std::vector<double> simulation_timepoints,
         Eigen::Ref<Eigen::VectorXd const> const &initial_state,
         Aux::InterpolatingVector const &initial_controls,
         Aux::InterpolatingVector const &lower_bounds,
@@ -108,16 +107,15 @@ namespace Optimization {
     Model::OptimizableObject &problem;
     ControlStateCache cache;
 
-    Model::Timedata const simulation_data;
-    Model::Timedata const controls_data;
-    Model::Timedata const constraints_data;
+    std::vector<double> const simulation_timepoints;
 
-    Eigen::VectorXd const state_initial_values;
-    Eigen::VectorXd const control_initial_values;
-    Eigen::VectorXd const lower_bounds;
-    Eigen::VectorXd const upper_bounds;
-    Eigen::VectorXd const constraints_lower_bounds;
-    Eigen::VectorXd const constraints_upper_bounds;
+    Eigen::VectorXd const initial_state;
+
+    Aux::InterpolatingVector const initial_controls;
+    Aux::InterpolatingVector const lower_bounds;
+    Aux::InterpolatingVector const upper_bounds;
+    Aux::InterpolatingVector const constraints_lower_bounds;
+    Aux::InterpolatingVector const constraints_upper_bounds;
 
     Eigen::VectorXd solution;
     double final_objective_value{std::numeric_limits<double>::max()};
@@ -129,13 +127,16 @@ namespace Optimization {
     /** \brief fills in the row and column index vectors at the beginning of the
      * optimization.
      */
-    void jacobian_structure(
+    void constraint_jacobian_structure(
         Ipopt::Index number_of_nonzeros_in_constraint_jacobian,
         Ipopt::Index *Rows, Ipopt::Index *Cols);
 
     /** \brief fills in the value vector for the constraint jacobian.
      */
     void constraint_jacobian(Ipopt::Number *values);
-  };
 
+    Eigen::Index get_number_of_controls() const;
+    Eigen::Index get_number_of_control_timesteps() const;
+    Eigen::Index get_number_of_constraint_timesteps() const;
+  };
 } // namespace Optimization

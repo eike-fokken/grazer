@@ -4,6 +4,7 @@
 #include "OptimizableObject.hpp"
 #include "Timeevolver.hpp"
 #include <IpAlgTypes.hpp>
+#include <cstddef>
 #include <stdexcept>
 
 namespace Optimization {
@@ -12,10 +13,11 @@ namespace Optimization {
     assert(false); // "implement me!"
   }
 
-  void IpoptWrapper::jacobian_structure(
+  void IpoptWrapper::constraint_jacobian_structure(
       Ipopt::Index number_of_nonzeros_in_constraint_jacobian,
       Ipopt::Index *Rows, Ipopt::Index *Cols) {
-
+    auto ntimesteps = get_number_of_control_timesteps();
+    for (Eigen::Index index = 0; index != ntimesteps; ++index) {}
     assert(false); // "implement me!"
   }
 
@@ -26,55 +28,49 @@ namespace Optimization {
 
   IpoptWrapper::IpoptWrapper(
       Model::Timeevolver &evolver, Model::OptimizableObject &_problem,
-      Model::Timedata _simulation_data, Model::Timedata _controls_data,
-      Model::Timedata _constraints_data,
-      Eigen::Ref<Eigen::VectorXd const> const &initial_state,
-      Aux::InterpolatingVector const &initial_controls,
+      std::vector<double> _simulation_timepoints,
+      Eigen::Ref<Eigen::VectorXd const> const &_initial_state,
+      Aux::InterpolatingVector const &_initial_controls,
       Aux::InterpolatingVector const &_lower_bounds,
       Aux::InterpolatingVector const &_upper_bounds,
       Aux::InterpolatingVector const &_constraints_lower_bounds,
       Aux::InterpolatingVector const &_constraints_upper_bounds) :
       problem(_problem),
       cache(evolver, _problem),
-      simulation_data(_simulation_data),
-      controls_data(_controls_data),
-      constraints_data(_constraints_data),
-      state_initial_values(initial_state),
-      control_initial_values(initial_controls.get_allvalues()),
-      lower_bounds(_lower_bounds.get_allvalues()),
-      upper_bounds(_upper_bounds.get_allvalues()),
-      constraints_lower_bounds(_constraints_lower_bounds.get_allvalues()),
-      constraints_upper_bounds(_constraints_upper_bounds.get_allvalues()) {
+      simulation_timepoints(_simulation_timepoints),
+      initial_state(_initial_state),
+      initial_controls(_initial_controls),
+      lower_bounds(_lower_bounds),
+      upper_bounds(_upper_bounds),
+      constraints_lower_bounds(_constraints_lower_bounds),
+      constraints_upper_bounds(_constraints_upper_bounds) {
 
     // control sanity checks:
     if (problem.get_number_of_controls_per_timepoint()
-            * controls_data.get_number_of_time_points()
-        != control_initial_values.size()) {
+        != initial_controls.get_inner_length()) {
       gthrow({"Wrong number of initial values of the controls!"});
     }
-    if (problem.get_number_of_controls_per_timepoint()
-            * controls_data.get_number_of_time_points()
-        != lower_bounds.size()) {
+    if (not have_same_structure(initial_controls, lower_bounds)) {
       gthrow({"Number of controls and number of control bounds do not match!"});
     }
-    if (lower_bounds.size() != upper_bounds.size()) {
-      gthrow({"The number of lower and upper bounds do not match!"});
+    if (not have_same_structure(lower_bounds, upper_bounds)) {
+      gthrow({"The lower and upper bounds do not match!"});
     }
     // constraints sanity checks:
-    if (constraints_lower_bounds.size() != constraints_upper_bounds.size()) {
+    if (not have_same_structure(
+            constraints_lower_bounds, constraints_upper_bounds)) {
       gthrow(
-          {"The number of lower and upper bounds for the constraints do not "
+          {"The lower and upper bounds for the constraints do not "
            "match!"});
     }
     if (problem.get_number_of_constraints_per_timepoint()
-            * constraints_data.get_number_of_time_points()
-        != constraints_lower_bounds.size()) {
+        != constraints_lower_bounds.get_inner_length()) {
       gthrow(
           {"Number of constraints and number of constraint bounds do not "
            "match!"});
     }
     // state sanity checks:
-    if (problem.get_number_of_states() != state_initial_values.size()) {
+    if (problem.get_number_of_states() != initial_state.size()) {
       gthrow({"Wrong number of initial values of the states!"});
     }
   }
@@ -83,11 +79,9 @@ namespace Optimization {
       Ipopt::Index &n, Ipopt::Index &m, Ipopt::Index &nnz_jac_g,
       Ipopt::Index &nnz_h_lag, IndexStyleEnum &index_style) {
     n = static_cast<Ipopt::Index>(
-        problem.get_number_of_controls_per_timepoint()
-        * controls_data.get_number_of_time_points());
+        initial_controls.get_total_number_of_values());
     m = static_cast<Ipopt::Index>(
-        problem.get_number_of_constraints_per_timepoint()
-        * constraints_data.get_number_of_time_points());
+        constraints_lower_bounds.get_total_number_of_values());
 
     nnz_jac_g = nnz_constraint_jacobian();
 
@@ -100,12 +94,18 @@ namespace Optimization {
       Ipopt::Index /*n*/, Ipopt::Number *x_l, Ipopt::Number *x_u,
       Ipopt::Index /*m*/, Ipopt::Number *g_l, Ipopt::Number *g_u) {
     // all sanity checks have been done in the constructor.
-    std::copy(lower_bounds.begin(), lower_bounds.end(), x_l);
-    std::copy(upper_bounds.begin(), upper_bounds.end(), x_u);
     std::copy(
-        constraints_lower_bounds.begin(), constraints_lower_bounds.end(), g_l);
+        lower_bounds.get_allvalues().begin(),
+        lower_bounds.get_allvalues().end(), x_l);
     std::copy(
-        constraints_upper_bounds.begin(), constraints_upper_bounds.end(), g_u);
+        upper_bounds.get_allvalues().begin(),
+        upper_bounds.get_allvalues().end(), x_u);
+    std::copy(
+        constraints_lower_bounds.get_allvalues().begin(),
+        constraints_lower_bounds.get_allvalues().end(), g_l);
+    std::copy(
+        constraints_upper_bounds.get_allvalues().begin(),
+        constraints_upper_bounds.get_allvalues().end(), g_u);
 
     return true;
   }
@@ -115,7 +115,9 @@ namespace Optimization {
       Ipopt::Index /*m */, bool /* init_lambda */,
       Ipopt::Number * /* lambda */) {
     // initialize to the given starting point
-    std::copy(control_initial_values.begin(), control_initial_values.end(), x);
+    std::copy(
+        initial_controls.get_allvalues().begin(),
+        initial_controls.get_allvalues().end(), x);
     return true;
   }
   bool IpoptWrapper::eval_f(
@@ -160,7 +162,7 @@ namespace Optimization {
     if (values == NULL) {
       // first internal call of this function.
       // set the structure of constraints jacobian.
-      jacobian_structure(n, iRow, jCol);
+      constraint_jacobian_structure(n, iRow, jCol);
     } else {
       // evaluate the jacobian of the constraints function
       // Eigen::VectorXd xx(Eigen::Map<const Eigen::VectorXd>(x, n));
@@ -183,4 +185,15 @@ namespace Optimization {
     std::copy(x, x + n, solution.begin());
     final_objective_value = obj_value;
   }
+
+  Eigen::Index IpoptWrapper::get_number_of_controls() const {
+    return initial_controls.get_total_number_of_values();
+  }
+  Eigen::Index IpoptWrapper::get_number_of_control_timesteps() const {
+    return initial_controls.size();
+  }
+  Eigen::Index IpoptWrapper::get_number_of_constraint_timesteps() const {
+    return constraints_lower_bounds.size();
+  }
+
 } // namespace Optimization
