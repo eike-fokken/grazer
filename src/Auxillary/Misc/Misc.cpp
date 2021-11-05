@@ -1,3 +1,4 @@
+#include "Exception.hpp"
 #include <Misc.hpp>
 
 namespace Aux {
