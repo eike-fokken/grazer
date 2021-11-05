@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ControlStateCache.hpp"
+#include "OptimizableObject.hpp"
 #include "Timedata.hpp"
 #include <Eigen/Sparse>
 #include <limits>
@@ -14,7 +15,7 @@ namespace Aux {
 
 namespace Model {
   class Timeevolver;
-  class Networkproblem;
+  class OptimizableObject;
 } // namespace Model
 
 namespace Optimization {
@@ -23,7 +24,7 @@ namespace Optimization {
 
   public:
     IpoptWrapper(
-        Model::Timeevolver &evolver, Model::Networkproblem &problem,
+        Model::Timeevolver &evolver, Model::OptimizableObject &problem,
         Model::Timedata simulation_data, Model::Timedata controls_data,
         Model::Timedata constraints_data,
         Eigen::Ref<Eigen::VectorXd const> const &initial_state,
@@ -105,7 +106,7 @@ namespace Optimization {
         Ipopt::IpoptCalculatedQuantities * /* ip_cq */) final;
 
   private:
-    Model::Networkproblem &problem;
+    Model::OptimizableObject &problem;
     ControlStateCache cache;
 
     Model::Timedata const simulation_data;

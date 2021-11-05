@@ -1,7 +1,7 @@
 #include "Wrapper.hpp"
 #include "Exception.hpp"
 #include "InterpolatingVector.hpp"
-#include "Networkproblem.hpp"
+#include "OptimizableObject.hpp"
 #include "Timeevolver.hpp"
 #include <IpAlgTypes.hpp>
 #include <stdexcept>
@@ -25,7 +25,7 @@ namespace Optimization {
   }
 
   IpoptWrapper::IpoptWrapper(
-      Model::Timeevolver &evolver, Model::Networkproblem &_problem,
+      Model::Timeevolver &evolver, Model::OptimizableObject &_problem,
       Model::Timedata _simulation_data, Model::Timedata _controls_data,
       Model::Timedata _constraints_data,
       Eigen::Ref<Eigen::VectorXd const> const &initial_state,
@@ -179,7 +179,8 @@ namespace Optimization {
     if (status != Ipopt::SUCCESS) {
       throw std::runtime_error("The solver failed to find a solution");
     }
-    solution = Eigen::VectorXd(x, n);
+    solution.resize(n);
+    std::copy(x, x + n, solution.begin());
     final_objective_value = obj_value;
   }
 } // namespace Optimization

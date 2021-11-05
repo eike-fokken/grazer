@@ -1,7 +1,5 @@
 #pragma once
-#include "Constraintcomponent.hpp"
-#include "Controlcomponent.hpp"
-#include "Costcomponent.hpp"
+#include "OptimizableObject.hpp"
 #include "Statecomponent.hpp"
 #include "Timedata.hpp"
 #include <Eigen/Sparse>
@@ -25,11 +23,7 @@ namespace Model {
 
   // This class defines a problem, that builds the model equations from a
   // network.
-  class Networkproblem final :
-      public Statecomponent,
-      public Controlcomponent,
-      public Constraintcomponent,
-      public Costcomponent {
+  class Networkproblem final : public OptimizableObject {
 
   public:
     static std::string get_type();

@@ -1,4 +1,5 @@
 #pragma once
+#include "OptimizableObject.hpp"
 #include "Wrapper.hpp"
 #include <Eigen/Dense>
 #include <IpIpoptApplication.hpp>
@@ -7,9 +8,6 @@
 using VectorXd = Eigen::VectorXd;
 using VectorXi = Eigen::VectorXi;
 
-template <
-    typename ObjFun, typename ObjGradFun, typename ConstrsFun,
-    typename ConstrsJacFun>
 class IpoptAdaptor {
 private:
   Ipopt::SmartPtr<Optimization::IpoptWrapper> _nlp;
@@ -17,7 +15,7 @@ private:
 
 public:
   IpoptAdaptor(
-      Model::Timeevolver &evolver, Model::Networkproblem &problem,
+      Model::Timeevolver &evolver, Model::OptimizableObject &problem,
       Model::Timedata simulation_data, Model::Timedata controls_data,
       Model::Timedata constraints_data,
       Eigen::Ref<Eigen::VectorXd const> const &initial_state,
