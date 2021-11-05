@@ -4,7 +4,8 @@ ControlStateCache.cpp)
 
 target_link_libraries(optimization_helpers PRIVATE
 exception
-networkproblem)
+networkproblem
+matrixhandler)
 
 target_link_libraries(optimization_helpers PUBLIC
 interpolatingVector
