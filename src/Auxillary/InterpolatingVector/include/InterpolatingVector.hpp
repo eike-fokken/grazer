@@ -66,4 +66,10 @@ namespace Aux {
   bool
   operator!=(InterpolatingVector const &lhs, InterpolatingVector const &rhs);
 
+  /** @brief returns true if and only if both arguments have the same inner
+   * length and the same interpolation points.
+   */
+  bool have_same_structure(
+      InterpolatingVector const &vec1, InterpolatingVector const &vec2);
+
 } // namespace Aux

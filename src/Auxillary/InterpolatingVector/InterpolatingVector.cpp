@@ -297,4 +297,15 @@ namespace Aux {
     return !(lhs == rhs);
   }
 
+  bool have_same_structure(
+      InterpolatingVector const &vec1, InterpolatingVector const &vec2) {
+    if (vec1.get_inner_length() != vec2.get_inner_length()) {
+      return false;
+    }
+    if (vec1.get_interpolation_points() != vec2.get_interpolation_points()) {
+      return false;
+    }
+    return true;
+  }
+
 } // namespace Aux
