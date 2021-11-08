@@ -2,8 +2,10 @@
 #include "Exception.hpp"
 #include "InterpolatingVector.hpp"
 #include "OptimizableObject.hpp"
+#include "Optimization_helpers.hpp"
 #include "Timeevolver.hpp"
 #include <IpAlgTypes.hpp>
+#include <IpTypes.hpp>
 #include <cstddef>
 #include <stdexcept>
 
@@ -11,14 +13,32 @@ namespace Optimization {
 
   Ipopt::Index IpoptWrapper::nnz_constraint_jacobian() {
     assert(false); // "implement me!"
+    return 0;
   }
 
   void IpoptWrapper::constraint_jacobian_structure(
       Ipopt::Index number_of_nonzeros_in_constraint_jacobian,
       Ipopt::Index *Rows, Ipopt::Index *Cols) {
-    auto ntimesteps = get_number_of_control_timesteps();
-    for (Eigen::Index index = 0; index != ntimesteps; ++index) {}
-    assert(false); // "implement me!"
+
+    std::vector<Ipopt::Index> rows;
+    std::vector<Ipopt::Index> columns;
+
+    auto jacobian_prototype = Optimization::constraint_jac_structure(
+        constraints_lower_bounds, initial_controls);
+
+    Ipopt::Index n = 0;
+    for (Eigen::Index row = 0; row != jacobian_prototype.rows(); ++row) {
+      for (Eigen::Index col = 0; col != jacobian_prototype.cols(); ++col) {
+        if (n >= number_of_nonzeros_in_constraint_jacobian) {
+          gthrow(
+              {"You try to write more indices than are accounted for in the "
+               "structure of the constraint jacobian!"});
+        }
+        Rows[n] = static_cast<Ipopt::Index>(row);
+        Cols[n] = static_cast<Ipopt::Index>(col);
+        ++n;
+      }
+    }
   }
 
   void IpoptWrapper::constraint_jacobian(Ipopt::Number *values) {
@@ -157,12 +177,12 @@ namespace Optimization {
   }
   bool IpoptWrapper::eval_jac_g(
       Ipopt::Index n, const Ipopt::Number *x, bool /* new_x */,
-      Ipopt::Index /* m */, Ipopt::Index /* nele_jac */, Ipopt::Index *iRow,
+      Ipopt::Index /* m */, Ipopt::Index nele_jac, Ipopt::Index *iRow,
       Ipopt::Index *jCol, Ipopt::Number *values) {
     if (values == NULL) {
       // first internal call of this function.
       // set the structure of constraints jacobian.
-      constraint_jacobian_structure(n, iRow, jCol);
+      constraint_jacobian_structure(nele_jac, iRow, jCol);
     } else {
       // evaluate the jacobian of the constraints function
       // Eigen::VectorXd xx(Eigen::Map<const Eigen::VectorXd>(x, n));

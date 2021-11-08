@@ -1,4 +1,5 @@
 #include "Constraintcomponent.hpp"
+#include <Eigen/Dense>
 #include <Eigen/Sparse>
 #include <Eigen/src/SparseCore/SparseMatrix.h>
 #include <nlohmann/json.hpp>
@@ -99,5 +100,13 @@ namespace Optimization {
   Eigen::SparseMatrix<double> compute_control_conversion(
       Aux::InterpolatingVector const &fine_resolution_vector,
       Aux::InterpolatingVector const &coarse_resolution_vector);
+
+  /** @brief Returns a matrix that contains 1 at all points where a constraint
+   * jacobian can be non-zero and zero everywhere else.
+   */
+  Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>
+  constraint_jac_structure(
+      Aux::InterpolatingVector const &constraints,
+      Aux::InterpolatingVector const &controls);
 
 } // namespace Optimization

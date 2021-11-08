@@ -4,6 +4,7 @@
 #include "Matrixhandler.hpp"
 #include "Networkproblem.hpp"
 #include "Timeevolver.hpp"
+#include <Eigen/Dense>
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
@@ -185,6 +186,51 @@ namespace Optimization {
       }
     }
     jacobian.setFromTriplets(triplets.begin(), triplets.end());
+    return jacobian;
+  }
+
+  static void
+  fill_EV_to_index(Eigen::Ref<Eigen::VectorXi> vector, Eigen::Index index_end) {
+    assert(vector.squaredNorm() == 0);
+    assert(0 <= index_end);
+    assert(index_end <= vector.size());
+    for (Eigen::Index i = 0; i != index_end; ++i) { vector[i] = 1; }
+  }
+
+  Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>
+  constraint_jac_structure(
+      Aux::InterpolatingVector const &constraints,
+      Aux::InterpolatingVector const &controls) {
+
+    // the jacobian is dense here because it is half full anyways.
+    Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>
+        jacobian(
+            constraints.get_total_number_of_values(),
+            controls.get_total_number_of_values());
+    jacobian.setZero();
+    auto constraints_times = constraints.get_interpolation_points();
+    auto controls_times = controls.get_interpolation_points();
+    auto ntimesteps = constraints_times.size();
+
+    auto number_controls_per_timestep = controls.get_inner_length();
+    auto number_constraints_per_timestep = constraints.get_inner_length();
+
+    for (size_t index = 0; index != ntimesteps; ++index) {
+      auto t_j_interator = std::lower_bound(
+          controls_times.begin(), controls_times.end(),
+          constraints_times[index]);
+      auto j = (t_j_interator - controls_times.begin());
+
+      for (auto row_index
+           = static_cast<Eigen::Index>(index) * number_constraints_per_timestep;
+           row_index
+           != static_cast<Eigen::Index>(index + 1)
+                  * number_constraints_per_timestep;
+           ++row_index) {
+        fill_EV_to_index(
+            jacobian.row(row_index), (j + 1) * number_controls_per_timestep);
+      }
+    }
     return jacobian;
   }
 
