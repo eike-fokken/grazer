@@ -71,17 +71,17 @@ namespace Optimization {
       Eigen::Ref<Eigen::VectorXd const> const &controls) {}
 
   void initialize(
-      Model::Networkproblem &problem, Aux::InterpolatingVector &controls,
+      Model::Networkproblem &problem, Aux::InterpolatingVector_Base &controls,
       nlohmann::json const &control_json,
       Eigen::Ref<Eigen::VectorXd> init_state,
       nlohmann::json const &initial_json,
-      Aux::InterpolatingVector &lower_bounds,
+      Aux::InterpolatingVector_Base &lower_bounds,
       nlohmann::json const &lower_bounds_json,
-      Aux::InterpolatingVector &upper_bounds,
+      Aux::InterpolatingVector_Base &upper_bounds,
       nlohmann::json const &upper_bounds_json,
-      Aux::InterpolatingVector &constraints_lower_bounds,
+      Aux::InterpolatingVector_Base &constraints_lower_bounds,
       nlohmann::json const &constraints_lower_bounds_json,
-      Aux::InterpolatingVector &constraints_upper_bounds,
+      Aux::InterpolatingVector_Base &constraints_upper_bounds,
       nlohmann::json const &constraints_upper_bounds_json) {
     problem.set_initial_values(init_state, initial_json);
     problem.set_initial_controls(controls, control_json);
@@ -97,8 +97,8 @@ namespace Optimization {
       std::vector<Aux::Matrixhandler> &constraint_step_handler,
       Model::Constraintcomponent &problem,
       std::vector<double> const &constraint_times,
-      Aux::InterpolatingVector const &controls,
-      Aux::InterpolatingVector const &states) {
+      Aux::InterpolatingVector_Base const &controls,
+      Aux::InterpolatingVector_Base const &states) {
     assert(constraint_step_handler.size() == constraint_times.size());
     for (size_t index = 0; index != constraint_times.size(); ++index) {
       problem.d_evaluate_constraint_d_control(
@@ -119,8 +119,8 @@ namespace Optimization {
   }
 
   Eigen::SparseMatrix<double> compute_control_conversion(
-      Aux::InterpolatingVector const &fine_resolution_vector,
-      Aux::InterpolatingVector const &coarse_resolution_vector) {
+      Aux::InterpolatingVector_Base const &fine_resolution_vector,
+      Aux::InterpolatingVector_Base const &coarse_resolution_vector) {
 
     auto const &fine_times = fine_resolution_vector.get_interpolation_points();
     auto const &coarse_times
@@ -198,8 +198,8 @@ namespace Optimization {
   }
 
   std::vector<Eigen::Triplet<double, Eigen::Index>> constraint_jac_triplets(
-      Aux::InterpolatingVector const &constraints,
-      Aux::InterpolatingVector const &controls) {
+      Aux::InterpolatingVector_Base const &constraints,
+      Aux::InterpolatingVector_Base const &controls) {
 
     std::vector<Eigen::Triplet<double, Eigen::Index>> triplets;
 

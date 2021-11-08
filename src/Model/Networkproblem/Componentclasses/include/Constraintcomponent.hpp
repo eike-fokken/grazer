@@ -4,7 +4,7 @@
 #include <nlohmann/json.hpp>
 
 namespace Aux {
-  class InterpolatingVector;
+  class InterpolatingVector_Base;
   class Matrixhandler;
 } // namespace Aux
 
@@ -60,11 +60,11 @@ namespace Model {
     Eigen::Index get_constraint_afterindex() const;
 
     virtual void set_constraint_lower_bounds(
-        Aux::InterpolatingVector &full_control_vector,
+        Aux::InterpolatingVector_Base &full_control_vector,
         nlohmann::json const &constraint_lower_bounds_json) const = 0;
 
     virtual void set_constraint_upper_bounds(
-        Aux::InterpolatingVector &full_control_vector,
+        Aux::InterpolatingVector_Base &full_control_vector,
         nlohmann::json const &constraint_upper_bounds_json) const = 0;
 
   private:

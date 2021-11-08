@@ -293,6 +293,10 @@ namespace Aux {
           _inner_length
           * static_cast<Eigen::Index>(_interpolation_points.size())) {}
 
+  InterpolatingVector::InterpolatingVector(
+      InterpolatingVector_Base const &other) :
+      InterpolatingVector_Base(other), values(other.get_allvalues()) {}
+
   Eigen::Ref<Eigen::VectorXd> InterpolatingVector::allvalues() {
     return values;
   }

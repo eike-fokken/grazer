@@ -53,15 +53,15 @@ namespace Model::Gas {
         Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
     void set_initial_controls(
-        Aux::InterpolatingVector &full_control_vector,
+        Aux::InterpolatingVector_Base &full_control_vector,
         nlohmann::json const &control_json) const final;
 
     void set_lower_bounds(
-        Aux::InterpolatingVector &full_lower_bound_vector,
+        Aux::InterpolatingVector_Base &full_lower_bound_vector,
         nlohmann::json const &lower_bound_json) const final;
 
     void set_upper_bounds(
-        Aux::InterpolatingVector &full_upper_bound_vector,
+        Aux::InterpolatingVector_Base &full_upper_bound_vector,
         nlohmann::json const &upper_bound_json) const final;
 
     Eigen::Index needed_number_of_controls_per_time_point() const final;

@@ -4,7 +4,7 @@
 #include <nlohmann/json.hpp>
 
 namespace Aux {
-  class InterpolatingVector;
+  class InterpolatingVector_Base;
 }
 
 namespace Model {
@@ -19,8 +19,8 @@ namespace Model {
 
     void simulate(
         Eigen::Ref<Eigen::VectorXd const> const &initial_state,
-        Aux::InterpolatingVector const &controls,
-        Controlcomponent &problem, Aux::InterpolatingVector &saved_states);
+        Aux::InterpolatingVector_Base const &controls,
+        Controlcomponent &problem, Aux::InterpolatingVector_Base &saved_states);
 
     Solver::Solutionstruct make_one_step(
         double last_time, double new_time,

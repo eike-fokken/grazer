@@ -4,7 +4,7 @@
 #include <vector>
 
 namespace Aux {
-  class InterpolatingVector;
+  class InterpolatingVector_Base;
 }
 
 namespace Model {
@@ -55,17 +55,17 @@ namespace Optimization {
   /** \brief Takes care of all initialization
    */
   void initialize(
-      Model::Networkproblem &problem, Aux::InterpolatingVector &controls,
+      Model::Networkproblem &problem, Aux::InterpolatingVector_Base &controls,
       nlohmann::json const &control_json,
       Eigen::Ref<Eigen::VectorXd> init_state,
       nlohmann::json const &initial_json,
-      Aux::InterpolatingVector &lower_bounds,
+      Aux::InterpolatingVector_Base &lower_bounds,
       nlohmann::json const &lower_bounds_json,
-      Aux::InterpolatingVector &upper_bounds,
+      Aux::InterpolatingVector_Base &upper_bounds,
       nlohmann::json const &upper_bounds_json,
-      Aux::InterpolatingVector &constraints_lower_bounds,
+      Aux::InterpolatingVector_Base &constraints_lower_bounds,
       nlohmann::json const &constraints_lower_bounds_json,
-      Aux::InterpolatingVector &constraints_upper_bounds,
+      Aux::InterpolatingVector_Base &constraints_upper_bounds,
       nlohmann::json const &constraints_upper_bounds_json);
 
   /** @brief computes the jacobian of the constraints in every time step and
@@ -80,8 +80,8 @@ namespace Optimization {
       std::vector<Aux::Matrixhandler> &stepwise_handlers,
       Model::Constraintcomponent &problem,
       std::vector<double> const &constraint_times,
-      Aux::InterpolatingVector const &controls,
-      Aux::InterpolatingVector const &states);
+      Aux::InterpolatingVector_Base const &controls,
+      Aux::InterpolatingVector_Base const &states);
 
   /** @brief Computes Indices and weights for the derivative of controls on a
    *  fine time grid w.r.t. controls on a coarse time grid.
@@ -95,14 +95,14 @@ namespace Optimization {
    *
    */
   Eigen::SparseMatrix<double> compute_control_conversion(
-      Aux::InterpolatingVector const &fine_resolution_vector,
-      Aux::InterpolatingVector const &coarse_resolution_vector);
+      Aux::InterpolatingVector_Base const &fine_resolution_vector,
+      Aux::InterpolatingVector_Base const &coarse_resolution_vector);
 
   /** @brief Returns a matrix that contains 1 at all points where a constraint
    * jacobian can be non-zero and zero everywhere else.
    */
   std::vector<Eigen::Triplet<double, Eigen::Index>> constraint_jac_triplets(
-      Aux::InterpolatingVector const &constraints,
-      Aux::InterpolatingVector const &controls);
+      Aux::InterpolatingVector_Base const &constraints,
+      Aux::InterpolatingVector_Base const &controls);
 
 } // namespace Optimization

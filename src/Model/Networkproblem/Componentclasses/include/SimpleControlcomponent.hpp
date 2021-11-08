@@ -4,7 +4,7 @@ namespace Model {
 
   void set_simple_control_values(
       Controlcomponent const *controlcomponent,
-      Aux::InterpolatingVector &full_control_vector,
+      Aux::InterpolatingVector_Base &full_control_vector,
       nlohmann::json const &initial_json, nlohmann::json const &initial_schema);
 
   class SimpleControlcomponent : public Controlcomponent {

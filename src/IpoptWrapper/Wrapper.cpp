@@ -46,11 +46,11 @@ namespace Optimization {
       Model::Timeevolver &evolver, Model::OptimizableObject &_problem,
       std::vector<double> _simulation_timepoints,
       Eigen::Ref<Eigen::VectorXd const> const &_initial_state,
-      Aux::InterpolatingVector const &_initial_controls,
-      Aux::InterpolatingVector const &_lower_bounds,
-      Aux::InterpolatingVector const &_upper_bounds,
-      Aux::InterpolatingVector const &_constraints_lower_bounds,
-      Aux::InterpolatingVector const &_constraints_upper_bounds) :
+      Aux::InterpolatingVector_Base const &_initial_controls,
+      Aux::InterpolatingVector_Base const &_lower_bounds,
+      Aux::InterpolatingVector_Base const &_upper_bounds,
+      Aux::InterpolatingVector_Base const &_constraints_lower_bounds,
+      Aux::InterpolatingVector_Base const &_constraints_upper_bounds) :
       constraint_jacobian(
           _constraints_lower_bounds.get_total_number_of_values(),
           _initial_controls.get_total_number_of_values()),

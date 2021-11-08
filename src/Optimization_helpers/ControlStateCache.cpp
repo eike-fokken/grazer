@@ -1,5 +1,6 @@
 #include "ControlStateCache.hpp"
 #include "Exception.hpp"
+#include "InterpolatingVector.hpp"
 #include "Timeevolver.hpp"
 
 namespace Optimization {
@@ -9,8 +10,8 @@ namespace Optimization {
       evolver(timeevolver), problem(_problem) {}
 
   bool ControlStateCache::get_states(
-      Aux::InterpolatingVector const &controls,
-      Aux::InterpolatingVector &states,
+      Aux::InterpolatingVector_Base const &controls,
+      Aux::InterpolatingVector_Base &states,
       Eigen::Ref<Eigen::VectorXd const> const &initial_state) {
     if (last_failed == controls) {
       return false;
@@ -26,7 +27,10 @@ namespace Optimization {
         last_failed = controls;
         return false;
       }
-      cache = std::make_pair(controls, states);
+      Aux::InterpolatingVector cached_controls(controls);
+      Aux::InterpolatingVector cached_states(states);
+
+      cache = std::make_pair(cached_controls, cached_states);
       return true;
     }
   }

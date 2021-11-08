@@ -4,7 +4,7 @@ namespace Model {
 
   void set_simple_constraint_values(
       Constraintcomponent const *component,
-      Aux::InterpolatingVector &full_constraint_vector,
+      Aux::InterpolatingVector_Base &full_constraint_vector,
       nlohmann::json const &initial_json, nlohmann::json const &initial_schema);
 
   class SimpleConstraintcomponent : public Constraintcomponent {

@@ -8,7 +8,7 @@ namespace Model {
 
   public:
     void set_initial_controls(
-        Timedata timedata, Aux::InterpolatingVector &controller,
+        Timedata timedata, Aux::InterpolatingVector_Base &controller,
         nlohmann::json const &control_json) final;
 
     void set_lower_bounds(

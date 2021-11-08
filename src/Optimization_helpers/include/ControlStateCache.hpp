@@ -16,8 +16,8 @@ namespace Optimization {
         Model::Timeevolver &timeevolver, Model::Controlcomponent &problem);
 
     bool get_states(
-        Aux::InterpolatingVector const &controls,
-        Aux::InterpolatingVector &states,
+        Aux::InterpolatingVector_Base const &controls,
+        Aux::InterpolatingVector_Base &states,
         Eigen::Ref<Eigen::VectorXd const> const &initial_state);
 
   private:

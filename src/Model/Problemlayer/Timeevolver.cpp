@@ -42,8 +42,8 @@ namespace Model {
 
   void Timeevolver::simulate(
       Eigen::Ref<Eigen::VectorXd const> const &initial_state,
-      Aux::InterpolatingVector const &controls, Controlcomponent &problem,
-      Aux::InterpolatingVector &saved_states) {
+      Aux::InterpolatingVector_Base const &controls, Controlcomponent &problem,
+      Aux::InterpolatingVector_Base &saved_states) {
     double last_time = saved_states.interpolation_point_at_index(0);
     double new_time = saved_states.interpolation_point_at_index(1);
 

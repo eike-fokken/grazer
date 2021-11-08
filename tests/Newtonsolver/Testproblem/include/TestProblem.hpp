@@ -67,19 +67,19 @@ namespace GrazerTest {
 
     MOCK_METHOD(
         void, set_initial_controls,
-        ((Aux::InterpolatingVector & full_control_vector),
+        ((Aux::InterpolatingVector_Base & full_control_vector),
          (nlohmann::json const &control_json)),
         (const, final));
 
     MOCK_METHOD(
         void, set_lower_bounds,
-        ((Aux::InterpolatingVector & full_control_vector),
+        ((Aux::InterpolatingVector_Base & full_control_vector),
          (nlohmann::json const &control_json)),
         (const, final));
 
     MOCK_METHOD(
         void, set_upper_bounds,
-        ((Aux::InterpolatingVector & full_control_vector),
+        ((Aux::InterpolatingVector_Base & full_control_vector),
          (nlohmann::json const &control_json)),
         (const, final));
   };

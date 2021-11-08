@@ -26,12 +26,16 @@ namespace Aux {
   public:
     virtual ~InterpolatingVector_Base();
     InterpolatingVector_Base();
-    InterpolatingVector_Base(InterpolatingVector_Base const &other) = default;
     InterpolatingVector_Base(
         Interpolation_data data, Eigen::Index _inner_length);
     InterpolatingVector_Base(
         std::vector<double> interpolation_points, Eigen::Index inner_length);
 
+  protected:
+    // copy constructor shall only be called by derived classes:
+    InterpolatingVector_Base(InterpolatingVector_Base const &other) = default;
+
+  public:
     void set_values_in_bulk(Eigen::Ref<Eigen::VectorXd const> const &values);
 
     Eigen::Index get_total_number_of_values() const;
@@ -83,6 +87,8 @@ namespace Aux {
     InterpolatingVector(Interpolation_data data, Eigen::Index inner_length);
     InterpolatingVector(
         std::vector<double> _interpolation_points, Eigen::Index inner_length);
+
+    InterpolatingVector(InterpolatingVector_Base const &other);
 
     Eigen::Ref<Eigen::VectorXd> allvalues() final;
     Eigen::Ref<Eigen::VectorXd const> const allvalues() const final;

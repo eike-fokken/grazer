@@ -5,7 +5,7 @@
 #include <nlohmann/json.hpp>
 
 namespace Aux {
-  class InterpolatingVector;
+  class InterpolatingVector_Base;
   class Matrixhandler;
 } // namespace Aux
 
@@ -143,15 +143,15 @@ namespace Model {
      */
 
     virtual void set_initial_controls(
-        Aux::InterpolatingVector &full_control_vector,
+        Aux::InterpolatingVector_Base &full_control_vector,
         nlohmann::json const &control_json) const = 0;
 
     virtual void set_lower_bounds(
-        Aux::InterpolatingVector &full_lower_bound_vector,
+        Aux::InterpolatingVector_Base &full_lower_bound_vector,
         nlohmann::json const &lower_bound_json) const = 0;
 
     virtual void set_upper_bounds(
-        Aux::InterpolatingVector &full_upper_bound_vector,
+        Aux::InterpolatingVector_Base &full_upper_bound_vector,
         nlohmann::json const &upper_bound_json) const = 0;
 
   private:

@@ -31,11 +31,11 @@ namespace Model::Gas {
         Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
     void set_constraint_lower_bounds(
-        Aux::InterpolatingVector &full_control_vector,
+        Aux::InterpolatingVector_Base &full_control_vector,
         const nlohmann::json &constraint_lower_bounds_json) const final;
 
     void set_constraint_upper_bounds(
-        Aux::InterpolatingVector &full_control_vector,
+        Aux::InterpolatingVector_Base &full_control_vector,
         const nlohmann::json &constraint_upper_bounds_json) const final;
 
     Eigen::Index needed_number_of_constraints_per_time_point() const final;

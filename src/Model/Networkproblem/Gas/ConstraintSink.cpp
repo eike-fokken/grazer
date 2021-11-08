@@ -42,7 +42,7 @@ namespace Model::Gas {
       Eigen::Ref<Eigen::VectorXd const> const &) const {}
 
   void ConstraintSink::set_constraint_lower_bounds(
-      Aux::InterpolatingVector &full_lower_bound_vector,
+      Aux::InterpolatingVector_Base &full_lower_bound_vector,
       const nlohmann::json &constraint_lower_bounds_json) const {
     set_simple_constraint_values(
         this, full_lower_bound_vector, constraint_lower_bounds_json,
@@ -50,7 +50,7 @@ namespace Model::Gas {
   }
 
   void ConstraintSink::set_constraint_upper_bounds(
-      Aux::InterpolatingVector &full_upper_bound_vector,
+      Aux::InterpolatingVector_Base &full_upper_bound_vector,
       const nlohmann::json &constraint_upper_bounds_json) const {
     set_simple_constraint_values(
         this, full_upper_bound_vector, constraint_upper_bounds_json,

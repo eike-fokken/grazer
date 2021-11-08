@@ -290,7 +290,7 @@ namespace Model {
   }
 
   void Networkproblem::set_initial_controls(
-      Aux::InterpolatingVector &controller,
+      Aux::InterpolatingVector_Base &controller,
       nlohmann::json const &control_json) const {
 
     auto ids = get_ids_of_objects(controlcomponents);
@@ -315,7 +315,7 @@ namespace Model {
   }
 
   void Networkproblem::set_lower_bounds(
-      Aux::InterpolatingVector &full_lower_bound_vector,
+      Aux::InterpolatingVector_Base &full_lower_bound_vector,
       nlohmann::json const &lower_bound_json) const {
 
     auto ids = get_ids_of_objects(controlcomponents);
@@ -340,7 +340,7 @@ namespace Model {
     }
   }
   void Networkproblem::set_upper_bounds(
-      Aux::InterpolatingVector &full_upper_bound_vector,
+      Aux::InterpolatingVector_Base &full_upper_bound_vector,
       nlohmann::json const &upper_bound_json) const {
 
     auto ids = get_ids_of_objects(controlcomponents);
@@ -465,7 +465,7 @@ namespace Model {
   }
 
   void Networkproblem::set_constraint_lower_bounds(
-      Aux::InterpolatingVector &full_lower_bounds_vector,
+      Aux::InterpolatingVector_Base &full_lower_bounds_vector,
       nlohmann::json const &constraint_lower_bounds_json) const {
     auto ids = get_ids_of_objects(constraintcomponents);
     check_components_in_json(
@@ -494,7 +494,7 @@ namespace Model {
   }
 
   void Networkproblem::set_constraint_upper_bounds(
-      Aux::InterpolatingVector &full_upper_bound_vector,
+      Aux::InterpolatingVector_Base &full_upper_bound_vector,
       nlohmann::json const &constraint_upper_bounds_json) const {
 
     auto ids = get_ids_of_objects(constraintcomponents);
