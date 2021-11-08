@@ -23,25 +23,26 @@ namespace Optimization {
     std::vector<Ipopt::Index> rows;
     std::vector<Ipopt::Index> columns;
 
-    auto jacobian_prototype = Optimization::constraint_jac_structure(
+    auto triplets = Optimization::constraint_jac_triplets(
         constraints_lower_bounds, initial_controls);
 
-    Ipopt::Index n = 0;
-    for (Eigen::Index row = 0; row != jacobian_prototype.rows(); ++row) {
-      for (Eigen::Index col = 0; col != jacobian_prototype.cols(); ++col) {
-        if (n >= number_of_nonzeros_in_constraint_jacobian) {
-          gthrow(
-              {"You try to write more indices than are accounted for in the "
-               "structure of the constraint jacobian!"});
-        }
-        Rows[n] = static_cast<Ipopt::Index>(row);
-        Cols[n] = static_cast<Ipopt::Index>(col);
-        ++n;
-      }
+    if (triplets.size()
+        != static_cast<size_t>(number_of_nonzeros_in_constraint_jacobian)) {
+      gthrow(
+          {"You try to write more indices than are accounted for in the "
+           "structure of the constraint jacobian!"});
+    }
+
+    for (size_t triplet_index = 0; triplet_index != triplets.size();
+         ++triplet_index) {
+      Rows[triplet_index]
+          = static_cast<Ipopt::Index>(triplets[triplet_index].row());
+      Cols[triplet_index]
+          = static_cast<Ipopt::Index>(triplets[triplet_index].col());
     }
   }
 
-  void IpoptWrapper::constraint_jacobian(Ipopt::Number *values) {
+  void IpoptWrapper::eval_constraint_jacobian(Ipopt::Number *values) {
 
     assert(false); // "implement me!"
   }
@@ -55,6 +56,9 @@ namespace Optimization {
       Aux::InterpolatingVector const &_upper_bounds,
       Aux::InterpolatingVector const &_constraints_lower_bounds,
       Aux::InterpolatingVector const &_constraints_upper_bounds) :
+      constraint_jacobian(
+          _constraints_lower_bounds.get_total_number_of_values(),
+          _initial_controls.get_total_number_of_values()),
       problem(_problem),
       cache(evolver, _problem),
       simulation_timepoints(_simulation_timepoints),
@@ -186,7 +190,7 @@ namespace Optimization {
     } else {
       // evaluate the jacobian of the constraints function
       // Eigen::VectorXd xx(Eigen::Map<const Eigen::VectorXd>(x, n));
-      constraint_jacobian(values);
+      // eval_constraint_jacobian(values);
     }
     assert(false);
     return true;

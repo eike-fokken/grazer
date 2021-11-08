@@ -1,7 +1,5 @@
 #include "Constraintcomponent.hpp"
-#include <Eigen/Dense>
 #include <Eigen/Sparse>
-#include <Eigen/src/SparseCore/SparseMatrix.h>
 #include <nlohmann/json.hpp>
 #include <vector>
 
@@ -104,8 +102,7 @@ namespace Optimization {
   /** @brief Returns a matrix that contains 1 at all points where a constraint
    * jacobian can be non-zero and zero everywhere else.
    */
-  Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>
-  constraint_jac_structure(
+  std::vector<Eigen::Triplet<double, Eigen::Index>> constraint_jac_triplets(
       Aux::InterpolatingVector const &constraints,
       Aux::InterpolatingVector const &controls);
 

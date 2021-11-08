@@ -4,10 +4,8 @@
 #include "Matrixhandler.hpp"
 #include "Networkproblem.hpp"
 #include "Timeevolver.hpp"
-#include <Eigen/Dense>
 #include <algorithm>
 #include <cassert>
-#include <cstddef>
 #include <iostream>
 
 namespace Optimization {
@@ -189,25 +187,22 @@ namespace Optimization {
     return jacobian;
   }
 
-  static void
-  fill_EV_to_index(Eigen::Ref<Eigen::VectorXi> vector, Eigen::Index index_end) {
-    assert(vector.squaredNorm() == 0);
-    assert(0 <= index_end);
-    assert(index_end <= vector.size());
-    for (Eigen::Index i = 0; i != index_end; ++i) { vector[i] = 1; }
+  static void add_row_to_triplets(
+      std::vector<Eigen::Triplet<double, Eigen::Index>> &triplets,
+      Eigen::Index row_index, Eigen::Index index_end) {
+    for (Eigen::Index col_index = 0; col_index != index_end; ++col_index) {
+      Eigen::Triplet<double, Eigen::Index> triplet(row_index, col_index);
+
+      triplets.push_back(triplet);
+    }
   }
 
-  Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>
-  constraint_jac_structure(
+  std::vector<Eigen::Triplet<double, Eigen::Index>> constraint_jac_triplets(
       Aux::InterpolatingVector const &constraints,
       Aux::InterpolatingVector const &controls) {
 
-    // the jacobian is dense here because it is half full anyways.
-    Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>
-        jacobian(
-            constraints.get_total_number_of_values(),
-            controls.get_total_number_of_values());
-    jacobian.setZero();
+    std::vector<Eigen::Triplet<double, Eigen::Index>> triplets;
+
     auto constraints_times = constraints.get_interpolation_points();
     auto controls_times = controls.get_interpolation_points();
     auto ntimesteps = constraints_times.size();
@@ -227,11 +222,11 @@ namespace Optimization {
            != static_cast<Eigen::Index>(index + 1)
                   * number_constraints_per_timestep;
            ++row_index) {
-        fill_EV_to_index(
-            jacobian.row(row_index), (j + 1) * number_controls_per_timestep);
+        add_row_to_triplets(
+            triplets, row_index, (j + 1) * number_controls_per_timestep);
       }
     }
-    return jacobian;
+    return triplets;
   }
 
 } // namespace Optimization

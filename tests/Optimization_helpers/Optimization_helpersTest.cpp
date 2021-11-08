@@ -1,5 +1,6 @@
 #include "Optimization_helpers.hpp"
 #include "InterpolatingVector.hpp"
+#include <Eigen/src/Core/util/Constants.h>
 #include <Eigen/src/SparseCore/SparseMatrix.h>
 #include <algorithm>
 #include <cstddef>
@@ -131,28 +132,47 @@ TEST(constraint_jac_structure, happy) {
       constraints_times, constraints_inner_length);
   Aux::InterpolatingVector controls(controls_times, controls_inner_length);
 
-  auto a = Optimization::constraint_jac_structure(constraints, controls);
-
-  Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> b(
+  auto triplets = Optimization::constraint_jac_triplets(constraints, controls);
+  Eigen::SparseMatrix<double, Eigen::RowMajor> spmat(
       constraints.get_total_number_of_values(),
       controls.get_total_number_of_values());
-  b.setZero();
+  spmat.setFromTriplets(triplets.begin(), triplets.end());
 
-  for (Eigen::Index row = 0; row != constraints.size(); ++row) {
-
+  size_t triplet_index = 0;
+  for (Eigen::Index outer_row = 0; outer_row != constraints.size();
+       ++outer_row) {
     auto it = std::lower_bound(
         controls_times.begin(), controls_times.end(),
-        constraints_times[static_cast<size_t>(row)]);
-
-    Eigen::Index lastControlIndex
-        = static_cast<Eigen::Index>(it - controls_times.begin());
-    for (Eigen::Index col = 0; col <= lastControlIndex; ++col) {
-
-      b.block<constraints_inner_length, controls_inner_length>(
-          row * constraints_inner_length, col * controls_inner_length)
-          = Eigen::MatrixXi::Ones(
-              constraints_inner_length, controls_inner_length);
+        constraints_times[static_cast<size_t>(outer_row)]);
+    for (Eigen::Index inner_row = 0; inner_row != constraints_inner_length;
+         ++inner_row) {
+      Eigen::Index lastControlIndex
+          = static_cast<Eigen::Index>(it - controls_times.begin());
+      for (Eigen::Index outer_col = 0; outer_col <= lastControlIndex;
+           ++outer_col) {
+        for (Eigen::Index inner_col = 0; inner_col != controls_inner_length;
+             ++inner_col) {
+          EXPECT_EQ(
+              triplets[triplet_index].row(),
+              outer_row * constraints_inner_length + inner_row);
+          EXPECT_EQ(
+              triplets[triplet_index].col(),
+              outer_col * controls_inner_length + inner_col);
+          ++triplet_index;
+        }
+      }
     }
   }
-  EXPECT_EQ(a, b);
+  EXPECT_EQ(triplet_index, triplets.size());
 }
+
+// TEST(lolo, laoa) {
+//   Eigen::SparseMatrix<double, Eigen::RowMajor> jac(5, 8);
+
+//   Eigen::SparseVector<double, Eigen::RowMajor> vec(8);
+//   for (int i = 0; i != 8; ++i) { vec.coeffRef(i) = 1; }
+
+//   jac.row(2) = vec;
+
+//   std::cout << Eigen::MatrixXd(jac) << std::endl;
+// }

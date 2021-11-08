@@ -3,6 +3,8 @@
 #include "ControlStateCache.hpp"
 
 #include <Eigen/Sparse>
+#include <Eigen/src/Core/util/Constants.h>
+#include <Eigen/src/SparseCore/SparseMatrix.h>
 #include <limits>
 #include <nlohmann/json.hpp>
 
@@ -104,11 +106,12 @@ namespace Optimization {
         Ipopt::IpoptCalculatedQuantities * /* ip_cq */) final;
 
   private:
+    Eigen::SparseMatrix<double, Eigen::RowMajor> constraint_jacobian;
+
     Model::OptimizableObject &problem;
     ControlStateCache cache;
 
     std::vector<double> const simulation_timepoints;
-
     Eigen::VectorXd const initial_state;
 
     Aux::InterpolatingVector const initial_controls;
@@ -133,7 +136,7 @@ namespace Optimization {
 
     /** \brief fills in the value vector for the constraint jacobian.
      */
-    void constraint_jacobian(Ipopt::Number *values);
+    void eval_constraint_jacobian(Ipopt::Number *values);
 
     Eigen::Index get_number_of_controls() const;
     Eigen::Index get_number_of_control_timesteps() const;
