@@ -293,6 +293,13 @@ namespace Aux {
           _inner_length
           * static_cast<Eigen::Index>(_interpolation_points.size())) {}
 
+  InterpolatingVector &
+  InterpolatingVector::operator=(InterpolatingVector_Base const &other) {
+    InterpolatingVector_Base::operator=(other);
+    values = other.get_allvalues();
+    return *this;
+  }
+
   InterpolatingVector::InterpolatingVector(
       InterpolatingVector_Base const &other) :
       InterpolatingVector_Base(other), values(other.get_allvalues()) {}
@@ -343,6 +350,33 @@ namespace Aux {
          "InterpolatingVectors passed json in component ",
          json["id"].get<std::string>(), ".\n",
          "The json was: ", json.dump(1, '\t')});
+  }
+
+  MappedInterpolatingVector::MappedInterpolatingVector(
+      Interpolation_data data, Eigen::Index _inner_length, double *array,
+      Eigen::Index number_of_elements) :
+      InterpolatingVector_Base(data, _inner_length),
+      mapped_values(array, number_of_elements) {}
+
+  MappedInterpolatingVector::MappedInterpolatingVector(
+      std::vector<double> _interpolation_points, Eigen::Index _inner_length,
+      double *array, Eigen::Index number_of_elements) :
+      InterpolatingVector_Base(_interpolation_points, _inner_length),
+      mapped_values(array, number_of_elements) {}
+
+  MappedInterpolatingVector &
+  MappedInterpolatingVector::operator=(InterpolatingVector_Base const &other) {
+    InterpolatingVector_Base::operator=(other);
+    mapped_values = other.get_allvalues();
+    return *this;
+  }
+
+  Eigen::Ref<Eigen::VectorXd> MappedInterpolatingVector::allvalues() {
+    return mapped_values;
+  }
+  Eigen::Ref<Eigen::VectorXd const> const
+  MappedInterpolatingVector::allvalues() const {
+    return mapped_values;
   }
 
 } // namespace Aux

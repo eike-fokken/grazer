@@ -7,6 +7,8 @@
 #include <vector>
 
 namespace Aux {
+  class InterpolatingVector;
+  class MappedInterpolatingVector;
 
   struct Interpolation_data {
     double first_point;
@@ -31,9 +33,15 @@ namespace Aux {
     InterpolatingVector_Base(
         std::vector<double> interpolation_points, Eigen::Index inner_length);
 
+    InterpolatingVector_Base &operator=(InterpolatingVector const &other);
+    InterpolatingVector_Base &operator=(MappedInterpolatingVector const &other);
+
   protected:
-    // copy constructor shall only be called by derived classes:
+    // copy constructor and copy assignment operator shall only be called by
+    // derived classes:
     InterpolatingVector_Base(InterpolatingVector_Base const &other) = default;
+    InterpolatingVector_Base &operator=(InterpolatingVector_Base const &other)
+        = default;
 
   public:
     void set_values_in_bulk(Eigen::Ref<Eigen::VectorXd const> const &values);
@@ -63,9 +71,11 @@ namespace Aux {
   private:
     virtual Eigen::Ref<Eigen::VectorXd> allvalues() = 0;
     virtual Eigen::Ref<Eigen::VectorXd const> const allvalues() const = 0;
+
     std::vector<double> interpolation_points;
     Eigen::Index inner_length;
   };
+
   bool operator==(
       InterpolatingVector_Base const &lhs, InterpolatingVector_Base const &rhs);
   bool operator!=(
@@ -88,22 +98,33 @@ namespace Aux {
     InterpolatingVector(
         std::vector<double> _interpolation_points, Eigen::Index inner_length);
 
+    // copy and copy assignment:
+    InterpolatingVector &operator=(InterpolatingVector_Base const &other);
     InterpolatingVector(InterpolatingVector_Base const &other);
 
+  private:
     Eigen::Ref<Eigen::VectorXd> allvalues() final;
     Eigen::Ref<Eigen::VectorXd const> const allvalues() const final;
 
-  private:
     Eigen::VectorXd values;
   };
 
   class MappedInterpolatingVector : public InterpolatingVector_Base {
   public:
+    MappedInterpolatingVector(
+        Interpolation_data data, Eigen::Index _inner_length, double *array,
+        Eigen::Index number_of_elements);
+    MappedInterpolatingVector(
+        std::vector<double> interpolation_points, Eigen::Index inner_length,
+        double *array, Eigen::Index number_of_elements);
+
+    MappedInterpolatingVector &operator=(InterpolatingVector_Base const &other);
+
+  private:
     Eigen::Ref<Eigen::VectorXd> allvalues() final;
     Eigen::Ref<Eigen::VectorXd const> const allvalues() const final;
 
-  private:
-    Eigen::Map<Eigen::VectorXd> data;
+    Eigen::Map<Eigen::VectorXd> mapped_values;
   };
 
 } // namespace Aux
