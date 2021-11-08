@@ -281,17 +281,17 @@ namespace Aux {
 
   InterpolatingVector::InterpolatingVector() : InterpolatingVector_Base() {}
   InterpolatingVector::InterpolatingVector(
-      Interpolation_data data, Eigen::Index inner_length) :
-      InterpolatingVector_Base(data, inner_length),
-      values(inner_length * static_cast<Eigen::Index>(data.number_of_entries)) {
-  }
+      Interpolation_data data, Eigen::Index _inner_length) :
+      InterpolatingVector_Base(data, _inner_length),
+      values(
+          _inner_length * static_cast<Eigen::Index>(data.number_of_entries)) {}
 
   InterpolatingVector::InterpolatingVector(
-      std::vector<double> interpolation_points, Eigen::Index inner_length) :
-      InterpolatingVector_Base(interpolation_points, inner_length),
+      std::vector<double> _interpolation_points, Eigen::Index _inner_length) :
+      InterpolatingVector_Base(_interpolation_points, _inner_length),
       values(
-          inner_length
-          * static_cast<Eigen::Index>(interpolation_points.size())) {}
+          _inner_length
+          * static_cast<Eigen::Index>(_interpolation_points.size())) {}
 
   Eigen::Ref<Eigen::VectorXd> InterpolatingVector::allvalues() {
     return values;
