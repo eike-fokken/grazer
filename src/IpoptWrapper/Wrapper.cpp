@@ -39,7 +39,7 @@ namespace Optimization {
 
   void IpoptWrapper::eval_constraint_jacobian(Ipopt::Number *values) {
 
-    assert(false); // "implement me!"
+    assert(false);
   }
 
   IpoptWrapper::IpoptWrapper(
@@ -190,8 +190,7 @@ namespace Optimization {
       constraint_jacobian_structure(nele_jac, iRow, jCol);
     } else {
       // evaluate the jacobian of the constraints function
-      // Eigen::VectorXd xx(Eigen::Map<const Eigen::VectorXd>(x, n));
-      // eval_constraint_jacobian(values);
+      eval_constraint_jacobian(values);
     }
     assert(false);
     return true;

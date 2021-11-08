@@ -89,11 +89,6 @@ namespace Optimization {
      *   2) The values of the Hessian of the Lagrangian (if "values" is not
      * NULL)
      */
-    // virtual bool eval_h(Index n, const Number* x, bool new_x, Number
-    // obj_factor,
-    //                     Index m, const Number* lambda, bool new_lambda,
-    //                     Index nele_hess, Index* iRow, Index* jCol,
-    //                     Number* values);
 
     /** This method is called when the algorithm is complete so the TNLP can
      * store/write the solution */

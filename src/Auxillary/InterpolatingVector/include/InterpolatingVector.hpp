@@ -1,6 +1,7 @@
 #pragma once
 #include "Timedata.hpp"
 #include <Eigen/Sparse>
+#include <Eigen/src/Core/Matrix.h>
 #include <cstddef>
 #include <nlohmann/json.hpp>
 #include <vector>
@@ -21,18 +22,17 @@ namespace Aux {
   Interpolation_data make_from_start_number_end(
       double first_point, double last_point, int number_of_entries);
 
-  class InterpolatingVector {
+  class InterpolatingVector_Base {
   public:
-    InterpolatingVector();
-    InterpolatingVector(InterpolatingVector const &other) = default;
-    InterpolatingVector(Interpolation_data data, Eigen::Index _inner_length);
-    InterpolatingVector(
+    virtual ~InterpolatingVector_Base();
+    InterpolatingVector_Base();
+    InterpolatingVector_Base(InterpolatingVector_Base const &other) = default;
+    InterpolatingVector_Base(
+        Interpolation_data data, Eigen::Index _inner_length);
+    InterpolatingVector_Base(
         std::vector<double> interpolation_points, Eigen::Index inner_length);
 
-    static InterpolatingVector construct_from_json(
-        nlohmann::json const &json, nlohmann::json const &schema);
-
-    void set_values_in_bulk(Eigen::Ref<Eigen::VectorXd> values);
+    void set_values_in_bulk(Eigen::Ref<Eigen::VectorXd const> const &values);
 
     Eigen::Index get_total_number_of_values() const;
     std::vector<double> const &get_interpolation_points() const;
@@ -57,19 +57,47 @@ namespace Aux {
     Eigen::Index size() const;
 
   private:
+    virtual Eigen::Ref<Eigen::VectorXd> allvalues() = 0;
+    virtual Eigen::Ref<Eigen::VectorXd const> const allvalues() const = 0;
     std::vector<double> interpolation_points;
     Eigen::Index inner_length;
-    Eigen::VectorXd allvalues;
   };
-  bool
-  operator==(InterpolatingVector const &lhs, InterpolatingVector const &rhs);
-  bool
-  operator!=(InterpolatingVector const &lhs, InterpolatingVector const &rhs);
+  bool operator==(
+      InterpolatingVector_Base const &lhs, InterpolatingVector_Base const &rhs);
+  bool operator!=(
+      InterpolatingVector_Base const &lhs, InterpolatingVector_Base const &rhs);
 
   /** @brief returns true if and only if both arguments have the same inner
    * length and the same interpolation points.
    */
   bool have_same_structure(
-      InterpolatingVector const &vec1, InterpolatingVector const &vec2);
+      InterpolatingVector_Base const &vec1,
+      InterpolatingVector_Base const &vec2);
+
+  class InterpolatingVector : public InterpolatingVector_Base {
+  public:
+    static InterpolatingVector construct_from_json(
+        nlohmann::json const &json, nlohmann::json const &schema);
+
+    InterpolatingVector();
+    InterpolatingVector(Interpolation_data data, Eigen::Index inner_length);
+    InterpolatingVector(
+        std::vector<double> _interpolation_points, Eigen::Index inner_length);
+
+    Eigen::Ref<Eigen::VectorXd> allvalues() final;
+    Eigen::Ref<Eigen::VectorXd const> const allvalues() const final;
+
+  private:
+    Eigen::VectorXd values;
+  };
+
+  class MappedInterpolatingVector : public InterpolatingVector_Base {
+  public:
+    Eigen::Ref<Eigen::VectorXd> allvalues() final;
+    Eigen::Ref<Eigen::VectorXd const> const allvalues() const final;
+
+  private:
+    Eigen::Map<Eigen::VectorXd> data;
+  };
 
 } // namespace Aux

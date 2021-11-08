@@ -92,9 +92,12 @@ namespace Aux {
     }
     return interpolation_points;
   }
-  InterpolatingVector::InterpolatingVector() :
-      interpolation_points(), inner_length(0), allvalues() {}
-  InterpolatingVector::InterpolatingVector(
+
+  InterpolatingVector_Base::~InterpolatingVector_Base() {}
+
+  InterpolatingVector_Base::InterpolatingVector_Base() :
+      interpolation_points(), inner_length(0) {}
+  InterpolatingVector_Base::InterpolatingVector_Base(
       Interpolation_data data, Eigen::Index _inner_length) :
       interpolation_points(set_equidistant_interpolation_points(data)),
       inner_length(_inner_length) {
@@ -104,8 +107,7 @@ namespace Aux {
     if (data.number_of_entries < 1) {
       gthrow({"You can't have less than 1 interpolation point!"});
     }
-    allvalues = Eigen::VectorXd(
-        _inner_length * static_cast<Eigen::Index>(data.number_of_entries));
+
     // if (interpolation_points.size()
     //     > static_cast<std::vector<double>::size_type>(
     //         std::numeric_limits<Eigen::Index>::max())) {
@@ -115,17 +117,189 @@ namespace Aux {
     // }
   }
 
-  InterpolatingVector::InterpolatingVector(
+  InterpolatingVector_Base::InterpolatingVector_Base(
       std::vector<double> _interpolation_points, Eigen::Index _inner_length) :
       interpolation_points(_interpolation_points),
-      inner_length(_inner_length),
-      allvalues(
-          _inner_length
-          * static_cast<Eigen::Index>(interpolation_points.size())) {
+      inner_length(_inner_length)
+  //      allvalues(
+  //_inner_length
+  //  * static_cast<Eigen::Index>(interpolation_points.size()))
+  {
     if (not std::is_sorted(
             _interpolation_points.begin(), _interpolation_points.end())) {
       gthrow({"Interpolation points for InterpolatingVector were not sorted!"});
     }
+  }
+
+  void InterpolatingVector_Base::set_values_in_bulk(
+      Eigen::Ref<Eigen::VectorXd const> const &values) {
+    if (values.size() != allvalues().size()) {
+      gthrow({"You are trying to assign the wrong number of values."});
+    }
+    allvalues() = values;
+  }
+
+  Eigen::Index InterpolatingVector_Base::get_total_number_of_values() const {
+    return allvalues().size();
+  }
+
+  Eigen::Index InterpolatingVector_Base::get_inner_length() const {
+    return inner_length;
+  }
+
+  std::vector<double> const &
+  InterpolatingVector_Base::get_interpolation_points() const {
+    return interpolation_points;
+  }
+
+  Eigen::VectorXd InterpolatingVector_Base::operator()(double t) const {
+    if (t >= interpolation_points.back()) {
+      if (t > interpolation_points.back() + Aux::EPSILON) {
+        std::ostringstream error_message;
+        error_message << "Requested value " << t
+                      << " is higher than the last valid value: "
+                      << interpolation_points.back() << "\n";
+        throw std::runtime_error(error_message.str());
+      }
+
+      return allvalues().segment(
+          static_cast<Eigen::Index>(interpolation_points.size() - 1)
+              * inner_length,
+          inner_length);
+    }
+    if (t <= interpolation_points.front()) {
+      if (t < interpolation_points.front() - Aux::EPSILON) {
+        std::ostringstream error_message;
+        error_message << "Requested value " << t
+                      << " is lower than the first valid value: "
+                      << interpolation_points.front() << "\n";
+        throw std::runtime_error(error_message.str());
+      }
+
+      return allvalues().segment(0, inner_length);
+    }
+    auto it = std::lower_bound(
+        interpolation_points.begin(), interpolation_points.end(), t);
+    auto t_next = *it;
+    auto t_prev = *std::prev(it);
+    auto next_index = static_cast<Eigen::Index>(
+        (it - interpolation_points.begin()) * inner_length);
+    auto prev_index = next_index - inner_length;
+
+    Eigen::VectorXd value_next = allvalues().segment(next_index, inner_length);
+    Eigen::VectorXd value_prev = allvalues().segment(prev_index, inner_length);
+
+    auto lambda = (t - t_prev) / (t_next - t_prev);
+
+    return (1 - lambda) * value_prev + lambda * value_next;
+  }
+
+  Eigen::Ref<Eigen::VectorXd const> const
+  InterpolatingVector_Base::get_allvalues() const {
+    return allvalues();
+  }
+
+  Eigen::Ref<Eigen::VectorXd>
+  InterpolatingVector_Base::mut_timestep(Eigen::Index current_index) {
+    if (current_index < 0) {
+      gthrow({"You try to set this InterpolatingVector at a negative index!"});
+    }
+    auto start_index = inner_length * current_index;
+    auto after_index = start_index + inner_length;
+    if (after_index > allvalues().size()) {
+      gthrow(
+          {"You try to set this InterpolatingVector at a higher index than "
+           "possible!"});
+    }
+    return allvalues().segment(start_index, inner_length);
+  }
+
+  void InterpolatingVector_Base::push_to_index(
+      Eigen::Index index, double timepoint, Eigen::VectorXd vector) {
+    mut_timestep(index) = vector;
+    interpolation_points[static_cast<size_t>(index)] = timepoint;
+  }
+
+  Eigen::Ref<Eigen::VectorXd const>
+  InterpolatingVector_Base::vector_at_index(Eigen::Index current_index) const {
+    if (current_index < 0) {
+      gthrow(
+          {"You try to access this InterpolatingVector at a negative index!"});
+    }
+    auto start_index = inner_length * current_index;
+    auto after_index = start_index + inner_length;
+    if (after_index > allvalues().size()) {
+      gthrow(
+          {"You try to set this InterpolatingVector at a higher index than "
+           "possible!"});
+    }
+    return allvalues().segment(start_index, inner_length);
+  }
+
+  double InterpolatingVector_Base::interpolation_point_at_index(
+      Eigen::Index index) const {
+    return interpolation_points[static_cast<size_t>(index)];
+  }
+
+  Eigen::Index InterpolatingVector_Base::size() const {
+    return static_cast<Eigen::Index>(interpolation_points.size());
+  }
+
+  bool operator==(
+      InterpolatingVector_Base const &lhs,
+      InterpolatingVector_Base const &rhs) {
+    if (lhs.get_inner_length() != rhs.get_inner_length()) {
+      return false;
+    }
+    if (lhs.get_interpolation_points() != rhs.get_interpolation_points()) {
+      return false;
+    }
+    return lhs.get_allvalues() == rhs.get_allvalues();
+  }
+
+  bool operator!=(
+      InterpolatingVector_Base const &lhs,
+      InterpolatingVector_Base const &rhs) {
+    return !(lhs == rhs);
+  }
+
+  bool have_same_structure(
+      InterpolatingVector_Base const &vec1,
+      InterpolatingVector_Base const &vec2) {
+    if (vec1.get_inner_length() != vec2.get_inner_length()) {
+      return false;
+    }
+    if (vec1.get_interpolation_points() != vec2.get_interpolation_points()) {
+      return false;
+    }
+    return true;
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // InterpolatingVector:
+  ////////////////////////////////////////////////////////////////
+
+  InterpolatingVector::InterpolatingVector() : InterpolatingVector_Base() {}
+  InterpolatingVector::InterpolatingVector(
+      Interpolation_data data, Eigen::Index inner_length) :
+      InterpolatingVector_Base(data, inner_length),
+      values(inner_length * static_cast<Eigen::Index>(data.number_of_entries)) {
+  }
+
+  InterpolatingVector::InterpolatingVector(
+      std::vector<double> interpolation_points, Eigen::Index inner_length) :
+      InterpolatingVector_Base(interpolation_points, inner_length),
+      values(
+          inner_length
+          * static_cast<Eigen::Index>(interpolation_points.size())) {}
+
+  Eigen::Ref<Eigen::VectorXd> InterpolatingVector::allvalues() {
+    return values;
+  }
+
+  Eigen::Ref<Eigen::VectorXd const> const
+  InterpolatingVector::allvalues() const {
+    return values;
   }
 
   InterpolatingVector InterpolatingVector::construct_from_json(
@@ -165,147 +339,6 @@ namespace Aux {
          "InterpolatingVectors passed json in component ",
          json["id"].get<std::string>(), ".\n",
          "The json was: ", json.dump(1, '\t')});
-  }
-
-  void
-  InterpolatingVector::set_values_in_bulk(Eigen::Ref<Eigen::VectorXd> values) {
-    if (values.size() != allvalues.size()) {
-      gthrow({"You are trying to assign the wrong number of values."});
-    }
-    allvalues = values;
-  }
-
-  Eigen::Index InterpolatingVector::get_total_number_of_values() const {
-    return allvalues.size();
-  }
-
-  Eigen::Index InterpolatingVector::get_inner_length() const {
-    return inner_length;
-  }
-
-  std::vector<double> const &
-  InterpolatingVector::get_interpolation_points() const {
-    return interpolation_points;
-  }
-
-  Eigen::VectorXd InterpolatingVector::operator()(double t) const {
-    if (t >= interpolation_points.back()) {
-      if (t > interpolation_points.back() + Aux::EPSILON) {
-        std::ostringstream error_message;
-        error_message << "Requested value " << t
-                      << " is higher than the last valid value: "
-                      << interpolation_points.back() << "\n";
-        throw std::runtime_error(error_message.str());
-      }
-
-      return allvalues.segment(
-          static_cast<Eigen::Index>(interpolation_points.size() - 1)
-              * inner_length,
-          inner_length);
-    }
-    if (t <= interpolation_points.front()) {
-      if (t < interpolation_points.front() - Aux::EPSILON) {
-        std::ostringstream error_message;
-        error_message << "Requested value " << t
-                      << " is lower than the first valid value: "
-                      << interpolation_points.front() << "\n";
-        throw std::runtime_error(error_message.str());
-      }
-
-      return allvalues.segment(0, inner_length);
-    }
-    auto it = std::lower_bound(
-        interpolation_points.begin(), interpolation_points.end(), t);
-    auto t_next = *it;
-    auto t_prev = *std::prev(it);
-    auto next_index = static_cast<Eigen::Index>(
-        (it - interpolation_points.begin()) * inner_length);
-    auto prev_index = next_index - inner_length;
-
-    Eigen::VectorXd value_next = allvalues.segment(next_index, inner_length);
-    Eigen::VectorXd value_prev = allvalues.segment(prev_index, inner_length);
-
-    auto lambda = (t - t_prev) / (t_next - t_prev);
-
-    return (1 - lambda) * value_prev + lambda * value_next;
-  }
-
-  Eigen::Ref<Eigen::VectorXd const> const
-  InterpolatingVector::get_allvalues() const {
-    return allvalues;
-  }
-
-  Eigen::Ref<Eigen::VectorXd>
-  InterpolatingVector::mut_timestep(Eigen::Index current_index) {
-    if (current_index < 0) {
-      gthrow({"You try to set this InterpolatingVector at a negative index!"});
-    }
-    auto start_index = inner_length * current_index;
-    auto after_index = start_index + inner_length;
-    if (after_index > allvalues.size()) {
-      gthrow(
-          {"You try to set this InterpolatingVector at a higher index than "
-           "possible!"});
-    }
-    return allvalues.segment(start_index, inner_length);
-  }
-
-  void InterpolatingVector::push_to_index(
-      Eigen::Index index, double timepoint, Eigen::VectorXd vector) {
-    mut_timestep(index) = vector;
-    interpolation_points[static_cast<size_t>(index)] = timepoint;
-  }
-
-  Eigen::Ref<Eigen::VectorXd const>
-  InterpolatingVector::vector_at_index(Eigen::Index current_index) const {
-    if (current_index < 0) {
-      gthrow(
-          {"You try to access this InterpolatingVector at a negative index!"});
-    }
-    auto start_index = inner_length * current_index;
-    auto after_index = start_index + inner_length;
-    if (after_index > allvalues.size()) {
-      gthrow(
-          {"You try to set this InterpolatingVector at a higher index than "
-           "possible!"});
-    }
-    return allvalues.segment(start_index, inner_length);
-  }
-
-  double
-  InterpolatingVector::interpolation_point_at_index(Eigen::Index index) const {
-    return interpolation_points[static_cast<size_t>(index)];
-  }
-
-  Eigen::Index InterpolatingVector::size() const {
-    return static_cast<Eigen::Index>(interpolation_points.size());
-  }
-
-  bool
-  operator==(InterpolatingVector const &lhs, InterpolatingVector const &rhs) {
-    if (lhs.get_inner_length() != rhs.get_inner_length()) {
-      return false;
-    }
-    if (lhs.get_interpolation_points() != rhs.get_interpolation_points()) {
-      return false;
-    }
-    return lhs.get_allvalues() == rhs.get_allvalues();
-  }
-
-  bool
-  operator!=(InterpolatingVector const &lhs, InterpolatingVector const &rhs) {
-    return !(lhs == rhs);
-  }
-
-  bool have_same_structure(
-      InterpolatingVector const &vec1, InterpolatingVector const &vec2) {
-    if (vec1.get_inner_length() != vec2.get_inner_length()) {
-      return false;
-    }
-    if (vec1.get_interpolation_points() != vec2.get_interpolation_points()) {
-      return false;
-    }
-    return true;
   }
 
 } // namespace Aux
