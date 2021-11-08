@@ -1,6 +1,7 @@
 #include "SimpleStatecomponent.hpp"
 #include "Exception.hpp"
 #include "InterpolatingVector.hpp"
+#include "Misc.hpp"
 #include "Statecomponent.hpp"
 #include "schema_validation.hpp"
 #include <iostream>
@@ -46,7 +47,7 @@ namespace Model {
   SimpleStatecomponent::set_state_indices(Eigen::Index next_free_index) {
     state_startindex = next_free_index;
     auto number_of_states = needed_number_of_states();
-    state_afterindex = next_free_index + number_of_states;
+    state_afterindex = Aux::safe_addition(next_free_index, number_of_states);
 
     return state_afterindex;
   }

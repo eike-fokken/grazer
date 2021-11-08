@@ -1,5 +1,6 @@
 #include "SimpleControlcomponent.hpp"
 #include "InterpolatingVector.hpp"
+#include "Misc.hpp"
 namespace Model {
 
   void set_simple_control_values(
@@ -30,7 +31,8 @@ namespace Model {
   SimpleControlcomponent::set_control_indices(Eigen::Index next_free_index) {
     control_startindex = next_free_index;
     auto number_of_controls = needed_number_of_controls_per_time_point();
-    control_afterindex = next_free_index + number_of_controls;
+    control_afterindex
+        = Aux::safe_addition(next_free_index, number_of_controls);
 
     return control_afterindex;
   }

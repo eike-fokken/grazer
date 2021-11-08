@@ -1,5 +1,6 @@
 #include "SimpleConstraintcomponent.hpp"
 #include "InterpolatingVector.hpp"
+#include "Misc.hpp"
 namespace Model {
 
   void set_simple_constraint_values(
@@ -28,7 +29,8 @@ namespace Model {
       Eigen::Index next_free_index) {
     constraint_startindex = next_free_index;
     auto number_of_inequalities = needed_number_of_constraints_per_time_point();
-    constraint_afterindex = next_free_index + number_of_inequalities;
+    constraint_afterindex
+        = Aux::safe_addition(next_free_index, number_of_inequalities);
 
     return constraint_afterindex;
   }
