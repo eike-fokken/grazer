@@ -8,7 +8,6 @@ namespace Aux {
 }
 
 namespace Model {
-  struct Timedata;
   class Timeevolver;
   class Networkproblem;
 } // namespace Model

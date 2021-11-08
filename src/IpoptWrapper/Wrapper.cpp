@@ -12,34 +12,29 @@
 namespace Optimization {
 
   Ipopt::Index IpoptWrapper::nnz_constraint_jacobian() {
-    assert(false); // "implement me!"
-    return 0;
+    return static_cast<Ipopt::Index>(constraint_jacobian.nonZeros());
   }
 
   void IpoptWrapper::constraint_jacobian_structure(
       Ipopt::Index number_of_nonzeros_in_constraint_jacobian,
       Ipopt::Index *Rows, Ipopt::Index *Cols) {
 
-    std::vector<Ipopt::Index> rows;
-    std::vector<Ipopt::Index> columns;
+    // loop over the constraint_jacobian and write the indices in the row and
+    // column arrays provided by ipopt.
+    size_t Ipopt_array_index = 0;
+    for (int k = 0; k < constraint_jacobian.outerSize(); ++k)
+      for (Eigen::SparseMatrix<double, Eigen::RowMajor>::InnerIterator it(
+               constraint_jacobian, k);
+           it; ++it) {
+        Rows[Ipopt_array_index] = static_cast<Ipopt::Index>(it.row());
+        Cols[Ipopt_array_index] = static_cast<Ipopt::Index>(it.col());
+        ++Ipopt_array_index;
+      }
 
-    auto triplets = Optimization::constraint_jac_triplets(
-        constraints_lower_bounds, initial_controls);
-
-    if (triplets.size()
-        != static_cast<size_t>(number_of_nonzeros_in_constraint_jacobian)) {
-      gthrow(
-          {"You try to write more indices than are accounted for in the "
-           "structure of the constraint jacobian!"});
-    }
-
-    for (size_t triplet_index = 0; triplet_index != triplets.size();
-         ++triplet_index) {
-      Rows[triplet_index]
-          = static_cast<Ipopt::Index>(triplets[triplet_index].row());
-      Cols[triplet_index]
-          = static_cast<Ipopt::Index>(triplets[triplet_index].col());
-    }
+    assert(Ipopt_array_index == static_cast<size_t>(nnz_constraint_jacobian()));
+    assert(
+        Ipopt_array_index
+        == static_cast<size_t>(number_of_nonzeros_in_constraint_jacobian));
   }
 
   void IpoptWrapper::eval_constraint_jacobian(Ipopt::Number *values) {
@@ -97,6 +92,12 @@ namespace Optimization {
     if (problem.get_number_of_states() != initial_state.size()) {
       gthrow({"Wrong number of initial values of the states!"});
     }
+
+    // final construction:
+    auto triplets = Optimization::constraint_jac_triplets(
+        constraints_lower_bounds, initial_controls);
+    constraint_jacobian.setFromTriplets(triplets.begin(), triplets.end());
+    constraint_jacobian.makeCompressed();
   }
 
   bool IpoptWrapper::get_nlp_info(
