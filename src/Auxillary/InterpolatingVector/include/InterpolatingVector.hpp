@@ -33,15 +33,16 @@ namespace Aux {
     InterpolatingVector_Base(
         std::vector<double> interpolation_points, Eigen::Index inner_length);
 
-    InterpolatingVector_Base &operator=(InterpolatingVector const &other);
-    InterpolatingVector_Base &operator=(MappedInterpolatingVector const &other);
+    /// @brief Copy assignment
+    ///
+    /// The copy assignment will call allvalues() and hence need not be virtual
+    /// itself, but can only assign vectors of the same structure!
+    InterpolatingVector_Base &operator=(InterpolatingVector_Base const &other);
 
   protected:
-    // copy constructor and copy assignment operator shall only be called by
+    // copy constructor shall only be called by
     // derived classes:
     InterpolatingVector_Base(InterpolatingVector_Base const &other) = default;
-    InterpolatingVector_Base &operator=(InterpolatingVector_Base const &other)
-        = default;
 
   public:
     void set_values_in_bulk(Eigen::Ref<Eigen::VectorXd const> const &values);
@@ -98,8 +99,7 @@ namespace Aux {
     InterpolatingVector(
         std::vector<double> _interpolation_points, Eigen::Index inner_length);
 
-    // copy and copy assignment:
-    InterpolatingVector &operator=(InterpolatingVector_Base const &other);
+    // copy constructor:
     InterpolatingVector(InterpolatingVector_Base const &other);
 
   private:
@@ -117,8 +117,6 @@ namespace Aux {
     MappedInterpolatingVector(
         std::vector<double> interpolation_points, Eigen::Index inner_length,
         double *array, Eigen::Index number_of_elements);
-
-    MappedInterpolatingVector &operator=(InterpolatingVector_Base const &other);
 
   private:
     Eigen::Ref<Eigen::VectorXd> allvalues() final;

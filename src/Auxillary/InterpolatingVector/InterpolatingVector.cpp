@@ -131,6 +131,19 @@ namespace Aux {
     }
   }
 
+  InterpolatingVector_Base &
+  InterpolatingVector_Base::operator=(InterpolatingVector_Base const &other) {
+    if (not have_same_structure(*this, other)) {
+      gthrow(
+          {"You cannot assign an Interpolating vector with different "
+           "structure!"});
+    }
+    this->interpolation_points = other.get_interpolation_points();
+    this->inner_length = other.get_inner_length();
+    this->allvalues() = other.get_allvalues();
+    return *this;
+  }
+
   void InterpolatingVector_Base::set_values_in_bulk(
       Eigen::Ref<Eigen::VectorXd const> const &values) {
     if (values.size() != allvalues().size()) {
@@ -293,13 +306,6 @@ namespace Aux {
           _inner_length
           * static_cast<Eigen::Index>(_interpolation_points.size())) {}
 
-  InterpolatingVector &
-  InterpolatingVector::operator=(InterpolatingVector_Base const &other) {
-    InterpolatingVector_Base::operator=(other);
-    values = other.get_allvalues();
-    return *this;
-  }
-
   InterpolatingVector::InterpolatingVector(
       InterpolatingVector_Base const &other) :
       InterpolatingVector_Base(other), values(other.get_allvalues()) {}
@@ -363,13 +369,6 @@ namespace Aux {
       double *array, Eigen::Index number_of_elements) :
       InterpolatingVector_Base(_interpolation_points, _inner_length),
       mapped_values(array, number_of_elements) {}
-
-  MappedInterpolatingVector &
-  MappedInterpolatingVector::operator=(InterpolatingVector_Base const &other) {
-    InterpolatingVector_Base::operator=(other);
-    mapped_values = other.get_allvalues();
-    return *this;
-  }
 
   Eigen::Ref<Eigen::VectorXd> MappedInterpolatingVector::allvalues() {
     return mapped_values;
