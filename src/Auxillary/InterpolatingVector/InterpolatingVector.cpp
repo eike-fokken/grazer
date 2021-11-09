@@ -139,10 +139,9 @@ namespace Aux {
 
   InterpolatingVector_Base &
   InterpolatingVector_Base::operator=(InterpolatingVector_Base const &other) {
-    resize_if_possible(other.get_total_number_of_values());
+    assign_values_if_possible(other);
     this->inner_length = other.inner_length;
     this->interpolation_points = other.interpolation_points;
-    allvalues() = other.allvalues();
     return *this;
   }
 
@@ -319,8 +318,9 @@ namespace Aux {
       InterpolatingVector_Base const &other) :
       InterpolatingVector_Base(other), values(other.get_allvalues()) {}
 
-  void InterpolatingVector::resize_if_possible(Eigen::Index newsize) {
-    values.resize(newsize);
+  void InterpolatingVector::assign_values_if_possible(
+      InterpolatingVector_Base const &other) {
+    values = other.get_allvalues();
   }
 
   Eigen::Ref<Eigen::VectorXd> InterpolatingVector::allvalues() {
@@ -400,18 +400,19 @@ namespace Aux {
   MappedInterpolatingVector &
   MappedInterpolatingVector::operator=(InterpolatingVector_Base const &other) {
     assignment_helper(other);
-    resize_if_possible(other.get_total_number_of_values());
-    this->mapped_values = other.get_allvalues();
+    assign_values_if_possible(other);
     return *this;
   }
 
-  void MappedInterpolatingVector::resize_if_possible(Eigen::Index newsize) {
-    if (mapped_values.size() != newsize) {
+  void MappedInterpolatingVector::assign_values_if_possible(
+      InterpolatingVector_Base const &other) {
+    if (mapped_values.size() != other.get_total_number_of_values()) {
       gthrow(
           {"You try to assign to a MappedInterpolatingVector of a different "
            "size. This is prohibited, because the underlying storage array "
            "cannot be resized."});
     }
+    mapped_values = other.get_allvalues();
   }
 
   Eigen::Ref<Eigen::VectorXd> MappedInterpolatingVector::allvalues() {
