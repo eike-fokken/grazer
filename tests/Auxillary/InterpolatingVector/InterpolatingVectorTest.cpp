@@ -17,13 +17,14 @@ TEST(InterpolatingVector, Copy_constructor_happy) {
   double start = 0;
   double delta = 0.5;
   auto data = Aux::make_from_start_delta_number(start, delta, number_of_points);
-  Aux::InterpolatingVector a(data, number_of_values_per_point);
-  InterpolatingVector b(data, number_of_values_per_point);
+  Aux::InterpolatingVector a;
+  Aux::InterpolatingVector b(data, number_of_values_per_point);
 
   a = b;
 
   EXPECT_EQ(a, b);
 }
+
 TEST(InterpolatingVector, Construction_happy_path) {
 
   int number_of_values_per_point = 4;
@@ -290,4 +291,68 @@ TEST(InterpolatingVector, equality_different_inner_lengths) {
   b.set_values_in_bulk(bvalues);
 
   EXPECT_NE(a, b);
+}
+
+TEST(MappedInterpolatingVector, Copy_assignment_happy) {
+
+  int number_of_values_per_point = 4;
+  int number_of_points = 8;
+  double start = 0;
+  double delta = 0.5;
+  auto data = Aux::make_from_start_delta_number(start, delta, number_of_points);
+  Aux::InterpolatingVector b(data, number_of_values_per_point);
+
+  std::array<double, 32> x;
+  Aux::MappedInterpolatingVector c(
+      data, number_of_values_per_point, x.data(), x.size());
+  c = b;
+
+  EXPECT_EQ(c, b);
+}
+
+TEST(MappedInterpolatingVector, Copy_assignment_fail) {
+
+  int number_of_values_per_point = 4;
+  int number_of_points = 8;
+  double start = 0;
+  double delta = 0.5;
+  auto data = Aux::make_from_start_delta_number(start, delta, number_of_points);
+  Aux::InterpolatingVector b(data, number_of_values_per_point);
+
+  std::array<double, 24> x;
+  Aux::MappedInterpolatingVector c(data, 3, x.data(), x.size());
+
+  try {
+    c = b;
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
+  } catch (std::runtime_error &e) {
+    EXPECT_THAT(
+        e.what(), testing::HasSubstr(
+                      "You cannot assign an Interpolating vector with "
+                      "different structure to a mapped interpolating vector!"));
+  }
+}
+
+TEST(MappedInterpolatingVector, Constructor_fail) {
+
+  int number_of_values_per_point = 4;
+  int number_of_points = 8;
+  double start = 0;
+  double delta = 0.5;
+  auto data = Aux::make_from_start_delta_number(start, delta, number_of_points);
+  Aux::InterpolatingVector b(data, number_of_values_per_point);
+
+  std::array<double, 32> x;
+  try {
+    Aux::MappedInterpolatingVector c(
+        data, number_of_values_per_point, x.data(), x.size() - 1);
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
+  } catch (std::runtime_error &e) {
+    EXPECT_THAT(
+        e.what(),
+        testing::HasSubstr(
+            "Given number of elements of mapped storage differs from needed "));
+  }
 }

@@ -131,17 +131,10 @@ namespace Aux {
     }
   }
 
-  InterpolatingVector_Base &
-  InterpolatingVector_Base::operator=(InterpolatingVector_Base const &other) {
-    if (not have_same_structure(*this, other)) {
-      gthrow(
-          {"You cannot assign an Interpolating vector with different "
-           "structure!"});
-    }
-    this->interpolation_points = other.get_interpolation_points();
-    this->inner_length = other.get_inner_length();
-    this->allvalues() = other.get_allvalues();
-    return *this;
+  void InterpolatingVector_Base::assignment_helper(
+      InterpolatingVector_Base const &other) {
+    interpolation_points = other.interpolation_points;
+    inner_length = other.inner_length;
   }
 
   void InterpolatingVector_Base::set_values_in_bulk(
@@ -310,6 +303,13 @@ namespace Aux {
       InterpolatingVector_Base const &other) :
       InterpolatingVector_Base(other), values(other.get_allvalues()) {}
 
+  InterpolatingVector &
+  InterpolatingVector::operator=(InterpolatingVector_Base const &other) {
+    assignment_helper(other);
+    values = other.get_allvalues();
+    return *this;
+  }
+
   Eigen::Ref<Eigen::VectorXd> InterpolatingVector::allvalues() {
     return values;
   }
@@ -362,13 +362,39 @@ namespace Aux {
       Interpolation_data data, Eigen::Index _inner_length, double *array,
       Eigen::Index number_of_elements) :
       InterpolatingVector_Base(data, _inner_length),
-      mapped_values(array, number_of_elements) {}
+      mapped_values(array, number_of_elements) {
+    if (get_inner_length() * size() != number_of_elements) {
+      gthrow(
+          {"Given number of elements of mapped storage differs from needed "
+           "number of elements as given in other data in "
+           "MappedInterpolatingVector!"});
+    }
+  }
 
   MappedInterpolatingVector::MappedInterpolatingVector(
       std::vector<double> _interpolation_points, Eigen::Index _inner_length,
       double *array, Eigen::Index number_of_elements) :
       InterpolatingVector_Base(_interpolation_points, _inner_length),
-      mapped_values(array, number_of_elements) {}
+      mapped_values(array, number_of_elements) {
+    if (get_inner_length() * size() != number_of_elements) {
+      gthrow(
+          {"Given number of elements of mapped storage differs from needed ",
+           "number of elements as given in other data in ",
+           "MappedInterpolatingVector!"});
+    }
+  }
+
+  MappedInterpolatingVector &
+  MappedInterpolatingVector::operator=(InterpolatingVector_Base const &other) {
+    if (not have_same_structure(*this, other)) {
+      gthrow(
+          {"You cannot assign an Interpolating vector with different structure "
+           "to a mapped interpolating vector!"});
+    }
+    assignment_helper(other);
+    mapped_values = other.get_allvalues();
+    return *this;
+  }
 
   Eigen::Ref<Eigen::VectorXd> MappedInterpolatingVector::allvalues() {
     return mapped_values;
