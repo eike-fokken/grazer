@@ -10,6 +10,11 @@
 
 using namespace Aux;
 
+// Used to actually call the base assignment.
+static void assign(InterpolatingVector_Base &a, InterpolatingVector_Base &b) {
+  a = b;
+}
+
 TEST(InterpolatingVector, Copy_constructor_happy) {
 
   int number_of_values_per_point = 4;
@@ -328,9 +333,9 @@ TEST(MappedInterpolatingVector, Copy_assignment_fail) {
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
     EXPECT_THAT(
-        e.what(), testing::HasSubstr(
-                      "You cannot assign an Interpolating vector with "
-                      "different structure to a mapped interpolating vector!"));
+        e.what(),
+        testing::HasSubstr("You try to assign to a MappedInterpolatingVector "
+                           "of a different size"));
   }
 }
 
@@ -354,5 +359,62 @@ TEST(MappedInterpolatingVector, Constructor_fail) {
         e.what(),
         testing::HasSubstr(
             "Given number of elements of mapped storage differs from needed "));
+  }
+}
+
+TEST(InterpolatingVector_Base, assignment_Normal_happy) {
+
+  int number_of_values_per_point = 4;
+  int number_of_points = 8;
+  double start = 0;
+  double delta = 0.5;
+  auto data = Aux::make_from_start_delta_number(start, delta, number_of_points);
+  Aux::InterpolatingVector a;
+  Aux::InterpolatingVector b(data, number_of_values_per_point);
+
+  assign(a, b);
+
+  EXPECT_EQ(a, b);
+}
+
+TEST(InterpolatingVector_Base, assignment_Mapped_happy) {
+
+  int number_of_values_per_point = 4;
+  int number_of_points = 8;
+  double start = 0;
+  double delta = 0.5;
+  auto data = Aux::make_from_start_delta_number(start, delta, number_of_points);
+  Aux::InterpolatingVector b(data, number_of_values_per_point);
+
+  std::array<double, 32> x;
+  Aux::MappedInterpolatingVector c(
+      data, number_of_values_per_point, x.data(), x.size());
+
+  assign(c, b);
+
+  EXPECT_EQ(c, b);
+}
+
+TEST(InterpolatingVector_Base, assignment_Mapped_fail) {
+
+  int number_of_values_per_point = 4;
+  int number_of_points = 8;
+  double start = 0;
+  double delta = 0.5;
+  auto data = Aux::make_from_start_delta_number(start, delta, number_of_points);
+  Aux::InterpolatingVector b(data, number_of_values_per_point);
+
+  std::array<double, 24> x;
+  Aux::MappedInterpolatingVector c(data, 3, x.data(), x.size());
+
+  try {
+    assign(c, b);
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
+  } catch (std::runtime_error &e) {
+    EXPECT_THAT(
+        e.what(),
+        testing::HasSubstr("You try to assign to a MappedInterpolatingVector "
+                           "of a different size"));
   }
 }

@@ -33,6 +33,8 @@ namespace Aux {
     InterpolatingVector_Base(
         std::vector<double> interpolation_points, Eigen::Index inner_length);
 
+    InterpolatingVector_Base &operator=(InterpolatingVector_Base const &other);
+
   protected:
     /// @brief helper function for implementing the assignment in derived
     /// classes
@@ -68,6 +70,7 @@ namespace Aux {
     Eigen::Index size() const;
 
   private:
+    virtual void resize_if_possible(Eigen::Index) = 0;
     virtual Eigen::Ref<Eigen::VectorXd> allvalues() = 0;
     virtual Eigen::Ref<Eigen::VectorXd const> const allvalues() const = 0;
 
@@ -103,6 +106,7 @@ namespace Aux {
     InterpolatingVector(InterpolatingVector_Base const &other);
 
   private:
+    void resize_if_possible(Eigen::Index) final;
     Eigen::Ref<Eigen::VectorXd> allvalues() final;
     Eigen::Ref<Eigen::VectorXd const> const allvalues() const final;
 
@@ -121,6 +125,7 @@ namespace Aux {
     MappedInterpolatingVector &operator=(InterpolatingVector_Base const &other);
 
   private:
+    void resize_if_possible(Eigen::Index) final;
     Eigen::Ref<Eigen::VectorXd> allvalues() final;
     Eigen::Ref<Eigen::VectorXd const> const allvalues() const final;
 
