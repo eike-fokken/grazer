@@ -104,8 +104,10 @@ namespace Aux {
 
     // copy assignment:
     InterpolatingVector &operator=(InterpolatingVector_Base const &other);
+    InterpolatingVector &operator=(InterpolatingVector const &other) = default;
     // copy constructor:
     InterpolatingVector(InterpolatingVector_Base const &other);
+    InterpolatingVector(InterpolatingVector const &other) = default;
 
   private:
     void assign_values_if_possible(InterpolatingVector_Base const &other) final;
@@ -124,7 +126,25 @@ namespace Aux {
         std::vector<double> interpolation_points, Eigen::Index inner_length,
         double *array, Eigen::Index number_of_elements);
 
+    // We cannot have a copy constructor because a MappedInterpolatingVector
+    // needs an underlying storage.
+    MappedInterpolatingVector(MappedInterpolatingVector const &other) = delete;
+
+    /** @brief Copy assignment operator.
+     *
+     * Throws if the underlying storages of
+     * the left-hand operand does not have the same total size as the right-hand
+     * operand.
+     */
     MappedInterpolatingVector &operator=(InterpolatingVector_Base const &other);
+    /** @brief Copy assignment operator.
+     *
+     * Throws if the underlying storages of
+     * the left-hand operand does not have the same total size as the right-hand
+     * operand.
+     */
+    MappedInterpolatingVector &
+    operator=(MappedInterpolatingVector const &other);
 
   private:
     void assign_values_if_possible(InterpolatingVector_Base const &other) final;

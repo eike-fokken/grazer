@@ -6,9 +6,7 @@
 #include "schema_validation.hpp"
 
 #include <algorithm>
-#include <cstddef>
 #include <exception>
-#include <iostream>
 #include <limits>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
@@ -140,8 +138,7 @@ namespace Aux {
   InterpolatingVector_Base &
   InterpolatingVector_Base::operator=(InterpolatingVector_Base const &other) {
     assign_values_if_possible(other);
-    this->inner_length = other.inner_length;
-    this->interpolation_points = other.interpolation_points;
+    assignment_helper(other);
     return *this;
   }
 
@@ -399,8 +396,15 @@ namespace Aux {
 
   MappedInterpolatingVector &
   MappedInterpolatingVector::operator=(InterpolatingVector_Base const &other) {
-    assignment_helper(other);
     assign_values_if_possible(other);
+    assignment_helper(other);
+    return *this;
+  }
+
+  MappedInterpolatingVector &
+  MappedInterpolatingVector::operator=(MappedInterpolatingVector const &other) {
+    assign_values_if_possible(other);
+    assignment_helper(other);
     return *this;
   }
 

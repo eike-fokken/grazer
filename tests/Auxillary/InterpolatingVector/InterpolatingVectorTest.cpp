@@ -22,12 +22,16 @@ TEST(InterpolatingVector, Copy_constructor_happy) {
   double start = 0;
   double delta = 0.5;
   auto data = Aux::make_from_start_delta_number(start, delta, number_of_points);
-  Aux::InterpolatingVector a;
+
   Aux::InterpolatingVector b(data, number_of_values_per_point);
 
-  a = b;
+  Aux::InterpolatingVector a = b;
 
+  Aux::InterpolatingVector_Base &bbase = b;
+
+  Aux::InterpolatingVector c = bbase;
   EXPECT_EQ(a, b);
+  EXPECT_EQ(c, b);
 }
 
 TEST(InterpolatingVector, Construction_happy_path) {
