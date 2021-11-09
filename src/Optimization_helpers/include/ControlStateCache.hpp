@@ -24,8 +24,7 @@ namespace Optimization {
     Model::Timeevolver &evolver;
     Model::Controlcomponent &problem;
 
-    std::pair<Aux::InterpolatingVector, Aux::InterpolatingVector>
-        cache;
+    std::pair<Aux::InterpolatingVector, Aux::InterpolatingVector> cache;
     Aux::InterpolatingVector last_failed;
   };
 

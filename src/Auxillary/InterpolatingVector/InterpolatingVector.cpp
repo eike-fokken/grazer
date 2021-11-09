@@ -388,7 +388,8 @@ namespace Aux {
   MappedInterpolatingVector::operator=(InterpolatingVector_Base const &other) {
     if (not have_same_structure(*this, other)) {
       gthrow(
-          {"You cannot assign an Interpolating vector with different structure "
+          {"You cannot assign an Interpolating vector with different "
+           "structure ",
            "to a mapped interpolating vector!"});
     }
     assignment_helper(other);
