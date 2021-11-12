@@ -21,15 +21,19 @@ namespace Optimization {
         Aux::InterpolatingVector_Base const &constraints,
         Aux::InterpolatingVector_Base const &controls);
 
-    double &CoeffRef(Ipopt::Number *values, Eigen::Index row, Eigen::Index col);
+    double &CoeffRef(
+        Ipopt::Number *values, Ipopt::Index values_end, Eigen::Index row,
+        Eigen::Index col);
 
-    double
-    Coeff(Ipopt::Number *values, Eigen::Index row, Eigen::Index col) const;
+    double Coeff(
+        Ipopt::Number *values, Ipopt::Index values_end, Eigen::Index row,
+        Eigen::Index col) const;
 
     Eigen::Map<Eigen::VectorXd> const
-    row(Ipopt::Number *values, Eigen::Index row_index);
+    row(Ipopt::Number *values, Ipopt::Index values_end, Eigen::Index row_index);
     Eigen::Map<Eigen::VectorXd const> const
-    row(Ipopt::Number *values, Eigen::Index row_index) const;
+    row(Ipopt::Number *values, Ipopt::Index values_end,
+        Eigen::Index row_index) const;
 
     /** @brief number of non-zeros in the given row.
      */
@@ -41,6 +45,10 @@ namespace Optimization {
     /** @brief number of columns in the matrix.
      */
     Eigen::Index cols() const;
+
+    /** @brief Number of non-zero elements.
+     */
+    Eigen::Index nonZeros() const;
 
   private:
     /** @brief Number of columns in the matrix.

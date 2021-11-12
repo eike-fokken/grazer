@@ -6,7 +6,6 @@
 #include "Timeevolver.hpp"
 #include <IpAlgTypes.hpp>
 #include <IpTypes.hpp>
-#include <cstddef>
 #include <stdexcept>
 
 namespace Optimization {
@@ -18,29 +17,28 @@ namespace Optimization {
   void IpoptWrapper::constraint_jacobian_structure(
       Ipopt::Index number_of_nonzeros_in_constraint_jacobian,
       Ipopt::Index *Rows, Ipopt::Index *Cols) {
-
-    // loop over the constraint_jacobian and write the indices in the row and
-    // column arrays provided by ipopt.
-    size_t Ipopt_array_index = 0;
-    for (int k = 0; k < constraint_jacobian.outerSize(); ++k)
-      for (Eigen::SparseMatrix<double, Eigen::RowMajor>::InnerIterator it(
-               constraint_jacobian, k);
-           it; ++it) {
-        Rows[Ipopt_array_index] = static_cast<Ipopt::Index>(it.row());
-        Cols[Ipopt_array_index] = static_cast<Ipopt::Index>(it.col());
-        ++Ipopt_array_index;
+    if (constraint_jacobian.nonZeros()
+        != number_of_nonzeros_in_constraint_jacobian) {
+      gthrow({"Wrong number of non-zeros in constraint jacobian!"});
+    }
+    std::size_t index = 0;
+    for (Eigen::Index row = 0; row != constraint_jacobian.rows(); ++row) {
+      for (Eigen::Index col = 0; col != constraint_jacobian.size_of_row(row);
+           ++col) {
+        Rows[index] = static_cast<Ipopt::Index>(row);
+        Cols[index] = static_cast<Ipopt::Index>(col);
+        ++index;
       }
-
-    assert(Ipopt_array_index == static_cast<size_t>(nnz_constraint_jacobian()));
-    assert(
-        Ipopt_array_index
-        == static_cast<size_t>(number_of_nonzeros_in_constraint_jacobian));
+    }
+    if (index
+        != static_cast<std::size_t>(
+            number_of_nonzeros_in_constraint_jacobian)) {
+      gthrow({"Wrong number ofnon-zeros in constraint jacobian!"});
+    }
   }
 
-  void IpoptWrapper::eval_constraint_jacobian(Ipopt::Number *values) {
-
-    assert(false);
-  }
+  void IpoptWrapper::eval_constraint_jacobian(
+      Ipopt::Number *values, Ipopt::Index nele_jac) {}
 
   IpoptWrapper::IpoptWrapper(
       Model::Timeevolver &evolver, Model::OptimizableObject &_problem,
@@ -51,9 +49,7 @@ namespace Optimization {
       Aux::InterpolatingVector_Base const &_upper_bounds,
       Aux::InterpolatingVector_Base const &_constraints_lower_bounds,
       Aux::InterpolatingVector_Base const &_constraints_upper_bounds) :
-      constraint_jacobian(
-          _constraints_lower_bounds.get_total_number_of_values(),
-          _initial_controls.get_total_number_of_values()),
+      constraint_jacobian(_constraints_lower_bounds, _initial_controls),
       problem(_problem),
       cache(evolver, _problem),
       simulation_timepoints(_simulation_timepoints),
@@ -203,7 +199,7 @@ namespace Optimization {
       constraint_jacobian_structure(nele_jac, iRow, jCol);
     } else {
       // evaluate the jacobian of the constraints function
-      eval_constraint_jacobian(values);
+      eval_constraint_jacobian(values, nele_jac);
     }
     assert(false);
     return true;
