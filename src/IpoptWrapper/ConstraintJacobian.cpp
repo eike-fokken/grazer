@@ -4,12 +4,13 @@ namespace Optimization {
 
   ConstraintJacobian::ConstraintJacobian(
       Aux::InterpolatingVector_Base const &constraints,
-      Aux::InterpolatingVector_Base const &controls, Ipopt::Number *values) {
+      Aux::InterpolatingVector_Base const &controls) {
     assert(false);
     // Check for off-by-one errors!
   }
 
-  double &ConstraintJacobian::operator()(Eigen::Index row, Eigen::Index col) {
+  double &ConstraintJacobian::CoeffRef(
+      Ipopt::Number *values, Eigen::Index row, Eigen::Index col) {
     assert(row >= 0);
     assert(col >= 0);
     assert(row < start_of_rows.size());
@@ -19,8 +20,8 @@ namespace Optimization {
     return values[element];
   }
 
-  double
-  ConstraintJacobian::operator()(Eigen::Index row, Eigen::Index col) const {
+  double ConstraintJacobian::Coeff(
+      Ipopt::Number *values, Eigen::Index row, Eigen::Index col) const {
     assert(row >= 0);
     assert(col >= 0);
     assert(row < start_of_rows.size());
@@ -30,7 +31,8 @@ namespace Optimization {
     return values[element];
   }
 
-  Eigen::Ref<Eigen::VectorXd> const ConstraintJacobian::row(Eigen::Index row) {
+  Eigen::Map<Eigen::VectorXd> const
+  ConstraintJacobian::row(Ipopt::Number *values, Eigen::Index row) {
     assert(row >= 0);
     assert(row < start_of_rows.size());
 
@@ -39,13 +41,13 @@ namespace Optimization {
     Eigen::Map<Eigen::VectorXd> current_row(start, end - start);
     return current_row;
   }
-  Eigen::Ref<Eigen::VectorXd const> const
-  ConstraintJacobian::row(Eigen::Index row) const {
+  Eigen::Map<Eigen::VectorXd const> const
+  ConstraintJacobian::row(Ipopt::Number *values, Eigen::Index row) const {
     assert(row >= 0);
     assert(row < start_of_rows.size());
     auto start = values + start_of_rows[row];
     auto end = values + start_of_rows[row + 1];
-    Eigen::Map<Eigen::VectorXd> current_row(start, end - start);
+    Eigen::Map<Eigen::VectorXd const> current_row(start, end - start);
     return current_row;
   }
 
@@ -54,5 +56,10 @@ namespace Optimization {
     assert(row > start_of_rows.size() - 1);
     return start_of_rows[row + 1] - start_of_rows[row];
   }
+
+  Eigen::Index ConstraintJacobian::rows() const {
+    return start_of_rows.size() - 1;
+  }
+  Eigen::Index ConstraintJacobian::cols() const { return number_of_columns; }
 
 } // namespace Optimization

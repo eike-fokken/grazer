@@ -1,34 +1,55 @@
 #pragma once
 #include "InterpolatingVector.hpp"
 #include <Eigen/Dense>
+#include <Eigen/src/Core/util/Meta.h>
 #include <IpTypes.hpp>
 #include <vector>
 
 namespace Optimization {
 
+  /** @brief A class holding the structure of a Constraint Jacobian.
+   *
+   * This class is suitable if the Jacobian is "half-dense", meaning, that each
+   * row of the Jacobian has non-zero entries in the first column and all
+   * following columns up until a row-dependent maximal index, after which only
+   * zeros follow. The maximal index is constant and may not change after
+   * construction. Neither may the number of rows and columns.
+   */
   class ConstraintJacobian {
   public:
     ConstraintJacobian(
         Aux::InterpolatingVector_Base const &constraints,
-        Aux::InterpolatingVector_Base const &controls, Ipopt::Number *values);
+        Aux::InterpolatingVector_Base const &controls);
 
-    double &operator()(Eigen::Index row, Eigen::Index col);
+    double &CoeffRef(Ipopt::Number *values, Eigen::Index row, Eigen::Index col);
 
-    double operator()(Eigen::Index row, Eigen::Index col) const;
+    double
+    Coeff(Ipopt::Number *values, Eigen::Index row, Eigen::Index col) const;
 
-    Eigen::Ref<Eigen::VectorXd> const row(Eigen::Index row_index);
-    Eigen::Ref<Eigen::VectorXd const> const row(Eigen::Index row_index) const;
+    Eigen::Map<Eigen::VectorXd> const
+    row(Ipopt::Number *values, Eigen::Index row_index);
+    Eigen::Map<Eigen::VectorXd const> const
+    row(Ipopt::Number *values, Eigen::Index row_index) const;
 
+    /** @brief number of non-zeros in the given row.
+     */
     Eigen::Index size_of_row(Eigen::Index row);
 
+    /** @brief number of rows in the matrix.
+     */
+    Eigen::Index rows() const;
+    /** @brief number of columns in the matrix.
+     */
+    Eigen::Index cols() const;
+
   private:
+    /** @brief Number of columns in the matrix.
+     */
+    Eigen::Index number_of_columns;
+
     /** @brief For each row this vector holds the starting index
      */
     Eigen::Vector<Eigen::Index, Eigen::Dynamic> start_of_rows;
-
-    /** Non-owning copy of the values array of the jacobian matrix
-     */
-    Ipopt::Number *values;
 
     /** @brief length of the values array.
      */
