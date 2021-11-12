@@ -135,10 +135,23 @@ namespace Optimization {
     return true;
   }
   bool IpoptWrapper::get_starting_point(
-      Ipopt::Index /* n */, bool /* init_x */, Ipopt::Number *x,
-      bool /* init_z */, Ipopt::Number * /* z_L */, Ipopt::Number * /* z_U */,
-      Ipopt::Index /*m */, bool /* init_lambda */,
-      Ipopt::Number * /* lambda */) {
+      Ipopt::Index n, bool init_x, Ipopt::Number *x, bool init_z,
+      Ipopt::Number * /* z_L */, Ipopt::Number * /* z_U */, Ipopt::Index /*m */,
+      bool init_lambda, Ipopt::Number * /* lambda */) {
+
+    assert(init_x);
+    assert(not init_z);
+    assert(not init_lambda);
+
+    if ((not init_x) or init_z or init_lambda) {
+      gthrow({"Ipopt demands initialization for non-primal variables!"});
+    }
+
+    if (not(n == initial_controls.size())) {
+      gthrow(
+          {"The number of controls demanded by IPOPT is different from the "
+           "number of controls in grazer."});
+    }
     // initialize to the given starting point
     std::copy(
         initial_controls.get_allvalues().begin(),
