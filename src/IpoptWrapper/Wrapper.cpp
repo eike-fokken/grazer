@@ -1,4 +1,5 @@
 #include "Wrapper.hpp"
+#include "ConstraintJacobian.hpp"
 #include "Exception.hpp"
 #include "InterpolatingVector.hpp"
 #include "OptimizableObject.hpp"
@@ -49,7 +50,8 @@ namespace Optimization {
       Aux::InterpolatingVector_Base const &_upper_bounds,
       Aux::InterpolatingVector_Base const &_constraints_lower_bounds,
       Aux::InterpolatingVector_Base const &_constraints_upper_bounds) :
-      constraint_jacobian(_constraints_lower_bounds, _initial_controls),
+      constraint_jacobian(ConstraintJacobian::make_instance(
+          _constraints_lower_bounds, _initial_controls)),
       problem(_problem),
       cache(evolver, _problem),
       simulation_timepoints(_simulation_timepoints),
@@ -89,11 +91,12 @@ namespace Optimization {
       gthrow({"Wrong number of initial values of the states!"});
     }
 
-    // final construction:
-    auto triplets = Optimization::constraint_jac_triplets(
-        constraints_lower_bounds, initial_controls);
-    constraint_jacobian.setFromTriplets(triplets.begin(), triplets.end());
-    constraint_jacobian.makeCompressed();
+    // // final construction:
+    // auto triplets = Optimization::constraint_jac_triplets(
+    //     constraints_lower_bounds, initial_controls);
+    // constraint_jacobian.setFromTriplets(triplets.begin(), triplets.end());
+    // constraint_jacobian.makeCompressed();
+    assert(false);
   }
 
   bool IpoptWrapper::get_nlp_info(

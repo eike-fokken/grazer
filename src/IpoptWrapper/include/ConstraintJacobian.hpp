@@ -17,7 +17,10 @@ namespace Optimization {
    */
   class ConstraintJacobian {
   public:
-    ConstraintJacobian(
+    /** @brief Returns a matrix that contains 1 at all points where a constraint
+     * jacobian can be non-zero and zero everywhere else.
+     */
+    static ConstraintJacobian make_instance(
         Aux::InterpolatingVector_Base const &constraints,
         Aux::InterpolatingVector_Base const &controls);
 
@@ -50,18 +53,26 @@ namespace Optimization {
      */
     Eigen::Index nonZeros() const;
 
+    Eigen::Vector<Eigen::Index, Eigen::Dynamic> const &get_start_of_rows() {
+      return start_of_rows;
+    }
+
   private:
+    /** @brief The constructor is private so we can make sure the right
+     * structure is passed in the make_instance method.
+     */
+    ConstraintJacobian(
+        Eigen::Vector<Eigen::Index, Eigen::Dynamic> start_indices_of_rows,
+        Eigen::Index number_of_columns);
+
+    /** @brief For each row this vector holds the starting index. The last entry
+     * marks the end index of the last row and is also the total number of
+     * non-zeros in the jacobian.
+     */
+    Eigen::Vector<Eigen::Index, Eigen::Dynamic> const start_of_rows;
     /** @brief Number of columns in the matrix.
      */
-    Eigen::Index number_of_columns;
-
-    /** @brief For each row this vector holds the starting index
-     */
-    Eigen::Vector<Eigen::Index, Eigen::Dynamic> start_of_rows;
-
-    /** @brief length of the values array.
-     */
-    Ipopt::Index nnz;
+    Eigen::Index const number_of_columns;
   };
 
 } // namespace Optimization

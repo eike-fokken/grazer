@@ -1,6 +1,15 @@
-# add_executable(HS071 hs071.cpp)
-# target_include_directories(HS071 PUBLIC include)
-# target_link_libraries(HS071 PUBLIC gtest_main my_ipopt ipoptwrapper componentclasses)
+
+
+
+add_executable(constrainedJacobian_test ConstrainedJacobianTest.cpp)
+target_include_directories(constrainedJacobian_test PUBLIC include)
+target_link_libraries(constrainedJacobian_test PUBLIC gtest gtest_main interpolatingVector ipoptwrapper)
+
+add_test(
+  NAME constrainedJacobian_test
+  COMMAND constrainedJacobian_test
+  )
+
 
 # add_executable(UNCONSTRAINED_LAMBDAS unconstrained_lambdas.cpp)
 # target_include_directories(UNCONSTRAINED_LAMBDAS PUBLIC include)
@@ -12,10 +21,6 @@
 # target_link_libraries(UNCONSTRAINED_CLASS PUBLIC
 #   gtest_main my_ipopt ipoptwrapper componentclasses)
 
-# add_test(
-#     NAME HS071
-#     COMMAND HS071
-# )
 
 # add_test(
 #     NAME UNCONSTRAINED_LAMBDAS

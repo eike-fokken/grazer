@@ -145,7 +145,7 @@ namespace Optimization {
            "point of the coarse vector."});
     }
 
-    Eigen::SparseMatrix<double> jacobian(
+    Eigen::SparseMatrix<double> derivative(
         fine_resolution_vector.get_total_number_of_values(),
         coarse_resolution_vector.get_total_number_of_values());
 
@@ -183,50 +183,8 @@ namespace Optimization {
         }
       }
     }
-    jacobian.setFromTriplets(triplets.begin(), triplets.end());
-    return jacobian;
-  }
-
-  static void add_row_to_triplets(
-      std::vector<Eigen::Triplet<double, Eigen::Index>> &triplets,
-      Eigen::Index row_index, Eigen::Index index_end) {
-    for (Eigen::Index col_index = 0; col_index != index_end; ++col_index) {
-      Eigen::Triplet<double, Eigen::Index> triplet(row_index, col_index);
-
-      triplets.push_back(triplet);
-    }
-  }
-
-  std::vector<Eigen::Triplet<double, Eigen::Index>> constraint_jac_triplets(
-      Aux::InterpolatingVector_Base const &constraints,
-      Aux::InterpolatingVector_Base const &controls) {
-
-    std::vector<Eigen::Triplet<double, Eigen::Index>> triplets;
-
-    auto constraints_times = constraints.get_interpolation_points();
-    auto controls_times = controls.get_interpolation_points();
-    auto ntimesteps = constraints_times.size();
-
-    auto number_controls_per_timestep = controls.get_inner_length();
-    auto number_constraints_per_timestep = constraints.get_inner_length();
-
-    for (size_t index = 0; index != ntimesteps; ++index) {
-      auto t_j_interator = std::lower_bound(
-          controls_times.begin(), controls_times.end(),
-          constraints_times[index]);
-      auto j = (t_j_interator - controls_times.begin());
-
-      for (auto row_index
-           = static_cast<Eigen::Index>(index) * number_constraints_per_timestep;
-           row_index
-           != static_cast<Eigen::Index>(index + 1)
-                  * number_constraints_per_timestep;
-           ++row_index) {
-        add_row_to_triplets(
-            triplets, row_index, (j + 1) * number_controls_per_timestep);
-      }
-    }
-    return triplets;
+    derivative.setFromTriplets(triplets.begin(), triplets.end());
+    return derivative;
   }
 
 } // namespace Optimization
