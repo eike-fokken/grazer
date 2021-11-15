@@ -1,4 +1,5 @@
 #include "ConstraintJacobian.hpp"
+#include "Exception.hpp"
 
 namespace Optimization {
 
@@ -13,12 +14,21 @@ namespace Optimization {
       Eigen::Index row, Eigen::Index col) {
     assert(values_end == nonZeros());
     assert(row >= 0);
+    assert(row < rows());
     assert(col >= 0);
-    assert(row < start_of_rows.size() - 1);
+    assert(col < cols());
+
     auto rowstart = start_of_rows[row];
     auto element = rowstart + col;
-    assert(element < start_of_rows[row + 1]);
-    return values[element];
+
+    if (element < start_of_rows[row + 1]) {
+      return values[element];
+    } else {
+      gthrow(
+          {"You get a mutable reference to this element of the "
+           "ConstraintJacobian: It is not among "
+           "the structurally non-zero elements!"});
+    }
   }
 
   double ConstraintJacobian::Coeff(
@@ -26,12 +36,17 @@ namespace Optimization {
       Eigen::Index row, Eigen::Index col) const {
     assert(values_end == nonZeros());
     assert(row >= 0);
+    assert(row < rows());
     assert(col >= 0);
-    assert(row < start_of_rows.size() - 1);
+    assert(col < cols());
+
     auto rowstart = start_of_rows[row];
     auto element = rowstart + col;
-    assert(element < start_of_rows[row + 1]);
-    return values[element];
+    if (element < start_of_rows[row + 1]) {
+      return values[element];
+    } else {
+      return 0;
+    }
   }
 
   Eigen::Map<Eigen::VectorXd> const ConstraintJacobian::row(
@@ -39,7 +54,7 @@ namespace Optimization {
       Eigen::Index row) {
     assert(values_end == nonZeros());
     assert(row >= 0);
-    assert(row < start_of_rows.size() - 1);
+    assert(row < rows());
 
     auto start = values + start_of_rows[row];
     auto end = values + start_of_rows[row + 1];
@@ -51,7 +66,7 @@ namespace Optimization {
       Eigen::Index row) const {
     assert(values_end == nonZeros());
     assert(row >= 0);
-    assert(row < start_of_rows.size() - 1);
+    assert(row < rows());
     auto start = values + start_of_rows[row];
     auto end = values + start_of_rows[row + 1];
     Eigen::Map<Eigen::VectorXd const> current_row(start, end - start);
@@ -60,7 +75,7 @@ namespace Optimization {
 
   Eigen::Index ConstraintJacobian::size_of_row(Eigen::Index row) {
     assert(row >= 0);
-    assert(row < start_of_rows.size() - 1);
+    assert(row < rows());
     return start_of_rows[row + 1] - start_of_rows[row];
   }
 

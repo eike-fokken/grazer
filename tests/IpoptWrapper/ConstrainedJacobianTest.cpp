@@ -30,3 +30,29 @@ TEST(ConstraintJacobian, construction) {
     EXPECT_EQ(start_of_rows[i + 1], curr);
   }
 }
+
+TEST(ConstraintJacobian, coeff) {
+  std::vector<double> constraints_times{0.0, 0.5, 1.0, 2.0};
+  std::vector<double> controls_times{0, 1, 2};
+
+  constexpr Eigen::Index constraints_inner_length = 2;
+  constexpr Eigen::Index controls_inner_length = 3;
+  Aux::InterpolatingVector constraints(
+      constraints_times, constraints_inner_length);
+  Aux::InterpolatingVector controls(controls_times, controls_inner_length);
+
+  auto test
+      = Optimization::ConstraintJacobian::make_instance(constraints, controls);
+  std::vector<double> value_vector(static_cast<std::size_t>(test.nonZeros()));
+
+  double i = 0;
+  for (auto &value : value_vector) {
+    value = i;
+    ++i;
+  }
+
+  auto values = value_vector.data();
+  auto values_end = static_cast<Ipopt::Index>(value_vector.size());
+
+  std::cout << test.Coeff(values, values_end, 2, 3);
+}
