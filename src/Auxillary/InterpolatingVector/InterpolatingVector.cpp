@@ -265,10 +265,7 @@ namespace Aux {
   bool operator==(
       InterpolatingVector_Base const &lhs,
       InterpolatingVector_Base const &rhs) {
-    if (lhs.get_inner_length() != rhs.get_inner_length()) {
-      return false;
-    }
-    if (lhs.get_interpolation_points() != rhs.get_interpolation_points()) {
+    if (not have_same_structure(lhs, rhs)) {
       return false;
     }
     return lhs.get_allvalues() == rhs.get_allvalues();
