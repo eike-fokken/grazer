@@ -3,11 +3,7 @@
 #include "SimpleControlcomponent.hpp"
 #include "SimpleStatecomponent.hpp"
 
-class TestProblem final :
-    public Model::OptimizableObject,
-    public Model::SimpleConstraintcomponent,
-    public Model::SimpleControlcomponent,
-    public Model::SimpleStatecomponent {
+class TestProblem final : public Model::OptimizableObject {
 
   void setup() final{};
   /// constraint component overrides:
@@ -34,10 +30,10 @@ class TestProblem final :
 
   // not needed:
   void set_constraint_lower_bounds(
-      Aux::InterpolatingVector &, nlohmann::json const &) const final {}
+      Aux::InterpolatingVector_Base &, nlohmann::json const &) const final {}
 
   void set_constraint_upper_bounds(
-      Aux::InterpolatingVector &, nlohmann::json const &) const final {}
+      Aux::InterpolatingVector_Base &, nlohmann::json const &) const final {}
 
   //// control components:
 
@@ -78,13 +74,13 @@ class TestProblem final :
 
   // not needed:
   void set_initial_controls(
-      Aux::InterpolatingVector &, nlohmann::json const &) const final {}
+      Aux::InterpolatingVector_Base &, nlohmann::json const &) const final {}
 
   void set_lower_bounds(
-      Aux::InterpolatingVector &, nlohmann::json const &) const final {}
+      Aux::InterpolatingVector_Base &, nlohmann::json const &) const final {}
 
   void set_upper_bounds(
-      Aux::InterpolatingVector &, nlohmann::json const &) const final {}
+      Aux::InterpolatingVector_Base &, nlohmann::json const &) const final {}
 
   //// Cost components:
   double evaluate_cost(
