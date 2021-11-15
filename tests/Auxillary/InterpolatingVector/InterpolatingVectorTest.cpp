@@ -337,9 +337,9 @@ TEST(MappedInterpolatingVector, Copy_assignment_fail) {
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
     EXPECT_THAT(
-        e.what(),
-        testing::HasSubstr("You try to assign to a MappedInterpolatingVector "
-                           "of a different size"));
+        e.what(), testing::HasSubstr(
+                      " You are trying to assign an InterpolatingVector with a "
+                      "different structure to this InterpolatingVector."));
   }
 }
 
@@ -373,7 +373,7 @@ TEST(InterpolatingVector_Base, assignment_Normal_happy) {
   double start = 0;
   double delta = 0.5;
   auto data = Aux::make_from_start_delta_number(start, delta, number_of_points);
-  Aux::InterpolatingVector a;
+  Aux::InterpolatingVector a(data, number_of_values_per_point);
   Aux::InterpolatingVector b(data, number_of_values_per_point);
 
   assign(a, b);
@@ -417,8 +417,7 @@ TEST(InterpolatingVector_Base, assignment_Mapped_fail) {
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
     EXPECT_THAT(
-        e.what(),
-        testing::HasSubstr("You try to assign to a MappedInterpolatingVector "
-                           "of a different size"));
+        e.what(), testing::HasSubstr("This is not permitted through the "
+                                     "InterpolatingVector_Base interface."));
   }
 }

@@ -70,9 +70,6 @@ namespace Aux {
     Eigen::Index size() const;
 
   private:
-    virtual void
-    assign_values_if_possible(InterpolatingVector_Base const &other)
-        = 0;
     virtual Eigen::Ref<Eigen::VectorXd> allvalues() = 0;
     virtual Eigen::Ref<Eigen::VectorXd const> const allvalues() const = 0;
 
@@ -110,7 +107,6 @@ namespace Aux {
     InterpolatingVector(InterpolatingVector const &other) = default;
 
   private:
-    void assign_values_if_possible(InterpolatingVector_Base const &other) final;
     Eigen::Ref<Eigen::VectorXd> allvalues() final;
     Eigen::Ref<Eigen::VectorXd const> const allvalues() const final;
 
@@ -147,7 +143,6 @@ namespace Aux {
     operator=(MappedInterpolatingVector const &other);
 
   private:
-    void assign_values_if_possible(InterpolatingVector_Base const &other) final;
     Eigen::Ref<Eigen::VectorXd> allvalues() final;
     Eigen::Ref<Eigen::VectorXd const> const allvalues() const final;
 

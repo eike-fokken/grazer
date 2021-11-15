@@ -137,7 +137,13 @@ namespace Aux {
 
   InterpolatingVector_Base &
   InterpolatingVector_Base::operator=(InterpolatingVector_Base const &other) {
-    assign_values_if_possible(other);
+    if (not have_same_structure(other, *this)) {
+      gthrow(
+          {"You are trying to assign an InterpolatingVector with a different "
+           "structure to this InterpolatingVector.\nThis is not permitted "
+           "through the InterpolatingVector_Base interface."});
+    }
+    allvalues() = other.get_allvalues();
     assignment_helper(other);
     return *this;
   }
@@ -315,11 +321,6 @@ namespace Aux {
       InterpolatingVector_Base const &other) :
       InterpolatingVector_Base(other), values(other.get_allvalues()) {}
 
-  void InterpolatingVector::assign_values_if_possible(
-      InterpolatingVector_Base const &other) {
-    values = other.get_allvalues();
-  }
-
   Eigen::Ref<Eigen::VectorXd> InterpolatingVector::allvalues() {
     return values;
   }
@@ -396,27 +397,28 @@ namespace Aux {
 
   MappedInterpolatingVector &
   MappedInterpolatingVector::operator=(InterpolatingVector_Base const &other) {
-    assign_values_if_possible(other);
+    if (not have_same_structure(other, *this)) {
+      gthrow(
+          {"You are trying to assign an InterpolatingVector with a different "
+           "structure to this InterpolatingVector.\nThis is not permitted "
+           "through the InterpolatingVector_Base interface."});
+    }
+    allvalues() = other.get_allvalues();
     assignment_helper(other);
     return *this;
   }
 
   MappedInterpolatingVector &
   MappedInterpolatingVector::operator=(MappedInterpolatingVector const &other) {
-    assign_values_if_possible(other);
+    if (not have_same_structure(other, *this)) {
+      gthrow(
+          {"You are trying to assign an InterpolatingVector with a different "
+           "structure to this MappedInterpolatingVector.\nThis is not "
+           "permitted."});
+    }
+    allvalues() = other.mapped_values;
     assignment_helper(other);
     return *this;
-  }
-
-  void MappedInterpolatingVector::assign_values_if_possible(
-      InterpolatingVector_Base const &other) {
-    if (mapped_values.size() != other.get_total_number_of_values()) {
-      gthrow(
-          {"You try to assign to a MappedInterpolatingVector of a different "
-           "size. This is prohibited, because the underlying storage array "
-           "cannot be resized."});
-    }
-    mapped_values = other.get_allvalues();
   }
 
   Eigen::Ref<Eigen::VectorXd> MappedInterpolatingVector::allvalues() {
