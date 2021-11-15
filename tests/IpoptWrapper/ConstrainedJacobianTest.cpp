@@ -3,6 +3,7 @@
 #include <Eigen/src/Core/util/Meta.h>
 #include <cstddef>
 #include <gtest/gtest.h>
+#include <iomanip>
 #include <sys/stat.h>
 
 TEST(ConstraintJacobian, construction) {
@@ -45,14 +46,23 @@ TEST(ConstraintJacobian, coeff) {
       = Optimization::ConstraintJacobian::make_instance(constraints, controls);
   std::vector<double> value_vector(static_cast<std::size_t>(test.nonZeros()));
 
-  double i = 0;
-  for (auto &value : value_vector) {
-    value = i;
-    ++i;
+  {
+    double i = 0;
+    for (auto &value : value_vector) {
+      value = i;
+      ++i;
+    }
   }
-
   auto values = value_vector.data();
   auto values_end = static_cast<Ipopt::Index>(value_vector.size());
 
-  std::cout << test.Coeff(values, values_end, 2, 3);
+  for (int i = 0; i != test.rows(); ++i) {
+    for (int j = 0; j != test.cols(); ++j) {
+      std::cout << std::setw(2) << test.Coeff(values, values_end, i, j) << " ";
+    }
+    std::cout << "\n";
+  }
+
+  std::cout << "number of non-Zeros: " << test.nonZeros() << std::endl;
+  EXPECT_EQ(test.nonZeros(), 48);
 }

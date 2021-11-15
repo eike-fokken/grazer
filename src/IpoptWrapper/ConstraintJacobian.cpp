@@ -25,7 +25,7 @@ namespace Optimization {
       return values[element];
     } else {
       gthrow(
-          {"You get a mutable reference to this element of the "
+          {"You try to get a mutable reference to this element of the "
            "ConstraintJacobian: It is not among "
            "the structurally non-zero elements!"});
     }
