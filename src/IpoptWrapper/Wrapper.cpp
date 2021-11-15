@@ -39,7 +39,8 @@ namespace Optimization {
   }
 
   void IpoptWrapper::eval_constraint_jacobian(
-      Ipopt::Number *values, Ipopt::Index nele_jac) {}
+      Ipopt::Number *x, Ipopt::Index number_of_controls, Ipopt::Number *values,
+      Ipopt::Index nele_jac) {}
 
   IpoptWrapper::IpoptWrapper(
       Model::Timeevolver &evolver, Model::OptimizableObject &_problem,
@@ -202,7 +203,7 @@ namespace Optimization {
       constraint_jacobian_structure(nele_jac, iRow, jCol);
     } else {
       // evaluate the jacobian of the constraints function
-      eval_constraint_jacobian(values, nele_jac);
+      eval_constraint_jacobian(x, n, values, nele_jac);
     }
     assert(false);
     return true;

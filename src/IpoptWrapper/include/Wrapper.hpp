@@ -121,7 +121,9 @@ namespace Optimization {
 
     /** \brief fills in the value vector for the constraint jacobian.
      */
-    void eval_constraint_jacobian(Ipopt::Number *values, Ipopt::Index nele_jac);
+    void eval_constraint_jacobian(
+        Ipopt::Number *x, Ipopt::Index number_of_controls,
+        Ipopt::Number *values, Ipopt::Index nele_jac);
 
     Eigen::Index get_number_of_controls() const;
     Eigen::Index get_number_of_control_timesteps() const;
