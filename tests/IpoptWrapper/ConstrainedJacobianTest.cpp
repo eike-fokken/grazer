@@ -1,10 +1,9 @@
 #include "ConstraintJacobian.hpp"
 #include "InterpolatingVector.hpp"
 #include <Eigen/src/Core/util/Meta.h>
-#include <cstddef>
 #include <gtest/gtest.h>
+
 #include <iomanip>
-#include <sys/stat.h>
 
 TEST(ConstraintJacobian, construction) {
 
