@@ -2,9 +2,8 @@
 #include <Eigen/Sparse>
 #include <nlohmann/json.hpp>
 // #include "Equationcomponent.hpp"
-
+class TestProblem;
 namespace Model {
-  class SimpleStatecomponent;
 
   class Statecomponent {
     /** \brief SimpleStatecomponent is a friend of Statecomponent to give it
@@ -12,6 +11,7 @@ namespace Model {
      */
     friend class SimpleStatecomponent;
     friend class Networkproblem;
+    friend class ::TestProblem;
 
   public:
     static nlohmann::json get_initial_schema() = delete;

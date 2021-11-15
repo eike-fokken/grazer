@@ -1,7 +1,4 @@
 #include "OptimizableObject.hpp"
-#include "SimpleConstraintcomponent.hpp"
-#include "SimpleControlcomponent.hpp"
-#include "SimpleStatecomponent.hpp"
 
 class TestProblem final : public Model::OptimizableObject {
 
@@ -23,10 +20,7 @@ class TestProblem final : public Model::OptimizableObject {
       Eigen::Ref<Eigen::VectorXd const> const &state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const final {}
 
-  Eigen::Index needed_number_of_constraints_per_time_point() const final {
-    assert(false);
-    return 0;
-  }
+  Eigen::Index set_constraint_indices(Eigen::Index) final { return -1; }
 
   // not needed:
   void set_constraint_lower_bounds(
@@ -67,10 +61,7 @@ class TestProblem final : public Model::OptimizableObject {
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const final {}
 
-  Eigen::Index needed_number_of_controls_per_time_point() const final {
-    assert(false);
-    return 0;
-  }
+  Eigen::Index set_control_indices(Eigen::Index) final { return -1; }
 
   // not needed:
   void set_initial_controls(
@@ -88,7 +79,7 @@ class TestProblem final : public Model::OptimizableObject {
       Eigen::Ref<Eigen::VectorXd const> const &state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const final {
     assert(false);
-    return 0;
+    return -1;
   }
 
   void d_evaluate_cost_d_state(
@@ -102,6 +93,12 @@ class TestProblem final : public Model::OptimizableObject {
       Eigen::Ref<Eigen::VectorXd const> const &control) const final {}
 
   //// State components:
+
+  Eigen::Index set_state_indices(Eigen::Index) final {
+    state_startindex = 3;
+    return -1;
+  }
+
   void add_results_to_json(nlohmann::json &) final {}
 
   void
@@ -112,6 +109,4 @@ class TestProblem final : public Model::OptimizableObject {
   void set_initial_values(
       Eigen::Ref<Eigen::VectorXd> new_state,
       nlohmann::json const &initial_json) final {}
-
-  Eigen::Index needed_number_of_states() const final { return 0; }
 };

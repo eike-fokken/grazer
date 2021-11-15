@@ -7,7 +7,7 @@ namespace Aux {
   class InterpolatingVector_Base;
   class Matrixhandler;
 } // namespace Aux
-
+class TestProblem;
 namespace Model {
   class SimpleConstraintcomponent;
 
@@ -17,6 +17,7 @@ namespace Model {
      */
     friend class SimpleConstraintcomponent;
     friend class Networkproblem;
+    friend class ::TestProblem;
 
   public:
     static nlohmann::json get_constraint_schema() = delete;

@@ -8,16 +8,16 @@ namespace Aux {
   class InterpolatingVector_Base;
   class Matrixhandler;
 } // namespace Aux
-
+class TestProblem;
 namespace Model {
-  class SimpleControlcomponent;
 
   class Controlcomponent : public Equation_base {
     /** \brief SimpleControlcomponent is a friend of Controlcomponent to
-     * give it access to #start_control_index and #after_control_index.
+     * give it access to #control_startindex and #control_afterindex.
      */
     friend class SimpleControlcomponent;
     friend class Networkproblem;
+    friend class ::TestProblem;
 
   public:
     static nlohmann::json get_control_schema() = delete;
