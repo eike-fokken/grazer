@@ -4,9 +4,19 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+using rootfunction
+    = Eigen::VectorXd(Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd);
+using Derivative = Eigen::SparseMatrix<double>(
+    Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd);
+
 class TestControlComponent_for_ControlStateCache final :
     public Model::Controlcomponent {
 public:
+  TestControlComponent_for_ControlStateCache(rootfunction _f, Derivative _df) :
+      f(_f), df(_df) {}
+  rootfunction *f;
+  Derivative *df;
+
   MOCK_METHOD(void, setup, (), (final));
 
   void evaluate(
@@ -14,16 +24,21 @@ public:
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const final {
-    rootvalues = new_state - last_state - control;
+    rootvalues = f(
+        last_state, new_state, control); // new_state - last_state - control;
   }
 
   void d_evalutate_d_new_state(
       Aux::Matrixhandler &jacobianhandler, double, double,
-      Eigen::Ref<Eigen::VectorXd const> const &,
-      Eigen::Ref<Eigen::VectorXd const> const &,
-      Eigen::Ref<Eigen::VectorXd const> const &) const final {
-    jacobianhandler.set_coefficient(0, 0, 1.0);
-    jacobianhandler.set_coefficient(1, 1, 1.0);
+      Eigen::Ref<Eigen::VectorXd const> const &last_state,
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
+      Eigen::Ref<Eigen::VectorXd const> const &control) const final {
+    Eigen::SparseMatrix<double> mat = df(last_state, new_state, control);
+    for (int k = 0; k < mat.outerSize(); ++k)
+      for (Eigen::SparseMatrix<double>::InnerIterator it(mat, k); it; ++it) {
+        jacobianhandler.set_coefficient(
+            static_cast<int>(it.row()), static_cast<int>(it.col()), it.value());
+      }
   }
 
   void prepare_timestep(

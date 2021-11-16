@@ -3,6 +3,7 @@
 #include "Exception.hpp"
 #include "InterpolatingVector.hpp"
 #include "Timeevolver.hpp"
+#include <iostream>
 #include <type_traits>
 #include <utility>
 
@@ -25,7 +26,6 @@ namespace Optimization {
         and initial_state == cache.first.initial_state
         && state_interpolation_points
                == cache.first.state_interpolation_points) {
-      std::cout << "cache used" << std::endl;
       return &cache.second;
     } else {
       Aux::InterpolatingVector states(
@@ -43,7 +43,6 @@ namespace Optimization {
           Cacheentry{
               cached_controls, state_interpolation_points, initial_state},
           std::move(states));
-      std::cout << "cache filled!" << std::endl;
       return &cache.second;
     }
   }
