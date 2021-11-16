@@ -1,9 +1,8 @@
 #pragma once
 #include "Controlcomponent.hpp"
-#include "gmock/gmock.h"
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
-#include <gmock/gmock-function-mocker.h>
+#include <gmock/gmock.h>
 #include <memory>
 #include <vector>
 

@@ -9,6 +9,7 @@ namespace Aux {
   class Matrixhandler;
 } // namespace Aux
 class TestProblem;
+class TestControlComponent;
 namespace Model {
 
   class Controlcomponent : public Equation_base {
@@ -18,6 +19,7 @@ namespace Model {
     friend class SimpleControlcomponent;
     friend class Networkproblem;
     friend class ::TestProblem;
+    friend class ::TestControlComponent;
 
   public:
     static nlohmann::json get_control_schema() = delete;

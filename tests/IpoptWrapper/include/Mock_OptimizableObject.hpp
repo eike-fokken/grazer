@@ -1,8 +1,11 @@
 #include "OptimizableObject.hpp"
+#include <iostream>
 
 class TestProblem final : public Model::OptimizableObject {
 
-  void setup() final{};
+  void setup() final {
+    assert(false); // never call me!
+  };
   /// constraint component overrides:
 
   void evaluate_constraint(
@@ -54,7 +57,7 @@ class TestProblem final : public Model::OptimizableObject {
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const &control) final {
-    assert(false); // never call me!
+    std::cout << "Called prepare_timestep!" << std::endl;
   }
 
   void d_evalutate_d_new_state(
