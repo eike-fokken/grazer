@@ -49,4 +49,6 @@ TEST(ControlStateCache, first) {
       EXPECT_DOUBLE_EQ(states(di)[j], initial[j] + controls(di)[j]);
     }
   }
+
+  auto *new_states = a.compute_states(controls, times, initial);
 }
