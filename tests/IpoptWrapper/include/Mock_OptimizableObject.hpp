@@ -1,7 +1,7 @@
 #include "OptimizableObject.hpp"
 #include <iostream>
 
-class TestProblem final : public Model::OptimizableObject {
+class Mock_OptimizableObject final : public Model::OptimizableObject {
 
   void setup() final {
     assert(false); // never call me!

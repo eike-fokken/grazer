@@ -28,7 +28,7 @@ TEST(Newtonsolver, LinearSolveWithRoot_InitialValue1) {
   double last_time = 0;
   double new_time = 1;
 
-  GrazerTest::TestProblem problem(f, df);
+  TestProblem problem(f, df);
   Solver::Solutionstruct a;
 
   // The following are not needed, as the power nodes are not controlled.  But
@@ -63,7 +63,7 @@ TEST(Newtonsolver, LinearSolveWithRoot_InitialValue2) {
   double last_time = 0;
   double new_time = 1;
 
-  GrazerTest::TestProblem problem(f, df);
+  TestProblem problem(f, df);
   Solver::Solutionstruct a;
 
   // The following are not needed, as the power nodes are not controlled.  But
@@ -100,7 +100,7 @@ TEST(Newtonsolver, NonlinearSolveWithRoot) {
   double last_time = 0;
   double new_time = 1;
 
-  GrazerTest::TestProblem problem(f2, df2);
+  TestProblem problem(f2, df2);
   Solver::Solutionstruct a;
   // The following are not needed, as the power nodes are not controlled.  But
   // to satisfy the interface, we must provide them.
@@ -133,7 +133,7 @@ TEST(Newtonsolver, NonlinearSolve_simplifiedNewton) {
   double last_time = 0;
   double new_time = 1;
 
-  GrazerTest::TestProblem problem(f2, df2);
+  TestProblem problem(f2, df2);
   Solver::Solutionstruct a;
 
   // The following are not needed, as no control components are used here not
@@ -166,7 +166,7 @@ TEST(Newtonsolver, SingularJacobian) {
   double last_time = 0;
   double new_time = 1;
 
-  GrazerTest::TestProblem problem(f2, df2);
+  TestProblem problem(f2, df2);
   Solver::Solutionstruct a;
 
   try {

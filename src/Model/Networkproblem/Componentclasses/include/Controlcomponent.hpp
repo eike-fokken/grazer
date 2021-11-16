@@ -8,7 +8,7 @@ namespace Aux {
   class InterpolatingVector_Base;
   class Matrixhandler;
 } // namespace Aux
-class TestProblem;
+class Mock_OptimizableObject;
 class TestControlComponent;
 namespace Model {
 
@@ -18,7 +18,7 @@ namespace Model {
      */
     friend class SimpleControlcomponent;
     friend class Networkproblem;
-    friend class ::TestProblem;
+    friend class ::Mock_OptimizableObject;
     friend class ::TestControlComponent;
 
   public:

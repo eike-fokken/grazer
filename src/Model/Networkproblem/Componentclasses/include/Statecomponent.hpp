@@ -2,7 +2,7 @@
 #include <Eigen/Sparse>
 #include <nlohmann/json.hpp>
 // #include "Equationcomponent.hpp"
-class TestProblem;
+class Mock_OptimizableObject;
 namespace Model {
 
   class Statecomponent {
@@ -11,7 +11,7 @@ namespace Model {
      */
     friend class SimpleStatecomponent;
     friend class Networkproblem;
-    friend class ::TestProblem;
+    friend class ::Mock_OptimizableObject;
 
   public:
     static nlohmann::json get_initial_schema() = delete;
