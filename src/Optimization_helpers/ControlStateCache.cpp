@@ -28,7 +28,7 @@ namespace Optimization {
         last_failed = controls;
         return nullptr;
       }
-      Aux::InterpolatingVector cached_controls(controls);
+      Aux::InterpolatingVector cached_controls = controls;
 
       cache = std::make_pair(cached_controls, std::move(states));
       return &cache.second;
