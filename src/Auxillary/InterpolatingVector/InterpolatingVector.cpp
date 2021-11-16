@@ -314,6 +314,13 @@ namespace Aux {
     return *this;
   }
 
+  InterpolatingVector &
+  InterpolatingVector::operator=(InterpolatingVector const &other) {
+    assignment_helper(other);
+    this->values = other.get_allvalues();
+    return *this;
+  }
+
   InterpolatingVector::InterpolatingVector(
       InterpolatingVector_Base const &other) :
       InterpolatingVector_Base(other), values(other.get_allvalues()) {}

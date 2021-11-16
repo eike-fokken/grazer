@@ -43,6 +43,8 @@ namespace Aux {
     /// @brief copy constructor, only callable from derived classes for copying
     /// private data.
     InterpolatingVector_Base(InterpolatingVector_Base const &other) = default;
+    // move constructor:
+    InterpolatingVector_Base(InterpolatingVector_Base &&other) = default;
 
   public:
     void set_values_in_bulk(Eigen::Ref<Eigen::VectorXd const> const &values);
@@ -101,10 +103,12 @@ namespace Aux {
 
     // copy assignment:
     InterpolatingVector &operator=(InterpolatingVector_Base const &other);
-    InterpolatingVector &operator=(InterpolatingVector const &other) = default;
+    InterpolatingVector &operator=(InterpolatingVector const &other);
     // copy constructor:
     InterpolatingVector(InterpolatingVector_Base const &other);
     InterpolatingVector(InterpolatingVector const &other) = default;
+    // move constructor:
+    InterpolatingVector(InterpolatingVector &&other) = default;
 
   private:
     Eigen::Ref<Eigen::VectorXd> allvalues() final;
