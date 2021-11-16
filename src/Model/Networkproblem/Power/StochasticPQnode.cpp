@@ -72,9 +72,7 @@ namespace Model::Power {
 
   void StochasticPQnode::prepare_timestep(
       double last_time, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> const &last_state,
-      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/
-  ) {
+      Eigen::Ref<Eigen::VectorXd const> const &last_state) {
     auto last_P = P(last_state);
     current_P = Aux::euler_maruyama_oup(
         stochasticdata->stability_parameter, stochasticdata->cut_off_factor,

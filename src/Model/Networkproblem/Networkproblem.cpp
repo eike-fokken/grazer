@@ -234,15 +234,13 @@ namespace Model {
   void Networkproblem::prepare_timestep(
       double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const &control) {
     for (auto *equationcomponent : equationcomponents) {
-      equationcomponent->prepare_timestep(
-          last_time, new_time, last_state, new_state);
+      equationcomponent->prepare_timestep(last_time, new_time, last_state);
     }
     for (auto *controlcomponent : controlcomponents) {
       controlcomponent->prepare_timestep(
-          last_time, new_time, last_state, new_state, control);
+          last_time, new_time, last_state, control);
     }
   }
 

@@ -75,8 +75,7 @@ namespace Model {
       last_time = new_time;
       last_state = new_state;
     }
-
-    std::cout << "=== simulation end ===" << std::endl; // provide regex help
+    // std::cout << "=== simulation end ===" << std::endl; // provide regex help
   }
 
   Solver::Solutionstruct Timeevolver::make_one_step(
@@ -100,8 +99,7 @@ namespace Model {
     Eigen::VectorXd new_state_backup = new_state;
     while (not solstruct.success) {
       new_state = new_state_backup;
-      problem.prepare_timestep(
-          last_time, new_time, last_state, new_state, control);
+      problem.prepare_timestep(last_time, new_time, last_state, control);
       solstruct = solver.solve(
           new_state, problem, false, use_full_jacobian, last_time, new_time,
           last_state, control);

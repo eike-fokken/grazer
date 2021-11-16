@@ -95,8 +95,7 @@ TEST_F(stochasticPQnodeTEST, evaluate) {
   // to satisfy the interface, we must provide them.
   Eigen::VectorXd last_control;
   Eigen::VectorXd control;
-  netprob->prepare_timestep(
-      last_time, new_time, last_state, new_state, control);
+  netprob->prepare_timestep(last_time, new_time, last_state, control);
   netprob->evaluate(
       rootvalues, last_time, new_time, last_state, new_state, control);
 

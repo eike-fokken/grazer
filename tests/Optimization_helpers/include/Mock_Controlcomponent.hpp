@@ -6,7 +6,7 @@
 
 class TestControlComponent_for_ControlStateCache final :
     public Model::Controlcomponent {
-
+public:
   MOCK_METHOD(void, setup, (), (final));
 
   void evaluate(
@@ -28,8 +28,9 @@ class TestControlComponent_for_ControlStateCache final :
 
   void prepare_timestep(
       double, double, Eigen::Ref<Eigen::VectorXd const> const &,
-      Eigen::Ref<Eigen::VectorXd const> const &,
-      Eigen::Ref<Eigen::VectorXd const> const &) final {}
+      Eigen::Ref<Eigen::VectorXd const> const &) final {
+    std::cout << "Called prepare_timestep" << std::endl;
+  };
 
   MOCK_METHOD(
       void, d_evalutate_d_last_state,
