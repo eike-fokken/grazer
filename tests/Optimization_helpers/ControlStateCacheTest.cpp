@@ -3,12 +3,16 @@
 #include "InterpolatingVector.hpp"
 #include "Mock_Controlcomponent.hpp"
 #include "Timeevolver.hpp"
+#include "test_io_helper.hpp"
+#include <cstddef>
 #include <gtest/gtest.h>
 #include <iostream>
+#include <streambuf>
+#include <string>
 
 using namespace testing;
 
-TEST(ControlStateCache, first) {
+TEST(ControlStateCache, fill_and_use_the_cache) {
 
   nlohmann::json timeevolution_json = R"(    {
         "use_simplified_newton": true,
@@ -36,9 +40,28 @@ TEST(ControlStateCache, first) {
   controlvalues << 2, 3, 4, 5;
   controls.set_values_in_bulk(controlvalues);
 
-  auto *states_pointer = a.compute_states(controls, times, initial);
+  Aux::InterpolatingVector_Base const *states_pointer = nullptr;
+  std::string output = "";
+  std::string expected_output = "Called prepare_timestep";
+  {
+    std::stringstream buffer;
+    Catch_cout catcher(buffer.rdbuf());
+    states_pointer = a.compute_states(controls, times, initial);
 
-  Aux::InterpolatingVector_Base const &states = *states_pointer;
+    output = buffer.str();
+  }
+  std::cout << output;
+  int encountered = 0;
+  size_t current_index = 0;
+  current_index = output.find(expected_output, current_index);
+  while (current_index != std::string::npos) {
+    ++encountered;
+    current_index += expected_output.length();
+    current_index = output.find(expected_output, current_index);
+  }
+
+  EXPECT_EQ(encountered, 1);
+  Aux::InterpolatingVector states = *states_pointer;
   for (Eigen::Index j = 0; j != states.get_inner_length(); ++j) {
     EXPECT_DOUBLE_EQ(states(0)[j], initial[j]);
   }
@@ -50,5 +73,25 @@ TEST(ControlStateCache, first) {
     }
   }
 
-  auto *new_states = a.compute_states(controls, times, initial);
+  encountered = 0;
+  output = "";
+  current_index = 0;
+  Aux::InterpolatingVector_Base const *new_states;
+  {
+    std::stringstream buffer;
+    Catch_cout catcher(buffer.rdbuf());
+    new_states = a.compute_states(controls, times, initial);
+    output = buffer.str();
+  }
+  std::cout << output;
+  current_index = output.find(expected_output, current_index);
+  while (current_index != std::string::npos) {
+    ++encountered;
+    current_index += expected_output.length();
+    current_index = output.find(expected_output, current_index);
+  }
+  // expect the cache to be used:
+  EXPECT_EQ(encountered, 0);
+  // expect the result to be equal:
+  EXPECT_EQ(states, *new_states);
 }
