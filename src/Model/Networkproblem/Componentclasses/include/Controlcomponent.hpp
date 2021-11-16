@@ -9,7 +9,7 @@ namespace Aux {
   class Matrixhandler;
 } // namespace Aux
 class Mock_OptimizableObject;
-class TestControlComponent;
+class TestControlComponent_for_ControlStateCache;
 namespace Model {
 
   class Controlcomponent : public Equation_base {
@@ -19,7 +19,7 @@ namespace Model {
     friend class SimpleControlcomponent;
     friend class Networkproblem;
     friend class ::Mock_OptimizableObject;
-    friend class ::TestControlComponent;
+    friend class ::TestControlComponent_for_ControlStateCache;
 
   public:
     static nlohmann::json get_control_schema() = delete;

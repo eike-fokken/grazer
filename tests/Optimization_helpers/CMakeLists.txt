@@ -11,7 +11,8 @@ add_test(
 
 
 add_executable(controlStateCache_test ControlStateCacheTest.cpp)
-target_link_libraries(controlStateCache_test PUBLIC gtest gtest_main gmock optimization_helpers)
+target_link_libraries(controlStateCache_test PUBLIC  optimization_helpers matrixhandler)
+target_link_libraries(controlStateCache_test PUBLIC gtest gtest_main gmock)
 
 add_test(
   NAME controlStateCache_test 
