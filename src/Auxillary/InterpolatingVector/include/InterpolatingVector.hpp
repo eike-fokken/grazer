@@ -153,4 +153,20 @@ namespace Aux {
     Eigen::Map<Eigen::VectorXd> mapped_values;
   };
 
+  class ConstMappedInterpolatingVector : public InterpolatingVector_Base {
+  public:
+    ConstMappedInterpolatingVector(
+        Interpolation_data data, Eigen::Index _inner_length,
+        double const *array, Eigen::Index number_of_elements);
+    ConstMappedInterpolatingVector(
+        std::vector<double> interpolation_points, Eigen::Index inner_length,
+        double const *array, Eigen::Index number_of_elements);
+
+  private:
+    Eigen::Ref<Eigen::VectorXd> allvalues() final;
+    Eigen::Ref<Eigen::VectorXd const> const allvalues() const final;
+
+    Eigen::Map<Eigen::VectorXd const> mapped_values;
+  };
+
 } // namespace Aux

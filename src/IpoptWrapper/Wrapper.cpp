@@ -7,6 +7,7 @@
 #include "Timeevolver.hpp"
 #include <IpAlgTypes.hpp>
 #include <IpTypes.hpp>
+#include <cstddef>
 #include <stdexcept>
 
 namespace Optimization {
@@ -40,7 +41,12 @@ namespace Optimization {
 
   void IpoptWrapper::eval_constraint_jacobian(
       Ipopt::Number const *x, Ipopt::Index number_of_controls,
-      Ipopt::Number *values, Ipopt::Index nele_jac) {}
+      Ipopt::Number *values, Ipopt::Index nele_jac) {
+    Aux::ConstMappedInterpolatingVector const controls(
+        initial_controls.get_interpolation_points(),
+        initial_controls.get_inner_length(), x,
+        static_cast<Eigen::Index>(number_of_controls));
+  }
 
   IpoptWrapper::IpoptWrapper(
       Model::Timeevolver &evolver, Model::OptimizableObject &_problem,

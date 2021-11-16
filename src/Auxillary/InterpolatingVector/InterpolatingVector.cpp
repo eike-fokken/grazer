@@ -11,6 +11,7 @@
 #include <nlohmann/json.hpp>
 #include <stdexcept>
 #include <string>
+#include <type_traits>
 
 namespace Aux {
 
@@ -430,6 +431,44 @@ namespace Aux {
   }
   Eigen::Ref<Eigen::VectorXd const> const
   MappedInterpolatingVector::allvalues() const {
+    return mapped_values;
+  }
+
+  ConstMappedInterpolatingVector::ConstMappedInterpolatingVector(
+      Interpolation_data data, Eigen::Index _inner_length, double const *array,
+      Eigen::Index number_of_elements) :
+      InterpolatingVector_Base(data, _inner_length),
+      mapped_values(array, number_of_elements) {
+    if (get_inner_length() * size() != number_of_elements) {
+      gthrow(
+          {"Given number of elements of mapped storage differs from needed "
+           "number of elements as given in other data in "
+           "MappedInterpolatingVector!"});
+    }
+  }
+
+  ConstMappedInterpolatingVector::ConstMappedInterpolatingVector(
+      std::vector<double> _interpolation_points, Eigen::Index _inner_length,
+      double const *array, Eigen::Index number_of_elements) :
+      InterpolatingVector_Base(_interpolation_points, _inner_length),
+      mapped_values(array, number_of_elements) {
+    if (get_inner_length() * size() != number_of_elements) {
+      gthrow(
+          {"Given number of elements of mapped storage differs from needed ",
+           "number of elements as given in other data in ",
+           "MappedInterpolatingVector!"});
+    }
+  }
+
+  Eigen::Ref<Eigen::VectorXd> ConstMappedInterpolatingVector::allvalues() {
+    gthrow(
+        {"You can't call the non-const version of this function!\n",
+         "The fact that you see this error message means, that somewhere in "
+         "your code an object of type ConstMappedInterpolatingVector is "
+         "constructed but is non-const! This is forbidden."});
+  }
+  Eigen::Ref<Eigen::VectorXd const> const
+  ConstMappedInterpolatingVector::allvalues() const {
     return mapped_values;
   }
 
