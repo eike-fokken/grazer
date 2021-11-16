@@ -3,6 +3,8 @@
 #include "Exception.hpp"
 #include "InterpolatingVector.hpp"
 #include "Timeevolver.hpp"
+#include <type_traits>
+#include <utility>
 
 namespace Optimization {
 
@@ -12,12 +14,18 @@ namespace Optimization {
 
   Aux::InterpolatingVector_Base const *ControlStateCache::compute_states(
       Aux::InterpolatingVector_Base const &controls,
-      std::vector<double> state_interpolation_points,
+      std::vector<double> const &state_interpolation_points,
       Eigen::Ref<Eigen::VectorXd const> const &initial_state) {
-    if (last_failed == controls) {
+    if (failed.control == controls
+        and failed.state_interpolation_points == state_interpolation_points
+        && failed.initial_state == initial_state) {
       return nullptr;
     }
-    if (controls == cache.first) {
+    if (controls == cache.first.control
+        and initial_state == cache.first.initial_state
+        && state_interpolation_points
+               == cache.first.state_interpolation_points) {
+      std::cout << "cache used" << std::endl;
       return &cache.second;
     } else {
       Aux::InterpolatingVector states(
@@ -25,13 +33,19 @@ namespace Optimization {
       try {
         evolver.simulate(initial_state, controls, problem, states);
       } catch (...) {
-        last_failed = controls;
+        failed
+            = Cacheentry{controls, state_interpolation_points, initial_state};
         return nullptr;
       }
       Aux::InterpolatingVector cached_controls = controls;
 
-      cache = std::make_pair(cached_controls, std::move(states));
+      cache = std::make_pair(
+          Cacheentry{
+              cached_controls, state_interpolation_points, initial_state},
+          std::move(states));
+      std::cout << "cache filled!" << std::endl;
       return &cache.second;
     }
   }
+
 } // namespace Optimization
