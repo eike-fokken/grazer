@@ -119,6 +119,12 @@ namespace Optimization {
         Ipopt::Index number_of_nonzeros_in_constraint_jacobian,
         Ipopt::Index *Rows, Ipopt::Index *Cols);
 
+    /** \brief fills in the value vector for the constraints.
+     */
+    bool eval_constraints(
+        Ipopt::Number const *x, Ipopt::Index number_of_controls,
+        Ipopt::Number *values, Ipopt::Index nele_jac);
+
     /** \brief fills in the value vector for the constraint jacobian.
      */
     bool eval_constraint_jacobian(

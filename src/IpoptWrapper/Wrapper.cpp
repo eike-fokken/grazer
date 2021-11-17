@@ -49,6 +49,7 @@ namespace Optimization {
 
     auto *state_pointer
         = cache.compute_states(controls, simulation_timepoints, initial_state);
+    // if the simulation failed: tell the calling site.
     if (state_pointer == nullptr) {
       return false;
     }
@@ -58,6 +59,38 @@ namespace Optimization {
       Eigen::VectorXd ones(constraint_jacobian.size_of_row(row));
       ones.setOnes();
       constraint_jacobian.row(values, nele_jac, row) = ones;
+    }
+    return true;
+  }
+
+  bool IpoptWrapper::eval_constraints(
+      Ipopt::Number const *x, Ipopt::Index number_of_controls,
+      Ipopt::Number *values, Ipopt::Index nele_jac) {
+    Aux::ConstMappedInterpolatingVector const controls(
+        initial_controls.get_interpolation_points(),
+        initial_controls.get_inner_length(), x,
+        static_cast<Eigen::Index>(number_of_controls));
+
+    auto *state_pointer
+        = cache.compute_states(controls, simulation_timepoints, initial_state);
+    // if the simulation failed: tell the calling site.
+    if (state_pointer == nullptr) {
+      return false;
+    }
+    auto &states = *state_pointer;
+
+    Aux::MappedInterpolatingVector constraints(
+        constraints_lower_bounds.get_interpolation_points(),
+        constraints_lower_bounds.get_inner_length(), values,
+        static_cast<Eigen::Index>(nele_jac));
+
+    for (Eigen::Index constraints_timeindex = 0;
+         constraints_timeindex != constraints.size(); ++constraints_timeindex) {
+      double time
+          = constraints.interpolation_point_at_index(constraints_timeindex);
+      problem.evaluate_constraint(
+          constraints.mut_timestep(constraints_timeindex), time, states(time),
+          controls(time));
     }
     return true;
   }
@@ -187,6 +220,7 @@ namespace Optimization {
 
     auto *state_pointer
         = cache.compute_states(controls, simulation_timepoints, initial_state);
+    // if the simulation failed: tell the calling site.
     if (state_pointer == nullptr) {
       return false;
     }
@@ -215,14 +249,10 @@ namespace Optimization {
     return true;
   }
   bool IpoptWrapper::eval_g(
-      Ipopt::Index n, const Ipopt::Number *x, bool /* new_x */, Ipopt::Index m,
+      Ipopt::Index n, Ipopt::Number const *x, bool /* new_x */, Ipopt::Index m,
       Ipopt::Number *g) {
-    Eigen::Map<Eigen::VectorXd const> xx(x, n);
-    // auto constrs = _constraints(xx);
-    // assert(constrs.size() == m);
-    // std::copy(constrs.cbegin(), constrs.cend(), g);
-    assert(false);
-    return true;
+
+    return eval_constraints(x, n, g, m);
   }
   bool IpoptWrapper::eval_jac_g(
       Ipopt::Index n, Ipopt::Number const *x, bool /* new_x */,
@@ -232,12 +262,11 @@ namespace Optimization {
       // first internal call of this function.
       // set the structure of constraints jacobian.
       constraint_jacobian_structure(nele_jac, iRow, jCol);
+      return true;
     } else {
       // evaluate the jacobian of the constraints function
-      eval_constraint_jacobian(x, n, values, nele_jac);
+      return eval_constraint_jacobian(x, n, values, nele_jac);
     }
-    assert(false);
-    return true;
   }
   void IpoptWrapper::finalize_solution(
       Ipopt::SolverReturn status, Ipopt::Index n, const Ipopt::Number *x,
