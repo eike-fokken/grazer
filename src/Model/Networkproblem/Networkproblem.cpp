@@ -387,12 +387,11 @@ namespace Model {
   /////////////////////////////////////////////////////////
 
   double Networkproblem::evaluate_cost(
-      double last_time, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> const &state,
+      double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const {
     double cost = 0;
     for (auto *costcomponent : costcomponents) {
-      cost += costcomponent->evaluate_cost(last_time, new_time, state, control);
+      cost += costcomponent->evaluate_cost(new_time, state, control);
     }
     return get_cost_weight() * cost;
   }

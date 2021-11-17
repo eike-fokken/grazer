@@ -15,8 +15,7 @@ namespace Model {
     virtual ~Costcomponent(){};
 
     virtual double evaluate_cost(
-        double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> const &state,
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
 
     virtual void d_evaluate_cost_d_state(

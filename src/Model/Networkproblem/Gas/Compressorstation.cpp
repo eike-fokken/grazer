@@ -119,8 +119,7 @@ namespace Model::Gas {
   ///////////////////////////////////////////////////////////
 
   double Compressorstation::evaluate_cost(
-      double /*last_time*/, double /*new_time*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*state*/,
+      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const & /*state*/,
       Eigen::Ref<Eigen::VectorXd const> const &control) const {
     auto current_control = control[get_control_startindex()];
     return get_cost_weight() * current_control * current_control;
