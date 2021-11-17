@@ -162,6 +162,8 @@ namespace Aux {
         std::vector<double> interpolation_points, Eigen::Index inner_length,
         double const *array, Eigen::Index number_of_elements);
 
+    void reset_values(double const *array, Eigen::Index number_of_elements);
+
   private:
     Eigen::Ref<Eigen::VectorXd> allvalues() final;
     Eigen::Ref<Eigen::VectorXd const> const allvalues() const final;

@@ -446,7 +446,7 @@ TEST(ConstMappedInterpolatingVector, Fail_on_non_const) {
     EXPECT_THAT(
         e.what(),
         testing::HasSubstr(
-            "somewhere in your code an object of type "
-            "ConstMappedInterpolatingVector is constructed but is non-const"));
+            "You are trying to get a mutable reference to mapped values in "
+            "ConstMappedInterpolatingVector"));
   }
 }

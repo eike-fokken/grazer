@@ -461,13 +461,23 @@ namespace Aux {
            "MappedInterpolatingVector!"});
     }
   }
+  void ConstMappedInterpolatingVector::reset_values(
+      double const *array, Eigen::Index number_of_elements) {
+    new (&mapped_values)
+        Eigen::Map<Eigen::VectorXd const>(array, number_of_elements);
+  }
 
   Eigen::Ref<Eigen::VectorXd> ConstMappedInterpolatingVector::allvalues() {
     gthrow(
-        {"You can't call the non-const version of this function!\n",
-         "The fact that you see this error message means, that somewhere in "
-         "your code an object of type ConstMappedInterpolatingVector is "
-         "constructed but is non-const! This is forbidden."});
+        {"You are trying to get a mutable reference to mapped values in ",
+         "ConstMappedInterpolatingVector.\n", "This is forbidden.",
+         "The fact that you see this error message means, that somewhere in ",
+         "your code a non-const object of type ConstMappedInterpolatingVector ",
+         "is constructed. This is allowed but you may not call any non-const ",
+         "method in InterpolatingVector_Base on such object!\n",
+         "As of now, forbidden (non-const methods) are:\n",
+         "mut_timestep(...)\n", "push_to_index(...)\n",
+         "set_values_in_bulk(...)"});
   }
   Eigen::Ref<Eigen::VectorXd const> const
   ConstMappedInterpolatingVector::allvalues() const {
