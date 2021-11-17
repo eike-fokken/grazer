@@ -463,6 +463,11 @@ namespace Aux {
   }
   void ConstMappedInterpolatingVector::reset_values(
       double const *array, Eigen::Index number_of_elements) {
+    if (number_of_elements != this->get_total_number_of_values()) {
+      gthrow(
+          {"You can only reset ConstMappedInterpolatingVector to an array of "
+           "the same size as before."});
+    }
     new (&mapped_values)
         Eigen::Map<Eigen::VectorXd const>(array, number_of_elements);
   }

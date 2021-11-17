@@ -449,4 +449,64 @@ TEST(ConstMappedInterpolatingVector, Fail_on_non_const) {
             "You are trying to get a mutable reference to mapped values in "
             "ConstMappedInterpolatingVector"));
   }
+
+  try {
+    mut_c.push_to_index(0, 0, Eigen::VectorXd(number_of_values_per_point));
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
+  } catch (std::runtime_error &e) {
+    EXPECT_THAT(
+        e.what(),
+        testing::HasSubstr(
+            "You are trying to get a mutable reference to mapped values in "
+            "ConstMappedInterpolatingVector"));
+  }
+
+  try {
+    mut_c.set_values_in_bulk(Eigen::VectorXd(x.size()));
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
+  } catch (std::runtime_error &e) {
+    EXPECT_THAT(
+        e.what(),
+        testing::HasSubstr(
+            "You are trying to get a mutable reference to mapped values in "
+            "ConstMappedInterpolatingVector"));
+  }
+}
+
+TEST(ConstMappedInterpolatingVector, happy_usage) {
+
+  int number_of_values_per_point = 4;
+  int number_of_points = 8;
+  double start = 0;
+  double delta = 0.5;
+  auto data = Aux::make_from_start_delta_number(start, delta, number_of_points);
+
+  std::array<double, 32> x;
+  Eigen::VectorXd xvalues(x.size());
+  xvalues.setZero();
+  Aux::MappedInterpolatingVector xvector(
+      data, number_of_values_per_point, x.data(), x.size());
+  xvector.set_values_in_bulk(xvalues);
+
+  std::array<double, 32> y;
+  Eigen::VectorXd yvalues(y.size());
+  yvalues.setOnes();
+  Aux::MappedInterpolatingVector yvector(
+      data, number_of_values_per_point, y.data(), y.size());
+  yvector.set_values_in_bulk(yvalues);
+
+  Aux::ConstMappedInterpolatingVector xc(
+      data, number_of_values_per_point, x.data(), x.size());
+
+  xc.reset_values(y.data(), y.size());
+
+  EXPECT_EQ(xc, yvector);
+
+  // The following statements should work:
+  xc.get_inner_length();
+  xc.get_interpolation_points();
+  xc.get_allvalues();
+  xc.size();
 }
