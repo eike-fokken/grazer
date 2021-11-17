@@ -49,7 +49,7 @@ namespace Optimization {
     }
   }
 
-  Eigen::Map<Eigen::VectorXd> const ConstraintJacobian::row(
+  Eigen::Map<Eigen::VectorXd> ConstraintJacobian::row(
       Ipopt::Number *values, [[maybe_unused]] Ipopt::Index values_end,
       Eigen::Index row) {
     assert(values_end == nonZeros());

@@ -32,7 +32,7 @@ namespace Optimization {
         Ipopt::Number *values, Ipopt::Index values_end, Eigen::Index row,
         Eigen::Index col) const;
 
-    Eigen::Map<Eigen::VectorXd> const
+    Eigen::Map<Eigen::VectorXd>
     row(Ipopt::Number *values, Ipopt::Index values_end, Eigen::Index row_index);
     Eigen::Map<Eigen::VectorXd const> const
     row(Ipopt::Number *values, Ipopt::Index values_end,
