@@ -158,7 +158,7 @@ namespace Aux {
   }
 
   Eigen::Index InterpolatingVector_Base::get_total_number_of_values() const {
-    return allvalues().size();
+    return get_allvalues().size();
   }
 
   Eigen::Index InterpolatingVector_Base::get_inner_length() const {
@@ -180,7 +180,7 @@ namespace Aux {
         throw std::runtime_error(error_message.str());
       }
 
-      return allvalues().segment(
+      return get_allvalues().segment(
           static_cast<Eigen::Index>(interpolation_points.size() - 1)
               * inner_length,
           inner_length);
@@ -194,7 +194,7 @@ namespace Aux {
         throw std::runtime_error(error_message.str());
       }
 
-      return allvalues().segment(0, inner_length);
+      return get_allvalues().segment(0, inner_length);
     }
     auto it = std::lower_bound(
         interpolation_points.begin(), interpolation_points.end(), t);
@@ -204,8 +204,10 @@ namespace Aux {
         (it - interpolation_points.begin()) * inner_length);
     auto prev_index = next_index - inner_length;
 
-    Eigen::VectorXd value_next = allvalues().segment(next_index, inner_length);
-    Eigen::VectorXd value_prev = allvalues().segment(prev_index, inner_length);
+    Eigen::VectorXd value_next
+        = get_allvalues().segment(next_index, inner_length);
+    Eigen::VectorXd value_prev
+        = get_allvalues().segment(prev_index, inner_length);
 
     auto lambda = (t - t_prev) / (t_next - t_prev);
 
@@ -224,7 +226,7 @@ namespace Aux {
     }
     auto start_index = inner_length * current_index;
     auto after_index = start_index + inner_length;
-    if (after_index > allvalues().size()) {
+    if (after_index > get_allvalues().size()) {
       gthrow(
           {"You try to set this InterpolatingVector at a higher index than "
            "possible!"});
@@ -246,12 +248,12 @@ namespace Aux {
     }
     auto start_index = inner_length * current_index;
     auto after_index = start_index + inner_length;
-    if (after_index > allvalues().size()) {
+    if (after_index > get_allvalues().size()) {
       gthrow(
           {"You try to set this InterpolatingVector at a higher index than "
            "possible!"});
     }
-    return allvalues().segment(start_index, inner_length);
+    return get_allvalues().segment(start_index, inner_length);
   }
 
   double InterpolatingVector_Base::interpolation_point_at_index(
