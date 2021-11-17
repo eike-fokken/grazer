@@ -39,13 +39,27 @@ namespace Optimization {
     }
   }
 
-  void IpoptWrapper::eval_constraint_jacobian(
+  bool IpoptWrapper::eval_constraint_jacobian(
       Ipopt::Number const *x, Ipopt::Index number_of_controls,
       Ipopt::Number *values, Ipopt::Index nele_jac) {
     Aux::ConstMappedInterpolatingVector const controls(
         initial_controls.get_interpolation_points(),
         initial_controls.get_inner_length(), x,
         static_cast<Eigen::Index>(number_of_controls));
+
+    auto *state_pointer
+        = cache.compute_states(controls, simulation_timepoints, initial_state);
+    if (state_pointer == nullptr) {
+      return false;
+    }
+    auto &states = *state_pointer;
+
+    for (Eigen::Index row = 0; row != constraint_jacobian.rows(); ++row) {
+      Eigen::VectorXd ones(constraint_jacobian.size_of_row(row));
+      ones.setOnes();
+      constraint_jacobian.row(values, nele_jac, row) = ones;
+    }
+    return true;
   }
 
   IpoptWrapper::IpoptWrapper(
@@ -165,21 +179,32 @@ namespace Optimization {
     return true;
   }
   bool IpoptWrapper::eval_f(
-      Ipopt::Index n, const Ipopt::Number *x, bool /* new_x */,
+      Ipopt::Index n, Ipopt::Number const *x, bool /* new_x */,
       Ipopt::Number &obj_value) {
-    Eigen::Map<Eigen::VectorXd const> xx(x, n);
-    // static_assert(
-    //     false,
-    //     "hier weiter, problem macht das nur fuer einen zeitschritt, noch
-    //     eine " "abstraction drum rum.");
-    // problem.evaluate_cost(
-    //     double last_time, double new_time,
-    //     const Eigen::Ref<const Eigen::VectorXd> &state,
-    //     const Eigen::Ref<const Eigen::VectorXd> &control);
-    // obj_value = _objective(xx);
-    assert(false);
+    Aux::ConstMappedInterpolatingVector controls(
+        initial_controls.get_interpolation_points(),
+        initial_controls.get_inner_length(), x, n);
+
+    auto *state_pointer
+        = cache.compute_states(controls, simulation_timepoints, initial_state);
+    if (state_pointer == nullptr) {
+      return false;
+    }
+    auto &states = *state_pointer;
+
+    obj_value = 0;
+    // timeindex starts at 1, because at 0 there are initial conditions which
+    // can not be altered!
+    for (Eigen::Index timeindex = 1; timeindex != states.size(); ++timeindex) {
+      auto utimeindex = static_cast<size_t>(timeindex);
+      obj_value += problem.evaluate_cost(
+          simulation_timepoints[utimeindex],
+          states(simulation_timepoints[utimeindex]),
+          controls(simulation_timepoints[utimeindex]));
+    }
     return true;
   }
+
   bool IpoptWrapper::eval_grad_f(
       Ipopt::Index n, const Ipopt::Number *x, bool /* new_x */,
       Ipopt::Number *grad_f) {
