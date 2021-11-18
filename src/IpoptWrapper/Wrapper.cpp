@@ -60,6 +60,7 @@ namespace Optimization {
       ones.setOnes();
       constraint_jacobian.row(values, nele_jac, row) = ones;
     }
+    assert(false); // not yet ready!
     return true;
   }
 
@@ -71,6 +72,7 @@ namespace Optimization {
         initial_controls.get_inner_length(), x,
         static_cast<Eigen::Index>(number_of_controls));
 
+    // get states:
     auto *state_pointer
         = cache.compute_states(controls, simulation_timepoints, initial_state);
     // if the simulation failed: tell the calling site.
@@ -84,6 +86,7 @@ namespace Optimization {
         constraints_lower_bounds.get_inner_length(), values,
         static_cast<Eigen::Index>(nele_jac));
 
+    // fill the constraints vector for every (constraints-)timepoint
     for (Eigen::Index constraints_timeindex = 0;
          constraints_timeindex != constraints.size(); ++constraints_timeindex) {
       double time
