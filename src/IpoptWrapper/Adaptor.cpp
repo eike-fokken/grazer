@@ -32,7 +32,7 @@ namespace Optimization {
     status = _app->OptimizeTNLP(_nlp);
     return status;
   }
-  Eigen::VectorXd IpoptAdaptor::get_solution() const {
+  Eigen::VectorXd const &IpoptAdaptor::get_solution() const {
     return _nlp->get_solution();
   }
   double IpoptAdaptor::get_obj_value() const {

@@ -296,4 +296,9 @@ namespace Optimization {
     return constraints_lower_bounds.size();
   }
 
+  Eigen::VectorXd const &IpoptWrapper::get_solution() const { return solution; }
+
+  double IpoptWrapper::get_final_objective_value() const {
+    return final_objective_value;
+  }
 } // namespace Optimization

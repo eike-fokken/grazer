@@ -28,7 +28,7 @@ namespace Optimization {
 
     auto optimize() const;
 
-    Eigen::VectorXd get_solution() const;
+    Eigen::VectorXd const &get_solution() const;
     double get_obj_value() const;
   };
 } // namespace Optimization

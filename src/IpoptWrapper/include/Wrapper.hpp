@@ -35,8 +35,8 @@ namespace Optimization {
 
     ~IpoptWrapper() = default;
 
-    Eigen::VectorXd const &get_solution() const { return solution; }
-    double get_final_objective_value() const { return final_objective_value; }
+    Eigen::VectorXd const &get_solution() const;
+    double get_final_objective_value() const;
 
     // Internal Ipopt methods
 
