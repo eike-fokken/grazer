@@ -101,23 +101,23 @@ namespace Optimization {
   IpoptWrapper::IpoptWrapper(
       Model::Timeevolver &evolver, Model::OptimizableObject &_problem,
       std::vector<double> _simulation_timepoints,
-      Eigen::Ref<Eigen::VectorXd const> const &_initial_state,
-      Aux::InterpolatingVector_Base const &_initial_controls,
-      Aux::InterpolatingVector_Base const &_lower_bounds,
-      Aux::InterpolatingVector_Base const &_upper_bounds,
-      Aux::InterpolatingVector_Base const &_constraints_lower_bounds,
-      Aux::InterpolatingVector_Base const &_constraints_upper_bounds) :
+      Eigen::VectorXd _initial_state,
+      Aux::InterpolatingVector _initial_controls,
+      Aux::InterpolatingVector _lower_bounds,
+      Aux::InterpolatingVector _upper_bounds,
+      Aux::InterpolatingVector _constraints_lower_bounds,
+      Aux::InterpolatingVector _constraints_upper_bounds) :
       constraint_jacobian(ConstraintJacobian::make_instance(
           _constraints_lower_bounds, _initial_controls)),
       problem(_problem),
       cache(evolver, _problem),
-      simulation_timepoints(_simulation_timepoints),
-      initial_state(_initial_state),
-      initial_controls(_initial_controls),
-      lower_bounds(_lower_bounds),
-      upper_bounds(_upper_bounds),
-      constraints_lower_bounds(_constraints_lower_bounds),
-      constraints_upper_bounds(_constraints_upper_bounds) {
+      simulation_timepoints(std::move(_simulation_timepoints)),
+      initial_state(std::move(_initial_state)),
+      initial_controls(std::move(_initial_controls)),
+      lower_bounds(std::move(_lower_bounds)),
+      upper_bounds(std::move(_upper_bounds)),
+      constraints_lower_bounds(std::move(_constraints_lower_bounds)),
+      constraints_upper_bounds(std::move(_constraints_upper_bounds)) {
 
     // control sanity checks:
     if (problem.get_number_of_controls_per_timepoint()
