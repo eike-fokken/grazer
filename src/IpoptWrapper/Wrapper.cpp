@@ -39,7 +39,7 @@ namespace Optimization {
     }
   }
 
-  bool IpoptWrapper::eval_constraint_jacobian(
+  bool IpoptWrapper::evaluate_constraint_jacobian(
       Ipopt::Number const *x, Ipopt::Index number_of_controls,
       Ipopt::Number *values, Ipopt::Index nele_jac) {
     Aux::ConstMappedInterpolatingVector const controls(
@@ -64,7 +64,7 @@ namespace Optimization {
     return true;
   }
 
-  bool IpoptWrapper::eval_constraints(
+  bool IpoptWrapper::evaluate_constraints(
       Ipopt::Number const *x, Ipopt::Index number_of_controls,
       Ipopt::Number *values, Ipopt::Index nele_jac) {
     Aux::ConstMappedInterpolatingVector const controls(
@@ -217,12 +217,15 @@ namespace Optimization {
   bool IpoptWrapper::eval_f(
       Ipopt::Index n, Ipopt::Number const *x, bool /* new_x */,
       Ipopt::Number &obj_value) {
+
+    // Get controls into an InterpolatingVector_Base:
     Aux::ConstMappedInterpolatingVector controls(
         initial_controls.get_interpolation_points(),
         initial_controls.get_inner_length(), x, n);
 
     auto *state_pointer
         = cache.compute_states(controls, simulation_timepoints, initial_state);
+
     // if the simulation failed: tell the calling site.
     if (state_pointer == nullptr) {
       return false;
@@ -243,19 +246,25 @@ namespace Optimization {
   }
 
   bool IpoptWrapper::eval_grad_f(
-      Ipopt::Index n, const Ipopt::Number *x, bool /* new_x */,
+      Ipopt::Index n, Ipopt::Number const *x, bool /* new_x */,
       Ipopt::Number *grad_f) {
-    Eigen::Map<Eigen::VectorXd const> xx(x, n);
-    // auto grad = _gradient(xx);
-    // std::copy(grad.cbegin(), grad.cend(), grad_f);
-    assert(false);
-    return true;
+
+    // Get controls into an InterpolatingVector_Base:
+    Aux::ConstMappedInterpolatingVector controls(
+        initial_controls.get_interpolation_points(),
+        initial_controls.get_inner_length(), x, n);
+
+    Aux::MappedInterpolatingVector(
+        initial_controls.get_interpolation_points(),
+        initial_controls.get_inner_length(), grad_f, n);
+
+    return false;
   }
   bool IpoptWrapper::eval_g(
       Ipopt::Index n, Ipopt::Number const *x, bool /* new_x */, Ipopt::Index m,
       Ipopt::Number *g) {
 
-    return eval_constraints(x, n, g, m);
+    return evaluate_constraints(x, n, g, m);
   }
   bool IpoptWrapper::eval_jac_g(
       Ipopt::Index n, Ipopt::Number const *x, bool /* new_x */,
@@ -268,7 +277,7 @@ namespace Optimization {
       return true;
     } else {
       // evaluate the jacobian of the constraints function
-      return eval_constraint_jacobian(x, n, values, nele_jac);
+      return evaluate_constraint_jacobian(x, n, values, nele_jac);
     }
   }
   void IpoptWrapper::finalize_solution(

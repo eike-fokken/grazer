@@ -121,13 +121,13 @@ namespace Optimization {
 
     /** \brief fills in the value vector for the constraints.
      */
-    bool eval_constraints(
+    bool evaluate_constraints(
         Ipopt::Number const *x, Ipopt::Index number_of_controls,
         Ipopt::Number *values, Ipopt::Index nele_jac);
 
     /** \brief fills in the value vector for the constraint jacobian.
      */
-    bool eval_constraint_jacobian(
+    bool evaluate_constraint_jacobian(
         Ipopt::Number const *x, Ipopt::Index number_of_controls,
         Ipopt::Number *values, Ipopt::Index nele_jac);
 
