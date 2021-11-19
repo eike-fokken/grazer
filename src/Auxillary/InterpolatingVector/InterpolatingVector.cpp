@@ -6,12 +6,9 @@
 #include "schema_validation.hpp"
 
 #include <algorithm>
-#include <exception>
-#include <limits>
-#include <nlohmann/json.hpp>
+
 #include <stdexcept>
 #include <string>
-#include <type_traits>
 
 namespace Aux {
 
@@ -106,24 +103,12 @@ namespace Aux {
     if (data.number_of_entries < 1) {
       gthrow({"You can't have less than 1 interpolation point!"});
     }
-
-    // if (interpolation_points.size()
-    //     > static_cast<std::vector<double>::size_type>(
-    //         std::numeric_limits<Eigen::Index>::max())) {
-    //   gthrow(
-    //       {"The vector index of inner_length too big to fit into "
-    //        "Eigen::Index."});
-    // }
   }
 
   InterpolatingVector_Base::InterpolatingVector_Base(
       std::vector<double> _interpolation_points, Eigen::Index _inner_length) :
-      interpolation_points(_interpolation_points),
-      inner_length(_inner_length)
-  //      allvalues(
-  //_inner_length
-  //  * static_cast<Eigen::Index>(interpolation_points.size()))
-  {
+      interpolation_points(std::move(_interpolation_points)),
+      inner_length(_inner_length) {
     if (not std::is_sorted(
             _interpolation_points.begin(), _interpolation_points.end())) {
       gthrow({"Interpolation points for InterpolatingVector were not sorted!"});
@@ -137,10 +122,14 @@ namespace Aux {
   }
 
   InterpolatingVector_Base::InterpolatingVector_Base(
-      InterpolatingVector_Base &&other) :
-      interpolation_points(std::move(other.interpolation_points)),
-      inner_length(other.inner_length) {
-    assert(this != &other);
+      InterpolatingVector_Base &&other) {
+    move_helper(std::move(other));
+  }
+
+  void InterpolatingVector_Base::move_helper(InterpolatingVector_Base &&other) {
+    assert(*this != other);
+    interpolation_points = std::move(other.interpolation_points);
+    inner_length = other.inner_length;
     other.inner_length = 0;
   }
 
@@ -152,8 +141,8 @@ namespace Aux {
            "structure to this InterpolatingVector.\nThis is not permitted "
            "through the InterpolatingVector_Base interface."});
     }
-    allvalues() = other.get_allvalues();
     assignment_helper(other);
+    allvalues() = other.get_allvalues();
     return *this;
   }
 
@@ -329,6 +318,13 @@ namespace Aux {
   InterpolatingVector::operator=(InterpolatingVector const &other) {
     assignment_helper(other);
     this->values = other.get_allvalues();
+    return *this;
+  }
+
+  InterpolatingVector &
+  InterpolatingVector::operator=(InterpolatingVector &&other) {
+    move_helper(std::move(other));
+    values = std::move(other.values);
     return *this;
   }
 

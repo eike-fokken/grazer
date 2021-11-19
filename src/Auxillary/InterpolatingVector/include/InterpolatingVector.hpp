@@ -1,8 +1,6 @@
 #pragma once
 #include "Timedata.hpp"
 #include <Eigen/Sparse>
-#include <Eigen/src/Core/Matrix.h>
-#include <cstddef>
 #include <nlohmann/json.hpp>
 #include <vector>
 
@@ -39,11 +37,12 @@ namespace Aux {
     /// @brief helper function for implementing the assignment in derived
     /// classes
     void assignment_helper(InterpolatingVector_Base const &other);
+    void move_helper(InterpolatingVector_Base &&other);
 
     /// @brief copy constructor, only callable from derived classes for copying
     /// private data.
     InterpolatingVector_Base(InterpolatingVector_Base const &other) = default;
-    // move constructor:
+    // move constructor, also only callable from derived classes:
     InterpolatingVector_Base(InterpolatingVector_Base &&other);
 
   public:
@@ -101,9 +100,10 @@ namespace Aux {
     InterpolatingVector(
         std::vector<double> _interpolation_points, Eigen::Index inner_length);
 
-    // copy assignment:
+    // assignment:
     InterpolatingVector &operator=(InterpolatingVector_Base const &other);
     InterpolatingVector &operator=(InterpolatingVector const &other);
+    InterpolatingVector &operator=(InterpolatingVector &&other);
     // copy constructor:
     InterpolatingVector(InterpolatingVector_Base const &other);
     InterpolatingVector(InterpolatingVector const &other) = default;
