@@ -140,6 +140,7 @@ namespace Aux {
       InterpolatingVector_Base &&other) :
       interpolation_points(std::move(other.interpolation_points)),
       inner_length(other.inner_length) {
+    assert(this != &other);
     other.inner_length = 0;
   }
 
