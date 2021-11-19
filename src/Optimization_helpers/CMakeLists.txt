@@ -1,6 +1,7 @@
 add_library(optimization_helpers STATIC
 Optimization_helpers.cpp
-ControlStateCache.cpp)
+ControlStateCache.cpp
+EquationDerivativeCache.cpp)
 
 target_link_libraries(optimization_helpers PRIVATE
 exception
