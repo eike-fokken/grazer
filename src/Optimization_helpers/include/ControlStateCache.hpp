@@ -11,7 +11,7 @@ namespace Model {
 
 namespace Optimization {
 
-  class ControlStateCache {
+  class ControlStateCache final {
   public:
     ControlStateCache(
         Model::Timeevolver &timeevolver, Model::Controlcomponent &problem);
