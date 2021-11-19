@@ -44,7 +44,7 @@ namespace Aux {
     /// private data.
     InterpolatingVector_Base(InterpolatingVector_Base const &other) = default;
     // move constructor:
-    InterpolatingVector_Base(InterpolatingVector_Base &&other) = default;
+    InterpolatingVector_Base(InterpolatingVector_Base &&other);
 
   public:
     void set_values_in_bulk(Eigen::Ref<Eigen::VectorXd const> const &values);

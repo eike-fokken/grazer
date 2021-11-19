@@ -34,6 +34,25 @@ TEST(InterpolatingVector, Copy_constructor_happy) {
   EXPECT_EQ(c, b);
 }
 
+TEST(InterpolatingVector, Move_constructor_happy) {
+
+  int number_of_values_per_point = 4;
+  int number_of_points = 8;
+  double start = 0;
+  double delta = 0.5;
+  auto data = Aux::make_from_start_delta_number(start, delta, number_of_points);
+
+  Aux::InterpolatingVector b(data, number_of_values_per_point);
+
+  auto before = b;
+  Aux::InterpolatingVector a = std::move(b);
+
+  EXPECT_EQ(a, before);
+  EXPECT_EQ(b.get_total_number_of_values(), 0);
+  EXPECT_EQ(b.get_inner_length(), 0);
+  EXPECT_EQ(b.get_interpolation_points().size(), 0);
+}
+
 TEST(InterpolatingVector, Construction_happy_path) {
 
   int number_of_values_per_point = 4;

@@ -136,6 +136,13 @@ namespace Aux {
     inner_length = other.inner_length;
   }
 
+  InterpolatingVector_Base::InterpolatingVector_Base(
+      InterpolatingVector_Base &&other) :
+      interpolation_points(std::move(other.interpolation_points)),
+      inner_length(other.inner_length) {
+    other.inner_length = 0;
+  }
+
   InterpolatingVector_Base &
   InterpolatingVector_Base::operator=(InterpolatingVector_Base const &other) {
     if (not have_same_structure(other, *this)) {
