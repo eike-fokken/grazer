@@ -5,18 +5,20 @@ namespace Optimization {
 
   IpoptAdaptor::IpoptAdaptor(
       Model::Timeevolver &evolver, Model::OptimizableObject &problem,
-      std::vector<double> simulation_timepoints,
-      Eigen::Ref<Eigen::VectorXd const> const &initial_state,
-      Aux::InterpolatingVector_Base const &initial_controls,
-      Aux::InterpolatingVector_Base const &lower_bounds,
-      Aux::InterpolatingVector_Base const &upper_bounds,
-      Aux::InterpolatingVector_Base const &constraints_lower_bounds,
-      Aux::InterpolatingVector_Base const &constraints_upper_bounds) :
+      std::vector<double> simulation_timepoints, Eigen::VectorXd initial_state,
+      Aux::InterpolatingVector_Base initial_controls,
+      Aux::InterpolatingVector_Base lower_bounds,
+      Aux::InterpolatingVector_Base upper_bounds,
+      Aux::InterpolatingVector_Base constraints_lower_bounds,
+      Aux::InterpolatingVector_Base constraints_upper_bounds) :
       _nlp(new Optimization::IpoptWrapper(
-          evolver, problem, simulation_timepoints, initial_state,
-          initial_controls, lower_bounds, upper_bounds,
-          constraints_lower_bounds, constraints_upper_bounds)),
+          evolver, problem, std::move(simulation_timepoints),
+          std::move(initial_state), std::move(initial_controls),
+          std::move(lower_bounds), std::move(upper_bounds),
+          std::move(constraints_lower_bounds),
+          std::move(constraints_upper_bounds))),
       _app(IpoptApplicationFactory()) {}
+
   auto IpoptAdaptor::optimize() const {
     // Approximate the hessian
     _app->Options()->SetStringValue("hessian_approximation", "limited-memory");

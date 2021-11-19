@@ -18,12 +18,12 @@ namespace Optimization {
     IpoptAdaptor(
         Model::Timeevolver &evolver, Model::OptimizableObject &problem,
         std::vector<double> simulation_timepoints,
-        Eigen::Ref<Eigen::VectorXd const> const &initial_state,
-        Aux::InterpolatingVector_Base const &initial_controls,
-        Aux::InterpolatingVector_Base const &lower_bounds,
-        Aux::InterpolatingVector_Base const &upper_bounds,
-        Aux::InterpolatingVector_Base const &constraints_lower_bounds,
-        Aux::InterpolatingVector_Base const &constraints_upper_bounds);
+        Eigen::VectorXd initial_state,
+        Aux::InterpolatingVector_Base initial_controls,
+        Aux::InterpolatingVector_Base lower_bounds,
+        Aux::InterpolatingVector_Base upper_bounds,
+        Aux::InterpolatingVector_Base constraints_lower_bounds,
+        Aux::InterpolatingVector_Base constraints_upper_bounds);
     ~IpoptAdaptor() = default;
 
     auto optimize() const;
