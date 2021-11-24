@@ -16,9 +16,9 @@ namespace Optimization {
   using MatrixVector = std::vector<Eigen::SparseMatrix<double>>;
 
   class EquationDerivativeCache final {
+  public:
     EquationDerivativeCache();
 
-  public:
     std::tuple<SolverVector const &, MatrixVector const &, MatrixVector const &>
     factorizations(
         Aux::InterpolatingVector_Base const &controls,
