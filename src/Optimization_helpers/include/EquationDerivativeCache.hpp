@@ -19,8 +19,14 @@ namespace Optimization {
   public:
     EquationDerivativeCache();
 
+    void initialize(
+        Aux::InterpolatingVector_Base const &controls,
+        Aux::InterpolatingVector_Base const &states,
+        Eigen::Ref<Eigen::VectorXd const> const &initial_state,
+        Model::Controlcomponent &problem);
+
     std::tuple<SolverVector const &, MatrixVector const &, MatrixVector const &>
-    factorizations(
+    compute_derivatives(
         Aux::InterpolatingVector_Base const &controls,
         Aux::InterpolatingVector_Base const &states,
         Eigen::Ref<Eigen::VectorXd const> const &initial_state,
@@ -32,6 +38,7 @@ namespace Optimization {
         dE_dnew_state_solvers;
     std::vector<Eigen::SparseMatrix<double>> dE_dlast_state;
     std::vector<Eigen::SparseMatrix<double>> dE_dcontrol;
+    bool initialized = false;
   };
 
 } // namespace Optimization
