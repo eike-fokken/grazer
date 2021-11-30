@@ -22,10 +22,10 @@ namespace Optimization {
       Eigen::Ref<Eigen::VectorXd const> const &initial_state,
       Model::Controlcomponent &problem) {
 
-    for (Eigen::Index states_timeindex = 1; states_timeindex != states.size();
-         ++states_timeindex) {
+    for (Eigen::Index states_index = 1; states_index != states.size();
+         ++states_index) {
 
-      auto u_timeindex = static_cast<size_t>(states_timeindex - 1);
+      auto u_timeindex = static_cast<size_t>(states_index - 1);
 
       Eigen::SparseMatrix<double> dE_dlast_state_matrix(
           states.get_inner_length(), states.get_inner_length());
@@ -47,7 +47,23 @@ namespace Optimization {
       /// here fill the matrices:
       //////////////////////////////
 
-      ///////////////
+      auto new_time = states.interpolation_point_at_index(states_index);
+      auto last_time = states.interpolation_point_at_index(states_index - 1);
+      auto new_state = states.vector_at_index(states_index);
+      auto last_state = states.vector_at_index(states_index - 1);
+
+      auto control = controls(new_time);
+
+      problem.d_evalutate_d_new_state(
+          new_handler, last_time, new_time, last_state, new_state, control);
+      problem.d_evalutate_d_last_state(
+          last_handler, last_time, new_time, last_state, new_state, control);
+      problem.d_evalutate_d_control(
+          control_handler, last_time, new_time, last_state, new_state, control);
+
+      /////////////////////////////////////////////
+      /// save the computed matrices and  solver states to the cache:
+      /////////////////////////////////////////////
 
       last_handler.set_matrix();
       control_handler.set_matrix();
@@ -62,6 +78,14 @@ namespace Optimization {
     }
 
     // hier die Länge der Vektoren prüfen!
+    auto rightsize
+        = states.size() - 1; // minus one because at the initial values
+                             // (state_index == 0) no derivatives are needed.
+
+    auto u_rightsize = static_cast<size_t>(rightsize);
+    assert(dE_dnew_state_solvers.size() == u_rightsize);
+    assert(dE_dlast_state.size() == u_rightsize);
+    assert(dE_dcontrol.size() == u_rightsize);
 
     initialized = true;
   }
