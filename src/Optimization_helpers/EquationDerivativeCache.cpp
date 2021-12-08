@@ -4,9 +4,6 @@
 #include "InterpolatingVector.hpp"
 #include "Matrixhandler.hpp"
 #include "Timeevolver.hpp"
-#include <Eigen/src/SparseCore/SparseMatrix.h>
-#include <Eigen/src/SparseLU/SparseLU.h>
-#include <cstddef>
 #include <iostream>
 #include <tuple>
 #include <type_traits>
@@ -40,8 +37,6 @@ namespace Optimization {
 
     for (Eigen::Index states_index = 1; states_index != states.size();
          ++states_index) {
-
-      auto u_timeindex = static_cast<size_t>(states_index);
 
       Eigen::SparseMatrix<double> dE_dlast_state_matrix(
           states.get_inner_length(), states.get_inner_length());
