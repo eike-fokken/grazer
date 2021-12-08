@@ -19,7 +19,6 @@ namespace Optimization {
   void EquationDerivativeCache::initialize(
       Aux::InterpolatingVector_Base const &controls,
       Aux::InterpolatingVector_Base const &states,
-      Eigen::Ref<Eigen::VectorXd const> const &initial_state,
       Model::Controlcomponent &problem) {
 
     for (Eigen::Index states_index = 1; states_index != states.size();
@@ -103,7 +102,7 @@ namespace Optimization {
                     == entry.state_interpolation_points)) {
 
       if (not initialized) {
-        initialize(controls, states, initial_state, problem);
+        initialize(controls, states, problem);
       }
 
       assert(dE_dlast_state.size() == static_cast<size_t>(states.size() - 1));

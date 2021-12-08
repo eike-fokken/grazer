@@ -22,7 +22,6 @@ namespace Optimization {
     void initialize(
         Aux::InterpolatingVector_Base const &controls,
         Aux::InterpolatingVector_Base const &states,
-        Eigen::Ref<Eigen::VectorXd const> const &initial_state,
         Model::Controlcomponent &problem);
 
     std::tuple<SolverVector const &, MatrixVector const &, MatrixVector const &>
