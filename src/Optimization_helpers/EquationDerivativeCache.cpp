@@ -21,10 +21,27 @@ namespace Optimization {
       Aux::InterpolatingVector_Base const &states,
       Model::Controlcomponent &problem) {
 
+    // We now exactly how many derivatives we need so we reserve:
+    auto usize = static_cast<size_t>(states.size());
+    dE_dcontrol.reserve(usize);
+    dE_dlast_state.reserve(usize);
+    dE_dnew_state_solvers.reserve(usize);
+
+    // insert dummy matrices/solvers at index 0, so that the state_indices and
+    // the derivative indices are the same.
+    assert(dE_dcontrol.empty());
+    assert(dE_dlast_state.empty());
+    assert(dE_dnew_state_solvers.empty());
+
+    dE_dcontrol.push_back(Eigen::SparseMatrix<double>());
+    dE_dlast_state.push_back(Eigen::SparseMatrix<double>());
+    dE_dnew_state_solvers.push_back(
+        Eigen::SparseLU<Eigen::SparseMatrix<double>>());
+
     for (Eigen::Index states_index = 1; states_index != states.size();
          ++states_index) {
 
-      auto u_timeindex = static_cast<size_t>(states_index - 1);
+      auto u_timeindex = static_cast<size_t>(states_index);
 
       Eigen::SparseMatrix<double> dE_dlast_state_matrix(
           states.get_inner_length(), states.get_inner_length());
@@ -72,19 +89,14 @@ namespace Optimization {
       solver.compute(dE_dnew_matrix);
 
       dE_dnew_state_solvers.push_back(std::move(solver));
-      dE_dlast_state.push_back(dE_dlast_state_matrix);
-      dE_dcontrol.push_back(dE_dcontrol_matrix);
+      dE_dlast_state.push_back(std::move(dE_dlast_state_matrix));
+      dE_dcontrol.push_back(std::move(dE_dcontrol_matrix));
     }
 
-    // hier die Länge der Vektoren prüfen!
-    auto rightsize
-        = states.size() - 1; // minus one because at the initial values
-                             // (state_index == 0) no derivatives are needed.
-
-    auto u_rightsize = static_cast<size_t>(rightsize);
-    assert(dE_dnew_state_solvers.size() == u_rightsize);
-    assert(dE_dlast_state.size() == u_rightsize);
-    assert(dE_dcontrol.size() == u_rightsize);
+    // Check the length of the vectors:
+    assert(dE_dnew_state_solvers.size() == usize);
+    assert(dE_dlast_state.size() == usize);
+    assert(dE_dcontrol.size() == usize);
 
     initialized = true;
   }
@@ -105,7 +117,7 @@ namespace Optimization {
         initialize(controls, states, problem);
       }
 
-      assert(dE_dlast_state.size() == static_cast<size_t>(states.size() - 1));
+      assert(dE_dlast_state.size() == static_cast<size_t>(states.size()));
 
       // fill the constraints vector for every (constraints-)timepoint
       // Once again start at the second state timepoint, as the first one is the
@@ -113,7 +125,7 @@ namespace Optimization {
 
       for (Eigen::Index states_timeindex = 1; states_timeindex != states.size();
            ++states_timeindex) {
-        auto u_timeindex = static_cast<size_t>(states_timeindex - 1);
+        auto u_timeindex = static_cast<size_t>(states_timeindex);
         dE_dlast_state[u_timeindex]
 
             double time
