@@ -12,6 +12,7 @@ TEST(aux_misc_overflow, aux_misc_overflow) {
   // Test that overflow occurs and exception is thrown
   try {
     [[maybe_unused]] int c = Aux::safe_addition(a, b + 1);
+    FAIL();
   } catch (std::runtime_error &e) {
     EXPECT_THAT(
         e.what(), testing::HasSubstr("The addition would cause an overflow."));

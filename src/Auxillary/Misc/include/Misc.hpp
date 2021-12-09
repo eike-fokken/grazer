@@ -1,5 +1,6 @@
 #pragma once
 #include "Exception.hpp"
+#include <limits>
 #include <sstream>
 
 namespace Aux {
@@ -33,7 +34,8 @@ namespace Aux {
   }
 
   template <typename T> T safe_addition(T a, T b) {
-    if ((a > 0 and a > std::numeric_limits<T>::max() - b)
+    if ((a > 0 and b > 0 and a > std::numeric_limits<T>::max() - b)
+        or (a < 0 and b > 0 and b < std::numeric_limits<T>::min() - a)
         or (b < 0 and a < std::numeric_limits<T>::min() - b)) {
       gthrow({"The addition would cause an overflow."});
     }
