@@ -102,30 +102,21 @@ namespace Optimization {
     if (not(controls == entry.control and initial_state == entry.initial_state
             and states.get_interpolation_points()
                     == entry.state_interpolation_points)) {
-
       if (not initialized) {
         initialize(controls, states, problem);
-      }
+      } else { // initialized == true
 
-      assert(dE_dlast_state.size() == static_cast<size_t>(states.size()));
+        // fill the constraints vector for every (constraints-)timepoint
+        // Once again start at the second state timepoint, as the first one is
+        // the (fixed) initial state.
 
-      // fill the constraints vector for every (constraints-)timepoint
-      // Once again start at the second state timepoint, as the first one is the
-      // (fixed) initial state.
+        for (Eigen::Index states_timeindex = 1;
+             states_timeindex != states.size(); ++states_timeindex) {
+          auto current_unsigned_index = static_cast<size_t>(states_timeindex);
+          dE_dlast_state[current_unsigned_index];
 
-      for (Eigen::Index states_timeindex = 1; states_timeindex != states.size();
-           ++states_timeindex) {
-        auto u_timeindex = static_cast<size_t>(states_timeindex);
-        dE_dlast_state[u_timeindex];
-
-        //     double time
-        //     = states.interpolation_point_at_index(states_timeindex);
-        // problem.d_evalutate_d_last_state(
-        //     Aux::Matrixhandler & jacobianhandler, double last_time,
-        //     double new_time,
-        //     const Eigen::Ref<const Eigen::VectorXd> &last_state,
-        //     const Eigen::Ref<const Eigen::VectorXd> &new_state,
-        //     const Eigen::Ref<const Eigen::VectorXd> &control)
+          // here jetzt mit coeffref handlern arbeiten!
+        }
       }
     }
     return std::make_tuple(
