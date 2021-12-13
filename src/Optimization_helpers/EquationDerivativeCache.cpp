@@ -20,7 +20,7 @@ namespace Optimization {
       dE_dlast_state(static_cast<size_t>(number_of_states)),
       dE_dcontrol(static_cast<size_t>(number_of_states)) {}
 
-  void EquationDerivativeCache::initialize(
+  void EquationDerivativeCache::initialize_derivatives(
       Aux::InterpolatingVector_Base const &controls,
       Aux::InterpolatingVector_Base const &states,
       Model::Controlcomponent &problem) {
@@ -30,6 +30,8 @@ namespace Optimization {
     assert(dE_dnew_state_solvers.size() == usize);
     assert(dE_dlast_state.size() == usize);
     assert(dE_dcontrol.size() == usize);
+
+    dE_dnew_matrix.resize(states.get_inner_length(), states.get_inner_length());
 
     for (Eigen::Index states_index = 1; states_index != states.size();
          ++states_index) {
@@ -51,10 +53,6 @@ namespace Optimization {
           states.get_inner_length(), states.get_inner_length());
       Aux::Triplethandler control_handler(dE_dcontrol_matrix);
 
-      //// This is an actual new matrix because only its decomposition is saved
-      /// in the solver:
-      Eigen::SparseMatrix<double> dE_dnew_matrix(
-          states.get_inner_length(), states.get_inner_length());
       Aux::Triplethandler new_handler(dE_dnew_matrix);
 
       //////////////////////////////
@@ -91,6 +89,81 @@ namespace Optimization {
     initialized = true;
   }
 
+  void EquationDerivativeCache::update_derivatives(
+      Aux::InterpolatingVector_Base const &controls,
+      Aux::InterpolatingVector_Base const &states,
+      Model::Controlcomponent &problem) {
+
+    auto usize = static_cast<size_t>(states.size());
+    // Check the length of the vectors:
+    assert(dE_dnew_state_solvers.size() == usize);
+    assert(dE_dlast_state.size() == usize);
+    assert(dE_dcontrol.size() == usize);
+
+    for (Eigen::Index states_index = 1; states_index != states.size();
+         ++states_index) {
+      auto current_unsigned_index = static_cast<size_t>(states_index);
+
+      Eigen::SparseMatrix<double> &dE_dlast_state_matrix
+          = dE_dlast_state[current_unsigned_index];
+      assert(dE_dlast_state_matrix.rows() == states.get_inner_length());
+      assert(dE_dlast_state_matrix.cols() == states.get_inner_length());
+      Aux::Coeffrefhandler last_handler(dE_dlast_state_matrix);
+
+      ////////////////////////////////////////////////////////////////////
+      /// columns is the number of states because we are not yet on control time
+      /// steps.
+      ////////////////////////////////////////////////////////////////////
+      Eigen::SparseMatrix<double> &dE_dcontrol_matrix
+          = dE_dcontrol[current_unsigned_index];
+
+      assert(dE_dcontrol_matrix.rows() == states.get_inner_length());
+      assert(dE_dcontrol_matrix.cols() == states.get_inner_length());
+      Aux::Coeffrefhandler control_handler(dE_dcontrol_matrix);
+
+      //////////////////////////////////////////////////////
+      // Careful: The following relies on the fact that each entry, that can
+      // ever be non-zero is set in each run!
+      //
+      // Also it is vital that the non-zero structure doesn't change from
+      // timestep to timestep!
+      //
+      // Both of these are the case up to now (December 21).
+      //////////////////////////////////////////////////////
+
+      assert(dE_dnew_matrix.rows() == states.get_inner_length());
+      assert(dE_dnew_matrix.cols() == states.get_inner_length());
+      Aux::Coeffrefhandler new_handler(dE_dnew_matrix);
+
+      //////////////////////////////
+      /// here fill the matrices:
+      //////////////////////////////
+
+      auto new_time = states.interpolation_point_at_index(states_index);
+      auto last_time = states.interpolation_point_at_index(states_index - 1);
+      auto new_state = states.vector_at_index(states_index);
+      auto last_state = states.vector_at_index(states_index - 1);
+
+      auto control = controls(new_time);
+
+      problem.d_evalutate_d_new_state(
+          new_handler, last_time, new_time, last_state, new_state, control);
+      problem.d_evalutate_d_last_state(
+          last_handler, last_time, new_time, last_state, new_state, control);
+      problem.d_evalutate_d_control(
+          control_handler, last_time, new_time, last_state, new_state, control);
+
+      /////////////////////////////////////////////
+      /// The computed matrices are in the cache, need to save the solver
+      /// states:
+      /////////////////////////////////////////////
+
+      Eigen::SparseLU<Eigen::SparseMatrix<double>> &solver
+          = dE_dnew_state_solvers[current_unsigned_index];
+      solver.compute(dE_dnew_matrix);
+    }
+  }
+
   std::tuple<SolverVector const &, MatrixVector const &, MatrixVector const &>
   EquationDerivativeCache::compute_derivatives(
       Aux::InterpolatingVector_Base const &controls,
@@ -98,25 +171,14 @@ namespace Optimization {
       Eigen::Ref<Eigen::VectorXd const> const &initial_state,
       Model::Controlcomponent &problem) {
 
-    // cache entry differs:
+    // Work only if cache entry differs:
     if (not(controls == entry.control and initial_state == entry.initial_state
             and states.get_interpolation_points()
                     == entry.state_interpolation_points)) {
       if (not initialized) {
-        initialize(controls, states, problem);
-      } else { // initialized == true
-
-        // fill the constraints vector for every (constraints-)timepoint
-        // Once again start at the second state timepoint, as the first one is
-        // the (fixed) initial state.
-
-        for (Eigen::Index states_timeindex = 1;
-             states_timeindex != states.size(); ++states_timeindex) {
-          auto current_unsigned_index = static_cast<size_t>(states_timeindex);
-          dE_dlast_state[current_unsigned_index];
-
-          // here jetzt mit coeffref handlern arbeiten!
-        }
+        initialize_derivatives(controls, states, problem);
+      } else { // already initialized
+        update_derivatives(controls, states, problem);
       }
     }
     return std::make_tuple(
