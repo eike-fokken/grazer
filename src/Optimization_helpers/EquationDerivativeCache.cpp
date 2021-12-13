@@ -160,7 +160,7 @@ namespace Optimization {
 
       Eigen::SparseLU<Eigen::SparseMatrix<double>> &solver
           = dE_dnew_state_solvers[current_unsigned_index];
-      solver.compute(dE_dnew_matrix);
+      solver.factorize(dE_dnew_matrix);
     }
   }
 
