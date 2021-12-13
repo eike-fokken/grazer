@@ -3,7 +3,6 @@
 #include "InterpolatingVector.hpp"
 #include "OptimizableObject.hpp"
 #include <Eigen/src/SparseCore/SparseMatrix.h>
-#include <iostream>
 #include <nlohmann/json.hpp>
 
 namespace Model {
@@ -17,7 +16,7 @@ namespace Optimization {
 
   class EquationDerivativeCache final {
   public:
-    EquationDerivativeCache();
+    EquationDerivativeCache(Eigen::Index number_of_states);
 
     void initialize(
         Aux::InterpolatingVector_Base const &controls,

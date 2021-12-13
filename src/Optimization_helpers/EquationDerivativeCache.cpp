@@ -4,6 +4,7 @@
 #include "InterpolatingVector.hpp"
 #include "Matrixhandler.hpp"
 #include "Timeevolver.hpp"
+#include <cstddef>
 #include <iostream>
 #include <tuple>
 #include <type_traits>
@@ -11,48 +12,50 @@
 
 namespace Optimization {
 
-  EquationDerivativeCache::EquationDerivativeCache() {}
+  // Because the solver class is non-copyable AND non-movable we need to default
+  // contstruct the correct number of solvers beforehand:
+  EquationDerivativeCache::EquationDerivativeCache(
+      Eigen::Index number_of_states) :
+      dE_dnew_state_solvers(static_cast<size_t>(number_of_states)),
+      dE_dlast_state(static_cast<size_t>(number_of_states)),
+      dE_dcontrol(static_cast<size_t>(number_of_states)) {}
 
   void EquationDerivativeCache::initialize(
       Aux::InterpolatingVector_Base const &controls,
       Aux::InterpolatingVector_Base const &states,
       Model::Controlcomponent &problem) {
 
-    // We now exactly how many derivatives we need so we reserve:
     auto usize = static_cast<size_t>(states.size());
-    dE_dcontrol.reserve(usize);
-    dE_dlast_state.reserve(usize);
-    dE_dnew_state_solvers.reserve(usize);
-
-    // insert dummy matrices/solvers at index 0, so that the state_indices and
-    // the derivative indices are the same.
-    assert(dE_dcontrol.empty());
-    assert(dE_dlast_state.empty());
-    assert(dE_dnew_state_solvers.empty());
-
-    dE_dcontrol.push_back(Eigen::SparseMatrix<double>());
-    dE_dlast_state.push_back(Eigen::SparseMatrix<double>());
-    dE_dnew_state_solvers.push_back(
-        Eigen::SparseLU<Eigen::SparseMatrix<double>>());
+    // Check the length of the vectors:
+    assert(dE_dnew_state_solvers.size() == usize);
+    assert(dE_dlast_state.size() == usize);
+    assert(dE_dcontrol.size() == usize);
 
     for (Eigen::Index states_index = 1; states_index != states.size();
          ++states_index) {
+      auto current_unsigned_index = static_cast<size_t>(states_index);
 
-      Eigen::SparseMatrix<double> dE_dlast_state_matrix(
+      Eigen::SparseMatrix<double> &dE_dlast_state_matrix
+          = dE_dlast_state[current_unsigned_index];
+      dE_dlast_state_matrix.resize(
           states.get_inner_length(), states.get_inner_length());
       Aux::Triplethandler last_handler(dE_dlast_state_matrix);
-
-      Eigen::SparseMatrix<double> dE_dnew_matrix(
-          states.get_inner_length(), states.get_inner_length());
-      Aux::Triplethandler new_handler(dE_dnew_matrix);
 
       ////////////////////////////////////////////////////////////////////
       /// columns is the number of states because we are not yet on control time
       /// steps.
       ////////////////////////////////////////////////////////////////////
-      Eigen::SparseMatrix<double> dE_dcontrol_matrix(
+      Eigen::SparseMatrix<double> &dE_dcontrol_matrix
+          = dE_dcontrol[current_unsigned_index];
+      dE_dcontrol_matrix.resize(
           states.get_inner_length(), states.get_inner_length());
       Aux::Triplethandler control_handler(dE_dcontrol_matrix);
+
+      //// This is an actual new matrix because only its decomposition is saved
+      /// in the solver:
+      Eigen::SparseMatrix<double> dE_dnew_matrix(
+          states.get_inner_length(), states.get_inner_length());
+      Aux::Triplethandler new_handler(dE_dnew_matrix);
 
       //////////////////////////////
       /// here fill the matrices:
@@ -80,18 +83,10 @@ namespace Optimization {
       control_handler.set_matrix();
 
       new_handler.set_matrix();
-      Eigen::SparseLU<Eigen::SparseMatrix<double>> solver;
+      Eigen::SparseLU<Eigen::SparseMatrix<double>> &solver
+          = dE_dnew_state_solvers[current_unsigned_index];
       solver.compute(dE_dnew_matrix);
-
-      dE_dnew_state_solvers.push_back(std::move(solver));
-      dE_dlast_state.push_back(std::move(dE_dlast_state_matrix));
-      dE_dcontrol.push_back(std::move(dE_dcontrol_matrix));
     }
-
-    // Check the length of the vectors:
-    assert(dE_dnew_state_solvers.size() == usize);
-    assert(dE_dlast_state.size() == usize);
-    assert(dE_dcontrol.size() == usize);
 
     initialized = true;
   }
@@ -121,16 +116,16 @@ namespace Optimization {
       for (Eigen::Index states_timeindex = 1; states_timeindex != states.size();
            ++states_timeindex) {
         auto u_timeindex = static_cast<size_t>(states_timeindex);
-        dE_dlast_state[u_timeindex]
+        dE_dlast_state[u_timeindex];
 
-            double time
-            = states.interpolation_point_at_index(states_timeindex);
-        problem.d_evalutate_d_last_state(
-            Aux::Matrixhandler & jacobianhandler, double last_time,
-            double new_time,
-            const Eigen::Ref<const Eigen::VectorXd> &last_state,
-            const Eigen::Ref<const Eigen::VectorXd> &new_state,
-            const Eigen::Ref<const Eigen::VectorXd> &control)
+        //     double time
+        //     = states.interpolation_point_at_index(states_timeindex);
+        // problem.d_evalutate_d_last_state(
+        //     Aux::Matrixhandler & jacobianhandler, double last_time,
+        //     double new_time,
+        //     const Eigen::Ref<const Eigen::VectorXd> &last_state,
+        //     const Eigen::Ref<const Eigen::VectorXd> &new_state,
+        //     const Eigen::Ref<const Eigen::VectorXd> &control)
       }
     }
     return std::make_tuple(
