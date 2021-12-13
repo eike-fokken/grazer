@@ -12,3 +12,15 @@ target_link_libraries(test_helpers PUBLIC gtest gtest_main gmock)
 
 target_include_directories(test_helpers PUBLIC include)
 
+
+
+
+
+# add_executable(playground_test PlaygroundTest.cpp)
+# target_link_libraries(playground_test PUBLIC balancelaw scheme)
+# target_link_libraries(playground_test PUBLIC gtest gtest_main gmock)
+
+# add_test(
+#   NAME playground_test
+#   COMMAND playground_test
+#   )
