@@ -36,6 +36,8 @@ namespace Optimization {
      * @param states The states for evaluation of the equations.
      * @param problem The problem whose equation derivatives should be
      * evaluated.
+     * @returns tuple of vectors of (LU solvers for) dE_dnewstate,
+     * dE_dlast_state, dE_dcontrol
      */
     std::tuple<SolverVector const &, MatrixVector const &, MatrixVector const &>
     compute_derivatives(

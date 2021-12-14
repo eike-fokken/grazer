@@ -24,6 +24,11 @@ df(Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd) {
   return A;
 }
 
+static Eigen::SparseMatrix<double>
+dfdummy(Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd) {
+  throw std::runtime_error("This function must not be called!");
+}
+
 static Eigen::VectorXd
 ffail(Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd) {
   throw std::runtime_error("fail!!");
@@ -50,7 +55,7 @@ TEST(ControlStateCache, fill_and_use_the_cache) {
 )"_json;
 
   auto evolver = Model::Timeevolver::make_instance(timeevolution_json);
-  TestControlComponent_for_ControlStateCache p(f, df);
+  TestControlComponent_for_ControlStateCache p(f, df, dfdummy, dfdummy);
 
   Optimization::ControlStateCache a(evolver, p);
 
@@ -138,7 +143,7 @@ TEST(ControlStateCache, failed_simulation) {
 )"_json;
 
   auto evolver = Model::Timeevolver::make_instance(timeevolution_json);
-  TestControlComponent_for_ControlStateCache p(ffail, dffail);
+  TestControlComponent_for_ControlStateCache p(ffail, dffail, dfdummy, dfdummy);
 
   Optimization::ControlStateCache a(evolver, p);
 

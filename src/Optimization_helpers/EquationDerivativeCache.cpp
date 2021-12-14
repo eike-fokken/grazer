@@ -19,7 +19,7 @@ namespace Optimization {
       dE_dnew_state_solvers(static_cast<size_t>(number_of_states)),
       dE_dlast_state(static_cast<size_t>(number_of_states)),
       dE_dcontrol(static_cast<size_t>(number_of_states)) {
-    if (number_of_states < 1) {
+    if (number_of_states < 2) {
       gthrow({"Can't build a cache on less than 1 timestep!"});
     }
   }
@@ -184,7 +184,11 @@ namespace Optimization {
       } else { // already initialized
         update_derivatives(controls, states, problem);
       }
+      entry
+          = {controls, states.get_interpolation_points(),
+             states.vector_at_index(0)};
     }
+
     return std::make_tuple(
         std::ref(dE_dnew_state_solvers), std::ref(dE_dlast_state),
         std::ref(dE_dcontrol));
