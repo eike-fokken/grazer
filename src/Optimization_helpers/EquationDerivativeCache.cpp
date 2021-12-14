@@ -18,7 +18,11 @@ namespace Optimization {
       Eigen::Index number_of_states) :
       dE_dnew_state_solvers(static_cast<size_t>(number_of_states)),
       dE_dlast_state(static_cast<size_t>(number_of_states)),
-      dE_dcontrol(static_cast<size_t>(number_of_states)) {}
+      dE_dcontrol(static_cast<size_t>(number_of_states)) {
+    if (number_of_states < 1) {
+      gthrow({"Can't build a cache on less than 1 timestep!"});
+    }
+  }
 
   void EquationDerivativeCache::initialize_derivatives(
       Aux::InterpolatingVector_Base const &controls,
