@@ -93,7 +93,7 @@ namespace Optimization {
       Aux::InterpolatingVector_Base const &controls,
       Aux::InterpolatingVector_Base const &states,
       Model::Controlcomponent &problem) {
-
+    assert(initialized);
     auto usize = static_cast<size_t>(states.size());
     // Check the length of the vectors:
     assert(dE_dnew_state_solvers.size() == usize);
@@ -168,11 +168,11 @@ namespace Optimization {
   EquationDerivativeCache::compute_derivatives(
       Aux::InterpolatingVector_Base const &controls,
       Aux::InterpolatingVector_Base const &states,
-      Eigen::Ref<Eigen::VectorXd const> const &initial_state,
       Model::Controlcomponent &problem) {
 
     // Work only if cache entry differs:
-    if (not(controls == entry.control and initial_state == entry.initial_state
+    if (not(controls == entry.control
+            and states.vector_at_index(0) == entry.initial_state
             and states.get_interpolation_points()
                     == entry.state_interpolation_points)) {
       if (not initialized) {

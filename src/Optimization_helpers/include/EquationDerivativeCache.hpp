@@ -14,23 +14,46 @@ namespace Optimization {
       = std::vector<Eigen::SparseLU<Eigen::SparseMatrix<double>>>;
   using MatrixVector = std::vector<Eigen::SparseMatrix<double>>;
 
+  /** @brief A cache for the timestep-wise derivatives of the equations w.r.t.
+   * states and controls.
+   *
+   * This class hands out (references to) vectors of derivative matrices of the
+   * equations. In case the input arguments (controls, timepoints where the
+   * equations are evaluated and initial state) change, a new set of vectors is
+   * computed. Otherwise the precomputed cache is supplied.
+   */
   class EquationDerivativeCache final {
   public:
+    /** @brief The constructor needs the number of states because the vector
+     * #dE_dnew_state_solvers must default construct all its members, as they
+     * are immovable.
+     */
     EquationDerivativeCache(Eigen::Index number_of_states);
 
+    /** @brief Supplies a reference to the derivatives
+     *
+     * @param controls The controls for evaluation of the equations.
+     * @param states The states for evaluation of the equations.
+     * @param problem The problem whose equation derivatives should be
+     * evaluated.
+     */
     std::tuple<SolverVector const &, MatrixVector const &, MatrixVector const &>
     compute_derivatives(
         Aux::InterpolatingVector_Base const &controls,
         Aux::InterpolatingVector_Base const &states,
-        Eigen::Ref<Eigen::VectorXd const> const &initial_state,
         Model::Controlcomponent &problem);
 
   private:
+    /** @brief Initializes and evaluates the derivatives.
+     */
     void initialize_derivatives(
         Aux::InterpolatingVector_Base const &controls,
         Aux::InterpolatingVector_Base const &states,
         Model::Controlcomponent &problem);
 
+    /** @brief evaluates the derivatives. Is only valid to run if
+     * initialize_derivatives has been run before.
+     */
     void update_derivatives(
         Aux::InterpolatingVector_Base const &controls,
         Aux::InterpolatingVector_Base const &states,
