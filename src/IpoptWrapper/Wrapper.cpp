@@ -13,20 +13,21 @@
 namespace Optimization {
 
   Ipopt::Index IpoptWrapper::nnz_constraint_jacobian() {
-    return static_cast<Ipopt::Index>(constraint_jacobian.nonZeros());
+    return static_cast<Ipopt::Index>(constraint_jacobian_structure.nonZeros());
   }
 
-  void IpoptWrapper::constraint_jacobian_structure(
+  void IpoptWrapper::save_constraint_jacobian_structure(
       Ipopt::Index number_of_nonzeros_in_constraint_jacobian,
       Ipopt::Index *Rows, Ipopt::Index *Cols) {
-    if (constraint_jacobian.nonZeros()
+    if (constraint_jacobian_structure.nonZeros()
         != number_of_nonzeros_in_constraint_jacobian) {
       gthrow({"Wrong number of non-zeros in constraint jacobian!"});
     }
     std::size_t index = 0;
-    for (Eigen::Index row = 0; row != constraint_jacobian.rows(); ++row) {
-      for (Eigen::Index col = 0; col != constraint_jacobian.size_of_row(row);
-           ++col) {
+    for (Eigen::Index row = 0; row != constraint_jacobian_structure.rows();
+         ++row) {
+      for (Eigen::Index col = 0;
+           col != constraint_jacobian_structure.size_of_row(row); ++col) {
         Rows[index] = static_cast<Ipopt::Index>(row);
         Cols[index] = static_cast<Ipopt::Index>(col);
         ++index;
@@ -55,11 +56,6 @@ namespace Optimization {
     }
     auto &states = *state_pointer;
 
-    for (Eigen::Index row = 0; row != constraint_jacobian.rows(); ++row) {
-      Eigen::VectorXd ones(constraint_jacobian.size_of_row(row));
-      ones.setOnes();
-      constraint_jacobian.row(values, nele_jac, row) = ones;
-    }
     assert(false); // not yet ready!
     return true;
   }
@@ -107,8 +103,10 @@ namespace Optimization {
       Aux::InterpolatingVector _upper_bounds,
       Aux::InterpolatingVector _constraints_lower_bounds,
       Aux::InterpolatingVector _constraints_upper_bounds) :
-      constraint_jacobian(ConstraintJacobian::make_instance(
+      constraint_jacobian_structure(ConstraintJacobian::make_instance(
           _constraints_lower_bounds, _initial_controls)),
+      constraint_jacobian_data(
+          static_cast<size_t>(constraint_jacobian_structure.nonZeros())),
       problem(_problem),
       cache(evolver, _problem),
       simulation_timepoints(std::move(_simulation_timepoints)),
@@ -215,9 +213,11 @@ namespace Optimization {
     return true;
   }
   bool IpoptWrapper::eval_f(
-      Ipopt::Index n, Ipopt::Number const *x, bool /* new_x */,
+      Ipopt::Index n, Ipopt::Number const *x, bool new_x,
       Ipopt::Number &obj_value) {
-
+    if (new_x) {
+      derivatives_computed = false;
+    }
     // Get controls into an InterpolatingVector_Base:
     Aux::ConstMappedInterpolatingVector controls(
         initial_controls.get_interpolation_points(),
@@ -246,39 +246,56 @@ namespace Optimization {
   }
 
   bool IpoptWrapper::eval_grad_f(
-      Ipopt::Index n, Ipopt::Number const *x, bool /* new_x */,
+      Ipopt::Index n, Ipopt::Number const *x, bool new_x,
       Ipopt::Number *grad_f) {
-
+    if (new_x) {
+      derivatives_computed = false;
+    }
     // Get controls into an InterpolatingVector_Base:
-    Aux::ConstMappedInterpolatingVector controls(
+    Aux::ConstMappedInterpolatingVector const controls(
         initial_controls.get_interpolation_points(),
         initial_controls.get_inner_length(), x, n);
 
-    Aux::MappedInterpolatingVector(
+    Aux::MappedInterpolatingVector gradient_f(
         initial_controls.get_interpolation_points(),
         initial_controls.get_inner_length(), grad_f, n);
 
     return false;
   }
   bool IpoptWrapper::eval_g(
-      Ipopt::Index n, Ipopt::Number const *x, bool /* new_x */, Ipopt::Index m,
+      Ipopt::Index n, Ipopt::Number const *x, bool new_x, Ipopt::Index m,
       Ipopt::Number *g) {
-
+    if (new_x) {
+      derivatives_computed = false;
+    }
     return evaluate_constraints(x, n, g, m);
   }
   bool IpoptWrapper::eval_jac_g(
-      Ipopt::Index n, Ipopt::Number const *x, bool /* new_x */,
+      Ipopt::Index /*n*/, Ipopt::Number const *x, bool new_x,
       Ipopt::Index /* m */, Ipopt::Index nele_jac, Ipopt::Index *iRow,
       Ipopt::Index *jCol, Ipopt::Number *values) {
-    if (values == NULL) {
+    if (new_x) {
+      derivatives_computed = false;
+    }
+    if (values == nullptr) {
       // first internal call of this function.
       // set the structure of constraints jacobian.
-      constraint_jacobian_structure(nele_jac, iRow, jCol);
+      save_constraint_jacobian_structure(nele_jac, iRow, jCol);
       return true;
-    } else {
-      // evaluate the jacobian of the constraints function
-      return evaluate_constraint_jacobian(x, n, values, nele_jac);
     }
+
+    // evaluate the jacobian of the constraints function and the objective:
+    // If that fails, report failure.
+    if (not compute_derivatives(new_x, x)) {
+      return false;
+    }
+    // Unfortunately we must make a copy here because we have to cache the
+    // result, as we don't know, whether eval_grad_f or eval_grad_g is called
+    // first.
+    std::copy(
+        constraint_jacobian_data.cbegin(), constraint_jacobian_data.cend(),
+        values);
+    return true;
   }
   void IpoptWrapper::finalize_solution(
       Ipopt::SolverReturn status, Ipopt::Index n, const Ipopt::Number *x,
@@ -293,6 +310,30 @@ namespace Optimization {
     solution.resize(n);
     std::copy(x, x + n, solution.begin());
     final_objective_value = obj_value;
+  }
+
+  bool IpoptWrapper::compute_derivatives(bool new_x, Ipopt::Number const *x) {
+
+    if ((not new_x) and derivatives_computed) {
+      return true;
+    }
+
+    auto number_of_controls = initial_controls.get_total_number_of_values();
+    Aux::ConstMappedInterpolatingVector const controls(
+        initial_controls.get_interpolation_points(),
+        initial_controls.get_inner_length(), x, number_of_controls);
+
+    auto *state_pointer
+        = cache.compute_states(controls, simulation_timepoints, initial_state);
+
+    // if the simulation failed: tell the calling site.
+    if (state_pointer == nullptr) {
+      return false;
+    }
+    auto &states = *state_pointer;
+
+    derivatives_computed = true;
+    return true;
   }
 
   Eigen::Index IpoptWrapper::get_number_of_controls() const {

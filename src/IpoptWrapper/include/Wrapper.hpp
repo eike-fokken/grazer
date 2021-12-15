@@ -2,6 +2,7 @@
 
 #include "ConstraintJacobian.hpp"
 #include "ControlStateCache.hpp"
+#include "InterpolatingVector.hpp"
 
 #include <Eigen/Sparse>
 #include <limits>
@@ -91,7 +92,12 @@ namespace Optimization {
         Ipopt::IpoptCalculatedQuantities *ip_cq) final;
 
   private:
-    ConstraintJacobian constraint_jacobian;
+    bool compute_derivatives(bool new_x, Ipopt::Number const *x);
+
+    bool derivatives_computed = false;
+    Aux::InterpolatingVector objective_gradient;
+    ConstraintJacobian constraint_jacobian_structure;
+    std::vector<double> constraint_jacobian_data;
 
     Model::OptimizableObject &problem;
     ControlStateCache cache;
@@ -115,7 +121,7 @@ namespace Optimization {
     /** \brief fills in the row and column index vectors at the beginning of the
      * optimization.
      */
-    void constraint_jacobian_structure(
+    void save_constraint_jacobian_structure(
         Ipopt::Index number_of_nonzeros_in_constraint_jacobian,
         Ipopt::Index *Rows, Ipopt::Index *Cols);
 
