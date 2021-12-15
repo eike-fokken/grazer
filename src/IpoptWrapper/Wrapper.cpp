@@ -258,7 +258,7 @@ namespace Optimization {
       return false;
     }
     // Unfortunately we must make a copy here because we have to cache the
-    // result, as we don't know, whether eval_grad_f or eval_grad_g is called
+    // result, as we don't know, whether eval_grad_f or eval_jac_g is called
     // first.
     std::copy(
         objective_gradient.get_allvalues().cbegin(),
@@ -293,7 +293,7 @@ namespace Optimization {
       return false;
     }
     // Unfortunately we must make a copy here because we have to cache the
-    // result, as we don't know, whether eval_grad_f or eval_grad_g is called
+    // result, as we don't know, whether eval_grad_f or eval_jac_g is called
     // first.
     std::copy(
         constraint_jacobian_data.cbegin(), constraint_jacobian_data.cend(),
