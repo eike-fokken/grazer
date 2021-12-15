@@ -246,21 +246,24 @@ namespace Optimization {
   }
 
   bool IpoptWrapper::eval_grad_f(
-      Ipopt::Index n, Ipopt::Number const *x, bool new_x,
+      Ipopt::Index /*n*/, Ipopt::Number const *x, bool new_x,
       Ipopt::Number *grad_f) {
     if (new_x) {
       derivatives_computed = false;
     }
-    // Get controls into an InterpolatingVector_Base:
-    Aux::ConstMappedInterpolatingVector const controls(
-        initial_controls.get_interpolation_points(),
-        initial_controls.get_inner_length(), x, n);
 
-    Aux::MappedInterpolatingVector gradient_f(
-        initial_controls.get_interpolation_points(),
-        initial_controls.get_inner_length(), grad_f, n);
-
-    return false;
+    // evaluate the jacobian of the constraints function and the objective:
+    // If that fails, report failure.
+    if (not compute_derivatives(new_x, x)) {
+      return false;
+    }
+    // Unfortunately we must make a copy here because we have to cache the
+    // result, as we don't know, whether eval_grad_f or eval_grad_g is called
+    // first.
+    std::copy(
+        objective_gradient.get_allvalues().cbegin(),
+        objective_gradient.get_allvalues().cend(), grad_f);
+    return true;
   }
   bool IpoptWrapper::eval_g(
       Ipopt::Index n, Ipopt::Number const *x, bool new_x, Ipopt::Index m,
