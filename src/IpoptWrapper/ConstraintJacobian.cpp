@@ -5,53 +5,45 @@
 
 namespace Optimization {
 
-  ConstraintJacobian::ConstraintJacobian(
+  MappedConstraintJacobian::MappedConstraintJacobian(
+      double *_values, Eigen::Index _number_of_entries,
       Eigen::Index _number_of_rows_per_block,
       Eigen::Index _number_of_columns_per_block,
       Eigen::Index _number_of_column_blocks, Eigen::Index _number_of_row_blocks,
       Eigen::Vector<Eigen::Index, Eigen::Dynamic> _column_block_starts) :
+      values(_values),
+      number_of_entries(_number_of_entries),
       number_of_rows_per_block(_number_of_rows_per_block),
       number_of_columns_per_block(_number_of_columns_per_block),
       number_of_column_blocks(_number_of_column_blocks),
       number_of_row_blocks(_number_of_row_blocks),
       column_block_starts(std::move(_column_block_starts)) {}
 
-  Eigen::MatrixXd &ConstraintJacobian::matrixRef() { return jacobian; }
-  Eigen::MatrixXd const &ConstraintJacobian::matrix() const { return jacobian; }
-
   Eigen::Ref<Eigen::MatrixXd>
-  ConstraintJacobian::get_nnz_column_block(Eigen::Index column) {
+  MappedConstraintJacobian::get_nnz_column_block(Eigen::Index column) {
 
     auto colstart = column * number_of_columns_per_block;
     auto rowstart = column_block_starts[column] * number_of_rows_per_block;
     auto number_of_rows
         = (number_of_row_blocks - rowstart) * number_of_rows_per_block;
     assert(false); // check this function!
-    return matrix().block(
-        rowstart, colstart, number_of_rows, number_of_columns_per_block);
   }
 
   Eigen::Ref<Eigen::MatrixXd const>
-  ConstraintJacobian::get_nnz_column_block(Eigen::Index column) const {
+  MappedConstraintJacobian::get_nnz_column_block(Eigen::Index column) const {
     auto colstart = column * number_of_columns_per_block;
     auto rowstart = column_block_starts[column] * number_of_rows_per_block;
     auto number_of_rows
         = (number_of_row_blocks - rowstart) * number_of_rows_per_block;
     assert(false); // check this function!
-    return matrix().block(
-        rowstart, colstart, number_of_rows, number_of_columns_per_block);
   }
 
-  Eigen::Index ConstraintJacobian::nonZeros() const {
-    auto blocksize = number_of_rows_per_block * number_of_columns_per_block;
-    Eigen::Index no_of_zeros = 0;
-    for (auto const &rowstart : column_block_starts) {
-      no_of_zeros += rowstart * blocksize;
-    }
-    return matrix().rows() * (matrix().cols()) - no_of_zeros;
+  Eigen::Index MappedConstraintJacobian::nonZeros() const {
+    return number_of_entries;
   }
 
-  ConstraintJacobian ConstraintJacobian::make_instance(
+  MappedConstraintJacobian MappedConstraintJacobian::make_instance(
+      double *values, Eigen::Index number_of_entries,
       Aux::InterpolatingVector_Base const &constraints,
       Aux::InterpolatingVector_Base const &controls) {
 
@@ -96,10 +88,44 @@ namespace Optimization {
       column_block_starts[icontrol] = first_relevant_block_row_index;
     }
 
-    return ConstraintJacobian(
-        number_of_constraints_per_step, number_of_controls_per_step,
-        number_of_column_blocks, number_of_row_blocks,
-        std::move(column_block_starts));
+    //
+    static_assert(false, "check that values is long enough!");
+
+    return MappedConstraintJacobian(
+        values, number_of_entries, number_of_constraints_per_step,
+        number_of_controls_per_step, number_of_column_blocks,
+        number_of_row_blocks, std::move(column_block_starts));
   }
+
+  /////////////////////////////////////////////////////////
+  // ConstraintJacobian:
+  /////////////////////////////////////////////////////////
+
+  ConstraintJacobian ConstraintJacobian::make_instance(
+      Aux::InterpolatingVector_Base const &constraints,
+      Aux::InterpolatingVector_Base const &controls) {
+    static_assert(
+        false, "write this function, maybe factor out some logic from above!");
+  }
+
+  ConstraintJacobian::ConstraintJacobian(
+      Eigen::Index number_of_entries, Eigen::Index number_of_rows_per_block,
+      Eigen::Index number_of_columns_per_block,
+      Eigen::Index number_of_column_blocks, Eigen::Index number_of_row_blocks,
+      Eigen::Vector<Eigen::Index, Eigen::Dynamic> column_block_starts) :
+      data(number_of_entries),
+      jac(data.data(), number_of_entries, number_of_rows_per_block,
+          number_of_columns_per_block, number_of_column_blocks,
+          number_of_row_blocks, std::move(column_block_starts)) {}
+
+  Eigen::Ref<Eigen::MatrixXd>
+  ConstraintJacobian::get_nnz_column_block(Eigen::Index column) {
+    return jac.get_nnz_column_block(column);
+  }
+  Eigen::Ref<Eigen::MatrixXd const>
+  ConstraintJacobian::get_nnz_column_block(Eigen::Index column) const {
+    return jac.get_nnz_column_block(column);
+  }
+  Eigen::Index ConstraintJacobian::nonZeros() const { return jac.nonZeros(); }
 
 } // namespace Optimization
