@@ -1,132 +1,105 @@
 #include "ConstraintJacobian.hpp"
 #include "Exception.hpp"
+#include <algorithm>
+#include <cstddef>
 
 namespace Optimization {
 
   ConstraintJacobian::ConstraintJacobian(
-      Eigen::Vector<Eigen::Index, Eigen::Dynamic> _start_indices_of_rows,
-      Eigen::Index _number_of_columns) :
-      start_of_rows(std::move(_start_indices_of_rows)),
-      number_of_columns(_number_of_columns) {}
+      Eigen::Index _number_of_rows_per_block,
+      Eigen::Index _number_of_columns_per_block,
+      Eigen::Index _number_of_column_blocks, Eigen::Index _number_of_row_blocks,
+      Eigen::Vector<Eigen::Index, Eigen::Dynamic> _column_block_starts) :
+      number_of_rows_per_block(_number_of_rows_per_block),
+      number_of_columns_per_block(_number_of_columns_per_block),
+      number_of_column_blocks(_number_of_column_blocks),
+      number_of_row_blocks(_number_of_row_blocks),
+      column_block_starts(std::move(_column_block_starts)) {}
 
-  double &ConstraintJacobian::CoeffRef(
-      Ipopt::Number *values, [[maybe_unused]] Ipopt::Index values_end,
-      Eigen::Index row, Eigen::Index col) {
-    assert(values_end == nonZeros());
-    assert(row >= 0);
-    assert(row < rows());
-    assert(col >= 0);
-    assert(col < cols());
+  Eigen::MatrixXd &ConstraintJacobian::matrixRef() { return jacobian; }
+  Eigen::MatrixXd const &ConstraintJacobian::matrix() const { return jacobian; }
 
-    auto rowstart = start_of_rows[row];
-    auto element = rowstart + col;
+  Eigen::Ref<Eigen::MatrixXd>
+  ConstraintJacobian::get_nnz_column_block(Eigen::Index column) {
 
-    if (element < start_of_rows[row + 1]) {
-      return values[element];
-    } else {
-      gthrow(
-          {"You try to get a mutable reference to this element of the "
-           "ConstraintJacobian: It is not among "
-           "the structurally non-zero elements!"});
-    }
+    auto colstart = column * number_of_columns_per_block;
+    auto rowstart = column_block_starts[column] * number_of_rows_per_block;
+    auto number_of_rows
+        = (number_of_row_blocks - rowstart) * number_of_rows_per_block;
+    assert(false); // check this function!
+    return matrix().block(
+        rowstart, colstart, number_of_rows, number_of_columns_per_block);
   }
 
-  double ConstraintJacobian::Coeff(
-      Ipopt::Number *values, [[maybe_unused]] Ipopt::Index values_end,
-      Eigen::Index row, Eigen::Index col) const {
-    assert(values_end == nonZeros());
-    assert(row >= 0);
-    assert(row < rows());
-    assert(col >= 0);
-    assert(col < cols());
-
-    auto rowstart = start_of_rows[row];
-    auto element = rowstart + col;
-    if (element < start_of_rows[row + 1]) {
-      return values[element];
-    } else {
-      return 0;
-    }
+  Eigen::Ref<Eigen::MatrixXd const>
+  ConstraintJacobian::get_nnz_column_block(Eigen::Index column) const {
+    auto colstart = column * number_of_columns_per_block;
+    auto rowstart = column_block_starts[column] * number_of_rows_per_block;
+    auto number_of_rows
+        = (number_of_row_blocks - rowstart) * number_of_rows_per_block;
+    assert(false); // check this function!
+    return matrix().block(
+        rowstart, colstart, number_of_rows, number_of_columns_per_block);
   }
-
-  Eigen::Map<Eigen::VectorXd> ConstraintJacobian::row(
-      Ipopt::Number *values, [[maybe_unused]] Ipopt::Index values_end,
-      Eigen::Index row) {
-    assert(values_end == nonZeros());
-    assert(row >= 0);
-    assert(row < rows());
-
-    auto start = values + start_of_rows[row];
-    auto end = values + start_of_rows[row + 1];
-    Eigen::Map<Eigen::VectorXd> current_row(start, end - start);
-    return current_row;
-  }
-  Eigen::Map<Eigen::VectorXd const> const ConstraintJacobian::row(
-      Ipopt::Number *values, [[maybe_unused]] Ipopt::Index values_end,
-      Eigen::Index row) const {
-    assert(values_end == nonZeros());
-    assert(row >= 0);
-    assert(row < rows());
-    auto start = values + start_of_rows[row];
-    auto end = values + start_of_rows[row + 1];
-    Eigen::Map<Eigen::VectorXd const> current_row(start, end - start);
-    return current_row;
-  }
-
-  Eigen::Index ConstraintJacobian::size_of_row(Eigen::Index row) {
-    assert(row >= 0);
-    assert(row < rows());
-    return start_of_rows[row + 1] - start_of_rows[row];
-  }
-
-  Eigen::Index ConstraintJacobian::rows() const {
-    return start_of_rows.size() - 1;
-  }
-  Eigen::Index ConstraintJacobian::cols() const { return number_of_columns; }
 
   Eigen::Index ConstraintJacobian::nonZeros() const {
-    return start_of_rows[start_of_rows.size() - 1];
+    auto blocksize = number_of_rows_per_block * number_of_columns_per_block;
+    Eigen::Index no_of_zeros = 0;
+    for (auto const &rowstart : column_block_starts) {
+      no_of_zeros += rowstart * blocksize;
+    }
+    return matrix().rows() * (matrix().cols()) - no_of_zeros;
   }
 
   ConstraintJacobian ConstraintJacobian::make_instance(
       Aux::InterpolatingVector_Base const &constraints,
       Aux::InterpolatingVector_Base const &controls) {
 
-    auto number_of_rows = constraints.get_total_number_of_values();
-    auto number_of_columns = controls.get_total_number_of_values();
-    Eigen::Vector<Eigen::Index, Eigen::Dynamic> start_indices_of_rows(
-        number_of_rows + 1);
-    // first row starts at 0
-    auto it = start_indices_of_rows.begin();
-    *it = 0;
-    ++it;
+    Eigen::Index number_of_row_blocks = constraints.size();
+    Eigen::Index number_of_constraints_per_step
+        = constraints.get_inner_length();
+    Eigen::Index number_of_controls_per_step = controls.get_inner_length();
+    Eigen::Index number_of_column_blocks = controls.size();
 
-    auto constraints_times = constraints.get_interpolation_points();
-    auto controls_times = controls.get_interpolation_points();
-    auto ntimesteps = constraints_times.size();
+    Eigen::Vector<Eigen::Index, Eigen::Dynamic> column_block_starts(
+        number_of_column_blocks);
 
-    auto number_controls_per_timestep = controls.get_inner_length();
-    auto number_constraints_per_timestep = constraints.get_inner_length();
+    // as we haven't programmed iterators for InterpolatingVector, this is our
+    // way of iterating in reverse:
+    for (Eigen::Index icontrol = number_of_column_blocks - 1; icontrol != -1;
+         --icontrol) {
 
-    for (size_t index = 0; index != ntimesteps; ++index) {
-      auto t_j_interator = std::lower_bound(
-          controls_times.begin(), controls_times.end(),
-          constraints_times[index]);
-      auto j = (t_j_interator - controls_times.begin());
-
-      for (auto row_index
-           = static_cast<Eigen::Index>(index) * number_constraints_per_timestep;
-           row_index
-           != static_cast<Eigen::Index>(index + 1)
-                  * number_constraints_per_timestep;
-           ++row_index) {
-        *it = *std::prev(it) + (j + 1) * number_controls_per_timestep;
-        ++it;
+      if (icontrol == 0) {
+        column_block_starts[icontrol] = 0;
+        break;
       }
+
+      // auto controltime = controls.interpolation_point_at_index(icontrol);
+      auto previous_controltime
+          = controls.interpolation_point_at_index(icontrol - 1);
+
+      auto &constrainttimes = constraints.get_interpolation_points();
+
+      auto greater_than
+          = [](double const &a, double const &b) -> bool { return a > b; };
+      // go from highest time point of constrainttimes to lowest and find the
+      // first time that is lesser of equal to the control timepoint one less.
+      //
+      // This is because  that is the last contraint time that cannot depend on
+      // the control at controltime.
+      auto constraint_time_iterator = std::lower_bound(
+          constrainttimes.rbegin(), constrainttimes.rend(),
+          previous_controltime, greater_than);
+      auto first_dependent_constraint_it = std::next(constraint_time_iterator);
+      auto first_relevant_block_row_index
+          = (constrainttimes.rend() - first_dependent_constraint_it - 1);
+      column_block_starts[icontrol] = first_relevant_block_row_index;
     }
 
     return ConstraintJacobian(
-        std::move(start_indices_of_rows), number_of_columns);
+        number_of_constraints_per_step, number_of_controls_per_step,
+        number_of_column_blocks, number_of_row_blocks,
+        std::move(column_block_starts));
   }
 
 } // namespace Optimization

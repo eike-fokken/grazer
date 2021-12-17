@@ -1,6 +1,8 @@
 #pragma once
 #include "InterpolatingVector.hpp"
 #include <Eigen/Dense>
+#include <Eigen/src/Core/Matrix.h>
+#include <Eigen/src/Core/util/Constants.h>
 #include <Eigen/src/Core/util/Meta.h>
 #include <IpTypes.hpp>
 #include <vector>
@@ -24,55 +26,32 @@ namespace Optimization {
         Aux::InterpolatingVector_Base const &constraints,
         Aux::InterpolatingVector_Base const &controls);
 
-    double &CoeffRef(
-        Ipopt::Number *values, Ipopt::Index values_end, Eigen::Index row,
-        Eigen::Index col);
+    Eigen::MatrixXd &matrixRef();
+    Eigen::MatrixXd const &matrix() const;
 
-    double Coeff(
-        Ipopt::Number *values, Ipopt::Index values_end, Eigen::Index row,
-        Eigen::Index col) const;
+    Eigen::Ref<Eigen::MatrixXd>
+    get_nnz_column_block(Eigen::Index block_row_start);
+    Eigen::Ref<Eigen::MatrixXd const>
+    get_nnz_column_block(Eigen::Index block_row_start) const;
 
-    Eigen::Map<Eigen::VectorXd>
-    row(Ipopt::Number *values, Ipopt::Index values_end, Eigen::Index row_index);
-    Eigen::Map<Eigen::VectorXd const> const
-    row(Ipopt::Number *values, Ipopt::Index values_end,
-        Eigen::Index row_index) const;
-
-    /** @brief number of non-zeros in the given row.
-     */
-    Eigen::Index size_of_row(Eigen::Index row);
-
-    /** @brief number of rows in the matrix.
-     */
-    Eigen::Index rows() const;
-    /** @brief number of columns in the matrix.
-     */
-    Eigen::Index cols() const;
-
-    /** @brief Number of non-zero elements.
-     */
     Eigen::Index nonZeros() const;
-
-    Eigen::Vector<Eigen::Index, Eigen::Dynamic> const &get_start_of_rows() {
-      return start_of_rows;
-    }
 
   private:
     /** @brief The constructor is private so we can make sure the right
      * structure is passed in the make_instance method.
      */
     ConstraintJacobian(
-        Eigen::Vector<Eigen::Index, Eigen::Dynamic> start_indices_of_rows,
-        Eigen::Index number_of_columns);
+        Eigen::Index number_of_rows_per_block,
+        Eigen::Index number_of_columns_per_block,
+        Eigen::Index number_of_column_blocks, Eigen::Index number_of_row_blocks,
+        Eigen::Vector<Eigen::Index, Eigen::Dynamic> column_block_starts);
 
-    /** @brief For each row this vector holds the starting index. The last entry
-     * marks the end index of the last row and is also the total number of
-     * non-zeros in the jacobian.
-     */
-    Eigen::Vector<Eigen::Index, Eigen::Dynamic> const start_of_rows;
-    /** @brief Number of columns in the matrix.
-     */
-    Eigen::Index const number_of_columns;
+    Eigen::MatrixXd jacobian;
+    Eigen::Index const number_of_rows_per_block;
+    Eigen::Index const number_of_columns_per_block;
+    Eigen::Index const number_of_column_blocks;
+    Eigen::Index const number_of_row_blocks;
+    Eigen::Vector<Eigen::Index, Eigen::Dynamic> const column_block_starts;
   };
 
 } // namespace Optimization
