@@ -19,6 +19,7 @@ namespace Optimization {
   ConstraintJacobian_impl ConstraintJacobian_impl::make_instance(
       Aux::InterpolatingVector_Base const &constraints,
       Aux::InterpolatingVector_Base const &controls) {
+    Eigen::Index block_height = constraints.get_inner_length();
     Eigen::Index block_width = controls.get_inner_length();
     Eigen::Index number_of_column_blocks = controls.size();
 
@@ -68,8 +69,15 @@ namespace Optimization {
     }
 
     return ConstraintJacobian_impl(
-        block_width, std::move(_block_column_offsets));
+        block_width, block_height, std::move(_block_column_offsets));
   }
+
+  ConstraintJacobian_impl::ConstraintJacobian_impl(
+      Eigen::Index _block_width, Eigen::Index _block_height,
+      Eigen::Vector<Eigen::Index, Eigen::Dynamic> _block_column_offsets) :
+      block_width(_block_width),
+      block_height(_block_height),
+      block_column_offsets(std::move(_block_column_offsets)) {}
 
   Eigen::Ref<Eigen::MatrixXd>
   MappedConstraintJacobian::get_nnz_column_block(Eigen::Index column) {

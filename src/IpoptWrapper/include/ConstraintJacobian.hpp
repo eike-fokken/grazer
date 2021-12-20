@@ -25,10 +25,11 @@ namespace Optimization {
 
   private:
     ConstraintJacobian_impl(
-        Eigen::Index block_width,
+        Eigen::Index block_width, Eigen::Index block_height,
         Eigen::Vector<Eigen::Index, Eigen::Dynamic> block_column_offsets);
 
     Eigen::Index const block_width;
+    Eigen::Index const block_height;
     Eigen::Vector<Eigen::Index, Eigen::Dynamic> const block_column_offsets;
   };
 
