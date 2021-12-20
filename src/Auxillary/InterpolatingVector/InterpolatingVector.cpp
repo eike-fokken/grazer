@@ -7,21 +7,20 @@
 
 #include <algorithm>
 
-#include <cstddef>
 #include <stdexcept>
 #include <string>
-#include <vector>
 
 namespace Aux {
 
   Interpolation_data make_from_start_number_end(
-      double first_point, double last_point, Eigen::Index number_of_entries) {
+      double first_point, double last_point, int number_of_entries) {
     if (number_of_entries <= 0) {
       gthrow(
           {"You can't have negative or zero number of entries in an "
            "InterpolatingVector.\n",
            "Supplied number of entries: ", std::to_string(number_of_entries)});
     }
+    size_t number = static_cast<size_t>(number_of_entries);
     if (last_point <= first_point) {
       gthrow(
           {"You can't have negative or zero number of entries in an ",
@@ -29,19 +28,12 @@ namespace Aux {
            "Supplied first point: ", std::to_string(first_point), "\n",
            "Supplied last point: ", std::to_string(last_point), "\n"});
     }
-    auto delta = last_point
-                 - first_point / (static_cast<double>(number_of_entries) - 1);
-    if (last_point
-        != first_point + delta * (static_cast<double>(number_of_entries) - 1)) {
-      gthrow(
-          {"Too great number of entries in InterpolatingVector. Can't fit this "
-           "number into a double without rounding!"});
-    }
-    return {first_point, delta, number_of_entries};
+    auto delta = last_point - first_point / number_of_entries;
+    return {first_point, delta, number};
   }
 
   Interpolation_data make_from_start_delta_number(
-      double first_point, double delta, Eigen::Index number_of_entries) {
+      double first_point, double delta, int number_of_entries) {
     if (number_of_entries <= 0) {
       gthrow(
           {"You can't have negative or zero number of entries in an "
@@ -54,7 +46,7 @@ namespace Aux {
            "InterpolatingVector.\n",
            "Supplied stepsize: ", std::to_string(delta)});
     }
-    return {first_point, delta, number_of_entries};
+    return {first_point, delta, static_cast<size_t>(number_of_entries)};
   }
   Interpolation_data make_from_start_delta_end(
       double first_point, double desired_delta, double last_point) {
@@ -75,8 +67,7 @@ namespace Aux {
     auto number_of_entries_double
         = (std::ceil((last_point - first_point) / desired_delta)) + 1;
 
-    auto number_of_entries
-        = static_cast<Eigen::Index>(number_of_entries_double);
+    auto number_of_entries = static_cast<size_t>(number_of_entries_double);
 
     auto delta
         = ((last_point - first_point)
@@ -84,16 +75,15 @@ namespace Aux {
     return {first_point, delta, number_of_entries};
   }
 
-  static Eigen::Vector<double, Eigen::Dynamic>
+  static std::vector<double>
   set_equidistant_interpolation_points(Interpolation_data data) {
     auto startpoint = data.first_point;
     auto delta = data.delta;
     auto number_of_entries = data.number_of_entries;
-    Eigen::Vector<double, Eigen::Dynamic> interpolation_points(
-        number_of_entries);
+    std::vector<double> interpolation_points;
     auto currentpoint = startpoint;
-    for (Eigen::Index index = 0; index != number_of_entries; ++index) {
-      interpolation_points[index] = currentpoint;
+    for (size_t index = 0; index != number_of_entries; ++index) {
+      interpolation_points.push_back(currentpoint);
       currentpoint += delta;
     }
     return interpolation_points;
@@ -116,22 +106,8 @@ namespace Aux {
   }
 
   InterpolatingVector_Base::InterpolatingVector_Base(
-      Eigen::Vector<double, Eigen::Dynamic> _interpolation_points,
-      Eigen::Index _inner_length) :
+      std::vector<double> _interpolation_points, Eigen::Index _inner_length) :
       interpolation_points(std::move(_interpolation_points)),
-      inner_length(_inner_length) {
-    if (not std::is_sorted(
-            _interpolation_points.begin(), _interpolation_points.end())) {
-      gthrow({"Interpolation points for InterpolatingVector were not sorted!"});
-    }
-  }
-
-  InterpolatingVector_Base::InterpolatingVector_Base(
-      std::vector<double> const &_interpolation_points,
-      Eigen::Index _inner_length) :
-      interpolation_points(Eigen::Map<Eigen::VectorXd const>(
-          _interpolation_points.data(),
-          static_cast<Eigen::Index>(_interpolation_points.size()))),
       inner_length(_inner_length) {
     if (not std::is_sorted(
             _interpolation_points.begin(), _interpolation_points.end())) {
@@ -186,20 +162,18 @@ namespace Aux {
     return inner_length;
   }
 
-  Eigen::Vector<double, Eigen::Dynamic> const &
+  std::vector<double> const &
   InterpolatingVector_Base::get_interpolation_points() const {
     return interpolation_points;
   }
 
   Eigen::VectorXd InterpolatingVector_Base::operator()(double t) const {
-    auto interpolationpoints_back
-        = interpolation_points[interpolation_points.size() - 1];
-    if (t >= interpolationpoints_back) {
-      if (t > interpolationpoints_back + Aux::EPSILON) {
+    if (t >= interpolation_points.back()) {
+      if (t > interpolation_points.back() + Aux::EPSILON) {
         std::ostringstream error_message;
         error_message << "Requested value " << t
                       << " is higher than the last valid value: "
-                      << interpolationpoints_back << "\n";
+                      << interpolation_points.back() << "\n";
         throw std::runtime_error(error_message.str());
       }
 
@@ -208,12 +182,12 @@ namespace Aux {
               * inner_length,
           inner_length);
     }
-    if (t <= interpolation_points[0]) {
-      if (t < interpolation_points[0] - Aux::EPSILON) {
+    if (t <= interpolation_points.front()) {
+      if (t < interpolation_points.front() - Aux::EPSILON) {
         std::ostringstream error_message;
         error_message << "Requested value " << t
                       << " is lower than the first valid value: "
-                      << interpolation_points[0] << "\n";
+                      << interpolation_points.front() << "\n";
         throw std::runtime_error(error_message.str());
       }
 
@@ -260,7 +234,7 @@ namespace Aux {
   void InterpolatingVector_Base::push_to_index(
       Eigen::Index index, double timepoint, Eigen::VectorXd vector) {
     mut_timestep(index) = vector;
-    interpolation_points[index] = timepoint;
+    interpolation_points[static_cast<size_t>(index)] = timepoint;
   }
 
   Eigen::Ref<Eigen::VectorXd const>
@@ -281,7 +255,7 @@ namespace Aux {
 
   double InterpolatingVector_Base::interpolation_point_at_index(
       Eigen::Index index) const {
-    return interpolation_points[index];
+    return interpolation_points[static_cast<size_t>(index)];
   }
 
   Eigen::Index InterpolatingVector_Base::size() const {
@@ -309,10 +283,6 @@ namespace Aux {
     if (vec1.get_inner_length() != vec2.get_inner_length()) {
       return false;
     }
-    if (vec1.get_interpolation_points().size()
-        != vec2.get_interpolation_points().size()) {
-      return false;
-    }
     if (vec1.get_interpolation_points() != vec2.get_interpolation_points()) {
       return false;
     }
@@ -331,16 +301,7 @@ namespace Aux {
           _inner_length * static_cast<Eigen::Index>(data.number_of_entries)) {}
 
   InterpolatingVector::InterpolatingVector(
-      Eigen::Vector<double, Eigen::Dynamic> _interpolation_points,
-      Eigen::Index _inner_length) :
-      InterpolatingVector_Base(_interpolation_points, _inner_length),
-      values(
-          _inner_length
-          * static_cast<Eigen::Index>(_interpolation_points.size())) {}
-
-  InterpolatingVector::InterpolatingVector(
-      std::vector<double> const &_interpolation_points,
-      Eigen::Index _inner_length) :
+      std::vector<double> _interpolation_points, Eigen::Index _inner_length) :
       InterpolatingVector_Base(_interpolation_points, _inner_length),
       values(
           _inner_length
@@ -384,8 +345,7 @@ namespace Aux {
       nlohmann::json const &json, nlohmann::json const &schema) {
     Aux::schema::validate_json(json, schema);
 
-    Eigen::Vector<double, Eigen::Dynamic> interpolation_points(
-        json["data"].size());
+    std::vector<double> interpolation_points;
 
     std::string name;
     if (json["data"].front().contains("x")) {
@@ -393,10 +353,8 @@ namespace Aux {
     } else {
       name = "time";
     }
-    Eigen::Index points_index = 0;
     for (auto const &[index, entry] : json["data"].items()) {
-      interpolation_points[points_index] = entry[name];
-      ++points_index;
+      interpolation_points.push_back(entry[name]);
     }
 
     auto inner_length
@@ -404,15 +362,14 @@ namespace Aux {
     InterpolatingVector interpolatingVector(interpolation_points, inner_length);
 
     auto size = interpolation_points.size();
-    for (Eigen::Index i = 0; i != size; ++i) {
-      auto ui = static_cast<size_t>(i);
-      Eigen::VectorXd a(json["data"][ui]["values"].size());
-      for (size_t index = 0; index != json["data"][ui]["values"].size();
+    for (size_t i = 0; i != size; ++i) {
+      Eigen::VectorXd a(json["data"][i]["values"].size());
+      for (size_t index = 0; index != json["data"][i]["values"].size();
            ++index) {
         a[static_cast<Eigen::Index>(index)]
-            = json["data"][ui]["values"][index].get<double>();
+            = json["data"][i]["values"][index].get<double>();
       }
-      interpolatingVector.mut_timestep(i) = a;
+      interpolatingVector.mut_timestep(static_cast<Eigen::Index>(i)) = a;
     }
     return interpolatingVector;
 
@@ -437,23 +394,8 @@ namespace Aux {
   }
 
   MappedInterpolatingVector::MappedInterpolatingVector(
-      Eigen::Vector<double, Eigen::Dynamic> _interpolation_points,
-      Eigen::Index _inner_length, double *array,
-      Eigen::Index number_of_elements) :
-      InterpolatingVector_Base(_interpolation_points, _inner_length),
-      mapped_values(array, number_of_elements) {
-    if (get_inner_length() * size() != number_of_elements) {
-      gthrow(
-          {"Given number of elements of mapped storage differs from needed ",
-           "number of elements as given in other data in ",
-           "MappedInterpolatingVector!"});
-    }
-  }
-
-  MappedInterpolatingVector::MappedInterpolatingVector(
-      std::vector<double> const &_interpolation_points,
-      Eigen::Index _inner_length, double *array,
-      Eigen::Index number_of_elements) :
+      std::vector<double> _interpolation_points, Eigen::Index _inner_length,
+      double *array, Eigen::Index number_of_elements) :
       InterpolatingVector_Base(_interpolation_points, _inner_length),
       mapped_values(array, number_of_elements) {
     if (get_inner_length() * size() != number_of_elements) {
@@ -512,9 +454,8 @@ namespace Aux {
   }
 
   ConstMappedInterpolatingVector::ConstMappedInterpolatingVector(
-      Eigen::Vector<double, Eigen::Dynamic> _interpolation_points,
-      Eigen::Index _inner_length, double const *array,
-      Eigen::Index number_of_elements) :
+      std::vector<double> _interpolation_points, Eigen::Index _inner_length,
+      double const *array, Eigen::Index number_of_elements) :
       InterpolatingVector_Base(_interpolation_points, _inner_length),
       mapped_values(array, number_of_elements) {
     if (get_inner_length() * size() != number_of_elements) {
@@ -524,21 +465,6 @@ namespace Aux {
            "MappedInterpolatingVector!"});
     }
   }
-
-  ConstMappedInterpolatingVector::ConstMappedInterpolatingVector(
-      std::vector<double> const &_interpolation_points,
-      Eigen::Index _inner_length, double const *array,
-      Eigen::Index number_of_elements) :
-      InterpolatingVector_Base(_interpolation_points, _inner_length),
-      mapped_values(array, number_of_elements) {
-    if (get_inner_length() * size() != number_of_elements) {
-      gthrow(
-          {"Given number of elements of mapped storage differs from needed ",
-           "number of elements as given in other data in ",
-           "MappedInterpolatingVector!"});
-    }
-  }
-
   void ConstMappedInterpolatingVector::reset_values(
       double const *array, Eigen::Index number_of_elements) {
     if (number_of_elements != this->get_total_number_of_values()) {
