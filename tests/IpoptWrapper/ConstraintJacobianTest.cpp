@@ -4,8 +4,51 @@
 
 #include <iomanip>
 
-TEST(ConstraintJacobian, construction) {
+TEST(ConstraintJacobian, construction1) {
 
+  Eigen::Vector<double, Eigen::Dynamic> constraints_times{
+      {0.0, 0.5, 0.6, 1.0, 2.0}};
+  Eigen::Vector<double, Eigen::Dynamic> controls_times{{-1, 0, 1, 2, 3}};
+
+  Eigen::Index constraints_inner_length = 2;
+  Eigen::Index controls_inner_length = 3;
+  Aux::InterpolatingVector constraints(
+      constraints_times, constraints_inner_length);
+  Aux::InterpolatingVector controls(controls_times, controls_inner_length);
+
+  auto jacobian = Optimization::ConstraintJacobian(constraints, controls);
+
+  EXPECT_EQ(jacobian.get_block_height(), constraints.get_inner_length());
+  EXPECT_EQ(jacobian.get_block_width(), controls.get_inner_length());
+  EXPECT_EQ(
+      jacobian.get_block_size(),
+      jacobian.get_block_height() * jacobian.get_block_width());
+}
+
+TEST(ConstraintJacobian, column_height) {
+
+  Eigen::Vector<double, Eigen::Dynamic> constraints_times{
+      {0.0, 0.5, 0.6, 1.0, 2.0}};
+  Eigen::Vector<double, Eigen::Dynamic> controls_times{{-1, 0, 1, 2, 3}};
+
+  Eigen::Index constraints_inner_length = 2;
+  Eigen::Index controls_inner_length = 3;
+  Aux::InterpolatingVector constraints(
+      constraints_times, constraints_inner_length);
+  Aux::InterpolatingVector controls(controls_times, controls_inner_length);
+
+  auto jacobian = Optimization::ConstraintJacobian(constraints, controls);
+
+  for (Eigen::Index j = 0; j != jacobian.get_outer_width(); ++j) {
+    Eigen::MatrixXd a = jacobian.get_nnz_column_block(j);
+    EXPECT_EQ(a.rows(), jacobian.get_inner_col_height(j));
+    EXPECT_EQ(
+        a.rows(),
+        jacobian.get_outer_col_height(j) * jacobian.get_block_height());
+  }
+}
+
+TEST(ConstraintJacobian, setmatrix) {
   Eigen::Vector<double, Eigen::Dynamic> constraints_times{{0.0, 0.5, 1.0, 2.0}};
   Eigen::Vector<double, Eigen::Dynamic> controls_times{{0, 1, 2}};
 
@@ -13,32 +56,29 @@ TEST(ConstraintJacobian, construction) {
   Eigen::Index controls_inner_length = 3;
   Aux::InterpolatingVector constraints(
       constraints_times, constraints_inner_length);
+  Aux::InterpolatingVector controls(controls_times, controls_inner_length);
 
-  // std::vector<double> constraints_times{0.0, 0.5, 1.0, 2.0};
-  // std::vector<double> controls_times{0, 1, 2};
+  auto jacobian = Optimization::ConstraintJacobian(constraints, controls);
 
-  // constexpr Eigen::Index constraints_inner_length = 2;
-  // constexpr Eigen::Index controls_inner_length = 3;
-  // Aux::InterpolatingVector constraints(
-  //     constraints_times, constraints_inner_length);
-  // Aux::InterpolatingVector controls(controls_times, controls_inner_length);
+  jacobian.setZero();
 
-  // auto jacobian
-  //     = Optimization::ConstraintJacobian::make_instance(constraints,
-  //     controls);
+  Eigen::Index counter = 0;
+  for (Eigen::Index column = 0; column != jacobian.get_outer_width();
+       ++column) {
+    // std::cout << "column: " << column << std::endl;
+    // std::cout << "rows: " << jacobian.get_nnz_column_block(column).rows()
+    //           << std::endl;
+    // std::cout << "cols: " << jacobian.get_nnz_column_block(column).cols()
+    //           << std::endl;
+    // counter += jacobian.get_nnz_column_block(column).rows();
+    jacobian.get_nnz_column_block(column).setOnes();
+  }
 
-  // EXPECT_EQ(jacobian.cols(), controls.get_total_number_of_values());
-  // EXPECT_EQ(jacobian.rows(), constraints.get_total_number_of_values());
-
-  // auto start_of_rows = jacobian.get_start_of_rows();
-  // Eigen::Index curr = 0;
-  // EXPECT_EQ(start_of_rows[0], 0);
-  // for (Eigen::Index i = 0; i != start_of_rows.size() - 1; ++i) {
-  //   curr += jacobian.size_of_row(i);
-  //   EXPECT_EQ(start_of_rows[i + 1], curr);
-  // }
+  // counter *= jacobian.get_block_width();
+  // std::cout << "counter: " << counter << std::endl;
+  // std::cout << "nonZeros: " << jacobian.nonZeros() << std::endl;
+  std::cout << jacobian.whole_matrix() << std::endl;
 }
-
 // TEST(ConstraintJacobian, coeff) {
 //   // std::vector<double> constraints_times{0.0, 0.5, 1.0, 2.0};
 //   // std::vector<double> controls_times{0, 1, 2};
@@ -115,8 +155,8 @@ TEST(ConstraintJacobian, construction) {
 
 //   // for (int row = 0; row != jacobian.rows(); ++row) {
 //   //   for (int j = 0; j != jacobian.cols(); ++j) {
-//   //     std::cout << std::setw(2) << jacobian.Coeff(values, values_end, row,
-//   j)
+//   //     std::cout << std::setw(2) << jacobian.Coeff(values, values_end,
+//   row, j)
 //   //               << " ";
 //   //   }
 //   //   std::cout << "\n";

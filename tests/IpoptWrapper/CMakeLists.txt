@@ -1,13 +1,13 @@
 
 
 
-add_executable(constrainedJacobian_test ConstrainedJacobianTest.cpp)
-target_include_directories(constrainedJacobian_test PUBLIC include)
-target_link_libraries(constrainedJacobian_test PUBLIC gtest gtest_main interpolatingVector ipoptwrapper)
+add_executable(constraintJacobian_test ConstraintJacobianTest.cpp)
+target_include_directories(constraintJacobian_test PUBLIC include)
+target_link_libraries(constraintJacobian_test PUBLIC gtest gtest_main interpolatingVector ipoptwrapper)
 
 add_test(
-  NAME constrainedJacobian_test
-  COMMAND constrainedJacobian_test
+  NAME constraintJacobian_test
+  COMMAND constraintJacobian_test
   )
 
 

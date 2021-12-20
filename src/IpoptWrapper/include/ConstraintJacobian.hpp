@@ -78,6 +78,8 @@ namespace Optimization {
         Ipopt::Index *iRow, Ipopt::Index *jCol,
         Eigen::Index number_of_values) const;
 
+    Eigen::MatrixXd whole_matrix() const;
+
   private:
     double *values;
     Eigen::Index number_of_entries;
@@ -99,6 +101,8 @@ namespace Optimization {
     void supply_indices(
         Ipopt::Index *iRow, Ipopt::Index *jCol,
         Eigen::Index number_of_values) const;
+
+    Eigen::MatrixXd whole_matrix() const;
 
   private:
     Eigen::Vector<double, Eigen::Dynamic> storage;

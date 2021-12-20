@@ -34,25 +34,30 @@ namespace Optimization {
     auto const &constrainttimes = constraints.get_interpolation_points();
     Eigen::Index control_index = 1;
     auto const &controltimes = controls.get_interpolation_points();
-
+    auto last_height = constraints.size();
     auto last_controltime = controltimes[0];
     _block_column_offsets[0] = 0;
-    while (control_index != controls.size()
-           and constraint_index != constraints.size()) {
-      if (constrainttimes[constraint_index] > last_controltime) {
+    while (control_index != controls.size()) {
+      if (constraint_index == constraints.size()) {
         _block_column_offsets[control_index]
-            = _block_column_offsets[control_index - 1] + constraint_index;
+            = _block_column_offsets[control_index - 1] + last_height;
+        last_height = 0;
+        ++control_index;
+      } else if (constrainttimes[constraint_index] > last_controltime) {
+        _block_column_offsets[control_index]
+            = _block_column_offsets[control_index - 1] + last_height;
+        last_height = constraints.size() - constraint_index;
 
         if (control_index != controls.size()) {
           last_controltime = controltimes[control_index];
-        } else {
         }
         ++control_index;
       } else {
         ++constraint_index;
       }
     }
-    std::cout << _block_column_offsets << std::endl;
+    _block_column_offsets[control_index]
+        = _block_column_offsets[control_index - 1] + last_height;
     return ConstraintJacobian_Base(
         block_width, block_height, std::move(_block_column_offsets));
   }
@@ -66,8 +71,8 @@ namespace Optimization {
       auto columnoffset = get_inner_colstart_jacobian(j);
       auto rowoffset = get_inner_rowstart_jacobian(j);
 
-      for (Eigen::Index innercol = columnoffset; innercol != get_block_width();
-           ++innercol) {
+      for (Eigen::Index innercol = columnoffset;
+           innercol != columnoffset + get_block_width(); ++innercol) {
         for (Eigen::Index innerrow = rowoffset; innerrow != get_inner_height();
              ++innerrow) {
           assert(index < number_of_values);
@@ -177,7 +182,8 @@ namespace Optimization {
   }
 
   Eigen::Index ConstraintJacobian_Base::nonZeros_of_structure() const {
-    return block_column_offsets[block_column_offsets.size() - 1];
+    return block_column_offsets[block_column_offsets.size() - 1]
+           * get_block_size();
   }
 
   /////////////////////////////
@@ -227,6 +233,20 @@ namespace Optimization {
     base_supply_indices(iRow, jCol, number_of_values);
   }
 
+  Eigen::MatrixXd MappedConstraintJacobian::whole_matrix() const {
+    Eigen::MatrixXd result
+        = Eigen::MatrixXd::Zero(get_inner_height(), get_inner_width());
+
+    for (Eigen::Index column = 0; column != get_outer_width(); ++column) {
+      result.block(
+          get_inner_rowstart_jacobian(column),
+          get_inner_colstart_jacobian(column), get_inner_col_height(column),
+          get_block_width())
+          = get_nnz_column_block(column);
+    }
+    return result;
+  }
+
   /////////////////////////////////////////////////////////
   // ConstraintJacobian:
   /////////////////////////////////////////////////////////
@@ -254,6 +274,20 @@ namespace Optimization {
       Ipopt::Index *iRow, Ipopt::Index *jCol,
       Eigen::Index number_of_values) const {
     base_supply_indices(iRow, jCol, number_of_values);
+  }
+
+  Eigen::MatrixXd ConstraintJacobian::whole_matrix() const {
+    Eigen::MatrixXd result
+        = Eigen::MatrixXd::Zero(get_inner_height(), get_inner_width());
+
+    for (Eigen::Index column = 0; column != get_outer_width(); ++column) {
+      result.block(
+          get_inner_rowstart_jacobian(column),
+          get_inner_colstart_jacobian(column), get_inner_col_height(column),
+          get_block_width())
+          = get_nnz_column_block(column);
+    }
+    return result;
   }
 
 } // namespace Optimization
