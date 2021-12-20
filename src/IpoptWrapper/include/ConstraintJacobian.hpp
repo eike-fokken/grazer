@@ -15,12 +15,10 @@ namespace Optimization {
         Aux::InterpolatingVector_Base const &constraints,
         Aux::InterpolatingVector_Base const &controls);
 
-    Eigen::Ref<Eigen::MatrixXd> get_nnz_column_block(
-        double *values, Eigen::Index number_of_entries, Eigen::Index column);
-
-    Eigen::Ref<Eigen::MatrixXd const> get_nnz_column_block(
-        double const *values, Eigen::Index number_of_entries,
-        Eigen::Index column) const;
+    Eigen::Ref<Eigen::MatrixXd>
+    get_nnz_column_block(double *values, Eigen::Index column);
+    Eigen::Ref<Eigen::MatrixXd const>
+    get_nnz_column_block(double const *values, Eigen::Index column) const;
 
     Eigen::Index nonZeros_of_structure() const;
 
@@ -33,6 +31,8 @@ namespace Optimization {
         Eigen::Index block_width, Eigen::Index block_height,
         Eigen::Vector<Eigen::Index, Eigen::Dynamic> block_column_offsets);
 
+    Eigen::Index get_outer_column_offset(Eigen::Index column) const;
+    Eigen::Index get_inner_column_offset(Eigen::Index column) const;
     Eigen::Index get_block_size() const;
     Eigen::Index get_block_width() const;
     Eigen::Index get_block_height() const;
