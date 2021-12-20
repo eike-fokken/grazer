@@ -215,6 +215,12 @@ namespace Optimization {
     values = new_values;
   }
 
+  void MappedConstraintJacobian::supply_indices(
+      Ipopt::Index *iRow, Ipopt::Index *jCol,
+      Eigen::Index number_of_values) const {
+    impl.supply_indices(iRow, jCol, number_of_values);
+  }
+
   /////////////////////////////////////////////////////////
   // ConstraintJacobian:
   /////////////////////////////////////////////////////////
@@ -236,5 +242,11 @@ namespace Optimization {
   Eigen::Index ConstraintJacobian::nonZeros() const { return storage.size(); }
 
   void ConstraintJacobian::setZero() { storage.setZero(); }
+
+  void ConstraintJacobian::supply_indices(
+      Ipopt::Index *iRow, Ipopt::Index *jCol,
+      Eigen::Index number_of_values) const {
+    impl.supply_indices(iRow, jCol, number_of_values);
+  }
 
 } // namespace Optimization

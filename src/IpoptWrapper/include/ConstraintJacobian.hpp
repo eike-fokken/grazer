@@ -75,6 +75,10 @@ namespace Optimization {
     void replace_storage(
         double *new_values, Eigen::Index length_must_be_equal_to_old_length);
 
+    void supply_indices(
+        Ipopt::Index *iRow, Ipopt::Index *jCol,
+        Eigen::Index number_of_values) const;
+
   private:
     ConstraintJacobian_impl impl;
     double *values;
@@ -93,6 +97,10 @@ namespace Optimization {
 
     Eigen::Index nonZeros() const;
     void setZero();
+
+    void supply_indices(
+        Ipopt::Index *iRow, Ipopt::Index *jCol,
+        Eigen::Index number_of_values) const;
 
   private:
     ConstraintJacobian_impl impl;
