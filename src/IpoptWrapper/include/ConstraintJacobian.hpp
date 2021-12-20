@@ -1,6 +1,7 @@
 #pragma once
 #include "InterpolatingVector.hpp"
 #include <Eigen/Dense>
+#include <Eigen/src/Core/util/Meta.h>
 #include <IpTypes.hpp>
 #include <vector>
 
@@ -16,17 +17,41 @@ namespace Optimization {
 
     Eigen::Ref<Eigen::MatrixXd> get_nnz_column_block(
         double *values, Eigen::Index number_of_entries, Eigen::Index column);
+
     Eigen::Ref<Eigen::MatrixXd const> get_nnz_column_block(
-        double *values, Eigen::Index number_of_entries,
+        double const *values, Eigen::Index number_of_entries,
         Eigen::Index column) const;
 
     Eigen::Index nonZeros_of_structure() const;
-    void setZero(double *values, Eigen::Index number_of_entries);
+
+    void supply_indices(
+        Ipopt::Index *iRow, Ipopt::Index *jCol,
+        Eigen::Index number_of_values) const;
 
   private:
     ConstraintJacobian_impl(
         Eigen::Index block_width, Eigen::Index block_height,
         Eigen::Vector<Eigen::Index, Eigen::Dynamic> block_column_offsets);
+
+    Eigen::Index get_block_size() const;
+    Eigen::Index get_block_width() const;
+    Eigen::Index get_block_height() const;
+
+    Eigen::Index get_inner_col_height(Eigen::Index column) const;
+    Eigen::Index get_outer_col_height(Eigen::Index column) const;
+    Eigen::Index get_outer_width() const;
+    Eigen::Index get_inner_width() const;
+    Eigen::Index get_outer_height() const;
+    Eigen::Index get_inner_height() const;
+
+    Eigen::Index get_outer_rowstart_jacobian(Eigen::Index column) const;
+    Eigen::Index get_inner_rowstart_jacobian(Eigen::Index column) const;
+
+    Eigen::Index get_outer_colstart_jacobian(Eigen::Index column) const;
+    Eigen::Index get_inner_colstart_jacobian(Eigen::Index column) const;
+
+    Eigen::Index column_values_start(Eigen::Index column) const;
+    Eigen::Index column_values_end(Eigen::Index column) const;
 
     Eigen::Index const block_width;
     Eigen::Index const block_height;
@@ -51,9 +76,9 @@ namespace Optimization {
         double *new_values, Eigen::Index length_must_be_equal_to_old_length);
 
   private:
+    ConstraintJacobian_impl impl;
     double *values;
     Eigen::Index number_of_entries;
-    ConstraintJacobian_impl impl;
   };
 
   class ConstraintJacobian {
@@ -62,15 +87,16 @@ namespace Optimization {
         Aux::InterpolatingVector_Base const &constraints,
         Aux::InterpolatingVector_Base const &controls);
 
-  private:
     Eigen::Ref<Eigen::MatrixXd> get_nnz_column_block(Eigen::Index column);
     Eigen::Ref<Eigen::MatrixXd const>
     get_nnz_column_block(Eigen::Index column) const;
+
     Eigen::Index nonZeros() const;
     void setZero();
 
-    Eigen::Vector<double, Eigen::Dynamic> storage;
+  private:
     ConstraintJacobian_impl impl;
+    Eigen::Vector<double, Eigen::Dynamic> storage;
   };
 
 } // namespace Optimization
