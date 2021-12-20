@@ -19,25 +19,25 @@ namespace Optimization {
   void IpoptWrapper::save_constraint_jacobian_structure(
       Ipopt::Index number_of_nonzeros_in_constraint_jacobian,
       Ipopt::Index *Rows, Ipopt::Index *Cols) {
-    if (constraint_jacobian_structure.nonZeros()
-        != number_of_nonzeros_in_constraint_jacobian) {
-      gthrow({"Wrong number of non-zeros in constraint jacobian!"});
-    }
-    std::size_t index = 0;
-    for (Eigen::Index row = 0; row != constraint_jacobian_structure.rows();
-         ++row) {
-      for (Eigen::Index col = 0;
-           col != constraint_jacobian_structure.size_of_row(row); ++col) {
-        Rows[index] = static_cast<Ipopt::Index>(row);
-        Cols[index] = static_cast<Ipopt::Index>(col);
-        ++index;
-      }
-    }
-    if (index
-        != static_cast<std::size_t>(
-            number_of_nonzeros_in_constraint_jacobian)) {
-      gthrow({"Wrong number ofnon-zeros in constraint jacobian!"});
-    }
+    // if (constraint_jacobian_structure.nonZeros()
+    //     != number_of_nonzeros_in_constraint_jacobian) {
+    //   gthrow({"Wrong number of non-zeros in constraint jacobian!"});
+    // }
+    // std::size_t index = 0;
+    // for (Eigen::Index row = 0; row != constraint_jacobian_structure.rows();
+    //      ++row) {
+    //   for (Eigen::Index col = 0;
+    //        col != constraint_jacobian_structure.size_of_row(row); ++col) {
+    //     Rows[index] = static_cast<Ipopt::Index>(row);
+    //     Cols[index] = static_cast<Ipopt::Index>(col);
+    //     ++index;
+    //   }
+    // }
+    // if (index
+    //     != static_cast<std::size_t>(
+    //         number_of_nonzeros_in_constraint_jacobian)) {
+    //   gthrow({"Wrong number ofnon-zeros in constraint jacobian!"});
+    // }
   }
 
   bool IpoptWrapper::evaluate_constraint_jacobian(
@@ -103,8 +103,8 @@ namespace Optimization {
       Aux::InterpolatingVector _upper_bounds,
       Aux::InterpolatingVector _constraints_lower_bounds,
       Aux::InterpolatingVector _constraints_upper_bounds) :
-      constraint_jacobian_structure(ConstraintJacobian::make_instance(
-          _constraints_lower_bounds, _initial_controls)),
+      constraint_jacobian_structure(
+          ConstraintJacobian(_constraints_lower_bounds, _initial_controls)),
       constraint_jacobian_data(
           static_cast<size_t>(constraint_jacobian_structure.nonZeros())),
       problem(_problem),
