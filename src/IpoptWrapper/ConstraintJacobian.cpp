@@ -3,70 +3,49 @@
 #include <algorithm>
 #include <cstddef>
 
+static size_t get_alignment_lesser_equal_1024(void *ptr) {
+  std::size_t space = 1u;
+  size_t alignment = 2048;
+  void *result = nullptr;
+  while ((not result) and alignment != 1) {
+    alignment /= 2;
+    result = std::align(alignment, 1u, ptr, space);
+  }
+  return alignment;
+}
+
 namespace Optimization {
 
-  MappedConstraintJacobian::MappedConstraintJacobian(
-      double *_values, Eigen::Index _number_of_entries,
-      Eigen::Index _number_of_rows_per_block,
-      Eigen::Index _number_of_columns_per_block,
-      Eigen::Index _number_of_column_blocks, Eigen::Index _number_of_row_blocks,
-      Eigen::Vector<Eigen::Index, Eigen::Dynamic> _column_block_starts) :
-      values(_values),
-      number_of_entries(_number_of_entries),
-      number_of_rows_per_block(_number_of_rows_per_block),
-      number_of_columns_per_block(_number_of_columns_per_block),
-      number_of_column_blocks(_number_of_column_blocks),
-      number_of_row_blocks(_number_of_row_blocks),
-      column_block_starts(std::move(_column_block_starts)) {}
-
-  Eigen::Ref<Eigen::MatrixXd>
-  MappedConstraintJacobian::get_nnz_column_block(Eigen::Index column) {
-
-    auto colstart = column * number_of_columns_per_block;
-    auto rowstart = column_block_starts[column] * number_of_rows_per_block;
-    auto number_of_rows
-        = (number_of_row_blocks - rowstart) * number_of_rows_per_block;
-    assert(false); // check this function!
-  }
-
-  Eigen::Ref<Eigen::MatrixXd const>
-  MappedConstraintJacobian::get_nnz_column_block(Eigen::Index column) const {
-    auto colstart = column * number_of_columns_per_block;
-    auto rowstart = column_block_starts[column] * number_of_rows_per_block;
-    auto number_of_rows
-        = (number_of_row_blocks - rowstart) * number_of_rows_per_block;
-    assert(false); // check this function!
-  }
-
-  Eigen::Index MappedConstraintJacobian::nonZeros() const {
-    return number_of_entries;
-  }
-
-  MappedConstraintJacobian MappedConstraintJacobian::make_instance(
-      double *values, Eigen::Index number_of_entries,
+  ConstraintJacobian_impl ConstraintJacobian_impl::make_instance(
       Aux::InterpolatingVector_Base const &constraints,
       Aux::InterpolatingVector_Base const &controls) {
-
-    Eigen::Index number_of_row_blocks = constraints.size();
-    Eigen::Index number_of_constraints_per_step
-        = constraints.get_inner_length();
-    Eigen::Index number_of_controls_per_step = controls.get_inner_length();
+    Eigen::Index block_width = controls.get_inner_length();
     Eigen::Index number_of_column_blocks = controls.size();
 
-    Eigen::Vector<Eigen::Index, Eigen::Dynamic> column_block_starts(
-        number_of_column_blocks);
+    Eigen::Vector<Eigen::Index, Eigen::Dynamic> _block_column_offsets(
+        number_of_column_blocks + 1);
 
-    // as we haven't programmed iterators for InterpolatingVector, this is our
-    // way of iterating in reverse:
+    Eigen::Index constraint_index = 0;
+    auto const &constrainttimes = constraints.get_interpolation_points();
+    Eigen::Index control_index = 1;
+    auto const &controltimes = controls.get_interpolation_points();
+
+    auto last_controltime = controltimes[0];
+    _block_column_offsets[0] = 0;
+    while (control_index != controltimes.size()) {
+      if (constrainttimes[constraint_index] > last_controltime) {
+        _block_column_offsets[control_index] = constraint_index;
+        last_controltime = controltimes[control_index];
+        ++control_index;
+        continue;
+      } else {
+        ++constraint_index;
+      }
+    }
+
     for (Eigen::Index icontrol = number_of_column_blocks - 1; icontrol != -1;
          --icontrol) {
 
-      if (icontrol == 0) {
-        column_block_starts[icontrol] = 0;
-        break;
-      }
-
-      // auto controltime = controls.interpolation_point_at_index(icontrol);
       auto previous_controltime
           = controls.interpolation_point_at_index(icontrol - 1);
 
@@ -82,20 +61,42 @@ namespace Optimization {
       auto constraint_time_iterator = std::lower_bound(
           constrainttimes.rbegin(), constrainttimes.rend(),
           previous_controltime, greater_than);
-      auto first_dependent_constraint_it = std::next(constraint_time_iterator);
+      auto first_dependent_constraint_it = std::prev(constraint_time_iterator);
       auto first_relevant_block_row_index
           = (constrainttimes.rend() - first_dependent_constraint_it - 1);
-      column_block_starts[icontrol] = first_relevant_block_row_index;
+      _block_column_offsets[icontrol] = first_relevant_block_row_index;
     }
 
-    //
-    static_assert(false, "check that values is long enough!");
-
-    return MappedConstraintJacobian(
-        values, number_of_entries, number_of_constraints_per_step,
-        number_of_controls_per_step, number_of_column_blocks,
-        number_of_row_blocks, std::move(column_block_starts));
+    return ConstraintJacobian_impl(
+        block_width, std::move(_block_column_offsets));
   }
+
+  Eigen::Ref<Eigen::MatrixXd>
+  MappedConstraintJacobian::get_nnz_column_block(Eigen::Index column) {
+
+    return impl.get_nnz_column_block(values, number_of_entries, column);
+  }
+
+  Eigen::Ref<Eigen::MatrixXd const>
+  MappedConstraintJacobian::get_nnz_column_block(Eigen::Index column) const {
+    return impl.get_nnz_column_block(values, number_of_entries, column);
+  }
+
+  Eigen::Index MappedConstraintJacobian::nonZeros() const {
+    return number_of_entries;
+  }
+
+  void MappedConstraintJacobian::setZero() {
+    if (get_alignment_lesser_equal_1024(values) >= 16) {
+      Eigen::Map<Eigen::VectorXd, Eigen::Aligned16> map(values, nonZeros());
+      map.setZero();
+    } else {
+      Eigen::Map<Eigen::VectorXd> map(values, nonZeros());
+      map.setZero();
+    }
+  }
+
+  //
 
   /////////////////////////////////////////////////////////
   // ConstraintJacobian:
@@ -127,5 +128,7 @@ namespace Optimization {
     return jac.get_nnz_column_block(column);
   }
   Eigen::Index ConstraintJacobian::nonZeros() const { return jac.nonZeros(); }
+
+  void ConstraintJacobian::setZero() { jac.setZero(); }
 
 } // namespace Optimization
