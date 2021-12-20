@@ -19,7 +19,7 @@
 
 namespace Optimization {
 
-  ConstraintJacobian_impl ConstraintJacobian_impl::make_instance(
+  ConstraintJacobian_Base ConstraintJacobian_Base::make_instance(
       Aux::InterpolatingVector_Base const &constraints,
       Aux::InterpolatingVector_Base const &controls) {
     Eigen::Index block_height = constraints.get_inner_length();
@@ -47,11 +47,11 @@ namespace Optimization {
       }
     }
 
-    return ConstraintJacobian_impl(
+    return ConstraintJacobian_Base(
         block_width, block_height, std::move(_block_column_offsets));
   }
 
-  void ConstraintJacobian_impl::supply_indices(
+  void ConstraintJacobian_Base::base_supply_indices(
       Ipopt::Index *iRow, Ipopt::Index *jCol,
       [[maybe_unused]] Eigen::Index number_of_values) const {
 
@@ -73,7 +73,7 @@ namespace Optimization {
     }
   }
 
-  ConstraintJacobian_impl::ConstraintJacobian_impl(
+  ConstraintJacobian_Base::ConstraintJacobian_Base(
       Eigen::Index _block_width, Eigen::Index _block_height,
       Eigen::Vector<Eigen::Index, Eigen::Dynamic> _block_column_offsets) :
       block_width(_block_width),
@@ -81,97 +81,96 @@ namespace Optimization {
       block_column_offsets(std::move(_block_column_offsets)) {}
 
   Eigen::Index
-  ConstraintJacobian_impl::get_outer_column_offset(Eigen::Index column) const {
+  ConstraintJacobian_Base::get_outer_column_offset(Eigen::Index column) const {
     assert(column >= 0);
     assert(column < get_outer_width());
 
     return block_column_offsets[column];
   }
   Eigen::Index
-  ConstraintJacobian_impl::get_inner_column_offset(Eigen::Index column) const {
+  ConstraintJacobian_Base::get_inner_column_offset(Eigen::Index column) const {
     assert(column >= 0);
     assert(column < get_outer_width());
     return get_outer_column_offset(column) * get_block_size();
   }
 
-  Eigen::Index ConstraintJacobian_impl::get_block_width() const {
+  Eigen::Index ConstraintJacobian_Base::get_block_width() const {
     return block_width;
   }
-  Eigen::Index ConstraintJacobian_impl::get_block_height() const {
+  Eigen::Index ConstraintJacobian_Base::get_block_height() const {
     return block_height;
   }
-  Eigen::Index ConstraintJacobian_impl::get_block_size() const {
+  Eigen::Index ConstraintJacobian_Base::get_block_size() const {
     return get_block_height() * get_block_width();
   }
-  Eigen::Index ConstraintJacobian_impl::get_outer_width() const {
+  Eigen::Index ConstraintJacobian_Base::get_outer_width() const {
     return block_column_offsets.size() - 1;
   }
-  Eigen::Index ConstraintJacobian_impl::get_inner_width() const {
+  Eigen::Index ConstraintJacobian_Base::get_inner_width() const {
     return get_outer_width() * get_block_width();
   }
-  Eigen::Index ConstraintJacobian_impl::get_outer_height() const {
+  Eigen::Index ConstraintJacobian_Base::get_outer_height() const {
     return block_column_offsets[1];
   }
-  Eigen::Index ConstraintJacobian_impl::get_inner_height() const {
+  Eigen::Index ConstraintJacobian_Base::get_inner_height() const {
     return get_outer_height() * get_block_height();
   }
   Eigen::Index
-  ConstraintJacobian_impl::get_outer_col_height(Eigen::Index column) const {
+  ConstraintJacobian_Base::get_outer_col_height(Eigen::Index column) const {
     assert(column >= 0);
     assert(column < get_outer_width());
     return block_column_offsets[column + 1] - block_column_offsets[column];
   }
   Eigen::Index
-  ConstraintJacobian_impl::get_inner_col_height(Eigen::Index column) const {
+  ConstraintJacobian_Base::get_inner_col_height(Eigen::Index column) const {
     assert(column >= 0);
     assert(column < get_outer_width());
     return get_outer_col_height(column) * get_block_height();
   }
 
-  Eigen::Index ConstraintJacobian_impl::get_outer_rowstart_jacobian(
+  Eigen::Index ConstraintJacobian_Base::get_outer_rowstart_jacobian(
       Eigen::Index column) const {
     assert(column >= 0);
     assert(column < get_outer_width());
     return get_outer_height() - get_outer_col_height(column);
   }
-  Eigen::Index ConstraintJacobian_impl::get_inner_rowstart_jacobian(
+  Eigen::Index ConstraintJacobian_Base::get_inner_rowstart_jacobian(
       Eigen::Index column) const {
     return get_outer_rowstart_jacobian(column) * get_block_height();
   }
-  Eigen::Index ConstraintJacobian_impl::get_outer_colstart_jacobian(
+  Eigen::Index ConstraintJacobian_Base::get_outer_colstart_jacobian(
       Eigen::Index column) const {
     return column;
   }
-  Eigen::Index ConstraintJacobian_impl::get_inner_colstart_jacobian(
+  Eigen::Index ConstraintJacobian_Base::get_inner_colstart_jacobian(
       Eigen::Index column) const {
     return get_outer_colstart_jacobian(column) * get_block_width();
   }
 
   Eigen::Index
-  ConstraintJacobian_impl::column_values_start(Eigen::Index column) const {
+  ConstraintJacobian_Base::column_values_start(Eigen::Index column) const {
     return get_block_size() * block_column_offsets[column];
   }
   Eigen::Index
-  ConstraintJacobian_impl::column_values_end(Eigen::Index column) const {
+  ConstraintJacobian_Base::column_values_end(Eigen::Index column) const {
     return block_column_offsets[column + 1] * get_block_size();
   }
 
-  Eigen::Ref<Eigen::MatrixXd> ConstraintJacobian_impl::get_nnz_column_block(
+  Eigen::Ref<Eigen::MatrixXd> ConstraintJacobian_Base::base_column_block(
       double *values, Eigen::Index column) {
 
     return Eigen::Map<Eigen::MatrixXd>(
         values + get_inner_column_offset(column), get_inner_col_height(column),
         get_block_width());
   }
-  Eigen::Ref<Eigen::MatrixXd const>
-  ConstraintJacobian_impl::get_nnz_column_block(
+  Eigen::Ref<Eigen::MatrixXd const> ConstraintJacobian_Base::base_column_block(
       double const *values, Eigen::Index column) const {
     return Eigen::Map<Eigen::MatrixXd const>(
         values + get_inner_column_offset(column), get_inner_col_height(column),
         get_block_width());
   }
 
-  Eigen::Index ConstraintJacobian_impl::nonZeros_of_structure() const {
+  Eigen::Index ConstraintJacobian_Base::nonZeros_of_structure() const {
     return block_column_offsets[block_column_offsets.size() - 1];
   }
 
@@ -183,20 +182,21 @@ namespace Optimization {
       double *_values, Eigen::Index _number_of_entries,
       Aux::InterpolatingVector_Base const &constraints,
       Aux::InterpolatingVector_Base const &controls) :
-      impl(ConstraintJacobian_impl::make_instance(constraints, controls)),
+      ConstraintJacobian_Base(
+          ConstraintJacobian_Base::make_instance(constraints, controls)),
       values(_values),
       number_of_entries(_number_of_entries) {
-    assert(impl.nonZeros_of_structure() == _number_of_entries);
+    assert(nonZeros_of_structure() == _number_of_entries);
   }
 
   Eigen::Ref<Eigen::MatrixXd>
   MappedConstraintJacobian::get_nnz_column_block(Eigen::Index column) {
-    return impl.get_nnz_column_block(values, column);
+    return base_column_block(values, column);
   }
 
   Eigen::Ref<Eigen::MatrixXd const>
   MappedConstraintJacobian::get_nnz_column_block(Eigen::Index column) const {
-    return impl.get_nnz_column_block(values, column);
+    return base_column_block(values, column);
   }
 
   Eigen::Index MappedConstraintJacobian::nonZeros() const {
@@ -218,7 +218,7 @@ namespace Optimization {
   void MappedConstraintJacobian::supply_indices(
       Ipopt::Index *iRow, Ipopt::Index *jCol,
       Eigen::Index number_of_values) const {
-    impl.supply_indices(iRow, jCol, number_of_values);
+    base_supply_indices(iRow, jCol, number_of_values);
   }
 
   /////////////////////////////////////////////////////////
@@ -228,16 +228,17 @@ namespace Optimization {
   ConstraintJacobian::ConstraintJacobian(
       Aux::InterpolatingVector_Base const &constraints,
       Aux::InterpolatingVector_Base const &controls) :
-      impl(ConstraintJacobian_impl::make_instance(constraints, controls)),
-      storage(impl.nonZeros_of_structure()) {}
+      ConstraintJacobian_Base(
+          ConstraintJacobian_Base::make_instance(constraints, controls)),
+      storage(nonZeros_of_structure()) {}
 
   Eigen::Ref<Eigen::MatrixXd>
   ConstraintJacobian::get_nnz_column_block(Eigen::Index column) {
-    return impl.get_nnz_column_block(storage.data(), column);
+    return base_column_block(storage.data(), column);
   }
   Eigen::Ref<Eigen::MatrixXd const>
   ConstraintJacobian::get_nnz_column_block(Eigen::Index column) const {
-    return impl.get_nnz_column_block(storage.data(), column);
+    return base_column_block(storage.data(), column);
   }
   Eigen::Index ConstraintJacobian::nonZeros() const { return storage.size(); }
 
@@ -246,7 +247,7 @@ namespace Optimization {
   void ConstraintJacobian::supply_indices(
       Ipopt::Index *iRow, Ipopt::Index *jCol,
       Eigen::Index number_of_values) const {
-    impl.supply_indices(iRow, jCol, number_of_values);
+    base_supply_indices(iRow, jCol, number_of_values);
   }
 
 } // namespace Optimization

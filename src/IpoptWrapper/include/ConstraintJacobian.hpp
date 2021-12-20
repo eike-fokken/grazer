@@ -7,30 +7,16 @@
 
 namespace Optimization {
 
-  class ConstraintJacobian_impl;
+  class ConstraintJacobian_Base;
 
-  class ConstraintJacobian_impl {
+  class ConstraintJacobian_Base {
+
   public:
-    static ConstraintJacobian_impl make_instance(
-        Aux::InterpolatingVector_Base const &constraints,
-        Aux::InterpolatingVector_Base const &controls);
-
-    Eigen::Ref<Eigen::MatrixXd>
-    get_nnz_column_block(double *values, Eigen::Index column);
-    Eigen::Ref<Eigen::MatrixXd const>
-    get_nnz_column_block(double const *values, Eigen::Index column) const;
-
-    Eigen::Index nonZeros_of_structure() const;
-
-    void supply_indices(
+    void base_supply_indices(
         Ipopt::Index *iRow, Ipopt::Index *jCol,
         Eigen::Index number_of_values) const;
 
-  private:
-    ConstraintJacobian_impl(
-        Eigen::Index block_width, Eigen::Index block_height,
-        Eigen::Vector<Eigen::Index, Eigen::Dynamic> block_column_offsets);
-
+    Eigen::Index nonZeros_of_structure() const;
     Eigen::Index get_outer_column_offset(Eigen::Index column) const;
     Eigen::Index get_inner_column_offset(Eigen::Index column) const;
     Eigen::Index get_block_size() const;
@@ -53,12 +39,27 @@ namespace Optimization {
     Eigen::Index column_values_start(Eigen::Index column) const;
     Eigen::Index column_values_end(Eigen::Index column) const;
 
+  protected:
+    static ConstraintJacobian_Base make_instance(
+        Aux::InterpolatingVector_Base const &constraints,
+        Aux::InterpolatingVector_Base const &controls);
+
+    Eigen::Ref<Eigen::MatrixXd>
+    base_column_block(double *values, Eigen::Index column);
+    Eigen::Ref<Eigen::MatrixXd const>
+    base_column_block(double const *values, Eigen::Index column) const;
+
+  private:
+    ConstraintJacobian_Base(
+        Eigen::Index block_width, Eigen::Index block_height,
+        Eigen::Vector<Eigen::Index, Eigen::Dynamic> block_column_offsets);
+
     Eigen::Index const block_width;
     Eigen::Index const block_height;
     Eigen::Vector<Eigen::Index, Eigen::Dynamic> const block_column_offsets;
   };
 
-  class MappedConstraintJacobian {
+  class MappedConstraintJacobian : public ConstraintJacobian_Base {
   public:
     MappedConstraintJacobian(
         double *values, Eigen::Index number_of_entries,
@@ -80,12 +81,11 @@ namespace Optimization {
         Eigen::Index number_of_values) const;
 
   private:
-    ConstraintJacobian_impl impl;
     double *values;
     Eigen::Index number_of_entries;
   };
 
-  class ConstraintJacobian {
+  class ConstraintJacobian : public ConstraintJacobian_Base {
   public:
     ConstraintJacobian(
         Aux::InterpolatingVector_Base const &constraints,
@@ -103,7 +103,6 @@ namespace Optimization {
         Eigen::Index number_of_values) const;
 
   private:
-    ConstraintJacobian_impl impl;
     Eigen::Vector<double, Eigen::Dynamic> storage;
   };
 
