@@ -30,6 +30,9 @@ namespace Aux {
         Interpolation_data data, Eigen::Index _inner_length);
     InterpolatingVector_Base(
         std::vector<double> interpolation_points, Eigen::Index inner_length);
+    InterpolatingVector_Base(
+        Eigen::Ref<Eigen::VectorXd const> const &interpolation_points,
+        Eigen::Index inner_length);
 
     InterpolatingVector_Base &operator=(InterpolatingVector_Base const &other);
 
@@ -49,7 +52,7 @@ namespace Aux {
     void set_values_in_bulk(Eigen::Ref<Eigen::VectorXd const> const &values);
 
     Eigen::Index get_total_number_of_values() const;
-    std::vector<double> const &get_interpolation_points() const;
+    Eigen::Map<Eigen::VectorXd const> get_interpolation_points() const;
 
     Eigen::Index get_inner_length() const;
 
@@ -99,6 +102,9 @@ namespace Aux {
     InterpolatingVector(Interpolation_data data, Eigen::Index inner_length);
     InterpolatingVector(
         std::vector<double> _interpolation_points, Eigen::Index inner_length);
+    InterpolatingVector(
+        Eigen::Ref<Eigen::VectorXd const> const &_interpolation_points,
+        Eigen::Index inner_length);
 
     // assignment:
     InterpolatingVector &operator=(InterpolatingVector_Base const &other);
@@ -125,6 +131,10 @@ namespace Aux {
     MappedInterpolatingVector(
         std::vector<double> interpolation_points, Eigen::Index inner_length,
         double *array, Eigen::Index number_of_elements);
+    MappedInterpolatingVector(
+        Eigen::Ref<Eigen::VectorXd const> const &interpolation_points,
+        Eigen::Index inner_length, double *array,
+        Eigen::Index number_of_elements);
 
     // We cannot have a copy constructor because a MappedInterpolatingVector
     // needs an underlying storage.
@@ -161,6 +171,10 @@ namespace Aux {
     ConstMappedInterpolatingVector(
         std::vector<double> interpolation_points, Eigen::Index inner_length,
         double const *array, Eigen::Index number_of_elements);
+    ConstMappedInterpolatingVector(
+        Eigen::Ref<Eigen::VectorXd const> const &interpolation_points,
+        Eigen::Index inner_length, double const *array,
+        Eigen::Index number_of_elements);
 
     void reset_values(double const *array, Eigen::Index number_of_elements);
 

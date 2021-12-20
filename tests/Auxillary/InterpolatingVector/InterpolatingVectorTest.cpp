@@ -3,6 +3,7 @@
 #include "Exception.hpp"
 #include "make_schema.hpp"
 #include <Eigen/Sparse>
+#include <Eigen/src/Core/util/Constants.h>
 #include <cstddef>
 #include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
@@ -276,7 +277,7 @@ TEST(InterpolatingVector, construct_from_json) {
   auto interpolatingVector
       = InterpolatingVector::construct_from_json(values, schema);
   auto points = interpolatingVector.get_interpolation_points();
-  std::vector<double> expected_points{0, 1};
+  Eigen::Vector<double, Eigen::Dynamic> expected_points{{0, 1}};
   EXPECT_EQ(points, expected_points);
 
   Eigen::Vector3d expected_first{{1, 2, 3}};

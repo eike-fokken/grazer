@@ -7,8 +7,6 @@
 
 namespace Optimization {
 
-  class ConstraintJacobian_Base;
-
   class ConstraintJacobian_Base {
 
   public:

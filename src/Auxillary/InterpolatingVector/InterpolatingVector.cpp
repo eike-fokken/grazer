@@ -106,6 +106,18 @@ namespace Aux {
   }
 
   InterpolatingVector_Base::InterpolatingVector_Base(
+      Eigen::Ref<Eigen::VectorXd const> const &_interpolation_points,
+      Eigen::Index _inner_length) :
+      interpolation_points(
+          _interpolation_points.begin(), _interpolation_points.end()),
+      inner_length(_inner_length) {
+    if (not std::is_sorted(
+            _interpolation_points.begin(), _interpolation_points.end())) {
+      gthrow({"Interpolation points for InterpolatingVector were not sorted!"});
+    }
+  }
+
+  InterpolatingVector_Base::InterpolatingVector_Base(
       std::vector<double> _interpolation_points, Eigen::Index _inner_length) :
       interpolation_points(std::move(_interpolation_points)),
       inner_length(_inner_length) {
@@ -162,9 +174,10 @@ namespace Aux {
     return inner_length;
   }
 
-  std::vector<double> const &
+  Eigen::Map<Eigen::VectorXd const>
   InterpolatingVector_Base::get_interpolation_points() const {
-    return interpolation_points;
+    return Eigen::Map<Eigen::VectorXd const>(
+        interpolation_points.data(), size());
   }
 
   Eigen::VectorXd InterpolatingVector_Base::operator()(double t) const {
@@ -283,6 +296,10 @@ namespace Aux {
     if (vec1.get_inner_length() != vec2.get_inner_length()) {
       return false;
     }
+    if (vec1.get_interpolation_points().size()
+        != vec2.get_interpolation_points().size()) {
+      return false;
+    }
     if (vec1.get_interpolation_points() != vec2.get_interpolation_points()) {
       return false;
     }
@@ -302,6 +319,14 @@ namespace Aux {
 
   InterpolatingVector::InterpolatingVector(
       std::vector<double> _interpolation_points, Eigen::Index _inner_length) :
+      InterpolatingVector_Base(_interpolation_points, _inner_length),
+      values(
+          _inner_length
+          * static_cast<Eigen::Index>(_interpolation_points.size())) {}
+
+  InterpolatingVector::InterpolatingVector(
+      Eigen::Ref<Eigen::VectorXd const> const &_interpolation_points,
+      Eigen::Index _inner_length) :
       InterpolatingVector_Base(_interpolation_points, _inner_length),
       values(
           _inner_length
@@ -406,6 +431,20 @@ namespace Aux {
     }
   }
 
+  MappedInterpolatingVector::MappedInterpolatingVector(
+      Eigen::Ref<Eigen::VectorXd const> const &_interpolation_points,
+      Eigen::Index _inner_length, double *array,
+      Eigen::Index number_of_elements) :
+      InterpolatingVector_Base(_interpolation_points, _inner_length),
+      mapped_values(array, number_of_elements) {
+    if (get_inner_length() * size() != number_of_elements) {
+      gthrow(
+          {"Given number of elements of mapped storage differs from needed ",
+           "number of elements as given in other data in ",
+           "MappedInterpolatingVector!"});
+    }
+  }
+
   MappedInterpolatingVector &
   MappedInterpolatingVector::operator=(InterpolatingVector_Base const &other) {
     if (not have_same_structure(other, *this)) {
@@ -465,6 +504,21 @@ namespace Aux {
            "MappedInterpolatingVector!"});
     }
   }
+
+  ConstMappedInterpolatingVector::ConstMappedInterpolatingVector(
+      Eigen::Ref<Eigen::VectorXd const> const &_interpolation_points,
+      Eigen::Index _inner_length, double const *array,
+      Eigen::Index number_of_elements) :
+      InterpolatingVector_Base(_interpolation_points, _inner_length),
+      mapped_values(array, number_of_elements) {
+    if (get_inner_length() * size() != number_of_elements) {
+      gthrow(
+          {"Given number of elements of mapped storage differs from needed ",
+           "number of elements as given in other data in ",
+           "MappedInterpolatingVector!"});
+    }
+  }
+
   void ConstMappedInterpolatingVector::reset_values(
       double const *array, Eigen::Index number_of_elements) {
     if (number_of_elements != this->get_total_number_of_values()) {

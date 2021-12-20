@@ -4,6 +4,7 @@
 #include <IpTypes.hpp>
 #include <algorithm>
 #include <cstddef>
+#include <iostream>
 #include <utility>
 
 // static size_t get_alignment_lesser_equal_1024(void *ptr) {
@@ -36,17 +37,22 @@ namespace Optimization {
 
     auto last_controltime = controltimes[0];
     _block_column_offsets[0] = 0;
-    while (control_index != controltimes.size()) {
+    while (control_index != controls.size()
+           and constraint_index != constraints.size()) {
       if (constrainttimes[constraint_index] > last_controltime) {
         _block_column_offsets[control_index]
             = _block_column_offsets[control_index - 1] + constraint_index;
-        last_controltime = controltimes[control_index];
+
+        if (control_index != controls.size()) {
+          last_controltime = controltimes[control_index];
+        } else {
+        }
         ++control_index;
       } else {
         ++constraint_index;
       }
     }
-
+    std::cout << _block_column_offsets << std::endl;
     return ConstraintJacobian_Base(
         block_width, block_height, std::move(_block_column_offsets));
   }

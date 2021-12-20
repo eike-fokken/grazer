@@ -8,7 +8,8 @@ namespace Model {
       nlohmann::json const &initial_json,
       nlohmann::json const &initial_schema) {
 
-    auto &timepoints = full_control_vector.get_interpolation_points();
+    Eigen::Ref<Eigen::VectorXd const> timepoints
+        = full_control_vector.get_interpolation_points();
 
     // careful: no controls at t= starttime, because initial values are fixed!
     auto initialvalues = Aux::InterpolatingVector::construct_from_json(

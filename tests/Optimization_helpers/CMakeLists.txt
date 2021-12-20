@@ -20,23 +20,23 @@ add_test(
   COMMAND controlStateCache_test 
   )
 
-add_executable(EquationDerivativeCache_test EquationDerivativeCacheTest.cpp)
-target_include_directories(EquationDerivativeCache_test PUBLIC include)
-target_link_libraries(EquationDerivativeCache_test PUBLIC optimization_helpers matrixhandler)
-target_link_libraries(EquationDerivativeCache_test PUBLIC gtest gtest_main gmock test_helpers)
+# add_executable(EquationDerivativeCache_test EquationDerivativeCacheTest.cpp)
+# target_include_directories(EquationDerivativeCache_test PUBLIC include)
+# target_link_libraries(EquationDerivativeCache_test PUBLIC optimization_helpers matrixhandler)
+# target_link_libraries(EquationDerivativeCache_test PUBLIC gtest gtest_main gmock test_helpers)
 
-add_test(
-  NAME EquationDerivativeCache_test 
-  COMMAND EquationDerivativeCache_test 
-  )
-
-
+# add_test(
+#   NAME EquationDerivativeCache_test 
+#   COMMAND EquationDerivativeCache_test 
+#   )
 
 
-add_executable(optimization_helpers_test Optimization_helpersTest.cpp)
-target_link_libraries(optimization_helpers_test PUBLIC gtest gtest_main gmock optimization_helpers)
 
-add_test(
-  NAME optimization_helpers_test 
-  COMMAND optimization_helpers_test 
-  )
+
+# add_executable(optimization_helpers_test Optimization_helpersTest.cpp)
+# target_link_libraries(optimization_helpers_test PUBLIC gtest gtest_main gmock optimization_helpers)
+
+# add_test(
+#   NAME optimization_helpers_test 
+#   COMMAND optimization_helpers_test 
+#   )
