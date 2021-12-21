@@ -5,6 +5,7 @@
 #include "OptimizableObject.hpp"
 #include "Optimization_helpers.hpp"
 #include "Timeevolver.hpp"
+
 #include <IpAlgTypes.hpp>
 #include <IpTypes.hpp>
 #include <cstddef>
@@ -168,7 +169,7 @@ namespace Optimization {
   }
   bool IpoptWrapper::eval_f(
       Ipopt::Index n, Ipopt::Number const *x, bool new_x,
-      Ipopt::Number &obj_value) {
+      Ipopt::Number &objective_value) {
     if (new_x) {
       derivatives_computed = false;
     }
@@ -179,19 +180,18 @@ namespace Optimization {
 
     auto *state_pointer
         = cache.compute_states(controls, simulation_timepoints, initial_state);
-
     // if the simulation failed: tell the calling site.
     if (state_pointer == nullptr) {
       return false;
     }
     auto &states = *state_pointer;
 
-    obj_value = 0;
+    objective_value = 0;
     // timeindex starts at 1, because at 0 there are initial conditions which
     // can not be altered!
     for (Eigen::Index timeindex = 1; timeindex != states.size(); ++timeindex) {
       auto utimeindex = static_cast<size_t>(timeindex);
-      obj_value += problem.evaluate_cost(
+      objective_value += problem.evaluate_cost(
           simulation_timepoints[utimeindex],
           states(simulation_timepoints[utimeindex]),
           controls(simulation_timepoints[utimeindex]));
@@ -207,14 +207,16 @@ namespace Optimization {
     }
     // evaluate the jacobian of the constraints function and the objective:
     // If that fails, report failure.
-    if (not compute_derivatives(new_x, x)) {
+    auto success_derivative_computation = compute_derivatives(new_x, x);
+    if (not success_derivative_computation) {
       return false;
     }
 
+    // After the derivatives are computed, we copy them over:
+    assert(derivatives_computed);
     Aux::MappedInterpolatingVector grad_f_accessor(
         initial_controls.get_interpolation_points(),
         initial_controls.get_inner_length(), grad_f, n);
-
     grad_f_accessor = objective_gradient;
     return true;
   }
@@ -239,10 +241,10 @@ namespace Optimization {
       constraint_jacobian.supply_indices(iRow, jCol, nele_jac);
       return true;
     }
-
     // evaluate the jacobian of the constraints function and the objective:
     // If that fails, report failure.
-    if (not compute_derivatives(new_x, x)) {
+    auto success_derivative_computation = compute_derivatives(new_x, x);
+    if (not success_derivative_computation) {
       return false;
     }
 
@@ -263,6 +265,10 @@ namespace Optimization {
       const Ipopt::IpoptData * /* ip_data */,
       Ipopt::IpoptCalculatedQuantities * /* ip_cq */) {
     if (status != Ipopt::SUCCESS) {
+      std::cout << "Ipopt status was: " << Ipopt::SUCCESS << "\n";
+      std::cout << "Compare the values to the enum Ipopt::SUCCESS for what "
+                   "that means."
+                << std::endl;
       throw std::runtime_error("The solver failed to find a solution");
     }
     Aux::ConstMappedInterpolatingVector const solution_accessor(
