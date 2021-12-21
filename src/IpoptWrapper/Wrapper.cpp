@@ -2,6 +2,7 @@
 #include "ConstraintJacobian.hpp"
 #include "Exception.hpp"
 #include "InterpolatingVector.hpp"
+#include "Matrixhandler.hpp"
 #include "OptimizableObject.hpp"
 #include "Optimization_helpers.hpp"
 #include "Timeevolver.hpp"
@@ -69,6 +70,9 @@ namespace Optimization {
           _constraints_lower_bounds.get_total_number_of_values())),
       problem(_problem),
       cache(evolver, _problem),
+      dE_dnew(_initial_state.size(), _initial_state.size()),
+      dE_dlast(_initial_state.size(), _initial_state.size()),
+      dE_dcontrol(_initial_state.size(), _initial_controls.get_inner_length()),
       simulation_timepoints(std::move(_simulation_timepoints)),
       initial_state(std::move(_initial_state)),
       initial_controls(std::move(_initial_controls)),
@@ -283,11 +287,9 @@ namespace Optimization {
   }
 
   bool IpoptWrapper::compute_derivatives(bool new_x, Ipopt::Number const *x) {
-
     if ((not new_x) and derivatives_computed) {
       return true;
     }
-
     auto number_of_controls = initial_controls.get_total_number_of_values();
     Aux::ConstMappedInterpolatingVector const controls(
         initial_controls.get_interpolation_points(),
@@ -302,18 +304,40 @@ namespace Optimization {
     }
     auto &states = *state_pointer;
 
+    // On the first run we must set the sparsity pattern of the equation
+    // derivatives and analyze the pattern inside the LU solver.
+    // TODO: Factor into a function.
+    if (not equation_matrices_initialized) {
+      double last_time = states.interpolation_point_at_index(0);
+      double new_time = states.interpolation_point_at_index(1);
+      Aux::Triplethandler new_handler(dE_dnew);
+      Aux::Triplethandler last_handler(dE_dlast);
+      Aux::Triplethandler control_handler(dE_dcontrol);
+      problem.d_evalutate_d_new_state(
+          new_handler, last_time, new_time, states(last_time), states(new_time),
+          controls(new_time));
+      new_handler.set_matrix();
+      solver.analyzePattern(dE_dnew);
+
+      problem.d_evalutate_d_last_state(
+          last_handler, last_time, new_time, states(last_time),
+          states(new_time), controls(new_time));
+      last_handler.set_matrix();
+
+      problem.d_evalutate_d_control(
+          control_handler, last_time, new_time, states(last_time),
+          states(new_time), controls(new_time));
+      control_handler.set_matrix();
+    }
+
+    Eigen::Index rev_constraint_index = constraints_lower_bounds.size() - 1;
+    for (Eigen::Index rev_state_index = states.size() - 1; rev_state_index != 0;
+         --rev_state_index) {
+      assert(false); // hier weiter
+    }
+
     derivatives_computed = true;
     return true;
-  }
-
-  Eigen::Index IpoptWrapper::get_number_of_controls() const {
-    return initial_controls.get_total_number_of_values();
-  }
-  Eigen::Index IpoptWrapper::get_number_of_control_timesteps() const {
-    return initial_controls.size();
-  }
-  Eigen::Index IpoptWrapper::get_number_of_constraint_timesteps() const {
-    return constraints_lower_bounds.size();
   }
 
   Aux::InterpolatingVector_Base const &IpoptWrapper::get_solution() const {

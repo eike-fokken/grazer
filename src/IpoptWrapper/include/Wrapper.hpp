@@ -94,7 +94,6 @@ namespace Optimization {
   private:
     bool compute_derivatives(bool new_x, Ipopt::Number const *x);
 
-    bool derivatives_computed = false;
     Aux::InterpolatingVector objective_gradient;
     ConstraintJacobian constraint_jacobian;
     MappedConstraintJacobian constraint_jacobian_accessor;
@@ -103,16 +102,22 @@ namespace Optimization {
     Model::OptimizableObject &problem;
     ControlStateCache cache;
 
+    Eigen::SparseMatrix<double> dE_dnew;
+    Eigen::SparseMatrix<double> dE_dlast;
+    Eigen::SparseMatrix<double> dE_dcontrol;
+    Eigen::SparseLU<Eigen::SparseMatrix<double>> solver;
     std::vector<double> const simulation_timepoints;
     Eigen::VectorXd const initial_state;
-
     Aux::InterpolatingVector const initial_controls;
     Aux::InterpolatingVector const lower_bounds;
     Aux::InterpolatingVector const upper_bounds;
     Aux::InterpolatingVector const constraints_lower_bounds;
     Aux::InterpolatingVector const constraints_upper_bounds;
-
     Aux::InterpolatingVector solution;
+
+    bool derivatives_computed = false;
+    bool equation_matrices_initialized = false;
+
     double final_objective_value{std::numeric_limits<double>::max()};
 
     /** \brief fills in the value vector for the constraints.
@@ -120,9 +125,5 @@ namespace Optimization {
     bool evaluate_constraints(
         Ipopt::Number const *x, Ipopt::Index number_of_controls,
         Ipopt::Number *values, Ipopt::Index nele_jac);
-
-    Eigen::Index get_number_of_controls() const;
-    Eigen::Index get_number_of_control_timesteps() const;
-    Eigen::Index get_number_of_constraint_timesteps() const;
   };
 } // namespace Optimization
