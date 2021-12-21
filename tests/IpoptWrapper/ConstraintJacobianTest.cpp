@@ -1,10 +1,8 @@
 #include "ConstraintJacobian.hpp"
 #include "InterpolatingVector.hpp"
-#include <Eigen/src/Core/Matrix.h>
-#include <Eigen/src/Core/util/Constants.h>
 #include <cstddef>
+#include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
-
 #include <iomanip>
 
 TEST(ConstraintJacobian, construction1) {
@@ -152,4 +150,35 @@ TEST(ConstraintJacobian, supply_indices) {
     comparemat(rows[uindex], cols[uindex]) = values(index);
   }
   EXPECT_EQ(jac2.whole_matrix(), comparemat);
+}
+
+TEST(ConstraintJacobian, nullpointer) {
+  Eigen::Vector<double, Eigen::Dynamic> constraints_times{{0.0, 0.5, 1.0, 2.0}};
+  Eigen::Vector<double, Eigen::Dynamic> controls_times{{0, 1, 2}};
+
+  Eigen::Index constraints_inner_length = 2;
+  Eigen::Index controls_inner_length = 3;
+  Aux::InterpolatingVector constraints(
+      constraints_times, constraints_inner_length);
+  Aux::InterpolatingVector controls(controls_times, controls_inner_length);
+
+  auto jac = Optimization::ConstraintJacobian(constraints, controls);
+
+  Eigen::VectorX<double> values(jac.nonZeros());
+  for (Eigen::Index i = 0; i != values.size(); ++i) {
+    values[i] = static_cast<double>(i) + 2;
+  }
+  auto jac2 = Optimization::MappedConstraintJacobian(
+      nullptr, values.size(), constraints, controls);
+
+  try {
+    jac2.get_column_block(2);
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
+  } catch (std::runtime_error &e) {
+    EXPECT_THAT(e.what(), testing::HasSubstr("holds a NULL pointer"));
+  }
+
+  jac2.replace_storage(values.data(), values.size());
+  jac2.setZero();
 }

@@ -3,7 +3,6 @@
 #include "Exception.hpp"
 #include "make_schema.hpp"
 #include <Eigen/Sparse>
-#include <Eigen/src/Core/util/Constants.h>
 #include <cstddef>
 #include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>

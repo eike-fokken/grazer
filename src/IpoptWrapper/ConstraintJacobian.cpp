@@ -260,8 +260,20 @@ namespace Optimization {
     return *this;
   }
 
-  double *MappedConstraintJacobian::get_value_pointer() { return values; }
+  double *MappedConstraintJacobian::get_value_pointer() {
+    if (values == nullptr) {
+      gthrow(
+          {"You may not access the values in a MappedConstraintJacobian, that "
+           "holds a NULL pointer!"});
+    }
+    return values;
+  }
   double const *MappedConstraintJacobian::get_value_pointer() const {
+    if (values == nullptr) {
+      gthrow(
+          {"You may not access the values in a MappedConstraintJacobian, that "
+           "holds a NULL pointer!"});
+    }
     return values;
   }
 
