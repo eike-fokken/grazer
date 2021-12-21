@@ -98,6 +98,7 @@ namespace Optimization {
     Aux::InterpolatingVector objective_gradient;
     ConstraintJacobian constraint_jacobian;
     MappedConstraintJacobian constraint_jacobian_accessor;
+    Eigen::MatrixXd Lambda_row_storage;
 
     Model::OptimizableObject &problem;
     ControlStateCache cache;

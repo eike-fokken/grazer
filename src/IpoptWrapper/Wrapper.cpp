@@ -64,6 +64,9 @@ namespace Optimization {
       constraint_jacobian_accessor(
           nullptr, constraint_jacobian.nonZeros(), _constraints_lower_bounds,
           _initial_controls),
+      Lambda_row_storage(Eigen::MatrixXd::Zero(
+          _initial_state.size(),
+          _constraints_lower_bounds.get_total_number_of_values())),
       problem(_problem),
       cache(evolver, _problem),
       simulation_timepoints(std::move(_simulation_timepoints)),
