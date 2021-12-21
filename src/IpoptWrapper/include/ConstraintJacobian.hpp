@@ -25,8 +25,6 @@ namespace Optimization {
         Eigen::Index block_width, Eigen::Index block_height,
         Eigen::Vector<Eigen::Index, Eigen::Dynamic> block_column_offsets);
 
-    ConstraintJacobian_Base &operator=(ConstraintJacobian_Base const &);
-
     virtual ~ConstraintJacobian_Base() = default;
 
     Eigen::Index get_outer_column_offset(Eigen::Index column) const;
@@ -88,6 +86,9 @@ namespace Optimization {
     void replace_storage(
         double *new_values, Eigen::Index length_must_be_equal_to_old_length);
 
+    MappedConstraintJacobian &operator=(MappedConstraintJacobian const &);
+    MappedConstraintJacobian &operator=(ConstraintJacobian const &);
+
   private:
     double *values;
     Eigen::Index number_of_entries;
@@ -101,6 +102,9 @@ namespace Optimization {
     ConstraintJacobian(
         Aux::InterpolatingVector_Base const &constraints,
         Aux::InterpolatingVector_Base const &controls);
+
+    ConstraintJacobian &operator=(MappedConstraintJacobian const &);
+    ConstraintJacobian &operator=(ConstraintJacobian const &);
 
   private:
     Eigen::Vector<double, Eigen::Dynamic> storage;

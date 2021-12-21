@@ -1,6 +1,8 @@
 #include "ConstraintJacobian.hpp"
 #include "InterpolatingVector.hpp"
+#include <Eigen/src/Core/Matrix.h>
 #include <Eigen/src/Core/util/Constants.h>
+#include <cstddef>
 #include <gtest/gtest.h>
 
 #include <iomanip>
@@ -106,17 +108,48 @@ TEST(ConstraintJacobian, assignment_happy) {
   Aux::InterpolatingVector controls(controls_times, controls_inner_length);
 
   auto jacobian1 = Optimization::ConstraintJacobian(constraints, controls);
-  auto jacobian2 = Optimization::ConstraintJacobian(constraints, controls);
 
-  jacobian1.setZero();
-  jacobian2.setZero();
-
-  for (Eigen::Index column = 0; column != jacobian1.get_outer_width();
-       ++column) {
-    jacobian1.get_column_block(column).setOnes();
+  Eigen::VectorX<double> values(jacobian1.nonZeros());
+  for (Eigen::Index i = 0; i != values.size(); ++i) {
+    values[i] = static_cast<double>(i);
   }
+  auto jacobian2 = Optimization::MappedConstraintJacobian(
+      values.data(), values.size(), constraints, controls);
 
-  jacobian2 = jacobian1;
-
+  jacobian1 = jacobian2;
   EXPECT_EQ(jacobian1.whole_matrix(), jacobian2.whole_matrix());
+}
+
+TEST(ConstraintJacobian, supply_indices) {
+  Eigen::Vector<double, Eigen::Dynamic> constraints_times{{0.0, 0.5, 1.0, 2.0}};
+  Eigen::Vector<double, Eigen::Dynamic> controls_times{{0, 1, 2}};
+
+  Eigen::Index constraints_inner_length = 2;
+  Eigen::Index controls_inner_length = 3;
+  Aux::InterpolatingVector constraints(
+      constraints_times, constraints_inner_length);
+  Aux::InterpolatingVector controls(controls_times, controls_inner_length);
+
+  auto jac = Optimization::ConstraintJacobian(constraints, controls);
+
+  Eigen::VectorX<double> values(jac.nonZeros());
+  for (Eigen::Index i = 0; i != values.size(); ++i) {
+    values[i] = static_cast<double>(i) + 2;
+  }
+  auto jac2 = Optimization::MappedConstraintJacobian(
+      values.data(), values.size(), constraints, controls);
+
+  std::vector<Ipopt::Index> rows(static_cast<size_t>(jac.nonZeros()));
+  std::vector<Ipopt::Index> cols(static_cast<size_t>(jac.nonZeros()));
+  jac.supply_indices(rows.data(), cols.data(), jac.nonZeros());
+
+  Eigen::MatrixXd comparemat(
+      constraints.get_total_number_of_values(),
+      controls.get_total_number_of_values());
+  comparemat.setZero();
+  for (Eigen::Index index = 0; index != jac.nonZeros(); ++index) {
+    auto uindex = static_cast<size_t>(index);
+    comparemat(rows[uindex], cols[uindex]) = values(index);
+  }
+  EXPECT_EQ(jac2.whole_matrix(), comparemat);
 }

@@ -201,8 +201,8 @@ namespace Optimization {
     return Eigen::Map<Eigen::VectorXd const>(get_value_pointer(), nonZeros());
   }
 
-  ConstraintJacobian_Base &
-  ConstraintJacobian_Base::operator=(ConstraintJacobian_Base const &other) {
+  void ConstraintJacobian_Base::assignment_helper(
+      ConstraintJacobian_Base const &other) {
     if (this->block_width != other.block_width) {
       gthrow(
           {"Can't assign a ConstraintJacobian to another one with different "
@@ -226,7 +226,6 @@ namespace Optimization {
     }
 
     this->underlying_storage() = other.underlying_storage();
-    return *this;
   }
 
   /////////////////////////////
@@ -250,6 +249,17 @@ namespace Optimization {
     values = new_values;
   }
 
+  MappedConstraintJacobian &
+  MappedConstraintJacobian::operator=(MappedConstraintJacobian const &other) {
+    assignment_helper(other);
+    return *this;
+  }
+  MappedConstraintJacobian &
+  MappedConstraintJacobian::operator=(ConstraintJacobian const &other) {
+    assignment_helper(other);
+    return *this;
+  }
+
   double *MappedConstraintJacobian::get_value_pointer() { return values; }
   double const *MappedConstraintJacobian::get_value_pointer() const {
     return values;
@@ -264,6 +274,17 @@ namespace Optimization {
       Aux::InterpolatingVector_Base const &controls) :
       ConstraintJacobian_Base(make_data(constraints, controls)),
       storage(nonZeros()) {}
+
+  ConstraintJacobian &
+  ConstraintJacobian::operator=(MappedConstraintJacobian const &other) {
+    assignment_helper(other);
+    return *this;
+  }
+  ConstraintJacobian &
+  ConstraintJacobian::operator=(ConstraintJacobian const &other) {
+    assignment_helper(other);
+    return *this;
+  }
 
   double *ConstraintJacobian::get_value_pointer() { return storage.data(); }
   double const *ConstraintJacobian::get_value_pointer() const {
