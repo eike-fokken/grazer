@@ -36,7 +36,7 @@ namespace Optimization {
 
     ~IpoptWrapper() = default;
 
-    Eigen::VectorXd const &get_solution() const;
+    Aux::InterpolatingVector_Base const &get_solution() const;
     double get_final_objective_value() const;
 
     // Internal Ipopt methods
@@ -96,8 +96,8 @@ namespace Optimization {
 
     bool derivatives_computed = false;
     Aux::InterpolatingVector objective_gradient;
-    ConstraintJacobian constraint_jacobian_structure;
-    std::vector<double> constraint_jacobian_data;
+    ConstraintJacobian constraint_jacobian;
+    MappedConstraintJacobian constraint_jacobian_accessor;
 
     Model::OptimizableObject &problem;
     ControlStateCache cache;
@@ -111,29 +111,12 @@ namespace Optimization {
     Aux::InterpolatingVector const constraints_lower_bounds;
     Aux::InterpolatingVector const constraints_upper_bounds;
 
-    Eigen::VectorXd solution;
+    Aux::InterpolatingVector solution;
     double final_objective_value{std::numeric_limits<double>::max()};
-
-    /** \brief returns the number of non-zeros in the constraint
-     * jacobian.
-     */
-    Ipopt::Index nnz_constraint_jacobian();
-    /** \brief fills in the row and column index vectors at the beginning of the
-     * optimization.
-     */
-    void save_constraint_jacobian_structure(
-        Ipopt::Index number_of_nonzeros_in_constraint_jacobian,
-        Ipopt::Index *Rows, Ipopt::Index *Cols);
 
     /** \brief fills in the value vector for the constraints.
      */
     bool evaluate_constraints(
-        Ipopt::Number const *x, Ipopt::Index number_of_controls,
-        Ipopt::Number *values, Ipopt::Index nele_jac);
-
-    /** \brief fills in the value vector for the constraint jacobian.
-     */
-    bool evaluate_constraint_jacobian(
         Ipopt::Number const *x, Ipopt::Index number_of_controls,
         Ipopt::Number *values, Ipopt::Index nele_jac);
 

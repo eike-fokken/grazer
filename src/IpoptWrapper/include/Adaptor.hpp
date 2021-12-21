@@ -1,4 +1,5 @@
 #pragma once
+#include "InterpolatingVector.hpp"
 #include "Wrapper.hpp"
 
 #include <Eigen/Dense>
@@ -28,7 +29,7 @@ namespace Optimization {
 
     auto optimize() const;
 
-    Eigen::VectorXd const &get_solution() const;
+    Aux::InterpolatingVector_Base const &get_solution() const;
     double get_obj_value() const;
   };
 } // namespace Optimization

@@ -160,7 +160,7 @@ namespace Optimization {
   void ConstraintJacobian_Base::supply_indices(
       Ipopt::Index *iRow, Ipopt::Index *jCol,
       Eigen::Index number_of_values) const {
-
+    assert(number_of_values == nonZeros());
     Ipopt::Index index = 0;
     for (Eigen::Index j = 0; j != get_outer_width(); ++j) {
       auto columnoffset = get_inner_colstart_jacobian(j);
@@ -177,6 +177,7 @@ namespace Optimization {
         }
       }
     }
+    assert(index == number_of_values);
   }
 
   Eigen::MatrixXd ConstraintJacobian_Base::whole_matrix() const {
