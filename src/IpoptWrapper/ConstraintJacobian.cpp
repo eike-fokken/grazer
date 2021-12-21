@@ -2,25 +2,11 @@
 #include "Exception.hpp"
 #include <Eigen/Dense>
 #include <IpTypes.hpp>
-#include <algorithm>
-#include <cstddef>
-#include <iostream>
-#include <utility>
-
-// static size_t get_alignment_lesser_equal_1024(void *ptr) {
-//   std::size_t space = 1u;
-//   size_t alignment = 2048;
-//   void *result = nullptr;
-//   while ((not result) and alignment != 1) {
-//     alignment /= 2;
-//     result = std::align(alignment, 1u, ptr, space);
-//   }
-//   return alignment;
-// }
 
 namespace Optimization {
 
-  ConstraintJacobian_Base ConstraintJacobian_Base::make_instance(
+  std::tuple<Eigen::Index, Eigen::Index, Eigen::VectorX<Eigen::Index>>
+  make_data(
       Aux::InterpolatingVector_Base const &constraints,
       Aux::InterpolatingVector_Base const &controls) {
     Eigen::Index block_height = constraints.get_inner_length();
@@ -58,37 +44,22 @@ namespace Optimization {
     }
     _block_column_offsets[control_index]
         = _block_column_offsets[control_index - 1] + last_height;
-    return ConstraintJacobian_Base(
-        block_width, block_height, std::move(_block_column_offsets));
-  }
 
-  void ConstraintJacobian_Base::base_supply_indices(
-      Ipopt::Index *iRow, Ipopt::Index *jCol,
-      [[maybe_unused]] Eigen::Index number_of_values) const {
-
-    Ipopt::Index index = 0;
-    for (Eigen::Index j = 0; j != get_outer_width(); ++j) {
-      auto columnoffset = get_inner_colstart_jacobian(j);
-      auto rowoffset = get_inner_rowstart_jacobian(j);
-
-      for (Eigen::Index innercol = columnoffset;
-           innercol != columnoffset + get_block_width(); ++innercol) {
-        for (Eigen::Index innerrow = rowoffset; innerrow != get_inner_height();
-             ++innerrow) {
-          assert(index < number_of_values);
-          iRow[index] = static_cast<int>(innerrow);
-          jCol[index] = static_cast<int>(innercol);
-          ++index;
-        }
-      }
-    }
+    return std::make_tuple(block_height, block_width, _block_column_offsets);
   }
 
   ConstraintJacobian_Base::ConstraintJacobian_Base(
-      Eigen::Index _block_width, Eigen::Index _block_height,
+      std::tuple<Eigen::Index, Eigen::Index, Eigen::VectorX<Eigen::Index>>
+          height_width_offsets) :
+      ConstraintJacobian_Base(
+          std::get<0>(height_width_offsets), std::get<1>(height_width_offsets),
+          std::get<2>(height_width_offsets)) {}
+
+  ConstraintJacobian_Base::ConstraintJacobian_Base(
+      Eigen::Index _block_height, Eigen::Index _block_width,
       Eigen::Vector<Eigen::Index, Eigen::Dynamic> _block_column_offsets) :
-      block_width(_block_width),
       block_height(_block_height),
+      block_width(_block_width),
       block_column_offsets(std::move(_block_column_offsets)) {}
 
   Eigen::Index
@@ -167,23 +138,95 @@ namespace Optimization {
     return block_column_offsets[column + 1] * get_block_size();
   }
 
-  Eigen::Ref<Eigen::MatrixXd> ConstraintJacobian_Base::base_column_block(
-      double *values, Eigen::Index column) {
+  void ConstraintJacobian_Base::setZero() { underlying_storage().setZero(); }
 
+  Eigen::Ref<Eigen::MatrixXd>
+  ConstraintJacobian_Base::get_column_block(Eigen::Index column) {
     return Eigen::Map<Eigen::MatrixXd>(
-        values + get_inner_column_offset(column), get_inner_col_height(column),
-        get_block_width());
+        get_value_pointer() + get_inner_column_offset(column),
+        get_inner_col_height(column), get_block_width());
   }
-  Eigen::Ref<Eigen::MatrixXd const> ConstraintJacobian_Base::base_column_block(
-      double const *values, Eigen::Index column) const {
+  Eigen::Ref<Eigen::MatrixXd const>
+  ConstraintJacobian_Base::get_column_block(Eigen::Index column) const {
     return Eigen::Map<Eigen::MatrixXd const>(
-        values + get_inner_column_offset(column), get_inner_col_height(column),
-        get_block_width());
+        get_value_pointer() + get_inner_column_offset(column),
+        get_inner_col_height(column), get_block_width());
   }
-
-  Eigen::Index ConstraintJacobian_Base::nonZeros_of_structure() const {
+  Eigen::Index ConstraintJacobian_Base::nonZeros() const {
     return block_column_offsets[block_column_offsets.size() - 1]
            * get_block_size();
+  }
+
+  void ConstraintJacobian_Base::supply_indices(
+      Ipopt::Index *iRow, Ipopt::Index *jCol,
+      Eigen::Index number_of_values) const {
+
+    Ipopt::Index index = 0;
+    for (Eigen::Index j = 0; j != get_outer_width(); ++j) {
+      auto columnoffset = get_inner_colstart_jacobian(j);
+      auto rowoffset = get_inner_rowstart_jacobian(j);
+
+      for (Eigen::Index innercol = columnoffset;
+           innercol != columnoffset + get_block_width(); ++innercol) {
+        for (Eigen::Index innerrow = rowoffset; innerrow != get_inner_height();
+             ++innerrow) {
+          assert(index < number_of_values);
+          iRow[index] = static_cast<int>(innerrow);
+          jCol[index] = static_cast<int>(innercol);
+          ++index;
+        }
+      }
+    }
+  }
+
+  Eigen::MatrixXd ConstraintJacobian_Base::whole_matrix() const {
+    Eigen::MatrixXd result
+        = Eigen::MatrixXd::Zero(get_inner_height(), get_inner_width());
+
+    for (Eigen::Index column = 0; column != get_outer_width(); ++column) {
+      result.block(
+          get_inner_rowstart_jacobian(column),
+          get_inner_colstart_jacobian(column), get_inner_col_height(column),
+          get_block_width())
+          = get_column_block(column);
+    }
+    return result;
+  }
+
+  Eigen::Ref<Eigen::VectorXd> ConstraintJacobian_Base::underlying_storage() {
+    return Eigen::Map<Eigen::VectorXd>(get_value_pointer(), nonZeros());
+  }
+  Eigen::Ref<Eigen::VectorXd const>
+  ConstraintJacobian_Base::underlying_storage() const {
+    return Eigen::Map<Eigen::VectorXd const>(get_value_pointer(), nonZeros());
+  }
+
+  ConstraintJacobian_Base &
+  ConstraintJacobian_Base::operator=(ConstraintJacobian_Base const &other) {
+    if (this->block_width != other.block_width) {
+      gthrow(
+          {"Can't assign a ConstraintJacobian to another one with different "
+           "structure!"});
+    }
+    if (this->block_height != other.block_height) {
+      gthrow(
+          {"Can't assign a ConstraintJacobian to another one with different "
+           "structure!"});
+    }
+    if (this->block_column_offsets.size()
+        != other.block_column_offsets.size()) {
+      gthrow(
+          {"Can't assign a ConstraintJacobian to another one with different "
+           "structure!"});
+    }
+    if (this->block_column_offsets != other.block_column_offsets) {
+      gthrow(
+          {"Can't assign a ConstraintJacobian to another one with different "
+           "structure!"});
+    }
+
+    this->underlying_storage() = other.underlying_storage();
+    return *this;
   }
 
   /////////////////////////////
@@ -194,30 +237,10 @@ namespace Optimization {
       double *_values, Eigen::Index _number_of_entries,
       Aux::InterpolatingVector_Base const &constraints,
       Aux::InterpolatingVector_Base const &controls) :
-      ConstraintJacobian_Base(
-          ConstraintJacobian_Base::make_instance(constraints, controls)),
+      ConstraintJacobian_Base(make_data(constraints, controls)),
       values(_values),
       number_of_entries(_number_of_entries) {
-    assert(nonZeros_of_structure() == _number_of_entries);
-  }
-
-  Eigen::Ref<Eigen::MatrixXd>
-  MappedConstraintJacobian::get_nnz_column_block(Eigen::Index column) {
-    return base_column_block(values, column);
-  }
-
-  Eigen::Ref<Eigen::MatrixXd const>
-  MappedConstraintJacobian::get_nnz_column_block(Eigen::Index column) const {
-    return base_column_block(values, column);
-  }
-
-  Eigen::Index MappedConstraintJacobian::nonZeros() const {
-    return number_of_entries;
-  }
-
-  void MappedConstraintJacobian::setZero() {
-    Eigen::Map<Eigen::VectorXd> map(values, nonZeros());
-    map.setZero();
+    assert(nonZeros() == _number_of_entries);
   }
 
   void MappedConstraintJacobian::replace_storage(
@@ -227,24 +250,9 @@ namespace Optimization {
     values = new_values;
   }
 
-  void MappedConstraintJacobian::supply_indices(
-      Ipopt::Index *iRow, Ipopt::Index *jCol,
-      Eigen::Index number_of_values) const {
-    base_supply_indices(iRow, jCol, number_of_values);
-  }
-
-  Eigen::MatrixXd MappedConstraintJacobian::whole_matrix() const {
-    Eigen::MatrixXd result
-        = Eigen::MatrixXd::Zero(get_inner_height(), get_inner_width());
-
-    for (Eigen::Index column = 0; column != get_outer_width(); ++column) {
-      result.block(
-          get_inner_rowstart_jacobian(column),
-          get_inner_colstart_jacobian(column), get_inner_col_height(column),
-          get_block_width())
-          = get_nnz_column_block(column);
-    }
-    return result;
+  double *MappedConstraintJacobian::get_value_pointer() { return values; }
+  double const *MappedConstraintJacobian::get_value_pointer() const {
+    return values;
   }
 
   /////////////////////////////////////////////////////////
@@ -254,40 +262,12 @@ namespace Optimization {
   ConstraintJacobian::ConstraintJacobian(
       Aux::InterpolatingVector_Base const &constraints,
       Aux::InterpolatingVector_Base const &controls) :
-      ConstraintJacobian_Base(
-          ConstraintJacobian_Base::make_instance(constraints, controls)),
-      storage(nonZeros_of_structure()) {}
+      ConstraintJacobian_Base(make_data(constraints, controls)),
+      storage(nonZeros()) {}
 
-  Eigen::Ref<Eigen::MatrixXd>
-  ConstraintJacobian::get_nnz_column_block(Eigen::Index column) {
-    return base_column_block(storage.data(), column);
-  }
-  Eigen::Ref<Eigen::MatrixXd const>
-  ConstraintJacobian::get_nnz_column_block(Eigen::Index column) const {
-    return base_column_block(storage.data(), column);
-  }
-  Eigen::Index ConstraintJacobian::nonZeros() const { return storage.size(); }
-
-  void ConstraintJacobian::setZero() { storage.setZero(); }
-
-  void ConstraintJacobian::supply_indices(
-      Ipopt::Index *iRow, Ipopt::Index *jCol,
-      Eigen::Index number_of_values) const {
-    base_supply_indices(iRow, jCol, number_of_values);
-  }
-
-  Eigen::MatrixXd ConstraintJacobian::whole_matrix() const {
-    Eigen::MatrixXd result
-        = Eigen::MatrixXd::Zero(get_inner_height(), get_inner_width());
-
-    for (Eigen::Index column = 0; column != get_outer_width(); ++column) {
-      result.block(
-          get_inner_rowstart_jacobian(column),
-          get_inner_colstart_jacobian(column), get_inner_col_height(column),
-          get_block_width())
-          = get_nnz_column_block(column);
-    }
-    return result;
+  double *ConstraintJacobian::get_value_pointer() { return storage.data(); }
+  double const *ConstraintJacobian::get_value_pointer() const {
+    return storage.data();
   }
 
 } // namespace Optimization

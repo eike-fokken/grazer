@@ -1,20 +1,34 @@
 #pragma once
 #include "InterpolatingVector.hpp"
 #include <Eigen/Dense>
-#include <Eigen/src/Core/util/Meta.h>
 #include <IpTypes.hpp>
+#include <tuple>
 #include <vector>
 
 namespace Optimization {
 
+  std::tuple<Eigen::Index, Eigen::Index, Eigen::VectorX<Eigen::Index>>
+  make_data(
+      Aux::InterpolatingVector_Base const &constraints,
+      Aux::InterpolatingVector_Base const &controls);
+
+  class ConstraintJacobian;
+
   class ConstraintJacobian_Base {
 
   public:
-    void base_supply_indices(
-        Ipopt::Index *iRow, Ipopt::Index *jCol,
-        Eigen::Index number_of_values) const;
+    ConstraintJacobian_Base(
+        std::tuple<Eigen::Index, Eigen::Index, Eigen::VectorX<Eigen::Index>>
+            height_width_offsets);
 
-    Eigen::Index nonZeros_of_structure() const;
+    ConstraintJacobian_Base(
+        Eigen::Index block_width, Eigen::Index block_height,
+        Eigen::Vector<Eigen::Index, Eigen::Dynamic> block_column_offsets);
+
+    ConstraintJacobian_Base &operator=(ConstraintJacobian_Base const &);
+
+    virtual ~ConstraintJacobian_Base() = default;
+
     Eigen::Index get_outer_column_offset(Eigen::Index column) const;
     Eigen::Index get_inner_column_offset(Eigen::Index column) const;
     Eigen::Index get_block_size() const;
@@ -37,24 +51,31 @@ namespace Optimization {
     Eigen::Index column_values_start(Eigen::Index column) const;
     Eigen::Index column_values_end(Eigen::Index column) const;
 
-  protected:
-    static ConstraintJacobian_Base make_instance(
-        Aux::InterpolatingVector_Base const &constraints,
-        Aux::InterpolatingVector_Base const &controls);
+    void setZero();
 
-    Eigen::Ref<Eigen::MatrixXd>
-    base_column_block(double *values, Eigen::Index column);
+    Eigen::Ref<Eigen::MatrixXd> get_column_block(Eigen::Index column);
     Eigen::Ref<Eigen::MatrixXd const>
-    base_column_block(double const *values, Eigen::Index column) const;
+    get_column_block(Eigen::Index column) const;
+    Eigen::Index nonZeros() const;
+
+    void supply_indices(
+        Ipopt::Index *iRow, Ipopt::Index *jCol,
+        Eigen::Index number_of_values) const;
+    Eigen::MatrixXd whole_matrix() const;
 
   private:
-    ConstraintJacobian_Base(
-        Eigen::Index block_width, Eigen::Index block_height,
-        Eigen::Vector<Eigen::Index, Eigen::Dynamic> block_column_offsets);
+    Eigen::Ref<Eigen::VectorXd> underlying_storage();
+    Eigen::Ref<Eigen::VectorXd const> underlying_storage() const;
 
-    Eigen::Index const block_width;
+    virtual double *get_value_pointer() = 0;
+    virtual double const *get_value_pointer() const = 0;
+
     Eigen::Index const block_height;
+    Eigen::Index const block_width;
     Eigen::Vector<Eigen::Index, Eigen::Dynamic> const block_column_offsets;
+
+  protected:
+    void assignment_helper(ConstraintJacobian_Base const &other);
   };
 
   class MappedConstraintJacobian : public ConstraintJacobian_Base {
@@ -64,25 +85,15 @@ namespace Optimization {
         Aux::InterpolatingVector_Base const &constraints,
         Aux::InterpolatingVector_Base const &controls);
 
-    Eigen::Ref<Eigen::MatrixXd> get_nnz_column_block(Eigen::Index column);
-    Eigen::Ref<Eigen::MatrixXd const>
-    get_nnz_column_block(Eigen::Index column) const;
-    Eigen::Index nonZeros() const;
-
-    void setZero();
-
     void replace_storage(
         double *new_values, Eigen::Index length_must_be_equal_to_old_length);
-
-    void supply_indices(
-        Ipopt::Index *iRow, Ipopt::Index *jCol,
-        Eigen::Index number_of_values) const;
-
-    Eigen::MatrixXd whole_matrix() const;
 
   private:
     double *values;
     Eigen::Index number_of_entries;
+
+    double *get_value_pointer() final;
+    double const *get_value_pointer() const final;
   };
 
   class ConstraintJacobian : public ConstraintJacobian_Base {
@@ -91,21 +102,11 @@ namespace Optimization {
         Aux::InterpolatingVector_Base const &constraints,
         Aux::InterpolatingVector_Base const &controls);
 
-    Eigen::Ref<Eigen::MatrixXd> get_nnz_column_block(Eigen::Index column);
-    Eigen::Ref<Eigen::MatrixXd const>
-    get_nnz_column_block(Eigen::Index column) const;
-
-    Eigen::Index nonZeros() const;
-    void setZero();
-
-    void supply_indices(
-        Ipopt::Index *iRow, Ipopt::Index *jCol,
-        Eigen::Index number_of_values) const;
-
-    Eigen::MatrixXd whole_matrix() const;
-
   private:
     Eigen::Vector<double, Eigen::Dynamic> storage;
+
+    double *get_value_pointer() final;
+    double const *get_value_pointer() const final;
   };
 
 } // namespace Optimization
