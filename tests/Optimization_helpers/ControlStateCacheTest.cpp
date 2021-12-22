@@ -59,9 +59,8 @@ TEST(ControlStateCache, fill_and_use_the_cache) {
 
   Optimization::ControlStateCache a(evolver, p);
 
-  std::vector<double> times(2);
-  times[0] = 0;
-  times[1] = 1;
+  Eigen::VectorXd times{{0, 1}};
+
   Eigen::VectorXd initial(2);
   initial << 5, 6;
   Aux::InterpolatingVector controls(times, 2);
@@ -147,9 +146,8 @@ TEST(ControlStateCache, failed_simulation) {
 
   Optimization::ControlStateCache a(evolver, p);
 
-  std::vector<double> times(2);
-  times[0] = 0;
-  times[1] = 1;
+  Eigen::VectorXd times{{0, 1}};
+
   Eigen::VectorXd initial(2);
   initial << 5, 6;
   Aux::InterpolatingVector controls(times, 2);

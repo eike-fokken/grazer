@@ -14,7 +14,7 @@ namespace Optimization {
 
   Aux::InterpolatingVector_Base const *ControlStateCache::compute_states(
       Aux::InterpolatingVector_Base const &controls,
-      std::vector<double> const &state_interpolation_points,
+      Eigen::Ref<Eigen::VectorXd const> const &state_interpolation_points,
       Eigen::Ref<Eigen::VectorXd const> const &initial_state) {
     if (failed.control == controls
         and failed.state_interpolation_points == state_interpolation_points
@@ -36,11 +36,9 @@ namespace Optimization {
             = Cacheentry{controls, state_interpolation_points, initial_state};
         return nullptr;
       }
-      Aux::InterpolatingVector cached_controls = controls;
 
       cache = std::make_pair(
-          Cacheentry{
-              cached_controls, state_interpolation_points, initial_state},
+          Cacheentry{controls, state_interpolation_points, initial_state},
           std::move(states));
       return &cache.second;
     }

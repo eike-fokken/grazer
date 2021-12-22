@@ -18,8 +18,8 @@ namespace Optimization {
   public:
     IpoptAdaptor(
         Model::Timeevolver &evolver, Model::OptimizableObject &problem,
-        std::vector<double> simulation_timepoints,
-        Eigen::VectorXd initial_state,
+        Eigen::VectorXd _state_timepoints, Eigen::VectorXd _control_timepoints,
+        Eigen::VectorXd _constraint_timepoints, Eigen::VectorXd initial_state,
         Aux::InterpolatingVector initial_controls,
         Aux::InterpolatingVector lower_bounds,
         Aux::InterpolatingVector upper_bounds,

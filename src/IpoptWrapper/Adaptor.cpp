@@ -6,14 +6,16 @@ namespace Optimization {
 
   IpoptAdaptor::IpoptAdaptor(
       Model::Timeevolver &evolver, Model::OptimizableObject &problem,
-      std::vector<double> simulation_timepoints, Eigen::VectorXd initial_state,
+      Eigen::VectorXd _state_timepoints, Eigen::VectorXd _control_timepoints,
+      Eigen::VectorXd _constraint_timepoints, Eigen::VectorXd initial_state,
       Aux::InterpolatingVector initial_controls,
       Aux::InterpolatingVector lower_bounds,
       Aux::InterpolatingVector upper_bounds,
       Aux::InterpolatingVector constraints_lower_bounds,
       Aux::InterpolatingVector constraints_upper_bounds) :
       _nlp(new Optimization::IpoptWrapper(
-          evolver, problem, std::move(simulation_timepoints),
+          evolver, problem, std::move(_state_timepoints),
+          std::move(_control_timepoints), std::move(_constraint_timepoints),
           std::move(initial_state), std::move(initial_controls),
           std::move(lower_bounds), std::move(upper_bounds),
           std::move(constraints_lower_bounds),

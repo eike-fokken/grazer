@@ -18,7 +18,7 @@ namespace Optimization {
 
     Aux::InterpolatingVector_Base const *compute_states(
         Aux::InterpolatingVector_Base const &controls,
-        std::vector<double> const &state_interpolation_points,
+        Eigen::Ref<Eigen::VectorXd const> const &state_interpolation_points,
         Eigen::Ref<Eigen::VectorXd const> const &initial_state);
 
   private:

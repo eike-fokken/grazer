@@ -6,7 +6,7 @@
 namespace Optimization {
   struct Cacheentry {
     Aux::InterpolatingVector control;
-    std::vector<double> state_interpolation_points;
+    Eigen::VectorXd state_interpolation_points;
     Eigen::VectorXd initial_state;
   };
 } // namespace Optimization

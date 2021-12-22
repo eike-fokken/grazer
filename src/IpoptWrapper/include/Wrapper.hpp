@@ -6,6 +6,7 @@
 
 #include <Eigen/Sparse>
 #include <limits>
+#include <memory>
 #include <nlohmann/json.hpp>
 
 #include <IpTNLP.hpp>
@@ -21,13 +22,33 @@ namespace Model {
 
 namespace Optimization {
 
+  struct Initialvalues {
+    Initialvalues(
+        Aux::InterpolatingVector initial_controls,
+        Aux::InterpolatingVector lower_bounds,
+        Aux::InterpolatingVector upper_bounds,
+        Aux::InterpolatingVector constraints_lower_bounds,
+        Aux::InterpolatingVector constraints_upper_bounds);
+    Aux::InterpolatingVector const initial_controls;
+    Aux::InterpolatingVector const lower_bounds;
+    Aux::InterpolatingVector const upper_bounds;
+    Aux::InterpolatingVector const constraints_lower_bounds;
+    Aux::InterpolatingVector const constraints_upper_bounds;
+
+    bool obsolete() const;
+
+    bool called_get_nlp_info = false;
+    bool called_get_bounds_info = false;
+    bool called_get_starting_point = false;
+  };
+
   class IpoptWrapper final : public Ipopt::TNLP {
 
   public:
     IpoptWrapper(
         Model::Timeevolver &evolver, Model::OptimizableObject &problem,
-        std::vector<double> simulation_timepoints,
-        Eigen::VectorXd initial_state,
+        Eigen::VectorXd _state_timepoints, Eigen::VectorXd _control_timepoints,
+        Eigen::VectorXd _constraint_timepoints, Eigen::VectorXd initial_state,
         Aux::InterpolatingVector initial_controls,
         Aux::InterpolatingVector lower_bounds,
         Aux::InterpolatingVector upper_bounds,
@@ -106,15 +127,12 @@ namespace Optimization {
     Eigen::SparseMatrix<double> dE_dlast;
     Eigen::SparseMatrix<double> dE_dcontrol;
     Eigen::SparseLU<Eigen::SparseMatrix<double>> solver;
-    std::vector<double> const simulation_timepoints;
+    Eigen::VectorXd const state_timepoints;
+    Eigen::VectorXd const control_timepoints;
+    Eigen::VectorXd const constraints_timepoints;
     Eigen::VectorXd const initial_state;
-    Aux::InterpolatingVector const initial_controls;
-    Aux::InterpolatingVector const lower_bounds;
-    Aux::InterpolatingVector const upper_bounds;
-    Aux::InterpolatingVector const constraints_lower_bounds;
-    Aux::InterpolatingVector const constraints_upper_bounds;
+    std::unique_ptr<Initialvalues> init;
     Aux::InterpolatingVector solution;
-
     bool derivatives_computed = false;
     bool equation_matrices_initialized = false;
 
@@ -125,5 +143,17 @@ namespace Optimization {
     bool evaluate_constraints(
         Ipopt::Number const *x, Ipopt::Index number_of_controls,
         Ipopt::Number *values, Ipopt::Index nele_jac);
+
+    Eigen::Index states_per_step() const;
+    Eigen::Index controls_per_step() const;
+    Eigen::Index constraints_per_step() const;
+
+    Eigen::Index state_steps() const;
+    Eigen::Index control_steps() const;
+    Eigen::Index constraints_steps() const;
+
+    Eigen::Index get_total_no_controls() const;
+    Eigen::Index get_total_no_constraints() const;
   };
+
 } // namespace Optimization
