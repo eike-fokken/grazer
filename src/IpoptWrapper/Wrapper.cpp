@@ -13,6 +13,7 @@
 #include <cstddef>
 #include <memory>
 #include <stdexcept>
+#include <string>
 
 namespace Optimization {
 
@@ -142,7 +143,37 @@ namespace Optimization {
       gthrow({"The constraints timepoints are not sorted!"});
     }
 
-    // check whether constraint timepoints are a subset of state timepoints.
+    // check whether constraint timepoints are a subset of state timepoints and
+    // that constraint times start at or after the time at state_timepoints[1]
+    auto constraint_iterator = constraints_timepoints.begin();
+
+    // If we are past all constraints and no error was detected, we are clear:
+    for (Eigen::Index i = 1; i != state_timepoints.size(); ++i) {
+      if (constraint_iterator == constraints_timepoints.end()) {
+        break;
+      }
+
+      auto timepoint = state_timepoints[i];
+
+      // next constraint time is further ahead:
+      if (timepoint < *constraint_iterator) {
+        continue;
+        // found next constraint time is equal to a state time.
+      } else if (timepoint == *constraint_iterator) {
+        ++constraint_iterator;
+        // FAIL: a constraint time lies in between two state times!
+      } else {
+        gthrow(
+            {"Constraint time ", std::to_string(*constraint_iterator),
+             " is not a state time. This is a bug."});
+      }
+    }
+    if (constraint_iterator != constraints_timepoints.end()) {
+      // FAIL: a constraint time lies after all state times:
+      gthrow(
+          {"Constraint time ", std::to_string(*constraint_iterator),
+           " is not a state time. This is a bug."});
+    }
   }
 
   bool IpoptWrapper::get_nlp_info(
