@@ -137,14 +137,14 @@ namespace Optimization {
     Model::OptimizableObject &problem;
     ControlStateCache cache;
 
-    Eigen::SparseMatrix<double> dE_dnew;
-    Eigen::SparseMatrix<double> dE_dlast;
+    Eigen::SparseMatrix<double> dE_dnew_transposed;
+    Eigen::SparseMatrix<double> dE_dlast_transposed;
     Eigen::SparseMatrix<double> dE_dcontrol;
-    Eigen::SparseMatrix<double> dg_dnew;
+    Eigen::SparseMatrix<double> dg_dnew_transposed;
     Eigen::SparseMatrix<double> dg_dcontrol;
 
     Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>
-        dg_dnew_dense;
+        dg_dnew_dense_transposed;
 
     Eigen::SparseLU<Eigen::SparseMatrix<double>> solver;
     Eigen::VectorXd const state_timepoints;
@@ -176,11 +176,19 @@ namespace Optimization {
     Eigen::Index get_total_no_controls() const;
     Eigen::Index get_total_no_constraints() const;
 
-    Eigen::Ref<Eigen::MatrixXd> right_block(
+    Eigen::Ref<Eigen::MatrixXd> right_cols(
         Eigen::Ref<Eigen::MatrixXd> Fullmat,
         Eigen::Index outer_col_index) const;
 
-    Eigen::Ref<Eigen::MatrixXd> middle_block(
+    Eigen::Ref<Eigen::MatrixXd> middle_col_block(
+        Eigen::Ref<Eigen::MatrixXd> Fullmat,
+        Eigen::Index outer_col_index) const;
+
+    Eigen::Ref<Eigen::MatrixXd> lower_rows(
+        Eigen::Ref<Eigen::MatrixXd> Fullmat,
+        Eigen::Index outer_col_index) const;
+
+    Eigen::Ref<Eigen::MatrixXd> middle_row_block(
         Eigen::Ref<Eigen::MatrixXd> Fullmat,
         Eigen::Index outer_col_index) const;
   };

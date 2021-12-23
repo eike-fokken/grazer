@@ -90,20 +90,20 @@ namespace Optimization {
           _initial_state.size(),
           _constraint_lower_bounds.get_total_number_of_values())),
       dg_duj(Eigen::MatrixXd::Zero(
-          _initial_state.size(),
-          _constraint_lower_bounds.get_total_number_of_values())),
+          _constraint_lower_bounds.get_total_number_of_values(),
+          _initial_controls.get_inner_length())),
       problem(_problem),
       cache(evolver, _problem),
-      dE_dnew(_initial_state.size(), _initial_state.size()),
-      dE_dlast(_initial_state.size(), _initial_state.size()),
+      dE_dnew_transposed(_initial_state.size(), _initial_state.size()),
+      dE_dlast_transposed(_initial_state.size(), _initial_state.size()),
       dE_dcontrol(_initial_state.size(), _initial_controls.get_inner_length()),
-      dg_dnew(
-          _constraint_lower_bounds.get_inner_length(), _initial_state.size()),
+      dg_dnew_transposed(
+          _initial_state.size(), _constraint_lower_bounds.get_inner_length()),
       dg_dcontrol(
           _constraint_lower_bounds.get_inner_length(),
           _initial_controls.get_inner_length()),
-      dg_dnew_dense(Eigen::MatrixXd::Zero(
-          _constraint_lower_bounds.get_inner_length(), _initial_state.size())),
+      dg_dnew_dense_transposed(Eigen::MatrixXd::Zero(
+          _initial_state.size(), _constraint_lower_bounds.get_inner_length())),
       state_timepoints(std::move(_state_timepoints)),
       control_timepoints(std::move(_control_timepoints)),
       constraint_timepoints(std::move(_constraint_timepoints)),
@@ -388,13 +388,13 @@ namespace Optimization {
       double last_time = states.interpolation_point_at_index(0);
       double new_time = states.interpolation_point_at_index(1);
 
-      Aux::Triplethandler new_handler(dE_dnew);
+      Aux::Triplethandler<Aux::Transposed> new_handler(dE_dnew_transposed);
       problem.d_evalutate_d_new_state(
           new_handler, last_time, new_time, states(last_time), states(new_time),
           controls(new_time));
       new_handler.set_matrix();
-      solver.analyzePattern(dE_dnew);
-      Aux::Triplethandler last_handler(dE_dlast);
+      solver.analyzePattern(dE_dnew_transposed);
+      Aux::Triplethandler<Aux::Transposed> last_handler(dE_dlast_transposed);
       problem.d_evalutate_d_last_state(
           last_handler, last_time, new_time, states(last_time),
           states(new_time), controls(new_time));
@@ -405,7 +405,7 @@ namespace Optimization {
           states(new_time), controls(new_time));
       control_handler.set_matrix();
 
-      Aux::Triplethandler gnew_handler(dg_dnew);
+      Aux::Triplethandler<Aux::Transposed> gnew_handler(dg_dnew_transposed);
       problem.d_evaluate_constraint_d_state(
           gnew_handler, new_time, states(new_time), controls(new_time));
       gnew_handler.set_matrix();
@@ -414,6 +414,7 @@ namespace Optimization {
           gcontrol_handler, new_time, states(new_time), controls(new_time));
       gcontrol_handler.set_matrix();
     }
+    // First run DONE here.
 
     // search the last timepoint of a constraint:
     Eigen::Index rev_constraint_index = constraint_steps() - 1;
@@ -427,41 +428,49 @@ namespace Optimization {
         constraint_timepoints[rev_constraint_index]
         == state_timepoints[rev_state_index]);
 
-    auto A_block = right_block(A_jp1_Lambda_j, rev_constraint_index);
-    auto Lambda_block = right_block(Lambda_j, rev_constraint_index);
-    auto dg_duj_block = right_block(dg_duj, rev_constraint_index);
     auto last_time = state_timepoints[rev_state_index - 1];
     auto new_time = state_timepoints[rev_state_index];
 
     {
-      Aux::Coeffrefhandler new_handler(dE_dnew);
+      Aux::Coeffrefhandler<Aux::Transposed> new_handler(dE_dnew_transposed);
       problem.d_evalutate_d_new_state(
           new_handler, last_time, new_time, states(last_time), states(new_time),
           controls(new_time));
     }
-    solver.factorize(dE_dnew);
+    solver.factorize(dE_dnew_transposed);
 
     {
-      Aux::Coeffrefhandler gnew_handler(dg_dnew);
+      Aux::Coeffrefhandler<Aux::Transposed> gnew_handler(dg_dnew_transposed);
       problem.d_evaluate_constraint_d_state(
           gnew_handler, new_time, states(new_time), controls(new_time));
     }
     // The dense matrix mostly contains zeros, so we only copy over the entries
     // in the sparse matrix.
-    assign_sparse_to_sparse_dense(dg_dnew_dense, dg_dnew);
+    assign_sparse_to_sparse_dense(dg_dnew_dense_transposed, dg_dnew_transposed);
 
+    auto A_block = right_cols(A_jp1_Lambda_j, rev_constraint_index);
+    auto Lambda_block = middle_col_block(Lambda_j, rev_constraint_index);
+    auto dg_duj_block = middle_row_block(dg_duj, rev_constraint_index);
+
+    A_block.noalias() = dE_dlast_transposed * Lambda_block;
     // finally compute lambda_{nn}:
-    Lambda_block.noalias()
-        = solver.transpose().solve(dg_dnew_dense.transpose());
+    Lambda_block.noalias() = solver.solve(dg_dnew_dense_transposed);
+
+    Aux::Coeffrefhandler gcontrol_handler(dg_dcontrol);
+    problem.d_evaluate_constraint_d_control(
+        gcontrol_handler, new_time, states(new_time), controls(new_time));
+
+    dg_duj_block = (Lambda_block.transpose() * dE_dcontrol) + dg_dcontrol;
+    //
 
     for (; rev_state_index != 0; --rev_state_index) {
       last_time = state_timepoints[rev_state_index - 1];
       new_time = state_timepoints[rev_state_index];
-      Aux::Coeffrefhandler new_handler(dE_dnew);
+      Aux::Coeffrefhandler<Aux::Transposed> new_handler(dE_dnew_transposed);
       problem.d_evalutate_d_new_state(
           new_handler, last_time, new_time, states(last_time), states(new_time),
           controls(new_time));
-      solver.factorize(dE_dnew);
+      solver.factorize(dE_dnew_transposed);
     }
 
     derivatives_computed = true;
@@ -504,15 +513,37 @@ namespace Optimization {
     return constraints_per_step() * constraint_steps();
   }
 
-  Eigen::Ref<Eigen::MatrixXd> IpoptWrapper::right_block(
+  Eigen::Ref<Eigen::MatrixXd> IpoptWrapper::right_cols(
       Eigen::Ref<Eigen::MatrixXd> Fullmat, Eigen::Index outer_col_index) const {
+    assert(Fullmat.cols() == get_total_no_constraints());
+    assert(Fullmat.cols() == controls_per_step());
+
     return Fullmat.rightCols(
         get_total_no_constraints() - outer_col_index * constraints_per_step());
   }
 
-  Eigen::Ref<Eigen::MatrixXd> IpoptWrapper::middle_block(
+  Eigen::Ref<Eigen::MatrixXd> IpoptWrapper::middle_col_block(
       Eigen::Ref<Eigen::MatrixXd> Fullmat, Eigen::Index outer_col_index) const {
+    assert(Fullmat.cols() == get_total_no_constraints());
+    assert(Fullmat.cols() == controls_per_step());
     return Fullmat.middleCols(
+        get_total_no_constraints() - outer_col_index * constraints_per_step(),
+        constraints_per_step());
+  }
+
+  Eigen::Ref<Eigen::MatrixXd> IpoptWrapper::lower_rows(
+      Eigen::Ref<Eigen::MatrixXd> Fullmat, Eigen::Index outer_col_index) const {
+    assert(Fullmat.rows() == get_total_no_constraints());
+    assert(Fullmat.rows() == controls_per_step());
+    return Fullmat.rightCols(
+        get_total_no_constraints() - outer_col_index * constraints_per_step());
+  }
+
+  Eigen::Ref<Eigen::MatrixXd> IpoptWrapper::middle_row_block(
+      Eigen::Ref<Eigen::MatrixXd> Fullmat, Eigen::Index outer_col_index) const {
+    assert(Fullmat.rows() == get_total_no_constraints());
+    assert(Fullmat.rows() == controls_per_step());
+    return Fullmat.middleRows(
         get_total_no_constraints() - outer_col_index * constraints_per_step(),
         constraints_per_step());
   }
