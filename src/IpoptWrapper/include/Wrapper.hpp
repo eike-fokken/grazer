@@ -5,6 +5,7 @@
 #include "InterpolatingVector.hpp"
 
 #include <Eigen/Sparse>
+#include <Eigen/src/Core/util/Constants.h>
 #include <limits>
 #include <memory>
 #include <nlohmann/json.hpp>
@@ -27,13 +28,13 @@ namespace Optimization {
         Aux::InterpolatingVector initial_controls,
         Aux::InterpolatingVector lower_bounds,
         Aux::InterpolatingVector upper_bounds,
-        Aux::InterpolatingVector constraints_lower_bounds,
-        Aux::InterpolatingVector constraints_upper_bounds);
+        Aux::InterpolatingVector constraint_lower_bounds,
+        Aux::InterpolatingVector constraint_upper_bounds);
     Aux::InterpolatingVector const initial_controls;
     Aux::InterpolatingVector const lower_bounds;
     Aux::InterpolatingVector const upper_bounds;
-    Aux::InterpolatingVector const constraints_lower_bounds;
-    Aux::InterpolatingVector const constraints_upper_bounds;
+    Aux::InterpolatingVector const constraint_lower_bounds;
+    Aux::InterpolatingVector const constraint_upper_bounds;
 
     bool obsolete() const;
 
@@ -52,8 +53,8 @@ namespace Optimization {
         Aux::InterpolatingVector initial_controls,
         Aux::InterpolatingVector lower_bounds,
         Aux::InterpolatingVector upper_bounds,
-        Aux::InterpolatingVector constraints_lower_bounds,
-        Aux::InterpolatingVector constraints_upper_bounds);
+        Aux::InterpolatingVector constraint_lower_bounds,
+        Aux::InterpolatingVector constraint_upper_bounds);
 
     ~IpoptWrapper() = default;
 
@@ -118,7 +119,11 @@ namespace Optimization {
     Aux::InterpolatingVector objective_gradient;
     ConstraintJacobian constraint_jacobian;
     MappedConstraintJacobian constraint_jacobian_accessor;
-    Eigen::MatrixXd Lambda_row_storage;
+
+    // cache_matrices :
+    Eigen::MatrixXd A_jp1_Lambda_j;
+    Eigen::MatrixXd Lambda_j;
+    Eigen::MatrixXd dg_duj;
 
     Model::OptimizableObject &problem;
     ControlStateCache cache;
@@ -126,10 +131,16 @@ namespace Optimization {
     Eigen::SparseMatrix<double> dE_dnew;
     Eigen::SparseMatrix<double> dE_dlast;
     Eigen::SparseMatrix<double> dE_dcontrol;
+    Eigen::SparseMatrix<double> dg_dnew;
+    Eigen::SparseMatrix<double> dg_dcontrol;
+    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>
+        dg_dnew_dense;
+    Eigen::MatrixXd dg_dcontrol_dense;
+
     Eigen::SparseLU<Eigen::SparseMatrix<double>> solver;
     Eigen::VectorXd const state_timepoints;
     Eigen::VectorXd const control_timepoints;
-    Eigen::VectorXd const constraints_timepoints;
+    Eigen::VectorXd const constraint_timepoints;
     Eigen::VectorXd const initial_state;
     std::unique_ptr<Initialvalues> init;
     Aux::InterpolatingVector solution;
@@ -144,16 +155,21 @@ namespace Optimization {
         Ipopt::Number const *x, Ipopt::Index number_of_controls,
         Ipopt::Number *values, Ipopt::Index nele_jac);
 
+  public:
     Eigen::Index states_per_step() const;
     Eigen::Index controls_per_step() const;
     Eigen::Index constraints_per_step() const;
 
     Eigen::Index state_steps() const;
     Eigen::Index control_steps() const;
-    Eigen::Index constraints_steps() const;
+    Eigen::Index constraint_steps() const;
 
     Eigen::Index get_total_no_controls() const;
     Eigen::Index get_total_no_constraints() const;
+
+    Eigen::Ref<Eigen::MatrixXd> right_block(
+        Eigen::Ref<Eigen::MatrixXd> Fullmat,
+        Eigen::Index outer_col_index) const;
   };
 
 } // namespace Optimization

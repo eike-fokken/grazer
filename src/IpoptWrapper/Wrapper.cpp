@@ -21,13 +21,13 @@ namespace Optimization {
       Aux::InterpolatingVector _initial_controls,
       Aux::InterpolatingVector _lower_bounds,
       Aux::InterpolatingVector _upper_bounds,
-      Aux::InterpolatingVector _constraints_lower_bounds,
-      Aux::InterpolatingVector _constraints_upper_bounds) :
+      Aux::InterpolatingVector _constraint_lower_bounds,
+      Aux::InterpolatingVector _constraint_upper_bounds) :
       initial_controls(std::move(_initial_controls)),
       lower_bounds(std::move(_lower_bounds)),
       upper_bounds(std::move(_upper_bounds)),
-      constraints_lower_bounds(std::move(_constraints_lower_bounds)),
-      constraints_upper_bounds(std::move(_constraints_upper_bounds)) {}
+      constraint_lower_bounds(std::move(_constraint_lower_bounds)),
+      constraint_upper_bounds(std::move(_constraint_upper_bounds)) {}
 
   bool Initialvalues::obsolete() const {
     return (!called_get_nlp_info) and (!called_get_bounds_info)
@@ -51,16 +51,16 @@ namespace Optimization {
     auto &states = *state_pointer;
 
     Aux::MappedInterpolatingVector constraints(
-        constraints_timepoints, constraints_per_step(), values,
+        constraint_timepoints, constraints_per_step(), values,
         static_cast<Eigen::Index>(nele_jac));
 
     // fill the constraints vector for every (constraints-)timepoint
-    for (Eigen::Index constraints_timeindex = 0;
-         constraints_timeindex != constraints.size(); ++constraints_timeindex) {
+    for (Eigen::Index constraint_timeindex = 0;
+         constraint_timeindex != constraints.size(); ++constraint_timeindex) {
       double time
-          = constraints.interpolation_point_at_index(constraints_timeindex);
+          = constraints.interpolation_point_at_index(constraint_timeindex);
       problem.evaluate_constraint(
-          constraints.mut_timestep(constraints_timeindex), time, states(time),
+          constraints.mut_timestep(constraint_timeindex), time, states(time),
           controls(time));
     }
     return true;
@@ -73,32 +73,43 @@ namespace Optimization {
       Aux::InterpolatingVector _initial_controls,
       Aux::InterpolatingVector _lower_bounds,
       Aux::InterpolatingVector _upper_bounds,
-      Aux::InterpolatingVector _constraints_lower_bounds,
-      Aux::InterpolatingVector _constraints_upper_bounds) :
+      Aux::InterpolatingVector _constraint_lower_bounds,
+      Aux::InterpolatingVector _constraint_upper_bounds) :
       objective_gradient(
           _initial_controls.get_interpolation_points(),
           _initial_controls.get_inner_length()),
       constraint_jacobian(
-          ConstraintJacobian(_constraints_lower_bounds, _initial_controls)),
+          ConstraintJacobian(_constraint_lower_bounds, _initial_controls)),
       constraint_jacobian_accessor(
-          nullptr, constraint_jacobian.nonZeros(), _constraints_lower_bounds,
+          nullptr, constraint_jacobian.nonZeros(), _constraint_lower_bounds,
           _initial_controls),
-      Lambda_row_storage(Eigen::MatrixXd::Zero(
+      A_jp1_Lambda_j(Eigen::MatrixXd::Zero(
           _initial_state.size(),
-          _constraints_lower_bounds.get_total_number_of_values())),
+          _constraint_lower_bounds.get_total_number_of_values())),
+      Lambda_j(Eigen::MatrixXd::Zero(
+          _initial_state.size(),
+          _constraint_lower_bounds.get_total_number_of_values())),
+      dg_duj(Eigen::MatrixXd::Zero(
+          _initial_state.size(),
+          _constraint_lower_bounds.get_total_number_of_values())),
       problem(_problem),
       cache(evolver, _problem),
       dE_dnew(_initial_state.size(), _initial_state.size()),
       dE_dlast(_initial_state.size(), _initial_state.size()),
       dE_dcontrol(_initial_state.size(), _initial_controls.get_inner_length()),
+      dg_dnew(
+          _constraint_lower_bounds.get_inner_length(), _initial_state.size()),
+      dg_dcontrol(
+          _constraint_lower_bounds.get_inner_length(),
+          _initial_controls.get_inner_length()),
       state_timepoints(std::move(_state_timepoints)),
       control_timepoints(std::move(_control_timepoints)),
-      constraints_timepoints(std::move(_constraint_timepoints)),
+      constraint_timepoints(std::move(_constraint_timepoints)),
       initial_state(std::move(_initial_state)),
       init(std::make_unique<Initialvalues>(
           std::move(_initial_controls), std::move(_lower_bounds),
-          std::move(_upper_bounds), std::move(_constraints_lower_bounds),
-          std::move(_constraints_upper_bounds))),
+          std::move(_upper_bounds), std::move(_constraint_lower_bounds),
+          std::move(_constraint_upper_bounds))),
       solution() {
     // control sanity checks:
     if (problem.get_number_of_controls_per_timepoint()
@@ -113,13 +124,13 @@ namespace Optimization {
     }
     // constraints sanity checks:
     if (not have_same_structure(
-            init->constraints_lower_bounds, init->constraints_upper_bounds)) {
+            init->constraint_lower_bounds, init->constraint_upper_bounds)) {
       gthrow(
           {"The lower and upper bounds for the constraints do not "
            "match!"});
     }
     if (problem.get_number_of_constraints_per_timepoint()
-        != init->constraints_lower_bounds.get_inner_length()) {
+        != init->constraint_lower_bounds.get_inner_length()) {
       gthrow(
           {"Number of constraints and number of constraint bounds do not "
            "match!"});
@@ -139,17 +150,17 @@ namespace Optimization {
       gthrow({"The control timepoints are not sorted!"});
     }
     if (not(std::is_sorted(
-            constraints_timepoints.cbegin(), constraints_timepoints.cend()))) {
+            constraint_timepoints.cbegin(), constraint_timepoints.cend()))) {
       gthrow({"The constraints timepoints are not sorted!"});
     }
 
     // check whether constraint timepoints are a subset of state timepoints and
     // that constraint times start at or after the time at state_timepoints[1]
-    auto constraint_iterator = constraints_timepoints.begin();
+    auto constraint_iterator = constraint_timepoints.begin();
 
     // If we are past all constraints and no error was detected, we are clear:
     for (Eigen::Index i = 1; i != state_timepoints.size(); ++i) {
-      if (constraint_iterator == constraints_timepoints.end()) {
+      if (constraint_iterator == constraint_timepoints.end()) {
         break;
       }
 
@@ -168,7 +179,7 @@ namespace Optimization {
              " is not a state time. This is a bug."});
       }
     }
-    if (constraint_iterator != constraints_timepoints.end()) {
+    if (constraint_iterator != constraint_timepoints.end()) {
       // FAIL: a constraint time lies after all state times:
       gthrow(
           {"Constraint time ", std::to_string(*constraint_iterator),
@@ -182,7 +193,7 @@ namespace Optimization {
     n = static_cast<Ipopt::Index>(
         init->initial_controls.get_total_number_of_values());
     m = static_cast<Ipopt::Index>(
-        init->constraints_lower_bounds.get_total_number_of_values());
+        init->constraint_lower_bounds.get_total_number_of_values());
 
     nnz_jac_g = static_cast<Ipopt::Index>(constraint_jacobian.nonZeros());
     nnz_h_lag = 0; // we don't use the hessian, so we can ignore it
@@ -207,11 +218,11 @@ namespace Optimization {
         init->upper_bounds.get_allvalues().begin(),
         init->upper_bounds.get_allvalues().end(), x_u);
     std::copy(
-        init->constraints_lower_bounds.get_allvalues().begin(),
-        init->constraints_lower_bounds.get_allvalues().end(), g_l);
+        init->constraint_lower_bounds.get_allvalues().begin(),
+        init->constraint_lower_bounds.get_allvalues().end(), g_l);
     std::copy(
-        init->constraints_upper_bounds.get_allvalues().begin(),
-        init->constraints_upper_bounds.get_allvalues().end(), g_u);
+        init->constraint_upper_bounds.get_allvalues().begin(),
+        init->constraint_upper_bounds.get_allvalues().end(), g_u);
 
     // delete initialdata if not needed anymore:
     if (init->obsolete()) {
@@ -374,41 +385,77 @@ namespace Optimization {
     if (not equation_matrices_initialized) {
       double last_time = states.interpolation_point_at_index(0);
       double new_time = states.interpolation_point_at_index(1);
+
       Aux::Triplethandler new_handler(dE_dnew);
-      Aux::Triplethandler last_handler(dE_dlast);
-      Aux::Triplethandler control_handler(dE_dcontrol);
       problem.d_evalutate_d_new_state(
           new_handler, last_time, new_time, states(last_time), states(new_time),
           controls(new_time));
       new_handler.set_matrix();
       solver.analyzePattern(dE_dnew);
-
+      Aux::Triplethandler last_handler(dE_dlast);
       problem.d_evalutate_d_last_state(
           last_handler, last_time, new_time, states(last_time),
           states(new_time), controls(new_time));
       last_handler.set_matrix();
-
+      Aux::Triplethandler control_handler(dE_dcontrol);
       problem.d_evalutate_d_control(
           control_handler, last_time, new_time, states(last_time),
           states(new_time), controls(new_time));
       control_handler.set_matrix();
+
+      Aux::Triplethandler gnew_handler(dg_dnew);
+      problem.d_evaluate_constraint_d_state(
+          gnew_handler, new_time, states(new_time), controls(new_time));
+      gnew_handler.set_matrix();
+      Aux::Triplethandler gcontrol_handler(dg_dcontrol);
+      problem.d_evaluate_constraint_d_control(
+          gcontrol_handler, new_time, states(new_time), controls(new_time));
+      gcontrol_handler.set_matrix();
     }
 
-    Lambda_row_storage.block();
+    // search the last timepoint of a constraint:
+    Eigen::Index rev_constraint_index = constraint_steps() - 1;
+    Eigen::Index rev_state_index = state_steps() - 1;
+    while (constraint_timepoints[rev_constraint_index]
+           < state_timepoints[rev_state_index]) {
+      assert(rev_state_index > 0);
+      --rev_state_index;
+    }
+    assert(
+        constraint_timepoints[rev_constraint_index]
+        == state_timepoints[rev_state_index]);
 
-    Eigen::Index rev_constraint_index = constraints_steps() - 1;
-    for (Eigen::Index rev_state_index = state_steps() - 1; rev_state_index != 0;
-         --rev_state_index) {
+    auto A_block = right_block(A_jp1_Lambda_j, rev_constraint_index);
+    auto Lambda_block = right_block(Lambda_j, rev_constraint_index);
+    auto dg_duj_block = right_block(dg_duj, rev_constraint_index);
+    auto last_time = state_timepoints[rev_state_index - 1];
+    auto new_time = state_timepoints[rev_state_index];
 
-      auto last_time = state_timepoints[rev_state_index - 1];
-      auto new_time = state_timepoints[rev_state_index];
+    {
+      Aux::Coeffrefhandler new_handler(dE_dnew);
+      problem.d_evalutate_d_new_state(
+          new_handler, last_time, new_time, states(last_time), states(new_time),
+          controls(new_time));
+    }
+    solver.factorize(dE_dnew);
+
+    {
+      Aux::Coeffrefhandler gnew_handler(dg_dnew);
+      problem.d_evaluate_constraint_d_state(
+          gnew_handler, new_time, states(new_time), controls(new_time));
+    }
+    dg_dnew_dense = dg_dnew;
+    // finally compute lambda_{nn}:
+    Lambda_block = solver.transpose().solve(dg_dnew_dense.transpose());
+
+    for (; rev_state_index != 0; --rev_state_index) {
+      last_time = state_timepoints[rev_state_index - 1];
+      new_time = state_timepoints[rev_state_index];
       Aux::Coeffrefhandler new_handler(dE_dnew);
       problem.d_evalutate_d_new_state(
           new_handler, last_time, new_time, states(last_time), states(new_time),
           controls(new_time));
       solver.factorize(dE_dnew);
-
-      assert(false); // hier weiter
     }
 
     derivatives_computed = true;
@@ -439,8 +486,8 @@ namespace Optimization {
   Eigen::Index IpoptWrapper::control_steps() const {
     return control_timepoints.size();
   }
-  Eigen::Index IpoptWrapper::constraints_steps() const {
-    return constraints_timepoints.size();
+  Eigen::Index IpoptWrapper::constraint_steps() const {
+    return constraint_timepoints.size();
   }
 
   Eigen::Index IpoptWrapper::get_total_no_controls() const {
@@ -448,7 +495,13 @@ namespace Optimization {
   }
 
   Eigen::Index IpoptWrapper::get_total_no_constraints() const {
-    return constraints_per_step() * constraints_steps();
+    return constraints_per_step() * constraint_steps();
+  }
+
+  Eigen::Ref<Eigen::MatrixXd> IpoptWrapper::right_block(
+      Eigen::Ref<Eigen::MatrixXd> Fullmat, Eigen::Index outer_col_index) const {
+    return Fullmat.rightCols(
+        get_total_no_constraints() - outer_col_index * constraints_per_step());
   }
 
 } // namespace Optimization
