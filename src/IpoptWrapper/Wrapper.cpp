@@ -102,6 +102,8 @@ namespace Optimization {
       dg_dcontrol(
           _constraint_lower_bounds.get_inner_length(),
           _initial_controls.get_inner_length()),
+      dg_dnew_dense(Eigen::MatrixXd::Zero(
+          _constraint_lower_bounds.get_inner_length(), _initial_state.size())),
       state_timepoints(std::move(_state_timepoints)),
       control_timepoints(std::move(_control_timepoints)),
       constraint_timepoints(std::move(_constraint_timepoints)),
@@ -444,9 +446,13 @@ namespace Optimization {
       problem.d_evaluate_constraint_d_state(
           gnew_handler, new_time, states(new_time), controls(new_time));
     }
-    dg_dnew_dense = dg_dnew;
+    // The dense matrix mostly contains zeros, so we only copy over the entries
+    // in the sparse matrix.
+    assign_sparse_to_sparse_dense(dg_dnew_dense, dg_dnew);
+
     // finally compute lambda_{nn}:
-    Lambda_block = solver.transpose().solve(dg_dnew_dense.transpose());
+    Lambda_block.noalias()
+        = solver.transpose().solve(dg_dnew_dense.transpose());
 
     for (; rev_state_index != 0; --rev_state_index) {
       last_time = state_timepoints[rev_state_index - 1];
@@ -502,6 +508,13 @@ namespace Optimization {
       Eigen::Ref<Eigen::MatrixXd> Fullmat, Eigen::Index outer_col_index) const {
     return Fullmat.rightCols(
         get_total_no_constraints() - outer_col_index * constraints_per_step());
+  }
+
+  Eigen::Ref<Eigen::MatrixXd> IpoptWrapper::middle_block(
+      Eigen::Ref<Eigen::MatrixXd> Fullmat, Eigen::Index outer_col_index) const {
+    return Fullmat.middleCols(
+        get_total_no_constraints() - outer_col_index * constraints_per_step(),
+        constraints_per_step());
   }
 
 } // namespace Optimization

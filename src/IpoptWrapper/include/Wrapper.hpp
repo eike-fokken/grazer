@@ -12,6 +12,15 @@
 
 #include <IpTNLP.hpp>
 
+template <typename Dense, typename Scalar, int Options, typename StorageIndex>
+void assign_sparse_to_sparse_dense(
+    Eigen::DenseBase<Dense> &dense,
+    Eigen::SparseMatrix<Scalar, Options, StorageIndex> &sparse) {
+  for (int i = 0; i < sparse.outerSize(); i++)
+    for (Eigen::InnerIterator it(sparse, i); it; ++it)
+      dense(it.row(), it.col()) = it.value();
+}
+
 namespace Aux {
   class InterpolatingVector_Base;
 }
@@ -133,9 +142,9 @@ namespace Optimization {
     Eigen::SparseMatrix<double> dE_dcontrol;
     Eigen::SparseMatrix<double> dg_dnew;
     Eigen::SparseMatrix<double> dg_dcontrol;
+
     Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>
         dg_dnew_dense;
-    Eigen::MatrixXd dg_dcontrol_dense;
 
     Eigen::SparseLU<Eigen::SparseMatrix<double>> solver;
     Eigen::VectorXd const state_timepoints;
@@ -168,6 +177,10 @@ namespace Optimization {
     Eigen::Index get_total_no_constraints() const;
 
     Eigen::Ref<Eigen::MatrixXd> right_block(
+        Eigen::Ref<Eigen::MatrixXd> Fullmat,
+        Eigen::Index outer_col_index) const;
+
+    Eigen::Ref<Eigen::MatrixXd> middle_block(
         Eigen::Ref<Eigen::MatrixXd> Fullmat,
         Eigen::Index outer_col_index) const;
   };
