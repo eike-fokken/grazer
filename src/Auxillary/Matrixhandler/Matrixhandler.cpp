@@ -2,34 +2,58 @@
 #include <Matrixhandler.hpp>
 
 namespace Aux {
-
   Matrixhandler::~Matrixhandler() {}
 
-  void Triplethandler::add_to_coefficient(
+  template <int Transpose>
+  void Triplethandler<Transpose>::add_to_coefficient(
       Eigen::Index row, Eigen::Index col, double value) {
-    Eigen::Triplet<double, Eigen::Index> newtriplet(row, col, value);
+    Eigen::Triplet<double, Eigen::Index> newtriplet;
+    if constexpr (not Transpose) {
+      newtriplet = {row, col, value};
+    } else {
+      newtriplet = {col, row, value};
+    }
     tripletlist.push_back(newtriplet);
   }
-
-  void Triplethandler::set_coefficient(
+  template <int Transpose>
+  void Triplethandler<Transpose>::set_coefficient(
       Eigen::Index row, Eigen::Index col, double value) {
-    add_to_coefficient(row, col, value);
+    if constexpr (not Transpose) {
+      add_to_coefficient(row, col, value);
+    } else {
+      add_to_coefficient(col, row, value);
+    }
   }
-
-  void Triplethandler::set_matrix() {
+  template <int Transpose> void Triplethandler<Transpose>::set_matrix() {
     matrix.setFromTriplets(tripletlist.begin(), tripletlist.end());
     tripletlist.clear();
   }
 
-  void Coeffrefhandler::set_coefficient(
+  template <int Transpose>
+  void Coeffrefhandler<Transpose>::set_coefficient(
       Eigen::Index row, Eigen::Index col, double value) {
-    matrix.coeffRef(row, col) = value;
+    if constexpr (not Transpose) {
+      matrix.coeffRef(row, col) = value;
+    } else {
+      matrix.coeffRef(col, row) = value;
+    }
   }
-  void Coeffrefhandler::add_to_coefficient(
+  template <int Transpose>
+  void Coeffrefhandler<Transpose>::add_to_coefficient(
       Eigen::Index row, Eigen::Index col, double value) {
-    matrix.coeffRef(row, col) += value;
+    if constexpr (not Transpose) {
+      matrix.coeffRef(row, col) += value;
+    } else {
+      matrix.coeffRef(col, row) += value;
+    }
   }
 
-  void Coeffrefhandler::set_matrix() {}
+  template <int Transpose> void Coeffrefhandler<Transpose>::set_matrix() {}
+
+  template class Triplethandler<Transposed>;
+  template class Triplethandler<Regular>;
+
+  template class Coeffrefhandler<Transposed>;
+  template class Coeffrefhandler<Regular>;
 
 } // namespace Aux

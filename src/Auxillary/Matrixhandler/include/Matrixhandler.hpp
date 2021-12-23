@@ -4,6 +4,8 @@
 
 namespace Aux {
 
+  enum Transpose { Regular = 0, Transposed = 1 };
+
   /// \brief A utility base class that is used to setup and modify a sparse
   /// matrix.
   class Matrixhandler {
@@ -45,11 +47,11 @@ namespace Aux {
 
   /// \brief The Triplethandler variety gathers the coefficients in triplets and
   /// later builds the matrix from the triplets.
+  template <int Transpose = Regular>
   class Triplethandler final : public Matrixhandler {
 
   public:
     using Matrixhandler::Matrixhandler;
-    ~Triplethandler(){};
 
     void
     add_to_coefficient(Eigen::Index row, Eigen::Index col, double value) final;
@@ -64,12 +66,12 @@ namespace Aux {
 
   /// \brief The Coeffrefhandler variety directly sets the coefficients and
   /// contains no state.
+
+  template <int Transpose = Regular>
   class Coeffrefhandler final : public Matrixhandler {
 
   public:
     using Matrixhandler::Matrixhandler;
-
-    ~Coeffrefhandler(){};
 
     void
     add_to_coefficient(Eigen::Index row, Eigen::Index col, double value) final;
@@ -77,5 +79,11 @@ namespace Aux {
     set_coefficient(Eigen::Index row, Eigen::Index col, double value) final;
     void set_matrix() final;
   };
+
+  extern template class Triplethandler<Regular>;
+  extern template class Coeffrefhandler<Regular>;
+
+  extern template class Triplethandler<Transposed>;
+  extern template class Coeffrefhandler<Transposed>;
 
 } // namespace Aux
