@@ -394,9 +394,20 @@ namespace Optimization {
       control_handler.set_matrix();
     }
 
+    Lambda_row_storage.block();
+
     Eigen::Index rev_constraint_index = constraints_steps() - 1;
-    for (Eigen::Index rev_state_index = states.size() - 1; rev_state_index != 0;
+    for (Eigen::Index rev_state_index = state_steps() - 1; rev_state_index != 0;
          --rev_state_index) {
+
+      auto last_time = state_timepoints[rev_state_index - 1];
+      auto new_time = state_timepoints[rev_state_index];
+      Aux::Coeffrefhandler new_handler(dE_dnew);
+      problem.d_evalutate_d_new_state(
+          new_handler, last_time, new_time, states(last_time), states(new_time),
+          controls(new_time));
+      solver.factorize(dE_dnew);
+
       assert(false); // hier weiter
     }
 
