@@ -3,6 +3,7 @@
 #include <Eigen/Sparse>
 #include <Eigen/src/SparseCore/SparseMatrix.h>
 #include <gmock/gmock-matchers.h>
+#include <gtest/gtest-death-test.h>
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 
@@ -39,7 +40,7 @@ TEST(Triplethandler, assert) {
     }
   }
   handler.set_matrix();
-  Triplethandler h2(mat);
+  EXPECT_DEATH(Triplethandler h2(mat), "nonZeros ==");
 }
 
 TEST(Triplethandler, add_to_coefficient) {
@@ -81,7 +82,7 @@ TEST(Coeffrefhandler, set_coefficient) {
   triplethandler.set_matrix();
 
   Eigen::MatrixXd expected_mat(5, 5);
-  Triplethandler coeffrefhandler(mat);
+  Coeffrefhandler coeffrefhandler(mat);
   double value = 1.0;
   for (Eigen::Index col = 0; col != mat.cols(); ++col) {
     for (Eigen::Index row = 0; row != mat.rows(); ++row) {
@@ -164,8 +165,8 @@ TEST(Coeffrefhandler_transposed, set_coefficient) {
     transposedhandler.set_matrix();
   }
 
-  Triplethandler coeffrefhandler(mat);
-  Triplethandler<Transposed> transposedcoeffrefhandler(mat_transposed);
+  Coeffrefhandler coeffrefhandler(mat);
+  Coeffrefhandler<Transposed> transposedcoeffrefhandler(mat_transposed);
   double value = 1.0;
   for (Eigen::Index col = 0; col != mat.cols(); ++col) {
     for (Eigen::Index row = 0; row != mat.rows(); ++row) {
@@ -201,8 +202,8 @@ TEST(Coeffrefhandler_transposed, add_to_coefficient) {
     transposedhandler.set_matrix();
   }
 
-  Triplethandler coeffrefhandler(mat);
-  Triplethandler<Transposed> transposedcoeffrefhandler(mat_transposed);
+  Coeffrefhandler coeffrefhandler(mat);
+  Coeffrefhandler<Transposed> transposedcoeffrefhandler(mat_transposed);
   double value = 1.0;
   for (Eigen::Index col = 0; col != mat.cols(); ++col) {
     for (Eigen::Index row = 0; row != mat.rows(); ++row) {

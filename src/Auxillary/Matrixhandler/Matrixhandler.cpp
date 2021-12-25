@@ -1,5 +1,5 @@
+#include "Matrixhandler.hpp"
 #include <Eigen/Sparse>
-#include <Matrixhandler.hpp>
 
 namespace Aux {
   Matrixhandler::~Matrixhandler() {}
@@ -32,6 +32,13 @@ namespace Aux {
   template <int Transpose> void Triplethandler<Transpose>::set_matrix() {
     matrix.setFromTriplets(tripletlist.begin(), tripletlist.end());
     tripletlist.clear();
+  }
+
+  template <int Transpose>
+  Coeffrefhandler<Transpose>::Coeffrefhandler(
+      Eigen::SparseMatrix<double> &_matrix) :
+      Matrixhandler(_matrix) {
+    assert(_matrix.nonZeros() != 0);
   }
 
   template <int Transpose>

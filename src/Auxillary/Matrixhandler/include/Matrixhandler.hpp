@@ -71,7 +71,7 @@ namespace Aux {
   class Coeffrefhandler final : public Matrixhandler {
 
   public:
-    using Matrixhandler::Matrixhandler;
+    Coeffrefhandler(Eigen::SparseMatrix<double> &matrix);
 
     void
     add_to_coefficient(Eigen::Index row, Eigen::Index col, double value) final;
