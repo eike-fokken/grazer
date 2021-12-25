@@ -51,7 +51,7 @@ namespace Aux {
   class Triplethandler final : public Matrixhandler {
 
   public:
-    using Matrixhandler::Matrixhandler;
+    Triplethandler(Eigen::SparseMatrix<double> &matrix);
 
     void
     add_to_coefficient(Eigen::Index row, Eigen::Index col, double value) final;

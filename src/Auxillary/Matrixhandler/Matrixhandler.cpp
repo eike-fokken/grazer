@@ -5,6 +5,13 @@ namespace Aux {
   Matrixhandler::~Matrixhandler() {}
 
   template <int Transpose>
+  Triplethandler<Transpose>::Triplethandler(
+      Eigen::SparseMatrix<double> &_matrix) :
+      Matrixhandler(_matrix) {
+    assert(_matrix.nonZeros() == 0);
+  }
+
+  template <int Transpose>
   void Triplethandler<Transpose>::add_to_coefficient(
       Eigen::Index row, Eigen::Index col, double value) {
     Eigen::Triplet<double, Eigen::Index> newtriplet;
@@ -18,11 +25,9 @@ namespace Aux {
   template <int Transpose>
   void Triplethandler<Transpose>::set_coefficient(
       Eigen::Index row, Eigen::Index col, double value) {
-    if constexpr (not Transpose) {
-      add_to_coefficient(row, col, value);
-    } else {
-      add_to_coefficient(col, row, value);
-    }
+    // set_coefficient will take care of swapping row and col, therefore no
+    // difference here in set_coefficient!
+    add_to_coefficient(row, col, value);
   }
   template <int Transpose> void Triplethandler<Transpose>::set_matrix() {
     matrix.setFromTriplets(tripletlist.begin(), tripletlist.end());
