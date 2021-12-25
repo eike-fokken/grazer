@@ -54,6 +54,9 @@ namespace Optimization {
 
   class IpoptWrapper final : public Ipopt::TNLP {
 
+    using RowMat = Eigen::Matrix<
+        double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
+
   public:
     IpoptWrapper(
         Model::Timeevolver &evolver, Model::OptimizableObject &problem,
@@ -132,7 +135,7 @@ namespace Optimization {
     // cache_matrices :
     Eigen::MatrixXd A_jp1_Lambda_j;
     Eigen::MatrixXd Lambda_j;
-    Eigen::MatrixXd dg_duj;
+    RowMat dg_duj;
 
     Model::OptimizableObject &problem;
     ControlStateCache cache;
@@ -184,13 +187,11 @@ namespace Optimization {
         Eigen::Ref<Eigen::MatrixXd> Fullmat,
         Eigen::Index outer_col_index) const;
 
-    Eigen::Ref<Eigen::MatrixXd> lower_rows(
-        Eigen::Ref<Eigen::MatrixXd> Fullmat,
-        Eigen::Index outer_col_index) const;
+    Eigen::Ref<RowMat>
+    lower_rows(Eigen::Ref<RowMat> Fullmat, Eigen::Index outer_col_index) const;
 
-    Eigen::Ref<Eigen::MatrixXd> middle_row_block(
-        Eigen::Ref<Eigen::MatrixXd> Fullmat,
-        Eigen::Index outer_col_index) const;
+    Eigen::Ref<RowMat> middle_row_block(
+        Eigen::Ref<RowMat> Fullmat, Eigen::Index outer_col_index) const;
   };
 
 } // namespace Optimization

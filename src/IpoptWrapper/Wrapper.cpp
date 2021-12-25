@@ -89,7 +89,7 @@ namespace Optimization {
       Lambda_j(Eigen::MatrixXd::Zero(
           _initial_state.size(),
           _constraint_lower_bounds.get_total_number_of_values())),
-      dg_duj(Eigen::MatrixXd::Zero(
+      dg_duj(IpoptWrapper::RowMat::Zero(
           _constraint_lower_bounds.get_total_number_of_values(),
           _initial_controls.get_inner_length())),
       problem(_problem),
@@ -413,6 +413,8 @@ namespace Optimization {
       problem.d_evaluate_constraint_d_control(
           gcontrol_handler, new_time, states(new_time), controls(new_time));
       gcontrol_handler.set_matrix();
+
+      equation_matrices_initialized = true;
     }
     // First run DONE here.
 
@@ -531,16 +533,18 @@ namespace Optimization {
         constraints_per_step());
   }
 
-  Eigen::Ref<Eigen::MatrixXd> IpoptWrapper::lower_rows(
-      Eigen::Ref<Eigen::MatrixXd> Fullmat, Eigen::Index outer_col_index) const {
+  Eigen::Ref<IpoptWrapper::RowMat> IpoptWrapper::lower_rows(
+      Eigen::Ref<IpoptWrapper::RowMat> Fullmat,
+      Eigen::Index outer_col_index) const {
     assert(Fullmat.rows() == get_total_no_constraints());
     assert(Fullmat.rows() == controls_per_step());
     return Fullmat.rightCols(
         get_total_no_constraints() - outer_col_index * constraints_per_step());
   }
 
-  Eigen::Ref<Eigen::MatrixXd> IpoptWrapper::middle_row_block(
-      Eigen::Ref<Eigen::MatrixXd> Fullmat, Eigen::Index outer_col_index) const {
+  Eigen::Ref<IpoptWrapper::RowMat> IpoptWrapper::middle_row_block(
+      Eigen::Ref<IpoptWrapper::RowMat> Fullmat,
+      Eigen::Index outer_col_index) const {
     assert(Fullmat.rows() == get_total_no_constraints());
     assert(Fullmat.rows() == controls_per_step());
     return Fullmat.middleRows(
