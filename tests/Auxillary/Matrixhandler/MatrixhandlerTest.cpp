@@ -27,7 +27,7 @@ TEST(Triplethandler, set_coefficient) {
   EXPECT_EQ(expected_mat, dense);
 }
 
-TEST(Triplethandler, assert) {
+TEST(Triplethandler, assert_empty_matrix) {
   Eigen::SparseMatrix<double> mat(5, 5);
   Eigen::MatrixXd expected_mat(5, 5);
   Triplethandler handler(mat);
@@ -40,7 +40,7 @@ TEST(Triplethandler, assert) {
     }
   }
   handler.set_matrix();
-  EXPECT_DEATH(Triplethandler h2(mat), "nonZeros ==");
+  EXPECT_DEATH(Triplethandler h2(mat), "nonZeros().*==.*0");
 }
 
 TEST(Triplethandler, add_to_coefficient) {
@@ -219,4 +219,9 @@ TEST(Coeffrefhandler_transposed, add_to_coefficient) {
   Eigen::MatrixXd compare_mat_transposed = mat_transposed;
 
   EXPECT_EQ(compare_mat, compare_mat_transposed);
+}
+
+TEST(Coeffrefhandler, assert_nonempty_matrix) {
+  Eigen::SparseMatrix<double> mat(5, 5);
+  EXPECT_DEATH(Coeffrefhandler handler(mat), "nonZeros().*!=.*0");
 }
