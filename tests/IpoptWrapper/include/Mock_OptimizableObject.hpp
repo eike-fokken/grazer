@@ -2,7 +2,7 @@
 #include <iostream>
 
 class Mock_OptimizableObject final : public Model::OptimizableObject {
-
+public:
   void setup() final {
     assert(false); // never call me!
   };
@@ -29,7 +29,11 @@ class Mock_OptimizableObject final : public Model::OptimizableObject {
     assert(false); // never call me!
   }
 
-  Eigen::Index set_constraint_indices(Eigen::Index) final { return -1; }
+  Eigen::Index set_constraint_indices(Eigen::Index next_index) final {
+    constraint_startindex = next_index;
+    constraint_afterindex = constraint_startindex + 1;
+    return constraint_afterindex;
+  }
 
   // not needed:
   void set_constraint_lower_bounds(
@@ -55,7 +59,6 @@ class Mock_OptimizableObject final : public Model::OptimizableObject {
   void prepare_timestep(
       double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const &control) final {
     std::cout << "Called prepare_timestep!" << std::endl;
   }
@@ -84,7 +87,11 @@ class Mock_OptimizableObject final : public Model::OptimizableObject {
     assert(false); // never call me!
   }
 
-  Eigen::Index set_control_indices(Eigen::Index) final { return -1; }
+  Eigen::Index set_control_indices(Eigen::Index next_index) final {
+    control_startindex = next_index;
+    control_afterindex = control_startindex + 2;
+    return control_afterindex;
+  }
 
   // not needed:
   void set_initial_controls(
@@ -104,8 +111,7 @@ class Mock_OptimizableObject final : public Model::OptimizableObject {
 
   //// Cost components:
   double evaluate_cost(
-      double last_time, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> const &state,
+      double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const final {
     assert(false);
     return -1;
@@ -127,9 +133,10 @@ class Mock_OptimizableObject final : public Model::OptimizableObject {
 
   //// State components:
 
-  Eigen::Index set_state_indices(Eigen::Index) final {
-    state_startindex = 3;
-    return -1;
+  Eigen::Index set_state_indices(Eigen::Index next_index) final {
+    state_startindex = next_index;
+    state_afterindex = state_startindex + 3;
+    return state_afterindex;
   }
 
   void add_results_to_json(nlohmann::json &) final {
