@@ -89,7 +89,7 @@ namespace Optimization {
       Lambda_j(Eigen::MatrixXd::Zero(
           _initial_state.size(),
           _constraint_lower_bounds.get_total_number_of_values())),
-      dg_duj(IpoptWrapper::RowMat::Zero(
+      dg_duj(RowMat::Zero(
           _constraint_lower_bounds.get_total_number_of_values(),
           _initial_controls.get_inner_length())),
       problem(_problem),
@@ -517,8 +517,10 @@ namespace Optimization {
 
   Eigen::Ref<Eigen::MatrixXd> IpoptWrapper::right_cols(
       Eigen::Ref<Eigen::MatrixXd> Fullmat, Eigen::Index outer_col_index) const {
-    assert(Fullmat.cols() == get_total_no_constraints());
+    assert(Fullmat.rows() == states_per_step());
     assert(Fullmat.cols() == controls_per_step());
+    assert(outer_col_index >= 0);
+    assert(outer_col_index < constraint_steps());
 
     return Fullmat.rightCols(
         get_total_no_constraints() - outer_col_index * constraints_per_step());
@@ -526,30 +528,34 @@ namespace Optimization {
 
   Eigen::Ref<Eigen::MatrixXd> IpoptWrapper::middle_col_block(
       Eigen::Ref<Eigen::MatrixXd> Fullmat, Eigen::Index outer_col_index) const {
+    assert(Fullmat.rows() == states_per_step());
     assert(Fullmat.cols() == get_total_no_constraints());
-    assert(Fullmat.cols() == controls_per_step());
+    assert(outer_col_index >= 0);
+    assert(outer_col_index < constraint_steps());
+
     return Fullmat.middleCols(
-        get_total_no_constraints() - outer_col_index * constraints_per_step(),
-        constraints_per_step());
+        outer_col_index * constraints_per_step(), constraints_per_step());
   }
 
-  Eigen::Ref<IpoptWrapper::RowMat> IpoptWrapper::lower_rows(
-      Eigen::Ref<IpoptWrapper::RowMat> Fullmat,
-      Eigen::Index outer_col_index) const {
+  Eigen::Ref<RowMat> IpoptWrapper::lower_rows(
+      Eigen::Ref<RowMat> Fullmat, Eigen::Index outer_row_index) const {
     assert(Fullmat.rows() == get_total_no_constraints());
-    assert(Fullmat.rows() == controls_per_step());
-    return Fullmat.rightCols(
-        get_total_no_constraints() - outer_col_index * constraints_per_step());
+    assert(Fullmat.cols() == controls_per_step());
+    assert(outer_row_index >= 0);
+    assert(outer_row_index < constraint_steps());
+
+    return Fullmat.bottomRows(
+        get_total_no_constraints() - outer_row_index * constraints_per_step());
   }
 
-  Eigen::Ref<IpoptWrapper::RowMat> IpoptWrapper::middle_row_block(
-      Eigen::Ref<IpoptWrapper::RowMat> Fullmat,
-      Eigen::Index outer_col_index) const {
+  Eigen::Ref<RowMat> IpoptWrapper::middle_row_block(
+      Eigen::Ref<RowMat> Fullmat, Eigen::Index outer_row_index) const {
     assert(Fullmat.rows() == get_total_no_constraints());
-    assert(Fullmat.rows() == controls_per_step());
+    assert(Fullmat.cols() == controls_per_step());
+    assert(outer_row_index >= 0);
+    assert(outer_row_index < constraint_steps());
     return Fullmat.middleRows(
-        get_total_no_constraints() - outer_col_index * constraints_per_step(),
-        constraints_per_step());
+        outer_row_index * constraints_per_step(), constraints_per_step());
   }
 
 } // namespace Optimization

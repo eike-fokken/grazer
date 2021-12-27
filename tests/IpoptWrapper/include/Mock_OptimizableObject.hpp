@@ -2,7 +2,19 @@
 #include <iostream>
 
 class Mock_OptimizableObject final : public Model::OptimizableObject {
+
+  Eigen::Index const number_of_states;
+  Eigen::Index const number_of_controls;
+  Eigen::Index const number_of_constraints;
+
 public:
+  Mock_OptimizableObject(
+      Eigen::Index _number_of_states, Eigen::Index _number_of_controls,
+      Eigen::Index _number_of_constraints) :
+      number_of_states(_number_of_states),
+      number_of_controls(_number_of_controls),
+      number_of_constraints(_number_of_constraints) {}
+
   void setup() final {
     assert(false); // never call me!
   };
@@ -31,7 +43,7 @@ public:
 
   Eigen::Index set_constraint_indices(Eigen::Index next_index) final {
     constraint_startindex = next_index;
-    constraint_afterindex = constraint_startindex + 1;
+    constraint_afterindex = constraint_startindex + number_of_constraints;
     return constraint_afterindex;
   }
 
@@ -89,7 +101,7 @@ public:
 
   Eigen::Index set_control_indices(Eigen::Index next_index) final {
     control_startindex = next_index;
-    control_afterindex = control_startindex + 2;
+    control_afterindex = control_startindex + number_of_controls;
     return control_afterindex;
   }
 
@@ -135,7 +147,7 @@ public:
 
   Eigen::Index set_state_indices(Eigen::Index next_index) final {
     state_startindex = next_index;
-    state_afterindex = state_startindex + 3;
+    state_afterindex = state_startindex + number_of_states;
     return state_afterindex;
   }
 

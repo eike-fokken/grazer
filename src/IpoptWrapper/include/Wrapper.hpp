@@ -12,6 +12,9 @@
 
 #include <IpTNLP.hpp>
 
+using RowMat
+    = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
+
 template <typename Dense, typename Scalar, int Options, typename StorageIndex>
 void assign_sparse_to_sparse_dense(
     Eigen::DenseBase<Dense> &dense,
@@ -53,9 +56,6 @@ namespace Optimization {
   };
 
   class IpoptWrapper final : public Ipopt::TNLP {
-
-    using RowMat = Eigen::Matrix<
-        double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
 
   public:
     IpoptWrapper(
