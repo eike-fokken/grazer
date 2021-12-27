@@ -137,27 +137,28 @@ TEST(IpoptWrapper, Matrix_blocks) {
   {
     Eigen::internal::set_is_malloc_allowed(false);
     auto a = wrapper.middle_row_block(dg_dui, 0);
+    EXPECT_EQ(a, dg_dui.topRows(wrapper.constraints_per_step()));
     Eigen::internal::set_is_malloc_allowed(true);
 
     Eigen::internal::set_is_malloc_allowed(false);
     auto b = wrapper.middle_row_block(dg_dui, 1);
+    EXPECT_EQ(
+        b, dg_dui.middleRows(
+               wrapper.constraints_per_step(), wrapper.constraints_per_step()));
     Eigen::internal::set_is_malloc_allowed(true);
-
-    std::cout << a << "\n\n" << b << std::endl;
   }
 
   {
 
-    std::cout << "lower_rows:\n";
     Eigen::internal::set_is_malloc_allowed(false);
     auto a = wrapper.lower_rows(dg_dui, 0);
     Eigen::internal::set_is_malloc_allowed(true);
+    EXPECT_EQ(a, dg_dui);
 
     Eigen::internal::set_is_malloc_allowed(false);
     auto b = wrapper.lower_rows(dg_dui, 1);
+    EXPECT_EQ(b, dg_dui.bottomRows(wrapper.constraints_per_step()));
     Eigen::internal::set_is_malloc_allowed(true);
-
-    std::cout << a << "\n\n" << b << std::endl;
   }
 }
 

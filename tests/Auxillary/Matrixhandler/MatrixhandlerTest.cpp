@@ -27,7 +27,8 @@ TEST(Triplethandler, set_coefficient) {
   EXPECT_EQ(expected_mat, dense);
 }
 
-TEST(Triplethandler, assert_empty_matrix) {
+TEST(TriplethandlerDeathTest, assert_empty_matrix) {
+  GTEST_FLAG_SET(death_test_style, "threadsafe");
   Eigen::SparseMatrix<double> mat(5, 5);
   Eigen::MatrixXd expected_mat(5, 5);
   Triplethandler handler(mat);
