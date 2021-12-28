@@ -36,7 +36,7 @@ namespace Optimization {
 
   bool IpoptWrapper::evaluate_constraints(
       Ipopt::Number const *x, Ipopt::Index number_of_controls,
-      Ipopt::Number *values, Ipopt::Index nele_jac) {
+      Ipopt::Number *values, Ipopt::Index number_of_constraints) {
     Aux::ConstMappedInterpolatingVector const controls(
         control_timepoints, controls_per_step(), x,
         static_cast<Eigen::Index>(number_of_controls));
@@ -52,7 +52,7 @@ namespace Optimization {
 
     Aux::MappedInterpolatingVector constraints(
         constraint_timepoints, constraints_per_step(), values,
-        static_cast<Eigen::Index>(nele_jac));
+        static_cast<Eigen::Index>(number_of_constraints));
 
     // fill the constraints vector for every (constraints-)timepoint
     for (Eigen::Index constraint_timeindex = 0;
@@ -260,14 +260,14 @@ namespace Optimization {
     return true;
   }
   bool IpoptWrapper::eval_f(
-      Ipopt::Index n, Ipopt::Number const *x, bool new_x,
+      Ipopt::Index number_of_controls, Ipopt::Number const *x, bool new_x,
       Ipopt::Number &objective_value) {
     if (new_x) {
       derivatives_computed = false;
     }
     // Get controls into an InterpolatingVector_Base:
     Aux::ConstMappedInterpolatingVector const controls(
-        control_timepoints, controls_per_step(), x, n);
+        control_timepoints, controls_per_step(), x, number_of_controls);
 
     auto *state_pointer
         = cache.compute_states(controls, state_timepoints, initial_state);
@@ -281,7 +281,6 @@ namespace Optimization {
     // timeindex starts at 1, because at 0 there are initial conditions which
     // can not be altered!
     for (Eigen::Index timeindex = 1; timeindex != states.size(); ++timeindex) {
-
       objective_value += problem.evaluate_cost(
           state_timepoints[timeindex], states(state_timepoints[timeindex]),
           controls(state_timepoints[timeindex]));
