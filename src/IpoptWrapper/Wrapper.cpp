@@ -532,7 +532,7 @@ namespace Optimization {
   }
 
   Eigen::Index IpoptWrapper::state_steps() const {
-    return state_timepoints.size() - 1;
+    return state_timepoints.size();
   }
   Eigen::Index IpoptWrapper::control_steps() const {
     return control_timepoints.size();
