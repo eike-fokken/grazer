@@ -170,6 +170,7 @@ namespace Aux {
 
   void InterpolatingVector_Base::interpolate_from(
       InterpolatingVector_Base const &values) {
+
     assert(get_inner_length() == values.get_inner_length());
     assert(
         values.interpolation_point_at_index(0)
@@ -422,12 +423,6 @@ namespace Aux {
       interpolatingVector.mut_timestep(static_cast<Eigen::Index>(i)) = a;
     }
     return interpolatingVector;
-
-    gthrow(
-        {"Couldn't determine the right number of entries in ",
-         "InterpolatingVectors passed json in component ",
-         json["id"].get<std::string>(), ".\n",
-         "The json was: ", json.dump(1, '\t')});
   }
 
   MappedInterpolatingVector::MappedInterpolatingVector(

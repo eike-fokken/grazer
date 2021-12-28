@@ -198,15 +198,19 @@ TEST(IpoptWrapperDeathTest, matrix_row_blocks) {
   }
   Aux::InterpolatingVector initial_controls(
       control_timepoints, problem.get_number_of_controls_per_timepoint());
-
+  initial_controls.setZero();
   Aux::InterpolatingVector lower_bounds(
       control_timepoints, problem.get_number_of_controls_per_timepoint());
+  lower_bounds.setZero();
   Aux::InterpolatingVector upper_bounds(
       control_timepoints, problem.get_number_of_controls_per_timepoint());
+  upper_bounds.setZero();
   Aux::InterpolatingVector constraint_lower_bounds(
       constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
+  constraint_lower_bounds.setZero();
   Aux::InterpolatingVector constraint_upper_bounds(
       constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
+  constraint_upper_bounds.setZero();
 
   IpoptWrapper wrapper(
       evolver, problem, state_timepoints, control_timepoints,

@@ -87,34 +87,50 @@ namespace Optimization {
           _p.get_number_of_controls_per_timepoint(), _constraint_timepoints,
           _control_timepoints),
       A_jp1_Lambda_j(Eigen::MatrixXd::Zero(
-          _initial_state.size(),
-          _constraint_lower_bounds.get_total_number_of_values())),
+          _initial_state.size(), _p.get_number_of_constraints_per_timepoint()
+                                     * _constraint_timepoints.size())),
       Lambda_j(Eigen::MatrixXd::Zero(
-          _initial_state.size(),
-          _constraint_lower_bounds.get_total_number_of_values())),
+          _initial_state.size(), _p.get_number_of_constraints_per_timepoint()
+                                     * _constraint_timepoints.size())),
       dg_duj(RowMat::Zero(
-          _constraint_lower_bounds.get_total_number_of_values(),
-          _initial_controls.get_inner_length())),
+          _p.get_number_of_constraints_per_timepoint()
+              * _constraint_timepoints.size(),
+          _p.get_number_of_controls_per_timepoint())),
       problem(_p),
       cache(evolver, _p),
       dE_dnew_transposed(_initial_state.size(), _initial_state.size()),
       dE_dlast_transposed(_initial_state.size(), _initial_state.size()),
-      dE_dcontrol(_initial_state.size(), _initial_controls.get_inner_length()),
+      dE_dcontrol(
+          _initial_state.size(), _p.get_number_of_controls_per_timepoint()),
       dg_dnew_transposed(
-          _initial_state.size(), _constraint_lower_bounds.get_inner_length()),
+          _initial_state.size(), _p.get_number_of_constraints_per_timepoint()),
       dg_dcontrol(
-          _constraint_lower_bounds.get_inner_length(),
-          _initial_controls.get_inner_length()),
+          _p.get_number_of_constraints_per_timepoint(),
+          _p.get_number_of_controls_per_timepoint()),
       dg_dnew_dense_transposed(Eigen::MatrixXd::Zero(
-          _initial_state.size(), _constraint_lower_bounds.get_inner_length())),
-      state_timepoints(std::move(_state_timepoints)),
-      control_timepoints(std::move(_control_timepoints)),
-      constraint_timepoints(std::move(_constraint_timepoints)),
+          _initial_state.size(), _p.get_number_of_constraints_per_timepoint())),
+      state_timepoints(_state_timepoints),
+      control_timepoints(_control_timepoints),
+      constraint_timepoints(_constraint_timepoints),
       initial_state(std::move(_initial_state)),
       init(std::make_unique<Initialvalues>(
-          std::move(_initial_controls), std::move(_lower_bounds),
-          std::move(_upper_bounds), std::move(_constraint_lower_bounds),
-          std::move(_constraint_upper_bounds))),
+          Aux::InterpolatingVector::construct_and_interpolate_from(
+              _control_timepoints, _p.get_number_of_controls_per_timepoint(),
+              _initial_controls),
+          Aux::InterpolatingVector::construct_and_interpolate_from(
+              _control_timepoints, _p.get_number_of_controls_per_timepoint(),
+              _lower_bounds),
+          Aux::InterpolatingVector::construct_and_interpolate_from(
+              _control_timepoints, _p.get_number_of_controls_per_timepoint(),
+              _upper_bounds),
+          Aux::InterpolatingVector::construct_and_interpolate_from(
+              _constraint_timepoints,
+              _p.get_number_of_constraints_per_timepoint(),
+              _constraint_lower_bounds),
+          Aux::InterpolatingVector::construct_and_interpolate_from(
+              _constraint_timepoints,
+              _p.get_number_of_constraints_per_timepoint(),
+              _constraint_upper_bounds))),
       solution() {
     // control sanity checks:
     if (problem.get_number_of_controls_per_timepoint()
