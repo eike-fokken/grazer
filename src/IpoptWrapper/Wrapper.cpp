@@ -67,7 +67,7 @@ namespace Optimization {
   }
 
   IpoptWrapper::IpoptWrapper(
-      Model::Timeevolver &evolver, Model::OptimizableObject &_problem,
+      Model::Timeevolver &evolver, Model::OptimizableObject &_p,
       Eigen::VectorXd _state_timepoints, Eigen::VectorXd _control_timepoints,
       Eigen::VectorXd _constraint_timepoints, Eigen::VectorXd _initial_state,
       Aux::InterpolatingVector _initial_controls,
@@ -76,13 +76,16 @@ namespace Optimization {
       Aux::InterpolatingVector _constraint_lower_bounds,
       Aux::InterpolatingVector _constraint_upper_bounds) :
       objective_gradient(
-          _initial_controls.get_interpolation_points(),
-          _initial_controls.get_inner_length()),
+          _control_timepoints, _p.get_number_of_controls_per_timepoint()),
       constraint_jacobian(
-          ConstraintJacobian(_constraint_lower_bounds, _initial_controls)),
+          _p.get_number_of_constraints_per_timepoint(),
+          _p.get_number_of_controls_per_timepoint(), _constraint_timepoints,
+          _control_timepoints),
       constraint_jacobian_accessor(
-          nullptr, constraint_jacobian.nonZeros(), _constraint_lower_bounds,
-          _initial_controls),
+          nullptr, constraint_jacobian.nonZeros(),
+          _p.get_number_of_constraints_per_timepoint(),
+          _p.get_number_of_controls_per_timepoint(), _constraint_timepoints,
+          _control_timepoints),
       A_jp1_Lambda_j(Eigen::MatrixXd::Zero(
           _initial_state.size(),
           _constraint_lower_bounds.get_total_number_of_values())),
@@ -92,8 +95,8 @@ namespace Optimization {
       dg_duj(RowMat::Zero(
           _constraint_lower_bounds.get_total_number_of_values(),
           _initial_controls.get_inner_length())),
-      problem(_problem),
-      cache(evolver, _problem),
+      problem(_p),
+      cache(evolver, _p),
       dE_dnew_transposed(_initial_state.size(), _initial_state.size()),
       dE_dlast_transposed(_initial_state.size(), _initial_state.size()),
       dE_dcontrol(_initial_state.size(), _initial_controls.get_inner_length()),
