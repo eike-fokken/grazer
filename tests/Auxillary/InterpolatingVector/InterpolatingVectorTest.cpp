@@ -5,6 +5,7 @@
 #include <Eigen/Sparse>
 #include <cstddef>
 #include <gmock/gmock-matchers.h>
+#include <gtest/gtest-death-test.h>
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 
@@ -108,47 +109,19 @@ TEST(InterpolatingVector, Construction_happy_path) {
       number_of_values_per_point * number_of_points);
 }
 
-TEST(InterpolatingVector, Construction_negative_number_of_controls) {
-
+TEST(InterpolatingVectorDeathTest, Construction_negative_number_of_controls) {
+  GTEST_FLAG_SET(death_test_style, "threadsafe");
   int number_of_values_per_point = -1;
   int number_of_points = 8;
   double start = 0;
   double delta = 0.5;
   auto data = Aux::make_from_start_delta_number(start, delta, number_of_points);
 
-  try {
-    InterpolatingVector interpolatingvector(data, number_of_values_per_point);
-    FAIL() << "Test FAILED: The statement ABOVE\n"
-           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::runtime_error &e) {
-    EXPECT_THAT(
-        e.what(),
-        testing::HasSubstr(
-            "You can't have less than 0 entries per interpolation point"));
-  }
+  EXPECT_DEATH(
+      InterpolatingVector interpolatingvector(data, number_of_values_per_point),
+      "interpolation points must be zero or both must be greater in an "
+      "InterpolatingVector");
 }
-
-// Must become test of Interpolation_data
-// TEST(InterpolatingVector, Construction_nonpositive_number_steps) {
-
-//   int number_of_values_per_point = -1;
-//   int number_of_points = 8;
-//   double start = 0;
-//   double delta = 0.5;
-//   auto data = Aux::interpolation_points_helper(start, delta,
-//   number_of_points);
-
-//   try {
-//     InterpolatingVector interpolatingvector(data,
-//     number_of_values_per_point);
-//       FAIL() << "Test FAILED: The statement ABOVE\n"
-//              << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-//     } catch (std::runtime_error &e) {
-//       EXPECT_THAT(
-//           e.what(),
-//           testing::HasSubstr("You can't have less than 1 time step!"));
-//     }
-//   }
 
 TEST(InterpolatingVector, set_and_evaluate_controls_happy_path) {
 
