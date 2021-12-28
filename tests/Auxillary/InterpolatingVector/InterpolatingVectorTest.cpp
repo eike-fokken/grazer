@@ -53,6 +53,27 @@ TEST(InterpolatingVector, Move_constructor_happy) {
   EXPECT_EQ(b.get_interpolation_points().size(), 0);
 }
 
+TEST(InterpolatingVector, construct_and_interpolate_from) {
+
+  int inner_length = 2;
+  Eigen::VectorXd timepoints1{{0, 1, 2, 3, 4}};
+  Eigen::VectorXd timepoints2{{0, 0.5, 1., 1.5, 2, 2.5, 3, 3.5, 4}};
+
+  Aux::InterpolatingVector a(timepoints1, inner_length);
+  for (Eigen::Index index = 0; index != a.size(); ++index) {
+    a.mut_timestep(index) = Eigen::VectorXd{
+        {static_cast<double>(index + 1), static_cast<double>(index + 100)}};
+  }
+
+  auto b = Aux::InterpolatingVector::construct_and_interpolate_from(
+      timepoints2, inner_length, a);
+
+  for (Eigen::Index index = 0; index != a.size(); ++index) {
+    auto time = a.interpolation_point_at_index(index);
+    EXPECT_EQ(a(time), b(time));
+  }
+}
+
 TEST(InterpolatingVector, Move_assignment_happy) {
 
   int number_of_values_per_point = 4;
@@ -436,6 +457,27 @@ TEST(InterpolatingVector_Base, assignment_Mapped_happy) {
   assign(c, b);
 
   EXPECT_EQ(c, b);
+}
+
+TEST(InterpolatingVector_Base, interpolate_from) {
+
+  int inner_length = 2;
+  Eigen::VectorXd timepoints1{{0, 1, 2, 3, 4}};
+  Eigen::VectorXd timepoints2{{0, 0.5, 1., 1.5, 2, 2.5, 3, 3.5, 4}};
+
+  Aux::InterpolatingVector a(timepoints1, inner_length);
+  for (Eigen::Index index = 0; index != a.size(); ++index) {
+    a.mut_timestep(index) = Eigen::VectorXd{
+        {static_cast<double>(index + 1), static_cast<double>(index + 100)}};
+  }
+
+  Aux::InterpolatingVector b(timepoints2, inner_length);
+
+  b.interpolate_from(a);
+  for (Eigen::Index index = 0; index != a.size(); ++index) {
+    auto time = a.interpolation_point_at_index(index);
+    EXPECT_EQ(a(time), b(time));
+  }
 }
 
 TEST(InterpolatingVector_Base, assignment_Mapped_fail) {

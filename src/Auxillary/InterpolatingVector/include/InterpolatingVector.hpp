@@ -50,6 +50,9 @@ namespace Aux {
 
   public:
     void set_values_in_bulk(Eigen::Ref<Eigen::VectorXd const> const &values);
+    void setZero();
+
+    void interpolate_from(InterpolatingVector_Base const &);
 
     Eigen::Index get_total_number_of_values() const;
     Eigen::Map<Eigen::VectorXd const> get_interpolation_points() const;
@@ -95,6 +98,10 @@ namespace Aux {
 
   class InterpolatingVector : public InterpolatingVector_Base {
   public:
+    static InterpolatingVector construct_and_interpolate_from(
+        Eigen::VectorXd _interpolation_points, Eigen::Index inner_length,
+        InterpolatingVector_Base const &values);
+
     static InterpolatingVector construct_from_json(
         nlohmann::json const &json, nlohmann::json const &schema);
 

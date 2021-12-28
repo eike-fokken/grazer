@@ -166,6 +166,23 @@ namespace Aux {
     allvalues() = values;
   }
 
+  void InterpolatingVector_Base::setZero() { allvalues().setZero(); }
+
+  void InterpolatingVector_Base::interpolate_from(
+      InterpolatingVector_Base const &values) {
+    assert(get_inner_length() == values.get_inner_length());
+    assert(
+        values.interpolation_point_at_index(0)
+        <= interpolation_point_at_index(0));
+    assert(
+        values.interpolation_point_at_index(values.size() - 1)
+        >= interpolation_point_at_index(size() - 1));
+
+    for (Eigen::Index index = 0; index != size(); ++index) {
+      mut_timestep(index) = values(interpolation_point_at_index(index));
+    }
+  }
+
   Eigen::Index InterpolatingVector_Base::get_total_number_of_values() const {
     return get_allvalues().size();
   }
@@ -364,6 +381,14 @@ namespace Aux {
   Eigen::Ref<Eigen::VectorXd const> const
   InterpolatingVector::allvalues() const {
     return values;
+  }
+
+  InterpolatingVector InterpolatingVector::construct_and_interpolate_from(
+      Eigen::VectorXd interpolation_points, Eigen::Index inner_length,
+      InterpolatingVector_Base const &values) {
+    InterpolatingVector result(interpolation_points, inner_length);
+    result.interpolate_from(values);
+    return result;
   }
 
   InterpolatingVector InterpolatingVector::construct_from_json(
