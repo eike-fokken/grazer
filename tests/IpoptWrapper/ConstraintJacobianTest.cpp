@@ -1,5 +1,4 @@
 #include "ConstraintJacobian.hpp"
-#include "InterpolatingVector.hpp"
 #include <cstddef>
 #include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
@@ -13,19 +12,18 @@ TEST(ConstraintJacobian, construction1) {
 
   Eigen::Index constraints_inner_length = 2;
   Eigen::Index controls_inner_length = 3;
-  Aux::InterpolatingVector constraints(
-      constraints_times, constraints_inner_length);
-  Aux::InterpolatingVector controls(controls_times, controls_inner_length);
 
-  auto jacobian = Optimization::ConstraintJacobian(constraints, controls);
+  auto jacobian = Optimization::ConstraintJacobian(
+      constraints_inner_length, controls_inner_length, constraints_times,
+      controls_times);
 
-  EXPECT_EQ(jacobian.get_block_height(), constraints.get_inner_length());
-  EXPECT_EQ(jacobian.get_block_width(), controls.get_inner_length());
+  EXPECT_EQ(jacobian.get_block_height(), constraints_inner_length);
+  EXPECT_EQ(jacobian.get_block_width(), controls_inner_length);
   EXPECT_EQ(
       jacobian.get_block_size(),
       jacobian.get_block_height() * jacobian.get_block_width());
-  EXPECT_EQ(jacobian.get_outer_height(), constraints.size());
-  EXPECT_EQ(jacobian.get_outer_width(), controls.size());
+  EXPECT_EQ(jacobian.get_outer_height(), constraints_times.size());
+  EXPECT_EQ(jacobian.get_outer_width(), controls_times.size());
 
   Eigen::Index expected_nonzeros = 0;
   for (Eigen::Index column = 0; column != jacobian.get_outer_width();
@@ -44,11 +42,10 @@ TEST(ConstraintJacobian, column_height) {
 
   Eigen::Index constraints_inner_length = 2;
   Eigen::Index controls_inner_length = 3;
-  Aux::InterpolatingVector constraints(
-      constraints_times, constraints_inner_length);
-  Aux::InterpolatingVector controls(controls_times, controls_inner_length);
 
-  auto jacobian = Optimization::ConstraintJacobian(constraints, controls);
+  auto jacobian = Optimization::ConstraintJacobian(
+      constraints_inner_length, controls_inner_length, constraints_times,
+      controls_times);
 
   for (Eigen::Index j = 0; j != jacobian.get_outer_width(); ++j) {
     Eigen::MatrixXd a = jacobian.get_column_block(j);
@@ -65,11 +62,15 @@ TEST(ConstraintJacobian, setmatrix) {
 
   Eigen::Index constraints_inner_length = 2;
   Eigen::Index controls_inner_length = 3;
-  Aux::InterpolatingVector constraints(
-      constraints_times, constraints_inner_length);
-  Aux::InterpolatingVector controls(controls_times, controls_inner_length);
 
-  auto jacobian = Optimization::ConstraintJacobian(constraints, controls);
+  Eigen::Index total_number_of_constraints
+      = constraints_inner_length * constraints_times.size();
+  Eigen::Index total_number_of_controls
+      = controls_inner_length * controls_times.size();
+
+  auto jacobian = Optimization::ConstraintJacobian(
+      constraints_inner_length, controls_inner_length, constraints_times,
+      controls_times);
 
   jacobian.setZero();
 
@@ -78,13 +79,13 @@ TEST(ConstraintJacobian, setmatrix) {
     jacobian.get_column_block(column).setOnes();
   }
 
-  auto total_height = constraints.get_total_number_of_values();
-  auto total_width = controls.get_total_number_of_values();
+  auto total_height = total_number_of_constraints;
+  auto total_width = total_number_of_controls;
   Eigen::MatrixXd expected_matrix(total_height, total_width);
   expected_matrix.setZero();
   Eigen::Vector<Eigen::Index, Eigen::Dynamic> rowstarts{{0, 2, 6}};
   Eigen::Vector<Eigen::Index, Eigen::Dynamic> colstarts{{0, 3, 6}};
-  auto blockwidth = controls.get_inner_length();
+  auto blockwidth = controls_inner_length;
   for (Eigen::Index column = 0; column != jacobian.get_outer_width();
        ++column) {
     auto current_height = total_height - rowstarts[column];
@@ -101,18 +102,18 @@ TEST(ConstraintJacobian, assignment_happy) {
 
   Eigen::Index constraints_inner_length = 2;
   Eigen::Index controls_inner_length = 3;
-  Aux::InterpolatingVector constraints(
-      constraints_times, constraints_inner_length);
-  Aux::InterpolatingVector controls(controls_times, controls_inner_length);
 
-  auto jacobian1 = Optimization::ConstraintJacobian(constraints, controls);
+  auto jacobian1 = Optimization::ConstraintJacobian(
+      constraints_inner_length, controls_inner_length, constraints_times,
+      controls_times);
 
   Eigen::VectorX<double> values(jacobian1.nonZeros());
   for (Eigen::Index i = 0; i != values.size(); ++i) {
     values[i] = static_cast<double>(i);
   }
   auto jacobian2 = Optimization::MappedConstraintJacobian(
-      values.data(), values.size(), constraints, controls);
+      values.data(), values.size(), constraints_inner_length,
+      controls_inner_length, constraints_times, controls_times);
 
   jacobian1 = jacobian2;
   EXPECT_EQ(jacobian1.whole_matrix(), jacobian2.whole_matrix());
@@ -124,26 +125,29 @@ TEST(ConstraintJacobian, supply_indices) {
 
   Eigen::Index constraints_inner_length = 2;
   Eigen::Index controls_inner_length = 3;
-  Aux::InterpolatingVector constraints(
-      constraints_times, constraints_inner_length);
-  Aux::InterpolatingVector controls(controls_times, controls_inner_length);
+  Eigen::Index total_number_of_constraints
+      = constraints_inner_length * constraints_times.size();
+  Eigen::Index total_number_of_controls
+      = controls_inner_length * controls_times.size();
 
-  auto jac = Optimization::ConstraintJacobian(constraints, controls);
+  auto jac = Optimization::ConstraintJacobian(
+      constraints_inner_length, controls_inner_length, constraints_times,
+      controls_times);
 
   Eigen::VectorX<double> values(jac.nonZeros());
   for (Eigen::Index i = 0; i != values.size(); ++i) {
     values[i] = static_cast<double>(i) + 2;
   }
   auto jac2 = Optimization::MappedConstraintJacobian(
-      values.data(), values.size(), constraints, controls);
+      values.data(), values.size(), constraints_inner_length,
+      controls_inner_length, constraints_times, controls_times);
 
   std::vector<Ipopt::Index> rows(static_cast<size_t>(jac.nonZeros()));
   std::vector<Ipopt::Index> cols(static_cast<size_t>(jac.nonZeros()));
   jac.supply_indices(rows.data(), cols.data(), jac.nonZeros());
 
   Eigen::MatrixXd comparemat(
-      constraints.get_total_number_of_values(),
-      controls.get_total_number_of_values());
+      total_number_of_constraints, total_number_of_controls);
   comparemat.setZero();
   for (Eigen::Index index = 0; index != jac.nonZeros(); ++index) {
     auto uindex = static_cast<size_t>(index);
@@ -158,18 +162,18 @@ TEST(ConstraintJacobian, nullpointer) {
 
   Eigen::Index constraints_inner_length = 2;
   Eigen::Index controls_inner_length = 3;
-  Aux::InterpolatingVector constraints(
-      constraints_times, constraints_inner_length);
-  Aux::InterpolatingVector controls(controls_times, controls_inner_length);
 
-  auto jac = Optimization::ConstraintJacobian(constraints, controls);
+  auto jac = Optimization::ConstraintJacobian(
+      constraints_inner_length, controls_inner_length, constraints_times,
+      controls_times);
 
   Eigen::VectorX<double> values(jac.nonZeros());
   for (Eigen::Index i = 0; i != values.size(); ++i) {
     values[i] = static_cast<double>(i) + 2;
   }
   auto jac2 = Optimization::MappedConstraintJacobian(
-      nullptr, values.size(), constraints, controls);
+      nullptr, values.size(), constraints_inner_length, controls_inner_length,
+      constraints_times, controls_times);
 
   try {
     jac2.get_column_block(2);

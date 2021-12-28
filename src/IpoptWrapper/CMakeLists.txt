@@ -1,4 +1,12 @@
+add_library(constraintJacobian STATIC ConstraintJacobian.cpp)
+target_link_libraries(constraintJacobian PUBLIC my_ipopt)
+target_link_libraries(constraintJacobian PRIVATE exception)
+target_include_directories(constraintJacobian PUBLIC include)
+
+
+
+
 add_library(ipoptwrapper STATIC Wrapper.cpp Adaptor.cpp ConstraintJacobian.cpp)
-target_link_libraries(ipoptwrapper PUBLIC my_ipopt optimization_helpers timedata)
+target_link_libraries(ipoptwrapper PUBLIC my_ipopt optimization_helpers timedata constraintJacobian)
 target_link_libraries(ipoptwrapper PRIVATE my_ipopt problemlayer networkproblem matrixhandler)
 target_include_directories(ipoptwrapper PUBLIC include)

@@ -1,5 +1,5 @@
 #pragma once
-#include "InterpolatingVector.hpp"
+
 #include <Eigen/Dense>
 #include <IpTypes.hpp>
 #include <tuple>
@@ -9,8 +9,10 @@ namespace Optimization {
 
   std::tuple<Eigen::Index, Eigen::Index, Eigen::VectorX<Eigen::Index>>
   make_data(
-      Aux::InterpolatingVector_Base const &constraints,
-      Aux::InterpolatingVector_Base const &controls);
+      Eigen::Index number_of_constraints_per_step,
+      Eigen::Index number_of_controls_per_step,
+      Eigen::Ref<Eigen::VectorXd const> const &constraint_interpolationpoints,
+      Eigen::Ref<Eigen::VectorXd const> const &control_interpolationpoints);
 
   class ConstraintJacobian;
 
@@ -80,8 +82,10 @@ namespace Optimization {
   public:
     MappedConstraintJacobian(
         double *values, Eigen::Index number_of_entries,
-        Aux::InterpolatingVector_Base const &constraints,
-        Aux::InterpolatingVector_Base const &controls);
+        Eigen::Index number_of_constraints_per_step,
+        Eigen::Index number_of_controls_per_step,
+        Eigen::Ref<Eigen::VectorXd const> const &constraint_interpolationpoints,
+        Eigen::Ref<Eigen::VectorXd const> const &control_interpolationpoints);
 
     void replace_storage(
         double *new_values, Eigen::Index length_must_be_equal_to_old_length);
@@ -100,8 +104,10 @@ namespace Optimization {
   class ConstraintJacobian : public ConstraintJacobian_Base {
   public:
     ConstraintJacobian(
-        Aux::InterpolatingVector_Base const &constraints,
-        Aux::InterpolatingVector_Base const &controls);
+        Eigen::Index number_of_constraints_per_step,
+        Eigen::Index number_of_controls_per_step,
+        Eigen::Ref<Eigen::VectorXd const> const &constraint_interpolationpoints,
+        Eigen::Ref<Eigen::VectorXd const> const &control_interpolationpoints);
 
     ConstraintJacobian &operator=(MappedConstraintJacobian const &);
     ConstraintJacobian &operator=(ConstraintJacobian const &);

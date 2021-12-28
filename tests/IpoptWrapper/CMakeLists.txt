@@ -11,7 +11,7 @@ add_test(
 
 add_executable(constraintJacobian_test ConstraintJacobianTest.cpp)
 target_include_directories(constraintJacobian_test PUBLIC include)
-target_link_libraries(constraintJacobian_test PUBLIC gtest gtest_main gmock interpolatingVector ipoptwrapper)
+target_link_libraries(constraintJacobian_test PUBLIC gtest gtest_main gmock constraintJacobian)
 
 add_test(
   NAME constraintJacobian_test

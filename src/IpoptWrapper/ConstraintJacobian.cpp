@@ -7,24 +7,26 @@ namespace Optimization {
 
   std::tuple<Eigen::Index, Eigen::Index, Eigen::VectorX<Eigen::Index>>
   make_data(
-      Aux::InterpolatingVector_Base const &constraints,
-      Aux::InterpolatingVector_Base const &controls) {
-    Eigen::Index block_height = constraints.get_inner_length();
-    Eigen::Index block_width = controls.get_inner_length();
-    Eigen::Index number_of_column_blocks = controls.size();
+      Eigen::Index number_of_constraints_per_step,
+      Eigen::Index number_of_controls_per_step,
+      Eigen::Ref<Eigen::VectorXd const> const &constraint_interpolationpoints,
+      Eigen::Ref<Eigen::VectorXd const> const &control_interpolationpoints) {
+    Eigen::Index block_height = number_of_constraints_per_step;
+    Eigen::Index block_width = number_of_controls_per_step;
+    Eigen::Index number_of_column_blocks = control_interpolationpoints.size();
 
     Eigen::Vector<Eigen::Index, Eigen::Dynamic> _block_column_offsets(
         number_of_column_blocks + 1);
 
     Eigen::Index constraint_index = 0;
-    auto const &constrainttimes = constraints.get_interpolation_points();
+    auto const &constrainttimes = constraint_interpolationpoints;
     Eigen::Index control_index = 1;
-    auto const &controltimes = controls.get_interpolation_points();
-    auto last_height = constraints.size();
+    auto const &controltimes = control_interpolationpoints;
+    auto last_height = constraint_interpolationpoints.size();
     auto last_controltime = controltimes[0];
     _block_column_offsets[0] = 0;
-    while (control_index != controls.size()) {
-      if (constraint_index == constraints.size()) {
+    while (control_index != control_interpolationpoints.size()) {
+      if (constraint_index == constraint_interpolationpoints.size()) {
         _block_column_offsets[control_index]
             = _block_column_offsets[control_index - 1] + last_height;
         last_height = 0;
@@ -32,9 +34,9 @@ namespace Optimization {
       } else if (constrainttimes[constraint_index] > last_controltime) {
         _block_column_offsets[control_index]
             = _block_column_offsets[control_index - 1] + last_height;
-        last_height = constraints.size() - constraint_index;
+        last_height = constraint_interpolationpoints.size() - constraint_index;
 
-        if (control_index != controls.size()) {
+        if (control_index != control_interpolationpoints.size()) {
           last_controltime = controltimes[control_index];
         }
         ++control_index;
@@ -235,9 +237,13 @@ namespace Optimization {
 
   MappedConstraintJacobian::MappedConstraintJacobian(
       double *_values, Eigen::Index _number_of_entries,
-      Aux::InterpolatingVector_Base const &constraints,
-      Aux::InterpolatingVector_Base const &controls) :
-      ConstraintJacobian_Base(make_data(constraints, controls)),
+      Eigen::Index number_of_constraints_per_step,
+      Eigen::Index number_of_controls_per_step,
+      Eigen::Ref<Eigen::VectorXd const> const &constraint_interpolationpoints,
+      Eigen::Ref<Eigen::VectorXd const> const &control_interpolationpoints) :
+      ConstraintJacobian_Base(make_data(
+          number_of_constraints_per_step, number_of_controls_per_step,
+          constraint_interpolationpoints, control_interpolationpoints)),
       values(_values),
       number_of_entries(_number_of_entries) {
     assert(nonZeros() == _number_of_entries);
@@ -283,9 +289,13 @@ namespace Optimization {
   /////////////////////////////////////////////////////////
 
   ConstraintJacobian::ConstraintJacobian(
-      Aux::InterpolatingVector_Base const &constraints,
-      Aux::InterpolatingVector_Base const &controls) :
-      ConstraintJacobian_Base(make_data(constraints, controls)),
+      Eigen::Index number_of_constraints_per_step,
+      Eigen::Index number_of_controls_per_step,
+      Eigen::Ref<Eigen::VectorXd const> const &constraint_interpolationpoints,
+      Eigen::Ref<Eigen::VectorXd const> const &control_interpolationpoints) :
+      ConstraintJacobian_Base(make_data(
+          number_of_constraints_per_step, number_of_controls_per_step,
+          constraint_interpolationpoints, control_interpolationpoints)),
       storage(nonZeros()) {}
 
   ConstraintJacobian &
