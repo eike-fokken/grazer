@@ -128,6 +128,10 @@ namespace Optimization {
   private:
     bool compute_derivatives(bool new_x, Ipopt::Number const *x);
 
+    void initialize_matrices(
+        Aux::InterpolatingVector_Base const &states,
+        Aux::InterpolatingVector_Base const &controls);
+
     Aux::InterpolatingVector objective_gradient;
     ConstraintJacobian constraint_jacobian;
     MappedConstraintJacobian constraint_jacobian_accessor;

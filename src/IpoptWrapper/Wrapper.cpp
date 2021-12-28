@@ -386,55 +386,21 @@ namespace Optimization {
     if ((not new_x) and derivatives_computed) {
       return true;
     }
-
     Aux::ConstMappedInterpolatingVector const controls(
         control_timepoints, controls_per_step(), x, get_total_no_controls());
 
     auto *state_pointer
         = cache.compute_states(controls, state_timepoints, initial_state);
-
     // if the simulation failed: tell the calling site.
     if (state_pointer == nullptr) {
       return false;
     }
     auto &states = *state_pointer;
-
-    // On the first run we must set the sparsity pattern of the equation
-    // derivatives and analyze the pattern inside the LU solver.
-    // TODO: Factor into a function.
     if (not equation_matrices_initialized) {
-      double last_time = states.interpolation_point_at_index(0);
-      double new_time = states.interpolation_point_at_index(1);
-
-      Aux::Triplethandler<Aux::Transposed> new_handler(dE_dnew_transposed);
-      problem.d_evalutate_d_new_state(
-          new_handler, last_time, new_time, states(last_time), states(new_time),
-          controls(new_time));
-      new_handler.set_matrix();
-      solver.analyzePattern(dE_dnew_transposed);
-      Aux::Triplethandler<Aux::Transposed> last_handler(dE_dlast_transposed);
-      problem.d_evalutate_d_last_state(
-          last_handler, last_time, new_time, states(last_time),
-          states(new_time), controls(new_time));
-      last_handler.set_matrix();
-      Aux::Triplethandler control_handler(dE_dcontrol);
-      problem.d_evalutate_d_control(
-          control_handler, last_time, new_time, states(last_time),
-          states(new_time), controls(new_time));
-      control_handler.set_matrix();
-
-      Aux::Triplethandler<Aux::Transposed> gnew_handler(dg_dnew_transposed);
-      problem.d_evaluate_constraint_d_state(
-          gnew_handler, new_time, states(new_time), controls(new_time));
-      gnew_handler.set_matrix();
-      Aux::Triplethandler gcontrol_handler(dg_dcontrol);
-      problem.d_evaluate_constraint_d_control(
-          gcontrol_handler, new_time, states(new_time), controls(new_time));
-      gcontrol_handler.set_matrix();
-
-      equation_matrices_initialized = true;
+      initialize_matrices(states, controls);
     }
-    // First run DONE here.
+
+    // Here we go backwards through the timesteps:
 
     // search the last timepoint of a constraint:
     Eigen::Index rev_constraint_index = constraint_steps() - 1;
@@ -495,6 +461,41 @@ namespace Optimization {
 
     derivatives_computed = true;
     return true;
+  }
+
+  void IpoptWrapper::initialize_matrices(
+      Aux::InterpolatingVector_Base const &states,
+      Aux::InterpolatingVector_Base const &controls) {
+    double last_time = states.interpolation_point_at_index(0);
+    double new_time = states.interpolation_point_at_index(1);
+
+    Aux::Triplethandler<Aux::Transposed> new_handler(dE_dnew_transposed);
+    problem.d_evalutate_d_new_state(
+        new_handler, last_time, new_time, states(last_time), states(new_time),
+        controls(new_time));
+    new_handler.set_matrix();
+    solver.analyzePattern(dE_dnew_transposed);
+    Aux::Triplethandler<Aux::Transposed> last_handler(dE_dlast_transposed);
+    problem.d_evalutate_d_last_state(
+        last_handler, last_time, new_time, states(last_time), states(new_time),
+        controls(new_time));
+    last_handler.set_matrix();
+    Aux::Triplethandler control_handler(dE_dcontrol);
+    problem.d_evalutate_d_control(
+        control_handler, last_time, new_time, states(last_time),
+        states(new_time), controls(new_time));
+    control_handler.set_matrix();
+
+    Aux::Triplethandler<Aux::Transposed> gnew_handler(dg_dnew_transposed);
+    problem.d_evaluate_constraint_d_state(
+        gnew_handler, new_time, states(new_time), controls(new_time));
+    gnew_handler.set_matrix();
+    Aux::Triplethandler gcontrol_handler(dg_dcontrol);
+    problem.d_evaluate_constraint_d_control(
+        gcontrol_handler, new_time, states(new_time), controls(new_time));
+    gcontrol_handler.set_matrix();
+
+    equation_matrices_initialized = true;
   }
 
   Aux::InterpolatingVector_Base const &IpoptWrapper::get_solution() const {
