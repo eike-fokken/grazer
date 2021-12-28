@@ -128,7 +128,7 @@ namespace Optimization {
   private:
     bool compute_derivatives(bool new_x, Ipopt::Number const *x);
 
-    void initialize_matrices(
+    void initialize_derivative_matrices(
         Aux::InterpolatingVector_Base const &states,
         Aux::InterpolatingVector_Base const &controls);
 
@@ -176,6 +176,10 @@ namespace Optimization {
     Eigen::Index controls_per_step() const;
     Eigen::Index constraints_per_step() const;
 
+    /** \brief returns the number of compute steps for the states. This excludes
+     * the initial state timepoint, because there only the initial conditions
+     * are present.
+     */
     Eigen::Index state_steps() const;
     Eigen::Index control_steps() const;
     Eigen::Index constraint_steps() const;

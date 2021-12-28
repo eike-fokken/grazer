@@ -397,25 +397,38 @@ namespace Optimization {
     }
     auto &states = *state_pointer;
     if (not equation_matrices_initialized) {
-      initialize_matrices(states, controls);
+      initialize_derivative_matrices(states, controls);
     }
 
     // Here we go backwards through the timesteps:
+    {
 
+      Eigen::Index state_index = state_timepoints.size() - 1;
+      while (state_index > 0) {
+
+        auto last_time = state_timepoints[state_index - 1];
+        auto new_time = state_timepoints[state_index];
+        // hier weiter...
+        Aux::Coeffrefhandler<Aux::Transposed> new_handler(dE_dnew_transposed);
+        problem.d_evalutate_d_new_state(
+            new_handler, last_time, new_time, states(last_time),
+            states(new_time), controls(new_time));
+      }
+    }
     // search the last timepoint of a constraint:
-    Eigen::Index rev_constraint_index = constraint_steps() - 1;
-    Eigen::Index rev_state_index = state_steps() - 1;
-    while (constraint_timepoints[rev_constraint_index]
-           < state_timepoints[rev_state_index]) {
-      assert(rev_state_index > 0);
-      --rev_state_index;
+    Eigen::Index constraint_index = constraint_steps() - 1;
+    Eigen::Index state_index = state_steps() - 1;
+    while (constraint_timepoints[constraint_index]
+           < state_timepoints[state_index]) {
+      assert(state_index > 0);
+      --state_index;
     }
     assert(
-        constraint_timepoints[rev_constraint_index]
-        == state_timepoints[rev_state_index]);
+        constraint_timepoints[constraint_index]
+        == state_timepoints[state_index]);
 
-    auto last_time = state_timepoints[rev_state_index - 1];
-    auto new_time = state_timepoints[rev_state_index];
+    auto last_time = state_timepoints[state_index - 1];
+    auto new_time = state_timepoints[state_index];
 
     {
       Aux::Coeffrefhandler<Aux::Transposed> new_handler(dE_dnew_transposed);
@@ -434,9 +447,9 @@ namespace Optimization {
     // in the sparse matrix.
     assign_sparse_to_sparse_dense(dg_dnew_dense_transposed, dg_dnew_transposed);
 
-    auto A_block = right_cols(A_jp1_Lambda_j, rev_constraint_index);
-    auto Lambda_block = middle_col_block(Lambda_j, rev_constraint_index);
-    auto dg_duj_block = middle_row_block(dg_duj, rev_constraint_index);
+    auto A_block = right_cols(A_jp1_Lambda_j, constraint_index);
+    auto Lambda_block = middle_col_block(Lambda_j, constraint_index);
+    auto dg_duj_block = middle_row_block(dg_duj, constraint_index);
 
     A_block.noalias() = dE_dlast_transposed * Lambda_block;
     // finally compute lambda_{nn}:
@@ -449,9 +462,9 @@ namespace Optimization {
     dg_duj_block = (Lambda_block.transpose() * dE_dcontrol) + dg_dcontrol;
     //
 
-    for (; rev_state_index != 0; --rev_state_index) {
-      last_time = state_timepoints[rev_state_index - 1];
-      new_time = state_timepoints[rev_state_index];
+    for (; state_index != 0; --state_index) {
+      last_time = state_timepoints[state_index - 1];
+      new_time = state_timepoints[state_index];
       Aux::Coeffrefhandler<Aux::Transposed> new_handler(dE_dnew_transposed);
       problem.d_evalutate_d_new_state(
           new_handler, last_time, new_time, states(last_time), states(new_time),
@@ -463,11 +476,13 @@ namespace Optimization {
     return true;
   }
 
-  void IpoptWrapper::initialize_matrices(
+  void IpoptWrapper::initialize_derivative_matrices(
       Aux::InterpolatingVector_Base const &states,
       Aux::InterpolatingVector_Base const &controls) {
-    double last_time = states.interpolation_point_at_index(0);
-    double new_time = states.interpolation_point_at_index(1);
+    auto last_state_index = state_timepoints.size() - 1;
+    double last_time = state_timepoints[last_state_index - 1];
+    double new_time = state_timepoints[last_state_index];
+    states.interpolation_point_at_index(1);
 
     Aux::Triplethandler<Aux::Transposed> new_handler(dE_dnew_transposed);
     problem.d_evalutate_d_new_state(
@@ -517,7 +532,7 @@ namespace Optimization {
   }
 
   Eigen::Index IpoptWrapper::state_steps() const {
-    return state_timepoints.size();
+    return state_timepoints.size() - 1;
   }
   Eigen::Index IpoptWrapper::control_steps() const {
     return control_timepoints.size();
