@@ -41,7 +41,7 @@ TEST(compute_index_lambda_vector, happy) {
     double time = start + static_cast<double>(i) * delta;
     fine_timepoints[i] = time;
   }
-  auto index_lambda_pairs = Optimization::compute_index_lambd_vector(
+  auto index_lambda_pairs = Optimization::compute_index_lambda_vector(
       coarse_timepoints, fine_timepoints);
 
   double computed_time = start - 1.0;

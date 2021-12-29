@@ -434,30 +434,53 @@ namespace Optimization {
       Eigen::VectorXd rhs(states_per_step());
       Eigen::VectorXd df_dui(controls_per_step());
       Eigen::Index state_index = state_timepoints.size() - 1;
-      update_equation_derivative_matrices(state_index, states, controls);
-      update_cost_derivative_matrices(state_index, states, controls);
 
-      // solve B^T xi = df/dx^T
-      rhs = -ATxi;
-      rhs -= df_dnew_transposed;
-      xi = solver.solve(rhs);
-      ATxi = dE_dlast_transposed * xi;
-      df_dui = xi.transpose() * dE_dcontrol + df_dcontrol;
+      {
+        update_equation_derivative_matrices(state_index, states, controls);
+        update_cost_derivative_matrices(state_index, states, controls);
 
-      // Compute the actual derivative with respect to the control:
-      auto lambda = index_lambda_pairs[state_index].second;
-      auto upper_index = index_lambda_pairs[state_index].first;
-      if (lambda == 1.0) {
-        objective_gradient.mut_timestep(upper_index) += df_dui;
-      } else {
-        objective_gradient.mut_timestep(upper_index) += lambda * df_dui;
-        objective_gradient.mut_timestep(upper_index - 1)
-            += (1 - lambda) * df_dui;
+        // solve B^T xi = df/dx^T
+        rhs = -ATxi;
+        rhs -= df_dnew_transposed;
+        xi = solver.solve(rhs);
+        ATxi.noalias() = dE_dlast_transposed * xi;
+        df_dui.noalias() = xi.transpose() * dE_dcontrol;
+        df_dui += df_dcontrol;
+
+        // Compute the actual derivative with respect to the control:
+        auto lambda = index_lambda_pairs[state_index].second;
+        auto upper_index = index_lambda_pairs[state_index].first;
+        if (lambda == 1.0) {
+          objective_gradient.mut_timestep(upper_index) += df_dui;
+        } else {
+          objective_gradient.mut_timestep(upper_index) += lambda * df_dui;
+          objective_gradient.mut_timestep(upper_index - 1)
+              += (1 - lambda) * df_dui;
+        }
+        --state_index;
       }
-
       while (state_index > 0) {
         update_equation_derivative_matrices(state_index, states, controls);
         update_cost_derivative_matrices(state_index, states, controls);
+        // solve B^T xi = df/dx^T
+        rhs = -ATxi;
+        rhs -= df_dnew_transposed;
+        xi = solver.solve(rhs);
+        ATxi.noalias() = dE_dlast_transposed * xi;
+        df_dui.noalias() = xi.transpose() * dE_dcontrol;
+        df_dui += df_dcontrol;
+
+        // Compute the actual derivative with respect to the control:
+        auto lambda = index_lambda_pairs[state_index].second;
+        auto upper_index = index_lambda_pairs[state_index].first;
+        if (lambda == 1.0) {
+          objective_gradient.mut_timestep(upper_index) += df_dui;
+        } else {
+          objective_gradient.mut_timestep(upper_index) += lambda * df_dui;
+          objective_gradient.mut_timestep(upper_index - 1)
+              += (1 - lambda) * df_dui;
+        }
+        --state_index;
       }
     }
 
