@@ -397,9 +397,8 @@ namespace Model {
   }
 
   void Networkproblem::d_evaluate_cost_d_state(
-      Aux::Costgradienthandler &cost_new_state_jacobian_handler,
-      double last_time, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> const &state,
+      Aux::Matrixhandler &cost_new_state_jacobian_handler, double last_time,
+      double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const {
     for (auto *costcomponent : costcomponents) {
       costcomponent->d_evaluate_cost_d_state(
@@ -408,7 +407,7 @@ namespace Model {
   }
 
   void Networkproblem::d_evaluate_cost_d_control(
-      Aux::Costgradienthandler &cost_control_jacobian_handler, double last_time,
+      Aux::Matrixhandler &cost_control_jacobian_handler, double last_time,
       double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const {
     for (auto *costcomponent : costcomponents) {

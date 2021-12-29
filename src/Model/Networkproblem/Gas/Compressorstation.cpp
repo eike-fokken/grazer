@@ -1,6 +1,5 @@
 #include "Compressorstation.hpp"
 #include "Controlcomponent.hpp"
-#include "Costgradienthandler.hpp"
 #include "Gasedge.hpp"
 #include "Get_base_component.hpp"
 #include "Matrixhandler.hpp"
@@ -127,19 +126,18 @@ namespace Model::Gas {
   }
 
   void Compressorstation::d_evaluate_cost_d_state(
-      Aux::Costgradienthandler & /*cost_new_state_jacobian_handler*/,
+      Aux::Matrixhandler & /*cost_new_state_jacobian_handler*/,
       double /*last_time*/, double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*state*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {}
 
   void Compressorstation::d_evaluate_cost_d_control(
-      Aux::Costgradienthandler &cost_control_jacobian_handler,
-      double /*last_time*/, double /*new_time*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*state*/,
+      Aux::Matrixhandler &cost_control_jacobian_handler, double /*last_time*/,
+      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const & /*state*/,
       Eigen::Ref<Eigen::VectorXd const> const &control) const {
     auto current_control = control[get_control_startindex()];
     cost_control_jacobian_handler.set_coefficient(
-        get_control_startindex(), 2 * get_cost_weight() * current_control);
+        0, get_control_startindex(), 2 * get_cost_weight() * current_control);
   }
 
 } // namespace Model::Gas
