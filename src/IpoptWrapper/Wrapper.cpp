@@ -87,30 +87,34 @@ namespace Optimization {
           _p.get_number_of_controls_per_timepoint(), _constraint_timepoints,
           _control_timepoints),
       A_jp1_Lambda_j(Eigen::MatrixXd::Zero(
-          _initial_state.size(), _p.get_number_of_constraints_per_timepoint()
-                                     * _constraint_timepoints.size())),
+          _p.get_number_of_states(),
+          _p.get_number_of_constraints_per_timepoint()
+              * _constraint_timepoints.size())),
       Lambda_j(Eigen::MatrixXd::Zero(
-          _initial_state.size(), _p.get_number_of_constraints_per_timepoint()
-                                     * _constraint_timepoints.size())),
+          _p.get_number_of_states(),
+          _p.get_number_of_constraints_per_timepoint()
+              * _constraint_timepoints.size())),
       dg_duj(RowMat::Zero(
           _p.get_number_of_constraints_per_timepoint()
               * _constraint_timepoints.size(),
           _p.get_number_of_controls_per_timepoint())),
       problem(_p),
       cache(evolver, _p),
-      dE_dnew_transposed(_initial_state.size(), _initial_state.size()),
-      dE_dlast_transposed(_initial_state.size(), _initial_state.size()),
+      dE_dnew_transposed(_p.get_number_of_states(), _p.get_number_of_states()),
+      dE_dlast_transposed(_p.get_number_of_states(), _p.get_number_of_states()),
       dE_dcontrol(
-          _initial_state.size(), _p.get_number_of_controls_per_timepoint()),
-      df_dnew_transposed(_initial_state.size(), 1),
+          _p.get_number_of_states(), _p.get_number_of_controls_per_timepoint()),
+      df_dnew_transposed(_p.get_number_of_states(), 1),
       df_dcontrol(1, _p.get_number_of_controls_per_timepoint()),
       dg_dnew_transposed(
-          _initial_state.size(), _p.get_number_of_constraints_per_timepoint()),
+          _p.get_number_of_states(),
+          _p.get_number_of_constraints_per_timepoint()),
       dg_dcontrol(
           _p.get_number_of_constraints_per_timepoint(),
           _p.get_number_of_controls_per_timepoint()),
       dg_dnew_dense_transposed(Eigen::MatrixXd::Zero(
-          _initial_state.size(), _p.get_number_of_constraints_per_timepoint())),
+          _p.get_number_of_states(),
+          _p.get_number_of_constraints_per_timepoint())),
       state_timepoints(_state_timepoints),
       control_timepoints(_control_timepoints),
       constraint_timepoints(_constraint_timepoints),
@@ -177,8 +181,25 @@ namespace Optimization {
       gthrow({"The constraints timepoints are not sorted!"});
     }
 
-    // check whether constraint timepoints are a subset of state timepoints and
-    // that constraint times start at or after the time at state_timepoints[1]
+    // check that latest control timepoint is after or at latest state
+    // timepoint:
+    if (control_timepoints(control_timepoints.size() - 1)
+        < state_timepoints(state_timepoints.size() - 1)) {
+      gthrow(
+          {"latest state timepoint is not inside the control timepoint span."});
+    }
+
+    // check that first control timepoint is before or at latest state
+    // timepoint. Note that at the state timepoint at 0, no controls are ever
+    // evaluated, as here only the state initial values are given.
+    if (control_timepoints(0) > state_timepoints(1)) {
+      gthrow(
+          {"first state timepoint is not inside the control timepoint span."});
+    }
+
+    // check whether constraint timepoints are a subset of state timepoints
+    // and that constraint times start at or after the time at
+    // state_timepoints[1]
     auto constraint_iterator = constraint_timepoints.begin();
 
     // If we are past all constraints and no error was detected, we are clear:
@@ -186,9 +207,7 @@ namespace Optimization {
       if (constraint_iterator == constraint_timepoints.end()) {
         break;
       }
-
       auto timepoint = state_timepoints[i];
-
       // next constraint time is further ahead:
       if (timepoint < *constraint_iterator) {
         continue;
@@ -408,10 +427,20 @@ namespace Optimization {
     {
       // TODO: should be preallocated:
       Eigen::VectorXd xi(states_per_step());
+      Eigen::VectorXd ATxi(states_per_step());
+      Eigen::VectorXd df_dui(controls_per_step());
       Eigen::Index state_index = state_timepoints.size() - 1;
+      update_equation_derivative_matrices(state_index, states, controls);
+      update_cost_derivative_matrices(state_index, states, controls);
+      xi = solver.solve(df_dnew_transposed);
+      ATxi = dE_dlast_transposed * xi;
+      df_dui = xi.transpose() * dE_dcontrol + df_dcontrol;
+
+      objective_gradient;
 
       while (state_index > 0) {
         update_equation_derivative_matrices(state_index, states, controls);
+        update_cost_derivative_matrices(state_index, states, controls);
       }
     }
 
