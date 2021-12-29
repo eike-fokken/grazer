@@ -371,7 +371,8 @@ namespace Optimization {
       const Ipopt::IpoptData * /* ip_data */,
       Ipopt::IpoptCalculatedQuantities * /* ip_cq */) {
     if (status != Ipopt::SUCCESS) {
-      std::cout << "Ipopt status was: " << Ipopt::SUCCESS << "\n";
+      std::cout << "Ipopt status was: " << static_cast<int>(Ipopt::SUCCESS)
+                << "\n";
       std::cout << "Compare the values to the enum Ipopt::SUCCESS for what "
                    "that means."
                 << std::endl;

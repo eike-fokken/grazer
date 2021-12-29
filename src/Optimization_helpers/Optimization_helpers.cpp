@@ -107,16 +107,16 @@ namespace Optimization {
     }
   }
 
-  static void add_homotethy_triplets_at_index(
-      std::vector<Eigen::Triplet<double, Eigen::Index>> &triplets,
-      double scale_factor, Eigen::Index row, Eigen::Index column,
-      Eigen::Index size) {
-    for (Eigen::Index i = 0; i != size; ++i) {
-      Eigen::Triplet<double, Eigen::Index> newtriplet(
-          row + i, column + i, scale_factor);
-      triplets.push_back(newtriplet);
-    }
-  }
+  // static void add_homotethy_triplets_at_index(
+  //     std::vector<Eigen::Triplet<double, Eigen::Index>> &triplets,
+  //     double scale_factor, Eigen::Index row, Eigen::Index column,
+  //     Eigen::Index size) {
+  //   for (Eigen::Index i = 0; i != size; ++i) {
+  //     Eigen::Triplet<double, Eigen::Index> newtriplet(
+  //         row + i, column + i, scale_factor);
+  //     triplets.push_back(newtriplet);
+  //   }
+  // }
 
   // Eigen::SparseMatrix<double> compute_control_conversion(
   //     Aux::InterpolatingVector_Base const &fine_resolution_vector,
