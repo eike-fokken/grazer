@@ -79,13 +79,13 @@ namespace Model::Gas {
         Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
     void d_evaluate_cost_d_state(
-        Aux::Matrixhandler &cost_new_state_jacobian_handler, double last_time,
-        double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+        Aux::Matrixhandler &cost_new_state_jacobian_handler, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
     void d_evaluate_cost_d_control(
-        Aux::Matrixhandler &cost_control_jacobian_handler, double last_time,
-        double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+        Aux::Matrixhandler &cost_control_jacobian_handler, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const final;
   };
 

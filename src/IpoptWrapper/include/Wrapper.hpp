@@ -145,6 +145,14 @@ namespace Optimization {
         Eigen::Index state_index, Aux::InterpolatingVector_Base const &states,
         Aux::InterpolatingVector_Base const &controls);
 
+    void update_constraint_derivative_matrices(
+        Eigen::Index state_index, Aux::InterpolatingVector_Base const &states,
+        Aux::InterpolatingVector_Base const &controls);
+
+    void update_cost_derivative_matrices(
+        Eigen::Index state_index, Aux::InterpolatingVector_Base const &states,
+        Aux::InterpolatingVector_Base const &controls);
+
     Aux::InterpolatingVector objective_gradient;
     ConstraintJacobian constraint_jacobian;
     MappedConstraintJacobian constraint_jacobian_accessor;
@@ -160,6 +168,8 @@ namespace Optimization {
     Eigen::SparseMatrix<double> dE_dnew_transposed;
     Eigen::SparseMatrix<double> dE_dlast_transposed;
     Eigen::SparseMatrix<double> dE_dcontrol;
+    Eigen::SparseMatrix<double> df_dnew_transposed;
+    Eigen::SparseMatrix<double> df_dcontrol;
     Eigen::SparseMatrix<double> dg_dnew_transposed;
     Eigen::SparseMatrix<double> dg_dcontrol;
 
@@ -173,8 +183,8 @@ namespace Optimization {
     Eigen::VectorXd const initial_state;
     std::unique_ptr<Initialvalues> init;
     Aux::InterpolatingVector solution;
-    bool derivatives_computed = false;
-    bool equation_matrices_initialized = false;
+    bool current_derivatives_computed = false;
+    bool derivative_matrices_initialized = false;
 
     double final_objective_value{std::numeric_limits<double>::max()};
 
