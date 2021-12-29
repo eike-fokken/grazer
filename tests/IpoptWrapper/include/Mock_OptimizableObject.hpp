@@ -1,4 +1,5 @@
 #include "OptimizableObject.hpp"
+#include <Eigen/Sparse>
 #include <iostream>
 
 class Mock_OptimizableObject final : public Model::OptimizableObject {
@@ -130,14 +131,15 @@ public:
   }
 
   void d_evaluate_cost_d_state(
-      Aux::Matrixhandler &cost_new_state_jacobian_handler, double last_time,
-      double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+      Aux::Costgradienthandler &cost_new_state_jacobian_handler,
+      double last_time, double new_time,
+      Eigen::Ref<Eigen::VectorXd const> const &state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const final {
     assert(false); // never call me!
   }
 
   void d_evaluate_cost_d_control(
-      Aux::Matrixhandler &cost_control_jacobian_handler, double last_time,
+      Aux::Costgradienthandler &cost_control_jacobian_handler, double last_time,
       double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const final {
     assert(false); // never call me!
