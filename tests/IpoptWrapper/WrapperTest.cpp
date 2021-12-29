@@ -162,6 +162,7 @@ TEST(IpoptWrapper, Matrix_row_blocks) {
   }
 }
 
+#ifndef NDEBUG
 TEST(IpoptWrapperDeathTest, matrix_row_blocks) {
   GTEST_FLAG_SET(death_test_style, "threadsafe");
   nlohmann::json timeevolver_data = R"(    {
@@ -225,6 +226,7 @@ TEST(IpoptWrapperDeathTest, matrix_row_blocks) {
   EXPECT_DEATH(
       wrapper.lower_rows(dg_dui, 2), "outer_row_index.*<.*constraint_steps()");
 }
+#endif
 
 TEST(IpoptWrapper, Matrix_col_blocks) {
 
@@ -310,6 +312,7 @@ TEST(IpoptWrapper, Matrix_col_blocks) {
   }
 }
 
+#ifndef NDEBUG
 TEST(IpoptWrapperDeathTest, matrix_col_blocks) {
   GTEST_FLAG_SET(death_test_style, "threadsafe");
   nlohmann::json timeevolver_data = R"(    {
@@ -369,3 +372,4 @@ TEST(IpoptWrapperDeathTest, matrix_col_blocks) {
   EXPECT_DEATH(
       wrapper.right_cols(Lambda, 2), "outer_col_index.*<.*constraint_steps()");
 }
+#endif

@@ -27,6 +27,7 @@ TEST(Triplethandler, set_coefficient) {
   EXPECT_EQ(expected_mat, dense);
 }
 
+#ifndef NDEBUG
 TEST(TriplethandlerDeathTest, assert_empty_matrix) {
   GTEST_FLAG_SET(death_test_style, "threadsafe");
   Eigen::SparseMatrix<double> mat(5, 5);
@@ -43,7 +44,7 @@ TEST(TriplethandlerDeathTest, assert_empty_matrix) {
   handler.set_matrix();
   EXPECT_DEATH(Triplethandler h2(mat), "nonZeros().*==.*0");
 }
-
+#endif
 TEST(Triplethandler, add_to_coefficient) {
 
   Eigen::SparseMatrix<double> mat(5, 5);
@@ -222,7 +223,10 @@ TEST(Coeffrefhandler_transposed, add_to_coefficient) {
   EXPECT_EQ(compare_mat, compare_mat_transposed);
 }
 
-TEST(Coeffrefhandler, assert_nonempty_matrix) {
+#ifndef NDEBUG
+TEST(CoeffrefhandlerDeathTest, assert_nonempty_matrix) {
+  GTEST_FLAG_SET(death_test_style, "threadsafe");
   Eigen::SparseMatrix<double> mat(5, 5);
   EXPECT_DEATH(Coeffrefhandler handler(mat), "nonZeros().*!=.*0");
 }
+#endif

@@ -109,6 +109,7 @@ TEST(InterpolatingVector, Construction_happy_path) {
       number_of_values_per_point * number_of_points);
 }
 
+#ifndef NDEBUG
 TEST(InterpolatingVectorDeathTest, Construction_negative_number_of_controls) {
   GTEST_FLAG_SET(death_test_style, "threadsafe");
   int number_of_values_per_point = -1;
@@ -122,6 +123,7 @@ TEST(InterpolatingVectorDeathTest, Construction_negative_number_of_controls) {
       "interpolation points must be zero or both must be greater in an "
       "InterpolatingVector");
 }
+#endif
 
 TEST(InterpolatingVector, set_and_evaluate_controls_happy_path) {
 
