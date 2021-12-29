@@ -5,12 +5,12 @@ ControlStateCache.cpp
 )
 
 target_link_libraries(optimization_helpers PRIVATE
-exception
 networkproblem
-matrixhandler)
+matrixhandler
+problemlayer)
 
 target_link_libraries(optimization_helpers PUBLIC
 interpolatingVector
-problemlayer)
+)
 
 target_include_directories(optimization_helpers PUBLIC include)
