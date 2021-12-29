@@ -102,6 +102,8 @@ namespace Optimization {
       dE_dlast_transposed(_initial_state.size(), _initial_state.size()),
       dE_dcontrol(
           _initial_state.size(), _p.get_number_of_controls_per_timepoint()),
+      df_dnew_transposed(_initial_state.size(), 1),
+      df_dcontrol(1, _p.get_number_of_controls_per_timepoint()),
       dg_dnew_transposed(
           _initial_state.size(), _p.get_number_of_constraints_per_timepoint()),
       dg_dcontrol(
@@ -279,7 +281,7 @@ namespace Optimization {
       Ipopt::Index number_of_controls, Ipopt::Number const *x, bool new_x,
       Ipopt::Number &objective_value) {
     if (new_x) {
-      derivatives_computed = false;
+      current_derivatives_computed = false;
     }
     // Get controls into an InterpolatingVector_Base:
     Aux::ConstMappedInterpolatingVector const controls(
@@ -308,7 +310,7 @@ namespace Optimization {
       Ipopt::Index n, Ipopt::Number const *x, bool new_x,
       Ipopt::Number *grad_f) {
     if (new_x) {
-      derivatives_computed = false;
+      current_derivatives_computed = false;
     }
     // evaluate the jacobian of the constraints function and the objective:
     // If that fails, report failure.
@@ -318,7 +320,7 @@ namespace Optimization {
     }
 
     // After the derivatives are computed, we copy them over:
-    assert(derivatives_computed);
+    assert(current_derivatives_computed);
     Aux::MappedInterpolatingVector grad_f_accessor(
         control_timepoints, controls_per_step(), grad_f, n);
     grad_f_accessor = objective_gradient;
@@ -328,7 +330,7 @@ namespace Optimization {
       Ipopt::Index n, Ipopt::Number const *x, bool new_x, Ipopt::Index m,
       Ipopt::Number *g) {
     if (new_x) {
-      derivatives_computed = false;
+      current_derivatives_computed = false;
     }
     return evaluate_constraints(x, n, g, m);
   }
@@ -337,7 +339,7 @@ namespace Optimization {
       Ipopt::Index /* m */, Ipopt::Index nele_jac, Ipopt::Index *iRow,
       Ipopt::Index *jCol, Ipopt::Number *values) {
     if (new_x) {
-      derivatives_computed = false;
+      current_derivatives_computed = false;
     }
     if (values == nullptr) {
       // first internal call of this function.
@@ -354,7 +356,7 @@ namespace Optimization {
 
     // After compute_derivatives was called, the jacobian is saved in
     // constraint_jacobian. We now copy it into the ipopt jacobian values.
-    assert(derivatives_computed);
+    assert(current_derivatives_computed);
     constraint_jacobian_accessor.replace_storage(values, nele_jac);
     constraint_jacobian_accessor = constraint_jacobian;
     constraint_jacobian_accessor.replace_storage(nullptr, nele_jac);
@@ -383,7 +385,7 @@ namespace Optimization {
   }
 
   bool IpoptWrapper::compute_derivatives(bool new_x, Ipopt::Number const *x) {
-    if ((not new_x) and derivatives_computed) {
+    if ((not new_x) and current_derivatives_computed) {
       return true;
     }
     Aux::ConstMappedInterpolatingVector const controls(
@@ -396,7 +398,7 @@ namespace Optimization {
       return false;
     }
     auto &states = *state_pointer;
-    if (not equation_matrices_initialized) {
+    if (not derivative_matrices_initialized) {
       initialize_derivative_matrices(states, controls);
     }
 
@@ -471,7 +473,7 @@ namespace Optimization {
       solver.factorize(dE_dnew_transposed);
     }
 
-    derivatives_computed = true;
+    current_derivatives_computed = true;
     return true;
   }
 
@@ -508,19 +510,27 @@ namespace Optimization {
         gcontrol_handler, new_time, states(new_time), controls(new_time));
     gcontrol_handler.set_matrix();
 
-    equation_matrices_initialized = true;
+    Aux::Triplethandler<Aux::Transposed> fnew_handler(df_dnew_transposed);
+    problem.d_evaluate_cost_d_state(
+        fnew_handler, new_time, states(new_time), controls(new_time));
+    fnew_handler.set_matrix();
+    Aux::Triplethandler fcontrol_handler(df_dcontrol);
+    problem.d_evaluate_cost_d_control(
+        fcontrol_handler, new_time, states(new_time), controls(new_time));
+    fcontrol_handler.set_matrix();
+
+    derivative_matrices_initialized = true;
   }
 
   void IpoptWrapper::update_equation_derivative_matrices(
       Eigen::Index state_index, Aux::InterpolatingVector_Base const &states,
       Aux::InterpolatingVector_Base const &controls) {
-    assert(equation_matrices_initialized);
+    assert(derivative_matrices_initialized);
     assert(state_index > 0);
     assert(state_index < states.size());
 
-    auto last_state_index = state_timepoints.size() - 1;
-    double last_time = state_timepoints[last_state_index - 1];
-    double new_time = state_timepoints[last_state_index];
+    double last_time = state_timepoints[state_index - 1];
+    double new_time = state_timepoints[state_index];
 
     Aux::Coeffrefhandler<Aux::Transposed> new_handler(dE_dnew_transposed);
     problem.d_evalutate_d_new_state(
@@ -537,6 +547,41 @@ namespace Optimization {
     problem.d_evalutate_d_control(
         control_handler, last_time, new_time, states(last_time),
         states(new_time), controls(new_time));
+  }
+
+  void IpoptWrapper::update_constraint_derivative_matrices(
+      Eigen::Index state_index, Aux::InterpolatingVector_Base const &states,
+      Aux::InterpolatingVector_Base const &controls) {
+
+    assert(derivative_matrices_initialized);
+    assert(state_index > 0);
+    assert(state_index < states.size());
+
+    double time = state_timepoints[state_index];
+
+    Aux::Coeffrefhandler<Aux::Transposed> gnew_handler(dg_dnew_transposed);
+    problem.d_evaluate_constraint_d_state(
+        gnew_handler, time, states(time), controls(time));
+    Aux::Coeffrefhandler gcontrol_handler(dg_dcontrol);
+    problem.d_evaluate_constraint_d_control(
+        gcontrol_handler, time, states(time), controls(time));
+  }
+
+  void IpoptWrapper::update_cost_derivative_matrices(
+      Eigen::Index state_index, Aux::InterpolatingVector_Base const &states,
+      Aux::InterpolatingVector_Base const &controls) {
+    assert(derivative_matrices_initialized);
+    assert(state_index > 0);
+    assert(state_index < states.size());
+
+    double time = state_timepoints[state_index];
+
+    Aux::Coeffrefhandler<Aux::Transposed> fnew_handler(df_dnew_transposed);
+    problem.d_evaluate_cost_d_state(
+        fnew_handler, time, states(time), controls(time));
+    Aux::Coeffrefhandler fcontrol_handler(df_dcontrol);
+    problem.d_evaluate_cost_d_control(
+        fcontrol_handler, time, states(time), controls(time));
   }
 
   Aux::InterpolatingVector_Base const &IpoptWrapper::get_solution() const {
