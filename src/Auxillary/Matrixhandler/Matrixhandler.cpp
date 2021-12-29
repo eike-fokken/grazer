@@ -14,12 +14,21 @@ namespace Aux {
   template <int Transpose>
   void Triplethandler<Transpose>::add_to_coefficient(
       Eigen::Index row, Eigen::Index col, double value) {
-    Eigen::Triplet<double, Eigen::Index> newtriplet;
+    Eigen::Index actual_row = -1;
+    Eigen::Index actual_col = -1;
     if constexpr (not Transpose) {
-      newtriplet = {row, col, value};
+      actual_row = row;
+      actual_col = col;
     } else {
-      newtriplet = {col, row, value};
+      actual_row = col;
+      actual_col = row;
     }
+    assert(0 <= actual_row);
+    assert(actual_row < matrix.rows());
+    assert(0 <= actual_col);
+    assert(actual_col < matrix.cols());
+    Eigen::Triplet<double, Eigen::Index> newtriplet
+        = {actual_row, actual_col, value};
     tripletlist.push_back(newtriplet);
   }
   template <int Transpose>
@@ -44,20 +53,39 @@ namespace Aux {
   template <int Transpose>
   void Coeffrefhandler<Transpose>::set_coefficient(
       Eigen::Index row, Eigen::Index col, double value) {
+    Eigen::Index actual_row = -1;
+    Eigen::Index actual_col = -1;
     if constexpr (not Transpose) {
-      matrix.coeffRef(row, col) = value;
+      actual_row = row;
+      actual_col = col;
     } else {
-      matrix.coeffRef(col, row) = value;
+      actual_row = col;
+      actual_col = row;
     }
+    assert(0 <= actual_row);
+    assert(actual_row < matrix.rows());
+    assert(0 <= actual_col);
+    assert(actual_col < matrix.cols());
+    matrix.coeffRef(actual_row, actual_col) = value;
   }
   template <int Transpose>
   void Coeffrefhandler<Transpose>::add_to_coefficient(
       Eigen::Index row, Eigen::Index col, double value) {
+
+    Eigen::Index actual_row = -1;
+    Eigen::Index actual_col = -1;
     if constexpr (not Transpose) {
-      matrix.coeffRef(row, col) += value;
+      actual_row = row;
+      actual_col = col;
     } else {
-      matrix.coeffRef(col, row) += value;
+      actual_row = col;
+      actual_col = row;
     }
+    assert(0 <= actual_row);
+    assert(actual_row < matrix.rows());
+    assert(0 <= actual_col);
+    assert(actual_col < matrix.cols());
+    matrix.coeffRef(actual_row, actual_col) += value;
   }
 
   template <int Transpose> void Coeffrefhandler<Transpose>::set_matrix() {}
