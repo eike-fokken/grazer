@@ -22,6 +22,13 @@ namespace Optimization {
   std::pair<Eigen::Index, double> compute_index_lambda(
       Eigen::Ref<Eigen::VectorXd const> const &timepoints, double time);
 
+  /** brief computes compute_index_lambda for a whole input vector of fine time
+   * points.
+   */
+  Eigen::VectorX<std::pair<Eigen::Index, double>> compute_index_lambda_vector(
+      Eigen::Ref<Eigen::VectorXd const> const &coarse_timepoints,
+      Eigen::Ref<Eigen::VectorXd const> const &fine_timepoints);
+
   /** \brief Takes care of all initialization
    */
   void initialize(

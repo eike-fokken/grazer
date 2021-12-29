@@ -30,6 +30,19 @@ namespace Optimization {
     return {i_upper, lambda};
   }
 
+  Eigen::VectorX<std::pair<Eigen::Index, double>> compute_index_lambda_vector(
+      Eigen::Ref<Eigen::VectorXd const> const &coarse_timepoints,
+      Eigen::Ref<Eigen::VectorXd const> const &fine_timepoints) {
+    Eigen::VectorX<std::pair<Eigen::Index, double>> results(
+        fine_timepoints.size());
+
+    for (Eigen::Index index = 0; index != fine_timepoints.size(); ++index) {
+      double time = fine_timepoints[index];
+      results[index] = compute_index_lambda(coarse_timepoints, time);
+    }
+    return results;
+  }
+
   void initialize(
       Model::Networkproblem &problem, Aux::InterpolatingVector_Base &controls,
       nlohmann::json const &control_json,
