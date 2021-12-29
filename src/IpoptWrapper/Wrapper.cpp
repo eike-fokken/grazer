@@ -421,10 +421,13 @@ namespace Optimization {
     if (not derivative_matrices_initialized) {
       initialize_derivative_matrices(states, controls);
     }
-
+    auto index_lambda_pairs
+        = compute_index_lambda_vector(control_timepoints, state_timepoints);
     // Here we go backwards through the timesteps:
 
     {
+      objective_gradient.setZero();
+      constraint_jacobian.setZero();
       // TODO: should be preallocated:
       Eigen::VectorXd xi(states_per_step());
       Eigen::VectorXd ATxi(states_per_step());
@@ -432,11 +435,24 @@ namespace Optimization {
       Eigen::Index state_index = state_timepoints.size() - 1;
       update_equation_derivative_matrices(state_index, states, controls);
       update_cost_derivative_matrices(state_index, states, controls);
+
+      // solve B^T xi = df/dx^T
+      // The - is introduced later to avoid a temporary, but I'm not sure,
+      // whether this is neccessary.
       xi = solver.solve(df_dnew_transposed);
+      xi = -xi;
       ATxi = dE_dlast_transposed * xi;
       df_dui = xi.transpose() * dE_dcontrol + df_dcontrol;
 
-      objective_gradient;
+      auto lambda = index_lambda_pairs[state_index].second;
+      auto upper_index = index_lambda_pairs[state_index].first;
+      if (lambda == 1.0) {
+        objective_gradient.mut_timestep(upper_index) += df_dui;
+      } else {
+        objective_gradient.mut_timestep(upper_index) += lambda * df_dui;
+        objective_gradient.mut_timestep(upper_index - 1)
+            += (1 - lambda) * df_dui;
+      }
 
       while (state_index > 0) {
         update_equation_derivative_matrices(state_index, states, controls);
