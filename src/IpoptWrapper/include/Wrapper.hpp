@@ -128,8 +128,21 @@ namespace Optimization {
   private:
     bool compute_derivatives(bool new_x, Ipopt::Number const *x);
 
+    /** \brief Allocates room for the structures of the matrices
+     * #dE_dnew_transposed #dE_dlast_transposed, #dE_dcontrol,
+     * #dg_dnew_transposed, #dg_dcontrol and anlyzes the pattern of
+     * #dE_dnew_transposed in the #solver member variable.
+     */
     void initialize_derivative_matrices(
         Aux::InterpolatingVector_Base const &states,
+        Aux::InterpolatingVector_Base const &controls);
+
+    /** \brief fills the matrices #dE_dnew_transposed #dE_dlast_transposed and
+     * #dE_dcontrol with their values at state_index and fills #solver with the
+     * factorization of #dE_dnew_transposed.
+     */
+    void update_equation_derivative_matrices(
+        Eigen::Index state_index, Aux::InterpolatingVector_Base const &states,
         Aux::InterpolatingVector_Base const &controls);
 
     Aux::InterpolatingVector objective_gradient;

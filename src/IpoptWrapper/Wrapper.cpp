@@ -401,20 +401,19 @@ namespace Optimization {
     }
 
     // Here we go backwards through the timesteps:
+
     {
-
+      // TODO: should be preallocated:
+      Eigen::VectorXd xi(states_per_step());
       Eigen::Index state_index = state_timepoints.size() - 1;
-      while (state_index > 0) {
 
-        auto last_time = state_timepoints[state_index - 1];
-        auto new_time = state_timepoints[state_index];
-        // hier weiter...
-        Aux::Coeffrefhandler<Aux::Transposed> new_handler(dE_dnew_transposed);
-        problem.d_evalutate_d_new_state(
-            new_handler, last_time, new_time, states(last_time),
-            states(new_time), controls(new_time));
+      while (state_index > 0) {
+        update_equation_derivative_matrices(state_index, states, controls);
       }
     }
+
+    // constraints:
+
     // search the last timepoint of a constraint:
     Eigen::Index constraint_index = constraint_steps() - 1;
     Eigen::Index state_index = state_steps() - 1;
@@ -482,7 +481,6 @@ namespace Optimization {
     auto last_state_index = state_timepoints.size() - 1;
     double last_time = state_timepoints[last_state_index - 1];
     double new_time = state_timepoints[last_state_index];
-    states.interpolation_point_at_index(1);
 
     Aux::Triplethandler<Aux::Transposed> new_handler(dE_dnew_transposed);
     problem.d_evalutate_d_new_state(
@@ -511,6 +509,34 @@ namespace Optimization {
     gcontrol_handler.set_matrix();
 
     equation_matrices_initialized = true;
+  }
+
+  void IpoptWrapper::update_equation_derivative_matrices(
+      Eigen::Index state_index, Aux::InterpolatingVector_Base const &states,
+      Aux::InterpolatingVector_Base const &controls) {
+    assert(equation_matrices_initialized);
+    assert(state_index > 0);
+    assert(state_index < states.size());
+
+    auto last_state_index = state_timepoints.size() - 1;
+    double last_time = state_timepoints[last_state_index - 1];
+    double new_time = state_timepoints[last_state_index];
+
+    Aux::Coeffrefhandler<Aux::Transposed> new_handler(dE_dnew_transposed);
+    problem.d_evalutate_d_new_state(
+        new_handler, last_time, new_time, states(last_time), states(new_time),
+        controls(new_time));
+    solver.factorize(dE_dnew_transposed);
+    solver.analyzePattern(dE_dnew_transposed);
+    Aux::Coeffrefhandler<Aux::Transposed> last_handler(dE_dlast_transposed);
+    problem.d_evalutate_d_last_state(
+        last_handler, last_time, new_time, states(last_time), states(new_time),
+        controls(new_time));
+
+    Aux::Coeffrefhandler control_handler(dE_dcontrol);
+    problem.d_evalutate_d_control(
+        control_handler, last_time, new_time, states(last_time),
+        states(new_time), controls(new_time));
   }
 
   Aux::InterpolatingVector_Base const &IpoptWrapper::get_solution() const {
