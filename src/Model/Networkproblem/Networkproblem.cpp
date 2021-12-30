@@ -180,7 +180,7 @@ namespace Model {
 
   void Networkproblem::set_initial_values(
       Eigen::Ref<Eigen::VectorXd> new_state,
-      nlohmann::json const &initial_json) {
+      nlohmann::json const &initial_json) const {
 
     auto ids = get_ids_of_objects(statecomponents);
     check_components_in_json(statecomponents, initial_json, "initial.json");

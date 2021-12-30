@@ -51,7 +51,7 @@ namespace Model::Power {
 
   void Powernode::set_initial_values(
       Eigen::Ref<Eigen::VectorXd> new_state,
-      nlohmann::json const &initial_json) {
+      nlohmann::json const &initial_json) const {
     set_simple_initial_values(
         this, new_state, initial_json, get_initial_schema());
   }

@@ -208,7 +208,7 @@ namespace Model::Gas {
 
   void Pipe::set_initial_values(
       Eigen::Ref<Eigen::VectorXd> new_state,
-      nlohmann::json const &initial_json) {
+      nlohmann::json const &initial_json) const {
 
     // Unfortunately the argument and return types do not match.
     // Therefore we declare a lambda, that takes a VectorXd and returns a

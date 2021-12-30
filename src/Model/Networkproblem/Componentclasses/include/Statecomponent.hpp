@@ -49,8 +49,7 @@ namespace Model {
     /// @param initial_json Json object that contains the initial values.
     virtual void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,
-        nlohmann::json const &initial_json)
-        = 0;
+        nlohmann::json const &initial_json) const = 0;
 
   protected:
     void setup_output_json_helper(std::string const &id);

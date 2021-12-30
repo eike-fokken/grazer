@@ -56,7 +56,7 @@ namespace Model::Gaspowerconnection {
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,
-        nlohmann::json const &initial_json) final;
+        nlohmann::json const &initial_json) const final;
 
     Eigen::Vector2d get_boundary_p_qvol_bar(
         Gas::Direction direction,

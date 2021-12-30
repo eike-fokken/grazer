@@ -63,7 +63,7 @@ namespace Model {
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,
-        nlohmann::json const &initial_json) final;
+        nlohmann::json const &initial_json) const final;
 
     Eigen::Index set_state_indices(Eigen::Index next_free_index) final;
 
