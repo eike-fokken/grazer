@@ -1,5 +1,4 @@
 #include "Implicit_Optimizer.hpp"
-#include "ConstraintJacobian.hpp"
 #include "Initialvalues.hpp"
 #include "OptimizableObject.hpp"
 #include <memory>
@@ -8,13 +7,15 @@ namespace Optimization {
 
   Implicit_Optimizer::Implicit_Optimizer(
       Model::OptimizableObject &_problem, Model::Timeevolver &_evolver,
-      Eigen::VectorXd _state_timepoints, Eigen::VectorXd _control_timepoints,
-      Eigen::VectorXd _constraint_timepoints, Eigen::VectorXd _initial_state,
-      Aux::InterpolatingVector _initial_controls,
-      Aux::InterpolatingVector _lower_bounds,
-      Aux::InterpolatingVector _upper_bounds,
-      Aux::InterpolatingVector _constraint_lower_bounds,
-      Aux::InterpolatingVector _constraint_upper_bounds) :
+      Eigen::Ref<Eigen::VectorXd const> const &_state_timepoints,
+      Eigen::Ref<Eigen::VectorXd const> const &_control_timepoints,
+      Eigen::Ref<Eigen::VectorXd const> const &_constraint_timepoints,
+      Eigen::Ref<Eigen::VectorXd const> const &_initial_state,
+      Aux::InterpolatingVector_Base const &_initial_controls,
+      Aux::InterpolatingVector_Base const &_lower_bounds,
+      Aux::InterpolatingVector_Base const &_upper_bounds,
+      Aux::InterpolatingVector_Base const &_constraint_lower_bounds,
+      Aux::InterpolatingVector_Base const &_constraint_upper_bounds) :
       problem(_problem),
       init(std::make_unique<Initialvalues>(
           _initial_controls, _lower_bounds, _upper_bounds,
@@ -54,17 +55,19 @@ namespace Optimization {
   bool Implicit_Optimizer::evaluate_objective(
       Eigen::Ref<Eigen::VectorXd const> const &ipoptcontrols,
       double &objective) {
+
     Aux::ConstMappedInterpolatingVector const controls(
         control_timepoints, controls_per_step(), ipoptcontrols.data(),
         static_cast<Eigen::Index>(get_total_no_controls()));
 
-    auto *state_pointer
-        = cache.compute_states(controls, state_timepoints, initial_state);
-    // if the simulation failed: tell the calling site.
-    if (state_pointer == nullptr) {
-      return false;
+    if (not states_up_to_date) {
+      auto could_compute_states
+          = cache.refresh_cache(controls, state_timepoints, initial_state);
+      if (not could_compute_states) {
+        return false;
+      }
     }
-    auto &states = *state_pointer;
+    auto &states = cache.get_cached_states();
 
     objective = 0;
     // timeindex starts at 1, because at 0 there are initial conditions which
@@ -85,13 +88,15 @@ namespace Optimization {
         static_cast<Eigen::Index>(get_total_no_controls()));
 
     // get states:
-    auto *state_pointer
-        = cache.compute_states(controls, state_timepoints, initial_state);
-    // if the simulation failed: tell the calling site.
-    if (state_pointer == nullptr) {
-      return false;
+    if (not states_up_to_date) {
+      auto could_compute_states
+          = cache.refresh_cache(controls, state_timepoints, initial_state);
+      if (not could_compute_states) {
+        return false;
+      }
     }
-    auto &states = *state_pointer;
+    auto &states = cache.get_cached_states();
+
     Aux::MappedInterpolatingVector constraints(
         constraint_timepoints, constraints_per_step(), ipoptconstraints.data(),
         static_cast<Eigen::Index>(get_total_no_constraints()));
@@ -106,6 +111,75 @@ namespace Optimization {
           controls(time));
     }
     return true;
+  }
+
+  bool Implicit_Optimizer::evaluate_objective_gradient(
+      Eigen::Ref<Eigen::VectorXd const> const &controls,
+      Eigen::Ref<Eigen::VectorXd> gradient) {
+    assert(false);
+  }
+  bool Implicit_Optimizer::evaluate_constraint_jacobian(
+      Eigen::Ref<Eigen::VectorXd const> const &controls,
+      Eigen::Ref<Eigen::VectorXd> values) {
+    assert(false);
+  }
+
+  Eigen::VectorXd Implicit_Optimizer::get_initial_controls() {
+    // Check that init has not been deleted:
+    assert(init);
+    auto initial_controls
+        = Aux::InterpolatingVector::construct_and_interpolate_from(
+            control_timepoints, controls_per_step(), init->initial_controls);
+    if (init->obsolete()) {
+      init.reset();
+    }
+    return initial_controls.get_allvalues();
+  }
+  Eigen::VectorXd Implicit_Optimizer::get_lower_bounds() {
+    // Check that init has not been deleted:
+    assert(init);
+    auto lower_bounds
+        = Aux::InterpolatingVector::construct_and_interpolate_from(
+            control_timepoints, controls_per_step(), init->lower_bounds);
+    if (init->obsolete()) {
+      init.reset();
+    }
+    return lower_bounds.get_allvalues();
+  }
+  Eigen::VectorXd Implicit_Optimizer::get_upper_bounds() {
+    // Check that init has not been deleted:
+    assert(init);
+    auto upper_bounds
+        = Aux::InterpolatingVector::construct_and_interpolate_from(
+            control_timepoints, controls_per_step(), init->upper_bounds);
+    if (init->obsolete()) {
+      init.reset();
+    }
+    return upper_bounds.get_allvalues();
+  }
+  Eigen::VectorXd Implicit_Optimizer::get_constraint_lower_bounds() {
+    // Check that init has not been deleted:
+    assert(init);
+    auto constraint_lower_bounds
+        = Aux::InterpolatingVector::construct_and_interpolate_from(
+            control_timepoints, controls_per_step(),
+            init->constraint_lower_bounds);
+    if (init->obsolete()) {
+      init.reset();
+    }
+    return constraint_lower_bounds.get_allvalues();
+  }
+  Eigen::VectorXd Implicit_Optimizer::get_constraint_upper_bounds() {
+    // Check that init has not been deleted:
+    assert(init);
+    auto constraint_upper_bounds
+        = Aux::InterpolatingVector::construct_and_interpolate_from(
+            control_timepoints, controls_per_step(),
+            init->constraint_upper_bounds);
+    if (init->obsolete()) {
+      init.reset();
+    }
+    return constraint_upper_bounds.get_allvalues();
   }
 
   ////////////////////////////////////////////////////////////

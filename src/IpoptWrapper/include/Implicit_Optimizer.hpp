@@ -3,21 +3,27 @@
 #include "ControlStateCache.hpp"
 #include "InterpolatingVector.hpp"
 #include "Optimizer.hpp"
-namespace Optimization {
 
+namespace Model {
+  class OptimizableObject;
+} // namespace Model
+
+namespace Optimization {
   struct Initialvalues;
 
   class Implicit_Optimizer final : public Optimizer {
   public:
     Implicit_Optimizer(
         Model::OptimizableObject &problem, Model::Timeevolver &evolver,
-        Eigen::VectorXd state_timepoints, Eigen::VectorXd control_timepoints,
-        Eigen::VectorXd constraint_timepoints, Eigen::VectorXd initial_state,
-        Aux::InterpolatingVector initial_controls,
-        Aux::InterpolatingVector lower_bounds,
-        Aux::InterpolatingVector upper_bounds,
-        Aux::InterpolatingVector constraint_lower_bounds,
-        Aux::InterpolatingVector constraint_upper_bounds);
+        Eigen::Ref<Eigen::VectorXd const> const &state_timepoints,
+        Eigen::Ref<Eigen::VectorXd const> const &control_timepoints,
+        Eigen::Ref<Eigen::VectorXd const> const &constraint_timepoints,
+        Eigen::Ref<Eigen::VectorXd const> const &initial_state,
+        Aux::InterpolatingVector_Base const &initial_controls,
+        Aux::InterpolatingVector_Base const &lower_bounds,
+        Aux::InterpolatingVector_Base const &upper_bounds,
+        Aux::InterpolatingVector_Base const &constraint_lower_bounds,
+        Aux::InterpolatingVector_Base const &constraint_upper_bounds);
 
     bool supply_constraint_jacobian_indices(
         Eigen::Ref<Eigen::VectorX<Ipopt::Index>> Rowindices,
@@ -43,11 +49,11 @@ namespace Optimization {
         Eigen::Ref<Eigen::VectorXd> values) final;
 
     // initial values:
-    Eigen::Ref<Eigen::VectorXd const> get_initial_controls() final;
-    Eigen::Ref<Eigen::VectorXd const> get_lower_bounds() final;
-    Eigen::Ref<Eigen::VectorXd const> get_upper_bounds() final;
-    Eigen::Ref<Eigen::VectorXd const> get_constraint_lower_bounds() final;
-    Eigen::Ref<Eigen::VectorXd const> get_constraint_upper_bounds() final;
+    Eigen::VectorXd get_initial_controls() final;
+    Eigen::VectorXd get_lower_bounds() final;
+    Eigen::VectorXd get_upper_bounds() final;
+    Eigen::VectorXd get_constraint_lower_bounds() final;
+    Eigen::VectorXd get_constraint_upper_bounds() final;
 
   private:
     Model::OptimizableObject &problem; // Order dependency before

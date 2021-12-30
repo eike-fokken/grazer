@@ -77,7 +77,7 @@ TEST(ControlStateCache, fill_and_use_the_cache) {
   {
     std::stringstream buffer;
     Catch_cout catcher(buffer.rdbuf());
-    states_pointer = a.compute_states(controls, times, initial);
+    states_pointer = a.check_and_supply_states(controls, times, initial);
 
     output = buffer.str();
   }
@@ -113,7 +113,7 @@ TEST(ControlStateCache, fill_and_use_the_cache) {
   {
     std::stringstream buffer;
     Catch_cout catcher(buffer.rdbuf());
-    new_states = a.compute_states(controls, times, initial);
+    new_states = a.check_and_supply_states(controls, times, initial);
     output = buffer.str();
   }
   std::cout << output;
@@ -165,7 +165,7 @@ TEST(ControlStateCache, failed_simulation) {
   {
     std::stringstream buffer;
     Catch_cout catcher(buffer.rdbuf());
-    states_pointer = a.compute_states(controls, times, initial);
+    states_pointer = a.check_and_supply_states(controls, times, initial);
 
     output = buffer.str();
   }
@@ -181,7 +181,7 @@ TEST(ControlStateCache, failed_simulation) {
 
   EXPECT_EQ(encountered, 1);
 
-  states_pointer = a.compute_states(controls, times, initial);
+  states_pointer = a.check_and_supply_states(controls, times, initial);
   EXPECT_EQ(states_pointer, nullptr);
 
   // Check that the second time the cache for failed simulations is used by
@@ -194,7 +194,7 @@ TEST(ControlStateCache, failed_simulation) {
   {
     std::stringstream buffer;
     Catch_cout catcher(buffer.rdbuf());
-    new_states = a.compute_states(controls, times, initial);
+    new_states = a.check_and_supply_states(controls, times, initial);
     output = buffer.str();
   }
   std::cout << output;

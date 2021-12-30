@@ -22,6 +22,8 @@ namespace Optimization {
 
   class Optimizer {
   public:
+    virtual ~Optimizer() {}
+
     virtual bool supply_constraint_jacobian_indices(
         Eigen::Ref<Eigen::VectorX<Ipopt::Index>> Rowindices,
         Eigen::Ref<Eigen::VectorX<Ipopt::Index>> Colindices) const = 0;
@@ -49,11 +51,11 @@ namespace Optimization {
         = 0;
 
     // initial values:
-    virtual Eigen::Ref<Eigen::VectorXd const> get_initial_controls() = 0;
-    virtual Eigen::Ref<Eigen::VectorXd const> get_lower_bounds() = 0;
-    virtual Eigen::Ref<Eigen::VectorXd const> get_upper_bounds() = 0;
-    virtual Eigen::Ref<Eigen::VectorXd const> get_constraint_lower_bounds() = 0;
-    virtual Eigen::Ref<Eigen::VectorXd const> get_constraint_upper_bounds() = 0;
+    virtual Eigen::VectorXd get_initial_controls() = 0;
+    virtual Eigen::VectorXd get_lower_bounds() = 0;
+    virtual Eigen::VectorXd get_upper_bounds() = 0;
+    virtual Eigen::VectorXd get_constraint_lower_bounds() = 0;
+    virtual Eigen::VectorXd get_constraint_upper_bounds() = 0;
   };
 
 } // namespace Optimization

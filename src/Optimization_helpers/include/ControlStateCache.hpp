@@ -16,9 +16,16 @@ namespace Optimization {
     ControlStateCache(
         Model::Timeevolver &timeevolver, Model::Controlcomponent &problem);
 
-    Aux::InterpolatingVector_Base const *compute_states(
+    bool refresh_cache(
         Aux::InterpolatingVector_Base const &controls,
-        Eigen::Ref<Eigen::VectorXd const> const &state_interpolation_points,
+        Eigen::Ref<Eigen::VectorXd const> const &state_timepoints,
+        Eigen::Ref<Eigen::VectorXd const> const &initial_state);
+
+    Aux::InterpolatingVector_Base const &get_cached_states();
+
+    Aux::InterpolatingVector_Base const *check_and_supply_states(
+        Aux::InterpolatingVector_Base const &controls,
+        Eigen::Ref<Eigen::VectorXd const> const &state_timepoints,
         Eigen::Ref<Eigen::VectorXd const> const &initial_state);
 
   private:
