@@ -1,11 +1,11 @@
-# add_executable(Wrapper_test WrapperTest.cpp)
-# target_include_directories(Wrapper_test PUBLIC include)
-# target_link_libraries(Wrapper_test PUBLIC gtest gtest_main gmock interpolatingVector ipoptwrapper problemlayer componentclasses)
+add_executable(Optimizer_test OptimizerTest.cpp)
+target_include_directories(Optimizer_test PUBLIC include)
+target_link_libraries(Optimizer_test PUBLIC gtest gtest_main gmock interpolatingVector optimizer problemlayer componentclasses)
 
-# add_test(
-#   NAME Wrapper_test
-#   COMMAND Wrapper_test
-#   )
+add_test(
+  NAME Optimizer_test
+  COMMAND Optimizer_test
+  )
 
 
 

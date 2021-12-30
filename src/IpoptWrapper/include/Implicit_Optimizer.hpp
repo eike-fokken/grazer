@@ -25,6 +25,8 @@ namespace Optimization {
         Aux::InterpolatingVector_Base const &constraint_lower_bounds,
         Aux::InterpolatingVector_Base const &constraint_upper_bounds);
 
+    ~Implicit_Optimizer() final;
+
     bool supply_constraint_jacobian_indices(
         Eigen::Ref<Eigen::VectorX<Ipopt::Index>> Rowindices,
         Eigen::Ref<Eigen::VectorX<Ipopt::Index>> Colindices) const final;

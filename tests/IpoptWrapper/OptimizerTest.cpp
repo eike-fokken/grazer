@@ -1,6 +1,6 @@
 #define EIGEN_RUNTIME_NO_MALLOC // Define this symbol to enable runtime tests
                                 // for allocations
-#include "Wrapper.hpp"
+#include "Implicit_Optimizer.hpp"
 #include "InterpolatingVector.hpp"
 #include "Mock_OptimizableObject.hpp"
 #include "Timeevolver.hpp"
@@ -12,7 +12,7 @@
 
 using namespace Optimization;
 
-TEST(IpoptWrapper, simple_dimension_getters) {
+TEST(Implicit_Optimizer, simple_dimension_getters) {
 
   nlohmann::json timeevolver_data = R"(    {
         "use_simplified_newton": true,
@@ -55,28 +55,28 @@ TEST(IpoptWrapper, simple_dimension_getters) {
   Aux::InterpolatingVector constraint_upper_bounds(
       constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
 
-  IpoptWrapper wrapper(
-      evolver, problem, state_timepoints, control_timepoints,
+  Implicit_Optimizer optimizer(
+      problem, evolver, state_timepoints, control_timepoints,
       constraint_timepoints, initial_state, initial_controls, lower_bounds,
       upper_bounds, constraint_lower_bounds, constraint_upper_bounds);
 
-  EXPECT_EQ(wrapper.state_steps(), 4);
-  EXPECT_EQ(wrapper.control_steps(), 3);
-  EXPECT_EQ(wrapper.constraint_steps(), 2);
+  EXPECT_EQ(optimizer.state_steps(), 4);
+  EXPECT_EQ(optimizer.control_steps(), 3);
+  EXPECT_EQ(optimizer.constraint_steps(), 2);
 
-  EXPECT_EQ(wrapper.states_per_step(), 3);
-  EXPECT_EQ(wrapper.controls_per_step(), 2);
-  EXPECT_EQ(wrapper.constraints_per_step(), 1);
+  EXPECT_EQ(optimizer.states_per_step(), 3);
+  EXPECT_EQ(optimizer.controls_per_step(), 2);
+  EXPECT_EQ(optimizer.constraints_per_step(), 1);
 
   EXPECT_EQ(
-      wrapper.get_total_no_constraints(),
-      wrapper.constraints_per_step() * wrapper.constraint_steps());
+      optimizer.get_total_no_constraints(),
+      optimizer.constraints_per_step() * optimizer.constraint_steps());
   EXPECT_EQ(
-      wrapper.get_total_no_controls(),
-      wrapper.controls_per_step() * wrapper.control_steps());
+      optimizer.get_total_no_controls(),
+      optimizer.controls_per_step() * optimizer.control_steps());
 }
 
-TEST(IpoptWrapper, Matrix_row_blocks) {
+TEST(Implicit_Optimizer, Matrix_row_blocks) {
 
   nlohmann::json timeevolver_data = R"(    {
         "use_simplified_newton": true,
@@ -122,13 +122,13 @@ TEST(IpoptWrapper, Matrix_row_blocks) {
   Aux::InterpolatingVector constraint_upper_bounds(
       constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
 
-  IpoptWrapper wrapper(
-      evolver, problem, state_timepoints, control_timepoints,
+  Implicit_Optimizer optimizer(
+      problem, evolver, state_timepoints, control_timepoints,
       constraint_timepoints, initial_state, initial_controls, lower_bounds,
       upper_bounds, constraint_lower_bounds, constraint_upper_bounds);
 
   RowMat dg_dui(
-      wrapper.get_total_no_constraints(), wrapper.controls_per_step());
+      optimizer.get_total_no_constraints(), optimizer.controls_per_step());
 
   for (auto i = dg_dui.data();
        i != dg_dui.data() + dg_dui.rows() * dg_dui.cols(); ++i) {
@@ -136,34 +136,35 @@ TEST(IpoptWrapper, Matrix_row_blocks) {
   }
   {
     Eigen::internal::set_is_malloc_allowed(false);
-    auto a = wrapper.middle_row_block(dg_dui, 0);
-    EXPECT_EQ(a, dg_dui.topRows(wrapper.constraints_per_step()));
+    auto a = optimizer.middle_row_block(dg_dui, 0);
+    EXPECT_EQ(a, dg_dui.topRows(optimizer.constraints_per_step()));
     Eigen::internal::set_is_malloc_allowed(true);
 
     Eigen::internal::set_is_malloc_allowed(false);
-    auto b = wrapper.middle_row_block(dg_dui, 1);
+    auto b = optimizer.middle_row_block(dg_dui, 1);
     EXPECT_EQ(
         b, dg_dui.middleRows(
-               wrapper.constraints_per_step(), wrapper.constraints_per_step()));
+               optimizer.constraints_per_step(),
+               optimizer.constraints_per_step()));
     Eigen::internal::set_is_malloc_allowed(true);
   }
 
   {
 
     Eigen::internal::set_is_malloc_allowed(false);
-    auto a = wrapper.lower_rows(dg_dui, 0);
+    auto a = optimizer.lower_rows(dg_dui, 0);
     Eigen::internal::set_is_malloc_allowed(true);
     EXPECT_EQ(a, dg_dui);
 
     Eigen::internal::set_is_malloc_allowed(false);
-    auto b = wrapper.lower_rows(dg_dui, 1);
-    EXPECT_EQ(b, dg_dui.bottomRows(wrapper.constraints_per_step()));
+    auto b = optimizer.lower_rows(dg_dui, 1);
+    EXPECT_EQ(b, dg_dui.bottomRows(optimizer.constraints_per_step()));
     Eigen::internal::set_is_malloc_allowed(true);
   }
 }
 
 #ifndef NDEBUG
-TEST(IpoptWrapperDeathTest, matrix_row_blocks) {
+TEST(Implicit_OptimizerDeathTest, matrix_row_blocks) {
   GTEST_FLAG_SET(death_test_style, "threadsafe");
   nlohmann::json timeevolver_data = R"(    {
         "use_simplified_newton": true,
@@ -213,22 +214,23 @@ TEST(IpoptWrapperDeathTest, matrix_row_blocks) {
       constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
   constraint_upper_bounds.setZero();
 
-  IpoptWrapper wrapper(
-      evolver, problem, state_timepoints, control_timepoints,
+  Implicit_Optimizer optimizer(
+      problem, evolver, state_timepoints, control_timepoints,
       constraint_timepoints, initial_state, initial_controls, lower_bounds,
       upper_bounds, constraint_lower_bounds, constraint_upper_bounds);
 
   RowMat dg_dui(
-      wrapper.get_total_no_constraints(), wrapper.controls_per_step());
+      optimizer.get_total_no_constraints(), optimizer.controls_per_step());
 
   // Check that asserts fail, if the outer_row_index exceeds its range:
-  EXPECT_DEATH(wrapper.lower_rows(dg_dui, -1), "outer_row_index.*>=.*0");
+  EXPECT_DEATH(optimizer.lower_rows(dg_dui, -1), "outer_row_index.*>=.*0");
   EXPECT_DEATH(
-      wrapper.lower_rows(dg_dui, 2), "outer_row_index.*<.*constraint_steps()");
+      optimizer.lower_rows(dg_dui, 2),
+      "outer_row_index.*<.*constraint_steps()");
 }
 #endif
 
-TEST(IpoptWrapper, Matrix_col_blocks) {
+TEST(Implicit_Optimizer, Matrix_col_blocks) {
 
   nlohmann::json timeevolver_data = R"(    {
         "use_simplified_newton": true,
@@ -274,13 +276,13 @@ TEST(IpoptWrapper, Matrix_col_blocks) {
   Aux::InterpolatingVector constraint_upper_bounds(
       constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
 
-  IpoptWrapper wrapper(
-      evolver, problem, state_timepoints, control_timepoints,
+  Implicit_Optimizer optimizer(
+      problem, evolver, state_timepoints, control_timepoints,
       constraint_timepoints, initial_state, initial_controls, lower_bounds,
       upper_bounds, constraint_lower_bounds, constraint_upper_bounds);
 
   Eigen::MatrixXd Lambda(
-      wrapper.states_per_step(), wrapper.get_total_no_constraints());
+      optimizer.states_per_step(), optimizer.get_total_no_constraints());
 
   for (auto index = Lambda.data();
        index != Lambda.data() + Lambda.rows() * Lambda.cols(); ++index) {
@@ -289,31 +291,32 @@ TEST(IpoptWrapper, Matrix_col_blocks) {
 
   {
     Eigen::internal::set_is_malloc_allowed(false);
-    auto a = wrapper.middle_col_block(Lambda, 0);
-    EXPECT_EQ(a, Lambda.leftCols(wrapper.constraints_per_step()));
+    auto a = optimizer.middle_col_block(Lambda, 0);
+    EXPECT_EQ(a, Lambda.leftCols(optimizer.constraints_per_step()));
     Eigen::internal::set_is_malloc_allowed(true);
     Eigen::internal::set_is_malloc_allowed(false);
-    auto b = wrapper.middle_col_block(Lambda, 1);
+    auto b = optimizer.middle_col_block(Lambda, 1);
     EXPECT_EQ(
         b, Lambda.middleCols(
-               wrapper.constraints_per_step(), wrapper.constraints_per_step()));
+               optimizer.constraints_per_step(),
+               optimizer.constraints_per_step()));
     Eigen::internal::set_is_malloc_allowed(true);
   }
   {
 
     Eigen::internal::set_is_malloc_allowed(false);
-    auto a = wrapper.right_cols(Lambda, 0);
+    auto a = optimizer.right_cols(Lambda, 0);
     Eigen::internal::set_is_malloc_allowed(true);
     EXPECT_EQ(a, Lambda);
     Eigen::internal::set_is_malloc_allowed(false);
-    auto b = wrapper.right_cols(Lambda, 1);
-    EXPECT_EQ(b, Lambda.rightCols(wrapper.constraints_per_step()));
+    auto b = optimizer.right_cols(Lambda, 1);
+    EXPECT_EQ(b, Lambda.rightCols(optimizer.constraints_per_step()));
     Eigen::internal::set_is_malloc_allowed(true);
   }
 }
 
 #ifndef NDEBUG
-TEST(IpoptWrapperDeathTest, matrix_col_blocks) {
+TEST(Implicit_OptimizerDeathTest, matrix_col_blocks) {
   GTEST_FLAG_SET(death_test_style, "threadsafe");
   nlohmann::json timeevolver_data = R"(    {
         "use_simplified_newton": true,
@@ -359,17 +362,18 @@ TEST(IpoptWrapperDeathTest, matrix_col_blocks) {
   Aux::InterpolatingVector constraint_upper_bounds(
       constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
 
-  IpoptWrapper wrapper(
-      evolver, problem, state_timepoints, control_timepoints,
+  Implicit_Optimizer optimizer(
+      problem, evolver, state_timepoints, control_timepoints,
       constraint_timepoints, initial_state, initial_controls, lower_bounds,
       upper_bounds, constraint_lower_bounds, constraint_upper_bounds);
 
   Eigen::MatrixXd Lambda(
-      wrapper.states_per_step(), wrapper.get_total_no_constraints());
+      optimizer.states_per_step(), optimizer.get_total_no_constraints());
 
   // Check that asserts fail, if the outer_row_index exceeds its range:
-  EXPECT_DEATH(wrapper.right_cols(Lambda, -1), "outer_col_index.*>=.*0");
+  EXPECT_DEATH(optimizer.right_cols(Lambda, -1), "outer_col_index.*>=.*0");
   EXPECT_DEATH(
-      wrapper.right_cols(Lambda, 2), "outer_col_index.*<.*constraint_steps()");
+      optimizer.right_cols(Lambda, 2),
+      "outer_col_index.*<.*constraint_steps()");
 }
 #endif
