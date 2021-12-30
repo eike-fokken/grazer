@@ -11,15 +11,16 @@
 
 namespace Optimization {
 
-  IpoptWrapper::IpoptWrapper(Optimization::Optimizer &_optimizer) :
-      optimizer(_optimizer) {} //   IpoptWrapper(
+  IpoptWrapper::IpoptWrapper(std::unique_ptr<Optimizer> _optimizer) :
+      optimizer(std::move(_optimizer)) {}
 
+  IpoptWrapper::~IpoptWrapper() = default;
   bool IpoptWrapper::get_nlp_info(
       Ipopt::Index &n, Ipopt::Index &m, Ipopt::Index &nnz_jac_g,
       Ipopt::Index &nnz_h_lag, IndexStyleEnum &index_style) {
-    auto number_of_controls = optimizer.get_total_no_controls();
-    auto number_of_constraints = optimizer.get_total_no_constraints();
-    auto number_of_nonzeros_in_jacobian = optimizer.get_no_nnz_in_jacobian();
+    auto number_of_controls = optimizer->get_total_no_controls();
+    auto number_of_constraints = optimizer->get_total_no_constraints();
+    auto number_of_nonzeros_in_jacobian = optimizer->get_no_nnz_in_jacobian();
     if (number_of_controls > std::numeric_limits<Ipopt::Index>::max()) {
       std::cout << "Too many controls to fit into an Ipopt::Index!"
                 << std::endl;
@@ -51,17 +52,17 @@ namespace Optimization {
       Ipopt::Index n, Ipopt::Number *x_l, Ipopt::Number *x_u, Ipopt::Index m,
       Ipopt::Number *g_l, Ipopt::Number *g_u) {
 
-    assert(m == optimizer.get_total_no_constraints());
+    assert(m == optimizer->get_total_no_constraints());
 
     Eigen::Map<Eigen::VectorXd> lower_bounds(x_l, n);
-    lower_bounds = optimizer.get_lower_bounds();
+    lower_bounds = optimizer->get_lower_bounds();
     Eigen::Map<Eigen::VectorXd> upper_bounds(x_u, n);
-    upper_bounds = optimizer.get_upper_bounds();
+    upper_bounds = optimizer->get_upper_bounds();
 
     Eigen::Map<Eigen::VectorXd> constraint_lower_bounds(g_l, m);
-    constraint_lower_bounds = optimizer.get_constraint_lower_bounds();
+    constraint_lower_bounds = optimizer->get_constraint_lower_bounds();
     Eigen::Map<Eigen::VectorXd> constraint_upper_bounds(g_u, m);
-    constraint_upper_bounds = optimizer.get_constraint_upper_bounds();
+    constraint_upper_bounds = optimizer->get_constraint_upper_bounds();
 
     return true;
   }
@@ -75,7 +76,7 @@ namespace Optimization {
 
     // initialize to the given starting point
     Eigen::Map<Eigen::VectorXd> ipoptcontrols(x, n);
-    ipoptcontrols = optimizer.get_initial_controls();
+    ipoptcontrols = optimizer->get_initial_controls();
 
     return true;
   }
@@ -83,33 +84,33 @@ namespace Optimization {
       Ipopt::Index number_of_controls, Ipopt::Number const *x, bool new_x,
       Ipopt::Number &objective_value) {
     if (new_x) {
-      optimizer.new_x();
+      optimizer->new_x();
     }
     // Get controls into an InterpolatingVector_Base:
     Eigen::Map<Eigen::VectorXd const> controls(x, number_of_controls);
 
-    return optimizer.evaluate_objective(controls, objective_value);
+    return optimizer->evaluate_objective(controls, objective_value);
   }
 
   bool IpoptWrapper::eval_grad_f(
       Ipopt::Index number_of_controls, Ipopt::Number const *x, bool new_x,
       Ipopt::Number *grad_f) {
     if (new_x) {
-      optimizer.new_x();
+      optimizer->new_x();
     }
     Eigen::Map<Eigen::VectorXd const> controls(x, number_of_controls);
     Eigen::Map<Eigen::VectorXd> gradient(grad_f, number_of_controls);
-    return optimizer.evaluate_objective_gradient(controls, gradient);
+    return optimizer->evaluate_objective_gradient(controls, gradient);
   }
   bool IpoptWrapper::eval_g(
       Ipopt::Index number_of_controls, Ipopt::Number const *x, bool new_x,
       Ipopt::Index number_of_constraints, Ipopt::Number *g) {
     if (new_x) {
-      optimizer.new_x();
+      optimizer->new_x();
     }
     Eigen::Map<Eigen::VectorXd const> controls(x, number_of_controls);
     Eigen::Map<Eigen::VectorXd> constraints(g, number_of_constraints);
-    return optimizer.evaluate_constraints(controls, constraints);
+    return optimizer->evaluate_constraints(controls, constraints);
   }
   bool IpoptWrapper::eval_jac_g(
       Ipopt::Index number_of_controls, Ipopt::Number const *x, bool new_x,
@@ -121,18 +122,18 @@ namespace Optimization {
       // set the structure of constraints jacobian.
       Eigen::Map<Eigen::VectorX<Ipopt::Index>> Rowindices(iRow, nele_jac);
       Eigen::Map<Eigen::VectorX<Ipopt::Index>> Colindices(jCol, nele_jac);
-      return optimizer.supply_constraint_jacobian_indices(
+      return optimizer->supply_constraint_jacobian_indices(
           Rowindices, Colindices);
     }
 
     if (new_x) {
-      optimizer.new_x();
+      optimizer->new_x();
     }
 
     Eigen::Map<Eigen::VectorXd const> controls(x, number_of_controls);
     Eigen::Map<Eigen::VectorXd> jacobian_values(values, nele_jac);
 
-    return optimizer.evaluate_constraint_jacobian(controls, jacobian_values);
+    return optimizer->evaluate_constraint_jacobian(controls, jacobian_values);
   }
   void IpoptWrapper::finalize_solution(
       Ipopt::SolverReturn status, Ipopt::Index number_of_controls,

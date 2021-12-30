@@ -2,6 +2,7 @@
 #include <Eigen/Dense>
 #include <IpTNLP.hpp>
 #include <limits>
+#include <memory>
 
 namespace Optimization {
 
@@ -10,9 +11,9 @@ namespace Optimization {
   class IpoptWrapper final : public Ipopt::TNLP {
 
   public:
-    IpoptWrapper(Optimization::Optimizer &optimizer);
+    IpoptWrapper(std::unique_ptr<Optimizer> optimizer);
 
-    ~IpoptWrapper() = default;
+    ~IpoptWrapper() final;
 
     // Ipopt method overrides:
 
@@ -71,7 +72,7 @@ namespace Optimization {
     Eigen::VectorXd get_best_constraints() const;
 
   private:
-    Optimization::Optimizer &optimizer;
+    std::unique_ptr<Optimizer> optimizer;
 
     Eigen::VectorXd best_solution;
     double best_objective_value = std::numeric_limits<double>::max();

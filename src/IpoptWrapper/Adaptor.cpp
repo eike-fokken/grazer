@@ -1,11 +1,13 @@
 #include "Adaptor.hpp"
 #include "InterpolatingVector.hpp"
 #include "OptimizableObject.hpp"
+#include "Optimizer.hpp"
+#include <memory>
 
 namespace Optimization {
 
-  IpoptAdaptor::IpoptAdaptor(Optimization::Optimizer &optimizer) :
-      _nlp(new Optimization::IpoptWrapper(optimizer)),
+  IpoptAdaptor::IpoptAdaptor(std::unique_ptr<Optimizer> optimizer) :
+      _nlp(new Optimization::IpoptWrapper(std::move(optimizer))),
       _app(IpoptApplicationFactory()) {}
 
   auto IpoptAdaptor::optimize() const {

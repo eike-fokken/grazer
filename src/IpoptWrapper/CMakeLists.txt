@@ -10,6 +10,6 @@ target_link_libraries(optimizer PRIVATE componentclasses matrixhandler)
 target_include_directories(optimizer PUBLIC include)
 
 add_library(ipoptwrapper STATIC Wrapper.cpp Adaptor.cpp)
-target_link_libraries(ipoptwrapper PUBLIC my_ipopt optimizer)
-target_link_libraries(ipoptwrapper PRIVATE my_ipopt problemlayer )
+target_link_libraries(ipoptwrapper PUBLIC my_ipopt )
+target_link_libraries(ipoptwrapper PRIVATE my_ipopt problemlayer optimizer)
 target_include_directories(ipoptwrapper PUBLIC include)
