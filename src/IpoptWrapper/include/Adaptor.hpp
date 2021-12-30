@@ -18,7 +18,7 @@ namespace Optimization {
     IpoptAdaptor(std::unique_ptr<Optimizer> optimizer);
     ~IpoptAdaptor() = default;
 
-    auto optimize() const;
+    Ipopt::ApplicationReturnStatus optimize() const;
 
     Eigen::VectorXd get_solution() const;
     double get_obj_value() const;
