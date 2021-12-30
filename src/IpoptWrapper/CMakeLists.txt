@@ -4,10 +4,12 @@ target_link_libraries(constraintJacobian PRIVATE exception)
 target_include_directories(constraintJacobian PUBLIC include)
 
 
-add_library(optimizer STATIC Optimizer.cpp)
+add_library(optimizer STATIC Implicit_Optimizer.cpp Initialvalues.cpp)
+target_link_libraries(optimizer PUBLIC interpolatingVector constraintJacobian optimization_helpers)
+target_link_libraries(optimizer PRIVATE componentclasses matrixhandler)
 target_include_directories(optimizer PUBLIC include)
 
 add_library(ipoptwrapper STATIC Wrapper.cpp Adaptor.cpp)
-target_link_libraries(ipoptwrapper PUBLIC my_ipopt optimization_helpers timedata constraintJacobian optimizer)
-target_link_libraries(ipoptwrapper PRIVATE my_ipopt problemlayer networkproblem matrixhandler)
+target_link_libraries(ipoptwrapper PUBLIC my_ipopt optimizer)
+target_link_libraries(ipoptwrapper PRIVATE my_ipopt problemlayer )
 target_include_directories(ipoptwrapper PUBLIC include)

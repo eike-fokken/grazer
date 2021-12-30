@@ -4,22 +4,8 @@
 
 namespace Optimization {
 
-  IpoptAdaptor::IpoptAdaptor(
-      Model::Timeevolver &evolver, Model::OptimizableObject &problem,
-      Eigen::VectorXd _state_timepoints, Eigen::VectorXd _control_timepoints,
-      Eigen::VectorXd _constraint_timepoints, Eigen::VectorXd initial_state,
-      Aux::InterpolatingVector initial_controls,
-      Aux::InterpolatingVector lower_bounds,
-      Aux::InterpolatingVector upper_bounds,
-      Aux::InterpolatingVector constraints_lower_bounds,
-      Aux::InterpolatingVector constraints_upper_bounds) :
-      _nlp(new Optimization::IpoptWrapper(
-          evolver, problem, std::move(_state_timepoints),
-          std::move(_control_timepoints), std::move(_constraint_timepoints),
-          std::move(initial_state), std::move(initial_controls),
-          std::move(lower_bounds), std::move(upper_bounds),
-          std::move(constraints_lower_bounds),
-          std::move(constraints_upper_bounds))),
+  IpoptAdaptor::IpoptAdaptor(Optimization::Optimizer &optimizer) :
+      _nlp(new Optimization::IpoptWrapper(optimizer)),
       _app(IpoptApplicationFactory()) {}
 
   auto IpoptAdaptor::optimize() const {
@@ -35,10 +21,10 @@ namespace Optimization {
     status = _app->OptimizeTNLP(_nlp);
     return status;
   }
-  Aux::InterpolatingVector_Base const &IpoptAdaptor::get_solution() const {
-    return _nlp->get_solution();
+  Eigen::VectorXd IpoptAdaptor::get_solution() const {
+    return _nlp->get_best_solution();
   }
   double IpoptAdaptor::get_obj_value() const {
-    return _nlp->get_final_objective_value();
+    return _nlp->get_best_objective_value();
   }
 } // namespace Optimization
