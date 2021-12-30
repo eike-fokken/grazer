@@ -144,7 +144,6 @@ namespace Optimization {
     Eigen::SparseMatrix<double> dg_dnew_transposed;
     Eigen::SparseMatrix<double> dg_dcontrol;
 
-    RowMat dg_dnew_dense_transposed;
     Eigen::SparseLU<Eigen::SparseMatrix<double>> solver;
 
     // cache_matrices :

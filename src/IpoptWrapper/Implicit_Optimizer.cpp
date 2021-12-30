@@ -368,18 +368,20 @@ namespace Optimization {
       // TODO: should be preallocated:
       Eigen::VectorXd xi(states_per_step());
       Eigen::VectorXd ATxi = Eigen::VectorXd::Zero(states_per_step());
-      Eigen::VectorXd rhs(states_per_step());
+      Eigen::VectorXd objective_rhs(states_per_step());
       Eigen::VectorXd df_dui(controls_per_step());
       Eigen::Index state_index = state_timepoints.size() - 1;
+
+      Eigen::MatrixXd constraint_rhs(states_per_step(), constraints_per_step());
 
       {
         update_equation_derivative_matrices(state_index, states, controls);
         update_cost_derivative_matrices(state_index, states, controls);
 
         // solve B^T xi = df/dx^T
-        rhs = -ATxi;
-        rhs -= df_dnew_transposed;
-        xi = solver.solve(rhs);
+        objective_rhs = -ATxi;
+        objective_rhs -= df_dnew_transposed;
+        xi = solver.solve(objective_rhs);
         ATxi.noalias() = dE_dlast_transposed * xi;
         df_dui.noalias() = xi.transpose() * dE_dcontrol;
         df_dui += df_dcontrol;
@@ -396,89 +398,57 @@ namespace Optimization {
         }
         --state_index;
       }
+      Eigen::Index constraint_index = constraint_steps() - 1;
       while (state_index > 0) {
         update_equation_derivative_matrices(state_index, states, controls);
         update_cost_derivative_matrices(state_index, states, controls);
         // solve B^T xi = df/dx^T
-        rhs = -ATxi;
-        rhs -= df_dnew_transposed;
-        xi = solver.solve(rhs);
+        objective_rhs = -ATxi;
+        objective_rhs -= df_dnew_transposed;
+        xi = solver.solve(objective_rhs);
         ATxi.noalias() = dE_dlast_transposed * xi;
         df_dui.noalias() = xi.transpose() * dE_dcontrol;
         df_dui += df_dcontrol;
+
+        // constraints:
+        if (constraint_timepoints[constraint_index]
+            == state_timepoints[state_index]) {
+          update_constraint_derivative_matrices(state_index, states, controls);
+
+          // hier weiter!
+          //////////////////////////////////////////////////////////
+          static_assert(false, "hier ueber die Bloecke nachdenken!");
+          auto A_block = right_cols(A_jp1_Lambda_j, constraint_index);
+          auto Lambda_block = middle_col_block(Lambda_j, constraint_index);
+          auto dg_duj_block = middle_row_block(dg_duj, constraint_index);
+
+          constraint_rhs = -A_block;
+          constraint_rhs -= dg_dnew_transposed;
+          A_block.noalias() = dE_dlast_transposed * Lambda_block;
+          // finally compute lambda_{nn}:
+          Lambda_block.noalias() = solver.solve(constraint_rhs);
+
+          dg_duj_block = (Lambda_block.transpose() * dE_dcontrol) + dg_dcontrol;
+          //////////////////////////////////////////////////////////
+        }
 
         // Compute the actual derivative with respect to the control:
         auto lambda = index_lambda_pairs[state_index].second;
         auto upper_index = index_lambda_pairs[state_index].first;
         if (lambda == 1.0) {
           objective_gradient.mut_timestep(upper_index) += df_dui;
+          constraint_jacobian.get_column_block(upper_index) += dg_duj;
         } else {
           objective_gradient.mut_timestep(upper_index) += lambda * df_dui;
           objective_gradient.mut_timestep(upper_index - 1)
               += (1 - lambda) * df_dui;
+
+          constraint_jacobian.get_column_block(upper_index) += lambda * dg_duj;
+          constraint_jacobian.get_column_block(upper_index - 1)
+              += (1 - lambda) * dg_duj;
         }
         --state_index;
       }
-    }
-
-    // constraints:
-
-    // search the last timepoint of a constraint:
-    Eigen::Index constraint_index = constraint_steps() - 1;
-    Eigen::Index state_index = state_steps() - 1;
-    while (constraint_timepoints[constraint_index]
-           < state_timepoints[state_index]) {
-      assert(state_index > 0);
-      --state_index;
-    }
-    assert(
-        constraint_timepoints[constraint_index]
-        == state_timepoints[state_index]);
-
-    auto last_time = state_timepoints[state_index - 1];
-    auto new_time = state_timepoints[state_index];
-
-    {
-      Aux::Coeffrefhandler<Aux::Transposed> new_handler(dE_dnew_transposed);
-      problem.d_evalutate_d_new_state(
-          new_handler, last_time, new_time, states(last_time), states(new_time),
-          controls(new_time));
-    }
-    solver.factorize(dE_dnew_transposed);
-
-    {
-      Aux::Coeffrefhandler<Aux::Transposed> gnew_handler(dg_dnew_transposed);
-      problem.d_evaluate_constraint_d_state(
-          gnew_handler, new_time, states(new_time), controls(new_time));
-    }
-    // The dense matrix mostly contains zeros, so we only copy over the
-    // entries
-    // in the sparse matrix.
-    assign_sparse_to_sparse_dense(dg_dnew_dense_transposed, dg_dnew_transposed);
-
-    auto A_block = right_cols(A_jp1_Lambda_j, constraint_index);
-    auto Lambda_block = middle_col_block(Lambda_j, constraint_index);
-    auto dg_duj_block = middle_row_block(dg_duj, constraint_index);
-
-    A_block.noalias() = dE_dlast_transposed * Lambda_block;
-    // finally compute lambda_{nn}:
-    Lambda_block.noalias() = solver.solve(dg_dnew_dense_transposed);
-
-    Aux::Coeffrefhandler gcontrol_handler(dg_dcontrol);
-    problem.d_evaluate_constraint_d_control(
-        gcontrol_handler, new_time, states(new_time), controls(new_time));
-
-    dg_duj_block = (Lambda_block.transpose() * dE_dcontrol) + dg_dcontrol;
-    //
-
-    for (; state_index != 0; --state_index) {
-      last_time = state_timepoints[state_index - 1];
-      new_time = state_timepoints[state_index];
-      Aux::Coeffrefhandler<Aux::Transposed> new_handler(dE_dnew_transposed);
-      problem.d_evalutate_d_new_state(
-          new_handler, last_time, new_time, states(last_time), states(new_time),
-          controls(new_time));
-      solver.factorize(dE_dnew_transposed);
     }
 
     derivatives_up_to_date = true;
@@ -541,8 +511,6 @@ namespace Optimization {
         fcontrol_handler, new_time, states(new_time), controls(new_time));
     fcontrol_handler.set_matrix();
 
-    dg_dnew_dense_transposed
-        = RowMat::Zero(states_per_step(), constraints_per_step());
     A_jp1_Lambda_j
         = Eigen::MatrixXd::Zero(states_per_step(), get_total_no_constraints());
     Lambda_j

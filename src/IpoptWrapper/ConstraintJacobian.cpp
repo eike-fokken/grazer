@@ -144,12 +144,17 @@ namespace Optimization {
 
   Eigen::Ref<Eigen::MatrixXd>
   ConstraintJacobian_Base::get_column_block(Eigen::Index column) {
+    assert(0 <= column);
+    assert(column < get_outer_width());
     return Eigen::Map<Eigen::MatrixXd>(
         get_value_pointer() + get_inner_column_offset(column),
         get_inner_col_height(column), get_block_width());
   }
   Eigen::Ref<Eigen::MatrixXd const>
   ConstraintJacobian_Base::get_column_block(Eigen::Index column) const {
+    assert(0 <= column);
+    assert(column < get_outer_width());
+
     return Eigen::Map<Eigen::MatrixXd const>(
         get_value_pointer() + get_inner_column_offset(column),
         get_inner_col_height(column), get_block_width());
