@@ -3,8 +3,6 @@
 
 #include <IpAlgTypes.hpp>
 #include <IpTypes.hpp>
-#include <algorithm>
-#include <cstddef>
 #include <iostream>
 #include <limits>
 #include <memory>
@@ -252,24 +250,6 @@ namespace Optimization {
 
     return optimizer.evaluate_objective(controls, objective_value);
   }
-  // auto *state_pointer
-  //     = cache.compute_states(controls, state_timepoints, initial_state);
-  // // if the simulation failed: tell the calling site.
-  // if (state_pointer == nullptr) {
-  //   return false;
-  // }
-  // auto &states = *state_pointer;
-
-  // objective_value = 0;
-  // // timeindex starts at 1, because at 0 there are initial conditions which
-  // // can not be altered!
-  // for (Eigen::Index timeindex = 1; timeindex != states.size(); ++timeindex)
-  // {
-  //   objective_value += problem.evaluate_cost(
-  //       state_timepoints[timeindex], states(state_timepoints[timeindex]),
-  //       controls(state_timepoints[timeindex]));
-  // }
-  // return true;
 
   bool IpoptWrapper::eval_grad_f(
       Ipopt::Index number_of_controls, Ipopt::Number const *x, bool new_x,

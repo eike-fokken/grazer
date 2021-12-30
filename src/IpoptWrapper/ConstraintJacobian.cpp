@@ -160,9 +160,11 @@ namespace Optimization {
   }
 
   void ConstraintJacobian_Base::supply_indices(
-      Ipopt::Index *iRow, Ipopt::Index *jCol,
-      Eigen::Index number_of_values) const {
-    assert(number_of_values == nonZeros());
+      Eigen::Ref<Eigen::VectorX<Ipopt::Index>> Rowindices,
+      Eigen::Ref<Eigen::VectorX<Ipopt::Index>> Colindices) const {
+
+    assert(Rowindices.size() == nonZeros());
+    assert(Colindices.size() == nonZeros());
     Ipopt::Index index = 0;
     for (Eigen::Index j = 0; j != get_outer_width(); ++j) {
       auto columnoffset = get_inner_colstart_jacobian(j);
@@ -172,14 +174,14 @@ namespace Optimization {
            innercol != columnoffset + get_block_width(); ++innercol) {
         for (Eigen::Index innerrow = rowoffset; innerrow != get_inner_height();
              ++innerrow) {
-          assert(index < number_of_values);
-          iRow[index] = static_cast<int>(innerrow);
-          jCol[index] = static_cast<int>(innercol);
+          assert(index < nonZeros());
+          Rowindices[index] = static_cast<int>(innerrow);
+          Colindices[index] = static_cast<int>(innercol);
           ++index;
         }
       }
     }
-    assert(index == number_of_values);
+    assert(index == nonZeros());
   }
 
   Eigen::MatrixXd ConstraintJacobian_Base::whole_matrix() const {

@@ -1,9 +1,4 @@
 #pragma once
-#include "ConstraintJacobian.hpp"
-#include "ControlStateCache.hpp"
-#include "Initialvalues.hpp"
-#include "InterpolatingVector.hpp"
-#include <Eigen/Dense>
 #include <Eigen/Sparse>
 #include <IpTypes.hpp>
 

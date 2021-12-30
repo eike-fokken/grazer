@@ -1,6 +1,11 @@
+#pragma once
+#include "ConstraintJacobian.hpp"
+#include "ControlStateCache.hpp"
+#include "InterpolatingVector.hpp"
 #include "Optimizer.hpp"
-
 namespace Optimization {
+
+  struct Initialvalues;
 
   class Implicit_Optimizer final : public Optimizer {
   public:
@@ -45,17 +50,19 @@ namespace Optimization {
     Eigen::Ref<Eigen::VectorXd const> get_constraint_upper_bounds() final;
 
   private:
-    Model::OptimizableObject &problem;
+    Model::OptimizableObject &problem; // Order dependency before
     std::unique_ptr<Initialvalues> init;
     ControlStateCache cache;
     bool states_up_to_date = false;
     bool derivatives_up_to_date = false;
-    Aux::InterpolatingVector objective_gradient;
-    ConstraintJacobian constraint_jacobian;
-    Eigen::VectorXd const state_timepoints;
-    Eigen::VectorXd const control_timepoints;
-    Eigen::VectorXd const constraint_timepoints;
+    Eigen::VectorXd const state_timepoints;      // Order dependency before
+    Eigen::VectorXd const control_timepoints;    // Order dependency before
+    Eigen::VectorXd const constraint_timepoints; // Order dependency before
     Eigen::VectorXd const initial_state;
+    Aux::InterpolatingVector
+        objective_gradient; // Order dependency after problem and timepoints
+    ConstraintJacobian
+        constraint_jacobian; // Order dependency after problem and timepoints
 
     bool
     compute_states_from_controls(Aux::InterpolatingVector_Base const &controls);

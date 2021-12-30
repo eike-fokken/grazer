@@ -59,8 +59,8 @@ namespace Optimization {
     Eigen::Index nonZeros() const;
 
     void supply_indices(
-        Ipopt::Index *iRow, Ipopt::Index *jCol,
-        Eigen::Index number_of_values) const;
+        Eigen::Ref<Eigen::VectorX<Ipopt::Index>> Rowindices,
+        Eigen::Ref<Eigen::VectorX<Ipopt::Index>> Colindices) const;
     Eigen::MatrixXd whole_matrix() const;
 
   private:

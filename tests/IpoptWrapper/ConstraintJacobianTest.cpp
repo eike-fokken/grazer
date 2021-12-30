@@ -142,16 +142,15 @@ TEST(ConstraintJacobian, supply_indices) {
       values.data(), values.size(), constraints_inner_length,
       controls_inner_length, constraints_times, controls_times);
 
-  std::vector<Ipopt::Index> rows(static_cast<size_t>(jac.nonZeros()));
-  std::vector<Ipopt::Index> cols(static_cast<size_t>(jac.nonZeros()));
-  jac.supply_indices(rows.data(), cols.data(), jac.nonZeros());
+  Eigen::VectorX<Ipopt::Index> rows((jac.nonZeros()));
+  Eigen::VectorX<Ipopt::Index> cols((jac.nonZeros()));
+  jac.supply_indices(rows, cols);
 
   Eigen::MatrixXd comparemat(
       total_number_of_constraints, total_number_of_controls);
   comparemat.setZero();
   for (Eigen::Index index = 0; index != jac.nonZeros(); ++index) {
-    auto uindex = static_cast<size_t>(index);
-    comparemat(rows[uindex], cols[uindex]) = values(index);
+    comparemat(rows[index], cols[index]) = values(index);
   }
   EXPECT_EQ(jac2.whole_matrix(), comparemat);
 }

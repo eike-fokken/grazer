@@ -1,9 +1,10 @@
 #pragma once
-#include "Optimizer.hpp"
-
+#include <Eigen/Dense>
 #include <IpTNLP.hpp>
 
 namespace Optimization {
+
+  class Optimizer;
 
   class IpoptWrapper final : public Ipopt::TNLP {
 
