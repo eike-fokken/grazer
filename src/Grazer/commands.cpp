@@ -7,7 +7,6 @@
 #include "Netfactory.hpp"
 #include "Networkproblem.hpp"
 #include "Optimization_helpers.hpp"
-#include "Optimizer.hpp"
 #include "Timeevolver.hpp"
 #include <chrono>
 #include <fstream>
