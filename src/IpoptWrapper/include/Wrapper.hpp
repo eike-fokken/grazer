@@ -1,6 +1,7 @@
 #pragma once
 #include <Eigen/Dense>
 #include <IpTNLP.hpp>
+#include <limits>
 
 namespace Optimization {
 
@@ -13,7 +14,7 @@ namespace Optimization {
 
     ~IpoptWrapper() = default;
 
-    // Internal Ipopt methods
+    // Ipopt method overrides:
 
     /** Method to return some info about the nlp */
     bool get_nlp_info(
@@ -73,77 +74,8 @@ namespace Optimization {
     Optimization::Optimizer &optimizer;
 
     Eigen::VectorXd best_solution;
-    double best_objective_value;
+    double best_objective_value = std::numeric_limits<double>::max();
     Eigen::VectorXd best_constraints;
-    //   bool MOVED_compute_derivatives(bool new_x, Ipopt::Number const *x);
-
-    //   /** \brief Allocates room for the structures of the matrices
-    //    * #dE_dnew_transposed #dE_dlast_transposed, #dE_dcontrol,
-    //    * #dg_dnew_transposed, #dg_dcontrol and anlyzes the pattern of
-    //    * #dE_dnew_transposed in the #solver member variable.
-    //    */
-    //   void MOVED_initialize_derivative_matrices(
-    //       Aux::InterpolatingVector_Base const &states,
-    //       Aux::InterpolatingVector_Base const &controls);
-
-    //   /** \brief fills the matrices #dE_dnew_transposed #dE_dlast_transposed
-    //   and
-    //    * #dE_dcontrol with their values at state_index and fills #solver with
-    //    the
-    //    * factorization of #dE_dnew_transposed.
-    //    */
-    //   void MOVED_update_equation_derivative_matrices(
-    //       Eigen::Index state_index, Aux::InterpolatingVector_Base const
-    //       &states, Aux::InterpolatingVector_Base const &controls);
-
-    //   void MOVED_update_constraint_derivative_matrices(
-    //       Eigen::Index state_index, Aux::InterpolatingVector_Base const
-    //       &states, Aux::InterpolatingVector_Base const &controls);
-
-    //   void MOVED_update_cost_derivative_matrices(
-    //       Eigen::Index state_index, Aux::InterpolatingVector_Base const
-    //       &states, Aux::InterpolatingVector_Base const &controls);
-
-    //   MappedConstraintJacobian constraint_jacobian_accessor;
-
-    //   // cache_matrices :
-    //   Eigen::MatrixXd A_jp1_Lambda_j;
-    //   Eigen::MatrixXd Lambda_j;
-    //   RowMat dg_duj;
-
-    //   Model::OptimizableObject &problem;
-    //   ControlStateCache cache;
-
-    //   Eigen::SparseMatrix<double> dE_dnew_transposed;
-    //   Eigen::SparseMatrix<double> dE_dlast_transposed;
-    //   Eigen::SparseMatrix<double> dE_dcontrol;
-    //   Eigen::SparseMatrix<double> df_dnew_transposed;
-    //   Eigen::SparseMatrix<double> df_dcontrol;
-    //   Eigen::SparseMatrix<double> dg_dnew_transposed;
-    //   Eigen::SparseMatrix<double> dg_dcontrol;
-
-    //   Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>
-    //       dg_dnew_dense_transposed;
-
-    //   Eigen::SparseLU<Eigen::SparseMatrix<double>> solver;
-    //   Eigen::VectorXd const state_timepoints;
-    //   Eigen::VectorXd const control_timepoints;
-    //   Eigen::VectorXd const constraint_timepoints;
-    //   Eigen::VectorXd const initial_state;
-    //   std::unique_ptr<Initialvalues> init;
-    //   Aux::InterpolatingVector solution;
-    //   bool current_derivatives_computed = false;
-    //   bool derivative_matrices_initialized = false;
-
-    //   double final_objective_value{std::numeric_limits<double>::max()};
-
-    //   /** \brief fills in the value vector for the constraints.
-    //    */
-    //   bool evaluate_constraints(
-    //       Ipopt::Number const *x, Ipopt::Index number_of_controls,
-    //       Ipopt::Number *values, Ipopt::Index nele_jac);
-
-    // public:
   };
 
 } // namespace Optimization

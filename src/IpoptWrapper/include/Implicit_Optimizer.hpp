@@ -36,16 +36,16 @@ namespace Optimization {
     void new_x() final;
 
     bool evaluate_objective(
-        Eigen::Ref<Eigen::VectorXd const> const &controls,
+        Eigen::Ref<Eigen::VectorXd const> const &ipoptcontrols,
         double &objective) final;
     bool evaluate_constraints(
-        Eigen::Ref<Eigen::VectorXd const> const &controls,
-        Eigen::Ref<Eigen::VectorXd> constraints) final;
+        Eigen::Ref<Eigen::VectorXd const> const &ipoptcontrols,
+        Eigen::Ref<Eigen::VectorXd> ipoptconstraints) final;
     bool evaluate_objective_gradient(
-        Eigen::Ref<Eigen::VectorXd const> const &controls,
+        Eigen::Ref<Eigen::VectorXd const> const &ipoptcontrols,
         Eigen::Ref<Eigen::VectorXd> gradient) final;
     bool evaluate_constraint_jacobian(
-        Eigen::Ref<Eigen::VectorXd const> const &controls,
+        Eigen::Ref<Eigen::VectorXd const> const &ipoptcontrols,
         Eigen::Ref<Eigen::VectorXd> values) final;
 
     // initial values:
@@ -55,23 +55,9 @@ namespace Optimization {
     Eigen::VectorXd get_constraint_lower_bounds() final;
     Eigen::VectorXd get_constraint_upper_bounds() final;
 
-  private:
-    Model::OptimizableObject &problem; // Order dependency before
-    std::unique_ptr<Initialvalues> init;
-    ControlStateCache cache;
-    bool states_up_to_date = false;
-    bool derivatives_up_to_date = false;
-    Eigen::VectorXd const state_timepoints;      // Order dependency before
-    Eigen::VectorXd const control_timepoints;    // Order dependency before
-    Eigen::VectorXd const constraint_timepoints; // Order dependency before
-    Eigen::VectorXd const initial_state;
-    Aux::InterpolatingVector
-        objective_gradient; // Order dependency after problem and timepoints
-    ConstraintJacobian
-        constraint_jacobian; // Order dependency after problem and timepoints
-
-    bool
-    compute_states_from_controls(Aux::InterpolatingVector_Base const &controls);
+    bool compute_derivatives(
+        Aux::InterpolatingVector_Base const &controls,
+        Aux::InterpolatingVector_Base const &states);
 
     /** \brief Allocates room for the structures of the matrices
      * #dE_dnew_transposed #dE_dlast_transposed, #dE_dcontrol,
@@ -98,7 +84,7 @@ namespace Optimization {
         Eigen::Index state_index, Aux::InterpolatingVector_Base const &states,
         Aux::InterpolatingVector_Base const &controls);
 
-  public:
+    // convenience methods:
     Eigen::Index states_per_step() const;
     Eigen::Index controls_per_step() const;
     Eigen::Index constraints_per_step() const;
@@ -113,6 +99,8 @@ namespace Optimization {
     Eigen::Index control_steps() const;
     Eigen::Index constraint_steps() const;
 
+    // Matrix block methods:
+
     Eigen::Ref<Eigen::MatrixXd> right_cols(
         Eigen::Ref<Eigen::MatrixXd> Fullmat,
         Eigen::Index outer_col_index) const;
@@ -126,5 +114,40 @@ namespace Optimization {
 
     Eigen::Ref<RowMat> middle_row_block(
         Eigen::Ref<RowMat> Fullmat, Eigen::Index outer_col_index) const;
+
+  private:
+    // members:
+    Model::OptimizableObject &problem; // Order dependency before
+    std::unique_ptr<Initialvalues> init;
+    ControlStateCache cache;
+    bool derivative_matrices_initialized = false;
+    bool states_up_to_date = false;
+    bool derivatives_up_to_date = false;
+    Eigen::VectorXd const state_timepoints;      // Order dependency before
+    Eigen::VectorXd const control_timepoints;    // Order dependency before
+    Eigen::VectorXd const constraint_timepoints; // Order dependency before
+    Eigen::VectorXd const initial_state;
+    Aux::InterpolatingVector
+        objective_gradient; // Order dependency after (problem and timepoints)
+    ConstraintJacobian constraint_jacobian; // Order dependency before () and
+                                            // after (problem and timepoints)
+    MappedConstraintJacobian
+        constraintjacobian_accessor; // Order dependency (after
+                                     // constraint_jacobian)
+    Eigen::SparseMatrix<double> dE_dnew_transposed;
+    Eigen::SparseMatrix<double> dE_dlast_transposed;
+    Eigen::SparseMatrix<double> dE_dcontrol;
+    Eigen::SparseMatrix<double> df_dnew_transposed;
+    Eigen::SparseMatrix<double> df_dcontrol;
+    Eigen::SparseMatrix<double> dg_dnew_transposed;
+    Eigen::SparseMatrix<double> dg_dcontrol;
+
+    RowMat dg_dnew_dense_transposed;
+    Eigen::SparseLU<Eigen::SparseMatrix<double>> solver;
+
+    // cache_matrices :
+    Eigen::MatrixXd A_jp1_Lambda_j;
+    Eigen::MatrixXd Lambda_j;
+    RowMat dg_duj;
   };
 } // namespace Optimization
