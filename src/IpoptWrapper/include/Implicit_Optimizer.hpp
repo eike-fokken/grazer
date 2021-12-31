@@ -147,8 +147,8 @@ namespace Optimization {
     Eigen::SparseLU<Eigen::SparseMatrix<double>> solver;
 
     // cache_matrices :
-    Eigen::MatrixXd A_jp1_Lambda_j;
-    Eigen::MatrixXd Lambda_j;
-    RowMat dg_duj;
+    // Eigen::MatrixXd A_jp1_Lambda_j;
+    // Eigen::MatrixXd Lambda_j;
+    // RowMat dg_duj;
   };
 } // namespace Optimization

@@ -4,7 +4,9 @@
 #include "Matrixhandler.hpp"
 #include "OptimizableObject.hpp"
 #include "Optimization_helpers.hpp"
+#include "Optimizer.hpp"
 #include <memory>
+#include <string>
 
 namespace Optimization {
 
@@ -85,7 +87,7 @@ namespace Optimization {
           {"latest state timepoint is not inside the control timepoint span."});
     }
 
-    // check that first control timepoint is before or at latest state
+    // check that first control timepoint is before or at first state
     // timepoint. Note that at the state timepoint at 0, no controls are ever
     // evaluated, as here only the state initial values are given.
     if (control_timepoints(0) > state_timepoints(1)) {
@@ -111,8 +113,8 @@ namespace Optimization {
         // found next constraint time is equal to a state time.
       } else if (timepoint == *constraint_iterator) {
         ++constraint_iterator;
-        // FAIL: a constraint time lies in between two state times!
       } else {
+        // FAIL: a constraint time lies in between two state times!
         gthrow(
             {"Constraint time ", std::to_string(*constraint_iterator),
              " is not a state time. This is a bug."});
@@ -123,6 +125,18 @@ namespace Optimization {
       gthrow(
           {"Constraint time ", std::to_string(*constraint_iterator),
            " is not a state time. This is a bug."});
+    }
+
+    // check that the last constraint time is also the last state time:
+    if (constraint_timepoints[constraint_timepoints.size() - 1]
+        != state_timepoints[state_timepoints.size() - 1]) {
+      gthrow(
+          {"The last constraint time must coincide with the last state time!\n",
+           "last constrainttime: ",
+           std::to_string(
+               constraint_timepoints[constraint_timepoints.size() - 1]),
+           "\nLast state time: ",
+           std::to_string(state_timepoints[state_timepoints.size() - 1])});
     }
   }
 
@@ -366,86 +380,59 @@ namespace Optimization {
       objective_gradient.setZero();
       constraint_jacobian.setZero();
       // TODO: should be preallocated:
-      Eigen::VectorXd xi(states_per_step());
-      Eigen::VectorXd ATxi = Eigen::VectorXd::Zero(states_per_step());
-      Eigen::VectorXd objective_rhs(states_per_step());
+      Eigen::VectorXd xi_f(states_per_step());
+      Eigen::VectorXd rhs_f = Eigen::VectorXd::Zero(states_per_step());
       Eigen::VectorXd df_dui(controls_per_step());
+
+      Eigen::MatrixXd full_Lambda_row = Eigen::MatrixXd::Zero(
+          states_per_step(), get_total_no_constraints());
+      Eigen::MatrixXd full_rhs_g(states_per_step(), get_total_no_constraints());
+      RowMat full_dg_dui = Eigen::MatrixXd::Zero(
+          get_total_no_constraints(), controls_per_step());
+
       Eigen::Index state_index = state_timepoints.size() - 1;
+      // We set this to
+      Eigen::Index constraint_index = constraint_steps();
 
-      Eigen::MatrixXd constraint_rhs(states_per_step(), constraints_per_step());
-
-      {
-        update_equation_derivative_matrices(state_index, states, controls);
-        update_cost_derivative_matrices(state_index, states, controls);
-
-        // solve B^T xi = df/dx^T
-        objective_rhs = -ATxi;
-        objective_rhs -= df_dnew_transposed;
-        xi = solver.solve(objective_rhs);
-        ATxi.noalias() = dE_dlast_transposed * xi;
-        df_dui.noalias() = xi.transpose() * dE_dcontrol;
-        df_dui += df_dcontrol;
-
-        // Compute the actual derivative with respect to the control:
-        auto lambda = index_lambda_pairs[state_index].second;
-        auto upper_index = index_lambda_pairs[state_index].first;
-        if (lambda == 1.0) {
-          objective_gradient.mut_timestep(upper_index) += df_dui;
-        } else {
-          objective_gradient.mut_timestep(upper_index) += lambda * df_dui;
-          objective_gradient.mut_timestep(upper_index - 1)
-              += (1 - lambda) * df_dui;
-        }
-        --state_index;
-      }
-      Eigen::Index constraint_index = constraint_steps() - 1;
       while (state_index > 0) {
         update_equation_derivative_matrices(state_index, states, controls);
         update_cost_derivative_matrices(state_index, states, controls);
-        // solve B^T xi = df/dx^T
-        objective_rhs = -ATxi;
-        objective_rhs -= df_dnew_transposed;
-        xi = solver.solve(objective_rhs);
-        ATxi.noalias() = dE_dlast_transposed * xi;
-        df_dui.noalias() = xi.transpose() * dE_dcontrol;
+
+        rhs_f -= df_dnew_transposed;
+        xi_f = solver.solve(rhs_f);
+        rhs_f.noalias() = -dE_dlast_transposed * xi_f;
+        df_dui.noalias() = xi_f.transpose() * dE_dcontrol;
         df_dui += df_dcontrol;
 
         // constraints:
-        if (constraint_timepoints[constraint_index]
+        if (constraint_timepoints[constraint_index - 1]
             == state_timepoints[state_index]) {
+          --constraint_index;
           update_constraint_derivative_matrices(state_index, states, controls);
-
-          // hier weiter!
-          //////////////////////////////////////////////////////////
-          static_assert(false, "hier ueber die Bloecke nachdenken!");
-          auto A_block = right_cols(A_jp1_Lambda_j, constraint_index);
-          auto Lambda_block = middle_col_block(Lambda_j, constraint_index);
-          auto dg_duj_block = middle_row_block(dg_duj, constraint_index);
-
-          constraint_rhs = -A_block;
-          constraint_rhs -= dg_dnew_transposed;
-          A_block.noalias() = dE_dlast_transposed * Lambda_block;
-          // finally compute lambda_{nn}:
-          Lambda_block.noalias() = solver.solve(constraint_rhs);
-
-          dg_duj_block = (Lambda_block.transpose() * dE_dcontrol) + dg_dcontrol;
-          //////////////////////////////////////////////////////////
+          assert(middle_col_block(full_rhs_g, constraint_index).isZero());
+          middle_col_block(full_rhs_g, constraint_index) -= dg_dnew_transposed;
         }
+        auto current_lambda = right_cols(full_Lambda_row, constraint_index);
+        auto current_rhs = right_cols(full_rhs_g, constraint_index);
+        current_lambda = solver.solve(current_rhs);
+        current_rhs.noalias() = -dE_dlast_transposed * current_lambda;
+        auto current_dg_dui = lower_rows(full_dg_dui, constraint_index);
+        current_dg_dui.noalias() = current_lambda.transpose() * dE_dcontrol;
 
         // Compute the actual derivative with respect to the control:
         auto lambda = index_lambda_pairs[state_index].second;
         auto upper_index = index_lambda_pairs[state_index].first;
         if (lambda == 1.0) {
           objective_gradient.mut_timestep(upper_index) += df_dui;
-          constraint_jacobian.get_column_block(upper_index) += dg_duj;
+          constraint_jacobian.get_column_block(upper_index) += current_dg_dui;
         } else {
           objective_gradient.mut_timestep(upper_index) += lambda * df_dui;
           objective_gradient.mut_timestep(upper_index - 1)
               += (1 - lambda) * df_dui;
-
-          constraint_jacobian.get_column_block(upper_index) += lambda * dg_duj;
+          constraint_jacobian.get_column_block(upper_index)
+              += lambda * current_dg_dui;
           constraint_jacobian.get_column_block(upper_index - 1)
-              += (1 - lambda) * dg_duj;
+              += (1 - lambda) * current_dg_dui;
         }
         --state_index;
       }
@@ -511,11 +498,13 @@ namespace Optimization {
         fcontrol_handler, new_time, states(new_time), controls(new_time));
     fcontrol_handler.set_matrix();
 
-    A_jp1_Lambda_j
-        = Eigen::MatrixXd::Zero(states_per_step(), get_total_no_constraints());
-    Lambda_j
-        = Eigen::MatrixXd::Zero(states_per_step(), get_total_no_constraints());
-    dg_duj = RowMat::Zero(get_total_no_constraints(), controls_per_step());
+    // A_jp1_Lambda_j
+    //     = Eigen::MatrixXd::Zero(states_per_step(),
+    //     get_total_no_constraints());
+    // Lambda_j
+    //     = Eigen::MatrixXd::Zero(states_per_step(),
+    //     get_total_no_constraints());
+    // dg_duj = RowMat::Zero(get_total_no_constraints(), controls_per_step());
 
     derivative_matrices_initialized = true;
   }
