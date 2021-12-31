@@ -393,14 +393,13 @@ namespace Optimization {
       Eigen::MatrixXd full_rhs_g(states_per_step(), get_total_no_constraints());
       RowMat full_dg_dui = Eigen::MatrixXd::Zero(
           get_total_no_constraints(), controls_per_step());
-      bool current_step_is_new_constraint_time = false;
 
       Eigen::Index state_index = state_timepoints.size() - 1;
       // We set this to
       Eigen::Index constraint_index = constraint_steps();
 
       while (state_index > 0) {
-        current_step_is_new_constraint_time = false;
+        bool current_step_is_new_constraint_time = false;
         update_equation_derivative_matrices(state_index, controls, states);
         update_cost_derivative_matrices(state_index, controls, states);
 
