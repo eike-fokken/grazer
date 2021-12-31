@@ -370,7 +370,7 @@ namespace Optimization {
       Aux::InterpolatingVector_Base const &controls,
       Aux::InterpolatingVector_Base const &states) {
     if (not derivative_matrices_initialized) {
-      initialize_derivative_matrices(states, controls);
+      initialize_derivative_matrices(controls, states);
     }
     auto index_lambda_pairs
         = compute_index_lambda_vector(control_timepoints, state_timepoints);
@@ -395,8 +395,8 @@ namespace Optimization {
       Eigen::Index constraint_index = constraint_steps();
 
       while (state_index > 0) {
-        update_equation_derivative_matrices(state_index, states, controls);
-        update_cost_derivative_matrices(state_index, states, controls);
+        update_equation_derivative_matrices(state_index, controls, states);
+        update_cost_derivative_matrices(state_index, controls, states);
 
         rhs_f -= df_dnew_transposed;
         xi_f = solver.solve(rhs_f);
@@ -408,7 +408,7 @@ namespace Optimization {
         if (constraint_timepoints[constraint_index - 1]
             == state_timepoints[state_index]) {
           --constraint_index;
-          update_constraint_derivative_matrices(state_index, states, controls);
+          update_constraint_derivative_matrices(state_index, controls, states);
           assert(middle_col_block(full_rhs_g, constraint_index).isZero());
           middle_col_block(full_rhs_g, constraint_index) -= dg_dnew_transposed;
         }
@@ -446,8 +446,8 @@ namespace Optimization {
    * derivative calculation and sets up the solver for #dE_dnew_transposed.
    */
   void Implicit_Optimizer::initialize_derivative_matrices(
-      Aux::InterpolatingVector_Base const &states,
-      Aux::InterpolatingVector_Base const &controls) {
+      Aux::InterpolatingVector_Base const &controls,
+      Aux::InterpolatingVector_Base const &states) {
     auto last_state_index = state_timepoints.size() - 1;
     double last_time = state_timepoints[last_state_index - 1];
     double new_time = state_timepoints[last_state_index];
@@ -514,8 +514,8 @@ namespace Optimization {
    * factorization of #dE_dnew_transposed.
    */
   void Implicit_Optimizer::update_equation_derivative_matrices(
-      Eigen::Index state_index, Aux::InterpolatingVector_Base const &states,
-      Aux::InterpolatingVector_Base const &controls) {
+      Eigen::Index state_index, Aux::InterpolatingVector_Base const &controls,
+      Aux::InterpolatingVector_Base const &states) {
     assert(derivative_matrices_initialized);
     assert(state_index > 0);
     assert(state_index < states.size());
@@ -541,8 +541,8 @@ namespace Optimization {
   }
 
   void Implicit_Optimizer::update_constraint_derivative_matrices(
-      Eigen::Index state_index, Aux::InterpolatingVector_Base const &states,
-      Aux::InterpolatingVector_Base const &controls) {
+      Eigen::Index state_index, Aux::InterpolatingVector_Base const &controls,
+      Aux::InterpolatingVector_Base const &states) {
     assert(derivative_matrices_initialized);
     assert(state_index > 0);
     assert(state_index < states.size());
@@ -558,8 +558,8 @@ namespace Optimization {
   }
 
   void Implicit_Optimizer::update_cost_derivative_matrices(
-      Eigen::Index state_index, Aux::InterpolatingVector_Base const &states,
-      Aux::InterpolatingVector_Base const &controls) {
+      Eigen::Index state_index, Aux::InterpolatingVector_Base const &controls,
+      Aux::InterpolatingVector_Base const &states) {
     assert(derivative_matrices_initialized);
     assert(state_index > 0);
     assert(state_index < states.size());

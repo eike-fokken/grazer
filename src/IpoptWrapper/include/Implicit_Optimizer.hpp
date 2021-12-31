@@ -67,24 +67,24 @@ namespace Optimization {
      * #dE_dnew_transposed in the #solver member variable.
      */
     void initialize_derivative_matrices(
-        Aux::InterpolatingVector_Base const &states,
-        Aux::InterpolatingVector_Base const &controls);
+        Aux::InterpolatingVector_Base const &controls,
+        Aux::InterpolatingVector_Base const &states);
 
     /** \brief fills the matrices #dE_dnew_transposed #dE_dlast_transposed and
      * #dE_dcontrol with their values at state_index and fills #solver with the
      * factorization of #dE_dnew_transposed.
      */
     void update_equation_derivative_matrices(
-        Eigen::Index state_index, Aux::InterpolatingVector_Base const &states,
-        Aux::InterpolatingVector_Base const &controls);
+        Eigen::Index state_index, Aux::InterpolatingVector_Base const &controls,
+        Aux::InterpolatingVector_Base const &states);
 
     void update_constraint_derivative_matrices(
-        Eigen::Index state_index, Aux::InterpolatingVector_Base const &states,
-        Aux::InterpolatingVector_Base const &controls);
+        Eigen::Index state_index, Aux::InterpolatingVector_Base const &controls,
+        Aux::InterpolatingVector_Base const &states);
 
     void update_cost_derivative_matrices(
-        Eigen::Index state_index, Aux::InterpolatingVector_Base const &states,
-        Aux::InterpolatingVector_Base const &controls);
+        Eigen::Index state_index, Aux::InterpolatingVector_Base const &controls,
+        Aux::InterpolatingVector_Base const &states);
 
     // convenience methods:
     Eigen::Index states_per_step() const;

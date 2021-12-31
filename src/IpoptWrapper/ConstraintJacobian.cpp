@@ -142,20 +142,20 @@ namespace Optimization {
 
   void ConstraintJacobian_Base::setZero() { underlying_storage().setZero(); }
 
-  Eigen::Ref<Eigen::MatrixXd>
+  Eigen::Ref<RowMat>
   ConstraintJacobian_Base::get_column_block(Eigen::Index column) {
     assert(0 <= column);
     assert(column < get_outer_width());
-    return Eigen::Map<Eigen::MatrixXd>(
+    return Eigen::Map<RowMat>(
         get_value_pointer() + get_inner_column_offset(column),
         get_inner_col_height(column), get_block_width());
   }
-  Eigen::Ref<Eigen::MatrixXd const>
+  Eigen::Ref<RowMat const>
   ConstraintJacobian_Base::get_column_block(Eigen::Index column) const {
     assert(0 <= column);
     assert(column < get_outer_width());
 
-    return Eigen::Map<Eigen::MatrixXd const>(
+    return Eigen::Map<RowMat const>(
         get_value_pointer() + get_inner_column_offset(column),
         get_inner_col_height(column), get_block_width());
   }
@@ -175,10 +175,10 @@ namespace Optimization {
       auto columnoffset = get_inner_colstart_jacobian(j);
       auto rowoffset = get_inner_rowstart_jacobian(j);
 
-      for (Eigen::Index innercol = columnoffset;
-           innercol != columnoffset + get_block_width(); ++innercol) {
-        for (Eigen::Index innerrow = rowoffset; innerrow != get_inner_height();
-             ++innerrow) {
+      for (Eigen::Index innerrow = rowoffset; innerrow != get_inner_height();
+           ++innerrow) {
+        for (Eigen::Index innercol = columnoffset;
+             innercol != columnoffset + get_block_width(); ++innercol) {
           assert(index < nonZeros());
           Rowindices[index] = static_cast<int>(innerrow);
           Colindices[index] = static_cast<int>(innercol);

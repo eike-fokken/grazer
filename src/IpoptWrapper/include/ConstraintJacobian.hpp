@@ -6,6 +6,8 @@
 #include <vector>
 
 namespace Optimization {
+  using RowMat
+      = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
 
   std::tuple<Eigen::Index, Eigen::Index, Eigen::VectorX<Eigen::Index>>
   make_data(
@@ -53,9 +55,8 @@ namespace Optimization {
 
     void setZero();
 
-    Eigen::Ref<Eigen::MatrixXd> get_column_block(Eigen::Index column);
-    Eigen::Ref<Eigen::MatrixXd const>
-    get_column_block(Eigen::Index column) const;
+    Eigen::Ref<RowMat> get_column_block(Eigen::Index column);
+    Eigen::Ref<RowMat const> get_column_block(Eigen::Index column) const;
     Eigen::Index nonZeros() const;
 
     void supply_indices(
