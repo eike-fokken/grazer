@@ -369,6 +369,10 @@ namespace Optimization {
   bool Implicit_Optimizer::compute_derivatives(
       Aux::InterpolatingVector_Base const &controls,
       Aux::InterpolatingVector_Base const &states) {
+    assert(
+        state_timepoints[state_timepoints.size() - 1]
+        == constraint_timepoints[constraint_timepoints.size() - 1]);
+
     if (not derivative_matrices_initialized) {
       initialize_derivative_matrices(controls, states);
     }
@@ -389,12 +393,14 @@ namespace Optimization {
       Eigen::MatrixXd full_rhs_g(states_per_step(), get_total_no_constraints());
       RowMat full_dg_dui = Eigen::MatrixXd::Zero(
           get_total_no_constraints(), controls_per_step());
+      bool current_step_is_new_constraint_time = false;
 
       Eigen::Index state_index = state_timepoints.size() - 1;
       // We set this to
       Eigen::Index constraint_index = constraint_steps();
 
       while (state_index > 0) {
+        current_step_is_new_constraint_time = false;
         update_equation_derivative_matrices(state_index, controls, states);
         update_cost_derivative_matrices(state_index, controls, states);
 
@@ -404,10 +410,14 @@ namespace Optimization {
         df_dui.noalias() = xi_f.transpose() * dE_dcontrol;
         df_dui += df_dcontrol;
 
-        // constraints:
+        // Find out, whether a new constraint appears at this index:
         if (constraint_timepoints[constraint_index - 1]
             == state_timepoints[state_index]) {
           --constraint_index;
+          current_step_is_new_constraint_time = true;
+        }
+
+        if (current_step_is_new_constraint_time) {
           update_constraint_derivative_matrices(state_index, controls, states);
           assert(middle_col_block(full_rhs_g, constraint_index).isZero());
           middle_col_block(full_rhs_g, constraint_index) -= dg_dnew_transposed;
@@ -418,6 +428,10 @@ namespace Optimization {
         current_rhs.noalias() = -dE_dlast_transposed * current_lambda;
         auto current_dg_dui = lower_rows(full_dg_dui, constraint_index);
         current_dg_dui.noalias() = current_lambda.transpose() * dE_dcontrol;
+
+        if (current_step_is_new_constraint_time) {
+          middle_row_block(full_dg_dui, constraint_index) += dg_dcontrol;
+        }
 
         // Compute the actual derivative with respect to the control:
         auto lambda = index_lambda_pairs[state_index].second;
