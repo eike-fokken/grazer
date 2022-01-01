@@ -376,19 +376,20 @@ namespace Optimization {
     if (not derivative_matrices_initialized) {
       initialize_derivative_matrices(controls, states);
     }
+
     auto index_lambda_pairs
         = compute_index_lambda_vector(control_timepoints, state_timepoints);
     // Here we go backwards through the timesteps:
-
     {
       objective_gradient.setZero();
       constraint_jacobian.setZero();
+
       // TODO: should be preallocated:
       Eigen::VectorXd xi_f(states_per_step());
       Eigen::VectorXd rhs_f = Eigen::VectorXd::Zero(states_per_step());
       Eigen::VectorXd df_dui(controls_per_step());
 
-      Eigen::MatrixXd full_Lambda_row = Eigen::MatrixXd::Zero(
+      Eigen::MatrixXd full_Xi_row = Eigen::MatrixXd::Zero(
           states_per_step(), get_total_no_constraints());
       Eigen::MatrixXd full_rhs_g(states_per_step(), get_total_no_constraints());
       RowMat full_dg_dui = Eigen::MatrixXd::Zero(
@@ -398,54 +399,79 @@ namespace Optimization {
       // We set this to
       Eigen::Index constraint_index = constraint_steps();
 
+      bool constraints_are_active_at_current_time = false;
       while (state_index > 0) {
-        bool current_step_is_new_constraint_time = false;
         update_equation_derivative_matrices(state_index, controls, states);
-        update_cost_derivative_matrices(state_index, controls, states);
 
-        rhs_f -= df_dnew_transposed;
-        xi_f = solver.solve(rhs_f);
-        rhs_f.noalias() = -dE_dlast_transposed * xi_f;
-        df_dui.noalias() = xi_f.transpose() * dE_dcontrol;
-        df_dui += df_dcontrol;
+        {
+          // cost derivative:
+          update_cost_derivative_matrices(state_index, controls, states);
+          rhs_f -= df_dnew_transposed;
+          xi_f = solver.solve(rhs_f);
+          rhs_f.noalias() = -dE_dlast_transposed * xi_f;
+          df_dui.noalias() = xi_f.transpose() * dE_dcontrol;
+          df_dui += df_dcontrol;
 
-        // Find out, whether a new constraint appears at this index:
-        if (constraint_timepoints[constraint_index - 1]
-            == state_timepoints[state_index]) {
-          --constraint_index;
-          current_step_is_new_constraint_time = true;
+          // Compute the actual derivative with respect to the control:
+          auto lambda = index_lambda_pairs[state_index].second;
+          assert(0 <= lambda);
+          assert(lambda <= 1.0);
+          auto upper_index = index_lambda_pairs[state_index].first;
+          if (lambda == 1.0) {
+            objective_gradient.mut_timestep(upper_index) += df_dui;
+          } else {
+            objective_gradient.mut_timestep(upper_index) += lambda * df_dui;
+            objective_gradient.mut_timestep(upper_index - 1)
+                += (1 - lambda) * df_dui;
+          }
         }
+        {
+          // constraints:
+          // Find out, whether a new constraint appears at this index:
+          bool current_step_is_new_constraint_time = false;
+          if (constraint_timepoints[constraint_index - 1]
+              == state_timepoints[state_index]) {
+            constraints_are_active_at_current_time = true;
 
-        if (current_step_is_new_constraint_time) {
-          update_constraint_derivative_matrices(state_index, controls, states);
-          assert(middle_col_block(full_rhs_g, constraint_index).isZero());
-          middle_col_block(full_rhs_g, constraint_index) -= dg_dnew_transposed;
-        }
-        auto current_lambda = right_cols(full_Lambda_row, constraint_index);
-        auto current_rhs = right_cols(full_rhs_g, constraint_index);
-        current_lambda = solver.solve(current_rhs);
-        current_rhs.noalias() = -dE_dlast_transposed * current_lambda;
-        auto current_dg_dui = lower_rows(full_dg_dui, constraint_index);
-        current_dg_dui.noalias() = current_lambda.transpose() * dE_dcontrol;
+            --constraint_index;
+            current_step_is_new_constraint_time = true;
+          }
 
-        if (current_step_is_new_constraint_time) {
-          middle_row_block(full_dg_dui, constraint_index) += dg_dcontrol;
-        }
+          if (constraints_are_active_at_current_time) {
+            if (current_step_is_new_constraint_time) {
+              update_constraint_derivative_matrices(
+                  state_index, controls, states);
+              assert(middle_col_block(full_rhs_g, constraint_index).isZero());
+              middle_col_block(full_rhs_g, constraint_index)
+                  -= dg_dnew_transposed;
+            }
 
-        // Compute the actual derivative with respect to the control:
-        auto lambda = index_lambda_pairs[state_index].second;
-        auto upper_index = index_lambda_pairs[state_index].first;
-        if (lambda == 1.0) {
-          objective_gradient.mut_timestep(upper_index) += df_dui;
-          constraint_jacobian.get_column_block(upper_index) += current_dg_dui;
-        } else {
-          objective_gradient.mut_timestep(upper_index) += lambda * df_dui;
-          objective_gradient.mut_timestep(upper_index - 1)
-              += (1 - lambda) * df_dui;
-          constraint_jacobian.get_column_block(upper_index)
-              += lambda * current_dg_dui;
-          constraint_jacobian.get_column_block(upper_index - 1)
-              += (1 - lambda) * current_dg_dui;
+            auto current_Xi = right_cols(full_Xi_row, constraint_index);
+            auto current_rhs = right_cols(full_rhs_g, constraint_index);
+            current_Xi = solver.solve(current_rhs);
+            current_rhs.noalias() = -dE_dlast_transposed * current_Xi;
+            auto current_dg_dui = lower_rows(full_dg_dui, constraint_index);
+            current_dg_dui.noalias() = current_Xi.transpose() * dE_dcontrol;
+
+            if (current_step_is_new_constraint_time) {
+              middle_row_block(full_dg_dui, constraint_index) += dg_dcontrol;
+            }
+
+            // Compute the actual derivative with respect to the control:
+            auto lambda = index_lambda_pairs[state_index].second;
+            assert(0 <= lambda);
+            assert(lambda <= 1.0);
+            auto upper_index = index_lambda_pairs[state_index].first;
+            if (lambda == 1.0) {
+              constraint_jacobian.get_column_block(upper_index)
+                  += current_dg_dui;
+            } else {
+              constraint_jacobian.get_column_block(upper_index)
+                  += lambda * current_dg_dui;
+              constraint_jacobian.get_column_block(upper_index - 1)
+                  += (1 - lambda) * current_dg_dui;
+            }
+          }
         }
         --state_index;
       }
