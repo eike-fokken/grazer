@@ -1,6 +1,8 @@
+
 #define EIGEN_RUNTIME_NO_MALLOC // Define this symbol to enable runtime tests
                                 // for allocations
-#include "Implicit_Optimizer.hpp"
+#include "ImplicitOptimizer.hpp"
+#include "ControlStateCache.hpp"
 #include "InterpolatingVector.hpp"
 #include "Mock_OptimizableObject.hpp"
 #include "Timeevolver.hpp"
@@ -12,7 +14,7 @@
 
 using namespace Optimization;
 
-TEST(Implicit_Optimizer, simple_dimension_getters) {
+TEST(ImplicitOptimizer, simple_dimension_getters) {
 
   nlohmann::json timeevolver_data = R"(    {
         "use_simplified_newton": true,
@@ -55,7 +57,7 @@ TEST(Implicit_Optimizer, simple_dimension_getters) {
   Aux::InterpolatingVector constraint_upper_bounds(
       constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
 
-  Implicit_Optimizer optimizer(
+  ImplicitOptimizer optimizer(
       problem, evolver, state_timepoints, control_timepoints,
       constraint_timepoints, initial_state, initial_controls, lower_bounds,
       upper_bounds, constraint_lower_bounds, constraint_upper_bounds);
@@ -76,7 +78,7 @@ TEST(Implicit_Optimizer, simple_dimension_getters) {
       optimizer.controls_per_step() * optimizer.control_steps());
 }
 
-TEST(Implicit_Optimizer, Matrix_row_blocks) {
+TEST(ImplicitOptimizer, Matrix_row_blocks) {
 
   nlohmann::json timeevolver_data = R"(    {
         "use_simplified_newton": true,
@@ -122,7 +124,7 @@ TEST(Implicit_Optimizer, Matrix_row_blocks) {
   Aux::InterpolatingVector constraint_upper_bounds(
       constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
 
-  Implicit_Optimizer optimizer(
+  ImplicitOptimizer optimizer(
       problem, evolver, state_timepoints, control_timepoints,
       constraint_timepoints, initial_state, initial_controls, lower_bounds,
       upper_bounds, constraint_lower_bounds, constraint_upper_bounds);
@@ -164,7 +166,7 @@ TEST(Implicit_Optimizer, Matrix_row_blocks) {
 }
 
 #ifndef NDEBUG
-TEST(Implicit_OptimizerDeathTest, matrix_row_blocks) {
+TEST(ImplicitOptimizerDeathTest, matrix_row_blocks) {
   GTEST_FLAG_SET(death_test_style, "threadsafe");
   nlohmann::json timeevolver_data = R"(    {
         "use_simplified_newton": true,
@@ -214,7 +216,7 @@ TEST(Implicit_OptimizerDeathTest, matrix_row_blocks) {
       constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
   constraint_upper_bounds.setZero();
 
-  Implicit_Optimizer optimizer(
+  ImplicitOptimizer optimizer(
       problem, evolver, state_timepoints, control_timepoints,
       constraint_timepoints, initial_state, initial_controls, lower_bounds,
       upper_bounds, constraint_lower_bounds, constraint_upper_bounds);
@@ -230,7 +232,7 @@ TEST(Implicit_OptimizerDeathTest, matrix_row_blocks) {
 }
 #endif
 
-TEST(Implicit_Optimizer, Matrix_col_blocks) {
+TEST(ImplicitOptimizer, Matrix_col_blocks) {
 
   nlohmann::json timeevolver_data = R"(    {
         "use_simplified_newton": true,
@@ -276,7 +278,7 @@ TEST(Implicit_Optimizer, Matrix_col_blocks) {
   Aux::InterpolatingVector constraint_upper_bounds(
       constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
 
-  Implicit_Optimizer optimizer(
+  ImplicitOptimizer optimizer(
       problem, evolver, state_timepoints, control_timepoints,
       constraint_timepoints, initial_state, initial_controls, lower_bounds,
       upper_bounds, constraint_lower_bounds, constraint_upper_bounds);
@@ -316,7 +318,7 @@ TEST(Implicit_Optimizer, Matrix_col_blocks) {
 }
 
 #ifndef NDEBUG
-TEST(Implicit_OptimizerDeathTest, matrix_col_blocks) {
+TEST(ImplicitOptimizerDeathTest, matrix_col_blocks) {
   GTEST_FLAG_SET(death_test_style, "threadsafe");
   nlohmann::json timeevolver_data = R"(    {
         "use_simplified_newton": true,
@@ -362,7 +364,7 @@ TEST(Implicit_OptimizerDeathTest, matrix_col_blocks) {
   Aux::InterpolatingVector constraint_upper_bounds(
       constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
 
-  Implicit_Optimizer optimizer(
+  ImplicitOptimizer optimizer(
       problem, evolver, state_timepoints, control_timepoints,
       constraint_timepoints, initial_state, initial_controls, lower_bounds,
       upper_bounds, constraint_lower_bounds, constraint_upper_bounds);
@@ -377,3 +379,68 @@ TEST(Implicit_OptimizerDeathTest, matrix_col_blocks) {
       "outer_col_index.*<.*constraint_steps()");
 }
 #endif
+
+TEST(ImplicitOptimizer, new_x) {
+  nlohmann::json timeevolver_data = R"(    {
+        "use_simplified_newton": true,
+        "maximal_number_of_newton_iterations": 2,
+        "tolerance": 1e-8,
+        "retries": 0,
+        "start_time": 0.0,
+        "end_time": 4.0,
+        "desired_delta_t": 1.0
+    }
+)"_json;
+
+  auto evolver = Model::Timeevolver::make_instance(timeevolver_data);
+  Eigen::Index const number_of_states(30);
+  Eigen::Index const number_of_controls(20);
+  Eigen::Index const number_of_constraints(10);
+
+  Mock_OptimizableObject problem(
+      number_of_states, number_of_controls, number_of_constraints);
+  problem.set_state_indices(0);
+  problem.set_control_indices(0);
+  problem.set_constraint_indices(0);
+
+  Eigen::VectorXd state_timepoints{{0, 1, 2, 3}};
+  Eigen::VectorXd control_timepoints{{1, 2, 3}};
+  Eigen::VectorXd constraint_timepoints{{2, 3}};
+
+  Eigen::VectorXd initial_state(number_of_states);
+  double value = 1;
+  for (auto &entry : initial_state) {
+    entry = 10 * value;
+    ++value;
+  }
+  Aux::InterpolatingVector initial_controls(
+      control_timepoints, problem.get_number_of_controls_per_timepoint());
+
+  initial_controls.setZero();
+
+  Aux::InterpolatingVector lower_bounds(
+      control_timepoints, problem.get_number_of_controls_per_timepoint());
+  Aux::InterpolatingVector upper_bounds(
+      control_timepoints, problem.get_number_of_controls_per_timepoint());
+  Aux::InterpolatingVector constraint_lower_bounds(
+      constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
+  Aux::InterpolatingVector constraint_upper_bounds(
+      constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
+
+  ImplicitOptimizer optimizer(
+      problem, evolver, state_timepoints, control_timepoints,
+      constraint_timepoints, initial_state, initial_controls, lower_bounds,
+      upper_bounds, constraint_lower_bounds, constraint_upper_bounds);
+
+  auto [initialized, states_uptodate, derivatives_uptodate]
+      = optimizer.get_boolians();
+  EXPECT_FALSE(initialized);
+  EXPECT_FALSE(states_uptodate);
+  EXPECT_FALSE(derivatives_uptodate);
+
+  ControlStateCache cache(evolver, problem);
+  cache.refresh_cache(initial_controls, state_timepoints, initial_state);
+  auto &states = cache.get_cached_states();
+
+  optimizer.initialize_derivative_matrices(initial_controls, states);
+}

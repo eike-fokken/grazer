@@ -1,4 +1,4 @@
-#include "Implicit_Optimizer.hpp"
+#include "ImplicitOptimizer.hpp"
 #include "Exception.hpp"
 #include "Initialvalues.hpp"
 #include "Matrixhandler.hpp"
@@ -10,7 +10,7 @@
 
 namespace Optimization {
 
-  Implicit_Optimizer::Implicit_Optimizer(
+  ImplicitOptimizer::ImplicitOptimizer(
       Model::OptimizableObject &_problem, Model::Timeevolver &_evolver,
       Eigen::Ref<Eigen::VectorXd const> const &_state_timepoints,
       Eigen::Ref<Eigen::VectorXd const> const &_control_timepoints,
@@ -140,35 +140,41 @@ namespace Optimization {
     }
   }
 
-  Implicit_Optimizer::~Implicit_Optimizer() = default;
+  ImplicitOptimizer::~ImplicitOptimizer() = default;
 
   ////////////////////////////////////////////////////////////
   // Overrides:
   ////////////////////////////////////////////////////////////
 
-  bool Implicit_Optimizer::supply_constraint_jacobian_indices(
+  bool ImplicitOptimizer::supply_constraint_jacobian_indices(
       Eigen::Ref<Eigen::VectorX<Ipopt::Index>> Rowindices,
       Eigen::Ref<Eigen::VectorX<Ipopt::Index>> Colindices) const {
     constraint_jacobian.supply_indices(Rowindices, Colindices);
     return true;
   }
 
-  Eigen::Index Implicit_Optimizer::get_total_no_controls() const {
+  Eigen::Index ImplicitOptimizer::get_total_no_controls() const {
     return controls_per_step() * control_steps();
   }
-  Eigen::Index Implicit_Optimizer::get_total_no_constraints() const {
+  Eigen::Index ImplicitOptimizer::get_total_no_constraints() const {
     return constraints_per_step() * constraint_steps();
   }
-  Eigen::Index Implicit_Optimizer::get_no_nnz_in_jacobian() const {
+  Eigen::Index ImplicitOptimizer::get_no_nnz_in_jacobian() const {
     return constraint_jacobian.nonZeros();
   }
 
-  void Implicit_Optimizer::new_x() {
+  void ImplicitOptimizer::new_x() {
     states_up_to_date = false;
     derivatives_up_to_date = false;
   }
 
-  bool Implicit_Optimizer::evaluate_objective(
+  std::tuple<bool, bool, bool> ImplicitOptimizer::get_boolians() const {
+    return {
+        derivative_matrices_initialized, states_up_to_date,
+        derivatives_up_to_date};
+  }
+
+  bool ImplicitOptimizer::evaluate_objective(
       Eigen::Ref<Eigen::VectorXd const> const &ipoptcontrols,
       double &objective) {
     assert(ipoptcontrols.size() == get_total_no_controls());
@@ -197,7 +203,7 @@ namespace Optimization {
     return true;
   }
 
-  bool Implicit_Optimizer::evaluate_constraints(
+  bool ImplicitOptimizer::evaluate_constraints(
       Eigen::Ref<Eigen::VectorXd const> const &ipoptcontrols,
       Eigen::Ref<Eigen::VectorXd> ipoptconstraints) {
     assert(ipoptconstraints.size() == get_total_no_constraints());
@@ -233,7 +239,7 @@ namespace Optimization {
     return true;
   }
 
-  bool Implicit_Optimizer::evaluate_objective_gradient(
+  bool ImplicitOptimizer::evaluate_objective_gradient(
       Eigen::Ref<Eigen::VectorXd const> const &ipoptcontrols,
       Eigen::Ref<Eigen::VectorXd> ipoptgradient) {
     assert(ipoptgradient.size() == get_total_no_controls());
@@ -267,7 +273,7 @@ namespace Optimization {
     gradient = objective_gradient;
     return true;
   }
-  bool Implicit_Optimizer::evaluate_constraint_jacobian(
+  bool ImplicitOptimizer::evaluate_constraint_jacobian(
       Eigen::Ref<Eigen::VectorXd const> const &ipoptcontrols,
       Eigen::Ref<Eigen::VectorXd> values) {
     assert(values.size() == get_no_nnz_in_jacobian());
@@ -301,7 +307,7 @@ namespace Optimization {
   }
 
   // initial values:
-  Eigen::VectorXd Implicit_Optimizer::get_initial_controls() {
+  Eigen::VectorXd ImplicitOptimizer::get_initial_controls() {
     // Check that init has not been deleted:
     assert(init);
     auto initial_controls
@@ -312,7 +318,7 @@ namespace Optimization {
     }
     return initial_controls.get_allvalues();
   }
-  Eigen::VectorXd Implicit_Optimizer::get_lower_bounds() {
+  Eigen::VectorXd ImplicitOptimizer::get_lower_bounds() {
     // Check that init has not been deleted:
     assert(init);
     auto lower_bounds
@@ -323,7 +329,7 @@ namespace Optimization {
     }
     return lower_bounds.get_allvalues();
   }
-  Eigen::VectorXd Implicit_Optimizer::get_upper_bounds() {
+  Eigen::VectorXd ImplicitOptimizer::get_upper_bounds() {
     // Check that init has not been deleted:
     assert(init);
     auto upper_bounds
@@ -334,7 +340,7 @@ namespace Optimization {
     }
     return upper_bounds.get_allvalues();
   }
-  Eigen::VectorXd Implicit_Optimizer::get_constraint_lower_bounds() {
+  Eigen::VectorXd ImplicitOptimizer::get_constraint_lower_bounds() {
     // Check that init has not been deleted:
     assert(init);
     auto constraint_lower_bounds
@@ -346,7 +352,7 @@ namespace Optimization {
     }
     return constraint_lower_bounds.get_allvalues();
   }
-  Eigen::VectorXd Implicit_Optimizer::get_constraint_upper_bounds() {
+  Eigen::VectorXd ImplicitOptimizer::get_constraint_upper_bounds() {
     // Check that init has not been deleted:
     assert(init);
     auto constraint_upper_bounds
@@ -366,7 +372,7 @@ namespace Optimization {
   // Internal methods:
   ////////////////////////////////////////////////////////////
 
-  bool Implicit_Optimizer::compute_derivatives(
+  bool ImplicitOptimizer::compute_derivatives(
       Aux::InterpolatingVector_Base const &controls,
       Aux::InterpolatingVector_Base const &states) {
     assert(
@@ -484,7 +490,7 @@ namespace Optimization {
   /** \brief Allocates room for the structures of all matrices used in
    * derivative calculation and sets up the solver for #dE_dnew_transposed.
    */
-  void Implicit_Optimizer::initialize_derivative_matrices(
+  void ImplicitOptimizer::initialize_derivative_matrices(
       Aux::InterpolatingVector_Base const &controls,
       Aux::InterpolatingVector_Base const &states) {
     auto last_state_index = state_timepoints.size() - 1;
@@ -552,7 +558,7 @@ namespace Optimization {
    * #dE_dcontrol with their values at state_index and fills #solver with the
    * factorization of #dE_dnew_transposed.
    */
-  void Implicit_Optimizer::update_equation_derivative_matrices(
+  void ImplicitOptimizer::update_equation_derivative_matrices(
       Eigen::Index state_index, Aux::InterpolatingVector_Base const &controls,
       Aux::InterpolatingVector_Base const &states) {
     assert(derivative_matrices_initialized);
@@ -579,7 +585,7 @@ namespace Optimization {
         states(new_time), controls(new_time));
   }
 
-  void Implicit_Optimizer::update_constraint_derivative_matrices(
+  void ImplicitOptimizer::update_constraint_derivative_matrices(
       Eigen::Index state_index, Aux::InterpolatingVector_Base const &controls,
       Aux::InterpolatingVector_Base const &states) {
     assert(derivative_matrices_initialized);
@@ -596,7 +602,7 @@ namespace Optimization {
         gcontrol_handler, time, states(time), controls(time));
   }
 
-  void Implicit_Optimizer::update_cost_derivative_matrices(
+  void ImplicitOptimizer::update_cost_derivative_matrices(
       Eigen::Index state_index, Aux::InterpolatingVector_Base const &controls,
       Aux::InterpolatingVector_Base const &states) {
     assert(derivative_matrices_initialized);
@@ -621,22 +627,22 @@ namespace Optimization {
   // simple convenience methods:
   ////////////////////////////////////////////////////////////
 
-  Eigen::Index Implicit_Optimizer::states_per_step() const {
+  Eigen::Index ImplicitOptimizer::states_per_step() const {
     return problem.get_number_of_states();
   }
-  Eigen::Index Implicit_Optimizer::controls_per_step() const {
+  Eigen::Index ImplicitOptimizer::controls_per_step() const {
     return problem.get_number_of_controls_per_timepoint();
   }
-  Eigen::Index Implicit_Optimizer::constraints_per_step() const {
+  Eigen::Index ImplicitOptimizer::constraints_per_step() const {
     return problem.get_number_of_constraints_per_timepoint();
   }
-  Eigen::Index Implicit_Optimizer::state_steps() const {
+  Eigen::Index ImplicitOptimizer::state_steps() const {
     return state_timepoints.size();
   }
-  Eigen::Index Implicit_Optimizer::control_steps() const {
+  Eigen::Index ImplicitOptimizer::control_steps() const {
     return control_timepoints.size();
   }
-  Eigen::Index Implicit_Optimizer::constraint_steps() const {
+  Eigen::Index ImplicitOptimizer::constraint_steps() const {
     return constraint_timepoints.size();
   }
   ////////////////////////////////////////////////////////////
@@ -646,7 +652,7 @@ namespace Optimization {
   ////////////////////////////////////////////////////////////
   // Matrix block methods:
   ////////////////////////////////////////////////////////////
-  Eigen::Ref<Eigen::MatrixXd> Implicit_Optimizer::right_cols(
+  Eigen::Ref<Eigen::MatrixXd> ImplicitOptimizer::right_cols(
       Eigen::Ref<Eigen::MatrixXd> Fullmat, Eigen::Index outer_col_index) const {
     assert(Fullmat.rows() == states_per_step());
     assert(Fullmat.cols() == controls_per_step());
@@ -657,7 +663,7 @@ namespace Optimization {
         get_total_no_constraints() - outer_col_index * constraints_per_step());
   }
 
-  Eigen::Ref<Eigen::MatrixXd> Implicit_Optimizer::middle_col_block(
+  Eigen::Ref<Eigen::MatrixXd> ImplicitOptimizer::middle_col_block(
       Eigen::Ref<Eigen::MatrixXd> Fullmat, Eigen::Index outer_col_index) const {
     assert(Fullmat.rows() == states_per_step());
     assert(Fullmat.cols() == get_total_no_constraints());
@@ -668,7 +674,7 @@ namespace Optimization {
         outer_col_index * constraints_per_step(), constraints_per_step());
   }
 
-  Eigen::Ref<RowMat> Implicit_Optimizer::lower_rows(
+  Eigen::Ref<RowMat> ImplicitOptimizer::lower_rows(
       Eigen::Ref<RowMat> Fullmat, Eigen::Index outer_row_index) const {
     assert(Fullmat.rows() == get_total_no_constraints());
     assert(Fullmat.cols() == controls_per_step());
@@ -679,7 +685,7 @@ namespace Optimization {
         get_total_no_constraints() - outer_row_index * constraints_per_step());
   }
 
-  Eigen::Ref<RowMat> Implicit_Optimizer::middle_row_block(
+  Eigen::Ref<RowMat> ImplicitOptimizer::middle_row_block(
       Eigen::Ref<RowMat> Fullmat, Eigen::Index outer_row_index) const {
     assert(Fullmat.rows() == get_total_no_constraints());
     assert(Fullmat.cols() == controls_per_step());

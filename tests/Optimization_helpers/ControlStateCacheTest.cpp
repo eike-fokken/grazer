@@ -129,6 +129,50 @@ TEST(ControlStateCache, fill_and_use_the_cache) {
   EXPECT_EQ(states, *new_states);
 }
 
+TEST(ControlStateCache, refresh_cache_then_get_states) {
+
+  nlohmann::json timeevolution_json = R"(    {
+        "use_simplified_newton": true,
+        "maximal_number_of_newton_iterations": 2,
+        "tolerance": 1e-8,
+        "retries": 0,
+        "start_time": 0.0,
+        "end_time": 1.0,
+        "desired_delta_t": 1.0
+    }
+)"_json;
+
+  auto evolver = Model::Timeevolver::make_instance(timeevolution_json);
+  TestControlComponent_for_ControlStateCache p(f, df, dfdummy, dfdummy);
+
+  Optimization::ControlStateCache cache(evolver, p);
+
+  Eigen::VectorXd times{{0, 1}};
+
+  Eigen::VectorXd initial(2);
+  initial << 5, 6;
+  Aux::InterpolatingVector controls(times, 2);
+  Eigen::VectorXd controlvalues(4);
+  controlvalues << 2, 3, 4, 5;
+  controls.set_values_in_bulk(controlvalues);
+
+  // Make sure that a simulation took place by expecting a call to
+  // prepare_timestep! This should very much be done with googlemocks
+  // EXPECT_CALL, but I don't know how.
+  cache.refresh_cache(controls, times, initial);
+  auto &states = cache.get_cached_states();
+  for (Eigen::Index j = 0; j != states.get_inner_length(); ++j) {
+    EXPECT_DOUBLE_EQ(states(0)[j], initial[j]);
+  }
+
+  for (Eigen::Index i = 1; i != states.size(); ++i) {
+    auto di = static_cast<double>(i);
+    for (Eigen::Index j = 0; j != states.get_inner_length(); ++j) {
+      EXPECT_DOUBLE_EQ(states(di)[j], initial[j] + controls(di)[j]);
+    }
+  }
+}
+
 TEST(ControlStateCache, failed_simulation) {
   nlohmann::json timeevolution_json = R"(    {
         "use_simplified_newton": true,

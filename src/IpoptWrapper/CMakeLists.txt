@@ -4,7 +4,7 @@ target_link_libraries(constraintJacobian PRIVATE exception)
 target_include_directories(constraintJacobian PUBLIC include)
 
 
-add_library(optimizer STATIC Implicit_Optimizer.cpp Initialvalues.cpp)
+add_library(optimizer STATIC ImplicitOptimizer.cpp Initialvalues.cpp)
 target_link_libraries(optimizer PUBLIC interpolatingVector constraintJacobian optimization_helpers)
 target_link_libraries(optimizer PRIVATE componentclasses matrixhandler)
 target_include_directories(optimizer PUBLIC include)

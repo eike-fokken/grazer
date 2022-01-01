@@ -11,9 +11,9 @@ namespace Model {
 namespace Optimization {
   struct Initialvalues;
 
-  class Implicit_Optimizer final : public Optimizer {
+  class ImplicitOptimizer final : public Optimizer {
   public:
-    Implicit_Optimizer(
+    ImplicitOptimizer(
         Model::OptimizableObject &problem, Model::Timeevolver &evolver,
         Eigen::Ref<Eigen::VectorXd const> const &state_timepoints,
         Eigen::Ref<Eigen::VectorXd const> const &control_timepoints,
@@ -25,7 +25,7 @@ namespace Optimization {
         Aux::InterpolatingVector_Base const &constraint_lower_bounds,
         Aux::InterpolatingVector_Base const &constraint_upper_bounds);
 
-    ~Implicit_Optimizer() final;
+    ~ImplicitOptimizer() final;
 
     bool supply_constraint_jacobian_indices(
         Eigen::Ref<Eigen::VectorX<Ipopt::Index>> Rowindices,
@@ -36,6 +36,8 @@ namespace Optimization {
     Eigen::Index get_no_nnz_in_jacobian() const final;
 
     void new_x() final;
+
+    std::tuple<bool, bool, bool> get_boolians() const;
 
     bool evaluate_objective(
         Eigen::Ref<Eigen::VectorXd const> const &ipoptcontrols,
