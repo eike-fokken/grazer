@@ -50,10 +50,11 @@ namespace Model {
     Eigen::VectorXd last_state = initial_state;
     Eigen::VectorXd new_state = last_state;
 
-    saved_states.mut_timestep(0) = new_state;
+    saved_states.mut_timestep(0) = initial_state;
 
     solver.evaluate_state_derivative_triplets(
-        problem, last_time, new_time, last_state, new_state, controls(0));
+        problem, last_time, new_time, last_state, new_state,
+        controls(new_time));
 
     // // provide regex help (cf. helper_functions/csv_from_log.py)
     // std::cout << "=== simulation start ===" << std::endl;
