@@ -12,30 +12,39 @@
 using namespace testing;
 
 static Eigen::VectorXd
-f(Eigen::VectorXd last_state, Eigen::VectorXd new_state,
-  Eigen::VectorXd control) {
+f(Eigen::Ref<Eigen::VectorXd const> const &last_state,
+  Eigen::Ref<Eigen::VectorXd const> const &new_state,
+  Eigen::Ref<Eigen::VectorXd const> const &control) {
   return new_state - last_state - control;
 }
 
 static Eigen::SparseMatrix<double>
-df(Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd) {
+df(Eigen::Ref<Eigen::VectorXd const> const &,
+   Eigen::Ref<Eigen::VectorXd const> const &,
+   Eigen::Ref<Eigen::VectorXd const> const &) {
   Eigen::SparseMatrix<double> A(2, 2);
   A.setIdentity();
   return A;
 }
 
-static Eigen::SparseMatrix<double>
-dfdummy(Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd) {
+static Eigen::SparseMatrix<double> dfdummy(
+    Eigen::Ref<Eigen::VectorXd const> const &,
+    Eigen::Ref<Eigen::VectorXd const> const &,
+    Eigen::Ref<Eigen::VectorXd const> const &) {
   throw std::runtime_error("This function must not be called!");
 }
 
-static Eigen::VectorXd
-ffail(Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd) {
+static Eigen::VectorXd ffail(
+    Eigen::Ref<Eigen::VectorXd const> const &,
+    Eigen::Ref<Eigen::VectorXd const> const &,
+    Eigen::Ref<Eigen::VectorXd const> const &) {
   throw std::runtime_error("fail!!");
 }
 
-static Eigen::SparseMatrix<double>
-dffail(Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd) {
+static Eigen::SparseMatrix<double> dffail(
+    Eigen::Ref<Eigen::VectorXd const> const &,
+    Eigen::Ref<Eigen::VectorXd const> const &,
+    Eigen::Ref<Eigen::VectorXd const> const &) {
   Eigen::SparseMatrix<double> A(2, 2);
   A.setIdentity();
   return A;

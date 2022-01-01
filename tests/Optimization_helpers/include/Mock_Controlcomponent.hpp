@@ -3,11 +3,16 @@
 #include "Statecomponent.hpp"
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
+#include <limits>
 
-using rootfunction
-    = Eigen::VectorXd(Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd);
+using rootfunction = Eigen::VectorXd(
+    Eigen::Ref<Eigen::VectorXd const> const &,
+    Eigen::Ref<Eigen::VectorXd const> const &,
+    Eigen::Ref<Eigen::VectorXd const> const &);
 using Derivative = Eigen::SparseMatrix<double>(
-    Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd);
+    Eigen::Ref<Eigen::VectorXd const> const &,
+    Eigen::Ref<Eigen::VectorXd const> const &,
+    Eigen::Ref<Eigen::VectorXd const> const &);
 
 class TestControlComponent_for_ControlStateCache final :
     public Model::Controlcomponent {

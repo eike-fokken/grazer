@@ -1,19 +1,58 @@
 #include "OptimizableObject.hpp"
 #include <iostream>
 
-class Mock_OptimizableObject final : public Model::OptimizableObject {
+using Costfunction = double(
+    Eigen::Ref<Eigen::VectorXd const> const &,
+    Eigen::Ref<Eigen::VectorXd const> const &);
+inline double default_cost(
+    Eigen::Ref<Eigen::VectorXd const> const & /*controls*/,
+    Eigen::Ref<Eigen::VectorXd const> const & /*states*/) {
+  return std::numeric_limits<double>::min();
+}
 
+using rootfunction = Eigen::VectorXd(
+    Eigen::Ref<Eigen::VectorXd const> const &,
+    Eigen::Ref<Eigen::VectorXd const> const &,
+    Eigen::Ref<Eigen::VectorXd const> const &);
+inline Eigen::VectorXd default_root(
+    Eigen::Ref<Eigen::VectorXd const> const &,
+    Eigen::Ref<Eigen::VectorXd const> const &,
+    Eigen::Ref<Eigen::VectorXd const> const &) {
+  return Eigen::VectorXd();
+}
+using DE_Dnew_function = Eigen::SparseMatrix<double>(
+    Eigen::Ref<Eigen::VectorXd const> const &,
+    Eigen::Ref<Eigen::VectorXd const> const &,
+    Eigen::Ref<Eigen::VectorXd const> const &);
+inline Eigen::SparseMatrix<double> default_DE_Dnew(
+    Eigen::Ref<Eigen::VectorXd const> const &,
+    Eigen::Ref<Eigen::VectorXd const> const &,
+    Eigen::Ref<Eigen::VectorXd const> const &) {
+  return Eigen::SparseMatrix<double>();
+}
+
+class Mock_OptimizableObject final : public Model::OptimizableObject {
+public:
   Eigen::Index const number_of_states;
   Eigen::Index const number_of_controls;
   Eigen::Index const number_of_constraints;
 
-public:
+  rootfunction *E;
+  DE_Dnew_function *dE_dnew;
+
+  Costfunction *f;
+
   Mock_OptimizableObject(
       Eigen::Index _number_of_states, Eigen::Index _number_of_controls,
-      Eigen::Index _number_of_constraints) :
+      Eigen::Index _number_of_constraints, rootfunction *_E = default_root,
+      DE_Dnew_function *_dE_dnew = default_DE_Dnew,
+      Costfunction *_f = default_cost) :
       number_of_states(_number_of_states),
       number_of_controls(_number_of_controls),
-      number_of_constraints(_number_of_constraints) {}
+      number_of_constraints(_number_of_constraints),
+      E(_E),
+      dE_dnew(_dE_dnew),
+      f(_f) {}
 
   void setup() final {
     assert(false); // never call me!
@@ -123,10 +162,9 @@ public:
 
   //// Cost components:
   double evaluate_cost(
-      double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const &state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const final {
-    assert(false);
-    return -1;
+    return f(control, state);
   }
 
   void d_evaluate_cost_d_state(

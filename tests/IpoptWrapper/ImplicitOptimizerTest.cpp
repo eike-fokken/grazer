@@ -14,6 +14,12 @@
 
 using namespace Optimization;
 
+static double cost(
+    Eigen::Ref<Eigen::VectorXd const> const &controls,
+    Eigen::Ref<Eigen::VectorXd const> const &states) {
+  return controls.norm();
+}
+
 TEST(ImplicitOptimizer, simple_dimension_getters) {
 
   nlohmann::json timeevolver_data = R"(    {
@@ -380,22 +386,22 @@ TEST(ImplicitOptimizerDeathTest, matrix_col_blocks) {
 }
 #endif
 
-TEST(ImplicitOptimizer, new_x) {
+TEST(ImplicitOptimizer, evaluate_cost) {
   nlohmann::json timeevolver_data = R"(    {
         "use_simplified_newton": true,
         "maximal_number_of_newton_iterations": 2,
         "tolerance": 1e-8,
         "retries": 0,
         "start_time": 0.0,
-        "end_time": 4.0,
+        "end_time": 1.0,
         "desired_delta_t": 1.0
     }
 )"_json;
 
   auto evolver = Model::Timeevolver::make_instance(timeevolver_data);
-  Eigen::Index const number_of_states(30);
-  Eigen::Index const number_of_controls(20);
-  Eigen::Index const number_of_constraints(10);
+  Eigen::Index const number_of_states(2);
+  Eigen::Index const number_of_controls(2);
+  Eigen::Index const number_of_constraints(0);
 
   Mock_OptimizableObject problem(
       number_of_states, number_of_controls, number_of_constraints);
@@ -403,9 +409,9 @@ TEST(ImplicitOptimizer, new_x) {
   problem.set_control_indices(0);
   problem.set_constraint_indices(0);
 
-  Eigen::VectorXd state_timepoints{{0, 1, 2, 3}};
-  Eigen::VectorXd control_timepoints{{1, 2, 3}};
-  Eigen::VectorXd constraint_timepoints{{2, 3}};
+  Eigen::VectorXd state_timepoints{{0, 1}};
+  Eigen::VectorXd control_timepoints{{1}};
+  Eigen::VectorXd constraint_timepoints{{}};
 
   Eigen::VectorXd initial_state(number_of_states);
   double value = 1;
@@ -431,12 +437,6 @@ TEST(ImplicitOptimizer, new_x) {
       problem, evolver, state_timepoints, control_timepoints,
       constraint_timepoints, initial_state, initial_controls, lower_bounds,
       upper_bounds, constraint_lower_bounds, constraint_upper_bounds);
-
-  auto [initialized, states_uptodate, derivatives_uptodate]
-      = optimizer.get_boolians();
-  EXPECT_FALSE(initialized);
-  EXPECT_FALSE(states_uptodate);
-  EXPECT_FALSE(derivatives_uptodate);
 
   ControlStateCache cache(evolver, problem);
   cache.refresh_cache(initial_controls, state_timepoints, initial_state);
