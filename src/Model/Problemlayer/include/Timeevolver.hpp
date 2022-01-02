@@ -20,10 +20,6 @@ namespace Model {
     static std::unique_ptr<Timeevolver>
     make_pointer_instance(nlohmann::json const &timeevolver_data);
 
-    Timeevolver(
-        double tolerance, int maximal_number_of_newton_iterations, int retries,
-        bool use_simplified_newton);
-
     void simulate(
         Eigen::Ref<Eigen::VectorXd const> const &initial_state,
         Aux::InterpolatingVector_Base const &controls,

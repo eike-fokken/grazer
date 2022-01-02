@@ -37,28 +37,7 @@ namespace Model {
   std::unique_ptr<Timeevolver>
   Timeevolver::make_pointer_instance(nlohmann::json const &timeevolver_data) {
     Aux::schema::validate_json(timeevolver_data, get_schema());
-    return std::make_unique<Timeevolver>(
-        timeevolver_data["tolerance"].get<double>(),
-        timeevolver_data["maximal_number_of_newton_iterations"].get<int>(),
-        timeevolver_data["retries"].get<int>(),
-        timeevolver_data["use_simplified_newton"].get<bool>());
-  }
-
-  Timeevolver::Timeevolver(
-      double tolerance, int maximal_number_of_newton_iterations, int _retries,
-      bool _use_simplified_newton) :
-      solver(tolerance, maximal_number_of_newton_iterations),
-      retries(_retries),
-      use_simplified_newton(_use_simplified_newton) {
-    if (tolerance <= 0) {
-      gthrow({"Tolerance must be positive"});
-    }
-    if (maximal_number_of_newton_iterations <= 0) {
-      gthrow({"Maximal number of Newton iterations must be positive!"});
-    }
-    if (_retries < 0) {
-      gthrow({"Number of allowed retries can't be negative!"});
-    }
+    return std::unique_ptr<Timeevolver>(new Timeevolver(timeevolver_data));
   }
 
   Timeevolver::Timeevolver(nlohmann::json const &timeevolver_data) :
