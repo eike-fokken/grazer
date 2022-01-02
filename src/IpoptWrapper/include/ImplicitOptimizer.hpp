@@ -1,8 +1,8 @@
 #pragma once
 #include "ConstraintJacobian.hpp"
-#include "ControlStateCache.hpp"
 #include "InterpolatingVector.hpp"
 #include "Optimizer.hpp"
+#include <memory>
 
 namespace Model {
   class OptimizableObject;
@@ -10,11 +10,12 @@ namespace Model {
 
 namespace Optimization {
   struct Initialvalues;
+  class StateCache;
 
   class ImplicitOptimizer final : public Optimizer {
   public:
     ImplicitOptimizer(
-        Model::OptimizableObject &problem, Model::Timeevolver &evolver,
+        Model::OptimizableObject &problem, std::unique_ptr<StateCache> cache,
         Eigen::Ref<Eigen::VectorXd const> const &state_timepoints,
         Eigen::Ref<Eigen::VectorXd const> const &control_timepoints,
         Eigen::Ref<Eigen::VectorXd const> const &constraint_timepoints,
@@ -123,7 +124,7 @@ namespace Optimization {
     // members:
     Model::OptimizableObject &problem; // Order dependency before
     std::unique_ptr<Initialvalues> init;
-    ControlStateCache cache;
+    std::unique_ptr<StateCache> cache;
     bool derivative_matrices_initialized = false;
     bool states_up_to_date = false;
     bool derivatives_up_to_date = false;

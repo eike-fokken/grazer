@@ -1,6 +1,7 @@
 #pragma once
 #include "Newtonsolver.hpp"
 #include "Timedata.hpp"
+#include <memory>
 #include <nlohmann/json.hpp>
 
 namespace Aux {
@@ -16,6 +17,12 @@ namespace Model {
   public:
     static nlohmann::json get_schema();
     static Timeevolver make_instance(nlohmann::json const &timeevolver_data);
+    static std::unique_ptr<Timeevolver>
+    make_pointer_instance(nlohmann::json const &timeevolver_data);
+
+    Timeevolver(
+        double tolerance, int maximal_number_of_newton_iterations, int retries,
+        bool use_simplified_newton);
 
     void simulate(
         Eigen::Ref<Eigen::VectorXd const> const &initial_state,

@@ -1,4 +1,5 @@
 #include "ImplicitOptimizer.hpp"
+#include "ControlStateCache.hpp"
 #include "Exception.hpp"
 #include "Initialvalues.hpp"
 #include "Matrixhandler.hpp"
@@ -11,7 +12,7 @@
 namespace Optimization {
 
   ImplicitOptimizer::ImplicitOptimizer(
-      Model::OptimizableObject &_problem, Model::Timeevolver &_evolver,
+      Model::OptimizableObject &_problem, std::unique_ptr<StateCache> _cache,
       Eigen::Ref<Eigen::VectorXd const> const &_state_timepoints,
       Eigen::Ref<Eigen::VectorXd const> const &_control_timepoints,
       Eigen::Ref<Eigen::VectorXd const> const &_constraint_timepoints,
@@ -25,7 +26,7 @@ namespace Optimization {
       init(std::make_unique<Initialvalues>(
           _initial_controls, _lower_bounds, _upper_bounds,
           _constraint_lower_bounds, _constraint_upper_bounds)),
-      cache(_evolver, _problem),
+      cache(std::move(_cache)),
       state_timepoints(_state_timepoints),
       control_timepoints(_control_timepoints),
       constraint_timepoints(_constraint_timepoints),
@@ -126,18 +127,6 @@ namespace Optimization {
           {"Constraint time ", std::to_string(*constraint_iterator),
            " is not a state time. This is a bug."});
     }
-
-    // check that the last constraint time is also the last state time:
-    if (constraint_timepoints[constraint_timepoints.size() - 1]
-        != state_timepoints[state_timepoints.size() - 1]) {
-      gthrow(
-          {"The last constraint time must coincide with the last state time!\n",
-           "last constrainttime: ",
-           std::to_string(
-               constraint_timepoints[constraint_timepoints.size() - 1]),
-           "\nLast state time: ",
-           std::to_string(state_timepoints[state_timepoints.size() - 1])});
-    }
   }
 
   ImplicitOptimizer::~ImplicitOptimizer() = default;
@@ -184,13 +173,13 @@ namespace Optimization {
         static_cast<Eigen::Index>(get_total_no_controls()));
 
     if (not states_up_to_date) {
-      auto could_compute_states
-          = cache.refresh_cache(controls, state_timepoints, initial_state);
+      auto could_compute_states = cache->refresh_cache(
+          problem, controls, state_timepoints, initial_state);
       if (not could_compute_states) {
         return false;
       }
     }
-    auto &states = cache.get_cached_states();
+    auto &states = cache->get_cached_states();
 
     objective = 0;
     // timeindex starts at 1, because at 0 there are initial conditions
@@ -215,13 +204,13 @@ namespace Optimization {
 
     // get states:
     if (not states_up_to_date) {
-      auto could_compute_states
-          = cache.refresh_cache(controls, state_timepoints, initial_state);
+      auto could_compute_states = cache->refresh_cache(
+          problem, controls, state_timepoints, initial_state);
       if (not could_compute_states) {
         return false;
       }
     }
-    auto &states = cache.get_cached_states();
+    auto &states = cache->get_cached_states();
 
     Aux::MappedInterpolatingVector constraints(
         constraint_timepoints, constraints_per_step(), ipoptconstraints.data(),
@@ -259,13 +248,13 @@ namespace Optimization {
         static_cast<Eigen::Index>(get_total_no_controls()));
     // get states:
     if (not states_up_to_date) {
-      auto could_compute_states
-          = cache.refresh_cache(controls, state_timepoints, initial_state);
+      auto could_compute_states = cache->refresh_cache(
+          problem, controls, state_timepoints, initial_state);
       if (not could_compute_states) {
         return false;
       }
     }
-    auto &states = cache.get_cached_states();
+    auto &states = cache->get_cached_states();
     auto could_compute_derivatives = compute_derivatives(controls, states);
     if (not could_compute_derivatives) {
       return false;
@@ -291,13 +280,13 @@ namespace Optimization {
         static_cast<Eigen::Index>(get_total_no_controls()));
     // get states:
     if (not states_up_to_date) {
-      auto could_compute_states
-          = cache.refresh_cache(controls, state_timepoints, initial_state);
+      auto could_compute_states = cache->refresh_cache(
+          problem, controls, state_timepoints, initial_state);
       if (not could_compute_states) {
         return false;
       }
     }
-    auto &states = cache.get_cached_states();
+    auto &states = cache->get_cached_states();
     auto could_compute_derivatives = compute_derivatives(controls, states);
     if (not could_compute_derivatives) {
       return false;

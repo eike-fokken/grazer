@@ -9,17 +9,18 @@
 namespace Optimization {
 
   ControlStateCache::ControlStateCache(
-      Model::Timeevolver &timeevolver, Model::Controlcomponent &_problem) :
-      evolver(timeevolver), problem(_problem) {}
+      std::unique_ptr<Model::Timeevolver> evolver) :
+      evolver(std::move(evolver)) {}
 
   bool ControlStateCache::refresh_cache(
+      Model::Controlcomponent &problem,
       Aux::InterpolatingVector_Base const &controls,
       Eigen::Ref<Eigen::VectorXd const> const &state_timepoints,
       Eigen::Ref<Eigen::VectorXd const> const &initial_state) {
 
     Aux::InterpolatingVector states(state_timepoints, initial_state.size());
     try {
-      evolver.simulate(initial_state, controls, problem, states);
+      evolver->simulate(initial_state, controls, problem, states);
     } catch (...) {
       failed = Cacheentry{controls, state_timepoints, initial_state};
       return false;
@@ -36,6 +37,7 @@ namespace Optimization {
 
   Aux::InterpolatingVector_Base const *
   ControlStateCache::check_and_supply_states(
+      Model::Controlcomponent &problem,
       Aux::InterpolatingVector_Base const &controls,
       Eigen::Ref<Eigen::VectorXd const> const &state_timepoints,
       Eigen::Ref<Eigen::VectorXd const> const &initial_state) {
@@ -51,7 +53,7 @@ namespace Optimization {
     } else {
       Aux::InterpolatingVector states(state_timepoints, initial_state.size());
       try {
-        evolver.simulate(initial_state, controls, problem, states);
+        evolver->simulate(initial_state, controls, problem, states);
       } catch (...) {
         failed = Cacheentry{controls, state_timepoints, initial_state};
         return nullptr;

@@ -63,10 +63,11 @@ TEST(ControlStateCache, fill_and_use_the_cache) {
     }
 )"_json;
 
-  auto evolver = Model::Timeevolver::make_instance(timeevolution_json);
-  TestControlComponent_for_ControlStateCache p(f, df, dfdummy, dfdummy);
+  auto evolver_ptr
+      = Model::Timeevolver::make_pointer_instance(timeevolution_json);
+  TestControlComponent_for_ControlStateCache problem(f, df, dfdummy, dfdummy);
 
-  Optimization::ControlStateCache a(evolver, p);
+  Optimization::ControlStateCache cache(std::move(evolver_ptr));
 
   Eigen::VectorXd times{{0, 1}};
 
@@ -86,7 +87,8 @@ TEST(ControlStateCache, fill_and_use_the_cache) {
   {
     std::stringstream buffer;
     Catch_cout catcher(buffer.rdbuf());
-    states_pointer = a.check_and_supply_states(controls, times, initial);
+    states_pointer
+        = cache.check_and_supply_states(problem, controls, times, initial);
 
     output = buffer.str();
   }
@@ -122,7 +124,8 @@ TEST(ControlStateCache, fill_and_use_the_cache) {
   {
     std::stringstream buffer;
     Catch_cout catcher(buffer.rdbuf());
-    new_states = a.check_and_supply_states(controls, times, initial);
+    new_states
+        = cache.check_and_supply_states(problem, controls, times, initial);
     output = buffer.str();
   }
   std::cout << output;
@@ -151,10 +154,10 @@ TEST(ControlStateCache, refresh_cache_then_get_states) {
     }
 )"_json;
 
-  auto evolver = Model::Timeevolver::make_instance(timeevolution_json);
-  TestControlComponent_for_ControlStateCache p(f, df, dfdummy, dfdummy);
+  auto evolver = Model::Timeevolver::make_pointer_instance(timeevolution_json);
+  TestControlComponent_for_ControlStateCache problem(f, df, dfdummy, dfdummy);
 
-  Optimization::ControlStateCache cache(evolver, p);
+  Optimization::ControlStateCache cache(std::move(evolver));
 
   Eigen::VectorXd times{{0, 1}};
 
@@ -168,7 +171,7 @@ TEST(ControlStateCache, refresh_cache_then_get_states) {
   // Make sure that a simulation took place by expecting a call to
   // prepare_timestep! This should very much be done with googlemocks
   // EXPECT_CALL, but I don't know how.
-  cache.refresh_cache(controls, times, initial);
+  cache.refresh_cache(problem, controls, times, initial);
   auto &states = cache.get_cached_states();
   for (Eigen::Index j = 0; j != states.get_inner_length(); ++j) {
     EXPECT_DOUBLE_EQ(states(0)[j], initial[j]);
@@ -194,10 +197,11 @@ TEST(ControlStateCache, failed_simulation) {
     }
 )"_json;
 
-  auto evolver = Model::Timeevolver::make_instance(timeevolution_json);
-  TestControlComponent_for_ControlStateCache p(ffail, dffail, dfdummy, dfdummy);
+  auto evolver = Model::Timeevolver::make_pointer_instance(timeevolution_json);
+  TestControlComponent_for_ControlStateCache problem(
+      ffail, dffail, dfdummy, dfdummy);
 
-  Optimization::ControlStateCache a(evolver, p);
+  Optimization::ControlStateCache cache(std::move(evolver));
 
   Eigen::VectorXd times{{0, 1}};
 
@@ -218,7 +222,8 @@ TEST(ControlStateCache, failed_simulation) {
   {
     std::stringstream buffer;
     Catch_cout catcher(buffer.rdbuf());
-    states_pointer = a.check_and_supply_states(controls, times, initial);
+    states_pointer
+        = cache.check_and_supply_states(problem, controls, times, initial);
 
     output = buffer.str();
   }
@@ -234,7 +239,8 @@ TEST(ControlStateCache, failed_simulation) {
 
   EXPECT_EQ(encountered, 1);
 
-  states_pointer = a.check_and_supply_states(controls, times, initial);
+  states_pointer
+      = cache.check_and_supply_states(problem, controls, times, initial);
   EXPECT_EQ(states_pointer, nullptr);
 
   // Check that the second time the cache for failed simulations is used by
@@ -247,7 +253,8 @@ TEST(ControlStateCache, failed_simulation) {
   {
     std::stringstream buffer;
     Catch_cout catcher(buffer.rdbuf());
-    new_states = a.check_and_supply_states(controls, times, initial);
+    new_states
+        = cache.check_and_supply_states(problem, controls, times, initial);
     output = buffer.str();
   }
   std::cout << output;
