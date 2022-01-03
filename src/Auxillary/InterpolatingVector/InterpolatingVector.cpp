@@ -139,11 +139,13 @@ namespace Aux {
 
   InterpolatingVector_Base::InterpolatingVector_Base(
       InterpolatingVector_Base &&other) {
+    // Careful: this may not call methods, that call virtual methods!
     move_helper(std::move(other));
   }
 
   void InterpolatingVector_Base::move_helper(InterpolatingVector_Base &&other) {
-    assert(*this != other);
+    // Careful: this may not call methods, that call virtual methods!
+    assert(this != &other);
     interpolation_points = std::move(other.interpolation_points);
     inner_length = other.inner_length;
     other.inner_length = 0;
