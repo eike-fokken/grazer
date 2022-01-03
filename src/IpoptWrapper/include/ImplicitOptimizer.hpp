@@ -56,7 +56,6 @@ namespace Optimization {
 
     // initial values:
     Eigen::Ref<Eigen::VectorXd const> get_initial_state();
-    Aux::InterpolatingVector_Base const &get_current_full_state();
     Eigen::VectorXd get_initial_controls() final;
     Eigen::VectorXd get_lower_bounds() final;
     Eigen::VectorXd get_upper_bounds() final;
@@ -91,6 +90,11 @@ namespace Optimization {
     void update_cost_derivative_matrices(
         Eigen::Index state_index, Aux::InterpolatingVector_Base const &controls,
         Aux::InterpolatingVector_Base const &states);
+
+    // getters:
+    Aux::InterpolatingVector_Base const &get_current_full_state() const;
+    Aux::InterpolatingVector_Base const &get_objective_gradient() const;
+    ConstraintJacobian_Base const &get_constraint_jacobian() const;
 
     // convenience methods:
     Eigen::Index states_per_step() const;

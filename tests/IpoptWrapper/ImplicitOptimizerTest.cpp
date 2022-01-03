@@ -1,4 +1,3 @@
-
 #define EIGEN_RUNTIME_NO_MALLOC // Define this symbol to enable runtime tests
                                 // for allocations
 #include "ImplicitOptimizer.hpp"
@@ -263,6 +262,8 @@ TEST(ImplicitOptimizer, evaluate_constraints) {
   }
   EXPECT_EQ(constraints, expected_constraints.get_allvalues());
 }
+
+TEST(ImplicitOptimizer, compute_derivatives) {}
 
 // instance factory:
 std::unique_ptr<ImplicitOptimizer> optimizer_ptr(

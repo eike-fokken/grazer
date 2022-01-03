@@ -302,11 +302,6 @@ namespace Optimization {
     return initial_state;
   }
 
-  Aux::InterpolatingVector_Base const &
-  ImplicitOptimizer::get_current_full_state() {
-    return cache->get_cached_states();
-  }
-
   Eigen::VectorXd ImplicitOptimizer::get_initial_controls() {
     // Check that init has not been deleted:
     assert(init);
@@ -607,6 +602,22 @@ namespace Optimization {
   ////////////////////////////////////////////////////////////
   // End of Internal methods
   ////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////
+  // getters
+  ////////////////////////////////////////////////////////////
+
+  Aux::InterpolatingVector_Base const &
+  ImplicitOptimizer::get_current_full_state() const {
+    return cache->get_cached_states();
+  }
+  Aux::InterpolatingVector_Base const &
+  ImplicitOptimizer::get_objective_gradient() const {
+    return objective_gradient;
+  }
+  ConstraintJacobian_Base const &
+  ImplicitOptimizer::get_constraint_jacobian() const {
+    return constraint_jacobian;
+  }
 
   ////////////////////////////////////////////////////////////
   // simple convenience methods:
