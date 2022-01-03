@@ -36,6 +36,9 @@ namespace Optimization {
     Eigen::Index get_block_size() const;
     Eigen::Index get_block_width() const;
     Eigen::Index get_block_height() const;
+    Eigen::Ref<Eigen::Vector<Eigen::Index, Eigen::Dynamic> const>
+    get_block_column_offsets() const;
+    Eigen::Ref<Eigen::VectorXd const> get_allvalues() const;
 
     Eigen::Index get_inner_col_height(Eigen::Index column) const;
     Eigen::Index get_outer_col_height(Eigen::Index column) const;
@@ -65,8 +68,7 @@ namespace Optimization {
     Eigen::MatrixXd whole_matrix() const;
 
   private:
-    Eigen::Ref<Eigen::VectorXd> underlying_storage();
-    Eigen::Ref<Eigen::VectorXd const> underlying_storage() const;
+    Eigen::Ref<Eigen::VectorXd> allvalues();
 
     virtual double *get_value_pointer() = 0;
     virtual double const *get_value_pointer() const = 0;
@@ -78,6 +80,12 @@ namespace Optimization {
   protected:
     void assignment_helper(ConstraintJacobian_Base const &other);
   };
+
+  bool
+  operator==(ConstraintJacobian_Base const &, ConstraintJacobian_Base const &);
+
+  bool
+  operator!=(ConstraintJacobian_Base const &, ConstraintJacobian_Base const &);
 
   class MappedConstraintJacobian : public ConstraintJacobian_Base {
   public:
@@ -114,7 +122,7 @@ namespace Optimization {
     ConstraintJacobian &operator=(ConstraintJacobian const &);
 
   private:
-    Eigen::Vector<double, Eigen::Dynamic> storage;
+    Eigen::VectorXd storage;
 
     double *get_value_pointer() final;
     double const *get_value_pointer() const final;

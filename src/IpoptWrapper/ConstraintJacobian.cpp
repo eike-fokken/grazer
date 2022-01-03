@@ -84,6 +84,12 @@ namespace Optimization {
   Eigen::Index ConstraintJacobian_Base::get_block_height() const {
     return block_height;
   }
+
+  Eigen::Ref<Eigen::Vector<Eigen::Index, Eigen::Dynamic> const>
+  ConstraintJacobian_Base::get_block_column_offsets() const {
+    return block_column_offsets;
+  }
+
   Eigen::Index ConstraintJacobian_Base::get_block_size() const {
     return get_block_height() * get_block_width();
   }
@@ -140,7 +146,7 @@ namespace Optimization {
     return block_column_offsets[column + 1] * get_block_size();
   }
 
-  void ConstraintJacobian_Base::setZero() { underlying_storage().setZero(); }
+  void ConstraintJacobian_Base::setZero() { allvalues().setZero(); }
 
   Eigen::Ref<RowMat>
   ConstraintJacobian_Base::get_column_block(Eigen::Index column) {
@@ -203,11 +209,11 @@ namespace Optimization {
     return result;
   }
 
-  Eigen::Ref<Eigen::VectorXd> ConstraintJacobian_Base::underlying_storage() {
+  Eigen::Ref<Eigen::VectorXd> ConstraintJacobian_Base::allvalues() {
     return Eigen::Map<Eigen::VectorXd>(get_value_pointer(), nonZeros());
   }
   Eigen::Ref<Eigen::VectorXd const>
-  ConstraintJacobian_Base::underlying_storage() const {
+  ConstraintJacobian_Base::get_allvalues() const {
     return Eigen::Map<Eigen::VectorXd const>(get_value_pointer(), nonZeros());
   }
 
@@ -235,7 +241,34 @@ namespace Optimization {
            "structure!"});
     }
 
-    this->underlying_storage() = other.underlying_storage();
+    this->allvalues() = other.get_allvalues();
+  }
+
+  bool operator==(
+      ConstraintJacobian_Base const &lhs, ConstraintJacobian_Base const &rhs) {
+    if (lhs.get_block_height() != rhs.get_block_height()) {
+      return false;
+    }
+    if (lhs.get_block_width() != rhs.get_block_width()) {
+      return false;
+    }
+    if (lhs.get_block_column_offsets().size()
+        != rhs.get_block_column_offsets().size()) {
+      return false;
+    }
+    if (lhs.get_block_column_offsets() != rhs.get_block_column_offsets()) {
+      return false;
+    }
+    // Size is equal because of the preceding if.
+    if (lhs.get_allvalues() != rhs.get_allvalues()) {
+      return false;
+    }
+    return true;
+  }
+
+  bool operator!=(
+      ConstraintJacobian_Base const &lhs, ConstraintJacobian_Base const &rhs) {
+    return !(lhs == rhs);
   }
 
   /////////////////////////////

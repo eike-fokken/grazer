@@ -6,9 +6,8 @@
 
 TEST(ConstraintJacobian, construction1) {
 
-  Eigen::Vector<double, Eigen::Dynamic> constraints_times{
-      {0.0, 0.5, 0.6, 1.0, 2.0}};
-  Eigen::Vector<double, Eigen::Dynamic> controls_times{{-1, 0, 1, 2, 3}};
+  Eigen::VectorXd constraints_times{{0.0, 0.5, 0.6, 1.0, 2.0}};
+  Eigen::VectorXd controls_times{{-1, 0, 1, 2, 3}};
 
   Eigen::Index constraints_inner_length = 2;
   Eigen::Index controls_inner_length = 3;
@@ -36,9 +35,8 @@ TEST(ConstraintJacobian, construction1) {
 
 TEST(ConstraintJacobian, column_height) {
 
-  Eigen::Vector<double, Eigen::Dynamic> constraints_times{
-      {0.0, 0.5, 0.6, 1.0, 2.0}};
-  Eigen::Vector<double, Eigen::Dynamic> controls_times{{-1, 0, 1, 2, 3}};
+  Eigen::VectorXd constraints_times{{0.0, 0.5, 0.6, 1.0, 2.0}};
+  Eigen::VectorXd controls_times{{-1, 0, 1, 2, 3}};
 
   Eigen::Index constraints_inner_length = 2;
   Eigen::Index controls_inner_length = 3;
@@ -57,8 +55,8 @@ TEST(ConstraintJacobian, column_height) {
 }
 
 TEST(ConstraintJacobian, setmatrix) {
-  Eigen::Vector<double, Eigen::Dynamic> constraints_times{{0.0, 0.5, 1.0, 2.0}};
-  Eigen::Vector<double, Eigen::Dynamic> controls_times{{0, 1, 2}};
+  Eigen::VectorXd constraints_times{{0.0, 0.5, 1.0, 2.0}};
+  Eigen::VectorXd controls_times{{0, 1, 2}};
 
   Eigen::Index constraints_inner_length = 2;
   Eigen::Index controls_inner_length = 3;
@@ -97,8 +95,8 @@ TEST(ConstraintJacobian, setmatrix) {
 }
 
 TEST(ConstraintJacobian, assignment_happy) {
-  Eigen::Vector<double, Eigen::Dynamic> constraints_times{{0.0, 0.5, 1.0, 2.0}};
-  Eigen::Vector<double, Eigen::Dynamic> controls_times{{0, 1, 2}};
+  Eigen::VectorXd constraints_times{{0.0, 0.5, 1.0, 2.0}};
+  Eigen::VectorXd controls_times{{0, 1, 2}};
 
   Eigen::Index constraints_inner_length = 2;
   Eigen::Index controls_inner_length = 3;
@@ -120,8 +118,8 @@ TEST(ConstraintJacobian, assignment_happy) {
 }
 
 TEST(ConstraintJacobian, supply_indices) {
-  Eigen::Vector<double, Eigen::Dynamic> constraints_times{{0.0, 0.5, 1.0, 2.0}};
-  Eigen::Vector<double, Eigen::Dynamic> controls_times{{0, 1, 2}};
+  Eigen::VectorXd constraints_times{{0.0, 0.5, 1.0, 2.0}};
+  Eigen::VectorXd controls_times{{0, 1, 2}};
 
   Eigen::Index constraints_inner_length = 2;
   Eigen::Index controls_inner_length = 3;
@@ -156,8 +154,8 @@ TEST(ConstraintJacobian, supply_indices) {
 }
 
 TEST(ConstraintJacobian, nullpointer) {
-  Eigen::Vector<double, Eigen::Dynamic> constraints_times{{0.0, 0.5, 1.0, 2.0}};
-  Eigen::Vector<double, Eigen::Dynamic> controls_times{{0, 1, 2}};
+  Eigen::VectorXd constraints_times{{0.0, 0.5, 1.0, 2.0}};
+  Eigen::VectorXd controls_times{{0, 1, 2}};
 
   Eigen::Index constraints_inner_length = 2;
   Eigen::Index controls_inner_length = 3;
@@ -184,4 +182,30 @@ TEST(ConstraintJacobian, nullpointer) {
 
   jac2.replace_storage(values.data(), values.size());
   jac2.setZero();
+}
+
+TEST(ConstraintJacobian, equality_and_inequality) {
+  Eigen::VectorXd constraints_times{{0.0, 0.5, 1.0, 2.0}};
+  Eigen::VectorXd controls_times{{0, 1, 2}};
+
+  Eigen::Index constraints_inner_length = 2;
+  Eigen::Index controls_inner_length = 3;
+
+  auto jac = Optimization::ConstraintJacobian(
+      constraints_inner_length, controls_inner_length, constraints_times,
+      controls_times);
+
+  jac.setZero();
+  Eigen::VectorX<double> values(jac.nonZeros());
+  for (Eigen::Index i = 0; i != values.size(); ++i) {
+    values[i] = static_cast<double>(i) + 2;
+  }
+  auto jac2 = Optimization::MappedConstraintJacobian(
+      values.data(), values.size(), constraints_inner_length,
+      controls_inner_length, constraints_times, controls_times);
+
+  EXPECT_NE(jac, jac2);
+
+  jac = jac2;
+  EXPECT_EQ(jac, jac2);
 }
