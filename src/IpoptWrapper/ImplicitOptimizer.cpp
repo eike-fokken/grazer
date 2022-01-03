@@ -12,7 +12,8 @@
 namespace Optimization {
 
   ImplicitOptimizer::ImplicitOptimizer(
-      Model::OptimizableObject &_problem, std::unique_ptr<StateCache> _cache,
+      std::unique_ptr<Model::OptimizableObject> _problem,
+      std::unique_ptr<StateCache> _cache,
       Eigen::Ref<Eigen::VectorXd const> const &_state_timepoints,
       Eigen::Ref<Eigen::VectorXd const> const &_control_timepoints,
       Eigen::Ref<Eigen::VectorXd const> const &_constraint_timepoints,
@@ -22,7 +23,7 @@ namespace Optimization {
       Aux::InterpolatingVector_Base const &_upper_bounds,
       Aux::InterpolatingVector_Base const &_constraint_lower_bounds,
       Aux::InterpolatingVector_Base const &_constraint_upper_bounds) :
-      problem(_problem),
+      problem(std::move(_problem)),
       init(std::make_unique<Initialvalues>(
           _initial_controls, _lower_bounds, _upper_bounds,
           _constraint_lower_bounds, _constraint_upper_bounds)),
@@ -39,7 +40,7 @@ namespace Optimization {
           nullptr, constraint_jacobian.nonZeros(), constraints_per_step(),
           controls_per_step(), constraint_timepoints, control_timepoints) {
     // control sanity checks:
-    if (problem.get_number_of_controls_per_timepoint()
+    if (problem->get_number_of_controls_per_timepoint()
         != init->initial_controls.get_inner_length()) {
       gthrow({"Wrong number of initial values of the controls!"});
     }
@@ -55,7 +56,7 @@ namespace Optimization {
             init->constraint_lower_bounds, init->constraint_upper_bounds)) {
       gthrow({"The lower and upper bounds for the constraints do not match!"});
     }
-    if (problem.get_number_of_constraints_per_timepoint()
+    if (problem->get_number_of_constraints_per_timepoint()
         != init->constraint_lower_bounds.get_inner_length()) {
       gthrow(
           {"Number of constraints and number of constraint bounds do not "
@@ -63,7 +64,7 @@ namespace Optimization {
     }
 
     // state sanity checks:
-    if (problem.get_number_of_states() != initial_state.size()) {
+    if (problem->get_number_of_states() != initial_state.size()) {
       gthrow({"Wrong number of initial values of the states!"});
     }
     // check all timepoints are sorted:
@@ -174,7 +175,7 @@ namespace Optimization {
 
     if (not states_up_to_date) {
       auto could_compute_states = cache->refresh_cache(
-          problem, controls, state_timepoints, initial_state);
+          *problem, controls, state_timepoints, initial_state);
       if (not could_compute_states) {
         return false;
       }
@@ -185,7 +186,7 @@ namespace Optimization {
     // timeindex starts at 1, because at 0 there are initial conditions
     // which can not be altered!
     for (Eigen::Index timeindex = 1; timeindex != states.size(); ++timeindex) {
-      objective += problem.evaluate_cost(
+      objective += problem->evaluate_cost(
           state_timepoints[timeindex], states(state_timepoints[timeindex]),
           controls(state_timepoints[timeindex]));
     }
@@ -205,7 +206,7 @@ namespace Optimization {
     // get states:
     if (not states_up_to_date) {
       auto could_compute_states = cache->refresh_cache(
-          problem, controls, state_timepoints, initial_state);
+          *problem, controls, state_timepoints, initial_state);
       if (not could_compute_states) {
         return false;
       }
@@ -221,7 +222,7 @@ namespace Optimization {
          constraint_timeindex != constraints.size(); ++constraint_timeindex) {
       double time
           = constraints.interpolation_point_at_index(constraint_timeindex);
-      problem.evaluate_constraint(
+      problem->evaluate_constraint(
           constraints.mut_timestep(constraint_timeindex), time, states(time),
           controls(time));
     }
@@ -249,7 +250,7 @@ namespace Optimization {
     // get states:
     if (not states_up_to_date) {
       auto could_compute_states = cache->refresh_cache(
-          problem, controls, state_timepoints, initial_state);
+          *problem, controls, state_timepoints, initial_state);
       if (not could_compute_states) {
         return false;
       }
@@ -281,7 +282,7 @@ namespace Optimization {
     // get states:
     if (not states_up_to_date) {
       auto could_compute_states = cache->refresh_cache(
-          problem, controls, state_timepoints, initial_state);
+          *problem, controls, state_timepoints, initial_state);
       if (not could_compute_states) {
         return false;
       }
@@ -296,15 +297,17 @@ namespace Optimization {
   }
 
   // initial values:
+
+  Eigen::Ref<Eigen::VectorXd const> ImplicitOptimizer::get_initial_state() {
+    return initial_state;
+  }
+
   Eigen::VectorXd ImplicitOptimizer::get_initial_controls() {
     // Check that init has not been deleted:
     assert(init);
     auto initial_controls
         = Aux::InterpolatingVector::construct_and_interpolate_from(
             control_timepoints, controls_per_step(), init->initial_controls);
-    if (init->obsolete()) {
-      init.reset();
-    }
     return initial_controls.get_allvalues();
   }
   Eigen::VectorXd ImplicitOptimizer::get_lower_bounds() {
@@ -313,9 +316,6 @@ namespace Optimization {
     auto lower_bounds
         = Aux::InterpolatingVector::construct_and_interpolate_from(
             control_timepoints, controls_per_step(), init->lower_bounds);
-    if (init->obsolete()) {
-      init.reset();
-    }
     return lower_bounds.get_allvalues();
   }
   Eigen::VectorXd ImplicitOptimizer::get_upper_bounds() {
@@ -324,9 +324,6 @@ namespace Optimization {
     auto upper_bounds
         = Aux::InterpolatingVector::construct_and_interpolate_from(
             control_timepoints, controls_per_step(), init->upper_bounds);
-    if (init->obsolete()) {
-      init.reset();
-    }
     return upper_bounds.get_allvalues();
   }
   Eigen::VectorXd ImplicitOptimizer::get_constraint_lower_bounds() {
@@ -336,9 +333,6 @@ namespace Optimization {
         = Aux::InterpolatingVector::construct_and_interpolate_from(
             control_timepoints, controls_per_step(),
             init->constraint_lower_bounds);
-    if (init->obsolete()) {
-      init.reset();
-    }
     return constraint_lower_bounds.get_allvalues();
   }
   Eigen::VectorXd ImplicitOptimizer::get_constraint_upper_bounds() {
@@ -348,9 +342,6 @@ namespace Optimization {
         = Aux::InterpolatingVector::construct_and_interpolate_from(
             control_timepoints, controls_per_step(),
             init->constraint_upper_bounds);
-    if (init->obsolete()) {
-      init.reset();
-    }
     return constraint_upper_bounds.get_allvalues();
   }
   ////////////////////////////////////////////////////////////
@@ -488,7 +479,7 @@ namespace Optimization {
 
     dE_dnew_transposed.resize(states_per_step(), states_per_step());
     Aux::Triplethandler<Aux::Transposed> new_handler(dE_dnew_transposed);
-    problem.d_evalutate_d_new_state(
+    problem->d_evalutate_d_new_state(
         new_handler, last_time, new_time, states(last_time), states(new_time),
         controls(new_time));
     new_handler.set_matrix();
@@ -496,39 +487,39 @@ namespace Optimization {
 
     dE_dlast_transposed.resize(states_per_step(), states_per_step());
     Aux::Triplethandler<Aux::Transposed> last_handler(dE_dlast_transposed);
-    problem.d_evalutate_d_last_state(
+    problem->d_evalutate_d_last_state(
         last_handler, last_time, new_time, states(last_time), states(new_time),
         controls(new_time));
     last_handler.set_matrix();
 
     dE_dcontrol.resize(states_per_step(), controls_per_step());
     Aux::Triplethandler control_handler(dE_dcontrol);
-    problem.d_evalutate_d_control(
+    problem->d_evalutate_d_control(
         control_handler, last_time, new_time, states(last_time),
         states(new_time), controls(new_time));
     control_handler.set_matrix();
 
     dg_dnew_transposed.resize(states_per_step(), constraints_per_step());
     Aux::Triplethandler<Aux::Transposed> gnew_handler(dg_dnew_transposed);
-    problem.d_evaluate_constraint_d_state(
+    problem->d_evaluate_constraint_d_state(
         gnew_handler, new_time, states(new_time), controls(new_time));
     gnew_handler.set_matrix();
 
     dg_dcontrol.resize(constraints_per_step(), controls_per_step());
     Aux::Triplethandler gcontrol_handler(dg_dcontrol);
-    problem.d_evaluate_constraint_d_control(
+    problem->d_evaluate_constraint_d_control(
         gcontrol_handler, new_time, states(new_time), controls(new_time));
     gcontrol_handler.set_matrix();
 
     df_dnew_transposed.resize(states_per_step(), 1);
     Aux::Triplethandler<Aux::Transposed> fnew_handler(df_dnew_transposed);
-    problem.d_evaluate_cost_d_state(
+    problem->d_evaluate_cost_d_state(
         fnew_handler, new_time, states(new_time), controls(new_time));
     fnew_handler.set_matrix();
 
     df_dcontrol.resize(controls_per_step(), 1);
     Aux::Triplethandler fcontrol_handler(df_dcontrol);
-    problem.d_evaluate_cost_d_control(
+    problem->d_evaluate_cost_d_control(
         fcontrol_handler, new_time, states(new_time), controls(new_time));
     fcontrol_handler.set_matrix();
 
@@ -558,18 +549,18 @@ namespace Optimization {
     double new_time = state_timepoints[state_index];
 
     Aux::Coeffrefhandler<Aux::Transposed> new_handler(dE_dnew_transposed);
-    problem.d_evalutate_d_new_state(
+    problem->d_evalutate_d_new_state(
         new_handler, last_time, new_time, states(last_time), states(new_time),
         controls(new_time));
     solver.factorize(dE_dnew_transposed);
     solver.analyzePattern(dE_dnew_transposed);
     Aux::Coeffrefhandler<Aux::Transposed> last_handler(dE_dlast_transposed);
-    problem.d_evalutate_d_last_state(
+    problem->d_evalutate_d_last_state(
         last_handler, last_time, new_time, states(last_time), states(new_time),
         controls(new_time));
 
     Aux::Coeffrefhandler control_handler(dE_dcontrol);
-    problem.d_evalutate_d_control(
+    problem->d_evalutate_d_control(
         control_handler, last_time, new_time, states(last_time),
         states(new_time), controls(new_time));
   }
@@ -584,10 +575,10 @@ namespace Optimization {
     double time = state_timepoints[state_index];
 
     Aux::Coeffrefhandler<Aux::Transposed> gnew_handler(dg_dnew_transposed);
-    problem.d_evaluate_constraint_d_state(
+    problem->d_evaluate_constraint_d_state(
         gnew_handler, time, states(time), controls(time));
     Aux::Coeffrefhandler gcontrol_handler(dg_dcontrol);
-    problem.d_evaluate_constraint_d_control(
+    problem->d_evaluate_constraint_d_control(
         gcontrol_handler, time, states(time), controls(time));
   }
 
@@ -601,10 +592,10 @@ namespace Optimization {
     double time = state_timepoints[state_index];
 
     Aux::Coeffrefhandler<Aux::Transposed> fnew_handler(df_dnew_transposed);
-    problem.d_evaluate_cost_d_state(
+    problem->d_evaluate_cost_d_state(
         fnew_handler, time, states(time), controls(time));
     Aux::Coeffrefhandler fcontrol_handler(df_dcontrol);
-    problem.d_evaluate_cost_d_control(
+    problem->d_evaluate_cost_d_control(
         fcontrol_handler, time, states(time), controls(time));
   }
 
@@ -617,13 +608,13 @@ namespace Optimization {
   ////////////////////////////////////////////////////////////
 
   Eigen::Index ImplicitOptimizer::states_per_step() const {
-    return problem.get_number_of_states();
+    return problem->get_number_of_states();
   }
   Eigen::Index ImplicitOptimizer::controls_per_step() const {
-    return problem.get_number_of_controls_per_timepoint();
+    return problem->get_number_of_controls_per_timepoint();
   }
   Eigen::Index ImplicitOptimizer::constraints_per_step() const {
-    return problem.get_number_of_constraints_per_timepoint();
+    return problem->get_number_of_constraints_per_timepoint();
   }
   Eigen::Index ImplicitOptimizer::state_steps() const {
     return state_timepoints.size();

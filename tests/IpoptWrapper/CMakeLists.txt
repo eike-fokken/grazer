@@ -1,6 +1,6 @@
 add_executable(ImplicitOptimizer_test ImplicitOptimizerTest.cpp)
 target_include_directories(ImplicitOptimizer_test PUBLIC include)
-target_link_libraries(ImplicitOptimizer_test PUBLIC gtest gtest_main gmock interpolatingVector optimizer problemlayer componentclasses)
+target_link_libraries(ImplicitOptimizer_test PUBLIC gtest gtest_main gmock interpolatingVector optimizer problemlayer componentclasses matrixhandler)
 
 add_test(
   NAME ImplicitOptimizer_test

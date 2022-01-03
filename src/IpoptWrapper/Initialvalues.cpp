@@ -13,11 +13,4 @@ namespace Optimization {
       upper_bounds(std::move(_upper_bounds)),
       constraint_lower_bounds(std::move(_constraint_lower_bounds)),
       constraint_upper_bounds(std::move(_constraint_upper_bounds)) {}
-
-  bool Initialvalues::obsolete() const {
-    return (
-        supplied_initial_controls and supplied_lower_bounds
-        and supplied_upper_bounds and supplied_constraint_lower_bounds
-        and supplied_constraint_upper_bounds);
-  }
 } // namespace Optimization

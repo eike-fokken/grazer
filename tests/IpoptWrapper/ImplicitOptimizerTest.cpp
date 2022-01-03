@@ -1,5 +1,4 @@
 
-
 #define EIGEN_RUNTIME_NO_MALLOC // Define this symbol to enable runtime tests
                                 // for allocations
 #include "ImplicitOptimizer.hpp"
@@ -16,6 +15,13 @@
 
 using namespace Optimization;
 
+std::unique_ptr<ImplicitOptimizer> optimizer_ptr(
+    Eigen::Index number_of_states = 30, Eigen::Index number_of_controls = 20,
+    Eigen::Index number_of_constraints = 10,
+    Eigen::VectorXd state_timepoints = Eigen::VectorXd{{0, 1, 2, 3}},
+    Eigen::VectorXd control_timepoints = Eigen::VectorXd{{1, 2, 3}},
+    Eigen::VectorXd constraint_timepoints = Eigen::VectorXd{{2, 3}});
+
 static double cost(
     Eigen::Ref<Eigen::VectorXd const> const &controls,
     Eigen::Ref<Eigen::VectorXd const> const &states) {
@@ -24,54 +30,8 @@ static double cost(
 
 TEST(ImplicitOptimizer, simple_dimension_getters) {
 
-  nlohmann::json timeevolver_data = R"(    {
-        "use_simplified_newton": true,
-        "maximal_number_of_newton_iterations": 2,
-        "tolerance": 1e-8,
-        "retries": 0,
-        "start_time": 0.0,
-        "end_time": 1.0,
-        "desired_delta_t": 1.0
-    }
-)"_json;
-
-  auto evolver_ptr
-      = Model::Timeevolver::make_pointer_instance(timeevolver_data);
-
-  Eigen::Index const number_of_states(3);
-  Eigen::Index const number_of_controls(2);
-  Eigen::Index const number_of_constraints(1);
-
-  Mock_OptimizableObject problem(
-      number_of_states, number_of_controls, number_of_constraints);
-
-  problem.set_state_indices(0);
-  problem.set_control_indices(0);
-  problem.set_constraint_indices(0);
-
-  Eigen::VectorXd state_timepoints{{0, 1, 2, 3}};
-  Eigen::VectorXd control_timepoints{{1, 2, 3}};
-  Eigen::VectorXd constraint_timepoints{{2, 3}};
-
-  Eigen::VectorXd initial_state{{0, 10.0, 20.0}};
-  Aux::InterpolatingVector initial_controls(
-      control_timepoints, problem.get_number_of_controls_per_timepoint());
-
-  Aux::InterpolatingVector lower_bounds(
-      control_timepoints, problem.get_number_of_controls_per_timepoint());
-  Aux::InterpolatingVector upper_bounds(
-      control_timepoints, problem.get_number_of_controls_per_timepoint());
-  Aux::InterpolatingVector constraint_lower_bounds(
-      constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
-  Aux::InterpolatingVector constraint_upper_bounds(
-      constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
-
-  auto cache = std::make_unique<ControlStateCache>(std::move(evolver_ptr));
-  ImplicitOptimizer optimizer(
-      problem, std::move(cache), state_timepoints, control_timepoints,
-      constraint_timepoints, initial_state, initial_controls, lower_bounds,
-      upper_bounds, constraint_lower_bounds, constraint_upper_bounds);
-
+  auto optimizer_pointer = optimizer_ptr(3, 2, 1);
+  auto &optimizer = *optimizer_pointer;
   EXPECT_EQ(optimizer.state_steps(), 4);
   EXPECT_EQ(optimizer.control_steps(), 3);
   EXPECT_EQ(optimizer.constraint_steps(), 2);
@@ -89,58 +49,18 @@ TEST(ImplicitOptimizer, simple_dimension_getters) {
 }
 
 TEST(ImplicitOptimizer, Matrix_row_blocks) {
-
-  nlohmann::json timeevolver_data = R"(    {
-        "use_simplified_newton": true,
-        "maximal_number_of_newton_iterations": 2,
-        "tolerance": 1e-8,
-        "retries": 0,
-        "start_time": 0.0,
-        "end_time": 1.0,
-        "desired_delta_t": 1.0
-    }
-)"_json;
-
-  auto evolver_ptr
-      = Model::Timeevolver::make_pointer_instance(timeevolver_data);
-
   Eigen::Index const number_of_states(30);
   Eigen::Index const number_of_controls(20);
   Eigen::Index const number_of_constraints(10);
-
-  Mock_OptimizableObject problem(
-      number_of_states, number_of_controls, number_of_constraints);
-  problem.set_state_indices(0);
-  problem.set_control_indices(0);
-  problem.set_constraint_indices(0);
 
   Eigen::VectorXd state_timepoints{{0, 1, 2, 3}};
   Eigen::VectorXd control_timepoints{{1, 2, 3}};
   Eigen::VectorXd constraint_timepoints{{2, 3}};
 
-  Eigen::VectorXd initial_state(number_of_states);
-  double value = 1;
-  for (auto &entry : initial_state) {
-    entry = 10 * value;
-    ++value;
-  }
-  Aux::InterpolatingVector initial_controls(
-      control_timepoints, problem.get_number_of_controls_per_timepoint());
-
-  Aux::InterpolatingVector lower_bounds(
-      control_timepoints, problem.get_number_of_controls_per_timepoint());
-  Aux::InterpolatingVector upper_bounds(
-      control_timepoints, problem.get_number_of_controls_per_timepoint());
-  Aux::InterpolatingVector constraint_lower_bounds(
-      constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
-  Aux::InterpolatingVector constraint_upper_bounds(
-      constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
-
-  auto cache = std::make_unique<ControlStateCache>(std::move(evolver_ptr));
-  ImplicitOptimizer optimizer(
-      problem, std::move(cache), state_timepoints, control_timepoints,
-      constraint_timepoints, initial_state, initial_controls, lower_bounds,
-      upper_bounds, constraint_lower_bounds, constraint_upper_bounds);
+  auto optimizer_pointer = optimizer_ptr(
+      number_of_states, number_of_controls, number_of_constraints,
+      state_timepoints, control_timepoints, constraint_timepoints);
+  auto &optimizer = *optimizer_pointer;
 
   RowMat dg_dui(
       optimizer.get_total_no_constraints(), optimizer.controls_per_step());
@@ -181,61 +101,19 @@ TEST(ImplicitOptimizer, Matrix_row_blocks) {
 #ifndef NDEBUG
 TEST(ImplicitOptimizerDeathTest, matrix_row_blocks) {
   GTEST_FLAG_SET(death_test_style, "threadsafe");
-  nlohmann::json timeevolver_data = R"(    {
-        "use_simplified_newton": true,
-        "maximal_number_of_newton_iterations": 2,
-        "tolerance": 1e-8,
-        "retries": 0,
-        "start_time": 0.0,
-        "end_time": 1.0,
-        "desired_delta_t": 1.0
-    }
-)"_json;
-
-  auto evolver_ptr
-      = Model::Timeevolver::make_pointer_instance(timeevolver_data);
 
   Eigen::Index const number_of_states(30);
   Eigen::Index const number_of_controls(20);
   Eigen::Index const number_of_constraints(10);
 
-  Mock_OptimizableObject problem(
-      number_of_states, number_of_controls, number_of_constraints);
-  problem.set_state_indices(0);
-  problem.set_control_indices(0);
-  problem.set_constraint_indices(0);
-
   Eigen::VectorXd state_timepoints{{0, 1, 2, 3}};
   Eigen::VectorXd control_timepoints{{1, 2, 3}};
   Eigen::VectorXd constraint_timepoints{{2, 3}};
 
-  Eigen::VectorXd initial_state(number_of_states);
-  double value = 1;
-  for (auto &entry : initial_state) {
-    entry = 10 * value;
-    ++value;
-  }
-  Aux::InterpolatingVector initial_controls(
-      control_timepoints, problem.get_number_of_controls_per_timepoint());
-  initial_controls.setZero();
-  Aux::InterpolatingVector lower_bounds(
-      control_timepoints, problem.get_number_of_controls_per_timepoint());
-  lower_bounds.setZero();
-  Aux::InterpolatingVector upper_bounds(
-      control_timepoints, problem.get_number_of_controls_per_timepoint());
-  upper_bounds.setZero();
-  Aux::InterpolatingVector constraint_lower_bounds(
-      constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
-  constraint_lower_bounds.setZero();
-  Aux::InterpolatingVector constraint_upper_bounds(
-      constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
-  constraint_upper_bounds.setZero();
-
-  auto cache = std::make_unique<ControlStateCache>(std::move(evolver_ptr));
-  ImplicitOptimizer optimizer(
-      problem, std::move(cache), state_timepoints, control_timepoints,
-      constraint_timepoints, initial_state, initial_controls, lower_bounds,
-      upper_bounds, constraint_lower_bounds, constraint_upper_bounds);
+  auto optimizer_pointer = optimizer_ptr(
+      number_of_states, number_of_controls, number_of_constraints,
+      state_timepoints, control_timepoints, constraint_timepoints);
+  auto &optimizer = *optimizer_pointer;
 
   RowMat dg_dui(
       optimizer.get_total_no_constraints(), optimizer.controls_per_step());
@@ -250,57 +128,17 @@ TEST(ImplicitOptimizerDeathTest, matrix_row_blocks) {
 
 TEST(ImplicitOptimizer, Matrix_col_blocks) {
 
-  nlohmann::json timeevolver_data = R"(    {
-        "use_simplified_newton": true,
-        "maximal_number_of_newton_iterations": 2,
-        "tolerance": 1e-8,
-        "retries": 0,
-        "start_time": 0.0,
-        "end_time": 1.0,
-        "desired_delta_t": 1.0
-    }
-)"_json;
-
-  auto evolver_ptr
-      = Model::Timeevolver::make_pointer_instance(timeevolver_data);
-
   Eigen::Index const number_of_states(30);
   Eigen::Index const number_of_controls(20);
   Eigen::Index const number_of_constraints(10);
 
-  Mock_OptimizableObject problem(
-      number_of_states, number_of_controls, number_of_constraints);
-  problem.set_state_indices(0);
-  problem.set_control_indices(0);
-  problem.set_constraint_indices(0);
-
   Eigen::VectorXd state_timepoints{{0, 1, 2, 3}};
   Eigen::VectorXd control_timepoints{{1, 2, 3}};
   Eigen::VectorXd constraint_timepoints{{2, 3}};
-
-  Eigen::VectorXd initial_state(number_of_states);
-  double value = 1;
-  for (auto &entry : initial_state) {
-    entry = 10 * value;
-    ++value;
-  }
-  Aux::InterpolatingVector initial_controls(
-      control_timepoints, problem.get_number_of_controls_per_timepoint());
-
-  Aux::InterpolatingVector lower_bounds(
-      control_timepoints, problem.get_number_of_controls_per_timepoint());
-  Aux::InterpolatingVector upper_bounds(
-      control_timepoints, problem.get_number_of_controls_per_timepoint());
-  Aux::InterpolatingVector constraint_lower_bounds(
-      constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
-  Aux::InterpolatingVector constraint_upper_bounds(
-      constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
-
-  auto cache = std::make_unique<ControlStateCache>(std::move(evolver_ptr));
-  ImplicitOptimizer optimizer(
-      problem, std::move(cache), state_timepoints, control_timepoints,
-      constraint_timepoints, initial_state, initial_controls, lower_bounds,
-      upper_bounds, constraint_lower_bounds, constraint_upper_bounds);
+  auto optimizer_pointer = optimizer_ptr(
+      number_of_states, number_of_controls, number_of_constraints,
+      state_timepoints, control_timepoints, constraint_timepoints);
+  auto &optimizer = *optimizer_pointer;
 
   Eigen::MatrixXd Lambda(
       optimizer.states_per_step(), optimizer.get_total_no_constraints());
@@ -339,57 +177,17 @@ TEST(ImplicitOptimizer, Matrix_col_blocks) {
 #ifndef NDEBUG
 TEST(ImplicitOptimizerDeathTest, matrix_col_blocks) {
   GTEST_FLAG_SET(death_test_style, "threadsafe");
-  nlohmann::json timeevolver_data = R"(    {
-        "use_simplified_newton": true,
-        "maximal_number_of_newton_iterations": 2,
-        "tolerance": 1e-8,
-        "retries": 0,
-        "start_time": 0.0,
-        "end_time": 1.0,
-        "desired_delta_t": 1.0
-    }
-)"_json;
-
-  auto evolver_ptr
-      = Model::Timeevolver::make_pointer_instance(timeevolver_data);
-
   Eigen::Index const number_of_states(30);
   Eigen::Index const number_of_controls(20);
   Eigen::Index const number_of_constraints(10);
-
-  Mock_OptimizableObject problem(
-      number_of_states, number_of_controls, number_of_constraints);
-  problem.set_state_indices(0);
-  problem.set_control_indices(0);
-  problem.set_constraint_indices(0);
-
   Eigen::VectorXd state_timepoints{{0, 1, 2, 3}};
   Eigen::VectorXd control_timepoints{{1, 2, 3}};
   Eigen::VectorXd constraint_timepoints{{2, 3}};
 
-  Eigen::VectorXd initial_state(number_of_states);
-  double value = 1;
-  for (auto &entry : initial_state) {
-    entry = 10 * value;
-    ++value;
-  }
-  Aux::InterpolatingVector initial_controls(
-      control_timepoints, problem.get_number_of_controls_per_timepoint());
-
-  Aux::InterpolatingVector lower_bounds(
-      control_timepoints, problem.get_number_of_controls_per_timepoint());
-  Aux::InterpolatingVector upper_bounds(
-      control_timepoints, problem.get_number_of_controls_per_timepoint());
-  Aux::InterpolatingVector constraint_lower_bounds(
-      constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
-  Aux::InterpolatingVector constraint_upper_bounds(
-      constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
-
-  auto cache = std::make_unique<ControlStateCache>(std::move(evolver_ptr));
-  ImplicitOptimizer optimizer(
-      problem, std::move(cache), state_timepoints, control_timepoints,
-      constraint_timepoints, initial_state, initial_controls, lower_bounds,
-      upper_bounds, constraint_lower_bounds, constraint_upper_bounds);
+  auto optimizer_pointer = optimizer_ptr(
+      number_of_states, number_of_controls, number_of_constraints,
+      state_timepoints, control_timepoints, constraint_timepoints);
+  auto &optimizer = *optimizer_pointer;
 
   Eigen::MatrixXd Lambda(
       optimizer.states_per_step(), optimizer.get_total_no_constraints());
@@ -417,19 +215,67 @@ TEST(ImplicitOptimizer, evaluate_cost) {
   auto evolver_ptr
       = Model::Timeevolver::make_pointer_instance(timeevolver_data);
 
+  auto evolver_ptr2
+      = Model::Timeevolver::make_pointer_instance(timeevolver_data);
+
   Eigen::Index const number_of_states(2);
   Eigen::Index const number_of_controls(2);
   Eigen::Index const number_of_constraints(0);
-
-  Mock_OptimizableObject problem(
-      number_of_states, number_of_controls, number_of_constraints);
-  problem.set_state_indices(0);
-  problem.set_control_indices(0);
-  problem.set_constraint_indices(0);
-
   Eigen::VectorXd state_timepoints{{0, 1}};
   Eigen::VectorXd control_timepoints{{1}};
   Eigen::VectorXd constraint_timepoints{{}};
+
+  auto optimizer_pointer = optimizer_ptr(
+      number_of_states, number_of_controls, number_of_constraints,
+      state_timepoints, control_timepoints, constraint_timepoints);
+  auto &optimizer = *optimizer_pointer;
+
+  auto problem2 = std::make_unique<Mock_OptimizableObject>(
+      number_of_states, number_of_controls, number_of_constraints);
+  problem2->set_state_indices(0);
+  problem2->set_control_indices(0);
+  problem2->set_constraint_indices(0);
+
+  Eigen::VectorXd initial_state = optimizer.get_initial_state();
+  Eigen::VectorXd raw_initial_controls = optimizer.get_initial_controls();
+  Aux::InterpolatingVector initial_controls(
+      control_timepoints, number_of_controls);
+  initial_controls.set_values_in_bulk(raw_initial_controls);
+
+  std::unique_ptr<StateCache> cache2
+      = std::make_unique<ControlStateCache>(std::move(evolver_ptr2));
+  cache2->refresh_cache(
+      *problem2, initial_controls, state_timepoints, initial_state);
+  auto &states = cache2->get_cached_states();
+
+  optimizer.initialize_derivative_matrices(initial_controls, states);
+}
+
+// instance factory:
+std::unique_ptr<ImplicitOptimizer> optimizer_ptr(
+    Eigen::Index number_of_states, Eigen::Index number_of_controls,
+    Eigen::Index number_of_constraints, Eigen::VectorXd state_timepoints,
+    Eigen::VectorXd control_timepoints, Eigen::VectorXd constraint_timepoints) {
+  nlohmann::json timeevolver_data = R"(    {
+        "use_simplified_newton": true,
+        "maximal_number_of_newton_iterations": 2,
+        "tolerance": 1e-8,
+        "retries": 0,
+        "start_time": 0.0,
+        "end_time": 1.0,
+        "desired_delta_t": 1.0
+    }
+)"_json;
+
+  auto evolver_ptr
+      = Model::Timeevolver::make_pointer_instance(timeevolver_data);
+
+  auto problem = std::make_unique<Mock_OptimizableObject>(
+      number_of_states, number_of_controls, number_of_constraints);
+
+  problem->set_state_indices(0);
+  problem->set_control_indices(0);
+  problem->set_constraint_indices(0);
 
   Eigen::VectorXd initial_state(number_of_states);
   double value = 1;
@@ -437,30 +283,26 @@ TEST(ImplicitOptimizer, evaluate_cost) {
     entry = 10 * value;
     ++value;
   }
-  Aux::InterpolatingVector initial_controls(
-      control_timepoints, problem.get_number_of_controls_per_timepoint());
 
-  initial_controls.setZero();
+  Aux::InterpolatingVector initial_controls(
+      control_timepoints, problem->get_number_of_controls_per_timepoint());
 
   Aux::InterpolatingVector lower_bounds(
-      control_timepoints, problem.get_number_of_controls_per_timepoint());
+      control_timepoints, problem->get_number_of_controls_per_timepoint());
   Aux::InterpolatingVector upper_bounds(
-      control_timepoints, problem.get_number_of_controls_per_timepoint());
+      control_timepoints, problem->get_number_of_controls_per_timepoint());
   Aux::InterpolatingVector constraint_lower_bounds(
-      constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
+      constraint_timepoints,
+      problem->get_number_of_constraints_per_timepoint());
   Aux::InterpolatingVector constraint_upper_bounds(
-      constraint_timepoints, problem.get_number_of_constraints_per_timepoint());
+      constraint_timepoints,
+      problem->get_number_of_constraints_per_timepoint());
 
   auto cache = std::make_unique<ControlStateCache>(std::move(evolver_ptr));
-  ImplicitOptimizer optimizer(
-      problem, std::move(cache), state_timepoints, control_timepoints,
-      constraint_timepoints, initial_state, initial_controls, lower_bounds,
-      upper_bounds, constraint_lower_bounds, constraint_upper_bounds);
-
-  // ControlStateCache cache2(evolver);
-  // cache2.refresh_cache(
-  //     problem, initial_controls, state_timepoints, initial_state);
-  // auto &states = cache2.get_cached_states();
-
-  // optimizer.initialize_derivative_matrices(initial_controls, states);
+  auto optimizer_ptr = std::make_unique<ImplicitOptimizer>(
+      std::move(problem), std::move(cache), state_timepoints,
+      control_timepoints, constraint_timepoints, initial_state,
+      initial_controls, lower_bounds, upper_bounds, constraint_lower_bounds,
+      constraint_upper_bounds);
+  return optimizer_ptr;
 }

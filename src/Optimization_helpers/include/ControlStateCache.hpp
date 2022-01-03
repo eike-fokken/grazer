@@ -15,7 +15,7 @@ namespace Optimization {
 
   class StateCache {
   public:
-    virtual ~StateCache() = default;
+    virtual ~StateCache();
     virtual bool refresh_cache(
         Model::Controlcomponent &problem,
         Aux::InterpolatingVector_Base const &controls,

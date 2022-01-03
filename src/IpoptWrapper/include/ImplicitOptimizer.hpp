@@ -15,7 +15,8 @@ namespace Optimization {
   class ImplicitOptimizer final : public Optimizer {
   public:
     ImplicitOptimizer(
-        Model::OptimizableObject &problem, std::unique_ptr<StateCache> cache,
+        std::unique_ptr<Model::OptimizableObject> problem,
+        std::unique_ptr<StateCache> cache,
         Eigen::Ref<Eigen::VectorXd const> const &state_timepoints,
         Eigen::Ref<Eigen::VectorXd const> const &control_timepoints,
         Eigen::Ref<Eigen::VectorXd const> const &constraint_timepoints,
@@ -54,6 +55,7 @@ namespace Optimization {
         Eigen::Ref<Eigen::VectorXd> values) final;
 
     // initial values:
+    Eigen::Ref<Eigen::VectorXd const> get_initial_state();
     Eigen::VectorXd get_initial_controls() final;
     Eigen::VectorXd get_lower_bounds() final;
     Eigen::VectorXd get_upper_bounds() final;
@@ -122,7 +124,8 @@ namespace Optimization {
 
   private:
     // members:
-    Model::OptimizableObject &problem; // Order dependency before
+    std::unique_ptr<Model::OptimizableObject>
+        problem; // Order dependency before
     std::unique_ptr<Initialvalues> init;
     std::unique_ptr<StateCache> cache;
     bool derivative_matrices_initialized = false;

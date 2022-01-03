@@ -8,6 +8,8 @@
 
 namespace Optimization {
 
+  StateCache::~StateCache() = default;
+
   ControlStateCache::ControlStateCache(
       std::unique_ptr<Model::Timeevolver> evolver) :
       evolver(std::move(evolver)) {}
