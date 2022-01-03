@@ -302,6 +302,11 @@ namespace Optimization {
     return initial_state;
   }
 
+  Aux::InterpolatingVector_Base const &
+  ImplicitOptimizer::get_current_full_state() {
+    return cache->get_cached_states();
+  }
+
   Eigen::VectorXd ImplicitOptimizer::get_initial_controls() {
     // Check that init has not been deleted:
     assert(init);

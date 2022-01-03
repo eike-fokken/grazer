@@ -2,9 +2,10 @@
 #define EIGEN_RUNTIME_NO_MALLOC // Define this symbol to enable runtime tests
                                 // for allocations
 #include "ImplicitOptimizer.hpp"
-#include "ControlStateCache.hpp"
+
 #include "InterpolatingVector.hpp"
 #include "Mock_OptimizableObject.hpp"
+#include "Mock_StateCache.hpp"
 #include "Timeevolver.hpp"
 #include <memory>
 
@@ -22,11 +23,9 @@ std::unique_ptr<ImplicitOptimizer> optimizer_ptr(
     Eigen::VectorXd control_timepoints = Eigen::VectorXd{{1, 2, 3}},
     Eigen::VectorXd constraint_timepoints = Eigen::VectorXd{{2, 3}});
 
-static double cost(
+double cost(
     Eigen::Ref<Eigen::VectorXd const> const &controls,
-    Eigen::Ref<Eigen::VectorXd const> const &states) {
-  return controls.norm() + states.norm();
-}
+    Eigen::Ref<Eigen::VectorXd const> const &states);
 
 TEST(ImplicitOptimizer, simple_dimension_getters) {
 
@@ -242,13 +241,14 @@ TEST(ImplicitOptimizer, evaluate_cost) {
       control_timepoints, number_of_controls);
   initial_controls.set_values_in_bulk(raw_initial_controls);
 
-  std::unique_ptr<StateCache> cache2
-      = std::make_unique<ControlStateCache>(std::move(evolver_ptr2));
-  cache2->refresh_cache(
-      *problem2, initial_controls, state_timepoints, initial_state);
-  auto &states = cache2->get_cached_states();
+  double objective = 0;
 
-  optimizer.initialize_derivative_matrices(initial_controls, states);
+  optimizer.evaluate_objective(raw_initial_controls, objective);
+  auto controls = optimizer.get_initial_controls();
+  Aux::InterpolatingVector states = optimizer.get_current_full_state();
+
+  EXPECT_DOUBLE_EQ(
+      objective, default_cost(controls, states.vector_at_index(1)));
 }
 
 // instance factory:
@@ -278,14 +278,28 @@ std::unique_ptr<ImplicitOptimizer> optimizer_ptr(
   problem->set_constraint_indices(0);
 
   Eigen::VectorXd initial_state(number_of_states);
-  double value = 1;
-  for (auto &entry : initial_state) {
-    entry = 10 * value;
-    ++value;
+  {
+    double value = 1;
+    for (auto &entry : initial_state) {
+      entry = value;
+      ++value;
+    }
   }
 
   Aux::InterpolatingVector initial_controls(
       control_timepoints, problem->get_number_of_controls_per_timepoint());
+
+  Eigen::VectorXd bulk_initial_controls(
+      initial_controls.get_total_number_of_values());
+  {
+    double value = 100;
+    for (auto &entry : bulk_initial_controls) {
+      entry = value;
+      ++value;
+    }
+  }
+
+  initial_controls.set_values_in_bulk(bulk_initial_controls);
 
   Aux::InterpolatingVector lower_bounds(
       control_timepoints, problem->get_number_of_controls_per_timepoint());
@@ -298,11 +312,29 @@ std::unique_ptr<ImplicitOptimizer> optimizer_ptr(
       constraint_timepoints,
       problem->get_number_of_constraints_per_timepoint());
 
-  auto cache = std::make_unique<ControlStateCache>(std::move(evolver_ptr));
+  Aux::InterpolatingVector states(state_timepoints, number_of_states);
+  Eigen::VectorXd bulk_states(states.get_total_number_of_values());
+  {
+    double value = 1;
+    for (auto &entry : bulk_states) {
+      entry = value;
+      ++value;
+    }
+  }
+  states.set_values_in_bulk(bulk_states);
+  assert(states.vector_at_index(0) == initial_state);
+
+  auto cache = std::make_unique<Mock_StateCache>(states);
   auto optimizer_ptr = std::make_unique<ImplicitOptimizer>(
       std::move(problem), std::move(cache), state_timepoints,
       control_timepoints, constraint_timepoints, initial_state,
       initial_controls, lower_bounds, upper_bounds, constraint_lower_bounds,
       constraint_upper_bounds);
   return optimizer_ptr;
+}
+
+double cost(
+    Eigen::Ref<Eigen::VectorXd const> const &controls,
+    Eigen::Ref<Eigen::VectorXd const> const &states) {
+  return controls.norm() + states.norm();
 }

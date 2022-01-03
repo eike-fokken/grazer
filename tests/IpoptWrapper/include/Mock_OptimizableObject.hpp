@@ -1,14 +1,16 @@
 #include "Matrixhandler.hpp"
 #include "OptimizableObject.hpp"
+#include <Eigen/src/SparseCore/SparseUtil.h>
+#include <cstddef>
 #include <iostream>
 
 using Costfunction = double(
     Eigen::Ref<Eigen::VectorXd const> const & /*controls*/,
     Eigen::Ref<Eigen::VectorXd const> const & /*states*/);
 inline double default_cost(
-    Eigen::Ref<Eigen::VectorXd const> const & /*controls*/,
-    Eigen::Ref<Eigen::VectorXd const> const & /*states*/) {
-  return std::numeric_limits<double>::min();
+    Eigen::Ref<Eigen::VectorXd const> const &controls,
+    Eigen::Ref<Eigen::VectorXd const> const &states) {
+  return controls.norm() + 3 * states.norm();
 }
 
 using Dcost_Dnew_function = Eigen::SparseMatrix<double>(
@@ -17,7 +19,14 @@ using Dcost_Dnew_function = Eigen::SparseMatrix<double>(
 inline Eigen::SparseMatrix<double> default_Dcost_Dnew(
     Eigen::Ref<Eigen::VectorXd const> const &new_state,
     Eigen::Ref<Eigen::VectorXd const> const & /*controls*/) {
-  return Eigen::SparseMatrix<double>(1, new_state.size());
+  Eigen::SparseMatrix<double> derivative(1, new_state.size());
+  std::vector<Eigen::Triplet<double>> triplets(
+      static_cast<size_t>(new_state.size()));
+  for (int i = 0; i != static_cast<Eigen::Index>(triplets.size()); ++i) {
+    triplets.push_back({0, i, 2 * new_state(i)});
+  }
+  derivative.setFromTriplets(triplets.begin(), triplets.end());
+  return 3 * derivative;
 }
 
 using Dcost_Dcontrol_function = Eigen::SparseMatrix<double>(
@@ -26,7 +35,14 @@ using Dcost_Dcontrol_function = Eigen::SparseMatrix<double>(
 inline Eigen::SparseMatrix<double> default_Dcost_Dcontrol(
     Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
     Eigen::Ref<Eigen::VectorXd const> const &controls) {
-  return Eigen::SparseMatrix<double>(1, controls.size());
+  Eigen::SparseMatrix<double> derivative(1, controls.size());
+  std::vector<Eigen::Triplet<double>> triplets(
+      static_cast<size_t>(controls.size()));
+  for (int i = 0; i != static_cast<Eigen::Index>(triplets.size()); ++i) {
+    triplets.push_back({0, i, 2 * controls(i)});
+  }
+  derivative.setFromTriplets(triplets.begin(), triplets.end());
+  return derivative;
 }
 
 using rootfunction = Eigen::VectorXd(
@@ -82,7 +98,7 @@ using constraintfunction = Eigen::VectorXd(
     Eigen::Ref<Eigen::VectorXd const> const & /*controls*/);
 inline Eigen::VectorXd default_constraint(
     Eigen::Index number_of_constraints,
-    Eigen::Ref<Eigen::VectorXd const> const &new_state,
+    Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
     Eigen::Ref<Eigen::VectorXd const> const & /*controls*/) {
   return Eigen::VectorXd(number_of_constraints);
 }
@@ -330,14 +346,14 @@ public:
     assert(false); // never call me!
   }
 
-  void
-  json_save(double time, Eigen::Ref<Eigen::VectorXd const> const &state) final {
-  }
+  void json_save(
+      double /*time*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*state*/) final {}
 
   // unneeded:
   void set_initial_values(
-      Eigen::Ref<Eigen::VectorXd> new_state,
-      nlohmann::json const &initial_json) const final {
+      Eigen::Ref<Eigen::VectorXd> /*new_state*/,
+      nlohmann::json const & /*initial_json*/) const final {
     assert(false); // never call me!
   }
 };

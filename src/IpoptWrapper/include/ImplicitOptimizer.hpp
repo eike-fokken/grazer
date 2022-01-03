@@ -56,6 +56,7 @@ namespace Optimization {
 
     // initial values:
     Eigen::Ref<Eigen::VectorXd const> get_initial_state();
+    Aux::InterpolatingVector_Base const &get_current_full_state();
     Eigen::VectorXd get_initial_controls() final;
     Eigen::VectorXd get_lower_bounds() final;
     Eigen::VectorXd get_upper_bounds() final;
