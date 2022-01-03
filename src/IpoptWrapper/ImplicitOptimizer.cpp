@@ -373,7 +373,7 @@ namespace Optimization {
       // TODO: should be preallocated:
       Eigen::VectorXd xi_f(states_per_step());
       Eigen::VectorXd rhs_f = Eigen::VectorXd::Zero(states_per_step());
-      Eigen::VectorXd df_dui(controls_per_step());
+      Eigen::RowVectorXd df_dui(controls_per_step());
 
       Eigen::MatrixXd full_Xi_row = Eigen::MatrixXd::Zero(
           states_per_step(), get_total_no_constraints());
@@ -517,7 +517,7 @@ namespace Optimization {
         fnew_handler, new_time, states(new_time), controls(new_time));
     fnew_handler.set_matrix();
 
-    df_dcontrol.resize(controls_per_step(), 1);
+    df_dcontrol.resize(1, controls_per_step());
     Aux::Triplethandler fcontrol_handler(df_dcontrol);
     problem->d_evaluate_cost_d_control(
         fcontrol_handler, new_time, states(new_time), controls(new_time));

@@ -20,9 +20,8 @@ inline Eigen::SparseMatrix<double> default_Dcost_Dnew(
     Eigen::Ref<Eigen::VectorXd const> const &new_state,
     Eigen::Ref<Eigen::VectorXd const> const & /*controls*/) {
   Eigen::SparseMatrix<double> derivative(1, new_state.size());
-  std::vector<Eigen::Triplet<double>> triplets(
-      static_cast<size_t>(new_state.size()));
-  for (int i = 0; i != static_cast<Eigen::Index>(triplets.size()); ++i) {
+  std::vector<Eigen::Triplet<double>> triplets;
+  for (int i = 0; i != new_state.size(); ++i) {
     triplets.push_back({0, i, 2 * new_state(i)});
   }
   derivative.setFromTriplets(triplets.begin(), triplets.end());
@@ -36,9 +35,8 @@ inline Eigen::SparseMatrix<double> default_Dcost_Dcontrol(
     Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
     Eigen::Ref<Eigen::VectorXd const> const &controls) {
   Eigen::SparseMatrix<double> derivative(1, controls.size());
-  std::vector<Eigen::Triplet<double>> triplets(
-      static_cast<size_t>(controls.size()));
-  for (int i = 0; i != static_cast<Eigen::Index>(triplets.size()); ++i) {
+  std::vector<Eigen::Triplet<double>> triplets;
+  for (int i = 0; i != controls.size(); ++i) {
     triplets.push_back({0, i, 2 * controls(i)});
   }
   derivative.setFromTriplets(triplets.begin(), triplets.end());
@@ -117,7 +115,9 @@ inline Eigen::VectorXd default_constraint(
     Eigen::Index number_of_constraints,
     Eigen::Ref<Eigen::VectorXd const> const &new_state,
     Eigen::Ref<Eigen::VectorXd const> const &controls) {
-
+  assert(
+      false
+      && "continue here: make constraints also linear in states and controls.");
   Eigen::VectorXd constraints(number_of_constraints);
   for (Eigen::Index i = 0; i != constraints.size(); ++i) {
     constraints(i)
