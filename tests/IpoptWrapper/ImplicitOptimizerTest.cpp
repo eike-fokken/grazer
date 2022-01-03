@@ -220,8 +220,8 @@ TEST(ImplicitOptimizer, evaluate_cost) {
   Eigen::Index const number_of_states(2);
   Eigen::Index const number_of_controls(2);
   Eigen::Index const number_of_constraints(0);
-  Eigen::VectorXd state_timepoints{{0, 1}};
-  Eigen::VectorXd control_timepoints{{1}};
+  Eigen::VectorXd state_timepoints{{0, 1, 2}};
+  Eigen::VectorXd control_timepoints{{0, 3}};
   Eigen::VectorXd constraint_timepoints{{}};
 
   auto optimizer_pointer = optimizer_ptr(
@@ -244,11 +244,14 @@ TEST(ImplicitOptimizer, evaluate_cost) {
   double objective = 0;
 
   optimizer.evaluate_objective(raw_initial_controls, objective);
-  auto controls = optimizer.get_initial_controls();
-  Aux::InterpolatingVector states = optimizer.get_current_full_state();
 
-  EXPECT_DOUBLE_EQ(
-      objective, default_cost(controls, states.vector_at_index(1)));
+  Aux::InterpolatingVector states = optimizer.get_current_full_state();
+  Aux::InterpolatingVector controls(control_timepoints, number_of_controls);
+  controls.set_values_in_bulk(optimizer.get_initial_controls());
+
+  double expected_objective = default_cost(controls(1), states(1))
+                              + default_cost(controls(2), states(2));
+  EXPECT_DOUBLE_EQ(objective, expected_objective);
 }
 
 // instance factory:
