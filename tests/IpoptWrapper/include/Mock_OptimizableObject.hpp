@@ -45,11 +45,11 @@ inline Eigen::SparseMatrix<double> default_Dcost_Dcontrol(
   return derivative;
 }
 
-using rootfunction = Eigen::VectorXd(
+using equation_function = Eigen::VectorXd(
     Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
     Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
     Eigen::Ref<Eigen::VectorXd const> const & /*controls*/);
-inline Eigen::VectorXd default_root(
+inline Eigen::VectorXd default_equation_function(
     Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
     Eigen::Ref<Eigen::VectorXd const> const &new_state,
     Eigen::Ref<Eigen::VectorXd const> const & /*controls*/) {
@@ -98,9 +98,15 @@ using constraintfunction = Eigen::VectorXd(
     Eigen::Ref<Eigen::VectorXd const> const & /*controls*/);
 inline Eigen::VectorXd default_constraint(
     Eigen::Index number_of_constraints,
-    Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
-    Eigen::Ref<Eigen::VectorXd const> const & /*controls*/) {
-  return Eigen::VectorXd(number_of_constraints);
+    Eigen::Ref<Eigen::VectorXd const> const &new_state,
+    Eigen::Ref<Eigen::VectorXd const> const &controls) {
+
+  Eigen::VectorXd constraints(number_of_constraints);
+  for (Eigen::Index i = 0; i != constraints.size(); ++i) {
+    constraints(i)
+        = static_cast<double>(i + 1) * (controls.norm() + 3 * new_state.norm());
+  }
+  return constraints;
 }
 using Dconstraint_Dnew_function = Eigen::SparseMatrix<double>(
     Eigen::Index number_of_constraints,
@@ -131,7 +137,7 @@ public:
   Eigen::Index const number_of_controls;
   Eigen::Index const number_of_constraints;
 
-  rootfunction *E;
+  equation_function *E;
   DE_Dnew_function *dE_dnew;
   DE_Dlast_function *dE_dlast;
   DE_Dcontrol_function *dE_dcontrol;
@@ -146,7 +152,8 @@ public:
 
   Mock_OptimizableObject(
       Eigen::Index _number_of_states, Eigen::Index _number_of_controls,
-      Eigen::Index _number_of_constraints, rootfunction *_E = default_root,
+      Eigen::Index _number_of_constraints,
+      equation_function *_E = default_equation_function,
       DE_Dnew_function *_dE_dnew = default_DE_Dnew,
       DE_Dlast_function *_dE_dlast = default_DE_Dlast,
       DE_Dcontrol_function *_dE_dcontrol = default_DE_Dcontrol,
