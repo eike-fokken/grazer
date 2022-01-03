@@ -46,46 +46,63 @@ inline Eigen::SparseMatrix<double> default_Dcost_Dcontrol(
 }
 
 using equation_function = Eigen::VectorXd(
-    Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-    Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
-    Eigen::Ref<Eigen::VectorXd const> const & /*controls*/);
-inline Eigen::VectorXd default_equation_function(
-    Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+    Eigen::Ref<Eigen::VectorXd const> const &last_state,
     Eigen::Ref<Eigen::VectorXd const> const &new_state,
-    Eigen::Ref<Eigen::VectorXd const> const & /*controls*/) {
-  return Eigen::VectorXd(new_state.size());
+    Eigen::Ref<Eigen::VectorXd const> const &controls);
+inline Eigen::VectorXd default_equation_function(
+    Eigen::Ref<Eigen::VectorXd const> const &last_state,
+    Eigen::Ref<Eigen::VectorXd const> const &new_state,
+    Eigen::Ref<Eigen::VectorXd const> const &controls) {
+  assert(new_state.size() == controls.size());
+  assert(last_state.size() == controls.size());
+  Eigen::VectorXd equations(new_state.size());
+  equations = new_state - 2 * last_state + 3 * controls;
+  return equations;
 }
 using DE_Dnew_function = Eigen::SparseMatrix<double>(
-    Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-    Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
-    Eigen::Ref<Eigen::VectorXd const> const & /*controls*/);
-inline Eigen::SparseMatrix<double> default_DE_Dnew(
-    Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+    Eigen::Ref<Eigen::VectorXd const> const &last_state,
     Eigen::Ref<Eigen::VectorXd const> const &new_state,
-    Eigen::Ref<Eigen::VectorXd const> const & /*controls*/) {
-  return Eigen::SparseMatrix<double>(new_state.size(), new_state.size());
+    Eigen::Ref<Eigen::VectorXd const> const &controls);
+inline Eigen::SparseMatrix<double> default_DE_Dnew(
+    Eigen::Ref<Eigen::VectorXd const> const &last_state,
+    Eigen::Ref<Eigen::VectorXd const> const &new_state,
+    Eigen::Ref<Eigen::VectorXd const> const &controls) {
+  assert(new_state.size() == controls.size());
+  assert(last_state.size() == controls.size());
+
+  Eigen::SparseMatrix<double> Derivative(new_state.size(), new_state.size());
+  Derivative.setIdentity();
+  return Derivative;
 }
 
 using DE_Dlast_function = Eigen::SparseMatrix<double>(
-    Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-    Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
-    Eigen::Ref<Eigen::VectorXd const> const & /*controls*/);
-inline Eigen::SparseMatrix<double> default_DE_Dlast(
-    Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+    Eigen::Ref<Eigen::VectorXd const> const &last_state,
     Eigen::Ref<Eigen::VectorXd const> const &new_state,
-    Eigen::Ref<Eigen::VectorXd const> const & /*controls*/) {
-  return Eigen::SparseMatrix<double>(new_state.size(), new_state.size());
+    Eigen::Ref<Eigen::VectorXd const> const &controls);
+inline Eigen::SparseMatrix<double> default_DE_Dlast(
+    Eigen::Ref<Eigen::VectorXd const> const &last_state,
+    Eigen::Ref<Eigen::VectorXd const> const &new_state,
+    Eigen::Ref<Eigen::VectorXd const> const &controls) {
+  assert(new_state.size() == controls.size());
+  assert(last_state.size() == controls.size());
+  Eigen::SparseMatrix<double> Derivative(new_state.size(), last_state.size());
+  Derivative.setIdentity();
+  return -2 * Derivative;
 }
 
 using DE_Dcontrol_function = Eigen::SparseMatrix<double>(
-    Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-    Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
-    Eigen::Ref<Eigen::VectorXd const> const & /*controls*/);
+    Eigen::Ref<Eigen::VectorXd const> const &last_state,
+    Eigen::Ref<Eigen::VectorXd const> const &new_state,
+    Eigen::Ref<Eigen::VectorXd const> const &controls);
 inline Eigen::SparseMatrix<double> default_DE_Dcontrol(
-    Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+    Eigen::Ref<Eigen::VectorXd const> const &last_state,
     Eigen::Ref<Eigen::VectorXd const> const &new_state,
     Eigen::Ref<Eigen::VectorXd const> const &controls) {
-  return Eigen::SparseMatrix<double>(new_state.size(), controls.size());
+  assert(new_state.size() == controls.size());
+  assert(last_state.size() == controls.size());
+  Eigen::SparseMatrix<double> Derivative(new_state.size(), controls.size());
+  Derivative.setIdentity();
+  return 3 * Derivative;
 }
 
 //////////////////////////////////////////////////////////////////////////////
