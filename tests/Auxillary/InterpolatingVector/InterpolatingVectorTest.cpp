@@ -46,7 +46,7 @@ TEST(InterpolatingVector, Move_constructor_happy) {
   Aux::InterpolatingVector b(data, number_of_values_per_point);
 
   auto before = b;
-  Aux::InterpolatingVector a = std::move(b);
+  Aux::InterpolatingVector a(std::move(b));
 
   EXPECT_EQ(a, before);
   EXPECT_EQ(b.get_total_number_of_values(), 0);

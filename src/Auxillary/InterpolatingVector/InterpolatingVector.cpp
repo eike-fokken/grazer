@@ -138,17 +138,19 @@ namespace Aux {
   }
 
   InterpolatingVector_Base::InterpolatingVector_Base(
-      InterpolatingVector_Base &&other) {
-    // Careful: this may not call methods, that call virtual methods!
-    move_helper(std::move(other));
+      InterpolatingVector_Base &&other) noexcept :
+      interpolation_points(std::move(other.interpolation_points)),
+      inner_length(other.inner_length) {
+    other.inner_length = 0;
   }
 
-  void InterpolatingVector_Base::move_helper(InterpolatingVector_Base &&other) {
-    // Careful: this may not call methods, that call virtual methods!
+  InterpolatingVector_Base &InterpolatingVector_Base::operator=(
+      InterpolatingVector_Base &&other) noexcept {
     assert(this != &other);
     interpolation_points = std::move(other.interpolation_points);
     inner_length = other.inner_length;
     other.inner_length = 0;
+    return *this;
   }
 
   InterpolatingVector_Base &
@@ -366,14 +368,7 @@ namespace Aux {
   InterpolatingVector &
   InterpolatingVector::operator=(InterpolatingVector const &other) {
     assignment_helper(other);
-    this->values = other.get_allvalues();
-    return *this;
-  }
-
-  InterpolatingVector &
-  InterpolatingVector::operator=(InterpolatingVector &&other) {
-    move_helper(std::move(other));
-    values = std::move(other.values);
+    this->values = other.values;
     return *this;
   }
 
@@ -384,6 +379,9 @@ namespace Aux {
   Eigen::Ref<Eigen::VectorXd> InterpolatingVector::allvalues() {
     return values;
   }
+
+  InterpolatingVector::InterpolatingVector(
+      InterpolatingVector &&other) noexcept = default;
 
   Eigen::Ref<Eigen::VectorXd const> const
   InterpolatingVector::allvalues() const {
