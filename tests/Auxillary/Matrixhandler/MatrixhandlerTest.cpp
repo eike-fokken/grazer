@@ -222,11 +222,3 @@ TEST(Coeffrefhandler_transposed, add_to_coefficient) {
 
   EXPECT_EQ(compare_mat, compare_mat_transposed);
 }
-
-#ifndef NDEBUG
-TEST(CoeffrefhandlerDeathTest, assert_nonempty_matrix) {
-  GTEST_FLAG_SET(death_test_style, "threadsafe");
-  Eigen::SparseMatrix<double> mat(5, 5);
-  EXPECT_DEATH(Coeffrefhandler handler(mat), "nonZeros().*!=.*0");
-}
-#endif

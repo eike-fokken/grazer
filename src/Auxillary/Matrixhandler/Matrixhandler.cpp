@@ -47,7 +47,8 @@ namespace Aux {
   Coeffrefhandler<Transpose>::Coeffrefhandler(
       Eigen::SparseMatrix<double> &_matrix) :
       Matrixhandler(_matrix) {
-    assert(_matrix.nonZeros() != 0);
+    // This assert wrongly fails if the matrix actually contains no zeros.
+    //  assert(_matrix.nonZeros() != 0);
   }
 
   template <int Transpose>
