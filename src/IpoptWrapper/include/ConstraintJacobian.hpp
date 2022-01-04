@@ -45,11 +45,11 @@ namespace Optimization {
     Eigen::Index get_outer_height() const;
     Eigen::Index get_inner_height() const;
 
-    Eigen::Index get_outer_rowstart_jacobian(Eigen::Index column) const;
-    Eigen::Index get_inner_rowstart_jacobian(Eigen::Index column) const;
+    Eigen::Index get_outer_rowstart(Eigen::Index column) const;
+    Eigen::Index get_inner_rowstart(Eigen::Index column) const;
 
-    Eigen::Index get_outer_colstart_jacobian(Eigen::Index column) const;
-    Eigen::Index get_inner_colstart_jacobian(Eigen::Index column) const;
+    Eigen::Index get_outer_colstart(Eigen::Index column) const;
+    Eigen::Index get_inner_colstart(Eigen::Index column) const;
 
     Eigen::Index column_values_start(Eigen::Index column) const;
     Eigen::Index column_values_end(Eigen::Index column) const;

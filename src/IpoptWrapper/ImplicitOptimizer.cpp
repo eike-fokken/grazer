@@ -6,6 +6,7 @@
 #include "OptimizableObject.hpp"
 #include "Optimization_helpers.hpp"
 #include "Optimizer.hpp"
+#include <Eigen/src/Core/util/Constants.h>
 #include <memory>
 #include <string>
 
@@ -386,7 +387,12 @@ namespace Optimization {
 
       bool constraints_are_active_at_current_time = false;
       while (state_index > 0) {
-        update_equation_derivative_matrices(state_index, controls, states);
+        auto could_update_equation_derivatives
+            = update_equation_derivative_matrices(
+                state_index, controls, states);
+        if (not could_update_equation_derivatives) {
+          return false;
+        }
 
         {
           // cost derivative:
@@ -431,11 +437,16 @@ namespace Optimization {
                   -= dg_dnew_transposed;
             }
 
-            auto current_Xi = right_cols(full_Xi_row, constraint_index);
-            auto current_rhs = right_cols(full_rhs_g, constraint_index);
+            // The outer rowindex, at which the
+            auto colstart = jac_outer_col_start(state_index);
+            auto current_Xi = right_cols(full_Xi_row, colstart);
+            auto current_rhs = right_cols(full_rhs_g, colstart);
             current_Xi = solver.solve(current_rhs);
+            std::cout << "time: " << state_timepoints[state_index] << std::endl;
+            std::cout << "solution: " << current_Xi << std::endl;
             current_rhs.noalias() = -dE_dlast_transposed * current_Xi;
-            auto current_dg_dui = lower_rows(full_dg_dui, constraint_index);
+
+            auto current_dg_dui = lower_rows(full_dg_dui, colstart);
             current_dg_dui.noalias() = current_Xi.transpose() * dE_dcontrol;
 
             if (current_step_is_new_constraint_time) {
@@ -535,7 +546,7 @@ namespace Optimization {
    * #dE_dcontrol with their values at state_index and fills #solver with the
    * factorization of #dE_dnew_transposed.
    */
-  void ImplicitOptimizer::update_equation_derivative_matrices(
+  bool ImplicitOptimizer::update_equation_derivative_matrices(
       Eigen::Index state_index, Aux::InterpolatingVector_Base const &controls,
       Aux::InterpolatingVector_Base const &states) {
     assert(derivative_matrices_initialized);
@@ -550,7 +561,9 @@ namespace Optimization {
         new_handler, last_time, new_time, states(last_time), states(new_time),
         controls(new_time));
     solver.factorize(dE_dnew_transposed);
-    solver.analyzePattern(dE_dnew_transposed);
+    if (solver.info() != Eigen::Success) {
+      return false;
+    }
     Aux::Coeffrefhandler<Aux::Transposed> last_handler(dE_dlast_transposed);
     problem->d_evalutate_d_last_state(
         last_handler, last_time, new_time, states(last_time), states(new_time),
@@ -560,6 +573,7 @@ namespace Optimization {
     problem->d_evalutate_d_control(
         control_handler, last_time, new_time, states(last_time),
         states(new_time), controls(new_time));
+    return true;
   }
 
   void ImplicitOptimizer::update_constraint_derivative_matrices(
@@ -689,9 +703,9 @@ namespace Optimization {
   }
 
   Eigen::Index
-  ImplicitOptimizer::jac_outer_col_height(Eigen::Index state_index) const {
+  ImplicitOptimizer::jac_outer_col_start(Eigen::Index state_index) const {
     auto column = index_lambda_pairs(state_index).first;
-    return jacobian.get_outer_col_height(column);
+    return jacobian.get_outer_rowstart(column);
   }
 
 } // namespace Optimization

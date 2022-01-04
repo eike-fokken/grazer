@@ -79,7 +79,7 @@ namespace Optimization {
      * #dE_dcontrol with their values at state_index and fills #solver with the
      * factorization of #dE_dnew_transposed.
      */
-    void update_equation_derivative_matrices(
+    bool update_equation_derivative_matrices(
         Eigen::Index state_index, Aux::InterpolatingVector_Base const &controls,
         Aux::InterpolatingVector_Base const &states);
 
@@ -127,7 +127,7 @@ namespace Optimization {
     Eigen::Ref<RowMat> middle_row_block(
         Eigen::Ref<RowMat> Fullmat, Eigen::Index outer_col_index) const;
 
-    Eigen::Index jac_outer_col_height(Eigen::Index state_index) const;
+    Eigen::Index jac_outer_col_start(Eigen::Index state_index) const;
 
   private:
     // members:

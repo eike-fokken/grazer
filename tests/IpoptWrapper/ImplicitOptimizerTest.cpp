@@ -222,15 +222,15 @@ TEST(ImplicitOptimizer, jac_outer_col_height) {
   for (Eigen::Index state_index = 0; state_index != state_timepoints.size();
        ++state_index) {
     std::cout << " time: " << state_timepoints[state_index]
-              << " height: " << optimizer.jac_outer_col_height(state_index)
+              << " height: " << optimizer.jac_outer_col_start(state_index)
               << std::endl;
   }
-  EXPECT_EQ(optimizer.jac_outer_col_height(0), 3);
-  EXPECT_EQ(optimizer.jac_outer_col_height(1), 3);
-  EXPECT_EQ(optimizer.jac_outer_col_height(2), 3);
-  EXPECT_EQ(optimizer.jac_outer_col_height(3), 3);
-  EXPECT_EQ(optimizer.jac_outer_col_height(4), 1);
-  EXPECT_EQ(optimizer.jac_outer_col_height(5), 0);
+  EXPECT_EQ(optimizer.jac_outer_col_start(0), 0);
+  EXPECT_EQ(optimizer.jac_outer_col_start(1), 0);
+  EXPECT_EQ(optimizer.jac_outer_col_start(2), 0);
+  EXPECT_EQ(optimizer.jac_outer_col_start(3), 0);
+  EXPECT_EQ(optimizer.jac_outer_col_start(4), 2);
+  EXPECT_EQ(optimizer.jac_outer_col_start(5), 3);
 }
 
 TEST(ImplicitOptimizer, evaluate_cost) {
@@ -343,7 +343,13 @@ TEST(ImplicitOptimizer, compute_derivatives) {
   Aux::InterpolatingVector states = optimizer.get_current_full_state();
   Aux::InterpolatingVector controls(control_timepoints, number_of_controls);
   controls.set_values_in_bulk(optimizer.get_initial_controls());
-  optimizer.compute_derivatives(controls, states);
+  auto success = optimizer.compute_derivatives(controls, states);
+  EXPECT_EQ(success, true);
+
+  ConstraintJacobian jac = optimizer.get_constraint_jacobian();
+  jac.setOnes();
+  std::cout << "jacobian structure:" << std::endl;
+  std::cout << jac.whole_matrix();
 }
 
 // instance factory:
