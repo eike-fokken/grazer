@@ -79,7 +79,7 @@ namespace Optimization {
      * #dE_dcontrol with their values at state_index and fills #solver with the
      * factorization of #dE_dnew_transposed.
      */
-    bool update_equation_derivative_matrices(
+    void update_equation_derivative_matrices(
         Eigen::Index state_index, Aux::InterpolatingVector_Base const &controls,
         Aux::InterpolatingVector_Base const &states);
 
@@ -127,8 +127,6 @@ namespace Optimization {
     Eigen::Ref<RowMat> middle_row_block(
         Eigen::Ref<RowMat> Fullmat, Eigen::Index outer_col_index) const;
 
-    Eigen::Index jac_outer_col_start(Eigen::Index state_index) const;
-
   private:
     // members:
     std::unique_ptr<Model::OptimizableObject>
@@ -146,8 +144,8 @@ namespace Optimization {
         index_lambda_pairs; // Order dependency after timepoints.
     Aux::InterpolatingVector
         objective_gradient; // Order dependency after (problem and timepoints)
-    ConstraintJacobian jacobian; // Order dependency before () and
-                                 // after (problem and timepoints)
+    ConstraintJacobian constraint_jacobian; // Order dependency before () and
+                                            // after (problem and timepoints)
     MappedConstraintJacobian
         constraintjacobian_accessor; // Order dependency (after
                                      // constraint_jacobian)

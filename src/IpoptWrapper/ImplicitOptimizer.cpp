@@ -6,7 +6,6 @@
 #include "OptimizableObject.hpp"
 #include "Optimization_helpers.hpp"
 #include "Optimizer.hpp"
-#include <Eigen/src/Core/util/Constants.h>
 #include <memory>
 #include <string>
 
@@ -36,11 +35,11 @@ namespace Optimization {
       index_lambda_pairs(
           compute_index_lambda_vector(control_timepoints, state_timepoints)),
       objective_gradient(control_timepoints, controls_per_step()),
-      jacobian(
+      constraint_jacobian(
           constraints_per_step(), controls_per_step(), constraint_timepoints,
           control_timepoints),
       constraintjacobian_accessor(
-          nullptr, jacobian.nonZeros(), constraints_per_step(),
+          nullptr, constraint_jacobian.nonZeros(), constraints_per_step(),
           controls_per_step(), constraint_timepoints, control_timepoints) {
     // control sanity checks:
     if (problem->get_number_of_controls_per_timepoint()
@@ -141,7 +140,7 @@ namespace Optimization {
   bool ImplicitOptimizer::supply_constraint_jacobian_indices(
       Eigen::Ref<Eigen::VectorX<Ipopt::Index>> Rowindices,
       Eigen::Ref<Eigen::VectorX<Ipopt::Index>> Colindices) const {
-    jacobian.supply_indices(Rowindices, Colindices);
+    constraint_jacobian.supply_indices(Rowindices, Colindices);
     return true;
   }
 
@@ -152,7 +151,7 @@ namespace Optimization {
     return constraints_per_step() * constraint_steps();
   }
   Eigen::Index ImplicitOptimizer::get_no_nnz_in_jacobian() const {
-    return jacobian.nonZeros();
+    return constraint_jacobian.nonZeros();
   }
 
   void ImplicitOptimizer::new_x() {
@@ -274,7 +273,7 @@ namespace Optimization {
 
     if (derivatives_up_to_date) {
       // if we already computed this, just return the value:
-      constraintjacobian_accessor = jacobian;
+      constraintjacobian_accessor = constraint_jacobian;
       return true;
     }
 
@@ -294,7 +293,7 @@ namespace Optimization {
     if (not could_compute_derivatives) {
       return false;
     }
-    constraintjacobian_accessor = jacobian;
+    constraintjacobian_accessor = constraint_jacobian;
     return true;
   }
 
@@ -368,7 +367,7 @@ namespace Optimization {
     // Here we go backwards through the timesteps:
     {
       objective_gradient.setZero();
-      jacobian.setZero();
+      constraint_jacobian.setZero();
 
       // TODO: should be preallocated:
       Eigen::VectorXd xi_f(states_per_step());
@@ -387,12 +386,7 @@ namespace Optimization {
 
       bool constraints_are_active_at_current_time = false;
       while (state_index > 0) {
-        auto could_update_equation_derivatives
-            = update_equation_derivative_matrices(
-                state_index, controls, states);
-        if (not could_update_equation_derivatives) {
-          return false;
-        }
+        update_equation_derivative_matrices(state_index, controls, states);
 
         {
           // cost derivative:
@@ -437,16 +431,11 @@ namespace Optimization {
                   -= dg_dnew_transposed;
             }
 
-            // The outer rowindex, at which the
-            auto colstart = jac_outer_col_start(state_index);
-            auto current_Xi = right_cols(full_Xi_row, colstart);
-            auto current_rhs = right_cols(full_rhs_g, colstart);
+            auto current_Xi = right_cols(full_Xi_row, constraint_index);
+            auto current_rhs = right_cols(full_rhs_g, constraint_index);
             current_Xi = solver.solve(current_rhs);
-            std::cout << "time: " << state_timepoints[state_index] << std::endl;
-            std::cout << "solution: " << current_Xi << std::endl;
             current_rhs.noalias() = -dE_dlast_transposed * current_Xi;
-
-            auto current_dg_dui = lower_rows(full_dg_dui, colstart);
+            auto current_dg_dui = lower_rows(full_dg_dui, constraint_index);
             current_dg_dui.noalias() = current_Xi.transpose() * dE_dcontrol;
 
             if (current_step_is_new_constraint_time) {
@@ -459,10 +448,12 @@ namespace Optimization {
             assert(lambda <= 1.0);
             auto upper_index = index_lambda_pairs[state_index].first;
             if (lambda == 1.0) {
-              jacobian.get_column_block(upper_index) += current_dg_dui;
+              constraint_jacobian.get_column_block(upper_index)
+                  += current_dg_dui;
             } else {
-              jacobian.get_column_block(upper_index) += lambda * current_dg_dui;
-              jacobian.get_column_block(upper_index - 1)
+              constraint_jacobian.get_column_block(upper_index)
+                  += lambda * current_dg_dui;
+              constraint_jacobian.get_column_block(upper_index - 1)
                   += (1 - lambda) * current_dg_dui;
             }
           }
@@ -546,7 +537,7 @@ namespace Optimization {
    * #dE_dcontrol with their values at state_index and fills #solver with the
    * factorization of #dE_dnew_transposed.
    */
-  bool ImplicitOptimizer::update_equation_derivative_matrices(
+  void ImplicitOptimizer::update_equation_derivative_matrices(
       Eigen::Index state_index, Aux::InterpolatingVector_Base const &controls,
       Aux::InterpolatingVector_Base const &states) {
     assert(derivative_matrices_initialized);
@@ -561,9 +552,7 @@ namespace Optimization {
         new_handler, last_time, new_time, states(last_time), states(new_time),
         controls(new_time));
     solver.factorize(dE_dnew_transposed);
-    if (solver.info() != Eigen::Success) {
-      return false;
-    }
+    solver.analyzePattern(dE_dnew_transposed);
     Aux::Coeffrefhandler<Aux::Transposed> last_handler(dE_dlast_transposed);
     problem->d_evalutate_d_last_state(
         last_handler, last_time, new_time, states(last_time), states(new_time),
@@ -573,7 +562,6 @@ namespace Optimization {
     problem->d_evalutate_d_control(
         control_handler, last_time, new_time, states(last_time),
         states(new_time), controls(new_time));
-    return true;
   }
 
   void ImplicitOptimizer::update_constraint_derivative_matrices(
@@ -627,7 +615,7 @@ namespace Optimization {
   }
   ConstraintJacobian_Base const &
   ImplicitOptimizer::get_constraint_jacobian() const {
-    return jacobian;
+    return constraint_jacobian;
   }
 
   ////////////////////////////////////////////////////////////
@@ -700,12 +688,6 @@ namespace Optimization {
     assert(outer_row_index < constraint_steps());
     return Fullmat.middleRows(
         outer_row_index * constraints_per_step(), constraints_per_step());
-  }
-
-  Eigen::Index
-  ImplicitOptimizer::jac_outer_col_start(Eigen::Index state_index) const {
-    auto column = index_lambda_pairs(state_index).first;
-    return jacobian.get_outer_rowstart(column);
   }
 
 } // namespace Optimization
