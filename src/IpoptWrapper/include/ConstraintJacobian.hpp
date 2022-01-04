@@ -25,9 +25,7 @@ namespace Optimization {
         std::tuple<Eigen::Index, Eigen::Index, Eigen::VectorX<Eigen::Index>>
             height_width_offsets);
 
-    ConstraintJacobian_Base(
-        Eigen::Index block_width, Eigen::Index block_height,
-        Eigen::Vector<Eigen::Index, Eigen::Dynamic> block_column_offsets);
+    ConstraintJacobian_Base(ConstraintJacobian_Base const &) = default;
 
     virtual ~ConstraintJacobian_Base() = default;
 
@@ -57,6 +55,7 @@ namespace Optimization {
     Eigen::Index column_values_end(Eigen::Index column) const;
 
     void setZero();
+    void setOnes();
 
     Eigen::Ref<RowMat> get_column_block(Eigen::Index column);
     Eigen::Ref<RowMat const> get_column_block(Eigen::Index column) const;
@@ -78,6 +77,10 @@ namespace Optimization {
     Eigen::Vector<Eigen::Index, Eigen::Dynamic> const block_column_offsets;
 
   protected:
+    ConstraintJacobian_Base(
+        Eigen::Index block_width, Eigen::Index block_height,
+        Eigen::Vector<Eigen::Index, Eigen::Dynamic> block_column_offsets);
+
     void assignment_helper(ConstraintJacobian_Base const &other);
   };
 
@@ -117,6 +120,9 @@ namespace Optimization {
         Eigen::Index number_of_controls_per_step,
         Eigen::Ref<Eigen::VectorXd const> const &constraint_interpolationpoints,
         Eigen::Ref<Eigen::VectorXd const> const &control_interpolationpoints);
+
+    ConstraintJacobian(ConstraintJacobian const &) = default;
+    ConstraintJacobian(ConstraintJacobian_Base const &);
 
     ConstraintJacobian &operator=(MappedConstraintJacobian const &);
     ConstraintJacobian &operator=(ConstraintJacobian const &);

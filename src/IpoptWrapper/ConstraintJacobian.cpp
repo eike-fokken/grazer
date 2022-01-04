@@ -147,6 +147,7 @@ namespace Optimization {
   }
 
   void ConstraintJacobian_Base::setZero() { allvalues().setZero(); }
+  void ConstraintJacobian_Base::setOnes() { allvalues().setOnes(); }
 
   Eigen::Ref<RowMat>
   ConstraintJacobian_Base::get_column_block(Eigen::Index column) {
@@ -337,6 +338,9 @@ namespace Optimization {
           number_of_constraints_per_step, number_of_controls_per_step,
           constraint_interpolationpoints, control_interpolationpoints)),
       storage(nonZeros()) {}
+
+  ConstraintJacobian::ConstraintJacobian(ConstraintJacobian_Base const &other) :
+      ConstraintJacobian_Base(other), storage(other.get_allvalues()) {}
 
   ConstraintJacobian &
   ConstraintJacobian::operator=(MappedConstraintJacobian const &other) {

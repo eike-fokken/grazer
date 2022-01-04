@@ -35,11 +35,11 @@ namespace Optimization {
       index_lambda_pairs(
           compute_index_lambda_vector(control_timepoints, state_timepoints)),
       objective_gradient(control_timepoints, controls_per_step()),
-      constraint_jacobian(
+      jacobian(
           constraints_per_step(), controls_per_step(), constraint_timepoints,
           control_timepoints),
       constraintjacobian_accessor(
-          nullptr, constraint_jacobian.nonZeros(), constraints_per_step(),
+          nullptr, jacobian.nonZeros(), constraints_per_step(),
           controls_per_step(), constraint_timepoints, control_timepoints) {
     // control sanity checks:
     if (problem->get_number_of_controls_per_timepoint()
@@ -140,7 +140,7 @@ namespace Optimization {
   bool ImplicitOptimizer::supply_constraint_jacobian_indices(
       Eigen::Ref<Eigen::VectorX<Ipopt::Index>> Rowindices,
       Eigen::Ref<Eigen::VectorX<Ipopt::Index>> Colindices) const {
-    constraint_jacobian.supply_indices(Rowindices, Colindices);
+    jacobian.supply_indices(Rowindices, Colindices);
     return true;
   }
 
@@ -151,7 +151,7 @@ namespace Optimization {
     return constraints_per_step() * constraint_steps();
   }
   Eigen::Index ImplicitOptimizer::get_no_nnz_in_jacobian() const {
-    return constraint_jacobian.nonZeros();
+    return jacobian.nonZeros();
   }
 
   void ImplicitOptimizer::new_x() {
@@ -273,7 +273,7 @@ namespace Optimization {
 
     if (derivatives_up_to_date) {
       // if we already computed this, just return the value:
-      constraintjacobian_accessor = constraint_jacobian;
+      constraintjacobian_accessor = jacobian;
       return true;
     }
 
@@ -293,7 +293,7 @@ namespace Optimization {
     if (not could_compute_derivatives) {
       return false;
     }
-    constraintjacobian_accessor = constraint_jacobian;
+    constraintjacobian_accessor = jacobian;
     return true;
   }
 
@@ -367,7 +367,7 @@ namespace Optimization {
     // Here we go backwards through the timesteps:
     {
       objective_gradient.setZero();
-      constraint_jacobian.setZero();
+      jacobian.setZero();
 
       // TODO: should be preallocated:
       Eigen::VectorXd xi_f(states_per_step());
@@ -448,12 +448,10 @@ namespace Optimization {
             assert(lambda <= 1.0);
             auto upper_index = index_lambda_pairs[state_index].first;
             if (lambda == 1.0) {
-              constraint_jacobian.get_column_block(upper_index)
-                  += current_dg_dui;
+              jacobian.get_column_block(upper_index) += current_dg_dui;
             } else {
-              constraint_jacobian.get_column_block(upper_index)
-                  += lambda * current_dg_dui;
-              constraint_jacobian.get_column_block(upper_index - 1)
+              jacobian.get_column_block(upper_index) += lambda * current_dg_dui;
+              jacobian.get_column_block(upper_index - 1)
                   += (1 - lambda) * current_dg_dui;
             }
           }
@@ -615,7 +613,7 @@ namespace Optimization {
   }
   ConstraintJacobian_Base const &
   ImplicitOptimizer::get_constraint_jacobian() const {
-    return constraint_jacobian;
+    return jacobian;
   }
 
   ////////////////////////////////////////////////////////////
@@ -688,6 +686,12 @@ namespace Optimization {
     assert(outer_row_index < constraint_steps());
     return Fullmat.middleRows(
         outer_row_index * constraints_per_step(), constraints_per_step());
+  }
+
+  Eigen::Index
+  ImplicitOptimizer::jac_outer_col_height(Eigen::Index state_index) const {
+    auto column = index_lambda_pairs(state_index).first;
+    return jacobian.get_outer_col_height(column);
   }
 
 } // namespace Optimization

@@ -1,7 +1,9 @@
+#include <algorithm>
 #define EIGEN_RUNTIME_NO_MALLOC // Define this symbol to enable runtime tests
                                 // for allocations
-#include "ImplicitOptimizer.hpp"
+#include "ConstraintJacobian.hpp"
 #include "ControlStateCache.hpp"
+#include "ImplicitOptimizer.hpp"
 #include "InterpolatingVector.hpp"
 #include "Mock_OptimizableObject.hpp"
 #include "Mock_StateCache.hpp"
@@ -48,9 +50,9 @@ TEST(ImplicitOptimizer, simple_dimension_getters) {
 }
 
 TEST(ImplicitOptimizer, Matrix_row_blocks) {
-  Eigen::Index const number_of_states(30);
-  Eigen::Index const number_of_controls(20);
-  Eigen::Index const number_of_constraints(10);
+  Eigen::Index const number_of_states(31);
+  Eigen::Index const number_of_controls(23);
+  Eigen::Index const number_of_constraints(11);
 
   Eigen::VectorXd state_timepoints{{0, 1, 2, 3}};
   Eigen::VectorXd control_timepoints{{0, 2, 3}};
@@ -101,9 +103,9 @@ TEST(ImplicitOptimizer, Matrix_row_blocks) {
 TEST(ImplicitOptimizerDeathTest, matrix_row_blocks) {
   GTEST_FLAG_SET(death_test_style, "threadsafe");
 
-  Eigen::Index const number_of_states(30);
-  Eigen::Index const number_of_controls(20);
-  Eigen::Index const number_of_constraints(10);
+  Eigen::Index const number_of_states(31);
+  Eigen::Index const number_of_controls(23);
+  Eigen::Index const number_of_constraints(11);
 
   Eigen::VectorXd state_timepoints{{0, 1, 2, 3}};
   Eigen::VectorXd control_timepoints{{0, 2, 3}};
@@ -176,9 +178,9 @@ TEST(ImplicitOptimizer, Matrix_col_blocks) {
 #ifndef NDEBUG
 TEST(ImplicitOptimizerDeathTest, matrix_col_blocks) {
   GTEST_FLAG_SET(death_test_style, "threadsafe");
-  Eigen::Index const number_of_states(30);
-  Eigen::Index const number_of_controls(20);
-  Eigen::Index const number_of_constraints(10);
+  Eigen::Index const number_of_states(31);
+  Eigen::Index const number_of_controls(23);
+  Eigen::Index const number_of_constraints(11);
   Eigen::VectorXd state_timepoints{{0, 1, 2, 3}};
   Eigen::VectorXd control_timepoints{{0, 2, 3}};
   Eigen::VectorXd constraint_timepoints{{2, 3}};
@@ -198,6 +200,38 @@ TEST(ImplicitOptimizerDeathTest, matrix_col_blocks) {
       "outer_col_index.*<.*constraint_steps()");
 }
 #endif
+
+TEST(ImplicitOptimizer, jac_outer_col_height) {
+  Eigen::Index const number_of_states(5);
+  Eigen::Index const number_of_controls(3);
+  Eigen::Index const number_of_constraints(2);
+
+  Eigen::VectorXd state_timepoints{{0, 1, 2, 3, 4, 5}};
+  Eigen::VectorXd control_timepoints{{0, 3, 4, 5}};
+  Eigen::VectorXd constraint_timepoints{{1, 2, 4}};
+  auto optimizer_pointer = optimizer_ptr(
+      number_of_states, number_of_controls, number_of_constraints,
+      state_timepoints, control_timepoints, constraint_timepoints);
+  auto &optimizer = *optimizer_pointer;
+
+  ConstraintJacobian jac(optimizer.get_constraint_jacobian());
+  jac.setOnes();
+  std::cout << jac.whole_matrix() << std::endl;
+
+  std::cout << "state heights:" << std::endl;
+  for (Eigen::Index state_index = 0; state_index != state_timepoints.size();
+       ++state_index) {
+    std::cout << " time: " << state_timepoints[state_index]
+              << " height: " << optimizer.jac_outer_col_height(state_index)
+              << std::endl;
+  }
+  EXPECT_EQ(optimizer.jac_outer_col_height(0), 3);
+  EXPECT_EQ(optimizer.jac_outer_col_height(1), 3);
+  EXPECT_EQ(optimizer.jac_outer_col_height(2), 3);
+  EXPECT_EQ(optimizer.jac_outer_col_height(3), 3);
+  EXPECT_EQ(optimizer.jac_outer_col_height(4), 1);
+  EXPECT_EQ(optimizer.jac_outer_col_height(5), 0);
+}
 
 TEST(ImplicitOptimizer, evaluate_cost) {
 

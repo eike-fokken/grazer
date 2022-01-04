@@ -127,6 +127,8 @@ namespace Optimization {
     Eigen::Ref<RowMat> middle_row_block(
         Eigen::Ref<RowMat> Fullmat, Eigen::Index outer_col_index) const;
 
+    Eigen::Index jac_outer_col_height(Eigen::Index state_index) const;
+
   private:
     // members:
     std::unique_ptr<Model::OptimizableObject>
@@ -144,8 +146,8 @@ namespace Optimization {
         index_lambda_pairs; // Order dependency after timepoints.
     Aux::InterpolatingVector
         objective_gradient; // Order dependency after (problem and timepoints)
-    ConstraintJacobian constraint_jacobian; // Order dependency before () and
-                                            // after (problem and timepoints)
+    ConstraintJacobian jacobian; // Order dependency before () and
+                                 // after (problem and timepoints)
     MappedConstraintJacobian
         constraintjacobian_accessor; // Order dependency (after
                                      // constraint_jacobian)
