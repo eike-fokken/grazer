@@ -376,7 +376,8 @@ namespace Optimization {
 
       Eigen::MatrixXd full_Xi_row = Eigen::MatrixXd::Zero(
           states_per_step(), get_total_no_constraints());
-      Eigen::MatrixXd full_rhs_g(states_per_step(), get_total_no_constraints());
+      Eigen::MatrixXd full_rhs_g = Eigen::MatrixXd::Zero(
+          states_per_step(), get_total_no_constraints());
       RowMat full_dg_dui = Eigen::MatrixXd::Zero(
           get_total_no_constraints(), controls_per_step());
 
@@ -417,7 +418,6 @@ namespace Optimization {
           if (constraint_timepoints[constraint_index - 1]
               == state_timepoints[state_index]) {
             constraints_are_active_at_current_time = true;
-
             --constraint_index;
             current_step_is_new_constraint_time = true;
           }
@@ -433,7 +433,9 @@ namespace Optimization {
 
             auto current_Xi = right_cols(full_Xi_row, constraint_index);
             auto current_rhs = right_cols(full_rhs_g, constraint_index);
+            std::cout << "current_rhs\n" << current_rhs << std::endl;
             current_Xi = solver.solve(current_rhs);
+            std::cout << "current_Xi\n" << current_Xi << std::endl;
             current_rhs.noalias() = -dE_dlast_transposed * current_Xi;
             auto current_dg_dui = lower_rows(full_dg_dui, constraint_index);
             current_dg_dui.noalias() = current_Xi.transpose() * dE_dcontrol;

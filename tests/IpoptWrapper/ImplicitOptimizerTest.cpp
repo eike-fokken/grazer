@@ -1,6 +1,7 @@
 #define EIGEN_RUNTIME_NO_MALLOC // Define this symbol to enable runtime tests
                                 // for allocations
 #include "ImplicitOptimizer.hpp"
+#include "ConstraintJacobian.hpp"
 #include "ControlStateCache.hpp"
 #include "InterpolatingVector.hpp"
 #include "Mock_OptimizableObject.hpp"
@@ -310,6 +311,9 @@ TEST(ImplicitOptimizer, compute_derivatives) {
   Aux::InterpolatingVector controls(control_timepoints, number_of_controls);
   controls.set_values_in_bulk(optimizer.get_initial_controls());
   optimizer.compute_derivatives(controls, states);
+
+  ConstraintJacobian jac = optimizer.get_constraint_jacobian();
+  std::cout << jac.whole_matrix() << std::endl;
 }
 
 // instance factory:
