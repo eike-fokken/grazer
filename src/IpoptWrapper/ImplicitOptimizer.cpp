@@ -356,9 +356,6 @@ namespace Optimization {
   bool ImplicitOptimizer::compute_derivatives(
       Aux::InterpolatingVector_Base const &controls,
       Aux::InterpolatingVector_Base const &states) {
-    assert(
-        state_timepoints[state_timepoints.size() - 1]
-        == constraint_timepoints[constraint_timepoints.size() - 1]);
 
     if (not derivative_matrices_initialized) {
       initialize_derivative_matrices(controls, states);
