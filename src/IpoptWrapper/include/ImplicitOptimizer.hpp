@@ -140,6 +140,8 @@ namespace Optimization {
     Eigen::VectorXd const control_timepoints;    // Order dependency before
     Eigen::VectorXd const constraint_timepoints; // Order dependency before
     Eigen::VectorXd const initial_state;
+    Eigen::VectorX<std::pair<Eigen::Index, double>> const
+        index_lambda_pairs; // Order dependency after timepoints.
     Aux::InterpolatingVector
         objective_gradient; // Order dependency after (problem and timepoints)
     ConstraintJacobian constraint_jacobian; // Order dependency before () and

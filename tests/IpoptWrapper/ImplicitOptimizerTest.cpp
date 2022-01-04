@@ -19,7 +19,7 @@ std::unique_ptr<ImplicitOptimizer> optimizer_ptr(
     Eigen::Index number_of_states = 30, Eigen::Index number_of_controls = 20,
     Eigen::Index number_of_constraints = 10,
     Eigen::VectorXd state_timepoints = Eigen::VectorXd{{0, 1, 2, 3}},
-    Eigen::VectorXd control_timepoints = Eigen::VectorXd{{1, 2, 3}},
+    Eigen::VectorXd control_timepoints = Eigen::VectorXd{{0, 2, 3}},
     Eigen::VectorXd constraint_timepoints = Eigen::VectorXd{{2, 3}},
     std::unique_ptr<StateCache> cache = std::unique_ptr<StateCache>());
 
@@ -53,7 +53,7 @@ TEST(ImplicitOptimizer, Matrix_row_blocks) {
   Eigen::Index const number_of_constraints(10);
 
   Eigen::VectorXd state_timepoints{{0, 1, 2, 3}};
-  Eigen::VectorXd control_timepoints{{1, 2, 3}};
+  Eigen::VectorXd control_timepoints{{0, 2, 3}};
   Eigen::VectorXd constraint_timepoints{{2, 3}};
 
   auto optimizer_pointer = optimizer_ptr(
@@ -106,7 +106,7 @@ TEST(ImplicitOptimizerDeathTest, matrix_row_blocks) {
   Eigen::Index const number_of_constraints(10);
 
   Eigen::VectorXd state_timepoints{{0, 1, 2, 3}};
-  Eigen::VectorXd control_timepoints{{1, 2, 3}};
+  Eigen::VectorXd control_timepoints{{0, 2, 3}};
   Eigen::VectorXd constraint_timepoints{{2, 3}};
 
   auto optimizer_pointer = optimizer_ptr(
@@ -132,7 +132,7 @@ TEST(ImplicitOptimizer, Matrix_col_blocks) {
   Eigen::Index const number_of_constraints(11);
 
   Eigen::VectorXd state_timepoints{{0, 1, 2, 3}};
-  Eigen::VectorXd control_timepoints{{1, 2, 3}};
+  Eigen::VectorXd control_timepoints{{0, 2, 3}};
   Eigen::VectorXd constraint_timepoints{{2, 3}};
   auto optimizer_pointer = optimizer_ptr(
       number_of_states, number_of_controls, number_of_constraints,
@@ -180,7 +180,7 @@ TEST(ImplicitOptimizerDeathTest, matrix_col_blocks) {
   Eigen::Index const number_of_controls(20);
   Eigen::Index const number_of_constraints(10);
   Eigen::VectorXd state_timepoints{{0, 1, 2, 3}};
-  Eigen::VectorXd control_timepoints{{1, 2, 3}};
+  Eigen::VectorXd control_timepoints{{0, 2, 3}};
   Eigen::VectorXd constraint_timepoints{{2, 3}};
 
   auto optimizer_pointer = optimizer_ptr(

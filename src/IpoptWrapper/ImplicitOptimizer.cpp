@@ -32,6 +32,8 @@ namespace Optimization {
       control_timepoints(_control_timepoints),
       constraint_timepoints(_constraint_timepoints),
       initial_state(_initial_state),
+      index_lambda_pairs(
+          compute_index_lambda_vector(control_timepoints, state_timepoints)),
       objective_gradient(control_timepoints, controls_per_step()),
       constraint_jacobian(
           constraints_per_step(), controls_per_step(), constraint_timepoints,
@@ -90,9 +92,8 @@ namespace Optimization {
     }
 
     // check that first control timepoint is before or at first state
-    // timepoint. Note that at the state timepoint at 0, no controls are ever
-    // evaluated, as here only the state initial values are given.
-    if (control_timepoints(0) > state_timepoints(1)) {
+    // timepoint.
+    if (control_timepoints(0) > state_timepoints(0)) {
       gthrow(
           {"first state timepoint is not inside the control timepoint span."});
     }
@@ -363,8 +364,6 @@ namespace Optimization {
       initialize_derivative_matrices(controls, states);
     }
 
-    auto index_lambda_pairs
-        = compute_index_lambda_vector(control_timepoints, state_timepoints);
     // Here we go backwards through the timesteps:
     {
       objective_gradient.setZero();
