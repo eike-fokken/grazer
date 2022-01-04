@@ -127,9 +127,9 @@ TEST(ImplicitOptimizerDeathTest, matrix_row_blocks) {
 
 TEST(ImplicitOptimizer, Matrix_col_blocks) {
 
-  Eigen::Index const number_of_states(30);
-  Eigen::Index const number_of_controls(20);
-  Eigen::Index const number_of_constraints(10);
+  Eigen::Index const number_of_states(31);
+  Eigen::Index const number_of_controls(23);
+  Eigen::Index const number_of_constraints(11);
 
   Eigen::VectorXd state_timepoints{{0, 1, 2, 3}};
   Eigen::VectorXd control_timepoints{{1, 2, 3}};

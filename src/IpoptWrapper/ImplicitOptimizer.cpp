@@ -651,7 +651,7 @@ namespace Optimization {
   Eigen::Ref<Eigen::MatrixXd> ImplicitOptimizer::right_cols(
       Eigen::Ref<Eigen::MatrixXd> Fullmat, Eigen::Index outer_col_index) const {
     assert(Fullmat.rows() == states_per_step());
-    assert(Fullmat.cols() == controls_per_step());
+    assert(Fullmat.cols() == get_total_no_constraints());
     assert(outer_col_index >= 0);
     assert(outer_col_index < constraint_steps());
 
