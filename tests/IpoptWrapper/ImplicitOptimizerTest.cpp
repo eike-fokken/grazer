@@ -304,16 +304,39 @@ TEST(ImplicitOptimizer, compute_derivatives) {
   initial_controls.set_values_in_bulk(raw_initial_controls);
 
   // to compute the states in the cache:
-  double objective = 0;
-  optimizer.evaluate_objective(raw_initial_controls, objective);
+  {
+    double objective = 0;
+    optimizer.evaluate_objective(raw_initial_controls, objective);
+  }
   //
   Aux::InterpolatingVector states = optimizer.get_current_full_state();
   Aux::InterpolatingVector controls(control_timepoints, number_of_controls);
   controls.set_values_in_bulk(optimizer.get_initial_controls());
-  optimizer.compute_derivatives(controls, states);
 
-  ConstraintJacobian jac = optimizer.get_constraint_jacobian();
-  std::cout << jac.whole_matrix() << std::endl;
+  Eigen::VectorXd ipoptcontrols = controls.get_allvalues();
+  double epsilon = pow(DBL_EPSILON, 1.0 / 3.0);
+  double finite_difference_threshold = sqrt(epsilon);
+
+  Eigen::VectorXd h = Eigen::VectorXd::Zero(optimizer.get_total_no_controls());
+  h[0] = epsilon;
+  Eigen::VectorXd ipoptcontrols2 = ipoptcontrols + h;
+  double objective = 0;
+  double objective2 = 0;
+  optimizer.evaluate_objective(ipoptcontrols, objective);
+  optimizer.new_x();
+  optimizer.evaluate_objective(ipoptcontrols2, objective2);
+  optimizer.new_x();
+  Eigen::VectorXd gradient(ipoptcontrols.size());
+  optimizer.evaluate_objective_gradient(ipoptcontrols, gradient);
+  auto diff_dobjective = (objective2 - objective) / epsilon;
+  auto ex_dobjective = gradient.dot(h) / epsilon;
+  std::cout << "diff: " << diff_dobjective << std::endl;
+  std::cout << "ex: " << ex_dobjective << std::endl;
+
+  // std::cout << optimizer.get_constraint_jacobian().whole_matrix() <<
+  // std::endl;
+
+  // EXPECT_NEAR(val1, val2, abs_error)
 }
 
 // instance factory:

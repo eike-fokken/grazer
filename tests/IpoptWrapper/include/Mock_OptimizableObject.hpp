@@ -9,7 +9,7 @@ using Costfunction = double(
 inline double default_cost(
     Eigen::Ref<Eigen::VectorXd const> const &controls,
     Eigen::Ref<Eigen::VectorXd const> const &states) {
-  return controls.norm() + 3 * states.norm();
+  return controls.squaredNorm() + 3 * states.squaredNorm();
 }
 
 using Dcost_Dnew_function = Eigen::SparseMatrix<double>(
@@ -36,7 +36,7 @@ inline Eigen::SparseMatrix<double> default_Dcost_Dcontrol(
   Eigen::SparseMatrix<double> derivative(1, controls.size());
   std::vector<Eigen::Triplet<double>> triplets;
   for (int i = 0; i != controls.size(); ++i) {
-    triplets.push_back({0, i, 2 * controls(i)});
+    triplets.push_back({0, i, 2 * controls(static_cast<Eigen::Index>(i))});
   }
   derivative.setFromTriplets(triplets.begin(), triplets.end());
   return derivative;
@@ -183,11 +183,10 @@ public:
       DE_Dlast_function *_dE_dlast = default_DE_Dlast,
       DE_Dcontrol_function *_dE_dcontrol = default_DE_Dcontrol,
       Costfunction *_cost = default_cost,
-      Dcost_Dnew_function *_dcost_dnew = default_Dcost_Dcontrol,
+      Dcost_Dnew_function *_dcost_dnew = default_Dcost_Dnew,
       Dcost_Dcontrol_function *_dcost_dcontrol = default_Dcost_Dcontrol,
       constraintfunction *_constraints = default_constraint,
-      Dconstraint_Dnew_function *_dconstraint_dnew
-      = default_Dconstraint_Dcontrol,
+      Dconstraint_Dnew_function *_dconstraint_dnew = default_Dconstraint_Dnew,
       Dconstraint_Dcontrol_function *_dconstraint_dcontrol
       = default_Dconstraint_Dcontrol) :
       number_of_states(_number_of_states),
