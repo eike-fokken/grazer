@@ -209,3 +209,26 @@ TEST(ConstraintJacobian, equality_and_inequality) {
   jac = jac2;
   EXPECT_EQ(jac, jac2);
 }
+
+TEST(ConstraintJacobian, copy_constructor) {
+  Eigen::VectorXd constraints_times{{0.0, 0.5, 1.0, 2.0}};
+  Eigen::VectorXd controls_times{{0, 1, 2}};
+
+  Eigen::Index constraints_inner_length = 2;
+  Eigen::Index controls_inner_length = 3;
+
+  auto jac = Optimization::ConstraintJacobian(
+      constraints_inner_length, controls_inner_length, constraints_times,
+      controls_times);
+
+  jac.setZero();
+  Eigen::VectorX<double> values(jac.nonZeros());
+  for (Eigen::Index i = 0; i != values.size(); ++i) {
+    values[i] = static_cast<double>(i) + 2;
+  }
+  auto jac2 = Optimization::MappedConstraintJacobian(
+      values.data(), values.size(), constraints_inner_length,
+      controls_inner_length, constraints_times, controls_times);
+  Optimization::ConstraintJacobian jac3(jac2);
+  EXPECT_EQ(jac3, jac2);
+}
