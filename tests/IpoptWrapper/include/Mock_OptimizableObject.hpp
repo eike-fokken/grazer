@@ -152,7 +152,7 @@ inline Eigen::SparseMatrix<double> default_Dconstraint_Dcontrol(
   Eigen::SparseMatrix<double> Derivative(
       number_of_constraints, new_state.size());
   Derivative.setIdentity();
-  return 4 * Derivative;
+  return -4 * Derivative;
 }
 ///////////////////////////////////////////////////////////////////////////
 

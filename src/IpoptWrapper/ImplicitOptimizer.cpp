@@ -430,9 +430,9 @@ namespace Optimization {
 
             auto current_Xi = right_cols(full_Xi_row, constraint_index);
             auto current_rhs = right_cols(full_rhs_g, constraint_index);
-            std::cout << "current_rhs\n" << current_rhs << std::endl;
+            // std::cout << "current_rhs\n" << current_rhs << std::endl;
             current_Xi = solver.solve(current_rhs);
-            std::cout << "current_Xi\n" << current_Xi << std::endl;
+            // std::cout << "current_Xi\n" << current_Xi << std::endl;
             current_rhs.noalias() = -dE_dlast_transposed * current_Xi;
             auto current_dg_dui = lower_rows(full_dg_dui, constraint_index);
             current_dg_dui.noalias() = current_Xi.transpose() * dE_dcontrol;
