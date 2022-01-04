@@ -451,9 +451,13 @@ namespace Optimization {
               constraint_jacobian.get_column_block(upper_index)
                   += current_dg_dui;
             } else {
-              constraint_jacobian.get_column_block(upper_index)
+              lower_rows(
+                  constraint_jacobian.get_column_block(upper_index),
+                  constraint_index)
                   += lambda * current_dg_dui;
-              constraint_jacobian.get_column_block(upper_index - 1)
+              lower_rows(
+                  constraint_jacobian.get_column_block(upper_index - 1),
+                  constraint_index)
                   += (1 - lambda) * current_dg_dui;
             }
           }
@@ -671,7 +675,7 @@ namespace Optimization {
 
   Eigen::Ref<RowMat> ImplicitOptimizer::lower_rows(
       Eigen::Ref<RowMat> Fullmat, Eigen::Index outer_row_index) const {
-    assert(Fullmat.rows() == get_total_no_constraints());
+    // assert(Fullmat.rows() == get_total_no_constraints());
     assert(Fullmat.cols() == controls_per_step());
     assert(outer_row_index >= 0);
     assert(outer_row_index < constraint_steps());
