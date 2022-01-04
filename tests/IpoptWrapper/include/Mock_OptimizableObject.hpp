@@ -1,7 +1,6 @@
 #include "Matrixhandler.hpp"
 #include "OptimizableObject.hpp"
 #include <Eigen/src/SparseCore/SparseUtil.h>
-#include <cstddef>
 #include <iostream>
 
 using Costfunction = double(
@@ -115,36 +114,45 @@ inline Eigen::VectorXd default_constraint(
     Eigen::Index number_of_constraints,
     Eigen::Ref<Eigen::VectorXd const> const &new_state,
     Eigen::Ref<Eigen::VectorXd const> const &controls) {
-  assert(
-      false
-      && "continue here: make constraints also linear in states and controls.");
+  assert(number_of_constraints == new_state.size());
+  assert(number_of_constraints == controls.size());
   Eigen::VectorXd constraints(number_of_constraints);
-  for (Eigen::Index i = 0; i != constraints.size(); ++i) {
-    constraints(i)
-        = static_cast<double>(i + 1) * (controls.norm() + 3 * new_state.norm());
-  }
+
+  constraints = 3 * new_state - 4 * controls;
   return constraints;
 }
 using Dconstraint_Dnew_function = Eigen::SparseMatrix<double>(
     Eigen::Index number_of_constraints,
-    Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
-    Eigen::Ref<Eigen::VectorXd const> const & /*controls*/);
+    Eigen::Ref<Eigen::VectorXd const> const &new_state,
+    Eigen::Ref<Eigen::VectorXd const> const &controls);
 inline Eigen::SparseMatrix<double> default_Dconstraint_Dnew(
     Eigen::Index number_of_constraints,
     Eigen::Ref<Eigen::VectorXd const> const &new_state,
-    Eigen::Ref<Eigen::VectorXd const> const & /*controls*/) {
-  return Eigen::SparseMatrix<double>(number_of_constraints, new_state.size());
+    Eigen::Ref<Eigen::VectorXd const> const &controls) {
+  assert(number_of_constraints == new_state.size());
+  assert(number_of_constraints == controls.size());
+
+  Eigen::SparseMatrix<double> Derivative(
+      number_of_constraints, new_state.size());
+  Derivative.setIdentity();
+  return 3 * Derivative;
 }
 
 using Dconstraint_Dcontrol_function = Eigen::SparseMatrix<double>(
     Eigen::Index number_of_constraints,
-    Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
-    Eigen::Ref<Eigen::VectorXd const> const & /*controls*/);
+    Eigen::Ref<Eigen::VectorXd const> const &new_state,
+    Eigen::Ref<Eigen::VectorXd const> const &controls);
 inline Eigen::SparseMatrix<double> default_Dconstraint_Dcontrol(
     Eigen::Index number_of_constraints,
-    Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
+    Eigen::Ref<Eigen::VectorXd const> const &new_state,
     Eigen::Ref<Eigen::VectorXd const> const &controls) {
-  return Eigen::SparseMatrix<double>(number_of_constraints, controls.size());
+  assert(number_of_constraints == new_state.size());
+  assert(number_of_constraints == controls.size());
+
+  Eigen::SparseMatrix<double> Derivative(
+      number_of_constraints, new_state.size());
+  Derivative.setIdentity();
+  return 4 * Derivative;
 }
 ///////////////////////////////////////////////////////////////////////////
 

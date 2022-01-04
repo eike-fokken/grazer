@@ -1,9 +1,7 @@
-
-#include <cstddef>
 #define EIGEN_RUNTIME_NO_MALLOC // Define this symbol to enable runtime tests
                                 // for allocations
-#include "ControlStateCache.hpp"
 #include "ImplicitOptimizer.hpp"
+#include "ControlStateCache.hpp"
 #include "InterpolatingVector.hpp"
 #include "Mock_OptimizableObject.hpp"
 #include "Mock_StateCache.hpp"

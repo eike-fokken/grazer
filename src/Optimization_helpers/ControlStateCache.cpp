@@ -11,8 +11,8 @@ namespace Optimization {
   StateCache::~StateCache() = default;
 
   ControlStateCache::ControlStateCache(
-      std::unique_ptr<Model::Timeevolver> evolver) :
-      evolver(std::move(evolver)) {}
+      std::unique_ptr<Model::Timeevolver> _evolver) :
+      evolver(std::move(_evolver)) {}
 
   bool ControlStateCache::refresh_cache(
       Model::Controlcomponent &problem,
