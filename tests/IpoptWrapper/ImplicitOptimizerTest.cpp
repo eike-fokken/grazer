@@ -268,7 +268,7 @@ TEST(ImplicitOptimizer, evaluate_constraints) {
   EXPECT_EQ(constraints, expected_constraints.get_allvalues());
 }
 
-TEST(ImplicitOptimizer, compute_derivatives) {
+TEST(ImplicitOptimizer, objective_gradient1) {
 
   nlohmann::json timeevolver_data = R"(    {
         "use_simplified_newton": true,
@@ -313,30 +313,28 @@ TEST(ImplicitOptimizer, compute_derivatives) {
   Aux::InterpolatingVector controls(control_timepoints, number_of_controls);
   controls.set_values_in_bulk(optimizer.get_initial_controls());
 
-  Eigen::VectorXd ipoptcontrols = controls.get_allvalues();
   double epsilon = pow(DBL_EPSILON, 1.0 / 3.0);
   double finite_difference_threshold = sqrt(epsilon);
 
-  Eigen::VectorXd h = Eigen::VectorXd::Zero(optimizer.get_total_no_controls());
-  h[0] = epsilon;
-  Eigen::VectorXd ipoptcontrols2 = ipoptcontrols + h;
+  Eigen::VectorXd ipoptcontrols = controls.get_allvalues();
   double objective = 0;
-  double objective2 = 0;
   optimizer.evaluate_objective(ipoptcontrols, objective);
-  optimizer.new_x();
-  optimizer.evaluate_objective(ipoptcontrols2, objective2);
-  optimizer.new_x();
   Eigen::VectorXd gradient(ipoptcontrols.size());
   optimizer.evaluate_objective_gradient(ipoptcontrols, gradient);
-  auto diff_dobjective = (objective2 - objective) / epsilon;
-  auto ex_dobjective = gradient.dot(h) / epsilon;
-  std::cout << "diff: " << diff_dobjective << std::endl;
-  std::cout << "ex: " << ex_dobjective << std::endl;
+  Eigen::VectorXd h(ipoptcontrols.size());
+  for (Eigen::Index i = 0; i != h.size(); ++i) {
+    h.setZero();
+    h[i] = epsilon;
 
-  // std::cout << optimizer.get_constraint_jacobian().whole_matrix() <<
-  // std::endl;
-
-  // EXPECT_NEAR(val1, val2, abs_error)
+    optimizer.new_x();
+    Eigen::VectorXd ipoptcontrols2 = ipoptcontrols + h;
+    double objective2 = 0;
+    optimizer.evaluate_objective(ipoptcontrols2, objective2);
+    optimizer.new_x();
+    auto diff_dobjective = (objective2 - objective) / epsilon;
+    auto ex_dobjective = gradient.dot(h) / epsilon;
+    EXPECT_NEAR(diff_dobjective, ex_dobjective, finite_difference_threshold);
+  }
 }
 
 // instance factory:
