@@ -97,6 +97,7 @@ namespace Optimization {
     ConstraintJacobian_Base const &get_constraint_jacobian() const;
 
     // convenience methods:
+    Eigen::Ref<Eigen::VectorXd const> get_integral_weights() const;
     Eigen::Index states_per_step() const;
     Eigen::Index controls_per_step() const;
     Eigen::Index constraints_per_step() const;
@@ -142,6 +143,8 @@ namespace Optimization {
     Eigen::VectorXd const initial_state;
     Eigen::VectorX<std::pair<Eigen::Index, double>> const
         index_lambda_pairs; // Order dependency after timepoints.
+    Eigen::VectorXd const integral_weights; // Order dependency after
+                                            // state_timepoints
     Aux::InterpolatingVector
         objective_gradient; // Order dependency after (problem and timepoints)
     ConstraintJacobian constraint_jacobian; // Order dependency before () and

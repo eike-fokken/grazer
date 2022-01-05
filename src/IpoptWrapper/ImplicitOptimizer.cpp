@@ -10,6 +10,71 @@
 #include <string>
 
 namespace Optimization {
+  template <typename T>
+  static inline T back(Eigen::Ref<Eigen::VectorX<T> const> const &vector) {
+    return vector[vector.size() - 1];
+  }
+
+  template <typename T> static inline T back(Eigen::VectorX<T> const &vector) {
+    return vector[vector.size() - 1];
+  }
+
+  template <typename T>
+  static inline T &back(Eigen::Ref<Eigen::VectorX<T>> &vector) {
+    return vector[vector.size() - 1];
+  }
+
+  template <typename T> static inline T &back(Eigen::VectorX<T> &vector) {
+    return vector[vector.size() - 1];
+  }
+
+  template <typename T>
+  static inline Eigen::Index
+  back_index(Eigen::Ref<Eigen::VectorX<T> const> const &vector) {
+    return vector.size() - 1;
+  }
+  template <typename T>
+  static inline Eigen::Index back_index(Eigen::VectorX<T> const &vector) {
+    return vector.size() - 1;
+  }
+
+  template <typename T>
+  static inline T front(Eigen::Ref<Eigen::VectorX<T> const> const &vector) {
+    return vector[0];
+  }
+
+  template <typename T> static inline T front(Eigen::VectorX<T> const &vector) {
+    return vector[0];
+  }
+
+  template <typename T>
+  static inline T &front(Eigen::Ref<Eigen::VectorX<T>> &vector) {
+    return vector[0];
+  }
+
+  template <typename T> static inline T &front(Eigen::VectorX<T> &vector) {
+    return vector[0];
+  }
+
+  static Eigen::VectorXd make_objective_function_coefficients(
+      Eigen::Ref<Eigen::VectorXd const> timepoints) {
+    assert(timepoints.size() > 0);
+    Eigen::VectorXd coefficients(timepoints.size());
+    if (coefficients.size() == 1) {
+      front(coefficients) = 1;
+      return coefficients;
+    }
+    // first timepoint:
+    front(coefficients) = 0.5 * (timepoints[1] - timepoints[0]);
+    for (Eigen::Index index = 1; index != back_index(timepoints); ++index) {
+      coefficients[index]
+          = 0.5 * (timepoints[index + 1] - timepoints[index - 1]);
+    }
+    back(coefficients) = 0.5
+                         * (timepoints[back_index(timepoints)]
+                            - timepoints[back_index(timepoints) - 1]);
+    return coefficients;
+  }
 
   ImplicitOptimizer::ImplicitOptimizer(
       std::unique_ptr<Model::OptimizableObject> _problem,
@@ -34,6 +99,7 @@ namespace Optimization {
       initial_state(_initial_state),
       index_lambda_pairs(
           compute_index_lambda_vector(control_timepoints, state_timepoints)),
+      integral_weights(make_objective_function_coefficients(state_timepoints)),
       objective_gradient(control_timepoints, controls_per_step()),
       constraint_jacobian(
           constraints_per_step(), controls_per_step(), constraint_timepoints,
@@ -85,8 +151,7 @@ namespace Optimization {
 
     // check that latest control timepoint is after or at latest state
     // timepoint:
-    if (control_timepoints(control_timepoints.size() - 1)
-        < state_timepoints(state_timepoints.size() - 1)) {
+    if (back(control_timepoints) < back(state_timepoints)) {
       gthrow(
           {"latest state timepoint is not inside the control timepoint span."});
     }
@@ -187,9 +252,11 @@ namespace Optimization {
     // timeindex starts at 1, because at 0 there are initial conditions
     // which can not be altered!
     for (Eigen::Index timeindex = 1; timeindex != states.size(); ++timeindex) {
-      objective += problem->evaluate_cost(
-          state_timepoints[timeindex], states(state_timepoints[timeindex]),
-          controls(state_timepoints[timeindex]));
+      objective += integral_weights[timeindex]
+                   * problem->evaluate_cost(
+                       state_timepoints[timeindex],
+                       states(state_timepoints[timeindex]),
+                       controls(state_timepoints[timeindex]));
     }
     return true;
   }
@@ -378,7 +445,7 @@ namespace Optimization {
       RowMat full_dg_dui = Eigen::MatrixXd::Zero(
           get_total_no_constraints(), controls_per_step());
 
-      Eigen::Index state_index = state_timepoints.size() - 1;
+      Eigen::Index state_index = back_index(state_timepoints);
       // We set this to
       Eigen::Index constraint_index = constraint_steps();
 
@@ -389,11 +456,11 @@ namespace Optimization {
         {
           // cost derivative:
           update_cost_derivative_matrices(state_index, controls, states);
-          rhs_f -= df_dnew_transposed;
+          rhs_f -= integral_weights[state_index] * df_dnew_transposed;
           xi_f = solver.solve(rhs_f);
           rhs_f.noalias() = -dE_dlast_transposed * xi_f;
           df_dui.noalias() = xi_f.transpose() * dE_dcontrol;
-          df_dui += df_dcontrol;
+          df_dui += integral_weights[state_index] * df_dcontrol;
 
           // Compute the actual derivative with respect to the control:
           auto lambda = index_lambda_pairs[state_index].second;
@@ -477,9 +544,8 @@ namespace Optimization {
   void ImplicitOptimizer::initialize_derivative_matrices(
       Aux::InterpolatingVector_Base const &controls,
       Aux::InterpolatingVector_Base const &states) {
-    auto last_state_index = state_timepoints.size() - 1;
-    double last_time = state_timepoints[last_state_index - 1];
-    double new_time = state_timepoints[last_state_index];
+    double last_time = state_timepoints[back_index(state_timepoints) - 1];
+    double new_time = back(state_timepoints);
 
     dE_dnew_transposed.resize(states_per_step(), states_per_step());
     Aux::Triplethandler<Aux::Transposed> new_handler(dE_dnew_transposed);
@@ -626,6 +692,11 @@ namespace Optimization {
   ////////////////////////////////////////////////////////////
   // simple convenience methods:
   ////////////////////////////////////////////////////////////
+
+  Eigen::Ref<Eigen::VectorXd const>
+  ImplicitOptimizer::get_integral_weights() const {
+    return integral_weights;
+  }
 
   Eigen::Index ImplicitOptimizer::states_per_step() const {
     return problem->get_number_of_states();

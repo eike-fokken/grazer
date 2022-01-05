@@ -424,6 +424,7 @@ TEST(ImplicitOptimizer, objective_gradient2) {
     auto ex_dobjective = (gradient * h)(0, 0) / epsilon;
     EXPECT_NEAR(diff_dobjective, ex_dobjective, finite_difference_threshold);
   }
+  std::cout << optimizer.get_integral_weights();
 }
 
 TEST(ImplicitOptimizer, constraint_jacobian2) {
