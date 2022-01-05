@@ -85,9 +85,6 @@ namespace Model {
           auto current_node = nodetype->make_instance(node);
           nodes.push_back(std::move(current_node));
         }
-      } else {
-        std::cout << "Node type " << nodetypename
-                  << " not present in the topology file." << std::endl;
       }
     }
 
@@ -125,9 +122,6 @@ namespace Model {
           auto current_edge = edgetype->make_instance(edge, nodes);
           edges.push_back(std::move(current_edge));
         }
-      } else {
-        std::cout << "Edge type " << edgetypename
-                  << " not present in the topology file." << std::endl;
       }
     }
 
