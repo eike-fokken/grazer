@@ -1,6 +1,10 @@
 {
-    "optimization": {
+    "optimize": false,
+    "constraint_settings": {
         "evaluate_constraints_every_n": 1
+    },
+    "control_settings":{
+        "number_of_steps": 3
     },
     "simulation_settings":
     {

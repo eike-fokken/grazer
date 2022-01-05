@@ -8,10 +8,13 @@
 #include "Networkproblem.hpp"
 #include "Optimization_helpers.hpp"
 #include "Timeevolver.hpp"
+#include "helpers.hpp"
 #include <chrono>
 #include <fstream>
 #include <iostream>
 #include <nlohmann/json.hpp>
+#include <sstream>
+#include <stdexcept>
 
 int grazer::run(std::filesystem::path directory_path) {
   using Clock = std::chrono::high_resolution_clock;
@@ -31,14 +34,14 @@ int grazer::run(std::filesystem::path directory_path) {
     // This must be wrapped in exception handling code!
 
     auto all_json = aux_json::get_json_from_file_path(problem_data_file);
-    auto time_evolution_json = all_json["simulation_settings"];
+    auto simulation_settings = all_json["simulation_settings"];
     auto problem_json = all_json["problem_data"];
     // give the path information of the file:
     problem_json["GRAZER_file_directory"] = problem_directory.string();
     auto initial_json = aux_json::get_json_from_file_path(
         problem_directory / std::filesystem::path("initial.json"));
-    Model::Timedata timedata(time_evolution_json);
-    auto timeevolver = Model::Timeevolver::make_instance(time_evolution_json);
+    Model::Timedata timedata(simulation_settings);
+    auto timeevolver = Model::Timeevolver::make_instance(simulation_settings);
 
     Model::Componentfactory::Full_factory componentfactory(
         problem_json.value("defaults", R"({})"_json));
@@ -51,16 +54,10 @@ int grazer::run(std::filesystem::path directory_path) {
 
     // set controls, if any:
     Aux::InterpolatingVector controls;
-    if (problem.get_number_of_controls_per_timepoint() > 0) {
-      auto control_json = aux_json::get_json_from_file_path(
-          problem_directory / std::filesystem::path("control.json"));
-      auto control_timehelper = Aux::make_from_start_delta_number(
-          timedata.get_starttime(), timedata.get_delta_t(),
-          timedata.get_number_of_time_points());
-      controls = Aux::InterpolatingVector(
-          control_timehelper, problem.get_number_of_controls_per_timepoint());
-      problem.set_initial_controls(controls, control_json);
-    }
+    setup_controls(controls, problem, timedata, all_json, problem_directory);
+
+    std::cout << "Number of control discretization points: " << controls.size()
+              << std::endl;
     std::cout << "data read" << std::endl;
 
     wall_clock_setup_end = Clock::now();
@@ -91,11 +88,12 @@ int grazer::run(std::filesystem::path directory_path) {
       std::ofstream o(output_file);
       o << output_json.dump(1, '\t');
     } catch (std::exception &e) {
-      std::cout << "Printing to files failed with error message:"
-                << "\n###############################################\n"
-                << e.what()
-                << "\n###############################################\n\n"
-                << std::flush;
+      std::ostringstream o;
+      o << "Printing to files failed with error message:"
+        << "\n###############################################\n"
+        << e.what() << "\n###############################################\n\n"
+        << std::flush;
+      throw std::runtime_error(o.str());
     }
   }
 
