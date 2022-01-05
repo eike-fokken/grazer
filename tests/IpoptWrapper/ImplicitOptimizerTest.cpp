@@ -16,6 +16,17 @@
 
 using namespace Optimization;
 
+nlohmann::json timeevolver_data = R"(    {
+        "use_simplified_newton": true,
+        "maximal_number_of_newton_iterations": 2,
+        "tolerance": 1e-8,
+        "retries": 0,
+        "start_time": 0.0,
+        "end_time": 2.0,
+        "desired_delta_t": 1.0
+    }
+)"_json;
+
 std::unique_ptr<ImplicitOptimizer> optimizer_ptr(
     Eigen::Index number_of_states = 30, Eigen::Index number_of_controls = 20,
     Eigen::Index number_of_constraints = 10,
@@ -270,17 +281,6 @@ TEST(ImplicitOptimizer, evaluate_constraints) {
 
 TEST(ImplicitOptimizer, objective_gradient1) {
 
-  nlohmann::json timeevolver_data = R"(    {
-        "use_simplified_newton": true,
-        "maximal_number_of_newton_iterations": 2,
-        "tolerance": 1e-8,
-        "retries": 0,
-        "start_time": 0.0,
-        "end_time": 2.0,
-        "desired_delta_t": 1.0
-    }
-)"_json;
-
   auto evolver_ptr
       = Model::Timeevolver::make_pointer_instance(timeevolver_data);
 
@@ -307,7 +307,7 @@ TEST(ImplicitOptimizer, objective_gradient1) {
   Eigen::VectorXd ipoptcontrols = controls.get_allvalues();
   double objective = 0;
   optimizer.evaluate_objective(ipoptcontrols, objective);
-  Eigen::VectorXd gradient(ipoptcontrols.size());
+  Eigen::RowVectorXd gradient(ipoptcontrols.size());
   optimizer.evaluate_objective_gradient(ipoptcontrols, gradient);
   Eigen::VectorXd h(ipoptcontrols.size());
   for (Eigen::Index i = 0; i != h.size(); ++i) {
@@ -320,23 +320,12 @@ TEST(ImplicitOptimizer, objective_gradient1) {
     optimizer.evaluate_objective(ipoptcontrols2, objective2);
     optimizer.new_x();
     auto diff_dobjective = (objective2 - objective) / epsilon;
-    auto ex_dobjective = gradient.dot(h) / epsilon;
+    auto ex_dobjective = (gradient * h)(0, 0) / epsilon;
     EXPECT_NEAR(diff_dobjective, ex_dobjective, finite_difference_threshold);
   }
 }
 
 TEST(ImplicitOptimizer, constraint_jacobian1) {
-
-  nlohmann::json timeevolver_data = R"(    {
-        "use_simplified_newton": true,
-        "maximal_number_of_newton_iterations": 2,
-        "tolerance": 1e-8,
-        "retries": 0,
-        "start_time": 0.0,
-        "end_time": 2.0,
-        "desired_delta_t": 1.0
-    }
-)"_json;
 
   auto evolver_ptr
       = Model::Timeevolver::make_pointer_instance(timeevolver_data);
@@ -387,6 +376,160 @@ TEST(ImplicitOptimizer, constraint_jacobian1) {
     EXPECT_NEAR(
         (diff_dconstraints - ex_dconstraints).norm(), 0,
         finite_difference_threshold);
+  }
+}
+
+TEST(ImplicitOptimizer, objective_gradient2) {
+
+  auto evolver_ptr
+      = Model::Timeevolver::make_pointer_instance(timeevolver_data);
+
+  Eigen::Index const number_of_states(3);
+  Eigen::Index const number_of_controls(3);
+  Eigen::Index const number_of_constraints(3);
+  Eigen::VectorXd state_timepoints{{0, 1, 2, 3}};
+  Eigen::VectorXd control_timepoints{{0, 1, 1.5, 3}};
+  Eigen::VectorXd constraint_timepoints{{1, 2}};
+  auto cache = std::make_unique<ControlStateCache>(std::move(evolver_ptr));
+
+  auto optimizer_pointer = optimizer_ptr(
+      number_of_states, number_of_controls, number_of_constraints,
+      state_timepoints, control_timepoints, constraint_timepoints,
+      std::move(cache));
+  auto &optimizer = *optimizer_pointer;
+
+  Aux::InterpolatingVector controls(control_timepoints, number_of_controls);
+  controls.set_values_in_bulk(optimizer.get_initial_controls());
+
+  double epsilon = pow(DBL_EPSILON, 1.0 / 3.0);
+  // Note that in this case apparently a higher threshhold must be set.
+  double finite_difference_threshold = 2 * sqrt(epsilon);
+
+  Eigen::VectorXd ipoptcontrols = controls.get_allvalues();
+  double objective = 0;
+  optimizer.evaluate_objective(ipoptcontrols, objective);
+  Eigen::RowVectorXd gradient(ipoptcontrols.size());
+  optimizer.evaluate_objective_gradient(ipoptcontrols, gradient);
+  Eigen::VectorXd h(ipoptcontrols.size());
+  for (Eigen::Index i = 0; i != h.size(); ++i) {
+    h.setZero();
+    h[i] = epsilon;
+
+    optimizer.new_x();
+    Eigen::VectorXd ipoptcontrols2 = ipoptcontrols + h;
+    double objective2 = 0;
+    optimizer.evaluate_objective(ipoptcontrols2, objective2);
+    optimizer.new_x();
+    auto diff_dobjective = (objective2 - objective) / epsilon;
+    auto ex_dobjective = (gradient * h)(0, 0) / epsilon;
+    EXPECT_NEAR(diff_dobjective, ex_dobjective, finite_difference_threshold);
+  }
+}
+
+TEST(ImplicitOptimizer, constraint_jacobian2) {
+  auto evolver_ptr
+      = Model::Timeevolver::make_pointer_instance(timeevolver_data);
+
+  Eigen::Index const number_of_states(3);
+  Eigen::Index const number_of_controls(3);
+  Eigen::Index const number_of_constraints(3);
+  Eigen::VectorXd state_timepoints{{0, 1, 2, 3}};
+  Eigen::VectorXd control_timepoints{{0, 1.5, 3}};
+  Eigen::VectorXd constraint_timepoints{{1, 2, 3}};
+  auto cache = std::make_unique<ControlStateCache>(std::move(evolver_ptr));
+
+  auto optimizer_pointer = optimizer_ptr(
+      number_of_states, number_of_controls, number_of_constraints,
+      state_timepoints, control_timepoints, constraint_timepoints,
+      std::move(cache));
+  auto &optimizer = *optimizer_pointer;
+
+  Aux::InterpolatingVector controls(control_timepoints, number_of_controls);
+  controls.set_values_in_bulk(optimizer.get_initial_controls());
+
+  double epsilon = pow(DBL_EPSILON, 1.0 / 3.0);
+  double finite_difference_threshold = sqrt(epsilon);
+
+  Eigen::VectorXd ipoptcontrols = controls.get_allvalues();
+  Eigen::VectorXd constraints(optimizer.get_total_no_constraints());
+  optimizer.evaluate_constraints(ipoptcontrols, constraints);
+  Eigen::VectorXd jacobian_storage(optimizer.get_no_nnz_in_jacobian());
+  MappedConstraintJacobian jacobian(
+      jacobian_storage.data(), jacobian_storage.size(),
+      optimizer.constraints_per_step(), optimizer.controls_per_step(),
+      constraint_timepoints, control_timepoints);
+  optimizer.evaluate_constraint_jacobian(ipoptcontrols, jacobian_storage);
+  Eigen::VectorXd h(ipoptcontrols.size());
+  for (Eigen::Index i = 0; i != h.size(); ++i) {
+    h.setZero();
+    h[i] = epsilon;
+
+    optimizer.new_x();
+    Eigen::VectorXd ipoptcontrols2 = ipoptcontrols + h;
+    Eigen::VectorXd constraints2(optimizer.get_total_no_constraints());
+    optimizer.evaluate_constraints(ipoptcontrols2, constraints2);
+    Eigen::VectorXd diff_dconstraints = (constraints2 - constraints) / epsilon;
+    Eigen::VectorXd ex_dconstraints = jacobian.whole_matrix() * h / epsilon;
+    // std::cout << "i: " << i << std::endl;
+    // std::cout << "diff:\n" << diff_dconstraints << std::endl;
+    EXPECT_NEAR(
+        (diff_dconstraints - ex_dconstraints).norm(), 0,
+        finite_difference_threshold);
+  }
+}
+
+TEST(ImplicitOptimizer, constraint_jacobian3) {
+
+  auto evolver_ptr
+      = Model::Timeevolver::make_pointer_instance(timeevolver_data);
+
+  Eigen::Index const number_of_states(3);
+  Eigen::Index const number_of_controls(3);
+  Eigen::Index const number_of_constraints(3);
+  Eigen::VectorXd state_timepoints{{0, 1, 2, 3}};
+  Eigen::VectorXd control_timepoints{{0, 1, 2, 3}};
+  Eigen::VectorXd constraint_timepoints{{1, 2, 3}};
+  auto cache = std::make_unique<ControlStateCache>(std::move(evolver_ptr));
+
+  auto optimizer_pointer = optimizer_ptr(
+      number_of_states, number_of_controls, number_of_constraints,
+      state_timepoints, control_timepoints, constraint_timepoints,
+      std::move(cache));
+  auto &optimizer = *optimizer_pointer;
+
+  Aux::InterpolatingVector controls(control_timepoints, number_of_controls);
+  controls.set_values_in_bulk(optimizer.get_initial_controls());
+
+  double epsilon = pow(DBL_EPSILON, 1.0 / 3.0);
+  double finite_difference_threshold = sqrt(epsilon);
+
+  Eigen::VectorXd ipoptcontrols = controls.get_allvalues();
+  Eigen::VectorXd constraints(optimizer.get_total_no_constraints());
+  optimizer.evaluate_constraints(ipoptcontrols, constraints);
+  Eigen::VectorXd jacobian_storage(optimizer.get_no_nnz_in_jacobian());
+  MappedConstraintJacobian jacobian(
+      jacobian_storage.data(), jacobian_storage.size(),
+      optimizer.constraints_per_step(), optimizer.controls_per_step(),
+      constraint_timepoints, control_timepoints);
+  optimizer.evaluate_constraint_jacobian(ipoptcontrols, jacobian_storage);
+  Eigen::VectorXd h(ipoptcontrols.size());
+  for (Eigen::Index i = 0; i != h.size(); ++i) {
+    h.setZero();
+    h[i] = epsilon;
+
+    optimizer.new_x();
+    Eigen::VectorXd ipoptcontrols2 = ipoptcontrols + h;
+    Eigen::VectorXd constraints2(optimizer.get_total_no_constraints());
+    optimizer.evaluate_constraints(ipoptcontrols2, constraints2);
+    Eigen::VectorXd diff_dconstraints = (constraints2 - constraints) / epsilon;
+    Eigen::VectorXd ex_dconstraints = jacobian.whole_matrix() * h / epsilon;
+    // std::cout << "i: " << i << std::endl;
+    // std::cout << "diff:\n" << diff_dconstraints << std::endl;
+    EXPECT_NEAR(
+        (diff_dconstraints - ex_dconstraints).norm(), 0,
+        finite_difference_threshold);
+    // std::cout << optimizer.get_constraint_jacobian().whole_matrix()
+    //           << std::endl;
   }
 }
 

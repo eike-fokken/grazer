@@ -447,7 +447,9 @@ namespace Optimization {
             assert(lambda <= 1.0);
             auto upper_index = index_lambda_pairs[state_index].first;
             if (lambda == 1.0) {
-              constraint_jacobian.get_column_block(upper_index)
+              lower_rows(
+                  constraint_jacobian.get_column_block(upper_index),
+                  constraint_index)
                   += current_dg_dui;
             } else {
               lower_rows(
