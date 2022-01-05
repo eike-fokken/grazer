@@ -109,9 +109,9 @@ namespace Aux::schema {
       "$schema": "http://json-schema.org/draft-07/schema",
       "type": "object",
       "description": "Metadata of the Problem",
-      "required": ["time_evolution_data", "initial_values", "problem_data"],
+      "required": ["simulation_settings", "initial_values", "problem_data"],
       "properties": {
-        "time_evolution_data": {
+        "simulation_settings": {
           "type": "object",
           "description": "provides all data on time and newton solver",
           "required": [

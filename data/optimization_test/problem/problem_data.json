@@ -2,7 +2,7 @@
     "optimization": {
         "evaluate_constraints_every_n": 1
     },
-    "time_evolution_data":
+    "simulation_settings":
     {
         "use_simplified_newton": true,
         "maximal_number_of_newton_iterations": 100,

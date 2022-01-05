@@ -6,7 +6,7 @@ namespace Model {
   struct Timedata {
 
     Timedata() = delete;
-    Timedata(nlohmann::json const &time_evolution_data);
+    Timedata(nlohmann::json const &simulation_settings);
 
     double get_starttime() const;
     double get_endtime() const;

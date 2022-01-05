@@ -1,5 +1,9 @@
 {
-    "time_evolution_data":
+    "control_settings":{
+        "number_of_control_steps": 5,
+        "control_desired_delta_t": 3600
+    },
+    "simulation_settings":
     {
         "use_simplified_newton": true,
         "maximal_number_of_newton_iterations": 100,
@@ -7,7 +11,7 @@
         "retries": 5,
         "start_time": 0,
         "end_time": 3600,
-        "desired_delta_t": 1800
+        "simulation_desired_delta_t": 1800
     },
     "problem_data":
     {

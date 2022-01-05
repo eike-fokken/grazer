@@ -3,11 +3,11 @@
 
 namespace Model {
 
-  Timedata::Timedata(nlohmann::json const &time_evolution_data) :
-      starttime(time_evolution_data["start_time"].get<double>()),
-      endtime(time_evolution_data["end_time"].get<double>()),
+  Timedata::Timedata(nlohmann::json const &simulation_settings) :
+      starttime(simulation_settings["start_time"].get<double>()),
+      endtime(simulation_settings["end_time"].get<double>()),
       Number_of_timesteps(init_Number_of_timesteps(
-          time_evolution_data["desired_delta_t"].get<double>())),
+          simulation_settings["desired_delta_t"].get<double>())),
       delta_t(init_delta_t()) {}
 
   int Timedata::init_Number_of_timesteps(double desired_delta_t) const {

@@ -31,7 +31,7 @@ int grazer::run(std::filesystem::path directory_path) {
     // This must be wrapped in exception handling code!
 
     auto all_json = aux_json::get_json_from_file_path(problem_data_file);
-    auto time_evolution_json = all_json["time_evolution_data"];
+    auto time_evolution_json = all_json["simulation_settings"];
     auto problem_json = all_json["problem_data"];
     // give the path information of the file:
     problem_json["GRAZER_file_directory"] = problem_directory.string();
@@ -39,6 +39,7 @@ int grazer::run(std::filesystem::path directory_path) {
         problem_directory / std::filesystem::path("initial.json"));
     Model::Timedata timedata(time_evolution_json);
     auto timeevolver = Model::Timeevolver::make_instance(time_evolution_json);
+
     Model::Componentfactory::Full_factory componentfactory(
         problem_json.value("defaults", R"({})"_json));
     auto net_ptr = Model::build_net(problem_json, componentfactory);
@@ -47,8 +48,9 @@ int grazer::run(std::filesystem::path directory_path) {
 
     Eigen::VectorXd initial_state(problem.get_number_of_states());
     problem.set_initial_values(initial_state, initial_json);
-    Aux::InterpolatingVector controls;
 
+    // set controls, if any:
+    Aux::InterpolatingVector controls;
     if (problem.get_number_of_controls_per_timepoint() > 0) {
       auto control_json = aux_json::get_json_from_file_path(
           problem_directory / std::filesystem::path("control.json"));
@@ -64,7 +66,6 @@ int grazer::run(std::filesystem::path directory_path) {
     wall_clock_setup_end = Clock::now();
 
     std::vector<double> saved_times;
-
     auto states_timehelper = Aux::make_from_start_delta_end(
         timedata.get_starttime(), timedata.get_delta_t(),
         timedata.get_endtime());
@@ -78,8 +79,6 @@ int grazer::run(std::filesystem::path directory_path) {
           saved_states.interpolation_point_at_index(index),
           saved_states.vector_at_index(index));
     }
-
-    // number_of_controls, control_value_json
 
     /* ----------------------------------------------------------------- */
 
