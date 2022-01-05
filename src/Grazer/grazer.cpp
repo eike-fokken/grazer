@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
     std::cout << "\n[Error]: " << ex.what() << std::endl;
   } catch (...) {
     std::cout << "An unkown type of exception was thrown.\n\n"
-                 "This is a bug and must be fixed!\n\n"
+                 "This is a bug, please report it!\n\n"
               << std::endl;
   }
   return 1;
