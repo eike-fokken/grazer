@@ -59,9 +59,14 @@ namespace Model {
 
     saved_states.mut_timestep(0) = initial_state;
 
+    Eigen::VectorXd current_controls;
+    bool actual_controls = (controls.get_inner_length() > 0);
+    if (actual_controls) {
+      current_controls = controls(new_time);
+    }
+
     solver.evaluate_state_derivative_triplets(
-        problem, last_time, new_time, last_state, new_state,
-        controls(new_time));
+        problem, last_time, new_time, last_state, new_state, current_controls);
 
     // // provide regex help (cf. helper_functions/csv_from_log.py)
     // std::cout << "=== simulation start ===" << std::endl;
@@ -70,8 +75,12 @@ namespace Model {
 
     for (int i = 1; i != saved_states.size(); ++i) {
       new_time = saved_states.interpolation_point_at_index(i);
+      if (actual_controls) {
+        current_controls = controls(new_time);
+      }
+
       auto solstruct = make_one_step(
-          last_time, new_time, last_state, new_state, controls(new_time),
+          last_time, new_time, last_state, new_state, current_controls,
           problem);
       // std::cout << new_time << ", ";
       // std::cout << solstruct.residual << ", ";

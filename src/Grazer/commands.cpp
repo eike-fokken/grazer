@@ -31,74 +31,34 @@ int grazer::run(std::filesystem::path directory_path) {
     // This must be wrapped in exception handling code!
 
     auto all_json = aux_json::get_json_from_file_path(problem_data_file);
-
-    nlohmann::json optimization_json;
-    // Extract the optimization data, if it is there
-    if (all_json.contains("optimization_data")) {
-      optimization_json = all_json["optimization_data"];
-    }
     auto time_evolution_json = all_json["time_evolution_data"];
     auto problem_json = all_json["problem_data"];
-
     // give the path information of the file:
     problem_json["GRAZER_file_directory"] = problem_directory.string();
-
-    std::cout << "\n" << __FILE__ << ":" << __LINE__ << std::endl;
-    std::cout << "FIX FILE HANDLING!!!\n" << std::endl;
-
     auto initial_json = aux_json::get_json_from_file_path(
         problem_directory / std::filesystem::path("initial.json"));
-    auto control_json = aux_json::get_json_from_file_path(
-        problem_directory / std::filesystem::path("control.json"));
-    auto lower_bounds_json = aux_json::get_json_from_file_path(
-        problem_directory / std::filesystem::path("lower_bounds.json"));
-    auto upper_bounds_json = aux_json::get_json_from_file_path(
-        problem_directory / std::filesystem::path("upper_bounds.json"));
-    // auto constraints_lower_bounds_json = aux_json::get_json_from_file_path(
-    //     problem_directory
-    //     / std::filesystem::path("constraints_lower_bounds.json"));
-    // auto constraints_upper_bounds_json = aux_json::get_json_from_file_path(
-    //     problem_directory
-    //     / std::filesystem::path("constraints_upper_bounds.json"));
-
-    nlohmann::json constraints_lower_bounds_json;
-    nlohmann::json constraints_upper_bounds_json;
-
-    nlohmann::json new_control_json;
-
     Model::Timedata timedata(time_evolution_json);
-
     auto timeevolver = Model::Timeevolver::make_instance(time_evolution_json);
-
     Model::Componentfactory::Full_factory componentfactory(
         problem_json.value("defaults", R"({})"_json));
     auto net_ptr = Model::build_net(problem_json, componentfactory);
     Model::Networkproblem problem(std::move(net_ptr));
-
     problem.init();
-    auto control_timehelper = Aux::make_from_start_delta_number(
-        timedata.get_starttime(), timedata.get_delta_t(),
-        timedata.get_number_of_time_points());
-
-    Aux::InterpolatingVector controller(
-        control_timehelper, problem.get_number_of_controls_per_timepoint());
 
     Eigen::VectorXd initial_state(problem.get_number_of_states());
-    Aux::InterpolatingVector lower_bounds(
-        control_timehelper, problem.get_number_of_controls_per_timepoint());
-    Aux::InterpolatingVector upper_bounds(
-        control_timehelper, problem.get_number_of_controls_per_timepoint());
-    Aux::InterpolatingVector constraints_lower_bounds(
-        control_timehelper, problem.get_number_of_constraints_per_timepoint());
-    Aux::InterpolatingVector constraints_upper_bounds(
-        control_timehelper, problem.get_number_of_constraints_per_timepoint());
+    problem.set_initial_values(initial_state, initial_json);
+    Aux::InterpolatingVector controls;
 
-    Optimization::initialize(
-        problem, controller, control_json, initial_state, initial_json,
-        lower_bounds, lower_bounds_json, upper_bounds, upper_bounds_json,
-        constraints_lower_bounds, constraints_lower_bounds_json,
-        constraints_upper_bounds, constraints_upper_bounds_json);
-
+    if (problem.get_number_of_controls_per_timepoint() > 0) {
+      auto control_json = aux_json::get_json_from_file_path(
+          problem_directory / std::filesystem::path("control.json"));
+      auto control_timehelper = Aux::make_from_start_delta_number(
+          timedata.get_starttime(), timedata.get_delta_t(),
+          timedata.get_number_of_time_points());
+      controls = Aux::InterpolatingVector(
+          control_timehelper, problem.get_number_of_controls_per_timepoint());
+      problem.set_initial_controls(controls, control_json);
+    }
     std::cout << "data read" << std::endl;
 
     wall_clock_setup_end = Clock::now();
@@ -111,7 +71,7 @@ int grazer::run(std::filesystem::path directory_path) {
     Aux::InterpolatingVector saved_states(
         states_timehelper, problem.get_number_of_states());
 
-    timeevolver.simulate(initial_state, controller, problem, saved_states);
+    timeevolver.simulate(initial_state, controls, problem, saved_states);
 
     for (Eigen::Index index = 0; index != saved_states.size(); ++index) {
       problem.json_save(
