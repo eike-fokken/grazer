@@ -1,105 +1,25 @@
 {
 	"$schema": "../schemas/topology_schema.json",
-	"information": {
-		"title": "greek-power",
-		"type": "gas-power",
-		"author": "automatic conversion",
-		"date": "2016-10-19",
-		"documentation": "Adapted gaslib-134 combined with ieee-300 network."
-	},
 	"nodes": {
 		"Source": [
 			{
 				"id": "source",
 				"x": 10.0,
-				"y": 10.0,
-				"height": {
-					"value": 0.0
-				},
-				"temperature": {
-					"unit": "K",
-					"value": 283.15
-				},
-				"pressureMin": {
-					"unit": "bar",
-					"value": 50.0
-				},
-				"pressureMax": {
-					"unit": "bar",
-					"value": 66.4
-				},
-				"pressureInit": {
-					"unit": "bar",
-					"value": 58.2
-				},
-				"flowMin": {
-					"unit": "m_cube_per_s",
-					"value": 0.0
-				},
-				"flowMax": {
-					"unit": "m_cube_per_s",
-					"value": 113.826115
-				}
-			}
+				"y": 10.0
+    }
 		],
       "Innode": [
 			    {
 				      "id": "innode",
 				      "x": 10.0,
-				      "y": 10.0,
-				      "height": {
-					        "value": 0.0
-				      },
-				      "temperature": {
-					        "unit": "K",
-					        "value": 283.15
-				      },
-				      "pressureMin": {
-					        "unit": "bar",
-					        "value": 50.0
-				      },
-				      "pressureMax": {
-					        "unit": "bar",
-					        "value": 66.4
-				      },
-				      "pressureInit": {
-					        "unit": "bar",
-					        "value": 58.2
-				      },
-				      "flowMin": {
-					        "unit": "m_cube_per_s",
-					        "value": 0.0
-				      },
-				      "flowMax": {
-					        "unit": "m_cube_per_s",
-					        "value": 113.826115
-				      }
+				      "y": 10.0
 			    }
 		  ],
 		"Sink": [
 			{
 				"id": "sink",
 				"x": 20.0,
-				"y": 10.0,
-				"height": {
-					"value": 0.0
-				},
-				"temperature": {
-					"unit": "K",
-					"value": 283.15
-				},
-				"pressureMin": {
-					"unit": "bar",
-					"value": 35.0
-				},
-				"pressureMax": {
-					"unit": "bar",
-					"value": 66.4
-				},
-				"pressureInit": {
-					"unit": "bar",
-					"value": 50.7
-				}
+				"y": 10.0
 			}
 		]
 	},
@@ -109,23 +29,6 @@
 				"id": "p_br1",
 				"from": "source",
 				"to": "innode",
-				"heatTransferCoefficient": "2",
-				"flowMin": {
-					"unit": "m_cube_per_s",
-					"value": -6369.426752
-				},
-				"flowMax": {
-					"unit": "m_cube_per_s",
-					"value": 6369.426752
-				},
-				"flowInInit": {
-					"unit": "m_cube_per_s",
-					"value": -6369.426752
-				},
-				"flowOutInit": {
-					"unit": "m_cube_per_s",
-					"value": -6369.426752
-				},
 				"length": {
 					"unit": "km",
 					"value": 14.56
@@ -145,122 +48,7 @@
 				"id": "cs",
 				"from": "innode",
 				"to": "sink",
-				"typeOfControl": "pressure",
-				"flowMin": {
-					"unit": "m_cube_per_s",
-					"value": 0.0
-				},
-				"flowMax": {
-					"unit": "m_cube_per_s",
-					"value": 6369.426752
-				},
-				"powerMin": {
-					"unit": "kW",
-					"value": 0.0
-				},
-				"powerMax": {
-					"unit": "kW",
-					"value": 20.0
-				},
-				"speedMin": {
-					"unit": "per_min",
-					"value": 5760
-				},
-				"speedMax": {
-					"unit": "per_min",
-					"value": 11600
-				},
-				"n_isoline_coeff_1": {
-					"value": -9.12494
-				},
-				"n_isoline_coeff_2": {
-					"value": 0.00210704
-				},
-				"n_isoline_coeff_3": {
-					"value": 6.98108e-08
-				},
-				"n_isoline_coeff_4": {
-					"value": 10.566
-				},
-				"n_isoline_coeff_5": {
-					"value": -0.00011885
-				},
-				"n_isoline_coeff_6": {
-					"value": 1.33716e-07
-				},
-				"n_isoline_coeff_7": {
-					"value": -10.5652
-				},
-				"n_isoline_coeff_8": {
-					"value": 0.00066214
-				},
-				"n_isoline_coeff_9": {
-					"value": -3.50928e-08
-				},
-				"eta_ad_isoline_coeff_1": {
-					"value": 1.30314
-				},
-				"eta_ad_isoline_coeff_2": {
-					"value": -0.000270759
-				},
-				"eta_ad_isoline_coeff_3": {
-					"value": 1.36317e-08
-				},
-				"eta_ad_isoline_coeff_4": {
-					"value": 0.368873
-				},
-				"eta_ad_isoline_coeff_5": {
-					"value": 0.000203474
-				},
-				"eta_ad_isoline_coeff_6": {
-					"value": -1.52475e-08
-				},
-				"eta_ad_isoline_coeff_7": {
-					"value": -0.77351
-				},
-				"eta_ad_isoline_coeff_8": {
-					"value": 6.18951e-05
-				},
-				"eta_ad_isoline_coeff_9": {
-					"value": -6.34336e-10
-				},
-				"surgeline_coeff_1": {
-					"value": -77.6315
-				},
-				"surgeline_coeff_2": {
-					"value": 118.291
-				},
-				"surgeline_coeff_3": {
-					"value": -24.711
-				},
-				"chokeline_coeff_1": {
-					"value": 0.168264
-				},
-				"chokeline_coeff_2": {
-					"value": -0.228366
-				},
-				"chokeline_coeff_3": {
-					"value": 2.47995
-				},
-				"energy_rate_fun_coeff_1": {
-					"value": 4001.75
-				},
-				"energy_rate_fun_coeff_2": {
-					"value": 2.60806
-				},
-				"energy_rate_fun_coeff_3": {
-					"value": 4.45109e-07
-				},
-				"ambientTemperature": {
-					"unit": "Celsius",
-					"value": 10.0
-				},
-				"specificFuelConsumption": {
-					"value": 12.6
-				},
-				"efficiency": {
-					"value": 0.8
-				}
+				"typeOfControl": "pressure"
 			}
 		]
 	}
