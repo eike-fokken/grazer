@@ -238,8 +238,10 @@ TEST(ImplicitOptimizer, evaluate_cost) {
   Aux::InterpolatingVector controls(control_timepoints, number_of_controls);
   controls.set_values_in_bulk(optimizer.get_initial_controls());
 
-  double expected_objective = default_cost(controls(1), states(1))
-                              + default_cost(controls(2), states(2));
+  auto weights = optimizer.get_integral_weights();
+  double expected_objective
+      = weights[1] * default_cost(controls(1), states(1))
+        + weights[2] * default_cost(controls(2), states(2));
   EXPECT_DOUBLE_EQ(objective, expected_objective);
 }
 
@@ -424,7 +426,6 @@ TEST(ImplicitOptimizer, objective_gradient2) {
     auto ex_dobjective = (gradient * h)(0, 0) / epsilon;
     EXPECT_NEAR(diff_dobjective, ex_dobjective, finite_difference_threshold);
   }
-  std::cout << optimizer.get_integral_weights();
 }
 
 TEST(ImplicitOptimizer, constraint_jacobian2) {
