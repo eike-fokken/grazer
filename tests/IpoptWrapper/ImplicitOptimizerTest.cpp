@@ -289,9 +289,9 @@ TEST(ImplicitOptimizer, objective_gradient1) {
   Eigen::Index const number_of_states(3);
   Eigen::Index const number_of_controls(3);
   Eigen::Index const number_of_constraints(3);
-  Eigen::VectorXd state_timepoints{{0, 1, 2}};
-  Eigen::VectorXd control_timepoints{{0, 3}};
-  Eigen::VectorXd constraint_timepoints{{1, 2}};
+  Eigen::VectorXd state_timepoints{{0, 1, 2, 3, 4, 5, 6, 7, 8}};
+  Eigen::VectorXd control_timepoints{{0, 3, 4, 5, 6, 7, 8}};
+  Eigen::VectorXd constraint_timepoints{{1, 2, 3, 4, 5, 6, 7, 8}};
   auto cache = std::make_unique<ControlStateCache>(std::move(evolver_ptr));
 
   auto optimizer_pointer = optimizer_ptr(
@@ -310,7 +310,11 @@ TEST(ImplicitOptimizer, objective_gradient1) {
   double objective = 0;
   optimizer.evaluate_objective(ipoptcontrols, objective);
   Eigen::RowVectorXd gradient(ipoptcontrols.size());
-  optimizer.evaluate_objective_gradient(ipoptcontrols, gradient);
+  auto could_evaluate
+      = optimizer.evaluate_objective_gradient(ipoptcontrols, gradient);
+  if (not could_evaluate) {
+    FAIL();
+  }
   Eigen::VectorXd h(ipoptcontrols.size());
   for (Eigen::Index i = 0; i != h.size(); ++i) {
     h.setZero();
@@ -320,10 +324,18 @@ TEST(ImplicitOptimizer, objective_gradient1) {
     Eigen::VectorXd ipoptcontrols2 = ipoptcontrols + h;
     double objective2 = 0;
     optimizer.evaluate_objective(ipoptcontrols2, objective2);
-    optimizer.new_x();
     auto diff_dobjective = (objective2 - objective) / epsilon;
     auto ex_dobjective = (gradient * h)(0, 0) / epsilon;
-    EXPECT_NEAR(diff_dobjective, ex_dobjective, finite_difference_threshold);
+    // std::cout << "index: " << i << std::endl;
+    // std::cout << "absolute difference: " << diff_dobjective - ex_dobjective
+    //           << std::endl;
+    // std::cout << "relative difference: "
+    //           << (diff_dobjective - ex_dobjective) / std::abs(ex_dobjective)
+    //           << std::endl;
+
+    EXPECT_NEAR(
+        (diff_dobjective - ex_dobjective) / std::abs(ex_dobjective), 0,
+        finite_difference_threshold);
   }
 }
 
@@ -379,6 +391,8 @@ TEST(ImplicitOptimizer, constraint_jacobian1) {
         (diff_dconstraints - ex_dconstraints).norm(), 0,
         finite_difference_threshold);
   }
+  // std::cout << optimizer.get_constraint_jacobian().whole_matrix() <<
+  // std::endl;
 }
 
 TEST(ImplicitOptimizer, objective_gradient2) {
@@ -389,9 +403,9 @@ TEST(ImplicitOptimizer, objective_gradient2) {
   Eigen::Index const number_of_states(3);
   Eigen::Index const number_of_controls(3);
   Eigen::Index const number_of_constraints(3);
-  Eigen::VectorXd state_timepoints{{0, 1, 2, 3}};
-  Eigen::VectorXd control_timepoints{{0, 1, 1.5, 3}};
-  Eigen::VectorXd constraint_timepoints{{1, 2}};
+  Eigen::VectorXd state_timepoints{{0, 1, 2, 3, 4, 5, 6, 7, 8}};
+  Eigen::VectorXd control_timepoints{{0, 1, 1.5, 3, 4, 5, 6, 7, 8}};
+  Eigen::VectorXd constraint_timepoints{{1, 2, 3, 4, 5, 6, 7, 8}};
   auto cache = std::make_unique<ControlStateCache>(std::move(evolver_ptr));
 
   auto optimizer_pointer = optimizer_ptr(
@@ -424,7 +438,12 @@ TEST(ImplicitOptimizer, objective_gradient2) {
     optimizer.new_x();
     auto diff_dobjective = (objective2 - objective) / epsilon;
     auto ex_dobjective = (gradient * h)(0, 0) / epsilon;
-    EXPECT_NEAR(diff_dobjective, ex_dobjective, finite_difference_threshold);
+    if (ex_dobjective > 1e-7) {
+      EXPECT_NEAR(
+          (diff_dobjective - ex_dobjective) / std::abs(ex_dobjective), 0, 1e-6);
+    } else {
+      EXPECT_NEAR(diff_dobjective, ex_dobjective, finite_difference_threshold);
+    }
   }
 }
 
@@ -478,6 +497,8 @@ TEST(ImplicitOptimizer, constraint_jacobian2) {
         (diff_dconstraints - ex_dconstraints).norm(), 0,
         finite_difference_threshold);
   }
+  // std::cout << optimizer.get_constraint_jacobian().whole_matrix() <<
+  // std::endl;
 }
 
 TEST(ImplicitOptimizer, constraint_jacobian3) {
@@ -488,9 +509,9 @@ TEST(ImplicitOptimizer, constraint_jacobian3) {
   Eigen::Index const number_of_states(3);
   Eigen::Index const number_of_controls(3);
   Eigen::Index const number_of_constraints(3);
-  Eigen::VectorXd state_timepoints{{0, 1, 2, 3}};
-  Eigen::VectorXd control_timepoints{{0, 1, 2, 3}};
-  Eigen::VectorXd constraint_timepoints{{1, 2, 3}};
+  Eigen::VectorXd state_timepoints{{0, 1, 2, 3, 4, 5, 6, 7, 8}};
+  Eigen::VectorXd control_timepoints{{0, 1, 2, 3, 4, 5, 6, 7, 8}};
+  Eigen::VectorXd constraint_timepoints{{1, 2, 3, 4, 5, 6, 7, 8}};
   auto cache = std::make_unique<ControlStateCache>(std::move(evolver_ptr));
 
   auto optimizer_pointer = optimizer_ptr(
@@ -533,6 +554,8 @@ TEST(ImplicitOptimizer, constraint_jacobian3) {
     // std::cout << optimizer.get_constraint_jacobian().whole_matrix()
     //           << std::endl;
   }
+  // std::cout << optimizer.get_constraint_jacobian().whole_matrix() <<
+  // std::endl;
 }
 
 // instance factory:
@@ -564,7 +587,7 @@ std::unique_ptr<ImplicitOptimizer> optimizer_ptr(
   Eigen::VectorXd bulk_initial_controls(
       initial_controls.get_total_number_of_values());
   {
-    double value = 100;
+    double value = 11;
     for (auto &entry : bulk_initial_controls) {
       entry = value;
       ++value;
