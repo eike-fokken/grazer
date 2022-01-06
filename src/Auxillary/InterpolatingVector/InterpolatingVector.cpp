@@ -97,10 +97,11 @@ namespace Aux {
       Interpolation_data data, Eigen::Index _inner_length) :
       interpolation_points(set_equidistant_interpolation_points(data)),
       inner_length(_inner_length) {
-    assert(
-        (((inner_length > 0) and (interpolation_points.size()>0))
-         or ((inner_length == 0) and interpolation_points.empty()))
-        and "Either inner length and number of interpolation points must be zero or both must be greater in an InterpolatingVector.");
+    // assert(
+    //     (((inner_length > 0) and (interpolation_points.size()>0))
+    //      or ((inner_length == 0) and interpolation_points.empty()))
+    //     and "Either inner length and number of interpolation points must be
+    //     zero or both must be greater in an InterpolatingVector.");
     assert(
         std::is_sorted(interpolation_points.begin(), interpolation_points.end())
         and "Interpolation points for InterpolatingVector were not sorted!");
@@ -112,10 +113,11 @@ namespace Aux {
       interpolation_points(
           _interpolation_points.begin(), _interpolation_points.end()),
       inner_length(_inner_length) {
-    assert(
-        (((inner_length > 0) and (interpolation_points.size()>0))
-         or ((inner_length == 0) and interpolation_points.empty()))
-        and "Either inner length and number of interpolation points must be zero or both must be greater in an InterpolatingVector.");
+    // assert(
+    //     (((inner_length > 0) and (interpolation_points.size()>0))
+    //      or ((inner_length == 0) and interpolation_points.empty()))
+    //     and "Either inner length and number of interpolation points must be
+    //     zero or both must be greater in an InterpolatingVector.");
     assert(
         std::is_sorted(interpolation_points.begin(), interpolation_points.end())
         and "Interpolation points for InterpolatingVector were not sorted!");

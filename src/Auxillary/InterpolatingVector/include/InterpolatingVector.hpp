@@ -5,8 +5,6 @@
 #include <vector>
 
 namespace Aux {
-  class InterpolatingVector;
-  class MappedInterpolatingVector;
 
   struct Interpolation_data {
     double first_point;
