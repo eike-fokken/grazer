@@ -284,6 +284,10 @@ namespace Optimization {
     if (not could_compute_derivatives) {
       return false;
     }
+    // std::cout << "new gradient: "
+    //           << Eigen::RowVectorXd(objective_gradient.get_allvalues())
+    //           << std::endl;
+
     gradient = objective_gradient;
     return true;
   }
@@ -578,7 +582,7 @@ namespace Optimization {
         new_handler, last_time, new_time, states(last_time), states(new_time),
         controls(new_time));
     solver.factorize(dE_dnew_transposed);
-    solver.analyzePattern(dE_dnew_transposed);
+
     Aux::Coeffrefhandler<Aux::Transposed> last_handler(dE_dlast_transposed);
     problem->d_evalutate_d_last_state(
         last_handler, last_time, new_time, states(last_time), states(new_time),
