@@ -3,6 +3,7 @@
 #include "Exception.hpp"
 #include "Initialvalues.hpp"
 #include "Matrixhandler.hpp"
+#include "Misc.hpp"
 #include "OptimizableObject.hpp"
 #include "Optimization_helpers.hpp"
 #include "Optimizer.hpp"
@@ -10,51 +11,6 @@
 #include <string>
 
 namespace Optimization {
-  template <typename T>
-  static inline T back(Eigen::Ref<Eigen::VectorX<T> const> const &vector) {
-    return vector[vector.size() - 1];
-  }
-
-  template <typename T> static inline T back(Eigen::VectorX<T> const &vector) {
-    return vector[vector.size() - 1];
-  }
-
-  template <typename T>
-  static inline T &back(Eigen::Ref<Eigen::VectorX<T>> &vector) {
-    return vector[vector.size() - 1];
-  }
-
-  template <typename T> static inline T &back(Eigen::VectorX<T> &vector) {
-    return vector[vector.size() - 1];
-  }
-
-  template <typename T>
-  static inline Eigen::Index
-  back_index(Eigen::Ref<Eigen::VectorX<T> const> const &vector) {
-    return vector.size() - 1;
-  }
-  template <typename T>
-  static inline Eigen::Index back_index(Eigen::VectorX<T> const &vector) {
-    return vector.size() - 1;
-  }
-
-  template <typename T>
-  static inline T front(Eigen::Ref<Eigen::VectorX<T> const> const &vector) {
-    return vector[0];
-  }
-
-  template <typename T> static inline T front(Eigen::VectorX<T> const &vector) {
-    return vector[0];
-  }
-
-  template <typename T>
-  static inline T &front(Eigen::Ref<Eigen::VectorX<T>> &vector) {
-    return vector[0];
-  }
-
-  template <typename T> static inline T &front(Eigen::VectorX<T> &vector) {
-    return vector[0];
-  }
 
   static Eigen::VectorXd make_objective_function_coefficients(
       Eigen::Ref<Eigen::VectorXd const> timepoints) {
@@ -399,7 +355,7 @@ namespace Optimization {
     assert(init);
     auto constraint_lower_bounds
         = Aux::InterpolatingVector::construct_and_interpolate_from(
-            control_timepoints, controls_per_step(),
+            constraint_timepoints, constraints_per_step(),
             init->constraint_lower_bounds);
     return constraint_lower_bounds.get_allvalues();
   }
@@ -408,7 +364,7 @@ namespace Optimization {
     assert(init);
     auto constraint_upper_bounds
         = Aux::InterpolatingVector::construct_and_interpolate_from(
-            control_timepoints, controls_per_step(),
+            constraint_timepoints, constraints_per_step(),
             init->constraint_upper_bounds);
     return constraint_upper_bounds.get_allvalues();
   }
@@ -475,7 +431,7 @@ namespace Optimization {
                 += (1 - lambda) * df_dui;
           }
         }
-        {
+        if (constraints_per_step() > 0) {
           // constraints:
           // Find out, whether a new constraint appears at this index:
           bool current_step_is_new_constraint_time = false;
