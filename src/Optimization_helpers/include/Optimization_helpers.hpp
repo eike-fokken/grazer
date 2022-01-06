@@ -31,11 +31,8 @@ namespace Optimization {
 
   /** \brief Takes care of all initialization
    */
-  void initialize(
-      Model::Networkproblem &problem, Aux::InterpolatingVector_Base &controls,
-      nlohmann::json const &control_json,
-      Eigen::Ref<Eigen::VectorXd> init_state,
-      nlohmann::json const &initial_json,
+  void initialize_bounds(
+      Model::Networkproblem &problem,
       Aux::InterpolatingVector_Base &lower_bounds,
       nlohmann::json const &lower_bounds_json,
       Aux::InterpolatingVector_Base &upper_bounds,

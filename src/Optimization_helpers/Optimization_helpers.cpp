@@ -43,11 +43,8 @@ namespace Optimization {
     return results;
   }
 
-  void initialize(
-      Model::Networkproblem &problem, Aux::InterpolatingVector_Base &controls,
-      nlohmann::json const &control_json,
-      Eigen::Ref<Eigen::VectorXd> init_state,
-      nlohmann::json const &initial_json,
+  void initialize_bounds(
+      Model::Networkproblem &problem,
       Aux::InterpolatingVector_Base &lower_bounds,
       nlohmann::json const &lower_bounds_json,
       Aux::InterpolatingVector_Base &upper_bounds,
@@ -56,8 +53,6 @@ namespace Optimization {
       nlohmann::json const &constraints_lower_bounds_json,
       Aux::InterpolatingVector_Base &constraints_upper_bounds,
       nlohmann::json const &constraints_upper_bounds_json) {
-    problem.set_initial_values(init_state, initial_json);
-    problem.set_initial_controls(controls, control_json);
     problem.set_lower_bounds(lower_bounds, lower_bounds_json);
     problem.set_upper_bounds(upper_bounds, upper_bounds_json);
     problem.set_constraint_lower_bounds(
