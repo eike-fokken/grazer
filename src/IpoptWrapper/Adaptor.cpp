@@ -20,6 +20,7 @@ namespace Optimization {
     // Process the options
     auto status = _app->Initialize();
     if (status != Ipopt::Solve_Succeeded) {
+      std::cout << "Couldn't finde an optimum!" << std::endl;
       return status;
     }
     // solve the problem
