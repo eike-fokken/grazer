@@ -189,6 +189,15 @@ int grazer::run(std::filesystem::path directory_path) {
                 << std::endl;
       std::cout << "solution norm: "
                 << adaptor.get_solution().transpose().norm() << std::endl;
+      Eigen::VectorXd ipoptconstraints(optimizer.get_total_no_constraints());
+      optimizer.evaluate_constraints(adaptor.get_solution(), ipoptconstraints);
+      Eigen::VectorXd last_lower_bounds
+          = optimizer.get_constraint_lower_bounds();
+      // std::cout << "constraints-lower_bounds: "
+      //           << ipoptconstraints - last_lower_bounds << std::endl;
+      // std::cout << "last constraint jacobian:\n"
+      //           << optimizer.get_constraint_jacobian().whole_matrix()
+      //           << std::endl;
       // std::cout << "objective: " << adaptor.get_obj_value() <<
       // std::endl; std::cout << "nnz: " <<
       // optimizer.get_no_nnz_in_jacobian() << std::endl;
@@ -218,7 +227,7 @@ int grazer::run(std::filesystem::path directory_path) {
       wall_clock_end - wall_clock_start);
 
   std::cout << "setup took:      " << setup_duration << " seconds" << std::endl;
-  std::cout << "simulation took: " << sim_duration << " seconds" << std::endl;
+  std::cout << "processing took: " << sim_duration << " seconds" << std::endl;
   std::cout << "teardown took:   " << teardown_duration << " seconds"
             << std::endl;
   std::cout << "-----------------------------" << std::endl;

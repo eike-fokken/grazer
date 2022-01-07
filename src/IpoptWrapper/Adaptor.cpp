@@ -14,9 +14,10 @@ namespace Optimization {
     // Approximate the hessian
     _app->Options()->SetStringValue("hessian_approximation", "limited-memory");
     // disable Ipopt's console output
-    _app->Options()->SetIntegerValue("print_level", 0);
+    _app->Options()->SetIntegerValue("print_level", 4);
     // Supress Ipopt Banner
     _app->Options()->SetBoolValue("sb", true);
+    // _app->Options()->SetStringValue("derivative_test", "first-order");
     // Process the options
     auto status = _app->Initialize();
     if (status != Ipopt::Solve_Succeeded) {
