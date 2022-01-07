@@ -483,7 +483,7 @@ namespace Model {
             auto index = iterator - ids.begin();
             constraintcomponents[static_cast<size_t>(index)]
                 ->set_constraint_lower_bounds(
-                    full_lower_bounds_vector, constraint_lower_bounds_json);
+                    full_lower_bounds_vector, componentjson);
           }
         }
       }
@@ -513,7 +513,7 @@ namespace Model {
             auto index = iterator - ids.begin();
             constraintcomponents[static_cast<size_t>(index)]
                 ->set_constraint_upper_bounds(
-                    full_upper_bound_vector, constraint_upper_bounds_json);
+                    full_upper_bound_vector, componentjson);
           }
         }
       }

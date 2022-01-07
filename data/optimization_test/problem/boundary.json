@@ -20,7 +20,7 @@
 				]
 			}
 		],
-		"Sink": [
+		"ConstraintSink": [
 			{
 				"id": "sink",
 				"data": [

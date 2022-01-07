@@ -1,1 +1,23 @@
-{}
+{
+	  "nodes": {
+		    "ConstraintSink": [
+		        {
+		        "id": "sink",
+		        "data": [
+				        {
+				        "time": 0,
+				        "values": [
+						        100
+				        ]
+		        },
+				        {
+				        "time": 18000,
+				        "values": [
+						        100
+				        ]
+		        }
+		        ]
+        }
+        ]
+    }
+}

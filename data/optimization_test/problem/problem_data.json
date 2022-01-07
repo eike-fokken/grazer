@@ -4,7 +4,7 @@
         "evaluate_constraints_every_n": 1
     },
     "control_settings":{
-        "number_of_steps": 3
+        "number_of_steps": 20
     },
     "simulation_settings":
     {

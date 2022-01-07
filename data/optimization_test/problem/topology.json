@@ -15,7 +15,7 @@
 				      "y": 10.0
 			    }
 		  ],
-		"Sink": [
+		"ConstraintSink": [
 			{
 				"id": "sink",
 				"x": 20.0,

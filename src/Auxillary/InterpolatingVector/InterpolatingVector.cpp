@@ -2,6 +2,7 @@
 
 #include "Exception.hpp"
 #include "Mathfunctions.hpp"
+#include "Misc.hpp"
 #include "make_schema.hpp"
 #include "schema_validation.hpp"
 
@@ -30,6 +31,7 @@ namespace Aux {
     size_t number = static_cast<size_t>(number_of_entries);
 
     auto delta = (last_point - first_point) / (number_of_entries - 1);
+    assert(last_point = first_point + (number_of_entries - 1) * delta);
     return {first_point, delta, number};
   }
 
@@ -73,6 +75,9 @@ namespace Aux {
     auto delta
         = ((last_point - first_point)
            / (static_cast<double>(number_of_entries - 1)));
+    assert(
+        last_point
+        = first_point + static_cast<double>(number_of_entries - 1) * delta);
     return {first_point, delta, number_of_entries};
   }
 
@@ -87,6 +92,12 @@ namespace Aux {
       interpolation_points.push_back(currentpoint);
       currentpoint += delta;
     }
+    assert(interpolation_points.front() == startpoint);
+    // check for double equality. Should be an aux function...
+    assert(
+        (interpolation_points.back()
+         - (startpoint + static_cast<double>(number_of_entries - 1) * delta))
+        < 1e-10);
     return interpolation_points;
   }
 
