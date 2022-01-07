@@ -20,7 +20,6 @@ namespace Aux {
            "InterpolatingVector.\n",
            "Supplied number of entries: ", std::to_string(number_of_entries)});
     }
-    size_t number = static_cast<size_t>(number_of_entries);
     if (last_point <= first_point) {
       gthrow(
           {"You can't have negative or zero number of entries in an ",
@@ -28,7 +27,9 @@ namespace Aux {
            "Supplied first point: ", std::to_string(first_point), "\n",
            "Supplied last point: ", std::to_string(last_point), "\n"});
     }
-    auto delta = last_point - first_point / number_of_entries;
+    size_t number = static_cast<size_t>(number_of_entries);
+
+    auto delta = (last_point - first_point) / (number_of_entries - 1);
     return {first_point, delta, number};
   }
 

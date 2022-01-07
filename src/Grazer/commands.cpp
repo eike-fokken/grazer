@@ -182,10 +182,16 @@ int grazer::run(std::filesystem::path directory_path) {
           constraint_upper_bounds);
       auto &optimizer = *optimizer_ptr;
       Optimization::IpoptAdaptor adaptor(std::move(optimizer_ptr));
-      std::cout << optimizer.get_initial_controls() << std::endl;
+      // std::cout << optimizer.get_initial_controls() << std::endl;
+
       adaptor.optimize();
-      std::cout << "solution: " << adaptor.get_solution() << std::endl;
-      std::cout << "objective: " << adaptor.get_obj_value() << std::endl;
+      std::cout << "solution:" << adaptor.get_solution().transpose()
+                << std::endl;
+      std::cout << "solution norm: "
+                << adaptor.get_solution().transpose().norm() << std::endl;
+      // std::cout << "objective: " << adaptor.get_obj_value() <<
+      // std::endl; std::cout << "nnz: " <<
+      // optimizer.get_no_nnz_in_jacobian() << std::endl;
       wall_clock_sim_end = Clock::now();
     }
 

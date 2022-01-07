@@ -1,16 +1,26 @@
 #include "Optimization_helpers.hpp"
 #include "InterpolatingVector.hpp"
+#include "Mathfunctions.hpp"
+#include "Misc.hpp"
 #include "Networkproblem.hpp"
 #include <algorithm>
 #include <cassert>
-
 namespace Optimization {
 
   std::pair<Eigen::Index, double> compute_index_lambda(
       Eigen::Ref<Eigen::VectorXd const> const &timepoints, double time) {
-    assert(time >= *timepoints.begin());
-    assert(time <= *(std::prev(timepoints.end())));
+    assert(timepoints.size() > 0);
+    assert(time >= front(timepoints));
+    assert(time <= back(timepoints) + Aux::EPSILON);
     assert(std::is_sorted(timepoints.begin(), timepoints.end()));
+
+    if (time > *(std::prev(timepoints.end()))
+        and time < *(std::prev(timepoints.end())) + Aux::EPSILON) {
+      Eigen::Index i_upper = back_index(timepoints);
+      double lambda = 1.0;
+      return {i_upper, lambda};
+    }
+
     // first element greater or equal to time:
     auto it_upper
         = std::lower_bound(timepoints.begin(), timepoints.end(), time);

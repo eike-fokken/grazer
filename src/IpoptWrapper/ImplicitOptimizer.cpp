@@ -2,6 +2,7 @@
 #include "ControlStateCache.hpp"
 #include "Exception.hpp"
 #include "Initialvalues.hpp"
+#include "Mathfunctions.hpp"
 #include "Matrixhandler.hpp"
 #include "Misc.hpp"
 #include "OptimizableObject.hpp"
@@ -107,7 +108,7 @@ namespace Optimization {
 
     // check that latest control timepoint is after or at latest state
     // timepoint:
-    if (back(control_timepoints) < back(state_timepoints)) {
+    if (back(control_timepoints) + Aux::EPSILON < back(state_timepoints)) {
       gthrow(
           {"latest state timepoint is not inside the control timepoint span."});
     }
@@ -207,19 +208,25 @@ namespace Optimization {
     objective = 0;
     // timeindex starts at 1, because at 0 there are initial conditions
     // which can not be altered!
+    // std::cout << "statesize:" << states.size() << std::endl;
     for (Eigen::Index timeindex = 1; timeindex != states.size(); ++timeindex) {
-      objective += integral_weights[timeindex]
-                   * problem->evaluate_cost(
-                       state_timepoints[timeindex],
-                       states(state_timepoints[timeindex]),
-                       controls(state_timepoints[timeindex]));
+      auto time = state_timepoints[timeindex];
+      // std::cout << "weight:" << integral_weights[timeindex];
+      auto add_value
+          = problem->evaluate_cost(time, states(time), controls(time));
+      // std::cout << ", added_value: " << add_value << std::endl;
+      objective += integral_weights[timeindex] * add_value;
     }
+    // std::cout << "control: " << controls.get_allvalues().transpose()
+    //           << std::endl;
+    // std::cout << "objective value: " << objective << std::endl;
     return true;
   }
 
   bool ImplicitOptimizer::evaluate_constraints(
       Eigen::Ref<Eigen::VectorXd const> const &ipoptcontrols,
       Eigen::Ref<Eigen::VectorXd> ipoptconstraints) {
+    new_x();
     assert(ipoptconstraints.size() == get_total_no_constraints());
     assert(ipoptcontrols.size() == get_total_no_controls());
 

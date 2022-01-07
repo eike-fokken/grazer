@@ -7,7 +7,9 @@ ControlStateCache.cpp
 target_link_libraries(optimization_helpers PRIVATE
 networkproblem
 matrixhandler
-problemlayer)
+problemlayer
+mathfunctions
+misc)
 
 target_link_libraries(optimization_helpers PUBLIC
 interpolatingVector
