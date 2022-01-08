@@ -109,21 +109,23 @@ TEST(InterpolatingVector, Construction_happy_path) {
       number_of_values_per_point * number_of_points);
 }
 
-#ifndef NDEBUG
-TEST(InterpolatingVectorDeathTest, Construction_negative_number_of_controls) {
-  GTEST_FLAG_SET(death_test_style, "threadsafe");
-  int number_of_values_per_point = -1;
-  int number_of_points = 8;
-  double start = 0;
-  double delta = 0.5;
-  auto data = Aux::make_from_start_delta_number(start, delta, number_of_points);
+// #ifndef NDEBUG
+// TEST(InterpolatingVectorDeathTest, Construction_negative_number_of_controls)
+// {
+//   GTEST_FLAG_SET(death_test_style, "threadsafe");
+//   int number_of_values_per_point = -1;
+//   int number_of_points = 8;
+//   double start = 0;
+//   double delta = 0.5;
+//   auto data = Aux::make_from_start_delta_number(start, delta,
+//   number_of_points);
 
-  EXPECT_DEATH(
-      InterpolatingVector interpolatingvector(data, number_of_values_per_point),
-      "interpolation points must be zero or both must be greater in an "
-      "InterpolatingVector");
-}
-#endif
+//   EXPECT_DEATH(
+//       InterpolatingVector interpolatingvector(data,
+//       number_of_values_per_point), "interpolation points must be zero or both
+//       must be greater in an " "InterpolatingVector");
+// }
+// #endif
 
 TEST(InterpolatingVector, set_and_evaluate_controls_happy_path) {
 
