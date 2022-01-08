@@ -79,7 +79,7 @@ namespace Optimization {
      * #dE_dcontrol with their values at state_index and fills #solver with the
      * factorization of #dE_dnew_transposed.
      */
-    void update_equation_derivative_matrices(
+    bool update_equation_derivative_matrices(
         Eigen::Index state_index, Aux::InterpolatingVector_Base const &controls,
         Aux::InterpolatingVector_Base const &states);
 

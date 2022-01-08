@@ -1,6 +1,7 @@
 #include "commands.hpp"
 #include "Adaptor.hpp"
 #include "Aux_json.hpp"
+#include "ConstraintJacobian.hpp"
 #include "ControlStateCache.hpp"
 #include "Exception.hpp"
 #include "Full_factory.hpp"
@@ -193,14 +194,32 @@ int grazer::run(std::filesystem::path directory_path) {
       optimizer.evaluate_constraints(adaptor.get_solution(), ipoptconstraints);
       Eigen::VectorXd last_lower_bounds
           = optimizer.get_constraint_lower_bounds();
-      // std::cout << "constraints-lower_bounds: "
-      //           << ipoptconstraints - last_lower_bounds << std::endl;
+      std::cout << "constraints-lower_bounds: "
+                << (ipoptconstraints - last_lower_bounds).transpose()
+                << std::endl;
       // std::cout << "last constraint jacobian:\n"
       //           << optimizer.get_constraint_jacobian().whole_matrix()
       //           << std::endl;
-      // std::cout << "objective: " << adaptor.get_obj_value() <<
-      // std::endl; std::cout << "nnz: " <<
-      // optimizer.get_no_nnz_in_jacobian() << std::endl;
+
+      Eigen::VectorXd storage(optimizer.get_no_nnz_in_jacobian());
+
+      Optimization::MappedConstraintJacobian jacmapped(
+          storage.data(), storage.size(), optimizer.constraints_per_step(),
+          optimizer.controls_per_step(), constraint_timepoints,
+          control_timepoints);
+      jacmapped = optimizer.get_constraint_jacobian();
+      int count = 0;
+      for (auto entry : storage) {
+        if (std::abs(entry) > 1e-15) {
+          ++count;
+        }
+      }
+      double sparsity
+          = double(count) / double(optimizer.get_no_nnz_in_jacobian());
+      std::cout << "sparsity of the constraint jacobian: " << sparsity
+                << std::endl;
+      std::cout << "objective: " << adaptor.get_obj_value() << std::endl;
+
       wall_clock_sim_end = Clock::now();
     }
 

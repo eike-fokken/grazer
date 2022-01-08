@@ -8,7 +8,10 @@
 #include "OptimizableObject.hpp"
 #include "Optimization_helpers.hpp"
 #include "Optimizer.hpp"
+#include <Eigen/src/Core/util/Constants.h>
+#include <iostream>
 #include <memory>
+#include <stdexcept>
 #include <string>
 
 namespace Optimization {
@@ -200,35 +203,37 @@ namespace Optimization {
       auto could_compute_states = cache->refresh_cache(
           *problem, controls, state_timepoints, initial_state);
       if (not could_compute_states) {
+        states_up_to_date = false;
         return false;
+      } else {
+        states_up_to_date = true;
       }
     }
+    assert(states_up_to_date);
     auto &states = cache->get_cached_states();
 
     objective = 0;
     // timeindex starts at 1, because at 0 there are initial conditions
     // which can not be altered!
-    // std::cout << "statesize:" << states.size() << std::endl;
     for (Eigen::Index timeindex = 1; timeindex != states.size(); ++timeindex) {
       auto time = state_timepoints[timeindex];
-      // std::cout << "weight:" << integral_weights[timeindex];
       auto add_value
           = problem->evaluate_cost(time, states(time), controls(time));
-      // std::cout << ", added_value: " << add_value << std::endl;
       objective += integral_weights[timeindex] * add_value;
     }
-    // std::cout << "control: " << controls.get_allvalues().transpose()
-    //           << std::endl;
-    // std::cout << "objective value: " << objective << std::endl;
     return true;
   }
 
   bool ImplicitOptimizer::evaluate_constraints(
       Eigen::Ref<Eigen::VectorXd const> const &ipoptcontrols,
       Eigen::Ref<Eigen::VectorXd> ipoptconstraints) {
-    new_x();
-    assert(ipoptconstraints.size() == get_total_no_constraints());
-    assert(ipoptcontrols.size() == get_total_no_controls());
+
+    if (ipoptconstraints.size() != get_total_no_constraints()) {
+      return false;
+    }
+    if (ipoptcontrols.size() != get_total_no_controls()) {
+      return false;
+    }
 
     Aux::ConstMappedInterpolatingVector const controls(
         control_timepoints, controls_per_step(), ipoptcontrols.data(),
@@ -240,6 +245,8 @@ namespace Optimization {
           *problem, controls, state_timepoints, initial_state);
       if (not could_compute_states) {
         return false;
+      } else {
+        states_up_to_date = true;
       }
     }
     auto &states = cache->get_cached_states();
@@ -284,6 +291,8 @@ namespace Optimization {
           *problem, controls, state_timepoints, initial_state);
       if (not could_compute_states) {
         return false;
+      } else {
+        states_up_to_date = true;
       }
     }
     auto &states = cache->get_cached_states();
@@ -291,9 +300,6 @@ namespace Optimization {
     if (not could_compute_derivatives) {
       return false;
     }
-    // std::cout << "new gradient: "
-    //           << Eigen::RowVectorXd(objective_gradient.get_allvalues())
-    //           << std::endl;
 
     gradient = objective_gradient;
     return true;
@@ -320,6 +326,8 @@ namespace Optimization {
           *problem, controls, state_timepoints, initial_state);
       if (not could_compute_states) {
         return false;
+      } else {
+        states_up_to_date = true;
       }
     }
     auto &states = cache->get_cached_states();
@@ -418,7 +426,12 @@ namespace Optimization {
 
       bool constraints_are_active_at_current_time = false;
       while (state_index > 0) {
-        update_equation_derivative_matrices(state_index, controls, states);
+        assert(derivative_matrices_initialized);
+        auto could_update_eq_derivatives = update_equation_derivative_matrices(
+            state_index, controls, states);
+        if (not could_update_eq_derivatives) {
+          return false;
+        }
 
         {
           // cost derivative:
@@ -466,6 +479,8 @@ namespace Optimization {
             auto current_rhs = right_cols(full_rhs_g, constraint_index);
             current_Xi = solver.solve(current_rhs);
             current_rhs.noalias() = -dE_dlast_transposed * current_Xi;
+            // std::cout << "A xi:\n";
+            // std::cout << current_rhs << std::endl;
 
             auto current_dg_dui = lower_rows(full_dg_dui, constraint_index);
             current_dg_dui.noalias() = current_Xi.transpose() * dE_dcontrol;
@@ -559,14 +574,6 @@ namespace Optimization {
         fcontrol_handler, new_time, states(new_time), controls(new_time));
     fcontrol_handler.set_matrix();
 
-    // A_jp1_Lambda_j
-    //     = Eigen::MatrixXd::Zero(states_per_step(),
-    //     get_total_no_constraints());
-    // Lambda_j
-    //     = Eigen::MatrixXd::Zero(states_per_step(),
-    //     get_total_no_constraints());
-    // dg_duj = RowMat::Zero(get_total_no_constraints(), controls_per_step());
-
     derivative_matrices_initialized = true;
   }
 
@@ -574,7 +581,7 @@ namespace Optimization {
    * #dE_dcontrol with their values at state_index and fills #solver with the
    * factorization of #dE_dnew_transposed.
    */
-  void ImplicitOptimizer::update_equation_derivative_matrices(
+  bool ImplicitOptimizer::update_equation_derivative_matrices(
       Eigen::Index state_index, Aux::InterpolatingVector_Base const &controls,
       Aux::InterpolatingVector_Base const &states) {
     assert(derivative_matrices_initialized);
@@ -583,12 +590,6 @@ namespace Optimization {
 
     double last_time = state_timepoints[state_index - 1];
     double new_time = state_timepoints[state_index];
-
-    Aux::Coeffrefhandler<Aux::Transposed> new_handler(dE_dnew_transposed);
-    problem->d_evalutate_d_new_state(
-        new_handler, last_time, new_time, states(last_time), states(new_time),
-        controls(new_time));
-    solver.factorize(dE_dnew_transposed);
 
     Aux::Coeffrefhandler<Aux::Transposed> last_handler(dE_dlast_transposed);
     problem->d_evalutate_d_last_state(
@@ -599,6 +600,27 @@ namespace Optimization {
     problem->d_evalutate_d_control(
         control_handler, last_time, new_time, states(last_time),
         states(new_time), controls(new_time));
+
+    Aux::Coeffrefhandler<Aux::Transposed> new_handler(dE_dnew_transposed);
+    problem->d_evalutate_d_new_state(
+        new_handler, last_time, new_time, states(last_time), states(new_time),
+        controls(new_time));
+    solver.factorize(dE_dnew_transposed);
+    if (solver.info() != Eigen::Success) {
+      // //Sparse matrix:
+      // std::cout << dE_dnew_transposed << std::endl;
+      // // Or the dense verion:
+      // std::cout << Eigen::MatrixXd(dE_dnew_transposed) << std::endl;
+      std::cout
+          << __FILE__ << ":" << __LINE__
+          << ": Couldn't decompose the transposed derivative of the equations "
+             "w.r.t. the current state, it may be non-invertible.\nTo display "
+             "it comment in the std::cout line preceding this statement."
+          << std::endl;
+      return false;
+    }
+
+    return true;
   }
 
   void ImplicitOptimizer::update_constraint_derivative_matrices(

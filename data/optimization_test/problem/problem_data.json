@@ -1,10 +1,10 @@
 {
     "optimize": true,
     "constraint_settings": {
-        "evaluate_constraints_every_n": 1
+        "evaluate_constraints_every_n": 10
     },
     "control_settings":{
-        "number_of_steps": 41
+        "number_of_steps": 10
     },
     "simulation_settings":
     {

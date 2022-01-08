@@ -10,10 +10,16 @@
 		],
       "Innode": [
 			    {
-				      "id": "innode",
+				      "id": "innode1",
 				      "x": 10.0,
 				      "y": 10.0
-			    }
+			},
+          {
+				  "id": "innode2",
+				  "x": 13.0,
+				  "y": 10.0
+			}
+
 		  ],
 		"ConstraintSink": [
 			{
@@ -26,12 +32,12 @@
 	"connections": {
 		"Pipe": [
 			{
-				"id": "p_br1",
+				"id": "pipe1",
 				"from": "source",
-				"to": "innode",
+				"to": "innode1",
 				"length": {
 					"unit": "km",
-					"value": 14.56
+					"value": 3.56
 				},
 				"diameter": {
 					"unit": "mm",
@@ -41,13 +47,30 @@
 					"unit": "m",
 					"value": 8e-06
 				}
-			}
+		},
+        {
+				"id": "pipe2",
+				"from": "innode2",
+				"to": "sink",
+				"length": {
+					  "unit": "km",
+					  "value": 1.56
+				},
+				"diameter": {
+					  "unit": "mm",
+					  "value": 914.4
+				},
+				"roughness": {
+					  "unit": "m",
+					  "value": 8e-06
+				}
+		}
 		],
       		"Compressorstation": [
 			{
 				"id": "cs",
-				"from": "innode",
-				"to": "sink",
+				"from": "innode1",
+				"to": "innode2",
 				"typeOfControl": "pressure"
 			}
 		]

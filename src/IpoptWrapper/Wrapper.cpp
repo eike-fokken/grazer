@@ -143,12 +143,12 @@ namespace Optimization {
       Ipopt::Number obj_value, const Ipopt::IpoptData * /* ip_data */,
       Ipopt::IpoptCalculatedQuantities * /* ip_cq */) {
     if (status != Ipopt::SUCCESS) {
-      std::cout << "Ipopt status was: " << static_cast<int>(Ipopt::SUCCESS)
-                << "\n";
-      std::cout << "Compare the values to the enum Ipopt::SUCCESS for what "
-                   "that means."
+      std::cout << "\n\n\nFAILED TO FIND AN OPTIMUM:\nIpopt status was: "
+                << static_cast<int>(Ipopt::SUCCESS) << "\n";
+      std::cout << "Compare the values to the enum Ipopt::SUCCESS in the IPOPT "
+                   "manual for what "
+                   "that means.\n\n\n"
                 << std::endl;
-      throw std::runtime_error("The solver failed to find a solution");
     }
     Eigen::Map<Eigen::VectorXd const> solution(x, number_of_controls);
     Eigen::Map<Eigen::VectorXd const> constraints(g, number_of_constraints);
