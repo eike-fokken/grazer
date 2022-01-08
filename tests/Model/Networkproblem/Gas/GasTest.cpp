@@ -944,6 +944,93 @@ TEST_F(GasTEST, Pipe_d_evalutate_d_new_state) {
   EXPECT_DOUBLE_EQ(DenseJ(2, 3), dright(1, 1));
 }
 
+TEST_F(GasTEST, Pipe_d_evalutate_d_last_state) {
+  nlohmann::json node0;
+  nlohmann::json node1;
+  node0["id"] = "node0";
+  node1["id"] = "node1";
+
+  std::string id = "pipe";
+  double length = 15250;
+  double diameter = 0.9144;
+  double roughness = 8e-6;
+  double desired_delta_x = 20000;
+
+  nlohmann::json pipe_topology = pipe_json(
+      id, node0, node1, length, "m", diameter, "m", roughness, "m",
+      desired_delta_x, "Isothermaleulerequation", "Implicitboxscheme");
+
+  std::vector<std::pair<double, Eigen::Matrix<double, 2, 1>>> initialvalues;
+  {
+    using E2d = Eigen::Matrix<double, 2, 1>;
+    double initial_Delta_x = 3812.5;
+    initialvalues.push_back({0, E2d(75.046978, 58.290215)});
+    initialvalues.push_back({initial_Delta_x, E2d(75.032557, 58.105963)});
+    initialvalues.push_back({2 * initial_Delta_x, E2d(75.01822, 57.921692)});
+    initialvalues.push_back({3 * initial_Delta_x, E2d(75.003966, 57.737405)});
+    initialvalues.push_back({4 * initial_Delta_x, E2d(74.989795, 57.553105)});
+  }
+
+  nlohmann::json pipe_initial = make_value_json(id, "x", initialvalues);
+  nlohmann::json net_initial
+      = make_initial_json({}, {{"Pipe", {pipe_initial}}});
+
+  auto netprop_json = make_full_json(
+      {{"Innode", {node0, node1}}}, {{"Pipe", {pipe_topology}}});
+
+  auto netprob = make_Networkproblem(netprop_json);
+
+  netprob->init();
+  auto number_of_variables = netprob->get_number_of_states();
+  double last_time = 0.0;
+  double new_time = 10.0;
+  Eigen::VectorXd rootvalues(number_of_variables);
+  rootvalues.setZero();
+  Eigen::VectorXd last_state(number_of_variables);
+  Eigen::VectorXd new_state(number_of_variables);
+  last_state.setRandom();
+
+  netprob->set_initial_values(new_state, net_initial);
+
+  Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
+  Aux::Triplethandler handler(J);
+
+  // The following are not needed, as the gas components up to now are not
+  // controlled.  But to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
+  netprob->d_evalutate_d_last_state(
+      handler, last_time, new_time, last_state, new_state, control);
+  handler.set_matrix();
+
+  Eigen::Matrix4d DenseJ = J;
+
+  Model::Balancelaw::Isothermaleulerequation bl(pipe_topology);
+  Model::Scheme::Implicitboxscheme scheme;
+  double Delta_x = length;
+  auto last_left = last_state.segment<2>(0);
+  auto last_right = last_state.segment<2>(2);
+  auto new_left = new_state.segment<2>(0);
+  auto new_right = new_state.segment<2>(2);
+
+  auto dleft = scheme.devaluate_point_d_last_left(
+      last_time, new_time, Delta_x, last_left, last_right, new_left, new_right,
+      bl);
+  auto dright = scheme.devaluate_point_d_last_right(
+      last_time, new_time, Delta_x, last_right, last_right, new_right,
+      new_right, bl);
+
+  EXPECT_DOUBLE_EQ(DenseJ(1, 0), dleft(0, 0));
+  EXPECT_DOUBLE_EQ(DenseJ(1, 1), dleft(0, 1));
+  EXPECT_DOUBLE_EQ(DenseJ(1, 2), dright(0, 0));
+  EXPECT_DOUBLE_EQ(DenseJ(1, 3), dright(0, 1));
+
+  EXPECT_DOUBLE_EQ(DenseJ(2, 0), dleft(1, 0));
+  EXPECT_DOUBLE_EQ(DenseJ(2, 1), dleft(1, 1));
+  EXPECT_DOUBLE_EQ(DenseJ(2, 2), dright(1, 0));
+  EXPECT_DOUBLE_EQ(DenseJ(2, 3), dright(1, 1));
+}
+
 nlohmann::json source_json(std::string id, double flowstart, double flowend) {
   nlohmann::json topology;
   topology["id"] = id;
