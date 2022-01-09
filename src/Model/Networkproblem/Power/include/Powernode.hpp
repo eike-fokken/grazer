@@ -59,8 +59,11 @@ namespace Model::Power {
     /// \brief number of state variables, this component needs.
     static constexpr Eigen::Index number_of_state_variables{2};
 
+    /// \brief Holds data on all attached transmission lines.
     std::vector<std::tuple<double, double, Powernode *>>
         attached_component_data;
+    // TODO: Should be replaced by a struct {double line_G, double line_B, ... *
+    // node}
   };
 
 } // namespace Model::Power
