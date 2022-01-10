@@ -1,0 +1,132 @@
+{
+	"$schema": "../schemas/topology_schema.json",
+	"nodes": {
+		"Source": [
+			{
+				"id": "source",
+				"x": 10.0,
+				"y": 10.0
+    }
+		],
+      "Innode": [
+			    {
+				      "id": "innode1",
+				      "x": 10.0,
+				      "y": 10.0
+			},
+          {
+				  "id": "innode2",
+				  "x": 13.0,
+				  "y": 10.0
+			},
+          {
+				  "id": "innode3",
+				  "x": 10.0,
+				  "y": 10.0
+			},
+          {
+				  "id": "innode4",
+				  "x": 13.0,
+				  "y": 10.0
+			}
+		  ],
+		"ConstraintSink": [
+			{
+				"id": "middlesink",
+				"x": 20.0,
+				"y": 10.0
+		},
+        {
+				"id": "endsink",
+				"x": 20.0,
+				"y": 10.0
+		}
+
+		]
+	},
+	"connections": {
+		"Pipe": [
+			{
+				"id": "pipe1",
+				"from": "source",
+				"to": "innode1",
+				"length": {
+					"unit": "km",
+					"value": 3.56
+				},
+				"diameter": {
+					"unit": "mm",
+					"value": 914.4
+				},
+				"roughness": {
+					"unit": "m",
+					"value": 8e-06
+				}
+		},
+        {
+				"id": "pipe2",
+				"from": "innode2",
+				"to": "middlesink",
+				"length": {
+					  "unit": "km",
+					  "value": 1.56
+				},
+				"diameter": {
+					  "unit": "mm",
+					  "value": 914.4
+				},
+				"roughness": {
+					  "unit": "m",
+					  "value": 8e-06
+				}
+		},			{
+				"id": "pipe3",
+				"from": "middlesink",
+				"to": "innode3",
+				"length": {
+					  "unit": "km",
+					  "value": 3.56
+				},
+				"diameter": {
+					  "unit": "mm",
+					  "value": 914.4
+				},
+				"roughness": {
+					  "unit": "m",
+					  "value": 8e-06
+				}
+		},			{
+				"id": "pipe4",
+				"from": "innode4",
+				"to": "endsink",
+				"length": {
+					  "unit": "km",
+					  "value": 3.56
+				},
+				"diameter": {
+					  "unit": "mm",
+					  "value": 914.4
+				},
+				"roughness": {
+					  "unit": "m",
+					  "value": 8e-06
+				}
+		}
+		],
+      		"Compressorstation": [
+			{
+				"id": "cs1",
+				"from": "innode1",
+				"to": "innode2",
+				"typeOfControl": "pressure"
+			    },
+              {
+				      "id": "cs2",
+				      "from": "innode3",
+				      "to": "innode4",
+				      "typeOfControl": "pressure"
+			    }
+
+		]
+	}
+}

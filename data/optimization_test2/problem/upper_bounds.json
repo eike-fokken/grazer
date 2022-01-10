@@ -1,0 +1,41 @@
+{
+	"$schema": "../schemas/control_schema.json",
+	"connections": {
+		"Compressorstation": [
+			{
+				"id": "cs1",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							1000.0
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							1000.0
+						]
+					}
+				]
+		},
+        {
+				"id": "cs2",
+				"data": [
+					  {
+						"time": 0,
+						"values": [
+							  1000.0
+						]
+				},
+					  {
+						"time": 604800,
+						"values": [
+							  1000.0
+						]
+				}
+				]
+		}
+		]		
+	}
+}

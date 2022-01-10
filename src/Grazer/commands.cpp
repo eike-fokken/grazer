@@ -210,7 +210,7 @@ int grazer::run(std::filesystem::path directory_path) {
       jacmapped = optimizer.get_constraint_jacobian();
       int count = 0;
       for (auto entry : storage) {
-        if (std::abs(entry) > 1e-15) {
+        if (std::abs(entry) > 1e-17) {
           ++count;
         }
       }

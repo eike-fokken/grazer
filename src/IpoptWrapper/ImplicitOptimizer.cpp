@@ -204,6 +204,12 @@ namespace Optimization {
           *problem, controls, state_timepoints, initial_state);
       if (not could_compute_states) {
         states_up_to_date = false;
+        if (ipoptcontrols == get_initial_controls()) {
+          std::cout << "FAILED to compute the states out of the initial "
+                       "controls!\n\n This means the simulation to satisfy the "
+                       "equality constraints at the initial point failed!"
+                    << std::endl;
+        }
         return false;
       } else {
         states_up_to_date = true;
@@ -244,6 +250,12 @@ namespace Optimization {
       auto could_compute_states = cache->refresh_cache(
           *problem, controls, state_timepoints, initial_state);
       if (not could_compute_states) {
+        if (ipoptcontrols == get_initial_controls()) {
+          std::cout << "FAILED to compute the states out of the initial "
+                       "controls!\n\n This means the simulation to satisfy the "
+                       "equality constraints at the initial point failed!"
+                    << std::endl;
+        }
         return false;
       } else {
         states_up_to_date = true;
@@ -290,6 +302,12 @@ namespace Optimization {
       auto could_compute_states = cache->refresh_cache(
           *problem, controls, state_timepoints, initial_state);
       if (not could_compute_states) {
+        if (ipoptcontrols == get_initial_controls()) {
+          std::cout << "FAILED to compute the states out of the initial "
+                       "controls!\n\n This means the simulation to satisfy the "
+                       "equality constraints at the initial point failed!"
+                    << std::endl;
+        }
         return false;
       } else {
         states_up_to_date = true;
@@ -325,6 +343,12 @@ namespace Optimization {
       auto could_compute_states = cache->refresh_cache(
           *problem, controls, state_timepoints, initial_state);
       if (not could_compute_states) {
+        if (ipoptcontrols == get_initial_controls()) {
+          std::cout << "FAILED to compute the states out of the initial "
+                       "controls!\n\n This means the simulation to satisfy the "
+                       "equality constraints at the initial point failed!"
+                    << std::endl;
+        }
         return false;
       } else {
         states_up_to_date = true;
