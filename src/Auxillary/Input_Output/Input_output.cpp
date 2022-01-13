@@ -114,11 +114,12 @@ namespace io {
 
   std::filesystem::path unique_output_directory(
       std::filesystem::path const &outer_output_directory,
-      dirname_generator dirname_generator) {
+      dirname_generator dirname_generator_funtion) {
     int number_of_tries = 20;
     for (int counter = 0; counter != number_of_tries; ++counter) {
       std::filesystem::path absolute_unique_directory_path
-          = outer_output_directory / std::filesystem::path(dirname_generator());
+          = outer_output_directory
+            / std::filesystem::path(dirname_generator_funtion());
       if (std::filesystem::create_directory(absolute_unique_directory_path)) {
         return absolute_unique_directory_path;
       }

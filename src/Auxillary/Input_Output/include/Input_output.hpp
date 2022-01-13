@@ -81,7 +81,8 @@ namespace io {
 
   std::filesystem::path unique_output_directory(
       std::filesystem::path const &outer_output_directory,
-      dirname_generator dirname_generator = millisecond_datetime_timestamp);
+      dirname_generator dirname_generator_function
+      = millisecond_datetime_timestamp);
 
   /** \brief Fills the output directory with the input files and opens empty
    * output files inside.

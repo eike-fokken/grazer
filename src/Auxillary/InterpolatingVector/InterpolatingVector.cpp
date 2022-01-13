@@ -10,6 +10,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <valarray>
 
 namespace Aux {
 
@@ -31,7 +32,12 @@ namespace Aux {
     size_t number = static_cast<size_t>(number_of_entries);
 
     auto delta = (last_point - first_point) / (number_of_entries - 1);
-    assert(last_point = first_point + (number_of_entries - 1) * delta);
+    assert(
+        last_point
+        > first_point + (number_of_entries - 1) * delta - Aux::EPSILON);
+    assert(
+        last_point
+        < first_point + (number_of_entries - 1) * delta - Aux::EPSILON);
     return {first_point, delta, number};
   }
 
@@ -76,8 +82,14 @@ namespace Aux {
         = ((last_point - first_point)
            / (static_cast<double>(number_of_entries - 1)));
     assert(
-        last_point
-        = first_point + static_cast<double>(number_of_entries - 1) * delta);
+        last_point > first_point
+                         + static_cast<double>(number_of_entries - 1) * delta
+                         - Aux::EPSILON);
+    assert(
+        last_point < first_point
+                         + static_cast<double>(number_of_entries - 1) * delta
+                         + Aux::EPSILON);
+
     return {first_point, delta, number_of_entries};
   }
 
@@ -95,9 +107,11 @@ namespace Aux {
     assert(interpolation_points.front() == startpoint);
     // check for double equality. Should be an aux function...
     assert(
-        (interpolation_points.back()
-         - (startpoint + static_cast<double>(number_of_entries - 1) * delta))
-        < 1e-10);
+        (std::abs(
+            interpolation_points.back()
+            - (startpoint
+               + static_cast<double>(number_of_entries - 1) * delta)))
+        < Aux::EPSILON);
     return interpolation_points;
   }
 
