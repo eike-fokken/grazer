@@ -218,13 +218,25 @@ int grazer::run(std::filesystem::path directory_path) {
           ++count;
         }
       }
+
       double sparsity
           = double(count) / double(optimizer.get_no_nnz_in_jacobian());
-      std::cout << "sparsity of the constraint jacobian: " << sparsity
-                << std::endl;
+      std::cout << "sparsity of the constraint jacobian: " << 100 * sparsity
+                << "%" << std::endl;
       std::cout << "objective: " << adaptor.get_obj_value() << std::endl;
 
       auto ipoptcontrols = adaptor.get_solution();
+      std::cout << "solution:\n" << ipoptcontrols << std::endl;
+      Eigen::VectorXd ipoptconstraints(optimizer.get_total_no_constraints());
+
+      optimizer.evaluate_constraints(ipoptcontrols, ipoptconstraints);
+      std::cout << "constraints-lower_bounds:\n"
+                << ipoptconstraints - constraint_lower_bounds.get_allvalues()
+                << std::endl;
+      std::cout << "upper_bounds -constraints:\n"
+                << constraint_upper_bounds.get_allvalues() - ipoptconstraints
+                << std::endl;
+
       double objective = 0;
       optimizer.new_x();
       optimizer.evaluate_objective(ipoptcontrols, objective);
