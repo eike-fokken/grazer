@@ -335,9 +335,18 @@ public:
   }
 
 private:
-  std::string componentclass() final { assert(false); }
-  std::string componenttype() final { assert(false); }
-  std::string id() final { assert(false); }
+  std::string componentclass() final {
+    assert(false);
+    return std::string();
+  }
+  std::string componenttype() final {
+    assert(false);
+    return std::string();
+  }
+  std::string id() final {
+    assert(false);
+    return std::string();
+  }
 
 public:
   //// Cost components:

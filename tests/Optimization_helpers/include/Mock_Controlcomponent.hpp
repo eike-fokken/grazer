@@ -108,7 +108,16 @@ public:
       ((Aux::InterpolatingVector_Base &), (nlohmann::json const &)),
       (const, final));
 
-  std::string componentclass() final { assert(false); }
-  std::string componenttype() final { assert(false); }
-  std::string id() final { assert(false); }
+  std::string componentclass() final {
+    assert(false);
+    return std::string();
+  }
+  std::string componenttype() final {
+    assert(false);
+    return std::string();
+  }
+  std::string id() final {
+    assert(false);
+    return std::string();
+  }
 };
