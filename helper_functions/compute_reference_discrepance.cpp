@@ -26,7 +26,7 @@ void add_power_json_data(
 //////** \brief Computes maximal discrepance between a given reference output
 ///// * of a grazer problem and a collection of grazer outputs for the same
 ///// * topology. Before running this function, change into the directory
-///containing
+/// containing
 ///// * the grazer output folder.
 ///// *
 ///// * The function expects the following command line arguments:

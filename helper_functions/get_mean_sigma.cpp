@@ -28,11 +28,11 @@ static void add_gas_json_data(
 ///// * that the same problem was solved with grazer for each of the outputs.
 ///// *
 ///// * All arguments are optional. If one or more arguments is given, the first
-///one
+/// one
 ///// * is given as the common substring with which all output files start. If
 ///// * two arguments are given, the second argument is the filename of the json
 ///// * file, get_mean_sigma should create, to output its computations. The
-///default
+/// default
 ///// * value of the substring is "output". The default value of the filename is
 ///// * "mean_and_sigma.json".
 ///// */
