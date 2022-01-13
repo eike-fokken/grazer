@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <stdexcept>
 #include <string>
 #include <thread>
 
@@ -69,15 +70,18 @@ namespace io {
   fs::path prepare_output_file(fs::path directory_path) {
     fs::path rel_output_dir("output");
     fs::path output_dir = directory_path / rel_output_dir;
-    if (fs::exists(output_dir)) {
-      if (not fs::is_directory(output_dir)) {
-        gthrow(
-            {"The output directory, \"", output_dir.string(),
-             "\" is present, but not a directory, I will abort now."});
-      }
-    }
 
-    fs::create_directory(output_dir);
+    auto could_create_directory = fs::create_directory(output_dir);
+    if (not could_create_directory) {
+      if (fs::exists(output_dir) and (not fs::is_directory(output_dir))) {
+        throw std::runtime_error(
+            "The output directory, \"" + output_dir.string()
+            + "\" is present, but not a directory.");
+      }
+      throw std::runtime_error(
+          "Failed to create the output directory \"" + output_dir.string()
+          + "\"");
+    }
     fs::path rel_filename("output.json");
     fs::path filename = output_dir / rel_filename;
 
