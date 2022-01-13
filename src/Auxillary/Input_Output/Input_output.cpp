@@ -1,5 +1,6 @@
-#include <Exception.hpp>
-#include <Input_output.hpp>
+#include "Input_output.hpp"
+#include "Exception.hpp"
+
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -56,11 +57,11 @@ namespace io {
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
       ++counter;
     } while (counter < number_of_tries);
-    if (counter >= 10) {
+    if (counter >= number_of_tries) {
       gthrow(
           {"Couldn't aquire a unique filename in ",
            std::to_string(number_of_tries), " tries.\n",
-           "Last tried filename was\n", unique_name.string(), "\nAborting..."});
+           "Last tried filename was\n", unique_name.string(), "\n"});
     }
     std::fclose(fp);
     return unique_name;
@@ -73,7 +74,7 @@ namespace io {
       if (not fs::is_directory(output_dir)) {
         gthrow(
             {"The output directory, \"", output_dir.string(),
-             "\" is present, but not a directory, I will abort now."});
+             "\" is present, but not a directory."});
       }
     }
 
@@ -84,6 +85,32 @@ namespace io {
     auto outputpath
         = fs::absolute(create_new_output_file(filename, attach_epoch_count));
     return outputpath;
+  }
+
+  std::string millisecond_datetime_timestamp() {
+    auto nowtime = std::chrono::system_clock::now();
+    std::time_t t = std::chrono::system_clock::to_time_t(nowtime);
+
+    auto time_up_to_seconds = std::chrono::system_clock::from_time_t(t);
+
+    auto ms_since_second
+        = std::chrono::duration_cast<std::chrono::milliseconds>(
+            nowtime - time_up_to_seconds);
+
+    auto ms_string = std::to_string(ms_since_second.count());
+    char mbstr[32];
+    if (std::strftime(
+            mbstr, sizeof(mbstr), "%Y.%m.%d_%H:%M:%S", std::localtime(&t))) {
+      std::string timestring(mbstr);
+
+      std::string full_timestring = timestring + "." + ms_string;
+      std::cout << full_timestring << std::endl;
+      return full_timestring;
+    } else {
+      gthrow(
+          {"std::strftime somehow failed. This is a bug, please report it on "
+           "github!"});
+    }
   }
 
 } // namespace io

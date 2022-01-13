@@ -52,4 +52,12 @@ namespace io {
 
   std::filesystem::path prepare_output_file(std::filesystem::path directory);
 
+  /** \brief Creates a string encoding the current time up to millisecond
+   * precision.
+   *
+   * Format is: YYYY.MM.DD_hh:mm:ss.mmm
+   * The last three m are milliseconds.
+   */
+  std::string millisecond_datetime_timestamp();
+
 } // namespace io
