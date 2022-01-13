@@ -112,8 +112,9 @@ int grazer::run(std::filesystem::path directory_path) {
         nlohmann::json states_output_json;
         problem.add_results_to_json(states_output_json);
         io::prepare_output_directory(
-            output_directory, problem_directory, {"states"});
-        std::filesystem::path states_outputfile = output_directory / "states";
+            output_directory, problem_directory, {"states.json"});
+        std::filesystem::path states_outputfile
+            = output_directory / "states.json";
         std::cout << std::filesystem::absolute(states_outputfile).string()
                   << std::endl;
         std::ofstream o(states_outputfile);
@@ -241,14 +242,15 @@ int grazer::run(std::filesystem::path directory_path) {
       // output to json:
 
       io::prepare_output_directory(
-          output_directory, problem_directory, {"states", "controls"});
+          output_directory, problem_directory,
+          {"states.json", "controls.json"});
 
       try {
         nlohmann::json control_output_json;
         problem.save_controls_to_json(control_solution, control_output_json);
 
         std::filesystem::path control_outputfile
-            = output_directory / "controls";
+            = output_directory / "controls.json";
         std::ofstream o(control_outputfile);
         o << control_output_json.dump(1, '\t');
 
@@ -266,7 +268,8 @@ int grazer::run(std::filesystem::path directory_path) {
         nlohmann::json states_output_json;
         problem.add_results_to_json(states_output_json);
 
-        std::filesystem::path states_outputfile = output_directory / "states";
+        std::filesystem::path states_outputfile
+            = output_directory / "states.json";
         std::ofstream o(states_outputfile);
         o << states_output_json.dump(1, '\t');
       } catch (std::exception &e) {
