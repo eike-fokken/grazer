@@ -52,12 +52,35 @@ namespace io {
 
   std::filesystem::path prepare_output_file(std::filesystem::path directory);
 
-  /** \brief Creates a string encoding the current time up to millisecond
+  /** \brief Returns a string encoding the current time up to millisecond
    * precision.
    *
    * Format is: YYYY.MM.DD_hh:mm:ss.mmm
    * The last three m are milliseconds.
    */
   std::string millisecond_datetime_timestamp();
+
+  /** Function pointer type for a function millisecond_datetime_timestamp,
+   * returns possible directory names, usually differing ones.
+   */
+  using dirname_generator = std::string (*)();
+
+  /** \brief Creates a unique output directory named by dirname_generator.
+   *
+   * If the directory is already present, waits one millisecond and tries again.
+   * Aborts after 20 trials.
+   * This function is useful, if many instances of grazer are called in
+   * parallel, such as when many samples are used in a Monte-Carlo simulation.
+   * It makes sure that each instance writes into its own output directory.
+   *
+   * @param outer_output_directory The directory that should be the direct
+   * parent of the newly created directory
+   * param dirname_generator function to produce a directory name
+   * @returns A path to the newly created directory
+   */
+
+  std::filesystem::path unique_output_directory(
+      std::filesystem::path const &outer_output_directory,
+      dirname_generator dirname_generator);
 
 } // namespace io

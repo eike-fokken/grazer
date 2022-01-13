@@ -112,4 +112,21 @@ namespace io {
     }
   }
 
+  std::filesystem::path unique_output_directory(
+      std::filesystem::path const &outer_output_directory,
+      dirname_generator dirname_generator) {
+    int number_of_tries = 20;
+    for (int counter = 0; counter != number_of_tries; ++counter) {
+      std::filesystem::path absolute_unique_directory_path
+          = outer_output_directory / std::filesystem::path(dirname_generator());
+      if (std::filesystem::create_directory(absolute_unique_directory_path)) {
+        return absolute_unique_directory_path;
+      }
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+    gthrow(
+        {"Failed to create a unique output directory in ",
+         std::to_string(number_of_tries), ".\n", "Are you running more than ",
+         std::to_string(number_of_tries), " instances of grazer in parallel?"});
+  }
 } // namespace io

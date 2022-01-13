@@ -18,6 +18,8 @@ class prepare_output_fileTEST : public CWD_To_Rand_Test_Dir {};
 // Inheritance just for the name change (test fixture inherits name)
 class extract_input_dataTEST : public CWD_To_Rand_Test_Dir {};
 
+class unique_output_directory_TEST : public CWD_To_Rand_Test_Dir {};
+
 TEST(absolute_file_path_in_rootTEST, wrong_path) {
 
   auto problem_root_path = std::filesystem::path("grazer/src/directory");
@@ -94,4 +96,26 @@ TEST(millisecond_datetime_timestamp, happy_path) {
   std::cout << "datetime string with milliseconds: " << datetime_string
             << std::endl;
   EXPECT_EQ(it, datetime_string.end());
+}
+
+TEST_F(unique_output_directory_TEST, happy_path) {
+  auto path
+      = io::unique_output_directory(".", io::millisecond_datetime_timestamp);
+}
+
+static std::string dummy() { return "lihasdliasdflijasdf"; }
+
+TEST_F(unique_output_directory_TEST, failed_to_get_unique_name) {
+  auto path = io::unique_output_directory(".", dummy);
+  ASSERT_TRUE(std::filesystem::is_directory(path));
+  try {
+    [[maybe_unused]] auto path_already_taken
+        = io::unique_output_directory(".", dummy);
+    FAIL() << "Test FAILED: The statement ABOVE\n"
+           << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
+  } catch (std::runtime_error &e) {
+    EXPECT_THAT(
+        e.what(),
+        testing::HasSubstr("Failed to create a unique output directory in "));
+  }
 }
