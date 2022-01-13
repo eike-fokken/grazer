@@ -334,6 +334,12 @@ public:
     assert(false); // never call me!
   }
 
+private:
+  std::string componentclass() final { assert(false); }
+  std::string componenttype() final { assert(false); }
+  std::string id() final { assert(false); }
+
+public:
   //// Cost components:
   double evaluate_cost(
       double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const &state,

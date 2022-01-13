@@ -108,27 +108,7 @@ public:
       ((Aux::InterpolatingVector_Base &), (nlohmann::json const &)),
       (const, final));
 
-  // //////////////////////////////
-  // // Statecomponent overrides:
-  // /////////////////////////
-
-  // Eigen::Index set_state_indices(Eigen::Index) final {
-  //   state_startindex = 0;
-  //   state_afterindex = 2;
-  //   return state_afterindex;
-  // }
-
-  // MOCK_METHOD(void, add_results_to_json, (nlohmann::json &), (final));
-
-  // MOCK_METHOD(
-  //     void, json_save,
-  //     ((double time), (Eigen::Ref<Eigen::VectorXd const> const &state)),
-  //     (final));
-
-  // // unneeded:
-  // MOCK_METHOD(
-  //     void, set_initial_values,
-  //     ((Eigen::Ref<Eigen::VectorXd> new_state),
-  //      (nlohmann::json const &initial_json)),
-  //     (final));
+  std::string componentclass() final { assert(false); }
+  std::string componenttype() final { assert(false); }
+  std::string id() final { assert(false); }
 };

@@ -6,11 +6,6 @@
 #include <memory>
 #include <vector>
 
-namespace Aux {
-
-  class Costgradienthandler;
-}
-
 namespace Network {
   class Net;
 }
@@ -67,7 +62,6 @@ namespace Model {
 
     Eigen::Index set_state_indices(Eigen::Index next_free_index) final;
 
-  private:
     ////////////////////////////////////////////////////////////////////////////
     // Controlcomponent methods
     ////////////////////////////////////////////////////////////////////////////
@@ -116,6 +110,15 @@ namespace Model {
     Eigen::Index set_control_indices(Eigen::Index next_free_index) final;
 
     void setup() final;
+
+    void save_controls_to_json(
+        Aux::InterpolatingVector_Base const &controls,
+        nlohmann::json &json) final;
+
+  private:
+    std::string componentclass() final;
+    std::string componenttype() final;
+    std::string id() final;
 
     /////////////////////////////////////////////////////////
     // cost function methods:

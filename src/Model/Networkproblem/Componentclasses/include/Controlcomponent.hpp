@@ -154,7 +154,13 @@ namespace Model {
         Aux::InterpolatingVector_Base &full_upper_bound_vector,
         nlohmann::json const &upper_bound_json) const = 0;
 
+    virtual void save_controls_to_json(
+        Aux::InterpolatingVector_Base const &controls, nlohmann::json &json);
+
   private:
+    virtual std::string componentclass() = 0;
+    virtual std::string componenttype() = 0;
+    virtual std::string id() = 0;
     /** \brief The first control index, this Controlcomponent "owns".
      */
     Eigen::Index control_startindex{-1};

@@ -65,6 +65,13 @@ namespace Model::Gas {
         nlohmann::json const &upper_bound_json) const final;
 
     Eigen::Index needed_number_of_controls_per_time_point() const final;
+
+  private:
+    std::string componentclass() final;
+    std::string componenttype() final;
+    std::string id() final;
+
+  public:
     ///////////////////////////////////////////////////////////
     // Statecomponent methods:
     ///////////////////////////////////////////////////////////

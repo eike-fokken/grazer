@@ -78,4 +78,9 @@ public:
       ((Aux::InterpolatingVector_Base & full_control_vector),
        (nlohmann::json const &control_json)),
       (const, final));
+
+private:
+  std::string componentclass() final { assert(false); }
+  std::string componenttype() final { assert(false); }
+  std::string id() final { assert(false); }
 };

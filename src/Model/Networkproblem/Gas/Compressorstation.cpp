@@ -139,4 +139,10 @@ namespace Model::Gas {
         0, get_control_startindex(), 2 * get_cost_weight() * current_control);
   }
 
+  std::string Compressorstation::componentclass() {
+    return Aux::component_class(*this);
+  }
+  std::string Compressorstation::componenttype() { return get_type(); }
+  std::string Compressorstation::id() { return get_id(); }
+
 } // namespace Model::Gas

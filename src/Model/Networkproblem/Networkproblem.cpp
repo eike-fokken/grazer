@@ -104,7 +104,7 @@ namespace Model {
     }
   }
 
-  std::string Networkproblem::get_type() { return "Network_problem"; }
+  std::string Networkproblem::get_type() { return "Networkproblem"; }
 
   Networkproblem::~Networkproblem() {}
 
@@ -519,6 +519,17 @@ namespace Model {
       }
     }
   }
+
+  void Networkproblem::save_controls_to_json(
+      Aux::InterpolatingVector_Base const &controls, nlohmann::json &json) {
+    for (auto *controlcomponent : controlcomponents) {
+      controlcomponent->save_controls_to_json(controls, json);
+    }
+  }
+
+  std::string Networkproblem::componentclass() { gthrow({"Never call me!"}); }
+  std::string Networkproblem::componenttype() { return get_type(); }
+  std::string Networkproblem::id() { gthrow({"Never call me!"}); }
 
   /////////////////////////////////////////////////////////
   // other methods:

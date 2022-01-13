@@ -15,6 +15,7 @@
 #include "Timeevolver.hpp"
 #include "helpers.hpp"
 #include <chrono>
+#include <exception>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -236,22 +237,41 @@ int grazer::run(std::filesystem::path directory_path) {
             state_solution.interpolation_point_at_index(index),
             state_solution.vector_at_index(index));
       }
+
       // output to json:
+
+      io::prepare_output_directory(
+          output_directory, problem_directory, {"states", "controls"});
+
+      try {
+        nlohmann::json control_output_json;
+        problem.save_controls_to_json(control_solution, control_output_json);
+
+        std::filesystem::path control_outputfile
+            = output_directory / "controls";
+        std::ofstream o(control_outputfile);
+        o << control_output_json.dump(1, '\t');
+
+      } catch (std::exception &e) {
+        std::ostringstream o;
+        o << "Printing to control output file failed with error message:"
+          << "\n###############################################\n"
+          << e.what()
+          << "\n###############################################\n\n";
+        throw std::runtime_error(o.str());
+      }
 
       try {
         // add_results_to_json();
         nlohmann::json states_output_json;
         problem.add_results_to_json(states_output_json);
-        io::prepare_output_directory(
-            output_directory, problem_directory, {"states"});
+
         std::filesystem::path states_outputfile = output_directory / "states";
-        std::cout << std::filesystem::absolute(states_outputfile).string()
-                  << std::endl;
         std::ofstream o(states_outputfile);
         o << states_output_json.dump(1, '\t');
       } catch (std::exception &e) {
         std::ostringstream o;
-        o << "Printing to files failed with error message:"
+        o << "Printing to state output file failed with error message:"
           << "\n###############################################\n"
           << e.what()
           << "\n###############################################\n\n";
