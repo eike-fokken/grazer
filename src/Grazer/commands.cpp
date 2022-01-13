@@ -110,8 +110,6 @@ int grazer::run(std::filesystem::path directory_path) {
         // add_results_to_json();
         nlohmann::json states_output_json;
         problem.add_results_to_json(states_output_json);
-        std::cout << problem_directory.string() << std::endl;
-        std::cout << output_directory.string() << std::endl;
         io::prepare_output_directory(
             output_directory, problem_directory, {"states"});
         std::filesystem::path states_outputfile = output_directory / "states";
@@ -204,20 +202,6 @@ int grazer::run(std::filesystem::path directory_path) {
       // std::cout << optimizer.get_initial_controls() << std::endl;
 
       adaptor.optimize();
-      std::cout << "solution:" << adaptor.get_solution().transpose()
-                << std::endl;
-      std::cout << "solution norm: "
-                << adaptor.get_solution().transpose().norm() << std::endl;
-      Eigen::VectorXd ipoptconstraints(optimizer.get_total_no_constraints());
-      optimizer.evaluate_constraints(adaptor.get_solution(), ipoptconstraints);
-      Eigen::VectorXd last_lower_bounds
-          = optimizer.get_constraint_lower_bounds();
-      std::cout << "constraints-lower_bounds: "
-                << (ipoptconstraints - last_lower_bounds).transpose()
-                << std::endl;
-      // std::cout << "last constraint jacobian:\n"
-      //           << optimizer.get_constraint_jacobian().whole_matrix()
-      //           << std::endl;
 
       Eigen::VectorXd storage(optimizer.get_no_nnz_in_jacobian());
 
@@ -228,7 +212,7 @@ int grazer::run(std::filesystem::path directory_path) {
       jacmapped = optimizer.get_constraint_jacobian();
       int count = 0;
       for (auto entry : storage) {
-        if (std::abs(entry) > 1e-17) {
+        if (std::abs(entry) > 1e-16) {
           ++count;
         }
       }
@@ -237,6 +221,42 @@ int grazer::run(std::filesystem::path directory_path) {
       std::cout << "sparsity of the constraint jacobian: " << sparsity
                 << std::endl;
       std::cout << "objective: " << adaptor.get_obj_value() << std::endl;
+
+      auto ipoptcontrols = adaptor.get_solution();
+      double objective = 0;
+      optimizer.new_x();
+      optimizer.evaluate_objective(ipoptcontrols, objective);
+      auto &state_solution = optimizer.get_current_full_state();
+      Aux::ConstMappedInterpolatingVector const control_solution(
+          control_timepoints, problem.get_number_of_controls_per_timepoint(),
+          ipoptcontrols.data(), ipoptcontrols.size());
+
+      for (Eigen::Index index = 0; index != saved_states.size(); ++index) {
+        problem.json_save(
+            state_solution.interpolation_point_at_index(index),
+            state_solution.vector_at_index(index));
+      }
+      // output to json:
+
+      try {
+        // add_results_to_json();
+        nlohmann::json states_output_json;
+        problem.add_results_to_json(states_output_json);
+        io::prepare_output_directory(
+            output_directory, problem_directory, {"states"});
+        std::filesystem::path states_outputfile = output_directory / "states";
+        std::cout << std::filesystem::absolute(states_outputfile).string()
+                  << std::endl;
+        std::ofstream o(states_outputfile);
+        o << states_output_json.dump(1, '\t');
+      } catch (std::exception &e) {
+        std::ostringstream o;
+        o << "Printing to files failed with error message:"
+          << "\n###############################################\n"
+          << e.what()
+          << "\n###############################################\n\n";
+        throw std::runtime_error(o.str());
+      }
 
       wall_clock_sim_end = Clock::now();
     }
