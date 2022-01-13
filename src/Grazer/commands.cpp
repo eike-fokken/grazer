@@ -15,6 +15,7 @@
 #include "Timeevolver.hpp"
 #include "helpers.hpp"
 #include <chrono>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -33,9 +34,18 @@ int grazer::run(std::filesystem::path directory_path) {
   {
     auto problem_directory = directory_path / "problem";
     auto problem_data_file = problem_directory / "problem_data.json";
-    auto output_file = io::prepare_output_file(directory_path);
-    nlohmann::json output_json;
-    std::cout << "Using output filename\n" << output_file.string() << std::endl;
+    std::filesystem::path outer_output_directory = directory_path / "output";
+    std::filesystem::create_directory(outer_output_directory);
+    if (not std::filesystem::is_directory(outer_output_directory)) {
+      throw std::runtime_error(
+          "The output directory "
+          + std::filesystem::absolute(outer_output_directory).string()
+          + " is not present and could not be created!");
+    }
+    // Here we reserve a output directory name for our outputs:
+    auto output_directory = io::unique_output_directory(outer_output_directory);
+    std::cout << "Using output directory\n"
+              << output_directory.string() << std::endl;
 
     // This must be wrapped in exception handling code!
 
@@ -98,9 +108,17 @@ int grazer::run(std::filesystem::path directory_path) {
       // output to json:
       try {
         // add_results_to_json();
-        problem.add_results_to_json(output_json);
-        std::ofstream o(output_file);
-        o << output_json.dump(1, '\t');
+        nlohmann::json states_output_json;
+        problem.add_results_to_json(states_output_json);
+        std::cout << problem_directory.string() << std::endl;
+        std::cout << output_directory.string() << std::endl;
+        io::prepare_output_directory(
+            output_directory, problem_directory, {"states"});
+        std::filesystem::path states_outputfile = output_directory / "states";
+        std::cout << std::filesystem::absolute(states_outputfile).string()
+                  << std::endl;
+        std::ofstream o(states_outputfile);
+        o << states_output_json.dump(1, '\t');
       } catch (std::exception &e) {
         std::ostringstream o;
         o << "Printing to files failed with error message:"

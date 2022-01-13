@@ -81,15 +81,17 @@ namespace io {
 
   std::filesystem::path unique_output_directory(
       std::filesystem::path const &outer_output_directory,
-      dirname_generator dirname_generator);
+      dirname_generator dirname_generator = millisecond_datetime_timestamp);
 
   /** \brief Fills the output directory with the input files and opens empty
    * output files inside.
    * @param output_directory The directory to fill
-   * @param problem_data_directory The directory to copy here
+   * @param problem_directory The directory to copy here
+   * @param filenames_to_create Optionally files with these filenames are
+   * created insied output_directory
    */
   void prepare_output_directory(
       std::filesystem::path const &output_directory,
-      std::filesystem::path const &problem_data_directory,
-      std::vector<std::string> filenames_to_create);
+      std::filesystem::path const &problem_directory,
+      std::vector<std::string> filenames_to_create = {{}});
 } // namespace io

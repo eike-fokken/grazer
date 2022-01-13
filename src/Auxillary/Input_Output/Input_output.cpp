@@ -132,11 +132,12 @@ namespace io {
 
   void prepare_output_directory(
       std::filesystem::path const &output_directory,
-      std::filesystem::path const &problem_data_directory,
+      std::filesystem::path const &problem_directory,
       std::vector<std::string> filenames_to_create) {
     namespace fs = std::filesystem;
-    fs::path problem_data = output_directory / fs::path("problem_data");
-    fs::copy(problem_data_directory, problem_data);
+    fs::path problem_files = output_directory / fs::path("problem");
+    const auto copyOptions = fs::copy_options::recursive;
+    fs::copy(problem_directory, problem_files, copyOptions);
 
     for (auto const &filename : filenames_to_create) {
       auto filepath = output_directory / fs::path(filename);
