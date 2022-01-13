@@ -13,7 +13,7 @@ namespace fs = std::filesystem;
 static void write_gas_csv(std::string id, json object);
 static void write_power_csv(std::string id, json object);
 
-/** \brief Outputs data from the output.json of grazer to a csv file.
+/** \brief Outputs data from the states.json of grazer to a csv file.
  *
  * This is especially useful for printing with LaTeX.
  * Takes two arguments: First the json file and second a component id, whose

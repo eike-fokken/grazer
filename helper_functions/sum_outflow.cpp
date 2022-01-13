@@ -13,6 +13,7 @@ namespace fs = std::filesystem;
 /** \brief Prints the summed outflux of a network.
  *
  * Best used in conjuction with change_inflow.
+ * - single input is the states output json file of a grazer run.
  */
 
 int main(int argc, char **argv) {
