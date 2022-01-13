@@ -86,3 +86,12 @@ TEST_F(prepare_output_fileTEST, output_not_a_directory) {
         e.what(), testing::HasSubstr("is present, but not a directory"));
   }
 }
+
+TEST(millisecond_datetime_timestamp, happy_path) {
+
+  auto datetime_string = io::millisecond_datetime_timestamp();
+  auto it = std::find(datetime_string.begin(), datetime_string.end(), ' ');
+  std::cout << "datetime string with milliseconds: " << datetime_string
+            << std::endl;
+  EXPECT_EQ(it, datetime_string.end());
+}

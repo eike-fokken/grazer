@@ -104,7 +104,6 @@ namespace io {
       std::string timestring(mbstr);
 
       std::string full_timestring = timestring + "." + ms_string;
-      std::cout << full_timestring << std::endl;
       return full_timestring;
     } else {
       gthrow(
