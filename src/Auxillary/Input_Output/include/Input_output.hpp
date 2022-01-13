@@ -83,4 +83,13 @@ namespace io {
       std::filesystem::path const &outer_output_directory,
       dirname_generator dirname_generator);
 
+  /** \brief Fills the output directory with the input files and opens empty
+   * output files inside.
+   * @param output_directory The directory to fill
+   * @param problem_data_directory The directory to copy here
+   */
+  void prepare_output_directory(
+      std::filesystem::path const &output_directory,
+      std::filesystem::path const &problem_data_directory,
+      std::vector<std::string> filenames_to_create);
 } // namespace io

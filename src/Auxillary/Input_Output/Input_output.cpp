@@ -129,4 +129,24 @@ namespace io {
          std::to_string(number_of_tries), ".\n", "Are you running more than ",
          std::to_string(number_of_tries), " instances of grazer in parallel?"});
   }
+
+  void prepare_output_directory(
+      std::filesystem::path const &output_directory,
+      std::filesystem::path const &problem_data_directory,
+      std::vector<std::string> filenames_to_create) {
+    namespace fs = std::filesystem;
+    fs::path problem_data = output_directory / fs::path("problem_data");
+    fs::copy(problem_data_directory, problem_data);
+
+    for (auto const &filename : filenames_to_create) {
+      auto filepath = output_directory / fs::path(filename);
+      auto fp = std::fopen(filepath.string().c_str(), "wx");
+      if (not fp) {
+        auto absolute_path = fs::absolute(filepath);
+        gthrow({"Failed to create file: ", absolute_path.string()});
+      }
+      std::fclose(fp);
+    }
+  }
+
 } // namespace io
