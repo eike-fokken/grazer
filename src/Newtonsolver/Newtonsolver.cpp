@@ -131,7 +131,8 @@ namespace Solver {
       ++solstruct.used_iterations;
       solstruct.residual = rootvalues.norm();
     }
-    if (solstruct.used_iterations == maximal_iterations) {
+    if (solstruct.used_iterations == maximal_iterations
+        and solstruct.residual > tolerance) {
       solstruct.success = false;
     } else {
       solstruct.success = true;
