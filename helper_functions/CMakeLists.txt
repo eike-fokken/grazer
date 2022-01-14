@@ -16,6 +16,10 @@ target_link_libraries(oup stochastics)
 add_executable(generate_printing_csv generate_printing_csv.cpp)
 target_link_libraries(generate_printing_csv PRIVATE input_output)
 
+add_executable(generate_control_printing_csv generate_control_printing_csv.cpp)
+target_link_libraries(generate_control_printing_csv PRIVATE input_output)
+
+
 add_executable(move_to_category move_to_category.cpp)
 add_executable(normalize_jsons normalize_jsons.cpp)
 add_executable(draw_gaslib_graph draw_gaslib_graph.cpp)
