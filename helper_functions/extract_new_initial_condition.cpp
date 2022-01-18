@@ -127,8 +127,6 @@ json powerinitial(json datapoint) {
   json init_datapoint;
   init_datapoint["x"] = 0.0;
   init_datapoint["values"] = json::array();
-  init_datapoint["values"].push_back(datapoint["P"]);
-  init_datapoint["values"].push_back(datapoint["Q"]);
   init_datapoint["values"].push_back(datapoint["V"]);
   init_datapoint["values"].push_back(datapoint["phi"]);
   init_data.push_back(init_datapoint);
