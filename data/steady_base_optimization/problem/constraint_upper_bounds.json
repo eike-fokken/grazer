@@ -1,0 +1,41 @@
+{
+	  "nodes": {
+		    "ConstraintSink": [
+		        {
+		        "id": "node_ld22",
+		        "data": [
+				        {
+				        "time": 0,
+				        "values": [
+						        120
+				        ]
+		        },
+				        {
+				        "time": 86400,
+				        "values": [
+						        120
+				        ]
+		        }
+                
+            ]
+        },
+            {
+		        "id": "node_ld40",
+		        "data": [
+				        {
+				        "time": 0,
+				        "values": [
+						        70
+				        ]
+		        },
+				        {
+				        "time": 86400,
+				        "values": [
+						        32
+				        ]
+		        }
+		        ]
+        }
+        ]
+    }
+}
