@@ -1,5 +1,5 @@
 {
-    "optimize": true,
+    "optimize": false,
     "constraint_settings": {
         "evaluate_constraints_every_n": 10
     },
