@@ -84,6 +84,8 @@ namespace Solver {
     while (rootvalues.norm() > tolerance
            && solstruct.used_iterations < maximal_iterations) {
       if (use_full_jacobian) {
+        evaluate_state_derivative_coeffref(
+            problem, last_time, new_time, last_state, new_state, control);
         lusolver.factorize(jacobian);
         if (lusolver.info() != Eigen::Success) {
           std::ostringstream o;

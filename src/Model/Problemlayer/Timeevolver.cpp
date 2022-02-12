@@ -65,6 +65,7 @@ namespace Model {
       current_controls = controls(new_time);
     }
 
+    // Here we set the Jacobian structure, never to be changed again.
     solver.evaluate_state_derivative_triplets(
         problem, last_time, new_time, last_state, new_state, current_controls);
 
