@@ -437,15 +437,26 @@ namespace Optimization {
       Eigen::VectorXd rhs_f = Eigen::VectorXd::Zero(states_per_step());
       Eigen::RowVectorXd df_dui(controls_per_step());
 
+      /** full_Xi_row is the Lagrange multiplier in the adjoint method,
+       *  or rather it is the row, that is currently worked on. The full
+       *  Lagrange multiplier (the matrix Xi) is never constructed,
+       *  because it rows can be used one after another to construct the
+       *  derivatives of the constraints.
+       */
       Eigen::MatrixXd full_Xi_row = Eigen::MatrixXd::Zero(
           states_per_step(), get_total_no_constraints());
+      /** full_rhs_g is the right-hand side in the adjoint method, or rather it
+       * is the row, that is currently worked on. It accompanies full_Xi_row,
+       * which is the Lagrange multiplier.
+       */
       Eigen::MatrixXd full_rhs_g = Eigen::MatrixXd::Zero(
           states_per_step(), get_total_no_constraints());
+
       RowMat full_dg_dui = Eigen::MatrixXd::Zero(
           get_total_no_constraints(), controls_per_step());
 
       Eigen::Index state_index = back_index(state_timepoints);
-      // We set this to
+
       Eigen::Index constraint_index = constraint_steps();
 
       bool constraints_are_active_at_current_time = false;
@@ -490,30 +501,50 @@ namespace Optimization {
             current_step_is_new_constraint_time = true;
           }
 
+          // This condition is false, if we are at timesteps that are later than
+          // any of the constraints. Usually doesn't happen, but could be
+          // implemented.
           if (constraints_are_active_at_current_time) {
             if (current_step_is_new_constraint_time) {
+              // compute d_constraints_dstates and d_constraints_dcontrols
               update_constraint_derivative_matrices(
                   state_index, controls, states);
-              assert(middle_col_block(full_rhs_g, constraint_index).isZero());
+              assert(middle_col_block(full_rhs_g, constraint_index).isZero() &&
+                     "Somehow the next part of the constraint right-hand side is not zero, this is a bug!");
+              // To make use of sparsity we add the sparse matrix
+              // dconstraint_dstate to the dense matrix full_rhs_g.
               middle_col_block(full_rhs_g, constraint_index)
                   -= dg_dnew_transposed;
             }
 
+            /**  current_Xi comprises all those columns of full_Xi_row, that are
+                 "active", meaning, that they can be non-zero at the current
+               time step.
+             */
             auto current_Xi = right_cols(full_Xi_row, constraint_index);
             auto current_rhs = right_cols(full_rhs_g, constraint_index);
             current_Xi = solver.solve(current_rhs);
             current_rhs.noalias() = -dE_dlast_transposed * current_Xi;
-            // std::cout << "A xi:\n";
-            // std::cout << current_rhs << std::endl;
 
+            /** current_dg_dui is the derivative of all constraints that are
+                active at the current time step or later with respect to the
+                (often interpolated) control at the current time step.
+             */
             auto current_dg_dui = lower_rows(full_dg_dui, constraint_index);
             current_dg_dui.noalias() = current_Xi.transpose() * dE_dcontrol;
 
+            // If at the current time step a constraint must be satisfied, then
+            // the derivative of this constraint with respect to the current
+            // control must be added
             if (current_step_is_new_constraint_time) {
               middle_row_block(full_dg_dui, constraint_index) += dg_dcontrol;
             }
 
-            // Compute the actual derivative with respect to the control:
+            // Compute the actual derivative with respect to the control: Up to
+            // now, only derivatives w.r.t. the control at the current time step
+            // were computed. Here we translate this into derivatives w.r.t the
+            // actual control variables, from which the current-time-controls
+            // are interpolated.
             auto lambda = index_lambda_pairs[state_index].second;
             assert(0 <= lambda);
             assert(lambda <= 1.0);
