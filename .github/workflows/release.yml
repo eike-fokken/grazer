@@ -13,7 +13,7 @@ jobs:
       version: ${{ steps.get_version.outputs.version }}
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Get Version
       id: get_version
@@ -78,7 +78,7 @@ jobs:
 
     steps:
     - name: Checkout the repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         submodules: recursive
 
@@ -178,7 +178,7 @@ jobs:
       CTEST_OUTPUT_ON_FAILURE: 1
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: recursive
 
@@ -206,7 +206,7 @@ jobs:
       run: cmake --build . --config $BUILD_TYPE --target docs --parallel 10
     
     - name: Upload Doku to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@4.1.5
+      uses: JamesIves/github-pages-deploy-action@v4.2.5
       with:
         branch: gh-pages
         folder: build/docs/html
