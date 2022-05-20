@@ -75,9 +75,8 @@ will appear in `release/src/Grazer/`.
 
 ## Usage
 
-Grazer provides both a command line interface (cli) and graphical user interface
-(gui) both binaries can be downloaded from [our GitHub releases
-page](https://github.com/eike-fokken/grazer/releases).
+Grazer provides a command line interface (cli). Binaries can be downloaded from 
+[our GitHub releases page](https://github.com/eike-fokken/grazer/releases).
 
 ### Command Line Interface (CLI)
 
@@ -132,21 +131,6 @@ will only insert the `$schema` keys.)
 
 Right now only Power and Gas networks are supported out of the box.
 A few example problems can be found in the `data` subdirectory.
-
-
-### Graphical User Interface (GUI)
-
-Grazer uses [Gooey](https://github.com/chriskiehl/Gooey) to provide a thin
-GUI wrapper for the command line interface. 
-
-![Grazer-Gui](./docs/images/grazer-gui.png)
-
-> Note: Since Gooey is a python package
-it would require an installation of python. To avoid this dependency we use
-[pyinstaller](https://www.pyinstaller.org/) to package everything into an
-executable. But this does mean we essentially ship a full python version with
-the GUI, which increases Grazers size from something like 2mb to something like
-20mb on windows and mac and even larger on linux.
 
 ## Documentation
 

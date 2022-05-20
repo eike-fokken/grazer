@@ -1,3 +1,0 @@
-Gooey==1.0.8
-wxPython==4.1.0
-pyinstaller==4.3
