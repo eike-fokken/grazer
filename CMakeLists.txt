@@ -234,10 +234,18 @@ if (NOT DEFINED IPOPT_DIRECTORY)
 
 else()
 
-  find_library(ipopt_library_file
-    NAMES ipopt
-    PATHS "${IPOPT_DIRECTORY}/lib" NO_DEFAULT_PATH)
-  set(ipopt_library_headers "${IPOPT_DIRECTORY}/include/coin-or")
+  if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    find_library(ipopt_library_file
+      NAMES ipopt-3
+      PATHS "${IPOPT_DIRECTORY}/bin" NO_DEFAULT_PATH)
+    set(ipopt_library_headers "${IPOPT_DIRECTORY}/include/coin-or")
+    set(ipopt_implib "${IPOPT_DIRECTORY}/lib/ipopt.dll.lib")
+  else()
+    find_library(ipopt_library_file
+      NAMES ipopt
+      PATHS "${IPOPT_DIRECTORY}/lib" NO_DEFAULT_PATH)
+    set(ipopt_library_headers "${IPOPT_DIRECTORY}/include/coin-or")
+  endif()
 endif()
 
 
@@ -249,10 +257,17 @@ endif()
   add_dependencies(my_ipopt ipopt_build_target ${ipopt_library_file})
 
   set_target_properties(my_ipopt
+    PROPERTIES
+    IMPORTED_LOCATION ${ipopt_library_file}
+  )
+  if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    set_target_properties(my_ipopt
       PROPERTIES
-      IMPORTED_LOCATION ${ipopt_library_file}
-      )
-    target_include_directories(my_ipopt SYSTEM INTERFACE ${ipopt_library_headers})
+      IMPORTED_IMPLIB ${ipopt_implib}
+    )
+
+  endif()
+  target_include_directories(my_ipopt SYSTEM INTERFACE ${ipopt_library_headers})
   
     # include_directories(SYSTEM ${ipopt_library_headers})
 
