@@ -235,13 +235,12 @@ if (NOT DEFINED IPOPT_DIRECTORY)
 else()
 
   if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-    set(ipopt_library_file "${IPOPT_DIRECTORY}/bin/ipopt-3.dll")
     find_file(ipopt_library_file
       NAMES ipopt-3.dll ipopt-3
       PATHS "${IPOPT_DIRECTORY}/bin/" NO_DEFAULT_PATH
     )
     find_library(ipopt_impl_library
-      NAMES ipopt
+      NAMES ipopt ipopt.dll ipopt.dll.lib
       PATHS "${IPOPT_DIRECTORY}/lib/" NO_DEFAULT_PATH)
     message(STATUS "ipopt impl library: ${ipopt_library_file}")
     set(ipopt_library_headers "${IPOPT_DIRECTORY}/include/coin-or")
