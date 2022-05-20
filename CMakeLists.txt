@@ -237,7 +237,6 @@ else()
   find_library(ipopt_library_file
     NAMES ipopt
     PATHS "${IPOPT_DIRECTORY}/lib" NO_DEFAULT_PATH)
-  set(ipopt_library_file )
   set(ipopt_library_headers "${IPOPT_DIRECTORY}/include/coin-or")
 endif()
 
