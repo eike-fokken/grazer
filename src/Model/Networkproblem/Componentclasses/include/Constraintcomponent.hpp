@@ -46,8 +46,7 @@ namespace Model {
      * not claimed by another component.
      * @returns The new lowest free index.
      */
-    virtual Eigen::Index
-    set_constraint_indices(Eigen::Index const next_free_index)
+    virtual Eigen::Index set_constraint_indices(Eigen::Index next_free_index)
         = 0;
 
     Eigen::Index get_number_of_constraints_per_timepoint() const;
