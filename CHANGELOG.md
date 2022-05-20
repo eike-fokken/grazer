@@ -1,3 +1,7 @@
+### Changes (since v0.2.1)
+
+- removed the GUI again.
+
 ### Changes (since v0.1.10)
 
 - Defaults can be set for arbitrary Components in the `problem_data.json`.
