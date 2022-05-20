@@ -37,16 +37,7 @@ if (BUILD_WITH_LIBCPP AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 enable_testing()
 
-
-
-
-# https://github.com/google/googletest/blob/master/googletest/README.md#visual-studio-dynamic-vs-static-runtimes
-# https://stackoverflow.com/a/12546288/6662425 "how to activate that flag"
-if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  set(gtest_force_shared_crt ON CACHE BOOL "Make gtest compile the C standard libraries as DLLs, because MSVE requires that." FORCE)
-endif()
 add_subdirectory(googletest EXCLUDE_FROM_ALL)
-
 
 # Typically you don't care so much for a third party library's tests to be
 # run from your own project's code.
@@ -98,17 +89,9 @@ set(debug_clang_options "-Wunreachable-code;-fcolor-diagnostics;-Wno-error=unuse
 
 set(debug_gcc_options "-fdiagnostics-color;-Wno-error=strict-overflow;-Wno-error=unused-but-set-variable")
 
-# Warning 4127 warns of if statements that are compile time constants.
-# But templated if statements are often compile time constants and Eigen does not have
-# if constexpr in those places. Therefore we suppress this warning.
-# /Zc:__cplusplus: https://gitlab.com/libeigen/eigen/-/issues/2170 might become superflous
-set(debug_msvc_options "/permissive-;/W4;/WX;/wd4127;/wd4100;/Zc:__cplusplus")
-
-
-
 set(release_clang_options "")
 set(release_gcc_options "")
-set(release_msvc_options "/permissive-")
+
 
 
 
@@ -120,13 +103,8 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   add_compile_options("$<$<CONFIG:DEBUG>:${my_debug_options}>")
    add_compile_options("$<$<CONFIG:DEBUG>:${debug_gcc_options}>"
      "$<$<NOT:$<CONFIG:Debug>>:${release_gcc_options}>")
-elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  add_compile_options(
-    "$<$<CONFIG:DEBUG>:${debug_msvc_options}>"
-    "$<$<NOT:$<CONFIG:Debug>>:${release_msvc_options}>"
-  )
 else()
-  message(WARNING "Your compiler, ${CMAKE_CXX_COMPILER_ID}, is untested with Grazer but maybe still works. Tested compilers are gcc, clang and msvc.")
+  message(WARNING "Your compiler, ${CMAKE_CXX_COMPILER_ID}, is untested with Grazer but maybe still works. Tested compilers are gcc and clang.")
 endif()
 
 
@@ -136,13 +114,7 @@ endif()
 # add_compile_options("$<$<CONFIG:DEBUG>:${MY_SANITIZE_OPTIONS}>")
 # add_link_options("$<$<CONFIG:DEBUG>:${MY_SANITIZE_OPTIONS}>")
 
-
-
-
-
-
 ## Hacky eigen include:
-# find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 
 include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/eigen/")
 
@@ -160,6 +132,7 @@ include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp/include/")
 
 include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/CLI11/include/")
 
+add_subdirectory(Randutils)
 
 # IPOPT
 # you can supply your own ipopt directory or build ipopt with cmake.
