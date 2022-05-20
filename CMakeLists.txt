@@ -102,7 +102,7 @@ set(debug_gcc_options "-fdiagnostics-color;-Wno-error=strict-overflow;-Wno-error
 # But templated if statements are often compile time constants and Eigen does not have
 # if constexpr in those places. Therefore we suppress this warning.
 # /Zc:__cplusplus: https://gitlab.com/libeigen/eigen/-/issues/2170 might become superflous
-set(debug_msvc_options "/permissive-;/W4;/WX;/wd4127;/wd4100;/Zc:__cplusplus")
+set(debug_msvc_options "/permissive-;/W4;/wd4127;/wd4100;/Zc:__cplusplus")
 
 
 
