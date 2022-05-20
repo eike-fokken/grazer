@@ -28,7 +28,6 @@ jobs:
         - Linux-Clang
         - Linux-Clang-libc++
         - MacOS-Clang
-        - Windows-VisualStudio
         - Release-Test
         include:
         - name: Linux-Docs
@@ -67,13 +66,6 @@ jobs:
           binary-path: /build/src/Grazer/grazer
           parallel-command: --parallel 10
           dep-install: brew install bash metis; echo "/usr/local/bin" >> $GITHUB_PATH; echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> $GITHUB_ENV; echo "FC=gfortran-11" >> $GITHUB_ENV;
-        - name: Windows-VisualStudio
-          os: windows-2019
-          compiler: msvc
-          build_type: Debug
-          binary-path: \build\src\Grazer\Debug\grazer.exe
-          binary-ending: ".exe"
-          parallel-command: --parallel 10
         - name: Release-Test
           os: ubuntu-20.04
           compiler: clang++-10
@@ -89,7 +81,7 @@ jobs:
       CTEST_OUTPUT_ON_FAILURE: 1
       BUILD_WITH_LIBCPP: ${{ matrix.build_with_libcpp }}
       # acts like a ternary:
-      CCACHE_OPTIONS: ${{ matrix.os != 'windows-2019' && '-D CMAKE_CXX_COMPILER_LAUNCHER=ccache -D CMAKE_C_COMPILER_LAUNCHER=ccache' || ' ' }}
+      CCACHE_OPTIONS: ${{'-D CMAKE_CXX_COMPILER_LAUNCHER=ccache -D CMAKE_C_COMPILER_LAUNCHER=ccache'}}
     # The CMake configure and build commands are platform agnostic and should work equally
     # well on Windows or Mac.  You can convert this to a matrix build if you need
     # cross-platform coverage.
@@ -103,17 +95,10 @@ jobs:
         submodules: recursive
     
     - name: Set up CCache
-      if: matrix.os != 'windows-2019' # does not work for windows
       uses: hendrikmuhs/ccache-action@v1 
       with:
         key: ${{ matrix.name }}
 
-    ## works for clang only (all OS)
-    # - name: Set up buildcache
-    #   if: matrix.os == 'windows-2019' 
-    #   uses: mikehardy/buildcache-action@v1
-    #   with:
-    #     cache_key: ${{ matrix.name }} # might be useful in the furture
 
     - name: Install Dependencies
       run: ${{ matrix.dep-install }}
