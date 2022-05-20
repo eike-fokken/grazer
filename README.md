@@ -1,5 +1,10 @@
 [![Release](https://github.com/eike-fokken/grazer/actions/workflows/release.yml/badge.svg)](https://github.com/eike-fokken/grazer/releases)
 
+## On this branch:
+This branch is as far as I got, building Grazer under Windows with MSVC. It builds only, if supplying the absolute path to the un-zipped
+directory, which can be downloaded from [The IPOPT git reposotory](https://github.com/coin-or/Ipopt).
+
+
 ## Grazer
 
 Grazer is a program that shall simulate the time evolution of dynamical systems.
@@ -11,9 +16,11 @@ Yet feel free to dig into it.  Any feedback in github issues or to the mail addr
 
 
 ## Installation
-Before you can use grazer, you must build it (You can also download a prebuilt version, although note that the latex documentation is not included and also the helper functions are missing. But for a first glimpse, checkout [Releases](https://github.com/eike-fokken/grazer/releases)).
-Supported compilers are clang-9, gcc-9 and Microsofts Visual Studio 2019 as well as later versions.
-Other compilers may work and probably do as we strive for full standard compliance to C++17.
+Before you can use grazer, you must build it. Supported compilers are clang-9 and gcc-9.
+Microsofts Visual Studio 2019 was supported but the dependency on IPOPT made this difficult.
+Other compilers may work, if you can compile IPOPT with them.
+
+
 
 ### Installing all dependencies
 
