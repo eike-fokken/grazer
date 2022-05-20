@@ -37,7 +37,7 @@ namespace Aux {
         > first_point + (number_of_entries - 1) * delta - Aux::EPSILON);
     assert(
         last_point
-        < first_point + (number_of_entries - 1) * delta - Aux::EPSILON);
+        < first_point + (number_of_entries - 1) * delta + Aux::EPSILON);
     return {first_point, delta, number};
   }
 
