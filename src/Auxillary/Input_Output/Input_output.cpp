@@ -100,7 +100,7 @@ namespace io {
     auto ms_string = std::to_string(ms_since_second.count());
     char mbstr[32];
     if (std::strftime(
-            mbstr, sizeof(mbstr), "%Y.%m.%d_%H:%M:%S", std::localtime(&t))) {
+            mbstr, sizeof(mbstr), "%Y.%m.%d_%H.%M.%S", std::localtime(&t))) {
       std::string timestring(mbstr);
 
       std::string full_timestring = timestring + "." + ms_string;
