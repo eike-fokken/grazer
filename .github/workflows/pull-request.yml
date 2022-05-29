@@ -37,6 +37,7 @@ jobs:
           build_type: Debug
           binary-path: /build/src/Grazer/grazer
           specific-target: --target doxygen user_guide
+          generator-command: -G"Ninja"
         - name: Linux-GNU
           compiler: g++-9
           os: ubuntu-18.04
@@ -64,7 +65,6 @@ jobs:
           compiler: clang++
           build_type: Debug
           binary-path: /build/src/Grazer/grazer
-          parallel-command: --parallel 10
           dep-install: brew install bash metis ninja; echo "/usr/local/bin" >> $GITHUB_PATH; echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> $GITHUB_ENV; echo "FC=gfortran-11" >> $GITHUB_ENV;
           generator-command: -G"Ninja"
         - name: Release-Test
@@ -129,7 +129,7 @@ jobs:
       working-directory: ${{github.workspace}}/build
       shell: bash
       # Execute the build.  You can specify a specific target with "--target <NAME>"
-      run: cmake --build . --config ${{ matrix.build_type }}  ${{ matrix.specific-target }} ${{ matrix.parallel-command }}
+      run: cmake --build . --config ${{ matrix.build_type }}  ${{ matrix.specific-target }}
 
     - name: Unit Tests
       if: matrix.name != 'Linux-Docs'
