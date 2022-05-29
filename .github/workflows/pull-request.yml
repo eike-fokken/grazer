@@ -141,4 +141,4 @@ jobs:
     
     - name: Integration Test
       if: matrix.name != 'Linux-Docs'
-      run: ${{github.workspace}}${{ matrix.binary-path }} run ./data/basetest
+      run: ${{github.workspace}}${{ matrix.binary-path }} run ./data/basetest && ${{github.workspace}}${{ matrix.binary-path }} run ./data/optimization_test
