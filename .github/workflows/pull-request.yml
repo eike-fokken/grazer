@@ -61,11 +61,12 @@ jobs:
           generator-command: -G"Ninja"
         - name: MacOS-Clang
           os: macos-10.15
-          compiler: g++-11
+          compiler: AppleClang
           build_type: Debug
           binary-path: /build/src/Grazer/grazer
           parallel-command: --parallel 10
-          dep-install: brew install bash metis; echo "/usr/local/bin" >> $GITHUB_PATH; echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> $GITHUB_ENV; echo "FC=gfortran-11" >> $GITHUB_ENV;
+          dep-install: brew install bash metis ninja; echo "/usr/local/bin" >> $GITHUB_PATH; echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> $GITHUB_ENV; echo "FC=gfortran-11" >> $GITHUB_ENV;
+          generator-command: -G"Ninja"
         - name: Release-Test
           os: ubuntu-20.04
           compiler: clang++-10
