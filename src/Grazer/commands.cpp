@@ -97,8 +97,11 @@ int grazer::run(std::filesystem::path directory_path) {
       }
     }
     if (not optimize) {
+      // These two make sure that the problem is de-allocated when this if
+      // branch is left. They serve no other purpose.
       auto problem_lifetime_manager = std::move(problem_ptr);
       auto timeevolver_lifetime_manager = std::move(timeevolver_ptr);
+
       timeevolver.simulate(initial_state, full_controls, problem, saved_states);
 
       for (Eigen::Index index = 0; index != saved_states.size(); ++index) {
@@ -221,7 +224,7 @@ int grazer::run(std::filesystem::path directory_path) {
 
       double sparsity
           = double(count) / double(optimizer.get_no_nnz_in_jacobian());
-      std::cout << "sparsity of the constraint jacobian: " << 100 * sparsity
+      std::cout << "density of the constraint jacobian: " << 100 * sparsity
                 << "%" << std::endl;
       std::cout << "objective: " << adaptor.get_obj_value() << std::endl;
 
