@@ -41,6 +41,9 @@ namespace Solver {
     return jacobian.nonZeros();
   }
 
+  Eigen::Index Newtonsolver::get_dimension_of_jacobian() {
+    return jacobian.cols();
+  }
   Solutionstruct Newtonsolver::solve(
       Eigen::Ref<Eigen::VectorXd> new_state,
       Model::Controlcomponent const &problem, bool newjac,

@@ -66,6 +66,10 @@ namespace Solver {
      */
     Eigen::Index get_number_non_zeros_jacobian();
 
+    /** \brief Returns n, where the jacobian is a matrix of dimension n x n.
+     */
+    Eigen::Index get_dimension_of_jacobian();
+
     /** \brief This method computes a solution to f(new_state) == 0.
      *
      * It uses

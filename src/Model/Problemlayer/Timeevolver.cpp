@@ -65,10 +65,19 @@ namespace Model {
       current_controls = controls(new_time);
     }
 
-    // Here we set the Jacobian structure, never to be changed again.
+    // TODO: include logic to hand in a jacobian, if this method is called from
+    // optimization. In that case we don't have to re-allocate the jacobian on
+    // every optimization step!
+
+    // Here we set the Jacobian structure, never to be
+    // changed again.
     solver.evaluate_state_derivative_triplets(
         problem, last_time, new_time, last_state, new_state, current_controls);
 
+    // std::cout << "Number of rows (== number of cols) of Jacobian: "
+    //           << solver.get_dimension_of_jacobian() << std::endl;
+    // std::cout << "Number of nonzeros in Jacobian: "
+    //           << solver.get_number_non_zeros_jacobian() << std::endl;
     // // provide regex help (cf. helper_functions/csv_from_log.py)
     // std::cout << "=== simulation start ===" << std::endl;
     // // csv heading:
