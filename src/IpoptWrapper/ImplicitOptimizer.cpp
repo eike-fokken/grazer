@@ -8,10 +8,8 @@
 #include "OptimizableObject.hpp"
 #include "Optimization_helpers.hpp"
 #include "Optimizer.hpp"
-#include <Eigen/src/Core/util/Constants.h>
 #include <iostream>
 #include <memory>
-#include <stdexcept>
 #include <string>
 
 namespace Optimization {
@@ -590,6 +588,10 @@ namespace Optimization {
         controls(new_time));
     new_handler.set_matrix();
     solver.analyzePattern(dE_dnew_transposed);
+    std::cout << "variables per step: " << dE_dnew_transposed.rows()
+              << std::endl;
+    std::cout << "nonzeros dE_dnew: " << dE_dnew_transposed.nonZeros()
+              << std::endl;
 
     dE_dlast_transposed.resize(states_per_step(), states_per_step());
     Aux::Triplethandler<Aux::Transposed> last_handler(dE_dlast_transposed);
@@ -597,7 +599,8 @@ namespace Optimization {
         last_handler, last_time, new_time, states(last_time), states(new_time),
         controls(new_time));
     last_handler.set_matrix();
-
+    std::cout << "nonzeros dE_dlast: " << dE_dlast_transposed.nonZeros()
+              << std::endl;
     dE_dcontrol.resize(states_per_step(), controls_per_step());
     Aux::Triplethandler control_handler(dE_dcontrol);
     problem->d_evalutate_d_control(

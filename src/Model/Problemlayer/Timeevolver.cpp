@@ -59,6 +59,8 @@ namespace Model {
 
     saved_states.mut_timestep(0) = initial_state;
 
+    // Our interface needs a control vector. If #problem has no control, we just
+    // use an empty vector.
     Eigen::VectorXd current_controls;
     bool actual_controls = (controls.get_inner_length() > 0);
     if (actual_controls) {
@@ -73,7 +75,6 @@ namespace Model {
     // changed again.
     solver.evaluate_state_derivative_triplets(
         problem, last_time, new_time, last_state, new_state, current_controls);
-
     // std::cout << "Number of rows (== number of cols) of Jacobian: "
     //           << solver.get_dimension_of_jacobian() << std::endl;
     // std::cout << "Number of nonzeros in Jacobian: "
