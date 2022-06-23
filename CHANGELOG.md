@@ -4,6 +4,7 @@
 - added optimal control capabilities
 - removed support for MSVC
 - restructured boundary value data types.
+- cleanup of data directory
 
 ### Changes (since v0.1.10)
 
