@@ -36,13 +36,13 @@ namespace Network {
     /// @returns Return True if the given edge or its reverse edge exists and
     /// false if neither exist.
     bool
-    exists_edge_between(std::string const id1, std::string const id2) const;
+    exists_edge_between(std::string const &id1, std::string const &id2) const;
 
     /// This function returns (by providing the nodes id) a pointer of type
     /// <Node>.
     /// @param id Nodes id
     /// @returns Returns shared pointer of type <Node>
-    Node *get_node_by_id(std::string const id) const;
+    Node *get_node_by_id(std::string const &id) const;
 
     Node *exists_node(Node *node) const;
 
@@ -53,9 +53,9 @@ namespace Network {
     /// @param id2 Nodes id of ending node
     /// @returns Returns shared pointer of type < Edge >
     Edge *
-    get_edge_by_node_ids(std::string const id1, std::string const id2) const;
+    get_edge_by_node_ids(std::string const &id1, std::string const &id2) const;
 
-    Edge *get_edge_by_id(std::string const id) const;
+    Edge *get_edge_by_id(std::string const &id) const;
 
   private:
     std::vector<std::unique_ptr<Node>> nodes;

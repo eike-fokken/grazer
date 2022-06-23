@@ -1,11 +1,8 @@
 add_executable(boundaryprettyfy boundaryprettyfy.cpp)
 
-add_executable(transform_boundary transform_boundary.cpp)
 
 add_executable(stringify_values stringify_value_json.cpp)
 target_link_libraries(stringify_values PRIVATE misc)
-
-add_executable(transform_initial transform_initial.cpp)
 
 add_executable(get_mean_sigma get_mean_sigma.cpp)
 
@@ -18,6 +15,10 @@ target_link_libraries(oup stochastics)
 
 add_executable(generate_printing_csv generate_printing_csv.cpp)
 target_link_libraries(generate_printing_csv PRIVATE input_output)
+
+add_executable(generate_control_printing_csv generate_control_printing_csv.cpp)
+target_link_libraries(generate_control_printing_csv PRIVATE input_output)
+
 
 add_executable(move_to_category move_to_category.cpp)
 add_executable(normalize_jsons normalize_jsons.cpp)
@@ -40,10 +41,10 @@ add_executable(include_seed_in_boundaryvalues include_seed_in_boundaryvalues.cpp
 add_executable(remove_seed_from_boundaryvalues remove_seed_from_boundaryvalues.cpp)
 
 add_executable(draw_heatmap_gaslib draw_heatmap_gaslib.cpp)
-target_link_libraries(draw_heatmap_gaslib PUBLIC netfactory)
+target_link_libraries(draw_heatmap_gaslib PUBLIC netfactory componentjsonhelpers)
 
 add_executable(draw_heatmap_power draw_heatmap_power.cpp)
-target_link_libraries(draw_heatmap_power PUBLIC netfactory)
+target_link_libraries(draw_heatmap_power PUBLIC netfactory componentjsonhelpers)
 
 add_executable(draw_power_graph draw_power_graph.cpp)
 

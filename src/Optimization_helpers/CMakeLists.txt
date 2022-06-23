@@ -1,0 +1,18 @@
+add_library(optimization_helpers STATIC
+Optimization_helpers.cpp
+ControlStateCache.cpp
+# EquationDerivativeCache.cpp
+)
+
+target_link_libraries(optimization_helpers PRIVATE
+networkproblem
+matrixhandler
+problemlayer
+mathfunctions
+misc)
+
+target_link_libraries(optimization_helpers PUBLIC
+interpolatingVector
+)
+
+target_include_directories(optimization_helpers PUBLIC include)

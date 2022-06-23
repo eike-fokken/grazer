@@ -113,7 +113,7 @@ namespace Aux::schema {
             {"You can't demand a non-positive number of initial values.\n",
              "The definition of get_initial_schema is wrong.\n",
              "If you want to not force the number of initial values, return "
-             "std::nullopt."})
+             "std::nullopt."});
       }
       interpol_point_array_params["minItems"] = num_interpol_points.value();
       interpol_point_array_params["maxItems"] = num_interpol_points.value();
@@ -128,7 +128,7 @@ namespace Aux::schema {
       data["allOf"].push_back(all_of_elmt);
     }
 
-    initial_schema["properties"]["data"] = data;
+    add_property(initial_schema, "data", data);
 
     return initial_schema;
   }
@@ -144,11 +144,13 @@ namespace Aux::schema {
     })"_json;
 
     nlohmann::json data_element;
-    data_element["time"] = type::number();
-    data_element["values"] = make_list_schema_of(
-        type::number(), {{"minItems", num_values}, {"maxItems", num_values}});
-
-    schema["properties"]["data"] = make_list_schema_of(data_element);
+    add_property(data_element, "time", type::number());
+    add_property(
+        data_element, "values",
+        make_list_schema_of(
+            type::number(),
+            {{"minItems", num_values}, {"maxItems", num_values}}));
+    add_property(schema, "data", make_list_schema_of(data_element));
     return schema;
   }
 

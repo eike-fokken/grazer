@@ -1,40 +1,72 @@
 #pragma once
-#include "Control.hpp"
+#include "Controlcomponent.hpp"
 #include "Edge.hpp"
 #include "Gasedge.hpp"
 #include "Shortcomponent.hpp"
+#include "SimpleControlcomponent.hpp"
 #include <nlohmann/json.hpp>
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Gas {
 
-  class Controlvalve final : public Shortcomponent {
+  class Controlvalve final :
+      public SimpleControlcomponent,
+      public Shortcomponent {
   public:
     static std::string get_type();
-    std::string get_gas_type() const override;
+    std::string get_gas_type() const final;
 
-    static std::optional<nlohmann::json> get_control_schema();
+    static nlohmann::json get_control_schema();
 
     Controlvalve(
         nlohmann::json const &edge_json,
         std::vector<std::unique_ptr<Network::Node>> &nodes);
 
+    void setup() final;
+
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-        double new_time, Eigen::Ref<Eigen::VectorXd const> last_state,
-        Eigen::Ref<Eigen::VectorXd const> new_state) const override;
-    void evaluate_state_derivative(
-        Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const>,
-        Eigen::Ref<Eigen::VectorXd const> new_state) const override;
+        double new_time, const Eigen::Ref<const Eigen::VectorXd> &last_state,
+        const Eigen::Ref<const Eigen::VectorXd> &new_state,
+        const Eigen::Ref<const Eigen::VectorXd> &control) const final;
 
-    void set_initial_values(
-        Eigen::Ref<Eigen::VectorXd> new_state,
-        nlohmann::json const &initial_json) override;
+    void d_evalutate_d_new_state(
+        Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
+        const Eigen::Ref<const Eigen::VectorXd> &last_state,
+        const Eigen::Ref<const Eigen::VectorXd> &new_state,
+        const Eigen::Ref<const Eigen::VectorXd> &control) const final;
+
+    void d_evalutate_d_last_state(
+        Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
+        const Eigen::Ref<const Eigen::VectorXd> &last_state,
+        const Eigen::Ref<const Eigen::VectorXd> &new_state,
+        const Eigen::Ref<const Eigen::VectorXd> &control) const final;
+
+    void d_evalutate_d_control(
+        Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state,
+        Eigen::Ref<Eigen::VectorXd const> const &control) const final;
+
+    void set_initial_controls(
+        Aux::InterpolatingVector_Base &full_control_vector,
+        nlohmann::json const &control_json) const final;
+
+    void set_lower_bounds(
+        Aux::InterpolatingVector_Base &full_lower_bound_vector,
+        nlohmann::json const &lower_bound_json) const final;
+
+    void set_upper_bounds(
+        Aux::InterpolatingVector_Base &full_upper_bound_vector,
+        nlohmann::json const &upper_bound_json) const final;
+
+    Eigen::Index needed_number_of_controls_per_time_point() const final;
 
     void add_results_to_json(nlohmann::json &new_output) final;
 
   private:
-    Control<1> const control_values;
+    std::string componentclass() final;
+    std::string componenttype() final;
+    std::string id() final;
   };
 
-} // namespace Model::Networkproblem::Gas
+} // namespace Model::Gas

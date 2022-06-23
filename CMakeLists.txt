@@ -18,12 +18,13 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
-# for debug builds use the debug configuration of the standard libraries:
-# Unfortunately MacOS doesn't ship the debug versions of standard types,
-# therefore we forego the debug macro for Apple's Clang.
-if(NOT (CMAKE_CXX_COMPILER_ID MATCHES "AppleClang"))
-  add_compile_definitions("$<$<CONFIG:DEBUG>:_GLIBCXX_DEBUG;_LIBCPP_DEBUG>")
-endif()
+# for debug builds with gcc use the debug configuration of the standard libraries:
+
+# We don't do that with Clang, although there is _LIBCPP_DEBUG, because
+# this fails with some part of our json dependencies.
+# Also MacOS doesn't ship the debug versions of standard types,
+# therefore we would forego the debug macro for Apple's Clang.
+add_compile_definitions("$<$<CONFIG:DEBUG>:_GLIBCXX_DEBUG>")
 
 option(BUILD_WITH_LIBCPP "Build with libc++ instead of libstdc++, if the compiler is clang." OFF)
 # include the googletest project for tests:
@@ -36,16 +37,7 @@ if (BUILD_WITH_LIBCPP AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 enable_testing()
 
-
-
-
-# https://github.com/google/googletest/blob/master/googletest/README.md#visual-studio-dynamic-vs-static-runtimes
-# https://stackoverflow.com/a/12546288/6662425 "how to activate that flag"
-if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  set(gtest_force_shared_crt ON CACHE BOOL "Make gtest compile the C standard libraries as DLLs, because MSVE requires that." FORCE)
-endif()
 add_subdirectory(googletest EXCLUDE_FROM_ALL)
-
 
 # Typically you don't care so much for a third party library's tests to be
 # run from your own project's code.
@@ -93,21 +85,13 @@ endif()
 
 set(my_debug_options -O0 -Werror -Wconversion -pedantic-errors -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wundef
   -Wdisabled-optimization -Wformat=2 -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wstrict-overflow=5 -Wswitch-default -Wunused -Wno-error=unused-parameter -Wno-error=unused -Wno-error=unused-variable -Wno-error=unused-value -Wdelete-non-virtual-dtor -Wno-error=undef)
-set(debug_clang_options "-Wunreachable-code;-fcolor-diagnostics;-Wno-error=unused-private-field;-Wmissing-prototypes;-Wdocumentation")
+set(debug_clang_options "-Wunreachable-code;-fcolor-diagnostics;-Wno-error=unused-private-field;-Wmissing-prototypes;-Wdocumentation;-Wno-error=unknown-warning-option")
 
-set(debug_gcc_options "-fdiagnostics-color;-Wno-error=strict-overflow;-Wno-error=unused-but-set-variable")
-
-# Warning 4127 warns of if statements that are compile time constants.
-# But templated if statements are often compile time constants and Eigen does not have
-# if constexpr in those places. Therefore we suppress this warning.
-# /Zc:__cplusplus: https://gitlab.com/libeigen/eigen/-/issues/2170 might become superflous
-set(debug_msvc_options "/permissive-;/W4;/WX;/wd4127;/wd4100;/Zc:__cplusplus")
-
-
+set(debug_gcc_options "-Wsuggest-override;-fdiagnostics-color;-Wno-error=strict-overflow;-Wno-error=unused-but-set-variable")
 
 set(release_clang_options "")
 set(release_gcc_options "")
-set(release_msvc_options "/permissive-")
+
 
 
 
@@ -119,13 +103,8 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   add_compile_options("$<$<CONFIG:DEBUG>:${my_debug_options}>")
    add_compile_options("$<$<CONFIG:DEBUG>:${debug_gcc_options}>"
      "$<$<NOT:$<CONFIG:Debug>>:${release_gcc_options}>")
-elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  add_compile_options(
-    "$<$<CONFIG:DEBUG>:${debug_msvc_options}>"
-    "$<$<NOT:$<CONFIG:Debug>>:${release_msvc_options}>"
-  )
 else()
-  message(WARNING "Your compiler, ${CMAKE_CXX_COMPILER_ID}, is untested with Grazer but maybe still works. Tested compilers are gcc, clang and msvc.")
+  message(WARNING "Your compiler, ${CMAKE_CXX_COMPILER_ID}, is untested with Grazer but maybe still works. Tested compilers are gcc and clang.")
 endif()
 
 
@@ -135,13 +114,7 @@ endif()
 # add_compile_options("$<$<CONFIG:DEBUG>:${MY_SANITIZE_OPTIONS}>")
 # add_link_options("$<$<CONFIG:DEBUG>:${MY_SANITIZE_OPTIONS}>")
 
-
-
-
-
-
 ## Hacky eigen include:
-# find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 
 include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/eigen/")
 
@@ -151,7 +124,7 @@ include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/eigen/")
 # discouraged (although not necessarily well documented as such) to use
 # include(...) for pulling in other CMake projects anyways.
 
-include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/nlohmann_json/include/")
+include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/nlohmann_json/single_include/")
 
 
 # This includes the pcg random number generator suite.
@@ -159,6 +132,102 @@ include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp/include/")
 
 include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/CLI11/include/")
 
+add_subdirectory(Randutils)
+
+# IPOPT
+# you can supply your own ipopt directory or build ipopt with cmake.
+# The building in cmake up to now works only, if coinbrew works.
+if (NOT DEFINED IPOPT_DIRECTORY)
+
+###############################################################
+# Ipopt building:
+###############################################################
+
+  #fetch coinbrew for building ipopt:
+  
+  if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt/coinbrew")
+  execute_process(
+    COMMAND wget https://raw.githubusercontent.com/coin-or/coinbrew/master/coinbrew
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt"
+    )
+  execute_process(
+    COMMAND chmod u+x coinbrew
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt"
+    )
+  endif()
+  
+  
+  
+  execute_process(
+    COMMAND ./coinbrew fetch Ipopt --no-prompt --skip=ThirdParty/ASL
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ipopt"
+    )
+  
+  
+  ######################################
+  # Set up the include directories beforehand, because it seems difficult to supply
+  # include directories that are only generated in a build step.
+  ######################################
+  set(ipopt_library_headers ${CMAKE_CURRENT_BINARY_DIR}/Ipopt/dist/include/coin-or)
+  file(MAKE_DIRECTORY ${ipopt_library_headers})
+    
+  # get the right library name, hopefully cross-platform:
+  set(ipopt_library_name ${CMAKE_SHARED_LIBRARY_PREFIX}ipopt${CMAKE_SHARED_LIBRARY_SUFFIX})
+  set(ipopt_library_file ${CMAKE_CURRENT_BINARY_DIR}/Ipopt/dist/lib/${ipopt_library_name})
+  
+  
+  
+  # run coinbrew in parallel:
+  include(ProcessorCount)
+  ProcessorCount(NumberOfProcessors)
+
+  ########################################################################################################
+  # These hoops have to be jumped in order to stop cmake from inserting bad escape characters into environment variables.
+  ########################################################################################################
+  if (BUILD_WITH_LIBCPP AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    set(STANDARDLIB "-stdlib=libc++")
+  endif()
+    set(DEBUG_FLAGS "-D_GLIBCXX_DEBUG")
+    set(MY_CXX_FLAGS "$<$<CONFIG:DEBUG>:${DEBUG_FLAGS}> ${STANDARDLIB}")
+
+  if(CMAKE_CXX_COMPILER_LAUNCHER MATCHES "ccache")
+    set(MY_OWN_CCACHE_VARIABLE "ccache")
+  endif()
+
+  # build ipopt:
+  add_custom_command(OUTPUT  ${ipopt_library_file}
+    COMMAND ${CMAKE_COMMAND} -E env "ADD_CXXFLAGS=${MY_CXX_FLAGS}" "CC=${MY_OWN_CCACHE_VARIABLE} ${CMAKE_C_COMPILER}" "CXX=${MY_OWN_CCACHE_VARIABLE} ${CMAKE_CXX_COMPILER}" ./coinbrew build Ipopt --no-prompt --skip=ThirdParty/ASL --build-dir=${CMAKE_CURRENT_BINARY_DIR}/Ipopt --prefix=${CMAKE_CURRENT_BINARY_DIR}/Ipopt/dist --parallel-jobs ${NumberOfProcessors}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Ipopt
+    USES_TERMINAL)
+  
+  # create a target out of the ipopt compilation that depends on the generated library:
+  add_custom_target(ipopt_build_target ALL
+    DEPENDS ${ipopt_library_file}
+    )
+
+else()
+
+  find_library(ipopt_library_file
+    NAMES ipopt
+    PATHS "${IPOPT_DIRECTORY}/lib" NO_DEFAULT_PATH)
+  set(ipopt_library_headers "${IPOPT_DIRECTORY}/include/coin-or")
+endif()
+
+
+
+
+
+  # The ipopt target, on which we can depend in our own source files.
+  add_library(my_ipopt SHARED IMPORTED)
+  add_dependencies(my_ipopt ipopt_build_target ${ipopt_library_file})
+
+  set_target_properties(my_ipopt
+      PROPERTIES
+      IMPORTED_LOCATION ${ipopt_library_file}
+      )
+    target_include_directories(my_ipopt SYSTEM INTERFACE ${ipopt_library_headers})
+  
+    # include_directories(SYSTEM ${ipopt_library_headers})
 
 # for building latex documentation
 

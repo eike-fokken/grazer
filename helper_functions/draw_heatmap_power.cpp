@@ -1,6 +1,6 @@
 
+#include "ComponentJsonHelpers.hpp"
 #include "Netfactory.hpp"
-
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -65,8 +65,8 @@ int main(int argc, char **argv) {
     resultsstream >> results;
   }
 
-  Model::Networkproblem::sort_json_vectors_by_id(results, "results");
-  Model::Networkproblem::sort_json_vectors_by_id(topology, "topology");
+  Aux::sort_json_vectors_by_id(results, "results");
+  Aux::sort_json_vectors_by_id(topology, "topology");
 
   std::vector<std::string> nodetypes{
       "PQnode", "PVnode", "Vphinode", "StochasticPQnode", "ExternalPowerplant"};
@@ -76,8 +76,7 @@ int main(int argc, char **argv) {
   std::cout << "min:" << min << std::endl;
   std::cout << "max:" << max << std::endl;
 
-  Model::Networkproblem::insert_second_json_in_topology_json(
-      topology, results, "results");
+  Model::insert_second_json_in_topology_json(topology, results, "results");
 
   double divideby = 1.0;
   if (argc == 4) {

@@ -1,5 +1,4 @@
 add_library(balancelaw STATIC
-  Pipe_Balancelaw.cpp
   Isothermaleulerequation.cpp
   Balancelaw_factory.cpp)
 

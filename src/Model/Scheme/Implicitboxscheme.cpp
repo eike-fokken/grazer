@@ -12,7 +12,6 @@ namespace Model::Scheme {
       Eigen::Ref<Eigen::Vector2d const> new_left,
       Eigen::Ref<Eigen::Vector2d const> new_right,
       Model::Balancelaw::Pipe_Balancelaw const &bl) const {
-    ;
 
     double Delta_t = new_time - last_time;
     result = 0.5 * (new_left + new_right) - 0.5 * (last_left + last_right)
@@ -20,14 +19,12 @@ namespace Model::Scheme {
              - 0.5 * Delta_t * (bl.source(new_right) + bl.source(new_left));
   }
 
-  /// The derivative with respect to \code{.cpp}last_left\endcode
-  Eigen::Matrix2d Implicitboxscheme::devaluate_point_dleft(
+  Eigen::Matrix2d Implicitboxscheme::devaluate_point_d_new_left(
       double last_time, double new_time, double Delta_x,
       Eigen::Ref<Eigen::Vector2d const>, Eigen::Ref<Eigen::Vector2d const>,
       Eigen::Ref<Eigen::Vector2d const> new_left,
       Eigen::Ref<Eigen::Vector2d const>,
       Model::Balancelaw::Pipe_Balancelaw const &bl) const {
-    ;
     double Delta_t = new_time - last_time;
     Eigen::Matrix2d jac;
     Eigen::Matrix2d id;
@@ -37,20 +34,47 @@ namespace Model::Scheme {
     return jac;
   }
 
-  /// The derivative with respect to \code{.cpp}last_right\endcode
-  Eigen::Matrix2d Implicitboxscheme::devaluate_point_dright(
+  Eigen::Matrix2d Implicitboxscheme::devaluate_point_d_new_right(
       double last_time, double new_time, double Delta_x,
       Eigen::Ref<Eigen::Vector2d const>, Eigen::Ref<Eigen::Vector2d const>,
       Eigen::Ref<Eigen::Vector2d const>,
       Eigen::Ref<Eigen::Vector2d const> new_right,
       Model::Balancelaw::Pipe_Balancelaw const &bl) const {
-    ;
+
     double Delta_t = new_time - last_time;
     Eigen::Matrix2d jac;
     Eigen::Matrix2d id;
     id.setIdentity();
     jac = 0.5 * id + Delta_t / Delta_x * bl.dflux_dstate(new_right)
           - 0.5 * Delta_t * bl.dsource_dstate(new_right);
+    return jac;
+  }
+
+  Eigen::Matrix2d Implicitboxscheme::devaluate_point_d_last_left(
+      double /*last_time*/, double /*new_time*/, double /*Delta_x*/,
+      Eigen::Ref<Eigen::Vector2d const>, Eigen::Ref<Eigen::Vector2d const>,
+      Eigen::Ref<Eigen::Vector2d const> /*new_left*/,
+      Eigen::Ref<Eigen::Vector2d const>,
+      Model::Balancelaw::Pipe_Balancelaw const & /*bl*/) const {
+
+    Eigen::Matrix2d jac;
+    Eigen::Matrix2d id;
+    id.setIdentity();
+    jac = -0.5 * id;
+    return jac;
+  }
+
+  Eigen::Matrix2d Implicitboxscheme::devaluate_point_d_last_right(
+      double /*last_time*/, double /*new_time*/, double /*Delta_x*/,
+      Eigen::Ref<Eigen::Vector2d const>, Eigen::Ref<Eigen::Vector2d const>,
+      Eigen::Ref<Eigen::Vector2d const>,
+      Eigen::Ref<Eigen::Vector2d const> /*new_right*/,
+      Model::Balancelaw::Pipe_Balancelaw const & /*bl*/) const {
+
+    Eigen::Matrix2d jac;
+    Eigen::Matrix2d id;
+    id.setIdentity();
+    jac = -0.5 * id;
     return jac;
   }
 

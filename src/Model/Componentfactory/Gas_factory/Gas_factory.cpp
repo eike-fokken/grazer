@@ -1,6 +1,7 @@
 #include "Gas_factory.hpp"
 
 #include "Compressorstation.hpp"
+#include "ConstraintSink.hpp"
 #include "Controlvalve.hpp"
 #include "Innode.hpp"
 #include "Pipe.hpp"
@@ -12,23 +13,18 @@ namespace Model::Componentfactory {
 
   void add_gas_components(
       Componentfactory &factory, nlohmann::json const &defaults) {
+    factory.add_node_type(std::make_unique<NodeType<Gas::Source>>(defaults));
+    factory.add_node_type(std::make_unique<NodeType<Gas::Sink>>(defaults));
+    factory.add_node_type(std::make_unique<NodeType<Gas::Innode>>(defaults));
     factory.add_node_type(
-        std::make_unique<NodeType<Networkproblem::Gas::Source>>(defaults));
-    factory.add_node_type(
-        std::make_unique<NodeType<Networkproblem::Gas::Sink>>(defaults));
-    factory.add_node_type(
-        std::make_unique<NodeType<Networkproblem::Gas::Innode>>(defaults));
+        std::make_unique<NodeType<Gas::ConstraintSink>>(defaults));
 
+    factory.add_edge_type(std::make_unique<EdgeType<Gas::Pipe>>(defaults));
+    factory.add_edge_type(std::make_unique<EdgeType<Gas::Shortpipe>>(defaults));
     factory.add_edge_type(
-        std::make_unique<EdgeType<Networkproblem::Gas::Pipe>>(defaults));
+        std::make_unique<EdgeType<Gas::Controlvalve>>(defaults));
     factory.add_edge_type(
-        std::make_unique<EdgeType<Networkproblem::Gas::Shortpipe>>(defaults));
-    factory.add_edge_type(
-        std::make_unique<EdgeType<Networkproblem::Gas::Controlvalve>>(
-            defaults));
-    factory.add_edge_type(
-        std::make_unique<EdgeType<Networkproblem::Gas::Compressorstation>>(
-            defaults));
+        std::make_unique<EdgeType<Gas::Compressorstation>>(defaults));
   }
 
   Gas_factory::Gas_factory(nlohmann::json const &defaults) {

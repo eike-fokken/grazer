@@ -56,7 +56,7 @@ void Aux::schema::validate_json(json const &data, json const &schema) {
     class prettyhandler : public nlohmann::json_schema::error_handler {
       void error(
           const json::json_pointer &ptr, const json &instance,
-          const std::string &message) override {
+          const std::string &message) final {
         throw std::invalid_argument(
             std::string("At ") + ptr.to_string() + " of "
             + instance.dump(1, '\t') + " - " + message + "\n");
@@ -67,9 +67,9 @@ void Aux::schema::validate_json(json const &data, json const &schema) {
     std::ostringstream o;
     std::string helper;
     if (data.contains("id")) {
-      o << "The json of the following object with id "
+      o << "The json of the following object with id\n >>>"
         << data["id"].get<std::string>()
-        << " does not conform to its schema!\n\n\n";
+        << "<<<\ndoes not conform to its schema!\n\n\n";
     } else {
       o << "The json of the following object json does not "
            "conform to its schema.\n"

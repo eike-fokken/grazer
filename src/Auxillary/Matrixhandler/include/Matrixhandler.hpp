@@ -4,22 +4,26 @@
 
 namespace Aux {
 
+  enum Transpose { Regular = 0, Transposed = 1 };
+
   /// \brief A utility base class that is used to setup and modify a sparse
   /// matrix.
   class Matrixhandler {
 
   public:
     Matrixhandler() = delete;
-    Matrixhandler(Eigen::SparseMatrix<double> *_matrix) : matrix(_matrix){};
+    Matrixhandler(Eigen::SparseMatrix<double> &_matrix) : matrix(_matrix){};
 
-    virtual ~Matrixhandler(){};
+    virtual ~Matrixhandler();
 
     /// \brief Adds to a coefficient.
     ///
     /// @param row The row index of the coefficient.
     /// @param col The column index of the coefficient.
     /// @param value The value to be added to the already present coefficient.
-    virtual void add_to_coefficient(int row, int col, double value) = 0;
+    virtual void
+    add_to_coefficient(Eigen::Index row, Eigen::Index col, double value)
+        = 0;
 
     /// \brief Sets a coefficient. For #Triplethandler this actually behaves
     /// like #add_to_coefficient.
@@ -27,7 +31,9 @@ namespace Aux {
     /// @param row The row index of the coefficient.
     /// @param col The column index of the coefficient.
     /// @param value The value to be inserted.
-    virtual void set_coefficient(int row, int col, double value) = 0;
+    virtual void
+    set_coefficient(Eigen::Index row, Eigen::Index col, double value)
+        = 0;
 
     /// For #Triplethandler: Builds the matrix from the gathered coefficients
     /// and then forgets the coefficients.
@@ -36,38 +42,48 @@ namespace Aux {
     virtual void set_matrix() = 0;
 
   protected:
-    Eigen::SparseMatrix<double> *matrix;
+    Eigen::SparseMatrix<double> &matrix;
   };
 
   /// \brief The Triplethandler variety gathers the coefficients in triplets and
   /// later builds the matrix from the triplets.
+  template <int Transpose = Regular>
   class Triplethandler final : public Matrixhandler {
 
   public:
-    using Matrixhandler::Matrixhandler;
-    ~Triplethandler() override{};
+    Triplethandler(Eigen::SparseMatrix<double> &matrix);
 
-    void add_to_coefficient(int row, int col, double value) final;
-    void set_coefficient(int row, int col, double value) final;
+    void
+    add_to_coefficient(Eigen::Index row, Eigen::Index col, double value) final;
+    void
+    set_coefficient(Eigen::Index row, Eigen::Index col, double value) final;
 
     void set_matrix() final;
 
   private:
-    std::vector<Eigen::Triplet<double>> tripletlist;
+    std::vector<Eigen::Triplet<double, Eigen::Index>> tripletlist;
   };
 
   /// \brief The Coeffrefhandler variety directly sets the coefficients and
   /// contains no state.
+
+  template <int Transpose = Regular>
   class Coeffrefhandler final : public Matrixhandler {
 
   public:
-    using Matrixhandler::Matrixhandler;
+    Coeffrefhandler(Eigen::SparseMatrix<double> &matrix);
 
-    ~Coeffrefhandler() override{};
-
-    void add_to_coefficient(int row, int col, double value) final;
-    void set_coefficient(int row, int col, double value) final;
+    void
+    add_to_coefficient(Eigen::Index row, Eigen::Index col, double value) final;
+    void
+    set_coefficient(Eigen::Index row, Eigen::Index col, double value) final;
     void set_matrix() final;
   };
+
+  extern template class Triplethandler<Regular>;
+  extern template class Coeffrefhandler<Regular>;
+
+  extern template class Triplethandler<Transposed>;
+  extern template class Coeffrefhandler<Transposed>;
 
 } // namespace Aux

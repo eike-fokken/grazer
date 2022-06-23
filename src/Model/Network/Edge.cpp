@@ -6,11 +6,6 @@
 #include <string>
 
 namespace Network {
-  std::string Edge::get_type() {
-    gthrow(
-        {"This static method must be implemented in the class inheriting "
-         "from edge!"});
-  }
 
   nlohmann::json Edge::get_schema() {
     nlohmann::json schema = Idobject::get_schema();
@@ -35,6 +30,8 @@ namespace Network {
     starting_node->attach_starting_edge(this);
     ending_node->attach_ending_edge(this);
   }
+
+  Edge::~Edge() {}
 
   Node *Edge::get_starting_node() const { return starting_node; }
 

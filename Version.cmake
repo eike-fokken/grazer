@@ -3,4 +3,4 @@
 # cf. .github/workflows/release.yml
 
 # Remember to update the CHANGELOG.md (-> will become the Release description)
-set(GRAZER_VERSION 0.2.1)
+set(GRAZER_VERSION 0.2.2)

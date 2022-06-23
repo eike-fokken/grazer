@@ -1,5 +1,4 @@
 #pragma once
-#include "Componentfactory.hpp"
 #include "Net.hpp"
 #include <filesystem>
 #include <memory>
@@ -20,23 +19,7 @@ namespace Model::Componentfactory {
   struct AbstractEdgeType;
 } // namespace Model::Componentfactory
 
-namespace Model::Networkproblem {
-
-  /** \brief Sort all components in all their respective categories and checks
-   * whether any id appears twice (in which case an exception is thrown.)
-   *
-   * @param components The json to be sorted.
-   * @param key The key inside the Networkproblem json, e.g. topology or
-   * boundary.
-   */
-  void sort_json_vectors_by_id(nlohmann::json &components, std::string key);
-
-  /** \brief Throws an exception if an id is used more than once
-   * @param components The json to be checked.
-   * @param key The key inside the Networkproblem json, e.g. topology or
-   * boundary.
-   */
-  void check_for_duplicates(nlohmann::json &components, std::string key);
+namespace Model {
 
   /** \brief Constructs the full networkproblem json from file paths for the
    * respective files and fills all component jsons with their boundary and
@@ -107,4 +90,4 @@ namespace Model::Networkproblem {
       nlohmann::json &networkproblem_json,
       Componentfactory::Componentfactory const &factory);
 
-} // namespace Model::Networkproblem
+} // namespace Model

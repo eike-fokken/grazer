@@ -13,6 +13,7 @@ namespace fs = std::filesystem;
 /** \brief Prints the summed outflux of a network.
  *
  * Best used in conjuction with change_inflow.
+ * - single input is the initial.json file of a grazer problem.
  */
 
 int main(int argc, char **argv) {
@@ -39,9 +40,6 @@ int main(int argc, char **argv) {
   double summed_output = 0;
   try {
     for (auto const &shortpipe : results["connections"]["Shortpipe"]) {
-      // if (shortpipe["data"][1]["values"][1].get<double>() < 0) {
-      //   std::cout << "Negative!" << std::endl;
-      // }
       summed_output += shortpipe["data"][1]["values"][1].get<double>();
     }
   } catch (std::exception &e) {

@@ -14,7 +14,7 @@ TEST(Newtonsolver, LinearSolveWithRoot_InitialValue1) {
   double tol = 1e-12;
   int max_it = 10000;
 
-  Solver::Newtonsolver<GrazerTest::TestProblem> Solver(tol, max_it);
+  Solver::Newtonsolver Solver(tol, max_it);
   Eigen::VectorXd new_state(2), last_state(2), solution(2);
   new_state(0) = 5; // Wähle Funktionswert, der etwas weiter weg liegt
   new_state(1) = 3;
@@ -28,11 +28,16 @@ TEST(Newtonsolver, LinearSolveWithRoot_InitialValue1) {
   double last_time = 0;
   double new_time = 1;
 
-  GrazerTest::TestProblem problem(f, df);
+  TestProblem problem(f, df);
   Solver::Solutionstruct a;
 
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
   a = Solver.solve(
-      new_state, problem, true, true, last_time, new_time, last_state);
+      new_state, problem, true, false, last_time, new_time, last_state,
+      control);
 
   EXPECT_EQ(a.success, true);
 
@@ -44,7 +49,7 @@ TEST(Newtonsolver, LinearSolveWithRoot_InitialValue2) {
   double tol = 1e-12;
   int max_it = 10000;
 
-  Solver::Newtonsolver<GrazerTest::TestProblem> Solver(tol, max_it);
+  Solver::Newtonsolver Solver(tol, max_it);
   Eigen::VectorXd new_state(2), last_state(2), solution(2);
   new_state(0) = -0.5; // Wähle Funktionswert, der nah an der Lösung ist
   new_state(1) = 0.;
@@ -58,11 +63,16 @@ TEST(Newtonsolver, LinearSolveWithRoot_InitialValue2) {
   double last_time = 0;
   double new_time = 1;
 
-  GrazerTest::TestProblem problem(f, df);
+  TestProblem problem(f, df);
   Solver::Solutionstruct a;
 
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
   a = Solver.solve(
-      new_state, problem, true, true, last_time, new_time, last_state);
+      new_state, problem, true, false, last_time, new_time, last_state,
+      control);
 
   EXPECT_EQ(a.success, true); // passed
 
@@ -75,7 +85,7 @@ TEST(Newtonsolver, NonlinearSolveWithRoot) {
   double tol = 1e-12;
   int max_it = 100;
 
-  Solver::Newtonsolver<GrazerTest::TestProblem> Solver(tol, max_it);
+  Solver::Newtonsolver Solver(tol, max_it);
   Eigen::VectorXd new_state(2), last_state(2), solution(2);
 
   last_state(0) = 0;
@@ -90,10 +100,15 @@ TEST(Newtonsolver, NonlinearSolveWithRoot) {
   double last_time = 0;
   double new_time = 1;
 
-  GrazerTest::TestProblem problem(f2, df2);
+  TestProblem problem(f2, df2);
   Solver::Solutionstruct a;
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
   a = Solver.solve(
-      new_state, problem, true, true, last_time, new_time, last_state);
+      new_state, problem, true, false, last_time, new_time, last_state,
+      control);
 
   EXPECT_EQ(a.success, false);
   EXPECT_EQ(a.used_iterations, max_it);
@@ -103,7 +118,7 @@ TEST(Newtonsolver, NonlinearSolve_simplifiedNewton) {
   double tol = 1e-12;
   int max_it = 100;
 
-  Solver::Newtonsolver<GrazerTest::TestProblem> Solver(tol, max_it);
+  Solver::Newtonsolver Solver(tol, max_it);
   Eigen::VectorXd new_state(2), last_state(2), solution(2);
 
   last_state(0) = 0;
@@ -118,10 +133,16 @@ TEST(Newtonsolver, NonlinearSolve_simplifiedNewton) {
   double last_time = 0;
   double new_time = 1;
 
-  GrazerTest::TestProblem problem(f2, df2);
+  TestProblem problem(f2, df2);
   Solver::Solutionstruct a;
+
+  // The following are not needed, as no control components are used here not
+  // controlled.  But to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
   a = Solver.solve(
-      new_state, problem, true, false, last_time, new_time, last_state);
+      new_state, problem, true, false, last_time, new_time, last_state,
+      control);
 
   EXPECT_EQ(a.success, false);
   EXPECT_EQ(a.used_iterations, max_it);
@@ -131,7 +152,7 @@ TEST(Newtonsolver, SingularJacobian) {
   double tol = 1e-12;
   int max_it = 100;
 
-  Solver::Newtonsolver<GrazerTest::TestProblem> Solver(tol, max_it);
+  Solver::Newtonsolver Solver(tol, max_it);
   Eigen::VectorXd new_state(2), last_state(2), solution(2);
 
   last_state(0) = 0;
@@ -145,15 +166,20 @@ TEST(Newtonsolver, SingularJacobian) {
   double last_time = 0;
   double new_time = 1;
 
-  GrazerTest::TestProblem problem(f2, df2);
+  TestProblem problem(f2, df2);
   Solver::Solutionstruct a;
 
   try {
+    // The following are not needed, as no control components are used here not
+    // controlled.  But to satisfy the interface, we must provide them.
+    Eigen::VectorXd last_control;
+    Eigen::VectorXd control;
     a = Solver.solve(
-        new_state, problem, true, true, last_time, new_time, last_state);
+        new_state, problem, true, false, last_time, new_time, last_state,
+        control);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
-  } catch (std::runtime_error &e) {
+  } catch (Solver::SolverNumericalProblem &e) {
     EXPECT_THAT(
         e.what(),
         testing::HasSubstr(

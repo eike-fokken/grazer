@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-namespace Model::Networkproblem::Power {
+namespace Model::Power {
 
   class Transmissionline final : public Network::Edge {
 
@@ -32,4 +32,4 @@ namespace Model::Networkproblem::Power {
     double B;
   };
 
-} // namespace Model::Networkproblem::Power
+} // namespace Model::Power

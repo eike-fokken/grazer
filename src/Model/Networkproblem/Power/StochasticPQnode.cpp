@@ -4,7 +4,7 @@
 #include "make_schema.hpp"
 #include <fstream>
 
-namespace Model::Networkproblem::Power {
+namespace Model::Power {
 
   std::string StochasticPQnode::get_type() { return "StochasticPQnode"; }
   std::string StochasticPQnode::get_power_type() const { return get_type(); }
@@ -25,13 +25,15 @@ namespace Model::Networkproblem::Power {
     return schema;
   }
 
-  std::optional<nlohmann::json> StochasticPQnode::get_boundary_schema() {
+  nlohmann::json StochasticPQnode::get_boundary_schema() {
     auto boundary_schema = Aux::schema::make_boundary_schema(2);
     auto seed_schema
         = Aux::schema::make_list_schema_of(Aux::schema::type::number());
     Aux::schema::add_property(boundary_schema, "seed", seed_schema);
     return boundary_schema;
   }
+
+  void StochasticPQnode::setup() { Powernode::setup_helper(); }
 
   StochasticPQnode::StochasticPQnode(nlohmann::json const &topology) :
       Powernode(topology) {
@@ -58,14 +60,11 @@ namespace Model::Networkproblem::Power {
   }
 
   void StochasticPQnode::evaluate(
-      Eigen::Ref<Eigen::VectorXd> rootvalues, double // last_time
-      ,
-      double // new_time
-      ,
-      Eigen::Ref<Eigen::VectorXd const> // last_state
-      ,
-      Eigen::Ref<Eigen::VectorXd const> new_state) const {
-    auto V_index = get_start_state_index();
+      Eigen::Ref<Eigen::VectorXd> rootvalues, double /*last_time*/,
+      double /*new_time*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
+    auto V_index = get_state_startindex();
     auto phi_index = V_index + 1;
     rootvalues[V_index] = P(new_state) - current_P;
     rootvalues[phi_index] = Q(new_state) - current_Q;
@@ -73,9 +72,7 @@ namespace Model::Networkproblem::Power {
 
   void StochasticPQnode::prepare_timestep(
       double last_time, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> last_state,
-      Eigen::Ref<Eigen::VectorXd const> // new_state
-  ) {
+      Eigen::Ref<Eigen::VectorXd const> const &last_state) {
     auto last_P = P(last_state);
     current_P = Aux::euler_maruyama_oup(
         stochasticdata->stability_parameter, stochasticdata->cut_off_factor,
@@ -96,8 +93,8 @@ namespace Model::Networkproblem::Power {
   // // Version for deterministic power factor:
   // void StochasticPQnode::prepare_timestep(
   //     double last_time, double new_time,
-  //     Eigen::Ref<Eigen::VectorXd const> last_state,
-  //     Eigen::Ref<Eigen::VectorXd const> // new_state
+  //     Eigen::Ref<Eigen::VectorXd const> const & last_state,
+  //     Eigen::Ref<Eigen::VectorXd const> const & // new_state
   // ) {
   //   auto P_deterministic = boundaryvalue(new_time)[0];
   //   auto Q_deterministic = boundaryvalue(new_time)[1];
@@ -117,22 +114,25 @@ namespace Model::Networkproblem::Power {
   //   }
   // }
 
-  void StochasticPQnode::evaluate_state_derivative(
-      Aux::Matrixhandler *jacobianhandler,
-      double // last_time
-      ,
-      double // new_time
-      ,
-      Eigen::Ref<Eigen::VectorXd const>,
-      Eigen::Ref<Eigen::VectorXd const> new_state) const {
-    auto first_equation_index = get_start_state_index();
+  void StochasticPQnode::d_evalutate_d_new_state(
+      Aux::Matrixhandler &jacobianhandler, double /*last_time*/,
+      double /*new_time*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
+    auto first_equation_index = get_state_startindex();
     auto second_equation_index = first_equation_index + 1;
     evaluate_P_derivative(first_equation_index, jacobianhandler, new_state);
     evaluate_Q_derivative(second_equation_index, jacobianhandler, new_state);
   }
 
+  void StochasticPQnode::d_evalutate_d_last_state(
+      Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
+      double /*new_time*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const {}
+
   void StochasticPQnode::json_save(
-      double time, Eigen::Ref<Eigen::VectorXd const> state) {
+      double time, Eigen::Ref<Eigen::VectorXd const> const &state) {
     auto P_val = current_P;
     auto Q_val = current_Q;
     auto P_deviation = P_val - boundaryvalue(time)[0];
@@ -142,8 +142,8 @@ namespace Model::Networkproblem::Power {
     current_value["time"] = time;
     current_value["P"] = P_val;
     current_value["Q"] = Q_val;
-    current_value["V"] = state[get_start_state_index()];
-    current_value["phi"] = state[get_start_state_index() + 1];
+    current_value["V"] = state[get_state_startindex()];
+    current_value["phi"] = state[get_state_startindex() + 1];
     current_value["P_deviation"] = P_deviation;
     current_value["Q_deviation"] = Q_deviation;
 
@@ -154,4 +154,4 @@ namespace Model::Networkproblem::Power {
   double StochasticPQnode::get_current_P() const { return current_P; }
   double StochasticPQnode::get_current_Q() const { return current_Q; }
 
-} // namespace Model::Networkproblem::Power
+} // namespace Model::Power

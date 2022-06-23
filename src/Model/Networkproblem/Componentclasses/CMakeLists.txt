@@ -1,0 +1,16 @@
+add_library(componentclasses STATIC
+Equationcomponent.cpp
+Statecomponent.cpp
+SimpleStatecomponent.cpp
+Controlcomponent.cpp
+SimpleControlcomponent.cpp
+
+Costcomponent.cpp
+Constraintcomponent.cpp
+SimpleConstraintcomponent.cpp
+)
+
+target_link_libraries(componentclasses PUBLIC mathfunctions exception timedata)
+target_link_libraries(componentclasses PRIVATE interpolatingVector aux_schema_validation interpolatingVector)
+
+target_include_directories(componentclasses PUBLIC include)

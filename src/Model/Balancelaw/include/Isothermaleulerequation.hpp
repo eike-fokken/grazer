@@ -10,38 +10,34 @@ namespace Model::Balancelaw {
   public:
     Isothermaleulerequation(nlohmann::json const &json);
 
-    Eigen::Vector2d
-    flux(Eigen::Ref<Eigen::Vector2d const> state) const override;
+    Eigen::Vector2d flux(Eigen::Ref<Eigen::Vector2d const> state) const final;
     Eigen::Matrix2d
-    dflux_dstate(Eigen::Ref<Eigen::Vector2d const> state) const override;
+    dflux_dstate(Eigen::Ref<Eigen::Vector2d const> state) const final;
 
-    Eigen::Vector2d
-    source(Eigen::Ref<Eigen::Vector2d const> state) const override;
+    Eigen::Vector2d source(Eigen::Ref<Eigen::Vector2d const> state) const final;
     Eigen::Matrix2d
-    dsource_dstate(Eigen::Ref<Eigen::Vector2d const> state) const override;
+    dsource_dstate(Eigen::Ref<Eigen::Vector2d const> state) const final;
 
-    Eigen::Vector2d
-    p_qvol(Eigen::Ref<Eigen::Vector2d const> state) const override;
+    Eigen::Vector2d p_qvol(Eigen::Ref<Eigen::Vector2d const> state) const final;
     Eigen::Matrix2d
-    dp_qvol_dstate(Eigen::Ref<Eigen::Vector2d const> state) const override;
+    dp_qvol_dstate(Eigen::Ref<Eigen::Vector2d const> state) const final;
 
-    Eigen::Vector2d
-    state(Eigen::Ref<Eigen::Vector2d const> p_qvol) const override;
-    double p_pascal_from_p_bar(double p) const override;
+    Eigen::Vector2d state(Eigen::Ref<Eigen::Vector2d const> p_qvol) const final;
+    double p_pascal_from_p_bar(double p) const final;
     Eigen::Vector2d p_qvol_from_p_qvol_bar(
-        Eigen::Ref<Eigen::Vector2d const> p_qvol_bar) const override;
+        Eigen::Ref<Eigen::Vector2d const> p_qvol_bar) const final;
 
-    double p_bar_from_p_pascal(double p) const override;
-    double dp_bar_from_p_pascal_dp_pascal(double p) const override;
+    double p_bar_from_p_pascal(double p) const final;
+    double dp_bar_from_p_pascal_dp_pascal(double p) const final;
 
     Eigen::Vector2d p_qvol_bar_from_p_qvol(
-        Eigen::Ref<Eigen::Vector2d const> p_qvol) const override;
+        Eigen::Ref<Eigen::Vector2d const> p_qvol) const final;
     Eigen::Matrix2d dp_qvol_bar_from_p_qvold_p_qvol(
-        Eigen::Ref<Eigen::Vector2d const> p_qvol) const override;
+        Eigen::Ref<Eigen::Vector2d const> p_qvol) const final;
 
-    double p(double rho) const override;
-    double dp_drho(double rho) const override;
-    double rho(double rho) const override;
+    double p(double rho) const final;
+    double dp_drho(double rho) const final;
+    double rho(double rho) const final;
 
     static double
     lambda_non_laminar(double Re, double diameter, double roughness);

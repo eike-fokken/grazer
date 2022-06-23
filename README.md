@@ -2,18 +2,56 @@
 
 ## Grazer
 
-Grazer is a program that shall simulate the time evolution of dynamical systems.
-Input data is handed to grazer by json files.
+Grazer is a software for the simulation and optimal control of dynamical systems
+defined on networks. Input data is handed to grazer by json files.
 
-This software is up to now only tested by one person, so expect some rough edges.
-Yet feel free to dig into it.  Any feedback in github issues or to the mail address below is welcome.
-
-
+Grazer is up to now used and tested by one person, so expect many rough edges.
+Still, feel free to dig into it. As long as almost nobody uses it, you can
+probably expect very detailed responses to questions. Any feedback in github
+issues or to the mail address below is welcome.
 
 ## Installation
-Before you can use grazer, you must build it (You can also download a prebuilt version, although note that the latex documentation is not included and also the helper functions are missing. But for a first glimpse, checkout [Releases](https://github.com/eike-fokken/grazer/releases)).
-Supported compilers are clang-9, gcc-9 and Microsofts Visual Studio 2019 as well as later versions.
-Other compilers may work and probably do as we strive for full standard compliance to C++17.
+Before you can use grazer, you must build it. On Unix-like operating systems
+(especially MacOs and Linux), building should be rather simple.
+
+Supported compilers are clang-9 and gcc-9 as well as later versions.
+
+In case you are interested in compiling with MSVC, support would be reinstated,
+as soon as the branch msvc_ipopt works. Without prompting, don't expect
+development there.
+
+### Installing all dependencies
+
+#### MacOS
+
+On MacOS, the most convenient way to install all of Grazer's dependencies is by
+using [Homebrew](https://brew.sh/). After Homebrew is installed, entering
+
+``` 
+brew install bash git gfortran metis cmake make wget tar patch dos2unix pkg-config g++ gfortran
+
+```
+
+inside a terminal window will install all required dependencies.
+Note that you can also use clang++ instead of g++. On MacOS it may 
+also be necessary to explicitly set the system SDK by executing
+
+``` bash
+echo "export SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> ~/.bash_profile && source ~/.bash_profile
+```
+
+inside a terminal window.
+
+#### Linux-based OSes
+
+On Debian-based Linux distributions (e.g. Ubuntu), the dependencies can be
+installed via
+
+```
+sudo apt-get install bash git cmake make wget tar patch dos2unix pkg-config g++ gfortran libmetis-dev gfortran doxygen graphviz
+```
+
+## Building
 
 To build grazer, clone this git repository, change into it and run
 
@@ -21,7 +59,8 @@ To build grazer, clone this git repository, change into it and run
 git submodule update --init --recursive --depth=1
 ```
 
-to fetch dependencies (`--depth=1` is not needed but cuts down the size tremendously).
+to fetch dependencies (`--depth=1` is not needed but cuts down the size
+tremendously).
 
 Then run
 
@@ -35,21 +74,26 @@ and afterwards
 cmake --build release
 ```
 
-You can also build a debug build, just exchange 'release' with 'debug' and 'Release' with 'Debug'
-everywhere in the last two commands.
+You can also build a debug build, just exchange 'release' with 'debug' and
+'Release' with 'Debug' everywhere in the last two commands.
 
-After the build has completed, a binary named grazer (or grazer.exe , if built on Windows)
-will appear in `release/src/Grazer/`.
+After the build has completed, a binary named grazer will appear in
+`release/src/Grazer/`.
+
+### Running tests
+There is a test suite, which can be executed via
+
+```
+cd release && ctest ; cd ..
+```
+
+Hopefully these tests should return `100% tests passed`.
 
 ## Usage
 
-Grazer provides both a command line interface (cli) and graphical user interface
-(gui) both binaries can be downloaded from [our GitHub releases
-page](https://github.com/eike-fokken/grazer/releases).
+Grazer provides a command line interface (cli).
 
-### Command Line Interface (CLI)
-
-Grazer has a command line interface - running the executable with `--help` 
+The executable is found at `release/src/Grazer/`. Running it with `--help` 
 will look something like this:
 
 ```bash
@@ -68,10 +112,19 @@ Subcommands:
 
 As a first try after compilation, run
 
-```bash
+```
 release/src/Grazer/grazer run data/base
 ```
-from the reposiroty directory (or `.../grazer.exe ...` under Windows) to run a simulation of a gas-power network.
+
+from the repository directory to run a simulation of a gas-power network.
+
+A second trial run can be
+
+```
+release/src/Grazer/grazer run data/steady_base_optimization
+```
+
+which executes an optimal control problem computing optimal compressor and valve usage for the same gas network.
 
 You can explore all grazer commands with `--help`. Commands usually expect a
 `grazer_directory` argument, which is a directory with the following structure
@@ -100,21 +153,6 @@ will only insert the `$schema` keys.)
 
 Right now only Power and Gas networks are supported out of the box.
 A few example problems can be found in the `data` subdirectory.
-
-
-### Graphical User Interface (GUI)
-
-Grazer uses [Gooey](https://github.com/chriskiehl/Gooey) to provide a thin
-GUI wrapper for the command line interface. 
-
-![Grazer-Gui](./docs/images/grazer-gui.png)
-
-> Note: Since Gooey is a python package
-it would require an installation of python. To avoid this dependency we use
-[pyinstaller](https://www.pyinstaller.org/) to package everything into an
-executable. But this does mean we essentially ship a full python version with
-the GUI, which increases Grazers size from something like 2mb to something like
-20mb on windows and mac and even larger on linux.
 
 ## Documentation
 

@@ -1,0 +1,31 @@
+{
+    "optimize": false,
+    "constraint_settings": {
+        "evaluate_constraints_every_n": 10
+    },
+    "control_settings":{
+        "number_of_steps": 10
+    },
+    "simulation_settings":
+    {
+        "use_simplified_newton": true,
+        "maximal_number_of_newton_iterations": 50,
+        "tolerance": 1e-8,
+        "retries": 0,
+        "start_time": 0,
+        "end_time": 86400,
+        "desired_delta_t": 1800
+    },
+    "problem_data":
+    {
+        "topology_json":"topology.json",
+        "boundary_json":"boundary.json",
+        "defaults" : {
+            "Pipe": {
+                "balancelaw": "Isothermaleulerequation",
+                "scheme": "Implicitboxscheme",
+                "desired_delta_x": 10000
+            }
+        }
+    }
+}

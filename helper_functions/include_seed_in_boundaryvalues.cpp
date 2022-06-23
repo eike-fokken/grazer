@@ -14,6 +14,8 @@ namespace fs = std::filesystem;
  * problem folder.
  *
  * Used to reproduce an output file that had stochastic inputs.
+ * - First argument is the problem folder
+ * - Second argument is the states output json file.
  */
 
 int main(int argc, char **argv) {

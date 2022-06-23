@@ -8,35 +8,42 @@ static_assert(
     "StochasticPQnode uses signaling_NaN. If you don't have that, replace the "
     "initialization of current_P and current_Q by something else.");
 
-namespace Model::Networkproblem::Power {
+namespace Model::Power {
 
   class StochasticPQnode final : public Powernode {
   public:
     static std::string get_type();
-    std::string get_power_type() const override;
+    std::string get_power_type() const final;
 
     static nlohmann::json get_schema();
-    static std::optional<nlohmann::json> get_boundary_schema();
+    static nlohmann::json get_boundary_schema();
+
+    void setup() final;
 
     StochasticPQnode(nlohmann::json const &topology);
 
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-        double new_time, Eigen::Ref<Eigen::VectorXd const> last_state,
-        Eigen::Ref<Eigen::VectorXd const> new_state) const override;
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const final;
 
-    void evaluate_state_derivative(
-        Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const>,
-        Eigen::Ref<Eigen::VectorXd const> new_state) const override;
+    void d_evalutate_d_new_state(
+        Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const final;
+
+    void d_evalutate_d_last_state(
+        Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
+        double /*new_time*/,
+        Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+        Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const final;
 
     void prepare_timestep(
         double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> last_state,
-        Eigen::Ref<Eigen::VectorXd const> new_state) override;
+        Eigen::Ref<Eigen::VectorXd const> const &last_state) final;
 
-    void
-    json_save(double time, Eigen::Ref<Eigen::VectorXd const> state) override;
+    void json_save(
+        double time, Eigen::Ref<Eigen::VectorXd const> const &state) final;
 
     // For testing purposes:
     double get_current_P() const;
@@ -87,4 +94,4 @@ namespace Model::Networkproblem::Power {
     double current_Q{std::numeric_limits<double>::signaling_NaN()};
     std::unique_ptr<StochasticData> stochasticdata;
   };
-} // namespace Model::Networkproblem::Power
+} // namespace Model::Power

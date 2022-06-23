@@ -1,5 +1,6 @@
-#include <Exception.hpp>
-#include <Input_output.hpp>
+#include "Input_output.hpp"
+#include "Exception.hpp"
+
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -56,11 +57,11 @@ namespace io {
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
       ++counter;
     } while (counter < number_of_tries);
-    if (counter >= 10) {
+    if (counter >= number_of_tries) {
       gthrow(
           {"Couldn't aquire a unique filename in ",
            std::to_string(number_of_tries), " tries.\n",
-           "Last tried filename was\n", unique_name.string(), "\nAborting..."});
+           "Last tried filename was\n", unique_name.string(), "\n"});
     }
     std::fclose(fp);
     return unique_name;
@@ -73,7 +74,7 @@ namespace io {
       if (not fs::is_directory(output_dir)) {
         gthrow(
             {"The output directory, \"", output_dir.string(),
-             "\" is present, but not a directory, I will abort now."});
+             "\" is present, but not a directory."});
       }
     }
 
@@ -84,6 +85,70 @@ namespace io {
     auto outputpath
         = fs::absolute(create_new_output_file(filename, attach_epoch_count));
     return outputpath;
+  }
+
+  std::string millisecond_datetime_timestamp() {
+    auto nowtime = std::chrono::system_clock::now();
+    std::time_t t = std::chrono::system_clock::to_time_t(nowtime);
+
+    auto time_up_to_seconds = std::chrono::system_clock::from_time_t(t);
+
+    auto ms_since_second
+        = std::chrono::duration_cast<std::chrono::milliseconds>(
+            nowtime - time_up_to_seconds);
+
+    auto ms_string = std::to_string(ms_since_second.count());
+    char mbstr[32];
+    if (std::strftime(
+            mbstr, sizeof(mbstr), "%Y.%m.%d_%H:%M:%S", std::localtime(&t))) {
+      std::string timestring(mbstr);
+
+      std::string full_timestring = timestring + "." + ms_string;
+      return full_timestring;
+    } else {
+      gthrow(
+          {"std::strftime somehow failed. This is a bug, please report it on "
+           "github!"});
+    }
+  }
+
+  std::filesystem::path unique_output_directory(
+      std::filesystem::path const &outer_output_directory,
+      dirname_generator dirname_generator_funtion) {
+    int number_of_tries = 20;
+    for (int counter = 0; counter != number_of_tries; ++counter) {
+      std::filesystem::path absolute_unique_directory_path
+          = outer_output_directory
+            / std::filesystem::path(dirname_generator_funtion());
+      if (std::filesystem::create_directory(absolute_unique_directory_path)) {
+        return absolute_unique_directory_path;
+      }
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+    gthrow(
+        {"Failed to create a unique output directory in ",
+         std::to_string(number_of_tries), ".\n", "Are you running more than ",
+         std::to_string(number_of_tries), " instances of grazer in parallel?"});
+  }
+
+  void prepare_output_directory(
+      std::filesystem::path const &output_directory,
+      std::filesystem::path const &problem_directory,
+      std::vector<std::string> filenames_to_create) {
+    namespace fs = std::filesystem;
+    fs::path problem_files = output_directory / fs::path("problem");
+    const auto copyOptions = fs::copy_options::recursive;
+    fs::copy(problem_directory, problem_files, copyOptions);
+
+    for (auto const &filename : filenames_to_create) {
+      auto filepath = output_directory / fs::path(filename);
+      auto fp = std::fopen(filepath.string().c_str(), "wx");
+      if (not fp) {
+        auto absolute_path = fs::absolute(filepath);
+        gthrow({"Failed to create file: ", absolute_path.string()});
+      }
+      std::fclose(fp);
+    }
   }
 
 } // namespace io

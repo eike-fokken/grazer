@@ -79,35 +79,38 @@ public:
   double V3 = 5.0;
   double phi3 = 89.0;
 
-  std::unique_ptr<Model::Networkproblem::Networkproblem>
+  std::unique_ptr<Model::Networkproblem>
   make_Networkproblem(nlohmann::json &netproblem);
 
   std::tuple<
-      std::unique_ptr<Model::Networkproblem::Networkproblem>, double, double,
-      Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd>
+      std::unique_ptr<Model::Networkproblem>, double, double, Eigen::VectorXd,
+      Eigen::VectorXd, Eigen::VectorXd>
   default_setup();
 };
 
 TEST_F(stochasticPQnodeTEST, evaluate) {
-
   auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
       = default_setup();
-  netprob->prepare_timestep(last_time, new_time, last_state, new_state);
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
+  netprob->prepare_timestep(last_time, new_time, last_state, control);
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
-  auto *stoch_pq
-      = dynamic_cast<Model::Networkproblem::Power::StochasticPQnode *>(
-          netprob->get_network().get_node_by_id("stochpq"));
+  auto *stoch_pq = dynamic_cast<Model::Power::StochasticPQnode *>(
+      netprob->get_network().get_node_by_id("stochpq"));
   if (not stoch_pq) {
     FAIL();
   }
 
-  auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *vphi = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
   if (not vphi) {
     FAIL();
   }
-  auto *pv = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *pv = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("pv"));
   if (not pv) {
     FAIL();
@@ -118,38 +121,42 @@ TEST_F(stochasticPQnodeTEST, evaluate) {
   // to work well and is hopefully sufficient to catch regressions.
 
   EXPECT_NEAR(
-      rootvalues[stoch_pq->get_start_state_index()],
+      rootvalues[stoch_pq->get_state_startindex()],
       -stoch_pq->get_current_P() + G2 * V2 * V2
           + V2 * V1 * (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 - phi1))
           + V2 * V3 * (Gt2 * cos(phi2 - phi3) + Bt2 * sin(phi2 - phi3)),
       1e-12);
 
   EXPECT_NEAR(
-      rootvalues[stoch_pq->get_start_state_index() + 1],
+      rootvalues[stoch_pq->get_state_startindex() + 1],
       -stoch_pq->get_current_Q() - B2 * V2 * V2
           + V2 * V1 * (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 - phi1))
           + V2 * V3 * (Gt2 * sin(phi2 - phi3) - Bt2 * cos(phi2 - phi3)),
       1e-12);
 }
 
-TEST_F(stochasticPQnodeTEST, evaluate_state_derivative) {
+TEST_F(stochasticPQnodeTEST, d_evalutate_d_new_state) {
 
   auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
       = default_setup();
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
-
-  auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *vphi = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
   if (not vphi) {
     FAIL();
   }
-  auto *pq = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *pq = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("stochpq"));
   if (not pq) {
     FAIL();
   }
-  auto *pv = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *pv = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("pv"));
 
   if (not pv) {
@@ -157,18 +164,18 @@ TEST_F(stochasticPQnodeTEST, evaluate_state_derivative) {
   }
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-  Aux::Triplethandler handler(&J);
-  netprob->evaluate_state_derivative(
-      &handler, last_time, new_time, last_state, new_state);
+  Aux::Triplethandler handler(J);
+  netprob->d_evalutate_d_new_state(
+      handler, last_time, new_time, last_state, new_state, control);
   handler.set_matrix();
 
   Eigen::Matrix<double, 6, 6> DenseJ = J;
-  auto index0_vphi = vphi->get_start_state_index();
-  auto index1_vphi = vphi->get_start_state_index() + 1;
-  auto index0_pq = pq->get_start_state_index();
-  auto index1_pq = pq->get_start_state_index() + 1;
-  auto index0_pv = pv->get_start_state_index();
-  auto index1_pv = pv->get_start_state_index() + 1;
+  auto index0_vphi = vphi->get_state_startindex();
+  auto index1_vphi = vphi->get_state_startindex() + 1;
+  auto index0_pq = pq->get_state_startindex();
+  auto index1_pq = pq->get_state_startindex() + 1;
+  auto index0_pv = pv->get_state_startindex();
+  auto index1_pv = pv->get_state_startindex() + 1;
 
   // derivatives of P in the PQ node:
   EXPECT_DOUBLE_EQ(
@@ -242,14 +249,14 @@ nlohmann::json stochpq_json(
   return stochpq_json;
 }
 
-std::unique_ptr<Model::Networkproblem::Networkproblem>
+std::unique_ptr<Model::Networkproblem>
 stochasticPQnodeTEST::make_Networkproblem(nlohmann::json &netproblem) {
   return EqcomponentTEST::make_Networkproblem(netproblem, factory);
 }
 
 std::tuple<
-    std::unique_ptr<Model::Networkproblem::Networkproblem>, double, double,
-    Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd>
+    std::unique_ptr<Model::Networkproblem>, double, double, Eigen::VectorXd,
+    Eigen::VectorXd, Eigen::VectorXd>
 stochasticPQnodeTEST::default_setup() {
 
   Eigen::Vector2d bdcond1{V1_bd, phi1_bd};
@@ -275,17 +282,12 @@ stochasticPQnodeTEST::default_setup() {
       {{"Transmissionline", {tl1_json, tl2_json}}});
 
   auto netprob = make_Networkproblem(np_json);
-  int number_of_variables = netprob->set_indices(0);
+  netprob->init();
+  auto number_of_variables = netprob->get_number_of_states();
 
-  Eigen::Vector4d cond1(
-      std::numeric_limits<double>::quiet_NaN(),
-      std::numeric_limits<double>::quiet_NaN(), V1, phi1);
-  Eigen::Vector4d cond2(
-      std::numeric_limits<double>::quiet_NaN(),
-      std::numeric_limits<double>::quiet_NaN(), V2, phi2);
-  Eigen::Vector4d cond3(
-      std::numeric_limits<double>::quiet_NaN(),
-      std::numeric_limits<double>::quiet_NaN(), V3, phi3);
+  Eigen::Vector2d cond1(V1, phi1);
+  Eigen::Vector2d cond2(V2, phi2);
+  Eigen::Vector2d cond3(V3, phi3);
 
   auto init1 = std::vector{std::make_pair(0.0, cond1)};
   auto initial_json1 = make_value_json(id1, "x", init1);

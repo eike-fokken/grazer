@@ -1,0 +1,43 @@
+{
+	"$schema": "../schemas/boundary_schema.json",
+	"nodes": {
+		"Source": [
+			{
+				"id": "source",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							58.993631
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							58.993631
+						]
+					}
+				]
+			}
+		],
+		"ConstraintSink": [
+			{
+				"id": "sink",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							  58.993631
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+								58.993631
+						]
+					}
+				]
+			}
+		]
+	}
+}

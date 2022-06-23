@@ -1,10 +1,10 @@
 #pragma once
-#include "Boundaryvalue.hpp"
-#include "Control.hpp"
 #include "Edge.hpp"
+#include "Equationcomponent.hpp"
 #include "Gasedge.hpp"
+#include "InterpolatingVector.hpp"
 
-namespace Model::Networkproblem::Gaspowerconnection {
+namespace Model::Gaspowerconnection {
 
   class ExternalPowerplant;
   /** \brief an edge connecting a gasnode to a powernode and modelling a
@@ -17,13 +17,14 @@ namespace Model::Networkproblem::Gaspowerconnection {
    * In power-controlled mode, it doesn't enforce the pressure. In this case an
    * additional equation must be set in the powernode at the connections end.
    */
-  class Gaspowerconnection final : public Gas::Gasedge, public Network::Edge {
+  class Gaspowerconnection final :
+      public Equationcomponent,
+      public Gas::Gasedge,
+      public Network::Edge {
   public:
     static std::string get_type();
-    std::string get_gas_type() const override;
+    std::string get_gas_type() const final;
     static nlohmann::json get_schema();
-    static std::optional<nlohmann::json> get_boundary_schema();
-    static std::optional<nlohmann::json> get_control_schema();
     static nlohmann::json get_initial_schema();
 
     Gaspowerconnection(
@@ -32,33 +33,39 @@ namespace Model::Networkproblem::Gaspowerconnection {
 
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-        double new_time, Eigen::Ref<Eigen::VectorXd const> last_state,
-        Eigen::Ref<Eigen::VectorXd const> new_state) const override;
-    void evaluate_state_derivative(
-        Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const>,
-        Eigen::Ref<Eigen::VectorXd const> new_state) const override;
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const final;
+    void d_evalutate_d_new_state(
+        Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const final;
 
-    void setup() override;
+    void d_evalutate_d_last_state(
+        Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const final;
 
-    int get_number_of_states() const override;
+    void setup() final;
 
-    void add_results_to_json(nlohmann::json &new_output) override;
+    Eigen::Index needed_number_of_states() const final;
 
-    void
-    json_save(double time, Eigen::Ref<const Eigen::VectorXd> state) override;
+    void add_results_to_json(nlohmann::json &new_output) final;
+
+    void json_save(
+        double time, Eigen::Ref<Eigen::VectorXd const> const &state) final;
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,
-        nlohmann::json const &initial_json) override;
+        nlohmann::json const &initial_json) const final;
 
     Eigen::Vector2d get_boundary_p_qvol_bar(
-        int direction, Eigen::Ref<Eigen::VectorXd const> state) const override;
+        Gas::Direction direction,
+        Eigen::Ref<Eigen::VectorXd const> const &state) const final;
 
     void dboundary_p_qvol_dstate(
-        int direction, Aux::Matrixhandler *jacobianhandler,
-        Eigen::RowVector2d function_derivative, int rootvalues_index,
-        Eigen::Ref<Eigen::VectorXd const> state) const override;
+        Gas::Direction direction, Aux::Matrixhandler &jacobianhandler,
+        Eigen::RowVector2d function_derivative, Eigen::Index rootvalues_index,
+        Eigen::Ref<Eigen::VectorXd const> const &state) const final;
 
     double smoothing_polynomial(double q) const;
     double dsmoothing_polynomial_dq(double q) const;
@@ -68,21 +75,10 @@ namespace Model::Networkproblem::Gaspowerconnection {
 
     static constexpr double kappa{60};
 
-    bool is_gas_driven(double time) const;
-
   private:
-    /** \brief is non-zero, if the connection is gas-controlled and zero, if
-     * power-controlled.
-     */
-    Control<1> control;
-
-    /** The set pressure for periods of gas-controlled operation. Values in
-     * power-controlled periods are ignored.
-     */
-    Boundaryvalue<1> boundaryvalue;
     ExternalPowerplant *powerendnode{nullptr};
 
     double const gas2power_q_coefficient;
     double const power2gas_q_coefficient;
   };
-} // namespace Model::Networkproblem::Gaspowerconnection
+} // namespace Model::Gaspowerconnection

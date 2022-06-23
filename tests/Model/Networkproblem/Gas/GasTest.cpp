@@ -4,6 +4,7 @@
 #include "Gas_factory.hpp"
 #include "Implicitboxscheme.hpp"
 #include "Innode.hpp"
+#include "InterpolatingVector.hpp"
 #include "Isothermaleulerequation.hpp"
 #include "Matrixhandler.hpp"
 #include "Netfactory.hpp"
@@ -39,7 +40,7 @@ class GasTEST : public EqcomponentTEST {
   Model::Componentfactory::Gas_factory factory{R"({})"_json};
 
 public:
-  std::unique_ptr<Model::Networkproblem::Networkproblem>
+  std::unique_ptr<Model::Networkproblem>
   make_Networkproblem(nlohmann::json &netproblem) {
     return EqcomponentTEST::make_Networkproblem(netproblem, factory);
   }
@@ -62,8 +63,8 @@ TEST_F(GasTEST, Shortpipe_evaluate) {
       {{"Shortpipe", {shortpipe_topology}}});
 
   auto netprob = make_Networkproblem(np_json);
-  int number_of_variables = netprob->set_indices(0);
-
+  netprob->init();
+  auto number_of_variables = netprob->get_number_of_states();
   double last_time = 0.0;
   double new_time = 0.0;
   Eigen::VectorXd rootvalues(number_of_variables);
@@ -85,13 +86,18 @@ TEST_F(GasTEST, Shortpipe_evaluate) {
 
   netprob->set_initial_values(last_state, np_initialjson);
   Eigen::VectorXd new_state = last_state;
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the gas components up to now are not
+  // controlled.  But to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
   EXPECT_DOUBLE_EQ(rootvalues[1], pressure_start - pressure_end);
   EXPECT_DOUBLE_EQ(rootvalues[2], flow_start - flow_end);
 }
 
-TEST_F(GasTEST, Shortpipe_evaluate_state_derivative) {
+TEST_F(GasTEST, Shortpipe_d_evalutate_d_new_state) {
 
   double flow0start = 88.0;
   double flow0end = 10.0;
@@ -109,8 +115,8 @@ TEST_F(GasTEST, Shortpipe_evaluate_state_derivative) {
 
   auto netprob = make_Networkproblem(np_json);
 
-  int number_of_variables = netprob->set_indices(0);
-
+  netprob->init();
+  auto number_of_variables = netprob->get_number_of_states();
   double last_time = 0.0;
   double new_time = 0.0;
   Eigen::VectorXd rootvalues(number_of_variables);
@@ -134,13 +140,18 @@ TEST_F(GasTEST, Shortpipe_evaluate_state_derivative) {
 
   netprob->set_initial_values(last_state, np_initialjson);
   Eigen::VectorXd new_state = last_state;
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the gas components up to now are not
+  // controlled.  But to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-  Aux::Triplethandler handler(&J);
+  Aux::Triplethandler handler(J);
 
-  netprob->evaluate_state_derivative(
-      &handler, last_time, new_time, last_state, new_state);
+  netprob->d_evalutate_d_new_state(
+      handler, last_time, new_time, last_state, new_state, control);
   handler.set_matrix();
 
   Eigen::Matrix4d DenseJ = J;
@@ -179,8 +190,8 @@ TEST_F(GasTEST, Source_evaluate) {
       {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
 
   auto netprob = make_Networkproblem(np_json);
-  int number_of_variables = netprob->set_indices(0);
-
+  netprob->init();
+  auto number_of_variables = netprob->get_number_of_states();
   double sp01_pressure_start = 810;
   double sp01_flow_start = -4;
   double sp01_pressure_end = 125;
@@ -216,7 +227,12 @@ TEST_F(GasTEST, Source_evaluate) {
 
   netprob->set_initial_values(new_state, initial_json);
 
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the gas components up to now are not
+  // controlled.  But to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
   // node0:
   EXPECT_DOUBLE_EQ(rootvalues[0], -sp01_pressure_start + sp20_pressure_end);
@@ -230,7 +246,7 @@ TEST_F(GasTEST, Source_evaluate) {
   EXPECT_DOUBLE_EQ(rootvalues[4], -flow2start + sp20_flow_start);
 }
 
-TEST_F(GasTEST, Source_evaluate_state_derivative) {
+TEST_F(GasTEST, Source_d_evalutate_d_new_state) {
 
   double flow0start = 88.0;
   double flow0end = 10.0;
@@ -253,8 +269,8 @@ TEST_F(GasTEST, Source_evaluate_state_derivative) {
       {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
 
   auto netprob = make_Networkproblem(np_json);
-  int number_of_variables = netprob->set_indices(0);
-
+  netprob->init();
+  auto number_of_variables = netprob->get_number_of_states();
   double sp01_pressure_start = 810;
   double sp01_flow_start = -4;
   double sp01_pressure_end = 125;
@@ -290,10 +306,14 @@ TEST_F(GasTEST, Source_evaluate_state_derivative) {
   netprob->set_initial_values(new_state, initial_json);
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-  Aux::Triplethandler handler(&J);
+  Aux::Triplethandler handler(J);
 
-  netprob->evaluate_state_derivative(
-      &handler, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the gas components up to now are not
+  // controlled.  But to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
+  netprob->d_evalutate_d_new_state(
+      handler, last_time, new_time, last_state, new_state, control);
   handler.set_matrix();
 
   Eigen::MatrixXd DenseJ = J;
@@ -359,8 +379,8 @@ TEST_F(GasTEST, Sink_evaluate) {
       {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
 
   auto netprob = make_Networkproblem(np_json);
-  int number_of_variables = netprob->set_indices(0);
-
+  netprob->init();
+  auto number_of_variables = netprob->get_number_of_states();
   double sp01_pressure_start = 810;
   double sp01_flow_start = -4;
   double sp01_pressure_end = 125;
@@ -396,7 +416,12 @@ TEST_F(GasTEST, Sink_evaluate) {
 
   netprob->set_initial_values(new_state, initial_json);
 
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the gas components up to now are not
+  // controlled.  But to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
   // Note that for sinks the boundary conditions should have the opposite signs
   // compared to sources. node0:
@@ -410,7 +435,7 @@ TEST_F(GasTEST, Sink_evaluate) {
   EXPECT_DOUBLE_EQ(rootvalues[4], flow2start + sp20_flow_start);
 }
 
-TEST_F(GasTEST, Sink_evaluate_state_derivative) {
+TEST_F(GasTEST, Sink_d_evalutate_d_new_state) {
 
   double flow0start = 86.0;
   double flow0end = 193.0;
@@ -433,8 +458,8 @@ TEST_F(GasTEST, Sink_evaluate_state_derivative) {
       {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
 
   auto netprob = make_Networkproblem(np_json);
-  int number_of_variables = netprob->set_indices(0);
-
+  netprob->init();
+  auto number_of_variables = netprob->get_number_of_states();
   double sp01_pressure_start = 810;
   double sp01_flow_start = -4;
   double sp01_pressure_end = 125;
@@ -470,10 +495,14 @@ TEST_F(GasTEST, Sink_evaluate_state_derivative) {
   netprob->set_initial_values(new_state, initial_json);
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-  Aux::Triplethandler handler(&J);
+  Aux::Triplethandler handler(J);
 
-  netprob->evaluate_state_derivative(
-      &handler, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the gas components up to now are not
+  // controlled.  But to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
+  netprob->d_evalutate_d_new_state(
+      handler, last_time, new_time, last_state, new_state, control);
   handler.set_matrix();
 
   Eigen::MatrixXd DenseJ = J;
@@ -533,8 +562,8 @@ TEST_F(GasTEST, Innode_evaluate) {
       {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
 
   auto netprob = make_Networkproblem(np_json);
-  int number_of_variables = netprob->set_indices(0);
-
+  netprob->init();
+  auto number_of_variables = netprob->get_number_of_states();
   double sp01_pressure_start = 8102;
   double sp01_flow_start = -49;
   double sp01_pressure_end = 1257;
@@ -570,7 +599,12 @@ TEST_F(GasTEST, Innode_evaluate) {
 
   netprob->set_initial_values(new_state, initial_json);
 
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the gas components up to now are not
+  // controlled.  But to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
   // node0:
   EXPECT_DOUBLE_EQ(rootvalues[0], -sp01_pressure_start + sp20_pressure_end);
@@ -583,7 +617,7 @@ TEST_F(GasTEST, Innode_evaluate) {
   EXPECT_DOUBLE_EQ(rootvalues[4], sp20_flow_start);
 }
 
-TEST_F(GasTEST, Innode_evaluate_state_derivative) {
+TEST_F(GasTEST, Innode_d_evalutate_d_new_state) {
 
   nlohmann::json node0_json;
   nlohmann::json node1_json;
@@ -600,8 +634,8 @@ TEST_F(GasTEST, Innode_evaluate_state_derivative) {
       {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
 
   auto netprob = make_Networkproblem(np_json);
-  int number_of_variables = netprob->set_indices(0);
-
+  netprob->init();
+  auto number_of_variables = netprob->get_number_of_states();
   double sp01_pressure_start = 81000;
   double sp01_flow_start = -411;
   double sp01_pressure_end = 12522;
@@ -637,10 +671,14 @@ TEST_F(GasTEST, Innode_evaluate_state_derivative) {
   netprob->set_initial_values(new_state, initial_json);
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-  Aux::Triplethandler handler(&J);
+  Aux::Triplethandler handler(J);
 
-  netprob->evaluate_state_derivative(
-      &handler, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the gas components up to now are not
+  // controlled.  But to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
+  netprob->d_evalutate_d_new_state(
+      handler, last_time, new_time, last_state, new_state, control);
   handler.set_matrix();
 
   Eigen::MatrixXd DenseJ = J;
@@ -703,8 +741,8 @@ TEST_F(GasTEST, Pipe_evaluate) {
   std::vector<std::pair<double, Eigen::Matrix<double, 2, 1>>> initialvalues;
   using E2d = Eigen::Matrix<double, 2, 1>;
   double initial_Delta_x = 3812.5;
-  initialvalues.push_back({0, E2d(75.046978, 58.290215)});
-  initialvalues.push_back({initial_Delta_x, E2d(75.032557, 58.105963)});
+  initialvalues.push_back({0 * initial_Delta_x, E2d(75.046978, 58.290215)});
+  initialvalues.push_back({1 * initial_Delta_x, E2d(75.032557, 58.105963)});
   initialvalues.push_back({2 * initial_Delta_x, E2d(75.01822, 57.921692)});
   initialvalues.push_back({3 * initial_Delta_x, E2d(75.003966, 57.737405)});
   initialvalues.push_back({4 * initial_Delta_x, E2d(74.989795, 57.553105)});
@@ -719,8 +757,8 @@ TEST_F(GasTEST, Pipe_evaluate) {
 
   auto netprob = make_Networkproblem(netprop_json);
 
-  int number_of_variables = netprob->set_indices(0);
-
+  netprob->init();
+  auto number_of_variables = netprob->get_number_of_states();
   double last_time = 0.0;
   double new_time = 10.0;
   Eigen::VectorXd rootvalues(number_of_variables);
@@ -730,7 +768,12 @@ TEST_F(GasTEST, Pipe_evaluate) {
 
   netprob->set_initial_values(new_state, net_initial);
 
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the gas components up to now are not
+  // controlled.  But to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
   Eigen::Vector2d last_left = last_state.segment<2>(0);
   Eigen::Vector2d last_right = last_state.segment<2>(2);
@@ -752,7 +795,69 @@ TEST_F(GasTEST, Pipe_evaluate) {
   EXPECT_DOUBLE_EQ(expected_result[1], rootvalues.segment<2>(1)[1]);
 }
 
-TEST_F(GasTEST, Pipe_evaluate_state_derivative) {
+TEST_F(GasTEST, Pipe_set_initial_conditions) {
+
+  nlohmann::json node0;
+  nlohmann::json node1;
+  node0["id"] = "node0";
+  node1["id"] = "node1";
+
+  std::string id = "pipe";
+  double length = 15250;
+  double diameter = 0.9144;
+  double roughness = 8;
+  double desired_delta_x = 20000;
+
+  nlohmann::json pipe_topology = pipe_json(
+      id, node0, node1, length, "m", diameter, "m", roughness, "m",
+      desired_delta_x, "Isothermaleulerequation", "Implicitboxscheme");
+
+  std::vector<std::pair<double, Eigen::Matrix<double, 2, 1>>> initialvalues;
+  using E2d = Eigen::Matrix<double, 2, 1>;
+  double initial_Delta_x = 3812.5;
+  initialvalues.push_back({0 * initial_Delta_x, E2d(75.046978, 58.290215)});
+  initialvalues.push_back({1 * initial_Delta_x, E2d(75.032557, 58.105963)});
+  initialvalues.push_back({2 * initial_Delta_x, E2d(75.01822, 57.921692)});
+  initialvalues.push_back({3 * initial_Delta_x, E2d(75.003966, 57.737405)});
+  initialvalues.push_back({4 * initial_Delta_x, E2d(74.989795, 57.553105)});
+
+  nlohmann::json pipe_initial = make_value_json(id, "x", initialvalues);
+
+  nlohmann::json net_initial
+      = make_initial_json({}, {{"Pipe", {pipe_initial}}});
+
+  auto netprop_json = make_full_json(
+      {{"Innode", {node0, node1}}}, {{"Pipe", {pipe_topology}}});
+
+  auto netprob = make_Networkproblem(netprop_json);
+
+  netprob->init();
+  auto number_of_variables = netprob->get_number_of_states();
+  Eigen::VectorXd new_state(number_of_variables);
+
+  netprob->set_initial_values(new_state, net_initial);
+
+  auto &net = netprob->get_network();
+  auto edges = net.get_edges();
+  auto pipe = dynamic_cast<Model::Gas::Pipe const *>(edges.front());
+  auto bl = pipe->get_balancelaw();
+  auto vals_per_point = pipe->init_vals_per_interpol_point();
+
+  Eigen::VectorXd expected_state(number_of_variables);
+
+  auto expected_values = Aux::InterpolatingVector::construct_from_json(
+      pipe_initial, pipe->get_initial_schema());
+
+  for (int ipoint = 0; ipoint != pipe->get_number_of_points(); ++ipoint) {
+    Eigen::Vector2d point = bl->state(bl->p_qvol_from_p_qvol_bar(
+        expected_values(ipoint * pipe->get_Delta_x())));
+    for (int ivar = 0; ivar != vals_per_point; ++ivar) {
+      EXPECT_DOUBLE_EQ(point[ivar], new_state[ipoint * vals_per_point + ivar]);
+    }
+  }
+}
+
+TEST_F(GasTEST, Pipe_d_evalutate_d_new_state) {
   nlohmann::json node0;
   nlohmann::json node1;
   node0["id"] = "node0";
@@ -788,8 +893,8 @@ TEST_F(GasTEST, Pipe_evaluate_state_derivative) {
 
   auto netprob = make_Networkproblem(netprop_json);
 
-  int number_of_variables = netprob->set_indices(0);
-
+  netprob->init();
+  auto number_of_variables = netprob->get_number_of_states();
   double last_time = 0.0;
   double new_time = 10.0;
   Eigen::VectorXd rootvalues(number_of_variables);
@@ -801,10 +906,14 @@ TEST_F(GasTEST, Pipe_evaluate_state_derivative) {
   netprob->set_initial_values(new_state, net_initial);
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-  Aux::Triplethandler handler(&J);
+  Aux::Triplethandler handler(J);
 
-  netprob->evaluate_state_derivative(
-      &handler, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the gas components up to now are not
+  // controlled.  But to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
+  netprob->d_evalutate_d_new_state(
+      handler, last_time, new_time, last_state, new_state, control);
   handler.set_matrix();
 
   Eigen::Matrix4d DenseJ = J;
@@ -817,10 +926,97 @@ TEST_F(GasTEST, Pipe_evaluate_state_derivative) {
   auto new_left = new_state.segment<2>(0);
   auto new_right = new_state.segment<2>(2);
 
-  auto dleft = scheme.devaluate_point_dleft(
+  auto dleft = scheme.devaluate_point_d_new_left(
       last_time, new_time, Delta_x, last_left, last_right, new_left, new_right,
       bl);
-  auto dright = scheme.devaluate_point_dright(
+  auto dright = scheme.devaluate_point_d_new_right(
+      last_time, new_time, Delta_x, last_right, last_right, new_right,
+      new_right, bl);
+
+  EXPECT_DOUBLE_EQ(DenseJ(1, 0), dleft(0, 0));
+  EXPECT_DOUBLE_EQ(DenseJ(1, 1), dleft(0, 1));
+  EXPECT_DOUBLE_EQ(DenseJ(1, 2), dright(0, 0));
+  EXPECT_DOUBLE_EQ(DenseJ(1, 3), dright(0, 1));
+
+  EXPECT_DOUBLE_EQ(DenseJ(2, 0), dleft(1, 0));
+  EXPECT_DOUBLE_EQ(DenseJ(2, 1), dleft(1, 1));
+  EXPECT_DOUBLE_EQ(DenseJ(2, 2), dright(1, 0));
+  EXPECT_DOUBLE_EQ(DenseJ(2, 3), dright(1, 1));
+}
+
+TEST_F(GasTEST, Pipe_d_evalutate_d_last_state) {
+  nlohmann::json node0;
+  nlohmann::json node1;
+  node0["id"] = "node0";
+  node1["id"] = "node1";
+
+  std::string id = "pipe";
+  double length = 15250;
+  double diameter = 0.9144;
+  double roughness = 8e-6;
+  double desired_delta_x = 20000;
+
+  nlohmann::json pipe_topology = pipe_json(
+      id, node0, node1, length, "m", diameter, "m", roughness, "m",
+      desired_delta_x, "Isothermaleulerequation", "Implicitboxscheme");
+
+  std::vector<std::pair<double, Eigen::Matrix<double, 2, 1>>> initialvalues;
+  {
+    using E2d = Eigen::Matrix<double, 2, 1>;
+    double initial_Delta_x = 3812.5;
+    initialvalues.push_back({0, E2d(75.046978, 58.290215)});
+    initialvalues.push_back({initial_Delta_x, E2d(75.032557, 58.105963)});
+    initialvalues.push_back({2 * initial_Delta_x, E2d(75.01822, 57.921692)});
+    initialvalues.push_back({3 * initial_Delta_x, E2d(75.003966, 57.737405)});
+    initialvalues.push_back({4 * initial_Delta_x, E2d(74.989795, 57.553105)});
+  }
+
+  nlohmann::json pipe_initial = make_value_json(id, "x", initialvalues);
+  nlohmann::json net_initial
+      = make_initial_json({}, {{"Pipe", {pipe_initial}}});
+
+  auto netprop_json = make_full_json(
+      {{"Innode", {node0, node1}}}, {{"Pipe", {pipe_topology}}});
+
+  auto netprob = make_Networkproblem(netprop_json);
+
+  netprob->init();
+  auto number_of_variables = netprob->get_number_of_states();
+  double last_time = 0.0;
+  double new_time = 10.0;
+  Eigen::VectorXd rootvalues(number_of_variables);
+  rootvalues.setZero();
+  Eigen::VectorXd last_state(number_of_variables);
+  Eigen::VectorXd new_state(number_of_variables);
+  last_state.setRandom();
+
+  netprob->set_initial_values(new_state, net_initial);
+
+  Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
+  Aux::Triplethandler handler(J);
+
+  // The following are not needed, as the gas components up to now are not
+  // controlled.  But to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
+  netprob->d_evalutate_d_last_state(
+      handler, last_time, new_time, last_state, new_state, control);
+  handler.set_matrix();
+
+  Eigen::Matrix4d DenseJ = J;
+
+  Model::Balancelaw::Isothermaleulerequation bl(pipe_topology);
+  Model::Scheme::Implicitboxscheme scheme;
+  double Delta_x = length;
+  auto last_left = last_state.segment<2>(0);
+  auto last_right = last_state.segment<2>(2);
+  auto new_left = new_state.segment<2>(0);
+  auto new_right = new_state.segment<2>(2);
+
+  auto dleft = scheme.devaluate_point_d_last_left(
+      last_time, new_time, Delta_x, last_left, last_right, new_left, new_right,
+      bl);
+  auto dright = scheme.devaluate_point_d_last_right(
       last_time, new_time, Delta_x, last_right, last_right, new_right,
       new_right, bl);
 

@@ -1,5 +1,6 @@
 #include "Netfactory.hpp"
 #include "Aux_json.hpp"
+#include "ComponentJsonHelpers.hpp"
 #include "Componentfactory.hpp"
 #include "Edge.hpp"
 #include "Exception.hpp"
@@ -14,95 +15,27 @@
 #include <string>
 #include <vector>
 
-namespace Model::Networkproblem {
-
-  void check_for_duplicates(nlohmann::json &components, std::string key) {
-
-    std::vector<std::string> component_vector;
-    for (auto const &component_class : {"nodes", "connections"}) {
-      if (not components.contains(component_class)) {
-        continue;
-      }
-      for (auto &[component_type, sub_json] :
-           components[component_class].items()) {
-        for (auto &component : sub_json) {
-          if (not component.contains("id")) {
-            gthrow({
-                "The json inside of the following object",
-                " does not contain an id! ",
-                component.dump(1, '\t'),
-                "\nThe object was inside \n\n",
-                key,
-                "[",
-                component_class,
-                "][",
-                component_type,
-                "]\n\n",
-                "Aborting...",
-            });
-          }
-          component_vector.push_back(component["id"].get<std::string>());
-        }
-      }
-    }
-    std::sort(component_vector.begin(), component_vector.end());
-    auto first_eq_id
-        = std::adjacent_find(component_vector.begin(), component_vector.end());
-    if (first_eq_id != component_vector.end()) {
-      gthrow({"The id ", (*first_eq_id), " appears twice in ", key, " ."});
-    }
-  }
-
-  void sort_json_vectors_by_id(nlohmann::json &components, std::string key) {
-
-    check_for_duplicates(components, key);
-
-    for (auto const &component_class : {"nodes", "connections"}) {
-      if (not components.contains(component_class)) {
-        continue;
-      }
-      for (auto &[component_type, sub_json] :
-           components[component_class].items()) {
-        auto &second_json_vector_json
-            = components[component_class][component_type];
-        // Define < function
-        auto id_compare_less
-            = [](nlohmann::json const &a, nlohmann::json const &b) -> bool {
-          return a["id"].get<std::string>() < b["id"].get<std::string>();
-        };
-        std::sort(
-            second_json_vector_json.begin(), second_json_vector_json.end(),
-            id_compare_less);
-      }
-    }
-  }
+namespace Model {
 
   nlohmann::json
   build_full_networkproblem_json(nlohmann::json &networkproblem_json) {
     std::string topology_key = "topology_json";
     std::string boundary_key = "boundary_json";
-    std::string control_key = "control_json";
 
     aux_json::replace_entry_with_json_from_file(
         networkproblem_json, topology_key);
     aux_json::replace_entry_with_json_from_file(
         networkproblem_json, boundary_key);
-    aux_json::replace_entry_with_json_from_file(
-        networkproblem_json, control_key);
 
     // Sorting the component vectors by ID
     nlohmann::json &topology = networkproblem_json[topology_key];
-    sort_json_vectors_by_id(topology, topology_key);
+    Aux::sort_json_vectors_by_id(topology, topology_key);
 
     nlohmann::json &boundary = networkproblem_json[boundary_key];
-    sort_json_vectors_by_id(boundary, boundary_key);
-
-    nlohmann::json &control = networkproblem_json[control_key];
-    sort_json_vectors_by_id(control, control_key);
+    Aux::sort_json_vectors_by_id(boundary, boundary_key);
 
     // build the node vector.
     insert_second_json_in_topology_json(topology, boundary, "boundary_values");
-    insert_second_json_in_topology_json(topology, control, "control_values");
 
     return networkproblem_json[topology_key];
   }
@@ -152,9 +85,6 @@ namespace Model::Networkproblem {
           auto current_node = nodetype->make_instance(node);
           nodes.push_back(std::move(current_node));
         }
-      } else {
-        std::cout << "Node type " << nodetypename
-                  << " not present in the topology file." << std::endl;
       }
     }
 
@@ -192,9 +122,6 @@ namespace Model::Networkproblem {
           auto current_edge = edgetype->make_instance(edge, nodes);
           edges.push_back(std::move(current_edge));
         }
-      } else {
-        std::cout << "Edge type " << edgetypename
-                  << " not present in the topology file." << std::endl;
       }
     }
 
@@ -269,4 +196,4 @@ namespace Model::Networkproblem {
 
     return network;
   }
-} // namespace Model::Networkproblem
+} // namespace Model

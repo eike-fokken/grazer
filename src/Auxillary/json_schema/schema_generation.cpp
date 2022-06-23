@@ -28,10 +28,7 @@ namespace Aux::schema {
       nlohmann::json problem_data
           = aux_json::get_json_from_file_path(problem_data_path);
       try {
-        defaults = problem_data.at("problem_data")
-                       .at("subproblems")
-                       .at("Network_problem")
-                       .at("defaults");
+        defaults = problem_data.at("problem_data").at("defaults");
       } catch (nlohmann::json::out_of_range &e) {
         std::cout << "[Warning] The `problem_data.json` does not have the "
                      "expected structure:\n"
@@ -112,9 +109,9 @@ namespace Aux::schema {
       "$schema": "http://json-schema.org/draft-07/schema",
       "type": "object",
       "description": "Metadata of the Problem",
-      "required": ["time_evolution_data", "initial_values", "problem_data"],
+      "required": ["simulation_settings", "initial_values", "problem_data"],
       "properties": {
-        "time_evolution_data": {
+        "simulation_settings": {
           "type": "object",
           "description": "provides all data on time and newton solver",
           "required": [

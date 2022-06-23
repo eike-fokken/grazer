@@ -10,7 +10,7 @@ namespace Model::Scheme {
 
   class Implicitboxscheme : public Threepointscheme {
   public:
-    ~Implicitboxscheme() override {}
+    ~Implicitboxscheme() {}
     /// Computes the implicit box scheme at one point.
     void evaluate_point(
         Eigen::Ref<Eigen::Vector2d> result, double last_time, double new_time,
@@ -18,24 +18,38 @@ namespace Model::Scheme {
         Eigen::Ref<Eigen::Vector2d const> last_right,
         Eigen::Ref<Eigen::Vector2d const> new_left,
         Eigen::Ref<Eigen::Vector2d const> new_right,
-        Model::Balancelaw::Pipe_Balancelaw const &bl) const override;
+        Model::Balancelaw::Pipe_Balancelaw const &bl) const final;
 
-    /// The derivative with respect to \code{.cpp}last_left\endcode
-    Eigen::Matrix2d devaluate_point_dleft(
+    Eigen::Matrix2d devaluate_point_d_new_left(
         double last_time, double new_time, double Delta_x,
         Eigen::Ref<Eigen::Vector2d const> last_left,
         Eigen::Ref<Eigen::Vector2d const> last_right,
         Eigen::Ref<Eigen::Vector2d const> new_left,
         Eigen::Ref<Eigen::Vector2d const> new_right,
-        Model::Balancelaw::Pipe_Balancelaw const &bl) const override;
+        Model::Balancelaw::Pipe_Balancelaw const &bl) const final;
 
-    /// \brief The derivative with respect to \code{.cpp}last_right\endcode
-    Eigen::Matrix2d devaluate_point_dright(
+    Eigen::Matrix2d devaluate_point_d_new_right(
         double last_time, double new_time, double Delta_x,
         Eigen::Ref<Eigen::Vector2d const> last_left,
         Eigen::Ref<Eigen::Vector2d const> last_right,
         Eigen::Ref<Eigen::Vector2d const> new_left,
         Eigen::Ref<Eigen::Vector2d const> new_right,
-        Model::Balancelaw::Pipe_Balancelaw const &bl) const override;
+        Model::Balancelaw::Pipe_Balancelaw const &bl) const final;
+
+    Eigen::Matrix2d devaluate_point_d_last_left(
+        double last_time, double new_time, double Delta_x,
+        Eigen::Ref<Eigen::Vector2d const> last_left,
+        Eigen::Ref<Eigen::Vector2d const> last_right,
+        Eigen::Ref<Eigen::Vector2d const> new_left,
+        Eigen::Ref<Eigen::Vector2d const> new_right,
+        Model::Balancelaw::Pipe_Balancelaw const &bl) const final;
+
+    Eigen::Matrix2d devaluate_point_d_last_right(
+        double last_time, double new_time, double Delta_x,
+        Eigen::Ref<Eigen::Vector2d const> last_left,
+        Eigen::Ref<Eigen::Vector2d const> last_right,
+        Eigen::Ref<Eigen::Vector2d const> new_left,
+        Eigen::Ref<Eigen::Vector2d const> new_right,
+        Model::Balancelaw::Pipe_Balancelaw const &bl) const final;
   };
 } // namespace Model::Scheme

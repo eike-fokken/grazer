@@ -81,7 +81,7 @@
 
 ** TODO  refactor the print_to_files function in all gas edges into Gasedge
 
-** TODO  call "set_indices" from "set_initial_values" to make sure it is called beforehand.
+** TODO  call "set_state_indices" from "set_initial_values" to make sure it is called beforehand.
 
 ** DONE Think about the boolian passed to solve that marks whether the Jacobian should be reanalyzed.
    Up to now, it seems to make no difference, whether we reanalyze the pattern everytime. Check this further.

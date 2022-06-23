@@ -1,4 +1,5 @@
 #include "Netfactory.hpp"
+#include "ComponentJsonHelpers.hpp"
 #include "PQnode.hpp"
 #include "PVnode.hpp"
 #include "Power_factory.hpp"
@@ -64,8 +65,7 @@ TEST(sort_json_vectors_by_idTEST, not_sorted) {
              {{"id", "TL_2_3"}, {"B", 30}},
              {{"id", "TL_3_6"}, {"B", 50}}}}}}};
 
-  Model::Networkproblem::sort_json_vectors_by_id(
-      topology_not_sorted, "topology_key");
+  Aux::sort_json_vectors_by_id(topology_not_sorted, "topology_key");
   EXPECT_EQ(topology_not_sorted, topology_sorted);
 }
 
@@ -85,8 +85,7 @@ TEST(check_for_duplicatesTEST, duplicate_id_in_same_vector) {
              {{"id", "node_6"}, {"x", 13.000000}}}}}}};
 
   try {
-    Model::Networkproblem::check_for_duplicates(
-        id_duplicate_json, "topology_key");
+    Aux::check_for_duplicates(id_duplicate_json, "topology_key");
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
@@ -112,8 +111,7 @@ TEST(check_for_duplicatesTEST, duplicate_id_in_neighbour_vector) {
           {{"id", "node_6"}, {"x", 13.000000}}}}}}};
 
   try {
-    Model::Networkproblem::check_for_duplicates(
-        id_duplicate_json, "topology_key");
+    Aux::check_for_duplicates(id_duplicate_json, "topology_key");
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
@@ -161,7 +159,7 @@ TEST(build_node_vectorTEST, node_type_not_known) {
              {"data", {{{{"time", 1}, {"values", {1.01, -0.203}}}}}}}}}}};
 
   try {
-    Model::Networkproblem::build_node_vector(node_topology, nodetypemap);
+    Model::build_node_vector(node_topology, nodetypemap);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
@@ -203,14 +201,11 @@ TEST(build_node_vectorTEST, evaluate) {
               {"data", {{{"time", 0}, {"values", {1.01, -0.203}}}}}}}}}}};
 
   std::vector<std::unique_ptr<Network::Node>> nodes;
-  nodes = Model::Networkproblem::build_node_vector(node_topology, nodetypemap);
+  nodes = Model::build_node_vector(node_topology, nodetypemap);
 
-  EXPECT_TRUE(
-      dynamic_cast<Model::Networkproblem::Power::PQnode *>(nodes[0].get()));
-  EXPECT_TRUE(
-      dynamic_cast<Model::Networkproblem::Power::PVnode *>(nodes[1].get()));
-  EXPECT_TRUE(
-      dynamic_cast<Model::Networkproblem::Power::Vphinode *>(nodes[2].get()));
+  EXPECT_TRUE(dynamic_cast<Model::Power::PQnode *>(nodes[0].get()));
+  EXPECT_TRUE(dynamic_cast<Model::Power::PVnode *>(nodes[1].get()));
+  EXPECT_TRUE(dynamic_cast<Model::Power::Vphinode *>(nodes[2].get()));
 }
 
 TEST(build_edge_vectorTEST, edge_type_not_known) {
@@ -246,7 +241,7 @@ TEST(build_edge_vectorTEST, edge_type_not_known) {
               {"data", {{{"time", 0}, {"values", {1.01, -0.203}}}}}}}}}}};
 
   std::vector<std::unique_ptr<Network::Node>> nodes;
-  nodes = Model::Networkproblem::build_node_vector(node_topology, nodetypemap);
+  nodes = Model::build_node_vector(node_topology, nodetypemap);
 
   auto &edgetypemap = power_factory.edge_type_map;
   nlohmann::json edge_topology;
@@ -269,7 +264,7 @@ TEST(build_edge_vectorTEST, edge_type_not_known) {
             {"gas2power_q_coeff", 0.5}}}}};
 
   try {
-    Model::Networkproblem::build_edge_vector(edge_topology, nodes, edgetypemap);
+    Model::build_edge_vector(edge_topology, nodes, edgetypemap);
     FAIL() << "Test FAILED: The statement ABOVE\n"
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
@@ -311,7 +306,7 @@ TEST(build_edge_vectorTEST, evaluate) {
               {"data", {{{"time", 1}, {"values", {1.01, -0.203}}}}}}}}}}};
 
   std::vector<std::unique_ptr<Network::Node>> nodes;
-  nodes = Model::Networkproblem::build_node_vector(node_topology, nodetypemap);
+  nodes = Model::build_node_vector(node_topology, nodetypemap);
 
   auto &edgetypemap = power_factory.edge_type_map;
   nlohmann::json edge_topology;
@@ -334,9 +329,7 @@ TEST(build_edge_vectorTEST, evaluate) {
             {"gas2power_q_coeff", 0.5}}}}};
 
   std::vector<std::unique_ptr<Network::Edge>> edges;
-  edges = Model::Networkproblem::build_edge_vector(
-      edge_topology, nodes, edgetypemap);
+  edges = Model::build_edge_vector(edge_topology, nodes, edgetypemap);
 
-  EXPECT_TRUE(dynamic_cast<Model::Networkproblem::Power::Transmissionline *>(
-      edges[0].get()));
+  EXPECT_TRUE(dynamic_cast<Model::Power::Transmissionline *>(edges[0].get()));
 }

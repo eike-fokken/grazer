@@ -23,7 +23,7 @@ json gasinitial(json datapoint);
  *
  * The function expects the following command line arguments:
  *
- * - the json file containing the results of a grazer computation
+ * - the json file containing the state results of a grazer computation
  * - the output file name of this executable. E.g. a json file with initial
  * conditions for a problem.
  * - the time at which the initial value should be extracted
@@ -127,8 +127,6 @@ json powerinitial(json datapoint) {
   json init_datapoint;
   init_datapoint["x"] = 0.0;
   init_datapoint["values"] = json::array();
-  init_datapoint["values"].push_back(datapoint["P"]);
-  init_datapoint["values"].push_back(datapoint["Q"]);
   init_datapoint["values"].push_back(datapoint["V"]);
   init_datapoint["values"].push_back(datapoint["phi"]);
   init_data.push_back(init_datapoint);

@@ -1,56 +1,55 @@
 #pragma once
-#include "Boundaryvalue.hpp"
+#include "Boundaryvaluecomponent.hpp"
 #include "Equationcomponent.hpp"
+#include "InterpolatingVector.hpp"
 #include "Node.hpp"
-#include "Statecomponent.hpp"
+#include "SimpleStatecomponent.hpp"
 #include <Eigen/Sparse>
 
-namespace Model::Networkproblem::Power {
+namespace Model::Power {
 
   class Powernode :
       public Equationcomponent,
-      public Statecomponent,
-      public Network::Node {
+      public SimpleStatecomponent,
+      public Network::Node,
+      public Boundaryvaluecomponent {
 
   public:
     virtual std::string get_power_type() const = 0;
     static nlohmann::json get_schema();
-    static std::optional<nlohmann::json> get_boundary_schema();
+    static nlohmann::json get_boundary_schema();
     static nlohmann::json get_initial_schema();
-    static int init_vals_per_interpol_point();
 
     Powernode(nlohmann::json const &topology);
-
-    ~Powernode() override{};
-
-    void setup() override;
-
-    int get_number_of_states() const final;
+    ~Powernode(){};
 
     double get_G() const;
     double get_B() const;
 
-    void add_results_to_json(nlohmann::json &new_output) override;
+    void add_results_to_json(nlohmann::json &new_output) final;
+
+    Eigen::Index needed_number_of_states() const final;
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,
-        nlohmann::json const &initial_json) final;
+        nlohmann::json const &initial_json) const final;
 
-    double P(Eigen::Ref<Eigen::VectorXd const> state) const;
-    double Q(Eigen::Ref<Eigen::VectorXd const> state) const;
+    double P(Eigen::Ref<Eigen::VectorXd const> const &state) const;
+    double Q(Eigen::Ref<Eigen::VectorXd const> const &state) const;
     void evaluate_P_derivative(
-        int equationindex, Aux::Matrixhandler *jacobianhandler,
-        Eigen::Ref<Eigen::VectorXd const> new_state) const;
+        Eigen::Index equationindex, Aux::Matrixhandler &jacobianhandler,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
     void evaluate_Q_derivative(
-        int equationindex, Aux::Matrixhandler *jacobianhandler,
-        Eigen::Ref<Eigen::VectorXd const> new_state) const;
+        Eigen::Index equationindex, Aux::Matrixhandler &jacobianhandler,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const;
 
   protected:
+    void setup_helper();
     void json_save_power(
-        double time, Eigen::Ref<Eigen::VectorXd const> state, double P_val,
-        double Q_val);
+        double time, Eigen::Ref<Eigen::VectorXd const> const &state,
+        double P_val, double Q_val);
 
-    Boundaryvalue<2> const boundaryvalue;
+    Aux::InterpolatingVector const boundaryvalue;
     /// Real part of the admittance of this node
     double G;
     /// Imaginary part of the admittance of this node
@@ -58,10 +57,13 @@ namespace Model::Networkproblem::Power {
 
   private:
     /// \brief number of state variables, this component needs.
-    static constexpr int number_of_state_variables{2};
+    static constexpr Eigen::Index number_of_state_variables{2};
 
+    /// \brief Holds data on all attached transmission lines.
     std::vector<std::tuple<double, double, Powernode *>>
         attached_component_data;
+    // TODO: Should be replaced by a struct {double line_G, double line_B, ... *
+    // node}
   };
 
-} // namespace Model::Networkproblem::Power
+} // namespace Model::Power

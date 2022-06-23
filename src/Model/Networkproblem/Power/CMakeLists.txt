@@ -11,9 +11,11 @@ target_include_directories(power PUBLIC
   include)
 
 target_link_libraries(power PUBLIC
-  equationcomponent
+  componentclasses
   network
-  stochastics)
+  stochastics
+    
+  interpolatingVector)
 target_link_libraries(power PRIVATE
   matrixhandler
   exception

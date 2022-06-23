@@ -6,14 +6,11 @@
 #include <vector>
 
 namespace Network {
-  std::string Node::get_type() {
-    gthrow(
-        {"This static method must be implemented in the class inheriting "
-         "from node!"});
-  }
 
   Node::Node(nlohmann::json const &data) :
       Idobject(data["id"].get<std::string>()) {}
+
+  Node::~Node() {}
 
   bool Node::remove_edge(Edge *to_remove) {
     for (auto it = attached_edges->starting_edges.begin();

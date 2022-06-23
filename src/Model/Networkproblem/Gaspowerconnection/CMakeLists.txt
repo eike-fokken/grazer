@@ -14,8 +14,9 @@ target_link_libraries(gaspowerconnection PRIVATE
 
 target_link_libraries(gaspowerconnection PUBLIC
   mathfunctions
-  equationcomponent
-  gas)
+  componentclasses
+  gas
+  interpolatingVector)
 
 target_include_directories(gaspowerconnection PUBLIC
   include)

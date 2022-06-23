@@ -1,0 +1,43 @@
+{
+	"$schema": "../schemas/control_schema.json",
+	"connections": {
+		"Controlvalve": [
+			{
+				"id": "controlValve_br65",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							100.0
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							100.0
+						]
+					}
+				]
+			}
+		],
+		"Compressorstation": [
+			{
+				"id": "cs",
+				"data": [
+					{
+						"time": 0,
+						"values": [
+							100.0
+						]
+					},
+					{
+						"time": 604800,
+						"values": [
+							100.0
+						]
+					}
+				]
+			}
+		]		
+	}
+}

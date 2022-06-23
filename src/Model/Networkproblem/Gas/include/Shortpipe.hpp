@@ -1,29 +1,32 @@
 #pragma once
 #include "Shortcomponent.hpp"
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Gas {
 
-  class Shortpipe : public Shortcomponent {
+  class Shortpipe : public Equationcomponent, public Shortcomponent {
 
   public:
     static std::string get_type();
-    std::string get_gas_type() const override;
+    std::string get_gas_type() const final;
     using Shortcomponent::Shortcomponent;
+
+    void setup() final;
 
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-        double new_time, Eigen::Ref<Eigen::VectorXd const> last_state,
-        Eigen::Ref<Eigen::VectorXd const> new_state) const final;
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const final;
 
-    void evaluate_state_derivative(
-        Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const>,
-        Eigen::Ref<Eigen::VectorXd const> new_state) const final;
+    void d_evalutate_d_new_state(
+        Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const final;
 
-    void set_initial_values(
-        Eigen::Ref<Eigen::VectorXd> new_state,
-        nlohmann::json const &initial_json) final;
-
-    void add_results_to_json(nlohmann::json &new_output) override;
+    void d_evalutate_d_last_state(
+        Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
+        double /*new_time*/,
+        Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+        Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const final;
+    void add_results_to_json(nlohmann::json &new_output) final;
   };
-} // namespace Model::Networkproblem::Gas
+} // namespace Model::Gas

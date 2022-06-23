@@ -64,29 +64,27 @@ public:
   double V3 = 5.0;
   double phi3 = 89.0;
 
-  std::unique_ptr<Model::Networkproblem::Networkproblem>
+  std::unique_ptr<Model::Networkproblem>
   make_Networkproblem(nlohmann::json &netproblem);
 
   std::tuple<
-      std::unique_ptr<Model::Networkproblem::Networkproblem>, double, double,
-      Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd>
+      std::unique_ptr<Model::Networkproblem>, double, double, Eigen::VectorXd,
+      Eigen::VectorXd, Eigen::VectorXd>
   default_setup();
 };
 
 TEST_F(PowerTEST, evaluate_Vphi) {
-
-  // std::unique_ptr<Model::Networkproblem::Networkproblem> netprob;
-  // double last_time;
-  // double new_time;
-  // Eigen::VectorXd last_state;
-  // Eigen::VectorXd new_state;
-  // Eigen::VectorXd rootvalues;
   auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
       = default_setup();
 
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
-  auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *vphi = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
 
   if (not vphi) {
@@ -94,35 +92,40 @@ TEST_F(PowerTEST, evaluate_Vphi) {
   }
 
   EXPECT_DOUBLE_EQ(
-      rootvalues[vphi->get_start_state_index()],
-      new_state[vphi->get_start_state_index()] - V1_bd);
+      rootvalues[vphi->get_state_startindex()],
+      new_state[vphi->get_state_startindex()] - V1_bd);
   EXPECT_DOUBLE_EQ(
-      rootvalues[vphi->get_start_state_index() + 1],
-      new_state[vphi->get_start_state_index() + 1] - phi1_bd);
+      rootvalues[vphi->get_state_startindex() + 1],
+      new_state[vphi->get_state_startindex() + 1] - phi1_bd);
 }
 
-TEST_F(PowerTEST, evaluate_state_derivative_Vphi) {
+TEST_F(PowerTEST, d_evalutate_d_new_state_Vphi) {
 
   auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
       = default_setup();
 
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
-  auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *vphi = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
   if (not vphi) {
     FAIL();
   }
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-  Aux::Triplethandler handler(&J);
+  Aux::Triplethandler handler(J);
 
-  netprob->evaluate_state_derivative(
-      &handler, last_time, new_time, last_state, new_state);
+  netprob->d_evalutate_d_new_state(
+      handler, last_time, new_time, last_state, new_state, control);
   handler.set_matrix();
 
   Eigen::Matrix<double, 6, 6> DenseJ = J;
-  auto index0 = vphi->get_start_state_index();
+  auto index0 = vphi->get_state_startindex();
 
   // derivatives of index 0, that is, V in the Vphi node:
   EXPECT_DOUBLE_EQ(DenseJ(index0, index0), 1.0);
@@ -134,7 +137,7 @@ TEST_F(PowerTEST, evaluate_state_derivative_Vphi) {
   }
 
   // derivatives of index 1, that is, phi in the Vphi node:
-  auto index1 = vphi->get_start_state_index() + 1;
+  auto index1 = vphi->get_state_startindex() + 1;
   EXPECT_DOUBLE_EQ(DenseJ(index1, index1), 1.0);
   for (int index = 1; index != 6; ++index) {
     if (index == index1) {
@@ -149,9 +152,14 @@ TEST_F(PowerTEST, evaluate_PQ) {
   auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
       = default_setup();
 
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
-  auto *pq = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *pq = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("pq"));
 
   if (not pq) {
@@ -159,35 +167,40 @@ TEST_F(PowerTEST, evaluate_PQ) {
   }
 
   EXPECT_DOUBLE_EQ(
-      rootvalues[pq->get_start_state_index()],
+      rootvalues[pq->get_state_startindex()],
       -P2_bd + G2 * V2 * V2
           + V2 * V1 * (Gt1 * cos(phi2 - phi1) + Bt1 * sin(phi2 - phi1))
           + V2 * V3 * (Gt2 * cos(phi2 - phi3) + Bt2 * sin(phi2 - phi3)));
   EXPECT_DOUBLE_EQ(
-      rootvalues[pq->get_start_state_index() + 1],
+      rootvalues[pq->get_state_startindex() + 1],
       -Q2_bd - B2 * V2 * V2
           + V2 * V1 * (Gt1 * sin(phi2 - phi1) - Bt1 * cos(phi2 - phi1))
           + V2 * V3 * (Gt2 * sin(phi2 - phi3) - Bt2 * cos(phi2 - phi3)));
 }
 
-TEST_F(PowerTEST, evaluate_state_derivative_PQ) {
+TEST_F(PowerTEST, d_evalutate_d_new_state_PQ) {
 
   auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
       = default_setup();
 
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
-  auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *vphi = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
   if (not vphi) {
     FAIL();
   }
-  auto *pq = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *pq = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("pq"));
   if (not pq) {
     FAIL();
   }
-  auto *pv = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *pv = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("pv"));
 
   if (not pv) {
@@ -195,18 +208,18 @@ TEST_F(PowerTEST, evaluate_state_derivative_PQ) {
   }
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-  Aux::Triplethandler handler(&J);
-  netprob->evaluate_state_derivative(
-      &handler, last_time, new_time, last_state, new_state);
+  Aux::Triplethandler handler(J);
+  netprob->d_evalutate_d_new_state(
+      handler, last_time, new_time, last_state, new_state, control);
   handler.set_matrix();
 
   Eigen::Matrix<double, 6, 6> DenseJ = J;
-  auto index0_vphi = vphi->get_start_state_index();
-  auto index1_vphi = vphi->get_start_state_index() + 1;
-  auto index0_pq = pq->get_start_state_index();
-  auto index1_pq = pq->get_start_state_index() + 1;
-  auto index0_pv = pv->get_start_state_index();
-  auto index1_pv = pv->get_start_state_index() + 1;
+  auto index0_vphi = vphi->get_state_startindex();
+  auto index1_vphi = vphi->get_state_startindex() + 1;
+  auto index0_pq = pq->get_state_startindex();
+  auto index1_pq = pq->get_state_startindex() + 1;
+  auto index0_pv = pv->get_state_startindex();
+  auto index1_pv = pv->get_state_startindex() + 1;
 
   // derivatives of P in the PQ node:
   EXPECT_DOUBLE_EQ(
@@ -258,9 +271,14 @@ TEST_F(PowerTEST, evaluate_PV) {
   auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
       = default_setup();
 
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
-  auto *pv = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *pv = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("pv"));
 
   if (not pv) {
@@ -268,32 +286,37 @@ TEST_F(PowerTEST, evaluate_PV) {
   }
 
   EXPECT_DOUBLE_EQ(
-      rootvalues[pv->get_start_state_index()],
+      rootvalues[pv->get_state_startindex()],
       -P3_bd + G3 * V3 * V3
           + V3 * V2 * (Gt2 * cos(phi3 - phi2) + Bt2 * sin(phi3 - phi2)));
   EXPECT_DOUBLE_EQ(
-      rootvalues[pv->get_start_state_index() + 1],
-      new_state[pv->get_start_state_index()] - V3_bd);
+      rootvalues[pv->get_state_startindex() + 1],
+      new_state[pv->get_state_startindex()] - V3_bd);
 }
 
-TEST_F(PowerTEST, evaluate_state_derivative_PV) {
+TEST_F(PowerTEST, d_evalutate_d_new_state_PV) {
 
   auto [netprob, last_time, new_time, last_state, new_state, rootvalues]
       = default_setup();
 
-  netprob->evaluate(rootvalues, last_time, new_time, last_state, new_state);
+  // The following are not needed, as the power nodes are not controlled.  But
+  // to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, control);
 
-  auto *vphi = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *vphi = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("vphi"));
   if (not vphi) {
     FAIL();
   }
-  auto *pq = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *pq = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("pq"));
   if (not pq) {
     FAIL();
   }
-  auto *pv = dynamic_cast<Model::Networkproblem::Power::Powernode *>(
+  auto *pv = dynamic_cast<Model::Power::Powernode *>(
       netprob->get_network().get_node_by_id("pv"));
 
   if (not pv) {
@@ -301,18 +324,18 @@ TEST_F(PowerTEST, evaluate_state_derivative_PV) {
   }
 
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
-  Aux::Triplethandler handler(&J);
-  netprob->evaluate_state_derivative(
-      &handler, last_time, new_time, last_state, new_state);
+  Aux::Triplethandler handler(J);
+  netprob->d_evalutate_d_new_state(
+      handler, last_time, new_time, last_state, new_state, control);
   handler.set_matrix();
 
   Eigen::Matrix<double, 6, 6> DenseJ = J;
-  auto index0_vphi = vphi->get_start_state_index();
-  auto index1_vphi = vphi->get_start_state_index() + 1;
-  auto index0_pq = pq->get_start_state_index();
-  auto index1_pq = pq->get_start_state_index() + 1;
-  auto index0_pv = pv->get_start_state_index();
-  auto index1_pv = pv->get_start_state_index() + 1;
+  auto index0_vphi = vphi->get_state_startindex();
+  auto index1_vphi = vphi->get_state_startindex() + 1;
+  auto index0_pq = pq->get_state_startindex();
+  auto index1_pq = pq->get_state_startindex() + 1;
+  auto index0_pv = pv->get_state_startindex();
+  auto index1_pv = pv->get_state_startindex() + 1;
 
   // derivatives of index 4, that is, P in the PV node:
   EXPECT_DOUBLE_EQ(DenseJ(index0_pv, index0_vphi), 0.0);
@@ -345,14 +368,14 @@ TEST_F(PowerTEST, evaluate_state_derivative_PV) {
 // Here come the definitions of the fixture methods:
 /////////////////////////////////////////////////////
 
-std::unique_ptr<Model::Networkproblem::Networkproblem>
+std::unique_ptr<Model::Networkproblem>
 PowerTEST::make_Networkproblem(nlohmann::json &netproblem) {
   return EqcomponentTEST::make_Networkproblem(netproblem, factory);
 }
 
 std::tuple<
-    std::unique_ptr<Model::Networkproblem::Networkproblem>, double, double,
-    Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd>
+    std::unique_ptr<Model::Networkproblem>, double, double, Eigen::VectorXd,
+    Eigen::VectorXd, Eigen::VectorXd>
 PowerTEST::default_setup() {
 
   Eigen::Vector2d bdcond1{V1_bd, phi1_bd};
@@ -372,17 +395,12 @@ PowerTEST::default_setup() {
       {{"Transmissionline", {tl1_json, tl2_json}}});
 
   auto netprob = make_Networkproblem(np_json);
-  int number_of_variables = netprob->set_indices(0);
+  netprob->init();
+  auto number_of_variables = netprob->get_number_of_states();
 
-  Eigen::Vector4d cond1(
-      std::numeric_limits<double>::quiet_NaN(),
-      std::numeric_limits<double>::quiet_NaN(), V1, phi1);
-  Eigen::Vector4d cond2(
-      std::numeric_limits<double>::quiet_NaN(),
-      std::numeric_limits<double>::quiet_NaN(), V2, phi2);
-  Eigen::Vector4d cond3(
-      std::numeric_limits<double>::quiet_NaN(),
-      std::numeric_limits<double>::quiet_NaN(), V3, phi3);
+  Eigen::Vector2d cond1(V1, phi1);
+  Eigen::Vector2d cond2(V2, phi2);
+  Eigen::Vector2d cond3(V3, phi3);
 
   auto init1 = std::vector{std::make_pair(0.0, cond1)};
   auto initial_json1 = make_value_json(id1, "x", init1);
@@ -392,9 +410,10 @@ PowerTEST::default_setup() {
   auto initial_json3 = make_value_json(id3, "x", init3);
 
   nlohmann::json np_initialjson = make_initial_json(
-      {}, {{"Vphinode", {initial_json1}},
-           {"PQnode", {initial_json2}},
-           {"PVnode", {initial_json3}}});
+      {{"Vphinode", {initial_json1}},
+       {"PQnode", {initial_json2}},
+       {"PVnode", {initial_json3}}},
+      {});
 
   double last_time = 0.0;
   double new_time = 0.0;

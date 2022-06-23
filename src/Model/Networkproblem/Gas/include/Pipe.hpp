@@ -1,5 +1,6 @@
 #pragma once
 #include "Edge.hpp"
+#include "Equationcomponent.hpp"
 #include "Gasedge.hpp"
 
 namespace Model::Balancelaw {
@@ -10,12 +11,15 @@ namespace Model::Scheme {
   class Threepointscheme;
 }
 
-namespace Model::Networkproblem::Gas {
+namespace Model::Gas {
 
-  class Pipe final : public Gasedge, public Network::Edge {
+  class Pipe final :
+      public Equationcomponent,
+      public Gasedge,
+      public Network::Edge {
   public:
     static std::string get_type();
-    std::string get_gas_type() const override;
+    std::string get_gas_type() const final;
     static int init_vals_per_interpol_point();
     static nlohmann::json get_schema();
     static nlohmann::json get_initial_schema();
@@ -24,45 +28,54 @@ namespace Model::Networkproblem::Gas {
         nlohmann::json const &topology,
         std::vector<std::unique_ptr<Network::Node>> &nodes);
 
-    ~Pipe() override;
+    ~Pipe() final;
 
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-        double new_time, Eigen::Ref<Eigen::VectorXd const> last_state,
-        Eigen::Ref<Eigen::VectorXd const> new_state) const override;
-    void evaluate_state_derivative(
-        Aux::Matrixhandler *jacobianhandler, double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const>,
-        Eigen::Ref<Eigen::VectorXd const> new_state) const override;
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const final;
+    void d_evalutate_d_new_state(
+        Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const final;
+    void d_evalutate_d_last_state(
+        Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const final;
+    void setup() final;
 
-    void setup() override;
+    Eigen::Index needed_number_of_states() const final;
 
-    int get_number_of_states() const override;
+    void add_results_to_json(nlohmann::json &new_output) final;
 
-    void add_results_to_json(nlohmann::json &new_output) override;
-
-    void
-    json_save(double time, Eigen::Ref<const Eigen::VectorXd> state) override;
+    void json_save(
+        double time, Eigen::Ref<Eigen::VectorXd const> const &state) final;
 
     void set_initial_values(
         Eigen::Ref<Eigen::VectorXd> new_state,
-        nlohmann::json const &initial_json) override;
+        nlohmann::json const &initial_json) const final;
 
     Eigen::Vector2d get_boundary_p_qvol_bar(
-        int direction, Eigen::Ref<Eigen::VectorXd const> state) const override;
+        Direction direction,
+        Eigen::Ref<Eigen::VectorXd const> const &state) const final;
 
     void dboundary_p_qvol_dstate(
-        int direction, Aux::Matrixhandler *jacobianhandler,
-        Eigen::RowVector2d function_derivative, int rootvalues_index,
-        Eigen::Ref<Eigen::VectorXd const> state) const override;
+        Direction direction, Aux::Matrixhandler &jacobianhandler,
+        Eigen::RowVector2d function_derivative, Eigen::Index rootvalues_index,
+        Eigen::Ref<Eigen::VectorXd const> const &state) const final;
+
+    Balancelaw::Pipe_Balancelaw const *get_balancelaw() const;
+
+    int get_number_of_points() const;
+    double get_Delta_x() const;
 
   private:
-    double get_length();
+    double get_length() const;
     int const number_of_points;
     double const Delta_x;
 
-    std::unique_ptr<Balancelaw::Pipe_Balancelaw const> bl;
+    std::unique_ptr<Balancelaw::Pipe_Balancelaw const> balancelaw;
     std::unique_ptr<Scheme::Threepointscheme const> scheme;
   };
 
-} // namespace Model::Networkproblem::Gas
+} // namespace Model::Gas

@@ -6,9 +6,24 @@ namespace Network {
   /// \brief Provides a unified "name" to inheriting classes.
   class Idobject {
   public:
+    static std::string get_type() = delete;
+
     static nlohmann::json get_schema();
 
     Idobject(std::string const &_id);
+
+    // This class is non-copyable to prevent pointers to it from becoming
+    // dangling (by using the copy constructor for an implicit move
+    // constructor.)
+    Idobject(Idobject const &) = delete;
+    Idobject(Idobject &) = delete;
+    Idobject &operator=(Idobject const &) = delete;
+
+    // This class is immovable to prevent pointers to it from becoming
+    // dangling.
+    Idobject(Idobject const &&) = delete;
+    Idobject(Idobject &&) = delete;
+    Idobject &operator=(Idobject const &&) = delete;
 
     /// \brief Getter for a const reference to the id.
     std::string const &get_id() const;
