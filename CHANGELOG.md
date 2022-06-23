@@ -1,5 +1,6 @@
 ### Changes (since v0.2.1)
 
+- switched to MIT license
 - removed the GUI again.
 - added optimal control capabilities
 - removed support for MSVC
