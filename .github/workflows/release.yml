@@ -7,15 +7,15 @@ on:
 name: Release
 jobs:
   create-release:
-    name: Create Release
+    name: Create_Release
     runs-on: ubuntu-20.04
     outputs:
       version: ${{ steps.get_version.outputs.version }}
     steps:
-    - name: Checkout Repository
+    - name: Checkout_Repository
       uses: actions/checkout@v3
 
-    - name: Get Version
+    - name: Get_Version
       id: get_version
       run: |        
         cmake -E make_directory ${{github.workspace}}/build
@@ -30,7 +30,7 @@ jobs:
         echo ::set-output name=changelog::$changelog
       # escaping newlines from changelog cf. https://github.community/t/set-output-truncates-multiline-strings/16852/3
 
-    - name: Create a GitHub release
+    - name: Create_a_GitHub_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -40,7 +40,7 @@ jobs:
         body: ${{ steps.get_version.outputs.changelog }}
 
   generate-binaries:
-    name: Generate Binaries 
+    name: Generate_Binaries 
     needs: create-release
 
     strategy:
@@ -49,13 +49,12 @@ jobs:
         name:
         - ubuntu-20.04
         - MacOS
-        - Windows
         include:
         - name: ubuntu-20.04
           os: ubuntu-20.04
           compiler: clang++-10
           binary-path: /build/src/Grazer/grazer
-          dep-install: sudo apt-get install -y cmake clang-10
+          dep-install: sudo apt-get install -y cmake clang-10 
         - name: MacOS
           os: macos-10.15
           compiler: clang++
@@ -72,20 +71,20 @@ jobs:
     runs-on: ${{matrix.os}}
 
     steps:
-    - name: Checkout the repository
+    - name: Checkout_the_repository
       uses: actions/checkout@v3
       with:
         submodules: recursive
 
-    - name: Install Dependencies
+    - name: Install_Dependencies
       run: ${{ matrix.dep-install }}
 
-    - name: Create Build Environment
+    - name: Create_Build_Environment
       # Some projects don't allow in-source building, so create a separate build directory
       # We'll use this as our working directory for all subsequent commands
       run: cmake -E make_directory ${{github.workspace}}/build
 
-    - name: Configure CMake
+    - name: Configure_CMake
       # Use a bash shell so we can use the same syntax for environment variable
       # access regardless of the host operating system
       shell: bash
@@ -101,10 +100,10 @@ jobs:
       # Execute the build.  You can specify a specific target with "--target <NAME>"
       run: cmake --build . --config Release --target grazer --parallel 10
     
-    - name: Final Smoke Test
-      run: ${{github.workspace}}${{ matrix.binary-path }} run ./data/basetest
+    - name: Final_Smoke_Test
+      run: ${{github.workspace}}${{ matrix.binary-path }} run ./data/basetest && ${{github.workspace}}${{ matrix.binary-path }} run ./data/optimization_test
     
-    - name: Upload CLI Binary to Release
+    - name: Upload_CLI_Binary_to_Release
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
@@ -127,15 +126,15 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Install Dependencies
+    - name: Install_Dependencies
       run: sudo apt-get install -y cmake doxygen graphviz texlive-full
 
-    - name: Create Build Environment
+    - name: Create_Build_Environment
       # Some projects don't allow in-source building, so create a separate build directory
       # We'll use this as our working directory for all subsequent commands
       run: cmake -E make_directory ${{github.workspace}}/build
 
-    - name: Configure CMake
+    - name: Configure_CMake
       # Use a bash shell so we can use the same syntax for environment variable
       # access regardless of the host operating system
       shell: bash
@@ -145,12 +144,12 @@ jobs:
       # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
       run: echo $BUILD_WITH_LIBCPP &&  cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
 
-    - name: Generate Documentation
+    - name: Generate_Documentation
       working-directory: ${{ github.workspace }}/build
       shell: bash
       run: cmake --build . --config $BUILD_TYPE --target docs --parallel 10
     
-    - name: Upload Doku to GitHub Pages
+    - name: Upload_Doku_to_GitHub_Pages
       uses: JamesIves/github-pages-deploy-action@v4.2.5
       with:
         branch: gh-pages
