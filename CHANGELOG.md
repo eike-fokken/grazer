@@ -1,6 +1,9 @@
 ### Changes (since v0.2.1)
 
 - removed the GUI again.
+- added optimal control capabilities
+- removed support for MSVC
+- restructured boundary value data types.
 
 ### Changes (since v0.1.10)
 

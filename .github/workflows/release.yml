@@ -60,12 +60,7 @@ jobs:
           os: macos-10.15
           compiler: clang++
           binary-path: /build/src/Grazer/grazer
-          # gui-app-extension: .app.zip
-        - name: Windows
-          os: windows-2019
-          compiler: msvc
-          binary-path: \build\src\Grazer\Release\grazer.exe
-          binary-ending: '.exe'
+
 
     env:
       # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
