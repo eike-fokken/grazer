@@ -1,0 +1,12 @@
+<map id="Model::Boundaryvaluecomponent" name="Model::Boundaryvaluecomponent">
+<area shape="rect" id="node2" href="$classModel_1_1Gas_1_1Flowboundarynode.html" title="Model::Gas::Flowboundarynode" alt="" coords="268,81,475,108"/>
+<area shape="rect" id="node6" href="$classModel_1_1Power_1_1Powernode.html" title="Model::Power::Powernode" alt="" coords="284,249,459,276"/>
+<area shape="rect" id="node3" href="$classModel_1_1Gas_1_1ConstraintSink.html" title="Model::Gas::ConstraintSink" alt="" coords="525,5,707,32"/>
+<area shape="rect" id="node4" href="$classModel_1_1Gas_1_1Sink.html" title="Model::Gas::Sink" alt="" coords="555,56,677,83"/>
+<area shape="rect" id="node5" href="$classModel_1_1Gas_1_1Source.html" title="Model::Gas::Source" alt="" coords="547,107,685,133"/>
+<area shape="rect" id="node7" href="$classModel_1_1Gaspowerconnection_1_1ExternalPowerplant.html" title="A Powernode to be connected to an edge that leads out of the power network. " alt="" coords="523,158,709,199"/>
+<area shape="rect" id="node8" href="$classModel_1_1Power_1_1PQnode.html" title="Model::Power::PQnode" alt="" coords="537,224,695,251"/>
+<area shape="rect" id="node9" href="$classModel_1_1Power_1_1PVnode.html" title="Model::Power::PVnode" alt="" coords="538,275,694,301"/>
+<area shape="rect" id="node10" href="$classModel_1_1Power_1_1StochasticPQnode.html" title="Model::Power::Stochastic\lPQnode" alt="" coords="530,326,702,367"/>
+<area shape="rect" id="node11" href="$classModel_1_1Power_1_1Vphinode.html" title="Model::Power::Vphinode" alt="" coords="534,392,698,419"/>
+</map>

@@ -1,0 +1,14 @@
+<map id="src/Model/Networkproblem/Gas/include/Compressorstation.hpp" name="src/Model/Networkproblem/Gas/include/Compressorstation.hpp">
+<area shape="rect" id="node2" href="$Costcomponent_8hpp.html" title="Costcomponent.hpp" alt="" coords="5,95,144,121"/>
+<area shape="rect" id="node4" href="$Edge_8hpp.html" title="Edge.hpp" alt="" coords="452,169,529,196"/>
+<area shape="rect" id="node8" href="$Gasedge_8hpp.html" title="Gasedge.hpp" alt="" coords="223,169,321,196"/>
+<area shape="rect" id="node15" href="$Shortcomponent_8hpp.html" title="Shortcomponent.hpp" alt="" coords="310,95,453,121"/>
+<area shape="rect" id="node16" href="$SimpleControlcomponent_8hpp.html" title="SimpleControlcomponent.hpp" alt="" coords="563,95,757,121"/>
+<area shape="rect" id="node5" href="$Idobject_8hpp.html" title="Idobject.hpp" alt="" coords="460,244,553,271"/>
+<area shape="rect" id="node9" href="$Equationcomponent_8hpp.html" title="Equationcomponent.hpp" alt="" coords="273,244,436,271"/>
+<area shape="rect" id="node13" href="$SimpleStatecomponent_8hpp.html" title="SimpleStatecomponent.hpp" alt="" coords="55,244,238,271"/>
+<area shape="rect" id="node10" href="$Equation__base_8hpp.html" title="Equation_base.hpp" alt="" coords="564,319,697,345"/>
+<area shape="rect" id="node14" href="$Statecomponent_8hpp.html" title="Statecomponent.hpp" alt="" coords="45,319,187,345"/>
+<area shape="rect" id="node17" href="$Controlcomponent_8hpp.html" title="Controlcomponent.hpp" alt="" coords="746,244,899,271"/>
+<area shape="rect" id="node18" href="$Timedata_8hpp.html" title="Timedata.hpp" alt="" coords="772,319,873,345"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="Model::SimpleControlcomponent" name="Model::SimpleControlcomponent">
+<area shape="rect" id="node4" href="$classModel_1_1Gas_1_1Compressorstation.html" title="Model::Gas::Compressorstation" alt="" coords="5,229,212,256"/>
+<area shape="rect" id="node5" href="$classModel_1_1Gas_1_1Controlvalve.html" title="Model::Gas::Controlvalve" alt="" coords="237,229,407,256"/>
+<area shape="rect" id="node2" href="$classModel_1_1Controlcomponent.html" title="Model::Controlcomponent" alt="" coords="130,80,301,107"/>
+<area shape="rect" id="node3" href="$classModel_1_1Equation__base.html" title="Model::Equation_base" alt="" coords="140,5,291,32"/>
+</map>

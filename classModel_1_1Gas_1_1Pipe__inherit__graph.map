@@ -1,0 +1,9 @@
+<map id="Model::Gas::Pipe" name="Model::Gas::Pipe">
+<area shape="rect" id="node2" href="$classModel_1_1Equationcomponent.html" title="A base class for network components that supply model equations to be solved. " alt="" coords="5,155,185,181"/>
+<area shape="rect" id="node3" href="$classModel_1_1Equation__base.html" title="Model::Equation_base" alt="" coords="15,80,165,107"/>
+<area shape="rect" id="node4" href="$classModel_1_1Gas_1_1Gasedge.html" title="This class is a base class for all Gas edges with a 2x2 balance law. " alt="" coords="215,155,365,181"/>
+<area shape="rect" id="node5" href="$classModel_1_1SimpleStatecomponent.html" title="Model::SimpleStatecomponent" alt="" coords="190,80,390,107"/>
+<area shape="rect" id="node6" href="$classModel_1_1Statecomponent.html" title="Model::Statecomponent" alt="" coords="210,5,370,32"/>
+<area shape="rect" id="node7" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="405,155,514,181"/>
+<area shape="rect" id="node8" href="$classNetwork_1_1Idobject.html" title="Provides a unified &quot;name&quot; to inheriting classes. " alt="" coords="414,80,539,107"/>
+</map>

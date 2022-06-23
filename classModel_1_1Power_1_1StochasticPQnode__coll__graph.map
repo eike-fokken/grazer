@@ -1,0 +1,18 @@
+<map id="Model::Power::StochasticPQnode" name="Model::Power::StochasticPQnode">
+<area shape="rect" id="node2" href="$classModel_1_1Power_1_1Powernode.html" title="Model::Power::Powernode" alt="" coords="1381,243,1555,270"/>
+<area shape="rect" id="node3" href="$classModel_1_1Equationcomponent.html" title="A base class for network components that supply model equations to be solved. " alt="" coords="973,410,1153,437"/>
+<area shape="rect" id="node4" href="$classModel_1_1Equation__base.html" title="Model::Equation_base" alt="" coords="665,410,816,437"/>
+<area shape="rect" id="node5" href="$classModel_1_1SimpleStatecomponent.html" title="Model::SimpleStatecomponent" alt="" coords="963,309,1163,335"/>
+<area shape="rect" id="node6" href="$classModel_1_1Statecomponent.html" title="Model::Statecomponent" alt="" coords="661,309,821,335"/>
+<area shape="rect" id="node8" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="1008,58,1119,85"/>
+<area shape="rect" id="node16" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="1413,22,1523,49"/>
+<area shape="rect" id="node9" href="$classNetwork_1_1Idobject.html" title="Provides a unified &quot;name&quot; to inheriting classes. " alt="" coords="678,13,803,39"/>
+<area shape="rect" id="node11" title="STL class. " alt="" coords="181,13,261,39"/>
+<area shape="rect" id="node12" title="STL class. " alt="" coords="5,5,132,47"/>
+<area shape="rect" id="node14" href="$structNetwork_1_1Node_1_1Edgecollection.html" title="Network::Node::Edgecollection" alt="" coords="2007,27,2209,54"/>
+<area shape="rect" id="node17" href="$classModel_1_1Boundaryvaluecomponent.html" title="Model::Boundaryvaluecomponent" alt="" coords="956,178,1171,205"/>
+<area shape="rect" id="node19" href="$classAux_1_1InterpolatingVector.html" title="Aux::InterpolatingVector" alt="" coords="982,359,1145,386"/>
+<area shape="rect" id="node20" href="$classAux_1_1InterpolatingVector__Base.html" title="Aux::InterpolatingVector_Base" alt="" coords="641,359,840,386"/>
+<area shape="rect" id="node23" href="$structModel_1_1Power_1_1StochasticPQnode_1_1StochasticData.html" title="Model::Power::Stochastic\lPQnode::StochasticData" alt="" coords="977,112,1149,153"/>
+<area shape="rect" id="node24" href="$classAux_1_1Normaldistribution.html" title="provides a normal distribution sample on invocation. " alt="" coords="661,119,820,146"/>
+</map>

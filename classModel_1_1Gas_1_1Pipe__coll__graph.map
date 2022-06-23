@@ -1,0 +1,15 @@
+<map id="Model::Gas::Pipe" name="Model::Gas::Pipe">
+<area shape="rect" id="node2" href="$classModel_1_1Equationcomponent.html" title="A base class for network components that supply model equations to be solved. " alt="" coords="967,101,1147,128"/>
+<area shape="rect" id="node3" href="$classModel_1_1Equation__base.html" title="Model::Equation_base" alt="" coords="697,92,848,119"/>
+<area shape="rect" id="node4" href="$classModel_1_1Gas_1_1Gasedge.html" title="This class is a base class for all Gas edges with a 2x2 balance law. " alt="" coords="983,152,1132,179"/>
+<area shape="rect" id="node5" href="$classModel_1_1SimpleStatecomponent.html" title="Model::SimpleStatecomponent" alt="" coords="673,143,873,169"/>
+<area shape="rect" id="node6" href="$classModel_1_1Statecomponent.html" title="Model::Statecomponent" alt="" coords="421,140,581,167"/>
+<area shape="rect" id="node8" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="1003,51,1112,77"/>
+<area shape="rect" id="node9" href="$classNetwork_1_1Idobject.html" title="Provides a unified &quot;name&quot; to inheriting classes. " alt="" coords="710,193,835,220"/>
+<area shape="rect" id="node13" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="2145,83,2256,109"/>
+<area shape="rect" id="node11" title="STL class. " alt="" coords="181,199,261,225"/>
+<area shape="rect" id="node12" title="STL class. " alt="" coords="5,191,132,233"/>
+<area shape="rect" id="node15" href="$structNetwork_1_1Node_1_1Edgecollection.html" title="Network::Node::Edgecollection" alt="" coords="1560,83,1763,109"/>
+<area shape="rect" id="node18" href="$classModel_1_1Balancelaw_1_1Pipe__Balancelaw.html" title="Model::Balancelaw::\lPipe_Balancelaw" alt="" coords="703,245,843,286"/>
+<area shape="rect" id="node20" href="$classModel_1_1Scheme_1_1Threepointscheme.html" title="Model::Scheme::Threepointscheme" alt="" coords="659,311,887,337"/>
+</map>

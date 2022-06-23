@@ -1,0 +1,8 @@
+<map id="Model::Power::Transmissionline" name="Model::Power::Transmissionline">
+<area shape="rect" id="node2" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="720,97,829,124"/>
+<area shape="rect" id="node3" href="$classNetwork_1_1Idobject.html" title="Provides a unified &quot;name&quot; to inheriting classes. " alt="" coords="545,168,671,195"/>
+<area shape="rect" id="node7" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="1865,123,1976,149"/>
+<area shape="rect" id="node5" title="STL class. " alt="" coords="181,168,261,195"/>
+<area shape="rect" id="node6" title="STL class. " alt="" coords="5,161,132,202"/>
+<area shape="rect" id="node9" href="$structNetwork_1_1Node_1_1Edgecollection.html" title="Network::Node::Edgecollection" alt="" coords="1280,56,1483,83"/>
+</map>

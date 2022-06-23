@@ -1,0 +1,18 @@
+<map id="Model::Equationcomponent" name="Model::Equationcomponent">
+<area shape="rect" id="node3" href="$classModel_1_1Gas_1_1Gasnode.html" title="Model::Gas::Gasnode" alt="" coords="451,81,600,108"/>
+<area shape="rect" id="node9" href="$classModel_1_1Gas_1_1Pipe.html" title="Model::Gas::Pipe" alt="" coords="464,132,587,159"/>
+<area shape="rect" id="node10" href="$classModel_1_1Gas_1_1Shortpipe.html" title="Model::Gas::Shortpipe" alt="" coords="449,183,601,209"/>
+<area shape="rect" id="node11" href="$classModel_1_1Gaspowerconnection_1_1Gaspowerconnection.html" title="an edge connecting a gasnode to a powernode and modelling a gaspower plant/power&#45;to&#45;gas plant..." alt="" coords="432,234,619,275"/>
+<area shape="rect" id="node12" href="$classModel_1_1Power_1_1Powernode.html" title="Model::Power::Powernode" alt="" coords="438,300,613,327"/>
+<area shape="rect" id="node2" href="$classModel_1_1Equation__base.html" title="Model::Equation_base" alt="" coords="5,183,156,209"/>
+<area shape="rect" id="node4" href="$classModel_1_1Gas_1_1Flowboundarynode.html" title="Model::Gas::Flowboundarynode" alt="" coords="667,56,873,83"/>
+<area shape="rect" id="node8" href="$classModel_1_1Gas_1_1Innode.html" title="Model::Gas::Innode" alt="" coords="702,107,838,133"/>
+<area shape="rect" id="node5" href="$classModel_1_1Gas_1_1ConstraintSink.html" title="Model::Gas::ConstraintSink" alt="" coords="921,5,1104,32"/>
+<area shape="rect" id="node6" href="$classModel_1_1Gas_1_1Sink.html" title="Model::Gas::Sink" alt="" coords="951,56,1074,83"/>
+<area shape="rect" id="node7" href="$classModel_1_1Gas_1_1Source.html" title="Model::Gas::Source" alt="" coords="943,107,1082,133"/>
+<area shape="rect" id="node13" href="$classModel_1_1Gaspowerconnection_1_1ExternalPowerplant.html" title="A Powernode to be connected to an edge that leads out of the power network. " alt="" coords="677,183,863,225"/>
+<area shape="rect" id="node14" href="$classModel_1_1Power_1_1PQnode.html" title="Model::Power::PQnode" alt="" coords="691,249,849,276"/>
+<area shape="rect" id="node15" href="$classModel_1_1Power_1_1PVnode.html" title="Model::Power::PVnode" alt="" coords="692,300,848,327"/>
+<area shape="rect" id="node16" href="$classModel_1_1Power_1_1StochasticPQnode.html" title="Model::Power::Stochastic\lPQnode" alt="" coords="684,351,856,393"/>
+<area shape="rect" id="node17" href="$classModel_1_1Power_1_1Vphinode.html" title="Model::Power::Vphinode" alt="" coords="688,417,852,444"/>
+</map>

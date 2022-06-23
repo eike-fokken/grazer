@@ -1,0 +1,5 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classAux_1_1Matrixhandler.html" title="A utility base class that is used to setup and modify a sparse matrix. " alt="" coords="5,46,136,73"/>
+<area shape="rect" id="node2" href="$classAux_1_1Coeffrefhandler.html" title="The Coeffrefhandler variety directly sets the coefficients and contains no state. ..." alt="" coords="184,5,327,47"/>
+<area shape="rect" id="node3" href="$classAux_1_1Triplethandler.html" title="The Triplethandler variety gathers the coefficients in triplets and later builds the matrix from the ..." alt="" coords="190,71,321,112"/>
+</map>

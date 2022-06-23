@@ -1,0 +1,11 @@
+<map id="Model::Gas::Shortcomponent" name="Model::Gas::Shortcomponent">
+<area shape="rect" id="node2" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="928,81,1037,107"/>
+<area shape="rect" id="node3" href="$classNetwork_1_1Idobject.html" title="Provides a unified &quot;name&quot; to inheriting classes. " alt="" coords="696,13,821,39"/>
+<area shape="rect" id="node7" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="2077,62,2188,89"/>
+<area shape="rect" id="node5" title="STL class. " alt="" coords="181,13,261,39"/>
+<area shape="rect" id="node6" title="STL class. " alt="" coords="5,5,132,47"/>
+<area shape="rect" id="node9" href="$structNetwork_1_1Node_1_1Edgecollection.html" title="Network::Node::Edgecollection" alt="" coords="1492,123,1695,150"/>
+<area shape="rect" id="node11" href="$classModel_1_1Gas_1_1Gasedge.html" title="This class is a base class for all Gas edges with a 2x2 balance law. " alt="" coords="908,179,1057,206"/>
+<area shape="rect" id="node12" href="$classModel_1_1SimpleStatecomponent.html" title="Model::SimpleStatecomponent" alt="" coords="659,179,859,206"/>
+<area shape="rect" id="node13" href="$classModel_1_1Statecomponent.html" title="Model::Statecomponent" alt="" coords="421,179,581,206"/>
+</map>

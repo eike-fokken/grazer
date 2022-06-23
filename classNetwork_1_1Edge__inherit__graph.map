@@ -1,0 +1,10 @@
+<map id="Network::Edge" name="Network::Edge">
+<area shape="rect" id="node3" href="$classModel_1_1Gas_1_1Pipe.html" title="Model::Gas::Pipe" alt="" coords="379,5,501,32"/>
+<area shape="rect" id="node4" href="$classModel_1_1Gas_1_1Shortcomponent.html" title="Model::Gas::Shortcomponent" alt="" coords="344,56,536,83"/>
+<area shape="rect" id="node8" href="$classModel_1_1Gaspowerconnection_1_1Gaspowerconnection.html" title="an edge connecting a gasnode to a powernode and modelling a gaspower plant/power&#45;to&#45;gas plant..." alt="" coords="347,107,533,149"/>
+<area shape="rect" id="node9" href="$classModel_1_1Power_1_1Transmissionline.html" title="Model::Power::Transmissionline" alt="" coords="336,173,544,200"/>
+<area shape="rect" id="node2" href="$classNetwork_1_1Idobject.html" title="Provides a unified &quot;name&quot; to inheriting classes. " alt="" coords="5,85,131,112"/>
+<area shape="rect" id="node5" href="$classModel_1_1Gas_1_1Compressorstation.html" title="Model::Gas::Compressorstation" alt="" coords="592,5,799,32"/>
+<area shape="rect" id="node6" href="$classModel_1_1Gas_1_1Controlvalve.html" title="Model::Gas::Controlvalve" alt="" coords="610,56,781,83"/>
+<area shape="rect" id="node7" href="$classModel_1_1Gas_1_1Shortpipe.html" title="Model::Gas::Shortpipe" alt="" coords="619,107,771,133"/>
+</map>

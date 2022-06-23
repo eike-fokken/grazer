@@ -1,0 +1,14 @@
+<map id="src/Model/Networkproblem/Power/Vphinode.cpp" name="src/Model/Networkproblem/Power/Vphinode.cpp">
+<area shape="rect" id="node2" href="$Matrixhandler_8hpp.html" title="Matrixhandler.hpp" alt="" coords="1136,244,1262,271"/>
+<area shape="rect" id="node5" href="$Vphinode_8hpp.html" title="Vphinode.hpp" alt="" coords="892,95,994,121"/>
+<area shape="rect" id="node6" href="$Powernode_8hpp.html" title="Powernode.hpp" alt="" coords="720,169,832,196"/>
+<area shape="rect" id="node7" href="$Boundaryvaluecomponent_8hpp.html" title="Boundaryvaluecomponent.hpp" alt="" coords="374,244,571,271"/>
+<area shape="rect" id="node9" href="$Equationcomponent_8hpp.html" title="Equationcomponent.hpp" alt="" coords="167,244,330,271"/>
+<area shape="rect" id="node14" href="$InterpolatingVector_8hpp.html" title="InterpolatingVector.hpp" alt="" coords="698,244,854,271"/>
+<area shape="rect" id="node16" href="$Node_8hpp.html" title="Node.hpp" alt="" coords="596,244,674,271"/>
+<area shape="rect" id="node18" href="$SimpleStatecomponent_8hpp.html" title="SimpleStatecomponent.hpp" alt="" coords="878,244,1061,271"/>
+<area shape="rect" id="node10" href="$Equation__base_8hpp.html" title="Equation_base.hpp" alt="" coords="182,319,315,345"/>
+<area shape="rect" id="node15" href="$Timedata_8hpp.html" title="Timedata.hpp" alt="" coords="659,319,760,345"/>
+<area shape="rect" id="node17" href="$Idobject_8hpp.html" title="Idobject.hpp" alt="" coords="390,319,483,345"/>
+<area shape="rect" id="node19" href="$Statecomponent_8hpp.html" title="Statecomponent.hpp" alt="" coords="868,319,1010,345"/>
+</map>

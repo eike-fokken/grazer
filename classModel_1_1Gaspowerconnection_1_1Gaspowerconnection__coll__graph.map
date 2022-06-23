@@ -1,0 +1,18 @@
+<map id="Model::Gaspowerconnection::Gaspowerconnection" name="Model::Gaspowerconnection::Gaspowerconnection">
+<area shape="rect" id="node17" href="$classModel_1_1Gaspowerconnection_1_1ExternalPowerplant.html" title="A Powernode to be connected to an edge that leads out of the power network. " alt="" coords="1921,97,2108,138"/>
+<area shape="rect" id="node2" href="$classModel_1_1Equationcomponent.html" title="A base class for network components that supply model equations to be solved. " alt="" coords="907,61,1087,88"/>
+<area shape="rect" id="node18" href="$classModel_1_1Power_1_1Powernode.html" title="Model::Power::Powernode" alt="" coords="1309,148,1484,175"/>
+<area shape="rect" id="node3" href="$classModel_1_1Equation__base.html" title="Model::Equation_base" alt="" coords="665,61,816,88"/>
+<area shape="rect" id="node4" href="$classModel_1_1Gas_1_1Gasedge.html" title="This class is a base class for all Gas edges with a 2x2 balance law. " alt="" coords="1322,11,1471,37"/>
+<area shape="rect" id="node5" href="$classModel_1_1SimpleStatecomponent.html" title="Model::SimpleStatecomponent" alt="" coords="897,7,1097,33"/>
+<area shape="rect" id="node6" href="$classModel_1_1Statecomponent.html" title="Model::Statecomponent" alt="" coords="661,7,821,33"/>
+<area shape="rect" id="node8" href="$classNetwork_1_1Edge.html" title="Network::Edge" alt="" coords="1342,295,1451,321"/>
+<area shape="rect" id="node9" href="$classNetwork_1_1Idobject.html" title="Provides a unified &quot;name&quot; to inheriting classes. " alt="" coords="678,327,803,353"/>
+<area shape="rect" id="node13" href="$classNetwork_1_1Node.html" title="Network::Node" alt="" coords="941,360,1052,387"/>
+<area shape="rect" id="node11" title="STL class. " alt="" coords="181,327,261,353"/>
+<area shape="rect" id="node12" title="STL class. " alt="" coords="5,319,132,361"/>
+<area shape="rect" id="node15" href="$structNetwork_1_1Node_1_1Edgecollection.html" title="Network::Node::Edgecollection" alt="" coords="1913,333,2116,360"/>
+<area shape="rect" id="node19" href="$classModel_1_1Boundaryvaluecomponent.html" title="Model::Boundaryvaluecomponent" alt="" coords="889,112,1104,139"/>
+<area shape="rect" id="node21" href="$classAux_1_1InterpolatingVector.html" title="Aux::InterpolatingVector" alt="" coords="915,243,1078,269"/>
+<area shape="rect" id="node22" href="$classAux_1_1InterpolatingVector__Base.html" title="Aux::InterpolatingVector_Base" alt="" coords="641,243,840,269"/>
+</map>

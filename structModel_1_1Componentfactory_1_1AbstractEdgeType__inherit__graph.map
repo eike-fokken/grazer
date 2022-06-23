@@ -1,0 +1,4 @@
+<map id="Model::Componentfactory::AbstractEdgeType" name="Model::Componentfactory::AbstractEdgeType">
+<area shape="rect" id="node3" href="$structModel_1_1Componentfactory_1_1EdgeType.html" title="A EdgeType is an instantiation of the class of a (concrete) edge. It allows the passing and storage o..." alt="" coords="5,184,201,225"/>
+<area shape="rect" id="node2" href="$structModel_1_1Componentfactory_1_1AbstractComponentType.html" title="Common attributes of AbstractNodeTypes and AbstractEdgeTypes (read their documentation for further de..." alt="" coords="16,5,191,47"/>
+</map>

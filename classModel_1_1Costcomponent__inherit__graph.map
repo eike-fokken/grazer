@@ -1,0 +1,5 @@
+<map id="Model::Costcomponent" name="Model::Costcomponent">
+<area shape="rect" id="node2" href="$classModel_1_1Gas_1_1Compressorstation.html" title="Model::Gas::Compressorstation" alt="" coords="5,80,212,107"/>
+<area shape="rect" id="node3" href="$classModel_1_1OptimizableObject.html" title="Model::OptimizableObject" alt="" coords="236,80,408,107"/>
+<area shape="rect" id="node4" href="$classModel_1_1Networkproblem.html" title="Model::Networkproblem" alt="" coords="242,155,402,181"/>
+</map>
