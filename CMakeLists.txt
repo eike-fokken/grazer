@@ -24,7 +24,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # this fails with some part of our json dependencies.
 # Also MacOS doesn't ship the debug versions of standard types,
 # therefore we would forego the debug macro for Apple's Clang.
-add_compile_definitions("$<$<CONFIG:DEBUG>:_GLIBCXX_DEBUG>")
+add_compile_options("$<$<CONFIG:DEBUG>:-D_GLIBCXX_DEBUG>")
 
 option(BUILD_WITH_LIBCPP "Build with libc++ instead of libstdc++, if the compiler is clang." OFF)
 # include the googletest project for tests:

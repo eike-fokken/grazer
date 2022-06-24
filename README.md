@@ -44,15 +44,16 @@ inside a terminal window.
 
 #### Linux-based OSes
 
-On Debian-based Linux distributions (e.g. Ubuntu), the dependencies can be
+On Debian-based moderately current Linux distributions (e.g. Ubuntu 18.04 or later), the dependencies can be
 installed via
 
 ```
-sudo apt-get install bash git cmake make wget tar patch dos2unix pkg-config g++ gfortran libmetis-dev gfortran doxygen graphviz
+sudo apt-get install bash git cmake lld ninja-build ccache wget tar patch dos2unix pkg-config g++ gfortran libmetis-dev gfortran doxygen graphviz gcc liblapack-dev
 ```
+In case you are on an older release, you may have to replace `lld` by `ld`, `ninja-build` by `make` and possibly have a look at differently named versions of the other
+
 
 ## Building
-
 To build grazer, clone this git repository, change into it and run
 
 ```
@@ -65,11 +66,11 @@ tremendously).
 Then run
 
 ```
-cmake -DCMAKE_BUILD_TYPE=Release -S . -B release
+cmake -DCMAKE_LINKER=/usr/bin/lld -G"Ninja" -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_BUILD_TYPE=Release -S . -B release
 ```
+This will set up a grazer build with a fast linker (lld), a fast build system (ninja) and a compiler cache, which will cut down on compile time, if you want or need to recompile.
 
-and afterwards
-
+To execute the build, that is, to compile grazer, then run:
 ```
 cmake --build release
 ```
