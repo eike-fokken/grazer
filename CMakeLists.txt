@@ -252,11 +252,11 @@ add_custom_target(cclean COMMAND cd ${CMAKE_SOURCE_DIR} && rm -r ${CMAKE_SOURCE_
 
 # Installation
 
-install(
-  TARGETS grazer
-  RUNTIME DESTINATION bin # relative to CMAKE_INSTALL_PREFIX (/urs/local -> UNIX, c:/Program Files/${PROJECT_NAME} -> windows)
-  # CONFIGURATIONS Release
-)
-if(WIN32)
-  # figure out how to modify PATH variable: https://stackoverflow.com/q/68683998/6662425
-endif(WIN32)
+# install(
+#   TARGETS grazer
+#   RUNTIME DESTINATION bin # relative to CMAKE_INSTALL_PREFIX (/urs/local -> UNIX, c:/Program Files/${PROJECT_NAME} -> windows)
+#   # CONFIGURATIONS Release
+# )
+# if(WIN32)
+#   # figure out how to modify PATH variable: https://stackoverflow.com/q/68683998/6662425
+# endif(WIN32)
