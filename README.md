@@ -44,13 +44,13 @@ inside a terminal window.
 
 #### Linux-based OSes
 
-On Debian-based moderately current Linux distributions (e.g. Ubuntu 18.04 or later), the dependencies can be
+On Debian-based moderately current Linux distributions (e.g. Ubuntu 20.04 or later), the dependencies can be
 installed via
 
 ```
-sudo apt-get install bash git cmake lld ninja-build ccache wget tar patch dos2unix pkg-config g++ gfortran libmetis-dev gfortran doxygen graphviz gcc liblapack-dev
+sudo apt-get install bash git cmake lld ninja-build ccache wget tar patch dos2unix pkg-config g++ libmetis-dev gfortran doxygen graphviz gcc liblapack-dev
 ```
-In case you are on an older release, you may have to replace `lld` by `ld`, `ninja-build` by `make` and possibly have a look at differently named versions of the other
+In case you are on an older release, you may have to replace `lld` by `ld`, `ninja-build` by `make` and possibly have a look at differently named versions of the other packages. Also it is important that you use g++-9 or clang++-9 or newer.
 
 
 ## Building
@@ -63,7 +63,7 @@ git submodule update --init --recursive --depth=1
 to fetch dependencies (`--depth=1` is not needed but cuts down the size
 tremendously).
 
-Then run
+If you have cmake 3.14 or newer, run
 
 ```
 cmake -DCMAKE_LINKER=/usr/bin/lld -G"Ninja" -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_BUILD_TYPE=Release -S . -B release
