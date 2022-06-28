@@ -174,7 +174,17 @@ namespace Model {
         Aux::InterpolatingVector_Base const &controls, nlohmann::json &json);
 
   private:
+    /** \brief Returns the high-level class of component, "nodes" or
+     * "connections".
+     *
+     * This is needed to write jsons, that have separate entries for nodes and
+     * edges.
+     */
     virtual std::string componentclass() = 0;
+    /** \brief Returns the type of component, "nodes" or "connections".
+     *
+     * This is needed to write jsons.
+     */
     virtual std::string componenttype() = 0;
     virtual std::string id() = 0;
     /** \brief The first control index, this Controlcomponent "owns".
