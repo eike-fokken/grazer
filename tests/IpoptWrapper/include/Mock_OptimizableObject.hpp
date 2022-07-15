@@ -3,6 +3,8 @@
 #include <Eigen/src/SparseCore/SparseUtil.h>
 #include <iostream>
 
+static double PenaltyFactor = 1000.0;
+
 using Costfunction = double(
     Eigen::Ref<Eigen::VectorXd const> const & /*controls*/,
     Eigen::Ref<Eigen::VectorXd const> const & /*states*/);
@@ -40,6 +42,42 @@ inline Eigen::SparseMatrix<double> default_Dcost_Dcontrol(
   }
   derivative.setFromTriplets(triplets.begin(), triplets.end());
   return derivative;
+}
+
+inline double default_penalty(
+    Eigen::Ref<Eigen::VectorXd const> const &controls,
+    Eigen::Ref<Eigen::VectorXd const> const &states) {
+  return PenaltyFactor * (controls.squaredNorm() + 3 * states.squaredNorm());
+}
+
+using Dcost_Dnew_function = Eigen::SparseMatrix<double>(
+    Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
+    Eigen::Ref<Eigen::VectorXd const> const & /*controls*/);
+inline Eigen::SparseMatrix<double> default_Dpenalty_Dnew(
+    Eigen::Ref<Eigen::VectorXd const> const &new_state,
+    Eigen::Ref<Eigen::VectorXd const> const & /*controls*/) {
+  Eigen::SparseMatrix<double> derivative(1, new_state.size());
+  std::vector<Eigen::Triplet<double>> triplets;
+  for (int i = 0; i != new_state.size(); ++i) {
+    triplets.push_back({0, i, 2 * new_state(i)});
+  }
+  derivative.setFromTriplets(triplets.begin(), triplets.end());
+  return PenaltyFactor * 3 * derivative;
+}
+
+using Dcost_Dcontrol_function = Eigen::SparseMatrix<double>(
+    Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
+    Eigen::Ref<Eigen::VectorXd const> const & /*controls*/);
+inline Eigen::SparseMatrix<double> default_Dpenalty_Dcontrol(
+    Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
+    Eigen::Ref<Eigen::VectorXd const> const &controls) {
+  Eigen::SparseMatrix<double> derivative(1, controls.size());
+  std::vector<Eigen::Triplet<double>> triplets;
+  for (int i = 0; i != controls.size(); ++i) {
+    triplets.push_back({0, i, 2 * controls(static_cast<Eigen::Index>(i))});
+  }
+  derivative.setFromTriplets(triplets.begin(), triplets.end());
+  return PenaltyFactor * derivative;
 }
 
 using equation_function = Eigen::VectorXd(
@@ -171,6 +209,10 @@ public:
   Dcost_Dnew_function *dcost_dnew;
   Dcost_Dcontrol_function *dcost_dcontrol;
 
+  Costfunction *penalty;
+  Dcost_Dnew_function *dpenalty_dnew;
+  Dcost_Dcontrol_function *dpenalty_dcontrol;
+
   constraintfunction *constraints;
   Dconstraint_Dnew_function *dconstraint_dnew;
   Dconstraint_Dcontrol_function *dconstraint_dcontrol;
@@ -185,6 +227,9 @@ public:
       Costfunction *_cost = default_cost,
       Dcost_Dnew_function *_dcost_dnew = default_Dcost_Dnew,
       Dcost_Dcontrol_function *_dcost_dcontrol = default_Dcost_Dcontrol,
+      Costfunction *_penalty = default_penalty,
+      Dcost_Dnew_function *_dpenalty_dnew = default_Dpenalty_Dnew,
+      Dcost_Dcontrol_function *_dpenalty_dcontrol = default_Dpenalty_Dcontrol,
       constraintfunction *_constraints = default_constraint,
       Dconstraint_Dnew_function *_dconstraint_dnew = default_Dconstraint_Dnew,
       Dconstraint_Dcontrol_function *_dconstraint_dcontrol
@@ -199,6 +244,9 @@ public:
       cost(_cost),
       dcost_dnew(_dcost_dnew),
       dcost_dcontrol(_dcost_dcontrol),
+      penalty(_penalty),
+      dpenalty_dnew(_dpenalty_dnew),
+      dpenalty_dcontrol(_dpenalty_dcontrol),
       constraints(_constraints),
       dconstraint_dnew(_dconstraint_dnew),
       dconstraint_dcontrol(_dconstraint_dcontrol) {}
@@ -381,20 +429,34 @@ public:
   }
 
   double evaluate_penalty(
-      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const & /*state*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const final {
-    return 0;
+      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const &state,
+      Eigen::Ref<Eigen::VectorXd const> const &control) const final {
+    return penalty(control, state);
   }
 
   void d_evaluate_penalty_d_state(
-      Aux::Matrixhandler & /*penalty_new_state_jacobian_handler*/,
-      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const & /*state*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const final {}
+      Aux::Matrixhandler &penalty_new_state_jacobian_handler,
+      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const &state,
+      Eigen::Ref<Eigen::VectorXd const> const &control) const final {
+    auto mat = dpenalty_dnew(state, control);
+    for (int k = 0; k < mat.outerSize(); ++k)
+      for (Eigen::SparseMatrix<double>::InnerIterator it(mat, k); it; ++it) {
+        penalty_new_state_jacobian_handler.add_to_coefficient(
+            static_cast<int>(it.row()), static_cast<int>(it.col()), it.value());
+      }
+  }
 
   void d_evaluate_penalty_d_control(
-      Aux::Matrixhandler & /*penalty_control_jacobian_handler*/,
-      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const & /*state*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const final {}
+      Aux::Matrixhandler &penalty_control_jacobian_handler, double /*new_time*/,
+      Eigen::Ref<Eigen::VectorXd const> const &state,
+      Eigen::Ref<Eigen::VectorXd const> const &control) const final {
+    auto mat = dpenalty_dcontrol(state, control);
+    for (int k = 0; k < mat.outerSize(); ++k)
+      for (Eigen::SparseMatrix<double>::InnerIterator it(mat, k); it; ++it) {
+        penalty_control_jacobian_handler.add_to_coefficient(
+            static_cast<int>(it.row()), static_cast<int>(it.col()), it.value());
+      }
+  }
 
   //// State components:
 

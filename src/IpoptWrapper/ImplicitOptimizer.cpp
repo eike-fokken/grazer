@@ -242,7 +242,6 @@ namespace Optimization {
       objective += integral_weights[timeindex] * add_value;
       auto add_penalty
           = problem->evaluate_penalty(time, states(time), controls(time));
-      objective += integral_weights[timeindex] * add_value;
       objective += integral_weights[timeindex] * add_penalty;
     }
     return true;
