@@ -51,11 +51,17 @@ namespace Model {
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
 
+    ///////////////////////////////////////////////////////////////////
+    //////// Careful: May only ever call add_to_coefficient!!!!! //////
+    ///////////////////////////////////////////////////////////////////
     virtual void d_evaluate_penalty_d_state(
         Aux::Matrixhandler &penalty_new_state_jacobian_handler, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
 
+    ///////////////////////////////////////////////////////////////////
+    //////// Careful: May only ever call add_to_coefficient!!!!! //////
+    ///////////////////////////////////////////////////////////////////
     virtual void d_evaluate_penalty_d_control(
         Aux::Matrixhandler &penalty_control_jacobian_handler, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &state,
