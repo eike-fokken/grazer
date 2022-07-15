@@ -155,6 +155,22 @@ namespace Model::Gas {
         0, get_control_startindex(), 2 * get_cost_weight() * current_control);
   }
 
+  double Compressorstation::evaluate_penalty(
+      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const & /*state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {
+    return 0;
+  }
+
+  void Compressorstation::d_evaluate_penalty_d_state(
+      Aux::Matrixhandler & /*penalty_new_state_jacobian_handler*/,
+      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const & /*state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {}
+
+  void Compressorstation::d_evaluate_penalty_d_control(
+      Aux::Matrixhandler & /*penalty_control_jacobian_handler*/,
+      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const & /*state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {}
+
   std::string Compressorstation::componentclass() {
     return Aux::component_class(*this);
   }

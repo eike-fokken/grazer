@@ -21,6 +21,10 @@ namespace Model {
   Costcomponent::Costcomponent(double _cost_weight) :
       cost_weight(_cost_weight) {}
 
+  Costcomponent::Costcomponent(double _cost_weight, double _penalty_weight) :
+      cost_weight(_cost_weight), penalty_weight(_penalty_weight) {}
+
   double Costcomponent::get_cost_weight() const { return cost_weight; }
+  double Costcomponent::get_penalty_weight() const { return penalty_weight; }
 
 } // namespace Model

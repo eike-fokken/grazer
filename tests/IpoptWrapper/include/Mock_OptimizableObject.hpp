@@ -380,6 +380,22 @@ public:
       }
   }
 
+  double evaluate_penalty(
+      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const & /*state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const final {
+    return 0;
+  }
+
+  void d_evaluate_penalty_d_state(
+      Aux::Matrixhandler & /*penalty_new_state_jacobian_handler*/,
+      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const & /*state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const final {}
+
+  void d_evaluate_penalty_d_control(
+      Aux::Matrixhandler & /*penalty_control_jacobian_handler*/,
+      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const & /*state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const final {}
+
   //// State components:
 
   Eigen::Index set_state_indices(Eigen::Index next_index) final {
