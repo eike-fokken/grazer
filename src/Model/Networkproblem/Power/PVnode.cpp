@@ -48,7 +48,7 @@ namespace Model::Power {
     auto V_index = get_state_startindex();
     auto phi_index = V_index + 1;
     evaluate_P_derivative(V_index, jacobianhandler, new_state);
-    jacobianhandler.set_coefficient(phi_index, V_index, 1.0);
+    jacobianhandler.add_to_coefficient(phi_index, V_index, 1.0);
   }
 
   void PVnode::d_evalutate_d_last_state(

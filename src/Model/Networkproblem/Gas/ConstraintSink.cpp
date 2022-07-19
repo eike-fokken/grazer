@@ -49,7 +49,7 @@ namespace Model::Gas {
     auto first_direction = directed_attached_gas_edges[0].first;
     auto *sample_gas_edge = directed_attached_gas_edges[0].second;
     auto index = sample_gas_edge->get_boundary_state_index(first_direction);
-    constraint_new_state_jacobian_handler.set_coefficient(
+    constraint_new_state_jacobian_handler.add_to_coefficient(
         get_constraint_startindex(), index, 1.0);
   }
 

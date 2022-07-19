@@ -54,8 +54,8 @@ namespace Model::Gas {
     /// If (p,qvol) = phi(rho,q), then this function must compute
     /// \code{.cpp}dF/dState = function_derivative*phi'\endcode and call
     /// \code{.cpp}
-    /// jacobianhandler.set_coefficient(rootvalues_index, rho_index,
-    /// dF/dState[0]); jacobianhandler.set_coefficient(rootvalues_index,
+    /// jacobianhandler.add_to_coefficient(rootvalues_index, rho_index,
+    /// dF/dState[0]); jacobianhandler.add_to_coefficient(rootvalues_index,
     /// q_index, dF/dState[1]); \endcode
     virtual void dboundary_p_qvol_dstate(
         Direction direction, Aux::Matrixhandler &jacobianhandler,

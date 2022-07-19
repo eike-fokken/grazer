@@ -49,7 +49,7 @@ public:
         = df_dnew_state(last_state, new_state, control);
     for (int k = 0; k < mat.outerSize(); ++k)
       for (Eigen::SparseMatrix<double>::InnerIterator it(mat, k); it; ++it) {
-        jacobianhandler.set_coefficient(
+        jacobianhandler.add_to_coefficient(
             static_cast<int>(it.row()), static_cast<int>(it.col()), it.value());
       }
   }
@@ -64,7 +64,7 @@ public:
         = df_dlast_state(last_state, new_state, control);
     for (int k = 0; k < mat.outerSize(); ++k)
       for (Eigen::SparseMatrix<double>::InnerIterator it(mat, k); it; ++it) {
-        jacobianhandler.set_coefficient(
+        jacobianhandler.add_to_coefficient(
             static_cast<int>(it.row()), static_cast<int>(it.col()), it.value());
       }
   }
@@ -79,7 +79,7 @@ public:
         = df_dcontrol(last_state, new_state, control);
     for (int k = 0; k < mat.outerSize(); ++k)
       for (Eigen::SparseMatrix<double>::InnerIterator it(mat, k); it; ++it) {
-        jacobianhandler.set_coefficient(
+        jacobianhandler.add_to_coefficient(
             static_cast<int>(it.row()), static_cast<int>(it.col()), it.value());
       }
   }

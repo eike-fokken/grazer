@@ -21,7 +21,7 @@ void TestProblem::d_evalutate_d_new_state(
   Eigen::SparseMatrix<double> mat = df(new_state);
   for (int k = 0; k < mat.outerSize(); ++k)
     for (Eigen::SparseMatrix<double>::InnerIterator it(mat, k); it; ++it) {
-      jacobianhandler.set_coefficient(
+      jacobianhandler.add_to_coefficient(
           static_cast<int>(it.row()), static_cast<int>(it.col()), it.value());
     }
 }

@@ -270,7 +270,7 @@ public:
     auto mat = dconstraint_dnew(number_of_constraints, state, control);
     for (int k = 0; k < mat.outerSize(); ++k)
       for (Eigen::SparseMatrix<double>::InnerIterator it(mat, k); it; ++it) {
-        constraint_new_state_jacobian_handler.set_coefficient(
+        constraint_new_state_jacobian_handler.add_to_coefficient(
             static_cast<int>(it.row()), static_cast<int>(it.col()), it.value());
       }
   }
@@ -282,7 +282,7 @@ public:
     auto mat = dconstraint_dcontrol(number_of_constraints, state, control);
     for (int k = 0; k < mat.outerSize(); ++k)
       for (Eigen::SparseMatrix<double>::InnerIterator it(mat, k); it; ++it) {
-        constraint_control_jacobian_handler.set_coefficient(
+        constraint_control_jacobian_handler.add_to_coefficient(
             static_cast<int>(it.row()), static_cast<int>(it.col()), it.value());
       }
   }
@@ -329,7 +329,7 @@ public:
     auto mat = dE_dnew(last_state, new_state, control);
     for (int k = 0; k < mat.outerSize(); ++k)
       for (Eigen::SparseMatrix<double>::InnerIterator it(mat, k); it; ++it) {
-        jacobianhandler.set_coefficient(
+        jacobianhandler.add_to_coefficient(
             static_cast<int>(it.row()), static_cast<int>(it.col()), it.value());
       }
   }
@@ -342,7 +342,7 @@ public:
     auto mat = dE_dlast(last_state, new_state, control);
     for (int k = 0; k < mat.outerSize(); ++k)
       for (Eigen::SparseMatrix<double>::InnerIterator it(mat, k); it; ++it) {
-        jacobianhandler.set_coefficient(
+        jacobianhandler.add_to_coefficient(
             static_cast<int>(it.row()), static_cast<int>(it.col()), it.value());
       }
   }
@@ -355,7 +355,7 @@ public:
     auto mat = dE_dcontrol(last_state, new_state, control);
     for (int k = 0; k < mat.outerSize(); ++k)
       for (Eigen::SparseMatrix<double>::InnerIterator it(mat, k); it; ++it) {
-        jacobianhandler.set_coefficient(
+        jacobianhandler.add_to_coefficient(
             static_cast<int>(it.row()), static_cast<int>(it.col()), it.value());
       }
   }
@@ -411,7 +411,7 @@ public:
     auto mat = dcost_dnew(state, control);
     for (int k = 0; k < mat.outerSize(); ++k)
       for (Eigen::SparseMatrix<double>::InnerIterator it(mat, k); it; ++it) {
-        cost_new_state_jacobian_handler.set_coefficient(
+        cost_new_state_jacobian_handler.add_to_coefficient(
             static_cast<int>(it.row()), static_cast<int>(it.col()), it.value());
       }
   }
@@ -423,7 +423,7 @@ public:
     auto mat = dcost_dcontrol(state, control);
     for (int k = 0; k < mat.outerSize(); ++k)
       for (Eigen::SparseMatrix<double>::InnerIterator it(mat, k); it; ++it) {
-        cost_control_jacobian_handler.set_coefficient(
+        cost_control_jacobian_handler.add_to_coefficient(
             static_cast<int>(it.row()), static_cast<int>(it.col()), it.value());
       }
   }

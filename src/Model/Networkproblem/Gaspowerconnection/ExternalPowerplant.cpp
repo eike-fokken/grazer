@@ -73,8 +73,8 @@ namespace Model::Gaspowerconnection {
     auto phi_index = V_index + 1;
 
     // is Vphinode!
-    jacobianhandler.set_coefficient(V_index, V_index, 1.0);
-    jacobianhandler.set_coefficient(phi_index, phi_index, 1.0);
+    jacobianhandler.add_to_coefficient(V_index, V_index, 1.0);
+    jacobianhandler.add_to_coefficient(phi_index, phi_index, 1.0);
   }
 
   void ExternalPowerplant::d_evalutate_d_last_state(

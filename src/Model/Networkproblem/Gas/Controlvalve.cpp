@@ -64,10 +64,10 @@ namespace Model::Gas {
     auto start_equation_index = get_equation_start_index();
     auto end_equation_index = start_equation_index + 1;
 
-    jacobianhandler.set_coefficient(start_equation_index, start_p_index, -1.0);
-    jacobianhandler.set_coefficient(start_equation_index, end_p_index, 1.0);
-    jacobianhandler.set_coefficient(end_equation_index, start_q_index, -1.0);
-    jacobianhandler.set_coefficient(end_equation_index, end_q_index, 1.0);
+    jacobianhandler.add_to_coefficient(start_equation_index, start_p_index, -1.0);
+    jacobianhandler.add_to_coefficient(start_equation_index, end_p_index, 1.0);
+    jacobianhandler.add_to_coefficient(end_equation_index, start_q_index, -1.0);
+    jacobianhandler.add_to_coefficient(end_equation_index, end_q_index, 1.0);
   }
 
   void Controlvalve::d_evalutate_d_last_state(
@@ -86,7 +86,7 @@ namespace Model::Gas {
     auto start_equation_index = get_equation_start_index();
     auto pressure_control_index = get_control_startindex();
 
-    jacobianhandler.set_coefficient(
+    jacobianhandler.add_to_coefficient(
         start_equation_index, pressure_control_index, 1.0);
   }
 

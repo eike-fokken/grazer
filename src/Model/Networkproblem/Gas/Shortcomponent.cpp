@@ -93,9 +93,9 @@ namespace Model::Gas {
     auto p_index = get_boundary_state_index(direction);
     auto q_index = p_index + 1;
 
-    jacobianhandler.set_coefficient(
+    jacobianhandler.add_to_coefficient(
         rootvalues_index, p_index, function_derivative[0]);
-    jacobianhandler.set_coefficient(
+    jacobianhandler.add_to_coefficient(
         rootvalues_index, q_index, function_derivative[1]);
   }
 
