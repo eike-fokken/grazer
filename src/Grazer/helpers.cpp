@@ -17,12 +17,12 @@
 #include "helpers.hpp"
 #include "Aux_json.hpp"
 #include "InterpolatingVector.hpp"
-#include "Networkproblem.hpp"
+#include "OptimizableObject.hpp"
 #include "Timedata.hpp"
 #include <nlohmann/json.hpp>
 #include <sstream>
 void setup_controls(
-    Aux::InterpolatingVector &controls, Model::Networkproblem &problem,
+    Aux::InterpolatingVector &controls, Model::OptimizableObject &problem,
     Model::Timedata &timedata, nlohmann::json const &all_json,
     std::filesystem::path const &problem_directory) {
   if (problem.get_number_of_controls_per_timepoint() > 0) {
