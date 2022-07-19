@@ -20,11 +20,11 @@ namespace Aux {
   class InterpolatingVector;
 }
 namespace Model {
-  class Networkproblem;
+  class OptimizableObject;
   struct Timedata;
 } // namespace Model
 
 void setup_controls(
-    Aux::InterpolatingVector &controls, Model::Networkproblem &problem,
+    Aux::InterpolatingVector &controls, Model::OptimizableObject &problem,
     Model::Timedata &timedata, nlohmann::json const &all_json,
     std::filesystem::path const &problem_directory);

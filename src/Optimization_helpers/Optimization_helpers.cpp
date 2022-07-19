@@ -18,7 +18,7 @@
 #include "InterpolatingVector.hpp"
 #include "Mathfunctions.hpp"
 #include "Misc.hpp"
-#include "Networkproblem.hpp"
+#include "OptimizableObject.hpp"
 #include <algorithm>
 #include <cassert>
 namespace Optimization {
@@ -70,7 +70,7 @@ namespace Optimization {
   }
 
   void initialize_bounds(
-      Model::Networkproblem &problem,
+      Model::OptimizableObject &problem,
       Aux::InterpolatingVector_Base &lower_bounds,
       nlohmann::json const &lower_bounds_json,
       Aux::InterpolatingVector_Base &upper_bounds,
