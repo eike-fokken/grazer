@@ -643,6 +643,8 @@ namespace Optimization {
     Aux::Triplethandler<Aux::Transposed> fnew_handler(df_dnew_transposed);
     problem->d_evaluate_cost_d_state(
         fnew_handler, new_time, states(new_time), controls(new_time));
+    // Here we add the penalties on the same matrix handler, because a new
+    // handler would zero out the existing matrix!
     problem->d_evaluate_penalty_d_state(
         fnew_handler, new_time, states(new_time), controls(new_time));
     fnew_handler.set_matrix();
@@ -651,6 +653,8 @@ namespace Optimization {
     Aux::Triplethandler fcontrol_handler(df_dcontrol);
     problem->d_evaluate_cost_d_control(
         fcontrol_handler, new_time, states(new_time), controls(new_time));
+    // Here we add the penalties on the same matrix handler, because a new
+    // handler would zero out the existing matrix!
     problem->d_evaluate_penalty_d_control(
         fcontrol_handler, new_time, states(new_time), controls(new_time));
     fcontrol_handler.set_matrix();
