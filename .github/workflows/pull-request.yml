@@ -3,7 +3,7 @@ name: PullRequest
 on:
   workflow_dispatch:
   pull_request:
-    branches: [master,develop]
+    branches: [main]
     types: [synchronize, opened, reopened, ready_for_review]
 
 jobs:
