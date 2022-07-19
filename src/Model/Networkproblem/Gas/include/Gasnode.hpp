@@ -21,13 +21,15 @@
 
 namespace Model::Gas {
 
-  class Gasnode : public Equationcomponent, public Network::Node {
+  class Gasnode : public Network::Node {
 
   public:
     using Node::Node;
 
+    ~Gasnode() override;
+
     /// Claims outer indices of attached edges.
-    void setup() final;
+    void gasnode_setup_helper();
 
   protected:
     void evaluate_flow_node_balance(

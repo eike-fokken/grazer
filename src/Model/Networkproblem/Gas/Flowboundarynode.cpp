@@ -49,6 +49,8 @@ namespace Model::Gas {
       boundaryvalue(Aux::InterpolatingVector::construct_from_json(
           data["boundary_values"], get_boundary_schema())) {}
 
+  void Flowboundarynode::setup() { gasnode_setup_helper(); }
+
   void Flowboundarynode::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &,
