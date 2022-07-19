@@ -70,6 +70,30 @@ TEST(Triplethandler, add_to_coefficient2) {
   EXPECT_EQ(expected_mat, dense);
 }
 
+TEST(Coeffrefhandler, Constructor_sets_zero) {
+
+  Eigen::SparseMatrix<double> mat(5, 5);
+
+  // fill with bogus values:
+  Triplethandler triplethandler(mat);
+  double value = 1.0;
+  for (Eigen::Index col = 0; col != mat.cols(); ++col) {
+    for (Eigen::Index row = 0; row != mat.rows(); ++row) {
+      triplethandler.add_to_coefficient(row, col, value);
+      ++value;
+    }
+  }
+  triplethandler.set_matrix();
+  assert(mat.nonZeros() != 0);
+
+  Coeffrefhandler coeffrefhandler(mat);
+
+  auto expected_mat = Eigen::MatrixXd::Zero(5, 5);
+  Eigen::MatrixXd dense = mat;
+
+  EXPECT_EQ(expected_mat, dense);
+}
+
 TEST(Coeffrefhandler, add_to_coefficient) {
 
   Eigen::SparseMatrix<double> mat(5, 5);
