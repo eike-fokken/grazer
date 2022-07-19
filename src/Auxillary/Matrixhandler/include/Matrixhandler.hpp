@@ -41,16 +41,6 @@ namespace Aux {
     add_to_coefficient(Eigen::Index row, Eigen::Index col, double value)
         = 0;
 
-    /// \brief Sets a coefficient. For #Triplethandler this actually behaves
-    /// like #add_to_coefficient.
-    ///
-    /// @param row The row index of the coefficient.
-    /// @param col The column index of the coefficient.
-    /// @param value The value to be inserted.
-    virtual void
-    set_coefficient(Eigen::Index row, Eigen::Index col, double value)
-        = 0;
-
     /// For #Triplethandler: Builds the matrix from the gathered coefficients
     /// and then forgets the coefficients.
     ///
@@ -62,7 +52,8 @@ namespace Aux {
   };
 
   /// \brief The Triplethandler variety gathers the coefficients in triplets and
-  /// later builds the matrix from the triplets.
+  /// later builds the matrix from the triplets. It works only on an empty
+  /// matrix.
   template <int Transpose = Regular>
   class Triplethandler final : public Matrixhandler {
 
@@ -71,8 +62,6 @@ namespace Aux {
 
     void
     add_to_coefficient(Eigen::Index row, Eigen::Index col, double value) final;
-    void
-    set_coefficient(Eigen::Index row, Eigen::Index col, double value) final;
 
     void set_matrix() final;
 
@@ -81,7 +70,7 @@ namespace Aux {
   };
 
   /// \brief The Coeffrefhandler variety directly sets the coefficients and
-  /// contains no state.
+  /// contains no state. It sets the matrix to zero on construction.
 
   template <int Transpose = Regular>
   class Coeffrefhandler final : public Matrixhandler {
@@ -91,8 +80,7 @@ namespace Aux {
 
     void
     add_to_coefficient(Eigen::Index row, Eigen::Index col, double value) final;
-    void
-    set_coefficient(Eigen::Index row, Eigen::Index col, double value) final;
+
     void set_matrix() final;
   };
 
