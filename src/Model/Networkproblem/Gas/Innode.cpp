@@ -21,6 +21,8 @@ namespace Model::Gas {
 
   std::string Innode::get_type() { return "Innode"; }
 
+  void Innode::setup() { gasnode_setup_helper(); }
+
   void Innode::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double,
       Eigen::Ref<Eigen::VectorXd const> const &,

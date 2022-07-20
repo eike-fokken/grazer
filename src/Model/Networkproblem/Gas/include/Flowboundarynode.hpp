@@ -27,7 +27,10 @@ namespace Model::Gas {
 
   nlohmann::json revert_boundary_conditions(nlohmann::json const &data);
 
-  class Flowboundarynode : public Gasnode, public Boundaryvaluecomponent {
+  class Flowboundarynode :
+      public Equationcomponent,
+      public Gasnode,
+      public Boundaryvaluecomponent {
 
   public:
     static nlohmann::json get_boundary_schema();
@@ -35,6 +38,8 @@ namespace Model::Gas {
     Flowboundarynode(nlohmann::json const &data);
 
     ~Flowboundarynode(){};
+
+    void setup() final;
 
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,

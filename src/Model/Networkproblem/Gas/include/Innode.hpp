@@ -21,7 +21,7 @@ namespace Model::Gas {
 
   /// This class represents an inner node of the gas network, that neither
   /// injects gas nor takes gas out.
-  class Innode final : public Gasnode {
+  class Innode final : public Equationcomponent, public Gasnode {
 
   public:
     static std::string get_type();
@@ -30,6 +30,8 @@ namespace Model::Gas {
     using Gasnode::Gasnode;
 
     virtual ~Innode(){};
+
+    void setup() final;
 
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,

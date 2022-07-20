@@ -24,6 +24,8 @@
 
 namespace Model::Gas {
 
+  Gasnode::~Gasnode() {}
+
   void Gasnode::evaluate_flow_node_balance(
       Eigen::Ref<Eigen::VectorXd> rootvalues,
       Eigen::Ref<Eigen::VectorXd const> const &state,
@@ -133,7 +135,7 @@ namespace Model::Gas {
         dirlast, jacobianhandler, dF_last_dpq_last, last_equation_index, state);
   }
 
-  void Gasnode::setup() {
+  void Gasnode::gasnode_setup_helper() {
 
     if (directed_attached_gas_edges.size() != 0) {
       std::cout << YELLOW << "You are calling setup a second time!" << RESET
