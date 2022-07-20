@@ -93,19 +93,19 @@ namespace Model {
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &control) final;
 
-    void d_evalutate_d_new_state(
+    void d_evaluate_d_new_state(
         Aux::Matrixhandler &jacobian, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
-    void d_evalutate_d_last_state(
+    void d_evaluate_d_last_state(
         Aux::Matrixhandler &jacobian, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
-    void d_evalutate_d_control(
+    void d_evaluate_d_control(
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,

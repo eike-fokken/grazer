@@ -37,7 +37,7 @@ namespace Model::Power {
 
   void PQnode::setup() { Powernode::setup_helper(); }
 
-  void PQnode::d_evalutate_d_new_state(
+  void PQnode::d_evaluate_d_new_state(
       Aux::Matrixhandler &jacobianhandler,
       double // last_time
       ,
@@ -51,7 +51,7 @@ namespace Model::Power {
     evaluate_Q_derivative(second_equation_index, jacobianhandler, new_state);
   }
 
-  void PQnode::d_evalutate_d_last_state(
+  void PQnode::d_evaluate_d_last_state(
       Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,

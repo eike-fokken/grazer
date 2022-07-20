@@ -340,7 +340,7 @@ TEST_F(GaspowerconnectionTEST, evaluate) {
   }
 }
 
-TEST_F(GaspowerconnectionTEST, d_evalutate_d_new_state) {
+TEST_F(GaspowerconnectionTEST, d_evaluate_d_new_state) {
 
   nlohmann::json innode_json;
   innode_json["id"] = "ainnode";
@@ -408,7 +408,7 @@ TEST_F(GaspowerconnectionTEST, d_evalutate_d_new_state) {
 
     Eigen::Matrix4d DenseJ;
     new_state.setRandom();
-    netprob->d_evalutate_d_new_state(
+    netprob->d_evaluate_d_new_state(
         handler, last_time, new_time, last_state, new_state, control);
     handler.set_matrix();
     DenseJ = J;
