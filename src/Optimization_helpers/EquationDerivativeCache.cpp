@@ -86,11 +86,11 @@ namespace Optimization {
 
       auto control = controls(new_time);
 
-      problem.d_evalutate_d_new_state(
+      problem.d_evaluate_d_new_state(
           new_handler, last_time, new_time, last_state, new_state, control);
-      problem.d_evalutate_d_last_state(
+      problem.d_evaluate_d_last_state(
           last_handler, last_time, new_time, last_state, new_state, control);
-      problem.d_evalutate_d_control(
+      problem.d_evaluate_d_control(
           control_handler, last_time, new_time, last_state, new_state, control);
 
       /////////////////////////////////////////////
@@ -166,11 +166,11 @@ namespace Optimization {
 
       auto control = controls(new_time);
 
-      problem.d_evalutate_d_new_state(
+      problem.d_evaluate_d_new_state(
           new_handler, last_time, new_time, last_state, new_state, control);
-      problem.d_evalutate_d_last_state(
+      problem.d_evaluate_d_last_state(
           last_handler, last_time, new_time, last_state, new_state, control);
-      problem.d_evalutate_d_control(
+      problem.d_evaluate_d_control(
           control_handler, last_time, new_time, last_state, new_state, control);
 
       /////////////////////////////////////////////

@@ -64,7 +64,7 @@ namespace Model::Gas {
         rootvalues, new_state, boundaryvalue(new_time)[0]);
   }
 
-  void Flowboundarynode::d_evalutate_d_new_state(
+  void Flowboundarynode::d_evaluate_d_new_state(
       Aux::Matrixhandler &jacobianhandler, double, double,
       Eigen::Ref<Eigen::VectorXd const> const &,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
@@ -74,7 +74,7 @@ namespace Model::Gas {
     evaluate_flow_node_derivative(jacobianhandler, new_state);
   }
 
-  void Flowboundarynode::d_evalutate_d_last_state(
+  void Flowboundarynode::d_evaluate_d_last_state(
       Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,

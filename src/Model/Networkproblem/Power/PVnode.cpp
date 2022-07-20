@@ -37,7 +37,7 @@ namespace Model::Power {
 
   void PVnode::setup() { Powernode::setup_helper(); }
 
-  void PVnode::d_evalutate_d_new_state(
+  void PVnode::d_evaluate_d_new_state(
       Aux::Matrixhandler &jacobianhandler,
       double // last_time
       ,
@@ -51,7 +51,7 @@ namespace Model::Power {
     jacobianhandler.add_to_coefficient(phi_index, V_index, 1.0);
   }
 
-  void PVnode::d_evalutate_d_last_state(
+  void PVnode::d_evaluate_d_last_state(
       Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,

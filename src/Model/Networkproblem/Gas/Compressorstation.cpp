@@ -55,7 +55,7 @@ namespace Model::Gas {
           - get_boundary_state(start, new_state) - pressure_control;
   }
 
-  void Compressorstation::d_evalutate_d_new_state(
+  void Compressorstation::d_evaluate_d_new_state(
       Aux::Matrixhandler &jacobianhandler, double /*last_time*/,
       double /*new_time*/,
       const Eigen::Ref<const Eigen::VectorXd> & /*last_state*/,
@@ -75,14 +75,14 @@ namespace Model::Gas {
     jacobianhandler.add_to_coefficient(end_equation_index, end_q_index, 1.0);
   }
 
-  void Compressorstation::d_evalutate_d_last_state(
+  void Compressorstation::d_evaluate_d_last_state(
       Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
       double /*new_time*/,
       const Eigen::Ref<const Eigen::VectorXd> & /*last_state*/,
       const Eigen::Ref<const Eigen::VectorXd> & /*new_state*/,
       const Eigen::Ref<const Eigen::VectorXd> & /*control*/) const {}
 
-  void Compressorstation::d_evalutate_d_control(
+  void Compressorstation::d_evaluate_d_control(
       Aux::Matrixhandler &jacobianhandler, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,

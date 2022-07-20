@@ -602,7 +602,7 @@ namespace Optimization {
 
     dE_dnew_transposed.resize(states_per_step(), states_per_step());
     Aux::Triplethandler<Aux::Transposed> new_handler(dE_dnew_transposed);
-    problem->d_evalutate_d_new_state(
+    problem->d_evaluate_d_new_state(
         new_handler, last_time, new_time, states(last_time), states(new_time),
         controls(new_time));
     new_handler.set_matrix();
@@ -614,7 +614,7 @@ namespace Optimization {
 
     dE_dlast_transposed.resize(states_per_step(), states_per_step());
     Aux::Triplethandler<Aux::Transposed> last_handler(dE_dlast_transposed);
-    problem->d_evalutate_d_last_state(
+    problem->d_evaluate_d_last_state(
         last_handler, last_time, new_time, states(last_time), states(new_time),
         controls(new_time));
     last_handler.set_matrix();
@@ -622,7 +622,7 @@ namespace Optimization {
               << std::endl;
     dE_dcontrol.resize(states_per_step(), controls_per_step());
     Aux::Triplethandler control_handler(dE_dcontrol);
-    problem->d_evalutate_d_control(
+    problem->d_evaluate_d_control(
         control_handler, last_time, new_time, states(last_time),
         states(new_time), controls(new_time));
     control_handler.set_matrix();
@@ -677,17 +677,17 @@ namespace Optimization {
     double new_time = state_timepoints[state_index];
 
     Aux::Coeffrefhandler<Aux::Transposed> last_handler(dE_dlast_transposed);
-    problem->d_evalutate_d_last_state(
+    problem->d_evaluate_d_last_state(
         last_handler, last_time, new_time, states(last_time), states(new_time),
         controls(new_time));
 
     Aux::Coeffrefhandler control_handler(dE_dcontrol);
-    problem->d_evalutate_d_control(
+    problem->d_evaluate_d_control(
         control_handler, last_time, new_time, states(last_time),
         states(new_time), controls(new_time));
 
     Aux::Coeffrefhandler<Aux::Transposed> new_handler(dE_dnew_transposed);
-    problem->d_evalutate_d_new_state(
+    problem->d_evaluate_d_new_state(
         new_handler, last_time, new_time, states(last_time), states(new_time),
         controls(new_time));
     solver.factorize(dE_dnew_transposed);

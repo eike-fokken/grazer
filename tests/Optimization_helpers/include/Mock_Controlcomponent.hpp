@@ -40,7 +40,7 @@ public:
         last_state, new_state, control); // new_state - last_state - control;
   }
 
-  void d_evalutate_d_new_state(
+  void d_evaluate_d_new_state(
       Aux::Matrixhandler &jacobianhandler, double, double,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
@@ -54,7 +54,7 @@ public:
       }
   }
 
-  void d_evalutate_d_last_state(
+  void d_evaluate_d_last_state(
       Aux::Matrixhandler &jacobianhandler, double, double,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
@@ -69,7 +69,7 @@ public:
       }
   }
 
-  void d_evalutate_d_control(
+  void d_evaluate_d_control(
       Aux::Matrixhandler &jacobianhandler, double, double,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,

@@ -260,45 +260,45 @@ namespace Model {
     }
   }
 
-  void Networkproblem::d_evalutate_d_new_state(
+  void Networkproblem::d_evaluate_d_new_state(
       ::Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const {
 
     for (auto *equationcomponent : equationcomponents) {
-      equationcomponent->d_evalutate_d_new_state(
+      equationcomponent->d_evaluate_d_new_state(
           jacobianhandler, last_time, new_time, last_state, new_state);
     }
     for (auto *controlcomponent : controlcomponents) {
-      controlcomponent->d_evalutate_d_new_state(
+      controlcomponent->d_evaluate_d_new_state(
           jacobianhandler, last_time, new_time, last_state, new_state, control);
     }
   }
 
-  void Networkproblem::d_evalutate_d_last_state(
+  void Networkproblem::d_evaluate_d_last_state(
       ::Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const {
 
     for (auto *equationcomponent : equationcomponents) {
-      equationcomponent->d_evalutate_d_last_state(
+      equationcomponent->d_evaluate_d_last_state(
           jacobianhandler, last_time, new_time, last_state, new_state);
     }
     for (auto *controlcomponent : controlcomponents) {
-      controlcomponent->d_evalutate_d_last_state(
+      controlcomponent->d_evaluate_d_last_state(
           jacobianhandler, last_time, new_time, last_state, new_state, control);
     }
   }
 
-  void Networkproblem::d_evalutate_d_control(
+  void Networkproblem::d_evaluate_d_control(
       Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const &control) const {
     for (auto *controlcomponent : controlcomponents) {
-      controlcomponent->d_evalutate_d_control(
+      controlcomponent->d_evaluate_d_control(
           jacobianhandler, last_time, new_time, last_state, new_state, control);
     }
   }

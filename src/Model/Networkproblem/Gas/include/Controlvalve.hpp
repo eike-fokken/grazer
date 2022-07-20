@@ -45,19 +45,19 @@ namespace Model::Gas {
         const Eigen::Ref<const Eigen::VectorXd> &new_state,
         const Eigen::Ref<const Eigen::VectorXd> &control) const final;
 
-    void d_evalutate_d_new_state(
+    void d_evaluate_d_new_state(
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         const Eigen::Ref<const Eigen::VectorXd> &last_state,
         const Eigen::Ref<const Eigen::VectorXd> &new_state,
         const Eigen::Ref<const Eigen::VectorXd> &control) const final;
 
-    void d_evalutate_d_last_state(
+    void d_evaluate_d_last_state(
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         const Eigen::Ref<const Eigen::VectorXd> &last_state,
         const Eigen::Ref<const Eigen::VectorXd> &new_state,
         const Eigen::Ref<const Eigen::VectorXd> &control) const final;
 
-    void d_evalutate_d_control(
+    void d_evaluate_d_control(
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,

@@ -36,7 +36,7 @@ namespace Model::Power {
     rootvalues[phi_index] = new_state[phi_index] - boundaryvalue(new_time)[1];
   }
 
-  void Vphinode::d_evalutate_d_new_state(
+  void Vphinode::d_evaluate_d_new_state(
       Aux::Matrixhandler &jacobianhandler, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
@@ -48,7 +48,7 @@ namespace Model::Power {
     jacobianhandler.add_to_coefficient(phi_index, phi_index, 1.0);
   }
 
-  void Vphinode::d_evalutate_d_last_state(
+  void Vphinode::d_evaluate_d_last_state(
       Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
