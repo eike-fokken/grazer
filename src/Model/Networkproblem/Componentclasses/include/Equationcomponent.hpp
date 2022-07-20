@@ -85,7 +85,7 @@ namespace Model {
      * @param last_state value of the state at last time step.
      * @param new_state value of the state at current time step.
      */
-    virtual void d_evalutate_d_new_state(
+    virtual void d_evaluate_d_new_state(
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
@@ -106,7 +106,7 @@ namespace Model {
      * @param new_state value of the state at current time step.
      */
 
-    virtual void d_evalutate_d_last_state(
+    virtual void d_evaluate_d_last_state(
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;

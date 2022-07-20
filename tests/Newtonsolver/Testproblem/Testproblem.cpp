@@ -12,7 +12,7 @@ void TestProblem::evaluate(
   rootvalues = f(new_state);
 }
 
-void TestProblem::d_evalutate_d_new_state(
+void TestProblem::d_evaluate_d_new_state(
     Aux::Matrixhandler &jacobianhandler, double, double,
     Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
     Eigen::Ref<Eigen::VectorXd const> const &new_state,

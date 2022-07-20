@@ -64,7 +64,7 @@ namespace Model::Gaspowerconnection {
     rootvalues[phi_index] = new_state[phi_index] - boundaryvalue(new_time)[1];
   }
 
-  void ExternalPowerplant::d_evalutate_d_new_state(
+  void ExternalPowerplant::d_evaluate_d_new_state(
       Aux::Matrixhandler &jacobianhandler, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
@@ -77,7 +77,7 @@ namespace Model::Gaspowerconnection {
     jacobianhandler.set_coefficient(phi_index, phi_index, 1.0);
   }
 
-  void ExternalPowerplant::d_evalutate_d_last_state(
+  void ExternalPowerplant::d_evaluate_d_last_state(
       Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,

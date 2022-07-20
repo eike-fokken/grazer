@@ -67,7 +67,7 @@ namespace Model::Gaspowerconnection {
         = powerendnode->P(new_state) - generated_power(new_state[q_index]);
   }
 
-  void Gaspowerconnection::d_evalutate_d_new_state(
+  void Gaspowerconnection::d_evaluate_d_new_state(
       Aux::Matrixhandler &jacobianhandler, double, double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const &,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
@@ -80,7 +80,7 @@ namespace Model::Gaspowerconnection {
         powerendnode->get_state_startindex(), p_index, 0.0);
   }
 
-  void Gaspowerconnection::d_evalutate_d_last_state(
+  void Gaspowerconnection::d_evaluate_d_last_state(
       Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,

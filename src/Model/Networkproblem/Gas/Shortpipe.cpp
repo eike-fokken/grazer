@@ -37,7 +37,7 @@ namespace Model::Gas {
           - get_boundary_state(end, new_state);
   }
 
-  void Shortpipe::d_evalutate_d_new_state(
+  void Shortpipe::d_evaluate_d_new_state(
       Aux::Matrixhandler &jacobianhandler, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
@@ -57,7 +57,7 @@ namespace Model::Gas {
     jacobianhandler.set_coefficient(end_equation_index, end_q_index, -1.0);
   }
 
-  void Shortpipe::d_evalutate_d_last_state(
+  void Shortpipe::d_evaluate_d_last_state(
       Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
