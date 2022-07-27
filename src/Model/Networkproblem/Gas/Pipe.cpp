@@ -126,19 +126,23 @@ namespace Model::Gas {
               last_time, new_time, Delta_x, last_left, last_right, new_left,
               new_right, *balancelaw);
 
-      jacobianhandler.add_to_coefficient(i, i - 1, current_derivative_left(0, 0));
+      jacobianhandler.add_to_coefficient(
+          i, i - 1, current_derivative_left(0, 0));
       jacobianhandler.add_to_coefficient(i, i, current_derivative_left(0, 1));
       jacobianhandler.add_to_coefficient(
           i + 1, i - 1, current_derivative_left(1, 0));
-      jacobianhandler.add_to_coefficient(i + 1, i, current_derivative_left(1, 1));
+      jacobianhandler.add_to_coefficient(
+          i + 1, i, current_derivative_left(1, 1));
 
       Eigen::Matrix2d current_derivative_right
           = scheme->devaluate_point_d_new_right(
               last_time, new_time, Delta_x, last_left, last_right, new_left,
               new_right, *balancelaw);
 
-      jacobianhandler.add_to_coefficient(i, i + 1, current_derivative_right(0, 0));
-      jacobianhandler.add_to_coefficient(i, i + 2, current_derivative_right(0, 1));
+      jacobianhandler.add_to_coefficient(
+          i, i + 1, current_derivative_right(0, 0));
+      jacobianhandler.add_to_coefficient(
+          i, i + 2, current_derivative_right(0, 1));
       jacobianhandler.add_to_coefficient(
           i + 1, i + 1, current_derivative_right(1, 0));
       jacobianhandler.add_to_coefficient(
@@ -163,19 +167,23 @@ namespace Model::Gas {
               last_time, new_time, Delta_x, last_left, last_right, new_left,
               new_right, *balancelaw);
 
-      jacobianhandler.add_to_coefficient(i, i - 1, current_derivative_left(0, 0));
+      jacobianhandler.add_to_coefficient(
+          i, i - 1, current_derivative_left(0, 0));
       jacobianhandler.add_to_coefficient(i, i, current_derivative_left(0, 1));
       jacobianhandler.add_to_coefficient(
           i + 1, i - 1, current_derivative_left(1, 0));
-      jacobianhandler.add_to_coefficient(i + 1, i, current_derivative_left(1, 1));
+      jacobianhandler.add_to_coefficient(
+          i + 1, i, current_derivative_left(1, 1));
 
       Eigen::Matrix2d current_derivative_right
           = scheme->devaluate_point_d_last_right(
               last_time, new_time, Delta_x, last_left, last_right, new_left,
               new_right, *balancelaw);
 
-      jacobianhandler.add_to_coefficient(i, i + 1, current_derivative_right(0, 0));
-      jacobianhandler.add_to_coefficient(i, i + 2, current_derivative_right(0, 1));
+      jacobianhandler.add_to_coefficient(
+          i, i + 1, current_derivative_right(0, 0));
+      jacobianhandler.add_to_coefficient(
+          i, i + 2, current_derivative_right(0, 1));
       jacobianhandler.add_to_coefficient(
           i + 1, i + 1, current_derivative_right(1, 0));
       jacobianhandler.add_to_coefficient(
@@ -275,8 +283,10 @@ namespace Model::Gas {
 
     auto rho_index = get_boundary_state_index(direction);
     auto q_index = rho_index + 1;
-    jacobianhandler.add_to_coefficient(rootvalues_index, rho_index, derivative[0]);
-    jacobianhandler.add_to_coefficient(rootvalues_index, q_index, derivative[1]);
+    jacobianhandler.add_to_coefficient(
+        rootvalues_index, rho_index, derivative[0]);
+    jacobianhandler.add_to_coefficient(
+        rootvalues_index, q_index, derivative[1]);
   }
 
   Balancelaw::Pipe_Balancelaw const *Pipe::get_balancelaw() const {

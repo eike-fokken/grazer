@@ -74,7 +74,8 @@ namespace Model::Gaspowerconnection {
     auto p_index = get_state_startindex();
     auto q_index = get_state_startindex() + 1;
     auto q = new_state[q_index];
-    jacobianhandler.add_to_coefficient(q_index, q_index, -dgenerated_power_dq(q));
+    jacobianhandler.add_to_coefficient(
+        q_index, q_index, -dgenerated_power_dq(q));
     powerendnode->evaluate_P_derivative(q_index, jacobianhandler, new_state);
     jacobianhandler.add_to_coefficient(
         powerendnode->get_state_startindex(), p_index, 0.0);
