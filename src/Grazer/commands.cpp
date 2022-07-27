@@ -233,7 +233,7 @@ int grazer::run(std::filesystem::path directory_path) {
       jacmapped = optimizer.get_constraint_jacobian();
       int count = 0;
       for (auto entry : storage) {
-        if (std::abs(entry) > 1e-16) {
+        if (std::abs(entry) > 1e-10) {
           ++count;
         }
       }
@@ -242,18 +242,25 @@ int grazer::run(std::filesystem::path directory_path) {
           = double(count) / double(optimizer.get_no_nnz_in_jacobian());
       std::cout << "density of the constraint jacobian: " << 100 * sparsity
                 << "%" << std::endl;
-      std::cout << "objective: " << adaptor.get_obj_value() << std::endl;
+      std::cout << "Cost: " << adaptor.get_cost_value() << std::endl;
+      std::cout << "Penalty: " << adaptor.get_penalty_value() << std::endl;
+      std::cout << "Overall objective: " << adaptor.get_objective_value()
+                << std::endl;
 
       auto ipoptcontrols = adaptor.get_solution();
-      std::cout << "solution:\n" << ipoptcontrols << std::endl;
+      // std::cout << "solution:\n" << ipoptcontrols << std::endl;
       Eigen::VectorXd ipoptconstraints(optimizer.get_total_no_constraints());
 
       optimizer.evaluate_constraints(ipoptcontrols, ipoptconstraints);
-      std::cout << "constraints-lower_bounds:\n"
-                << ipoptconstraints - constraint_lower_bounds.get_allvalues()
+      std::cout << "Maximum lower constraint violation:\n"
+                << (-(ipoptconstraints
+                      - constraint_lower_bounds.get_allvalues()))
+                       .maxCoeff()
                 << std::endl;
-      std::cout << "upper_bounds -constraints:\n"
-                << constraint_upper_bounds.get_allvalues() - ipoptconstraints
+      std::cout << "Maximum upper constraint violation:\n"
+                << (-(constraint_upper_bounds.get_allvalues()
+                      - ipoptconstraints))
+                       .maxCoeff()
                 << std::endl;
 
       double objective = 0;

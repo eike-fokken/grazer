@@ -47,7 +47,13 @@ namespace Optimization {
   Eigen::VectorXd IpoptAdaptor::get_solution() const {
     return _nlp->get_best_solution();
   }
-  double IpoptAdaptor::get_obj_value() const {
+  double IpoptAdaptor::get_objective_value() const {
     return _nlp->get_best_objective_value();
+  }
+  double IpoptAdaptor::get_cost_value() const {
+    return _nlp->get_best_cost_value();
+  }
+  double IpoptAdaptor::get_penalty_value() const {
+    return _nlp->get_best_penalty_value();
   }
 } // namespace Optimization
