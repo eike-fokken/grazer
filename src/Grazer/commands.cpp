@@ -248,7 +248,7 @@ int grazer::run(std::filesystem::path directory_path) {
                 << std::endl;
 
       auto ipoptcontrols = adaptor.get_solution();
-      // std::cout << "solution:\n" << ipoptcontrols << std::endl;
+
       Eigen::VectorXd ipoptconstraints(optimizer.get_total_no_constraints());
 
       optimizer.evaluate_constraints(ipoptcontrols, ipoptconstraints);
@@ -321,6 +321,12 @@ int grazer::run(std::filesystem::path directory_path) {
 
       wall_clock_sim_end = Clock::now();
     }
+
+    std::cout
+        << "\n\nOptimal controls and resulting states can be found in the "
+           "directory\n"
+        << output_directory.string() << "\n\n"
+        << std::endl;
 
     /* ----------------------------------------------------------------- */
   }
