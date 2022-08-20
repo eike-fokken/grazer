@@ -74,9 +74,10 @@ namespace Model::Gaspowerconnection {
     auto p_index = get_state_startindex();
     auto q_index = get_state_startindex() + 1;
     auto q = new_state[q_index];
-    jacobianhandler.set_coefficient(q_index, q_index, -dgenerated_power_dq(q));
+    jacobianhandler.add_to_coefficient(
+        q_index, q_index, -dgenerated_power_dq(q));
     powerendnode->evaluate_P_derivative(q_index, jacobianhandler, new_state);
-    jacobianhandler.set_coefficient(
+    jacobianhandler.add_to_coefficient(
         powerendnode->get_state_startindex(), p_index, 0.0);
   }
 
@@ -154,9 +155,9 @@ namespace Model::Gaspowerconnection {
       Eigen::Ref<Eigen::VectorXd const> const &) const {
     auto p_index = get_boundary_state_index(direction);
     auto q_index = p_index + 1;
-    jacobianhandler.set_coefficient(
+    jacobianhandler.add_to_coefficient(
         rootvalues_index, p_index, function_derivative[0]);
-    jacobianhandler.set_coefficient(
+    jacobianhandler.add_to_coefficient(
         rootvalues_index, q_index, function_derivative[1]);
   }
 

@@ -69,10 +69,11 @@ namespace Model::Gas {
     auto start_equation_index = get_equation_start_index();
     auto end_equation_index = start_equation_index + 1;
 
-    jacobianhandler.set_coefficient(start_equation_index, start_p_index, -1.0);
-    jacobianhandler.set_coefficient(start_equation_index, end_p_index, 1.0);
-    jacobianhandler.set_coefficient(end_equation_index, start_q_index, -1.0);
-    jacobianhandler.set_coefficient(end_equation_index, end_q_index, 1.0);
+    jacobianhandler.add_to_coefficient(
+        start_equation_index, start_p_index, -1.0);
+    jacobianhandler.add_to_coefficient(start_equation_index, end_p_index, 1.0);
+    jacobianhandler.add_to_coefficient(end_equation_index, start_q_index, -1.0);
+    jacobianhandler.add_to_coefficient(end_equation_index, end_q_index, 1.0);
   }
 
   void Compressorstation::d_evaluate_d_last_state(
@@ -91,7 +92,7 @@ namespace Model::Gas {
     auto start_equation_index = get_equation_start_index();
     auto pressure_control_index = get_control_startindex();
 
-    jacobianhandler.set_coefficient(
+    jacobianhandler.add_to_coefficient(
         start_equation_index, pressure_control_index, -1.0);
   }
 
@@ -151,9 +152,25 @@ namespace Model::Gas {
       Eigen::Ref<Eigen::VectorXd const> const & /*state*/,
       Eigen::Ref<Eigen::VectorXd const> const &control) const {
     auto current_control = control[get_control_startindex()];
-    cost_control_jacobian_handler.set_coefficient(
+    cost_control_jacobian_handler.add_to_coefficient(
         0, get_control_startindex(), 2 * get_cost_weight() * current_control);
   }
+
+  double Compressorstation::evaluate_penalty(
+      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const & /*state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {
+    return 0;
+  }
+
+  void Compressorstation::d_evaluate_penalty_d_state(
+      Aux::Matrixhandler & /*penalty_new_state_jacobian_handler*/,
+      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const & /*state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {}
+
+  void Compressorstation::d_evaluate_penalty_d_control(
+      Aux::Matrixhandler & /*penalty_control_jacobian_handler*/,
+      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const & /*state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {}
 
   std::string Compressorstation::componentclass() {
     return Aux::component_class(*this);

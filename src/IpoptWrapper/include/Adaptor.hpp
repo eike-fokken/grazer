@@ -37,6 +37,8 @@ namespace Optimization {
     Ipopt::ApplicationReturnStatus optimize() const;
 
     Eigen::VectorXd get_solution() const;
-    double get_obj_value() const;
+    double get_objective_value() const;
+    double get_cost_value() const;
+    double get_penalty_value() const;
   };
 } // namespace Optimization

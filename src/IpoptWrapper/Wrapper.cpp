@@ -170,6 +170,10 @@ namespace Optimization {
     Eigen::Map<Eigen::VectorXd const> constraints(g, number_of_constraints);
     best_solution = solution;
     best_objective_value = obj_value;
+    best_cost_value = 0;
+    optimizer->evaluate_cost(solution, best_cost_value);
+    best_penalty_value = 0;
+    optimizer->evaluate_penalty(solution, best_penalty_value);
     best_constraints = constraints;
   }
 
@@ -178,6 +182,10 @@ namespace Optimization {
   }
   double IpoptWrapper::get_best_objective_value() const {
     return best_objective_value;
+  }
+  double IpoptWrapper::get_best_cost_value() const { return best_cost_value; }
+  double IpoptWrapper::get_best_penalty_value() const {
+    return best_penalty_value;
   }
   Eigen::VectorXd IpoptWrapper::get_best_constraints() const {
     return best_constraints;

@@ -9,7 +9,7 @@
 
 using namespace Aux;
 
-TEST(Triplethandler, set_coefficient) {
+TEST(Triplethandler, add_to_coefficient) {
 
   Eigen::SparseMatrix<double> mat(5, 5);
   Eigen::MatrixXd expected_mat(5, 5);
@@ -17,7 +17,7 @@ TEST(Triplethandler, set_coefficient) {
   double value = 1.0;
   for (Eigen::Index col = 0; col != mat.cols(); ++col) {
     for (Eigen::Index row = 0; row != mat.rows(); ++row) {
-      handler.set_coefficient(row, col, value);
+      handler.add_to_coefficient(row, col, value);
       expected_mat(row, col) = value;
       ++value;
     }
@@ -36,7 +36,7 @@ TEST(TriplethandlerDeathTest, assert_empty_matrix) {
   double value = 1.0;
   for (Eigen::Index col = 0; col != mat.cols(); ++col) {
     for (Eigen::Index row = 0; row != mat.rows(); ++row) {
-      handler.set_coefficient(row, col, value);
+      handler.add_to_coefficient(row, col, value);
       expected_mat(row, col) = value;
       ++value;
     }
@@ -45,13 +45,13 @@ TEST(TriplethandlerDeathTest, assert_empty_matrix) {
   EXPECT_DEATH(Triplethandler h2(mat), "nonZeros().*==.*0");
 }
 #endif
-TEST(Triplethandler, add_to_coefficient) {
+TEST(Triplethandler, add_to_coefficient2) {
 
   Eigen::SparseMatrix<double> mat(5, 5);
   Triplethandler handler(mat);
   for (Eigen::Index col = 0; col != mat.cols(); ++col) {
     for (Eigen::Index row = 0; row != mat.rows(); ++row) {
-      handler.set_coefficient(row, col, 6.0);
+      handler.add_to_coefficient(row, col, 6.0);
     }
   }
 
@@ -70,31 +70,27 @@ TEST(Triplethandler, add_to_coefficient) {
   EXPECT_EQ(expected_mat, dense);
 }
 
-TEST(Coeffrefhandler, set_coefficient) {
+TEST(Coeffrefhandler, Constructor_sets_zero) {
 
   Eigen::SparseMatrix<double> mat(5, 5);
 
-  // prepare layout:
+  // fill with bogus values:
   Triplethandler triplethandler(mat);
-  for (Eigen::Index col = 0; col != mat.cols(); ++col) {
-    for (Eigen::Index row = 0; row != mat.rows(); ++row) {
-      triplethandler.set_coefficient(row, col, 0.0);
-    }
-  }
-  triplethandler.set_matrix();
-
-  Eigen::MatrixXd expected_mat(5, 5);
-  Coeffrefhandler coeffrefhandler(mat);
   double value = 1.0;
   for (Eigen::Index col = 0; col != mat.cols(); ++col) {
     for (Eigen::Index row = 0; row != mat.rows(); ++row) {
-      coeffrefhandler.set_coefficient(row, col, value);
-      expected_mat(row, col) = value;
+      triplethandler.add_to_coefficient(row, col, value);
       ++value;
     }
   }
-  coeffrefhandler.set_matrix();
+  triplethandler.set_matrix();
+  assert(mat.nonZeros() != 0);
+
+  Coeffrefhandler coeffrefhandler(mat);
+
+  auto expected_mat = Eigen::MatrixXd::Zero(5, 5);
   Eigen::MatrixXd dense = mat;
+
   EXPECT_EQ(expected_mat, dense);
 }
 
@@ -106,17 +102,18 @@ TEST(Coeffrefhandler, add_to_coefficient) {
   Triplethandler triplethandler(mat);
   for (Eigen::Index col = 0; col != mat.cols(); ++col) {
     for (Eigen::Index row = 0; row != mat.rows(); ++row) {
-      triplethandler.set_coefficient(row, col, 5.0);
+      triplethandler.add_to_coefficient(row, col, 0.0);
     }
   }
   triplethandler.set_matrix();
+
   Eigen::MatrixXd expected_mat(5, 5);
   Coeffrefhandler coeffrefhandler(mat);
   double value = 1.0;
   for (Eigen::Index col = 0; col != mat.cols(); ++col) {
     for (Eigen::Index row = 0; row != mat.rows(); ++row) {
       coeffrefhandler.add_to_coefficient(row, col, value);
-      expected_mat(row, col) = (value + 5.0);
+      expected_mat(row, col) = value;
       ++value;
     }
   }
@@ -125,7 +122,7 @@ TEST(Coeffrefhandler, add_to_coefficient) {
   EXPECT_EQ(expected_mat, dense);
 }
 
-TEST(Triplethandler_transposed, set_coefficient) {
+TEST(Triplethandler_transposed, add_to_coefficient) {
 
   Eigen::SparseMatrix<double> mat(5, 5);
   Eigen::SparseMatrix<double> mat_transposed(5, 5);
@@ -135,50 +132,13 @@ TEST(Triplethandler_transposed, set_coefficient) {
   double value = 1.0;
   for (Eigen::Index col = 0; col != mat.cols(); ++col) {
     for (Eigen::Index row = 0; row != mat.rows(); ++row) {
-      handler.set_coefficient(row, col, value);
-      transposedhandler.set_coefficient(row, col, value);
+      handler.add_to_coefficient(row, col, value);
+      transposedhandler.add_to_coefficient(row, col, value);
       ++value;
     }
   }
   handler.set_matrix();
   transposedhandler.set_matrix();
-
-  Eigen::MatrixXd compare_mat = mat.transpose();
-  Eigen::MatrixXd compare_mat_transposed = mat_transposed;
-
-  EXPECT_EQ(compare_mat, compare_mat_transposed);
-}
-
-TEST(Coeffrefhandler_transposed, set_coefficient) {
-
-  Eigen::SparseMatrix<double> mat(5, 5);
-  Eigen::SparseMatrix<double> mat_transposed(5, 5);
-
-  {
-    Triplethandler handler(mat);
-    Triplethandler<1> transposedhandler(mat_transposed);
-    for (Eigen::Index col = 0; col != mat.cols(); ++col) {
-      for (Eigen::Index row = 0; row != mat.rows(); ++row) {
-        handler.set_coefficient(row, col, 0.0);
-        transposedhandler.set_coefficient(row, col, 0.0);
-      }
-    }
-    handler.set_matrix();
-    transposedhandler.set_matrix();
-  }
-
-  Coeffrefhandler coeffrefhandler(mat);
-  Coeffrefhandler<Transposed> transposedcoeffrefhandler(mat_transposed);
-  double value = 1.0;
-  for (Eigen::Index col = 0; col != mat.cols(); ++col) {
-    for (Eigen::Index row = 0; row != mat.rows(); ++row) {
-      coeffrefhandler.set_coefficient(row, col, value);
-      transposedcoeffrefhandler.set_coefficient(row, col, value);
-      ++value;
-    }
-  }
-  coeffrefhandler.set_matrix();
-  transposedcoeffrefhandler.set_matrix();
 
   Eigen::MatrixXd compare_mat = mat.transpose();
   Eigen::MatrixXd compare_mat_transposed = mat_transposed;
@@ -196,8 +156,8 @@ TEST(Coeffrefhandler_transposed, add_to_coefficient) {
     Triplethandler<1> transposedhandler(mat_transposed);
     for (Eigen::Index col = 0; col != mat.cols(); ++col) {
       for (Eigen::Index row = 0; row != mat.rows(); ++row) {
-        handler.set_coefficient(row, col, 0.0);
-        transposedhandler.set_coefficient(row, col, 0.0);
+        handler.add_to_coefficient(row, col, 0.0);
+        transposedhandler.add_to_coefficient(row, col, 0.0);
       }
     }
     handler.set_matrix();
@@ -209,7 +169,7 @@ TEST(Coeffrefhandler_transposed, add_to_coefficient) {
   double value = 1.0;
   for (Eigen::Index col = 0; col != mat.cols(); ++col) {
     for (Eigen::Index row = 0; row != mat.rows(); ++row) {
-      coeffrefhandler.set_coefficient(row, col, value);
+      coeffrefhandler.add_to_coefficient(row, col, value);
       transposedcoeffrefhandler.add_to_coefficient(row, col, value);
       ++value;
     }

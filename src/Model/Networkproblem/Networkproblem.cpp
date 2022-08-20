@@ -432,6 +432,36 @@ namespace Model {
     }
   }
 
+  double Networkproblem::evaluate_penalty(
+      double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+      Eigen::Ref<Eigen::VectorXd const> const &control) const {
+    double penalty = 0;
+    for (auto *costcomponent : costcomponents) {
+      penalty += costcomponent->evaluate_penalty(new_time, state, control);
+    }
+    return get_penalty_weight() * penalty;
+  }
+
+  void Networkproblem::d_evaluate_penalty_d_state(
+      Aux::Matrixhandler &penalty_new_state_jacobian_handler, double new_time,
+      Eigen::Ref<Eigen::VectorXd const> const &state,
+      Eigen::Ref<Eigen::VectorXd const> const &control) const {
+    for (auto *costcomponent : costcomponents) {
+      costcomponent->d_evaluate_penalty_d_state(
+          penalty_new_state_jacobian_handler, new_time, state, control);
+    }
+  }
+
+  void Networkproblem::d_evaluate_penalty_d_control(
+      Aux::Matrixhandler &penalty_control_jacobian_handler, double new_time,
+      Eigen::Ref<Eigen::VectorXd const> const &state,
+      Eigen::Ref<Eigen::VectorXd const> const &control) const {
+    for (auto *costcomponent : costcomponents) {
+      costcomponent->d_evaluate_penalty_d_control(
+          penalty_control_jacobian_handler, new_time, state, control);
+    }
+  }
+
   /////////////////////////////////////////////////////////
   // constraint methods:
   /////////////////////////////////////////////////////////

@@ -154,6 +154,20 @@ namespace Model {
         Eigen::Ref<Eigen::VectorXd const> const &state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
+    double evaluate_penalty(
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+        Eigen::Ref<Eigen::VectorXd const> const &control) const final;
+
+    void d_evaluate_penalty_d_state(
+        Aux::Matrixhandler &penalty_new_state_jacobian_handler, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &state,
+        Eigen::Ref<Eigen::VectorXd const> const &control) const final;
+
+    void d_evaluate_penalty_d_control(
+        Aux::Matrixhandler &penalty_control_jacobian_handler, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &state,
+        Eigen::Ref<Eigen::VectorXd const> const &control) const final;
+
     /////////////////////////////////////////////////////////
     // constraint methods:
     /////////////////////////////////////////////////////////

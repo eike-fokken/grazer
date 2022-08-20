@@ -27,6 +27,7 @@ namespace Model {
   public:
     Costcomponent();
     Costcomponent(double cost_weight);
+    Costcomponent(double cost_weight, double penalty_weight);
 
     virtual ~Costcomponent(){};
 
@@ -46,7 +47,24 @@ namespace Model {
 
     double get_cost_weight() const;
 
+    virtual double evaluate_penalty(
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,
+        Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
+
+    virtual void d_evaluate_penalty_d_state(
+        Aux::Matrixhandler &penalty_new_state_jacobian_handler, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &state,
+        Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
+
+    virtual void d_evaluate_penalty_d_control(
+        Aux::Matrixhandler &penalty_control_jacobian_handler, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &state,
+        Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
+
+    double get_penalty_weight() const;
+
   private:
     double cost_weight{1.0};
+    double penalty_weight{1.0};
   };
 } // namespace Model

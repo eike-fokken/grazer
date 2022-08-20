@@ -53,6 +53,12 @@ namespace Optimization {
     virtual bool evaluate_objective(
         Eigen::Ref<Eigen::VectorXd const> const &controls, double &objective)
         = 0;
+    virtual bool evaluate_cost(
+        Eigen::Ref<Eigen::VectorXd const> const &controls, double &cost)
+        = 0;
+    virtual bool evaluate_penalty(
+        Eigen::Ref<Eigen::VectorXd const> const &controls, double &penalty)
+        = 0;
     virtual bool evaluate_constraints(
         Eigen::Ref<Eigen::VectorXd const> const &controls,
         Eigen::Ref<Eigen::VectorXd> constraints)

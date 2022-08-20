@@ -56,7 +56,7 @@ jobs:
           binary-path: /build/src/Grazer/grazer
           dep-install: sudo apt-get install -y cmake clang-10 
         - name: MacOS
-          os: macos-10.15
+          os: macos-latest
           compiler: clang++
           binary-path: /build/src/Grazer/grazer
           dep-install: brew install bash metis ninja; echo "/usr/local/bin" >> $GITHUB_PATH; echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> $GITHUB_ENV; echo "FC=gfortran-11" >> $GITHUB_ENV;

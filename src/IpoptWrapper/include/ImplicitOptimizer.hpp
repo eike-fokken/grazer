@@ -60,6 +60,11 @@ namespace Optimization {
     bool evaluate_objective(
         Eigen::Ref<Eigen::VectorXd const> const &ipoptcontrols,
         double &objective) final;
+    bool evaluate_cost(
+        Eigen::Ref<Eigen::VectorXd const> const &controls, double &cost) final;
+    bool evaluate_penalty(
+        Eigen::Ref<Eigen::VectorXd const> const &controls,
+        double &penalty) final;
     bool evaluate_constraints(
         Eigen::Ref<Eigen::VectorXd const> const &ipoptcontrols,
         Eigen::Ref<Eigen::VectorXd> ipoptconstraints) final;

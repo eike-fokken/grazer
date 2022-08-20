@@ -185,8 +185,8 @@ namespace Model::Power {
     auto V_i = new_state[V_index];
     auto phi_i = new_state[phi_index];
 
-    jacobianhandler.set_coefficient(equationindex, V_index, 2 * G_i * V_i);
-    jacobianhandler.set_coefficient(equationindex, phi_index, 0.0);
+    jacobianhandler.add_to_coefficient(equationindex, V_index, 2 * G_i * V_i);
+    jacobianhandler.add_to_coefficient(equationindex, phi_index, 0.0);
 
     for (auto &triple : attached_component_data) {
       auto G_ik = std::get<0>(triple);
@@ -205,10 +205,10 @@ namespace Model::Power {
           equationindex, phi_index,
           V_i * V_k * (-G_ik * sin(phi_ik) + B_ik * cos(phi_ik)));
 
-      jacobianhandler.set_coefficient(
+      jacobianhandler.add_to_coefficient(
           equationindex, V_index_k,
           V_i * (G_ik * cos(phi_ik) + B_ik * sin(phi_ik)));
-      jacobianhandler.set_coefficient(
+      jacobianhandler.add_to_coefficient(
           equationindex, phi_index_k,
           V_i * V_k * (G_ik * sin(phi_ik) - B_ik * cos(phi_ik)));
     }
@@ -223,8 +223,8 @@ namespace Model::Power {
     auto V_i = new_state[V_index];
     auto phi_i = new_state[phi_index];
 
-    jacobianhandler.set_coefficient(equationindex, V_index, -2 * B_i * V_i);
-    jacobianhandler.set_coefficient(equationindex, phi_index, 0.0);
+    jacobianhandler.add_to_coefficient(equationindex, V_index, -2 * B_i * V_i);
+    jacobianhandler.add_to_coefficient(equationindex, phi_index, 0.0);
 
     for (auto &triple : attached_component_data) {
       auto G_ik = std::get<0>(triple);
@@ -242,10 +242,10 @@ namespace Model::Power {
       jacobianhandler.add_to_coefficient(
           equationindex, phi_index,
           V_i * V_k * (G_ik * cos(phi_ik) + B_ik * sin(phi_ik)));
-      jacobianhandler.set_coefficient(
+      jacobianhandler.add_to_coefficient(
           equationindex, V_index_k,
           V_i * (G_ik * sin(phi_ik) - B_ik * cos(phi_ik)));
-      jacobianhandler.set_coefficient(
+      jacobianhandler.add_to_coefficient(
           equationindex, phi_index_k,
           V_i * V_k * (-G_ik * cos(phi_ik) - B_ik * sin(phi_ik)));
     }

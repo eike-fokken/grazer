@@ -85,6 +85,8 @@ namespace Optimization {
 
     Eigen::VectorXd get_best_solution() const;
     double get_best_objective_value() const;
+    double get_best_cost_value() const;
+    double get_best_penalty_value() const;
     Eigen::VectorXd get_best_constraints() const;
 
   private:
@@ -92,6 +94,8 @@ namespace Optimization {
 
     Eigen::VectorXd best_solution;
     double best_objective_value = std::numeric_limits<double>::max();
+    double best_cost_value = std::numeric_limits<double>::max();
+    double best_penalty_value = std::numeric_limits<double>::max();
     Eigen::VectorXd best_constraints;
   };
 

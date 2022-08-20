@@ -207,6 +207,18 @@ namespace Optimization {
   bool ImplicitOptimizer::evaluate_objective(
       Eigen::Ref<Eigen::VectorXd const> const &ipoptcontrols,
       double &objective) {
+    double cost = 0;
+    if (not evaluate_cost(ipoptcontrols, cost))
+      return false;
+    double penalty = 0;
+    if (not evaluate_penalty(ipoptcontrols, penalty))
+      return false;
+
+    objective = cost + penalty;
+    return true;
+  }
+  bool ImplicitOptimizer::evaluate_cost(
+      Eigen::Ref<Eigen::VectorXd const> const &ipoptcontrols, double &cost) {
     assert(ipoptcontrols.size() == get_total_no_controls());
 
     Aux::ConstMappedInterpolatingVector const controls(
@@ -232,14 +244,53 @@ namespace Optimization {
     assert(states_up_to_date);
     auto &states = cache->get_cached_states();
 
-    objective = 0;
+    cost = 0;
     // timeindex starts at 1, because at 0 there are initial conditions
     // which can not be altered!
     for (Eigen::Index timeindex = 1; timeindex != states.size(); ++timeindex) {
       auto time = state_timepoints[timeindex];
       auto add_value
           = problem->evaluate_cost(time, states(time), controls(time));
-      objective += integral_weights[timeindex] * add_value;
+      cost += integral_weights[timeindex] * add_value;
+    }
+    return true;
+  }
+
+  bool ImplicitOptimizer::evaluate_penalty(
+      Eigen::Ref<Eigen::VectorXd const> const &ipoptcontrols, double &penalty) {
+    assert(ipoptcontrols.size() == get_total_no_controls());
+
+    Aux::ConstMappedInterpolatingVector const controls(
+        control_timepoints, controls_per_step(), ipoptcontrols.data(),
+        static_cast<Eigen::Index>(get_total_no_controls()));
+
+    if (not states_up_to_date) {
+      auto could_compute_states = cache->refresh_cache(
+          *problem, controls, state_timepoints, initial_state);
+      if (not could_compute_states) {
+        states_up_to_date = false;
+        if (ipoptcontrols == get_initial_controls()) {
+          std::cout << "FAILED to compute the states out of the initial "
+                       "controls!\n\n This means the simulation to satisfy the "
+                       "equality constraints at the initial point failed!"
+                    << std::endl;
+        }
+        return false;
+      } else {
+        states_up_to_date = true;
+      }
+    }
+    assert(states_up_to_date);
+    auto &states = cache->get_cached_states();
+
+    penalty = 0;
+    // timeindex starts at 1, because at 0 there are initial conditions
+    // which can not be altered!
+    for (Eigen::Index timeindex = 1; timeindex != states.size(); ++timeindex) {
+      auto time = state_timepoints[timeindex];
+      auto add_value
+          = problem->evaluate_penalty(time, states(time), controls(time));
+      penalty += integral_weights[timeindex] * add_value;
     }
     return true;
   }
@@ -459,9 +510,9 @@ namespace Optimization {
        */
       Eigen::MatrixXd full_Xi_row = Eigen::MatrixXd::Zero(
           states_per_step(), get_total_no_constraints());
-      /** full_rhs_g is the right-hand side in the adjoint method, or rather it
-       * is the row, that is currently worked on. It accompanies full_Xi_row,
-       * which is the Lagrange multiplier.
+      /** full_rhs_g is the right-hand side in the adjoint method, or rather
+       * it is the row, that is currently worked on. It accompanies
+       * full_Xi_row, which is the Lagrange multiplier.
        */
       Eigen::MatrixXd full_rhs_g = Eigen::MatrixXd::Zero(
           states_per_step(), get_total_no_constraints());
@@ -515,8 +566,8 @@ namespace Optimization {
             current_step_is_new_constraint_time = true;
           }
 
-          // This condition is false, if we are at timesteps that are later than
-          // any of the constraints. Usually doesn't happen, but could be
+          // This condition is false, if we are at timesteps that are later
+          // than any of the constraints. Usually doesn't happen, but could be
           // implemented.
           if (constraints_are_active_at_current_time) {
             if (current_step_is_new_constraint_time) {
@@ -531,8 +582,8 @@ namespace Optimization {
                   -= dg_dnew_transposed;
             }
 
-            /**  current_Xi comprises all those columns of full_Xi_row, that are
-                 "active", meaning, that they can be non-zero at the current
+            /**  current_Xi comprises all those columns of full_Xi_row, that
+               are "active", meaning, that they can be non-zero at the current
                time step.
              */
             auto current_Xi = right_cols(full_Xi_row, constraint_index);
@@ -547,18 +598,18 @@ namespace Optimization {
             auto current_dg_dui = lower_rows(full_dg_dui, constraint_index);
             current_dg_dui.noalias() = current_Xi.transpose() * dE_dcontrol;
 
-            // If at the current time step a constraint must be satisfied, then
-            // the derivative of this constraint with respect to the current
-            // control must be added
+            // If at the current time step a constraint must be satisfied,
+            // then the derivative of this constraint with respect to the
+            // current control must be added
             if (current_step_is_new_constraint_time) {
               middle_row_block(full_dg_dui, constraint_index) += dg_dcontrol;
             }
 
-            // Compute the actual derivative with respect to the control: Up to
-            // now, only derivatives w.r.t. the control at the current time step
-            // were computed. Here we translate this into derivatives w.r.t the
-            // actual control variables, from which the current-time-controls
-            // are interpolated.
+            // Compute the actual derivative with respect to the control: Up
+            // to now, only derivatives w.r.t. the control at the current time
+            // step were computed. Here we translate this into derivatives
+            // w.r.t the actual control variables, from which the
+            // current-time-controls are interpolated.
             auto lambda = index_lambda_pairs[state_index].second;
             assert(0 <= lambda);
             assert(lambda <= 1.0);
@@ -640,11 +691,19 @@ namespace Optimization {
     Aux::Triplethandler<Aux::Transposed> fnew_handler(df_dnew_transposed);
     problem->d_evaluate_cost_d_state(
         fnew_handler, new_time, states(new_time), controls(new_time));
+    // Here we add the penalties on the same matrix handler, because a new
+    // handler would zero out the existing matrix!
+    problem->d_evaluate_penalty_d_state(
+        fnew_handler, new_time, states(new_time), controls(new_time));
     fnew_handler.set_matrix();
 
     df_dcontrol.resize(1, controls_per_step());
     Aux::Triplethandler fcontrol_handler(df_dcontrol);
     problem->d_evaluate_cost_d_control(
+        fcontrol_handler, new_time, states(new_time), controls(new_time));
+    // Here we add the penalties on the same matrix handler, because a new
+    // handler would zero out the existing matrix!
+    problem->d_evaluate_penalty_d_control(
         fcontrol_handler, new_time, states(new_time), controls(new_time));
     fcontrol_handler.set_matrix();
 
@@ -685,12 +744,13 @@ namespace Optimization {
       // std::cout << dE_dnew_transposed << std::endl;
       // // Or the dense verion:
       // std::cout << Eigen::MatrixXd(dE_dnew_transposed) << std::endl;
-      std::cout
-          << __FILE__ << ":" << __LINE__
-          << ": Couldn't decompose the transposed derivative of the equations "
-             "w.r.t. the current state, it may be non-invertible.\nTo display "
-             "it comment in the std::cout line preceding this statement."
-          << std::endl;
+      std::cout << __FILE__ << ":" << __LINE__
+                << ": Couldn't decompose the transposed derivative of the "
+                   "equations "
+                   "w.r.t. the current state, it may be non-invertible.\nTo "
+                   "display "
+                   "it comment in the std::cout line preceding this statement."
+                << std::endl;
       return false;
     }
 
@@ -726,8 +786,12 @@ namespace Optimization {
     Aux::Coeffrefhandler<Aux::Transposed> fnew_handler(df_dnew_transposed);
     problem->d_evaluate_cost_d_state(
         fnew_handler, time, states(time), controls(time));
+    problem->d_evaluate_penalty_d_state(
+        fnew_handler, time, states(time), controls(time));
     Aux::Coeffrefhandler fcontrol_handler(df_dcontrol);
     problem->d_evaluate_cost_d_control(
+        fcontrol_handler, time, states(time), controls(time));
+    problem->d_evaluate_penalty_d_control(
         fcontrol_handler, time, states(time), controls(time));
   }
 

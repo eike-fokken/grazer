@@ -241,7 +241,9 @@ TEST(ImplicitOptimizer, evaluate_cost) {
   auto weights = optimizer.get_integral_weights();
   double expected_objective
       = weights[1] * default_cost(controls(1), states(1))
-        + weights[2] * default_cost(controls(2), states(2));
+        + weights[2] * default_cost(controls(2), states(2))
+        + weights[1] * default_penalty(controls(1), states(1))
+        + weights[2] * default_penalty(controls(2), states(2));
   EXPECT_DOUBLE_EQ(objective, expected_objective);
 }
 
@@ -281,7 +283,7 @@ TEST(ImplicitOptimizer, evaluate_constraints) {
   EXPECT_EQ(constraints, expected_constraints.get_allvalues());
 }
 
-TEST(ImplicitOptimizer, objective_gradient1) {
+TEST(ImplicitOptimizer, objective_gradient1_with_cost_and_penalty) {
 
   auto evolver_ptr
       = Model::Timeevolver::make_pointer_instance(timeevolver_data);
