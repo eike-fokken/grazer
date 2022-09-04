@@ -2,5 +2,5 @@
 
 add_library(interpolatingVector STATIC InterpolatingVector.cpp)
 target_link_libraries(interpolatingVector PRIVATE exception mathfunctions aux_schema_validation misc)
-target_link_libraries(interpolatingVector PUBLIC timedata)
+target_link_libraries(interpolatingVector PUBLIC timedata nlohmann_json)
 target_include_directories(interpolatingVector PUBLIC include)
