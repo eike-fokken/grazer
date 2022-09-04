@@ -46,6 +46,9 @@ set(JSON_BuildTests OFF CACHE INTERNAL "")
 # If you only include this third party in PRIVATE source files, you do not
 # need to install it when your main project gets installed.
 set(JSON_Install ON CACHE INTERNAL "")
+set(JSON_SystemInclude On)
+# something seems to activate that, if not deactivated here:
+set(JSON_MultipleHeaders Off)
 add_subdirectory(nlohmann_json)
 
 if(BUILD_TESTS)
@@ -200,7 +203,7 @@ if (NOT DEFINED IPOPT_DIRECTORY)
 
   # build ipopt:
   add_custom_command(OUTPUT  ${ipopt_library_file}
-    COMMAND ${CMAKE_COMMAND} -E env "ADD_FCFLAGS=${MY_FORTRAN_FLAGS}" "ADD_CFLAGS=${MY_C_FLAGS}" "ADD_CXXFLAGS=${MY_CXX_FLAGS}" "CC=${MY_OWN_CCACHE_VARIABLE} ${CMAKE_C_COMPILER}" "CXX=${MY_OWN_CCACHE_VARIABLE} ${CMAKE_CXX_COMPILER}" ./coinbrew build Ipopt --no-prompt --skip=ThirdParty/ASL --build-dir=${CMAKE_CURRENT_BINARY_DIR}/Ipopt --prefix=${CMAKE_CURRENT_BINARY_DIR}/Ipopt/dist --parallel-jobs ${NumberOfProcessors}
+    COMMAND ${CMAKE_COMMAND} -E env "ADD_FCFLAGS=${MY_FORTRAN_FLAGS}" "ADD_CFLAGS=${MY_C_FLAGS}" "ADD_CXXFLAGS=${MY_CXX_FLAGS}" "CC=${MY_OWN_CCACHE_VARIABLE} ${CMAKE_C_COMPILER}" "CXX=${MY_OWN_CCACHE_VARIABLE} ${CMAKE_CXX_COMPILER}" ./coinbrew build Ipopt --no-prompt --skip=ThirdParty/ASL --build-dir=${CMAKE_CURRENT_BINARY_DIR}/Ipopt --prefix=${CMAKE_CURRENT_BINARY_DIR}/Ipopt/dist --parallel-jobs ${NumberOfProcessors} || ${CMAKE_COMMAND} -E env "ADD_FCFLAGS=${MY_FORTRAN_FLAGS}" "ADD_CFLAGS=${MY_C_FLAGS}" "ADD_CXXFLAGS=${MY_CXX_FLAGS}" "CC=${MY_OWN_CCACHE_VARIABLE} ${CMAKE_C_COMPILER}" "CXX=${MY_OWN_CCACHE_VARIABLE} ${CMAKE_CXX_COMPILER}" ./coinbrew build Ipopt --no-prompt --skip=ThirdParty/ASL --build-dir=${CMAKE_CURRENT_BINARY_DIR}/Ipopt --prefix=${CMAKE_CURRENT_BINARY_DIR}/Ipopt/dist --parallel-jobs ${NumberOfProcessors}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Ipopt
     USES_TERMINAL)
   
