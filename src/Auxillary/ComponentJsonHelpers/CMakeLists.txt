@@ -1,6 +1,3 @@
 add_library(componentjsonhelpers STATIC ComponentJsonHelpers.cpp)
 target_link_libraries(componentjsonhelpers PRIVATE exception)
-target_link_libraries(componentjsonhelpers PUBLIC
-  nlohmann_json)
-
 target_include_directories(componentjsonhelpers PUBLIC include)

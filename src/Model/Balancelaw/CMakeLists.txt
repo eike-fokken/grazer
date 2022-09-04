@@ -7,9 +7,6 @@ exception
 mathfunctions
 aux_unit_conversion
 )
-target_link_libraries(balancelaw PUBLIC
- nlohmann_json)
-
 
 target_include_directories(balancelaw PUBLIC
 include)

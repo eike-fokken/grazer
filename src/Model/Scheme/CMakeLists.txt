@@ -6,10 +6,5 @@ target_link_libraries(scheme PRIVATE
   balancelaw
   exception)
 
-target_link_libraries(scheme PUBLIC
-  nlohmann_json
-)
-
-
 target_include_directories(scheme PUBLIC
   include)

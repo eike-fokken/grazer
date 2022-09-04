@@ -1,19 +1,5 @@
 # add_compile_options("-march=native")
 
-# Don't use include(nlohmann_json/CMakeLists.txt) since that carries with it
-# unintended consequences that will break the build.  It's generally
-# discouraged (although not necessarily well documented as such) to use
-# include(...) for pulling in other CMake projects anyways.
-
-include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/../nlohmann_json/single_include/")
-
-# TODO: This should be cleaned up and every target should simply link to
-# nlohmann_json, a target that is pulled in as add_subdirectory above before the
-# schema validator.
-
-
-
-
 add_subdirectory(Model)
 add_subdirectory(Newtonsolver)
 add_subdirectory(Auxillary)

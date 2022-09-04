@@ -46,14 +46,17 @@ set(JSON_BuildTests OFF CACHE INTERNAL "")
 # If you only include this third party in PRIVATE source files, you do not
 # need to install it when your main project gets installed.
 set(JSON_Install ON CACHE INTERNAL "")
-set(JSON_SystemInclude On)
-# something seems to activate that, if not deactivated here:
-set(JSON_MultipleHeaders Off)
 add_subdirectory(nlohmann_json)
 
+if(BUILD_TESTS)
+  option(BUILD_TESTS OFF)
+  add_subdirectory(json-schema-validator)
+  option(BUILD_TESTS ON)
+else()
+  add_subdirectory(json-schema-validator)
+endif()
 
-option(BUILD_TESTS OFF)
-add_subdirectory(json-schema-validator)
+
 
 # An option to exclude IPO from the release type to make better use of a compiler cache (like ccache) for development:
 if (NOT DEVEL_RELEASE)
@@ -115,6 +118,15 @@ endif()
 ## Hacky eigen include:
 
 include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/eigen/")
+
+
+# Don't use include(nlohmann_json/CMakeLists.txt) since that carries with it
+# unintended consequences that will break the build.  It's generally
+# discouraged (although not necessarily well documented as such) to use
+# include(...) for pulling in other CMake projects anyways.
+
+include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/nlohmann_json/single_include/")
+
 
 # This includes the pcg random number generator suite.
 include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp/include/")

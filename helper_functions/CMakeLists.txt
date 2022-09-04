@@ -1,78 +1,55 @@
 add_executable(boundaryprettyfy boundaryprettyfy.cpp)
-target_link_libraries(boundaryprettyfy PUBLIC nlohmann_json)
 
 
 add_executable(stringify_values stringify_value_json.cpp)
-target_link_libraries(stringify_values PUBLIC nlohmann_json)
 target_link_libraries(stringify_values PRIVATE misc)
 
 add_executable(get_mean_sigma get_mean_sigma.cpp)
-target_link_libraries(get_mean_sigma PUBLIC nlohmann_json)
 
 add_executable(get_quantiles get_quantiles.cpp)
-target_link_libraries(get_quantiles PUBLIC nlohmann_json)
 add_executable(compute_reference_discrepance compute_reference_discrepance.cpp)
-target_link_libraries(compute_reference_discrepance PUBLIC nlohmann_json)
 
 add_executable(oup oup.cpp)
-target_link_libraries(oup PUBLIC nlohmann_json stochastics)
+target_link_libraries(oup stochastics)
 
 
 add_executable(generate_printing_csv generate_printing_csv.cpp)
-target_link_libraries(generate_printing_csv PUBLIC nlohmann_json)
 target_link_libraries(generate_printing_csv PRIVATE input_output)
 
 add_executable(generate_control_printing_csv generate_control_printing_csv.cpp)
-target_link_libraries(generate_control_printing_csv PUBLIC nlohmann_json)
 target_link_libraries(generate_control_printing_csv PRIVATE input_output)
 
 
 add_executable(move_to_category move_to_category.cpp)
-target_link_libraries(move_to_category PUBLIC nlohmann_json)
 add_executable(normalize_jsons normalize_jsons.cpp)
-target_link_libraries(normalize_jsons PUBLIC nlohmann_json)
 add_executable(draw_gaslib_graph draw_gaslib_graph.cpp)
-target_link_libraries(draw_gaslib_graph PUBLIC nlohmann_json)
 
 
 
 add_executable(extract_new_initial_condition extract_new_initial_condition.cpp)
-target_link_libraries(extract_new_initial_condition PUBLIC nlohmann_json)
 
 
 add_executable(pv_to_vphi pv_to_vphi.cpp)
-target_link_libraries(pv_to_vphi PUBLIC nlohmann_json)
 add_executable(construct_gaspowerconnection construct_gaspowerconnection.cpp)
-target_link_libraries(construct_gaspowerconnection PUBLIC nlohmann_json)
 
 
 
 add_executable(sum_outflow sum_outflow.cpp)
-target_link_libraries(sum_outflow PUBLIC nlohmann_json)
 add_executable(change_inflow change_inflow.cpp)
-target_link_libraries(change_inflow PUBLIC nlohmann_json)
 add_executable(increase_pressure increase_pressure.cpp)
-target_link_libraries(increase_pressure PUBLIC nlohmann_json)
-target_link_libraries(increase_pressure PUBLIC nlohmann_json)
 add_executable(include_seed_in_boundaryvalues include_seed_in_boundaryvalues.cpp)
-target_link_libraries(include_seed_in_boundaryvalues PUBLIC nlohmann_json)
 add_executable(remove_seed_from_boundaryvalues remove_seed_from_boundaryvalues.cpp)
-target_link_libraries(remove_seed_from_boundaryvalues PUBLIC nlohmann_json)
 
 add_executable(draw_heatmap_gaslib draw_heatmap_gaslib.cpp)
-target_link_libraries(draw_heatmap_gaslib PUBLIC nlohmann_json)
 target_link_libraries(draw_heatmap_gaslib PUBLIC netfactory componentjsonhelpers)
 
 add_executable(draw_heatmap_power draw_heatmap_power.cpp)
-target_link_libraries(draw_heatmap_power PUBLIC nlohmann_json)
 target_link_libraries(draw_heatmap_power PUBLIC netfactory componentjsonhelpers)
 
 add_executable(draw_power_graph draw_power_graph.cpp)
-target_link_libraries(draw_power_graph PUBLIC nlohmann_json)
 
 
 
 
 add_executable(insert_positions insert_positions.cpp)
-target_link_libraries(insert_positions PUBLIC nlohmann_json)
 target_link_libraries(insert_positions PUBLIC exception)

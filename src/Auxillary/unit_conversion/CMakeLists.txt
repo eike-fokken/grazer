@@ -1,5 +1,5 @@
 add_library(aux_unit_conversion STATIC unit_conversion.cpp)
 
-target_link_libraries(aux_unit_conversion PRIVATE aux_schema_validation)
+target_link_libraries(aux_unit_conversion PRIVATE nlohmann_json aux_schema_validation)
 
 target_include_directories(aux_unit_conversion PUBLIC include)
