@@ -538,6 +538,13 @@ namespace Optimization {
           update_cost_derivative_matrices(state_index, controls, states);
           rhs_f -= integral_weights[state_index] * df_dnew_transposed;
           xi_f = solver.solve(rhs_f);
+          if (solver.info() != Eigen::Success) {
+            std::cout << "Couldn't decompose a state derivative matrix during "
+                         "control derivative computation.\n"
+                      << "\n Note, that only LU decomposition is implemented."
+                      << std::endl;
+            return false;
+          }
           rhs_f.noalias() = -dE_dlast_transposed * xi_f;
           df_dui.noalias() = xi_f.transpose() * dE_dcontrol;
           df_dui += integral_weights[state_index] * df_dcontrol;
@@ -589,6 +596,15 @@ namespace Optimization {
             auto current_Xi = right_cols(full_Xi_row, constraint_index);
             auto current_rhs = right_cols(full_rhs_g, constraint_index);
             current_Xi = solver.solve(current_rhs);
+            if (solver.info() != Eigen::Success) {
+              std::cout
+                  << "Couldn't decompose a state derivative matrix during "
+                     "control derivative computation.\n"
+                  << "\n Note, that only LU decomposition is implemented."
+                  << std::endl;
+              return false;
+            }
+
             current_rhs.noalias() = -dE_dlast_transposed * current_Xi;
 
             /** current_dg_dui is the derivative of all constraints that are
