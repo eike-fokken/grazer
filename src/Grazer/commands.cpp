@@ -30,6 +30,7 @@
 #include "Optimization_helpers.hpp"
 #include "Timeevolver.hpp"
 #include "helpers.hpp"
+#include <algorithm>
 #include <chrono>
 #include <exception>
 #include <filesystem>
@@ -252,16 +253,16 @@ int grazer::run(std::filesystem::path directory_path) {
       Eigen::VectorXd ipoptconstraints(optimizer.get_total_no_constraints());
 
       optimizer.evaluate_constraints(ipoptcontrols, ipoptconstraints);
+      auto lower_violation
+          = (-(ipoptconstraints - constraint_lower_bounds.get_allvalues()))
+                .maxCoeff();
       std::cout << "Maximum lower constraint violation:\n"
-                << (-(ipoptconstraints
-                      - constraint_lower_bounds.get_allvalues()))
-                       .maxCoeff()
-                << std::endl;
+                << std::max(0.0, lower_violation) << std::endl;
+      auto upper_violation
+          = (-(constraint_upper_bounds.get_allvalues() - ipoptconstraints))
+                .maxCoeff();
       std::cout << "Maximum upper constraint violation:\n"
-                << (-(constraint_upper_bounds.get_allvalues()
-                      - ipoptconstraints))
-                       .maxCoeff()
-                << std::endl;
+                << std::max(0.0, upper_violation) << std::endl;
 
       double objective = 0;
       optimizer.new_x();
