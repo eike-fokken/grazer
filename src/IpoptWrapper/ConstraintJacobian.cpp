@@ -18,6 +18,7 @@
 #include "Exception.hpp"
 #include <Eigen/Dense>
 #include <IpTypes.hpp>
+#include <cassert>
 
 namespace Optimization {
 
