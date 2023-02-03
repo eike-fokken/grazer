@@ -16,6 +16,7 @@
  */
 #include "Matrixhandler.hpp"
 #include <Eigen/Sparse>
+#include <cassert>
 
 namespace Aux {
   Matrixhandler::~Matrixhandler() {}

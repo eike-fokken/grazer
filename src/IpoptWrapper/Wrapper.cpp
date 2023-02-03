@@ -19,6 +19,7 @@
 
 #include <IpAlgTypes.hpp>
 #include <IpTypes.hpp>
+#include <cassert>
 #include <iostream>
 #include <limits>
 #include <memory>
