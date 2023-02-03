@@ -28,7 +28,8 @@ namespace Model::Power {
   void PQnode::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {
     auto V_index = get_state_startindex();
     auto phi_index = V_index + 1;
     rootvalues[V_index] = P(new_state) - boundaryvalue(new_time)[0];
@@ -38,13 +39,10 @@ namespace Model::Power {
   void PQnode::setup() { Powernode::setup_helper(); }
 
   void PQnode::d_evaluate_d_new_state(
-      Aux::Matrixhandler &jacobianhandler,
-      double // last_time
-      ,
-      double // new_time
-      ,
-      Eigen::Ref<Eigen::VectorXd const> const &,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
+      Aux::Matrixhandler &jacobianhandler, double /*last_time*/,
+      double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const &,
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {
     auto first_equation_index = get_state_startindex();
     auto second_equation_index = first_equation_index + 1;
     evaluate_P_derivative(first_equation_index, jacobianhandler, new_state);
@@ -55,7 +53,8 @@ namespace Model::Power {
       Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const {}
+      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {}
 
   void PQnode::json_save(
       double time, Eigen::Ref<Eigen::VectorXd const> const &state) {

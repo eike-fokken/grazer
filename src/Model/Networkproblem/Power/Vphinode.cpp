@@ -28,7 +28,8 @@ namespace Model::Power {
   void Vphinode::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double /*last_time*/,
       double new_time, Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {
     auto V_index = get_state_startindex();
     auto phi_index = V_index + 1;
     rootvalues[V_index] = new_state[V_index] - boundaryvalue(new_time)[0];
@@ -40,8 +41,8 @@ namespace Model::Power {
       Aux::Matrixhandler &jacobianhandler, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/
-  ) const {
+      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {
     auto V_index = get_state_startindex();
     auto phi_index = V_index + 1;
     jacobianhandler.add_to_coefficient(V_index, V_index, 1.0);
@@ -52,7 +53,8 @@ namespace Model::Power {
       Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const {}
+      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {}
 
   void Vphinode::json_save(
       double time, Eigen::Ref<Eigen::VectorXd const> const &state) {

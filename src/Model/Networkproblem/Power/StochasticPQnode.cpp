@@ -79,7 +79,8 @@ namespace Model::Power {
       Eigen::Ref<Eigen::VectorXd> rootvalues, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {
     auto V_index = get_state_startindex();
     auto phi_index = V_index + 1;
     rootvalues[V_index] = P(new_state) - current_P;
@@ -88,7 +89,8 @@ namespace Model::Power {
 
   void StochasticPQnode::prepare_timestep(
       double last_time, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> const &last_state) {
+      Eigen::Ref<Eigen::VectorXd const> const &last_state,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) {
     auto last_P = P(last_state);
     current_P = Aux::euler_maruyama_oup(
         stochasticdata->stability_parameter, stochasticdata->cut_off_factor,
@@ -134,7 +136,8 @@ namespace Model::Power {
       Aux::Matrixhandler &jacobianhandler, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {
     auto first_equation_index = get_state_startindex();
     auto second_equation_index = first_equation_index + 1;
     evaluate_P_derivative(first_equation_index, jacobianhandler, new_state);
@@ -145,7 +148,8 @@ namespace Model::Power {
       Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const {}
+      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {}
 
   void StochasticPQnode::json_save(
       double time, Eigen::Ref<Eigen::VectorXd const> const &state) {
