@@ -17,6 +17,7 @@
 #pragma once
 #include "Costcomponent.hpp"
 #include "Edge.hpp"
+#include "Equationcomponent.hpp"
 #include "Gasedge.hpp"
 #include "Shortcomponent.hpp"
 #include "SimpleControlcomponent.hpp"
@@ -25,6 +26,7 @@
 namespace Model::Gas {
 
   class Compressorstation final :
+      public Equationcomponent,
       public SimpleControlcomponent,
       public Costcomponent,
       public Shortcomponent {

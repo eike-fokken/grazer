@@ -31,7 +31,8 @@ namespace Model::Gas {
   void Shortpipe::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double,
       Eigen::Ref<Eigen::VectorXd const> const &,
-      Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {
     rootvalues.segment<2>(get_equation_start_index())
         = get_boundary_state(start, new_state)
           - get_boundary_state(end, new_state);
@@ -41,7 +42,8 @@ namespace Model::Gas {
       Aux::Matrixhandler &jacobianhandler, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const {
+      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {
 
     auto start_p_index = get_boundary_state_index(start);
     auto start_q_index = start_p_index + 1;
@@ -62,7 +64,8 @@ namespace Model::Gas {
       Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
       double /*new_time*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
-      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const {}
+      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {}
 
   void Shortpipe::add_results_to_json(nlohmann::json &new_output) {
     std::string comp_type = Aux::component_class(*this);
