@@ -26,7 +26,6 @@
 namespace Model::Gas {
 
   class Controlvalve final :
-      public Equationcomponent,
       public SimpleControlcomponent,
       public Shortcomponent {
   public:

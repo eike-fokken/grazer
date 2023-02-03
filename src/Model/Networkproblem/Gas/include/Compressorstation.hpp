@@ -26,7 +26,6 @@
 namespace Model::Gas {
 
   class Compressorstation final :
-      public Equationcomponent,
       public SimpleControlcomponent,
       public Costcomponent,
       public Shortcomponent {

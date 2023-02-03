@@ -15,6 +15,7 @@
  *
  */
 #pragma once
+#include "Equationcomponent.hpp"
 #include "Timedata.hpp"
 #include <Eigen/Dense>
 #include <nlohmann/json.hpp>
@@ -32,7 +33,7 @@ namespace Model {
    * This class only makes sense, if the implementing class also inherits from
    * Equationcomponent.
    */
-  class Controlcomponent {
+  class Controlcomponent : public Equationcomponent {
     /** \brief SimpleControlcomponent is a friend of Controlcomponent to
      * give it access to #control_startindex and #control_afterindex.
      */

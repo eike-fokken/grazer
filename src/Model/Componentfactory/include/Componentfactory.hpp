@@ -38,23 +38,6 @@ namespace Model::Componentfactory {
 #define STRINGIFYII(nonstring) #nonstring
 #define LINE_NUMBER_STRING STRINGIFY(__LINE__)
 
-  /** \brief Makes sure that no component inherits from Equationcomponent and
-   * Controlcomponent simultaneously. Otherwise causes a compiler error.
-   *
-   * @tparam Component The component to be checked.
-   */
-  template <typename Component>
-  constexpr void check_class_hierarchy_properties() {
-    static_assert(
-        not(std::is_base_of_v<
-                Equationcomponent,
-                Component> and std::is_base_of_v<Controlcomponent, Component>),
-        "\n\n\nYou have a Component type that inherits both from "
-        "Equationcomponent and Controlcomponent! This is forbidden, as their "
-        "evaluate methods share the same functionality.\n\nPLEASE ONLY "
-        "INHERIT FROM EITHER ONE.\n\n\n");
-  }
-
   /**
    * @brief Get the boundary schema of a component.
    * @return The schema
@@ -305,7 +288,6 @@ namespace Model::Componentfactory {
       // order is important (defaults can be required!)
       Aux::schema::validate_json(topology, topology_schema);
 
-      check_class_hierarchy_properties<ConcreteNode>();
       return std::make_unique<ConcreteNode>(topology);
     };
   };
@@ -409,7 +391,6 @@ namespace Model::Componentfactory {
       Aux::schema::apply_defaults(topology, topology_schema);
       // order is important (defaults can be required!)
       Aux::schema::validate_json(topology, topology_schema);
-      check_class_hierarchy_properties<ConcreteEdge>();
       return std::make_unique<ConcreteEdge>(topology, nodes);
     };
   };
