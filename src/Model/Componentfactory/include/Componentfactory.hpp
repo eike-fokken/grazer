@@ -18,7 +18,7 @@
 #include "Boundaryvaluecomponent.hpp"
 #include "Controlcomponent.hpp"
 #include "Edge.hpp"
-#include "Equation_base.hpp"
+
 #include "Equationcomponent.hpp"
 #include "Node.hpp"
 #include "Statecomponent.hpp"

@@ -79,7 +79,7 @@ namespace Model {
     Eigen::Index set_state_indices(Eigen::Index next_free_index) final;
 
     ////////////////////////////////////////////////////////////////////////////
-    // Controlcomponent methods
+    // Equationcomponent methods
     ////////////////////////////////////////////////////////////////////////////
   public:
     void evaluate(
@@ -105,6 +105,12 @@ namespace Model {
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
         Eigen::Ref<Eigen::VectorXd const> const &control) const final;
 
+    void setup() final;
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Controlcomponent methods
+    ////////////////////////////////////////////////////////////////////////////
+
     void d_evaluate_d_control(
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
@@ -124,8 +130,6 @@ namespace Model {
         nlohmann::json const &upper_bounds_json) const final;
 
     Eigen::Index set_control_indices(Eigen::Index next_free_index) final;
-
-    void setup() final;
 
     void save_controls_to_json(
         Aux::InterpolatingVector_Base const &controls,

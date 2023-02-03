@@ -239,10 +239,6 @@ namespace Model {
 
     for (auto *equationcomponent : equationcomponents) {
       equationcomponent->evaluate(
-          rootvalues, last_time, new_time, last_state, new_state);
-    }
-    for (auto *controlcomponent : controlcomponents) {
-      controlcomponent->evaluate(
           rootvalues, last_time, new_time, last_state, new_state, control);
     }
   }
@@ -252,10 +248,7 @@ namespace Model {
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &control) {
     for (auto *equationcomponent : equationcomponents) {
-      equationcomponent->prepare_timestep(last_time, new_time, last_state);
-    }
-    for (auto *controlcomponent : controlcomponents) {
-      controlcomponent->prepare_timestep(
+      equationcomponent->prepare_timestep(
           last_time, new_time, last_state, control);
     }
   }
@@ -268,10 +261,6 @@ namespace Model {
 
     for (auto *equationcomponent : equationcomponents) {
       equationcomponent->d_evaluate_d_new_state(
-          jacobianhandler, last_time, new_time, last_state, new_state);
-    }
-    for (auto *controlcomponent : controlcomponents) {
-      controlcomponent->d_evaluate_d_new_state(
           jacobianhandler, last_time, new_time, last_state, new_state, control);
     }
   }
@@ -284,10 +273,6 @@ namespace Model {
 
     for (auto *equationcomponent : equationcomponents) {
       equationcomponent->d_evaluate_d_last_state(
-          jacobianhandler, last_time, new_time, last_state, new_state);
-    }
-    for (auto *controlcomponent : controlcomponents) {
-      controlcomponent->d_evaluate_d_last_state(
           jacobianhandler, last_time, new_time, last_state, new_state, control);
     }
   }
@@ -392,9 +377,6 @@ namespace Model {
   void Networkproblem::setup() {
     for (auto *equationcomponent : equationcomponents) {
       equationcomponent->setup();
-    }
-    for (auto *controlcomponent : controlcomponents) {
-      controlcomponent->setup();
     }
   }
 

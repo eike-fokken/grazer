@@ -15,7 +15,6 @@
  *
  */
 #pragma once
-#include "Equation_base.hpp"
 #include "Timedata.hpp"
 #include <Eigen/Dense>
 #include <nlohmann/json.hpp>
@@ -28,7 +27,12 @@ class Mock_OptimizableObject;
 class TestControlComponent_for_ControlStateCache;
 namespace Model {
 
-  class Controlcomponent : public Equation_base {
+  /** \brief Interface class for components that depend on controls.
+   *
+   * This class only makes sense, if the implementing class also inherits from
+   * Equationcomponent.
+   */
+  class Controlcomponent {
     /** \brief SimpleControlcomponent is a friend of Controlcomponent to
      * give it access to #control_startindex and #control_afterindex.
      */
@@ -42,83 +46,9 @@ namespace Model {
 
     virtual ~Controlcomponent(){};
 
-    /** \brief evaluates the model equations into rootvalues.
+    /** \brief derivative of Equationcomponent::evaluate w.r.t. \p control.
      *
-     * @param[out] rootvalues Results of the model equations, when evaluated
-     * on the other parameters.
-     * @param last_time time point of the last time step. Usually important
-     * for PDEs
-     * @param new_time time point of the current time step.
-     * @param last_state value of the state at last time step.
-     * @param new_state value of the state at current time step.
-     * @param control value of the control at current time step.
-     */
-    virtual void evaluate(
-        Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
-        double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
-        Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
-
-    /** \brief Carries out steps that need to be taken before the Newton
-     * method for a time step can start.
-     *
-     * For most components does nothing.
-     * @param last_time time point of the last time step. Usually important
-     * for PDEs
-     * @param new_time time point of the current time step.
-     * @param last_state value of the state at last time step.
-     * @param control value of the control at current time step.
-     */
-
-    virtual void prepare_timestep(
-        double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> const &last_state,
-        Eigen::Ref<Eigen::VectorXd const> const &control);
-
-    /** \brief derivative of Controlcomponent::evaluate w.r.t. \p new_state.
-     *
-     * evaluates the derivative of Controlcomponent::evaluate and hands
-     * the result to jacobianhandler, which will fill the Jacobi matrix.
-     *
-     * @param jacobianhandler A helper object, that fills a sparse matrix
-     * in an efficient way.
-     * @param last_time time point of the last time step. Usually important
-     * for PDEs
-     * @param new_time time point of the current time step.
-     * @param last_state value of the state at last time step.
-     * @param new_state value of the state at current time step.
-     * @param control value of the control at current time step.
-     */
-    virtual void d_evaluate_d_new_state(
-        Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> const &last_state,
-        Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
-
-    /** \brief derivative of Controlcomponent::evaluate w.r.t. \p
-     * last_state.
-     *
-     * evaluates the derivative of Controlcomponent::evaluate and hands
-     * the result to jacobianhandler, which will fill the Jacobi matrix.
-     *
-     * @param jacobianhandler A helper object, that fills a sparse matrix
-     * in an efficient way.
-     * @param last_time time point of the last time step. Usually important
-     * for PDEs
-     * @param new_time time point of the current time step.
-     * @param last_state value of the state at last time step.
-     * @param new_state value of the state at current time step.
-     * @param control value of the control at current time step.
-     */
-    virtual void d_evaluate_d_last_state(
-        Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> const &last_state,
-        Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
-
-    /** \brief derivative of Controlcomponent::evaluate w.r.t. \p control.
-     *
-     * evaluates the derivative of Controlcomponent::evaluate and hands
+     * evaluates the derivative of Equationcomponent::evaluate and hands
      * the result to jacobianhandler, which will fill the Jacobi matrix.
      *
      * @param jacobianhandler A helper object, that fills a sparse matrix
