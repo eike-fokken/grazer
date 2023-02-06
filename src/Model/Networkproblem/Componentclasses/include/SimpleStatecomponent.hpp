@@ -34,6 +34,10 @@ namespace Model {
   public:
     Eigen::Index set_state_indices(Eigen::Index next_free_index) final;
 
+    Eigen::Index get_state_startindex() const final;
+
+    Eigen::Index get_state_afterindex() const final;
+
   private:
     /// \brief Returns number of state variables needed by this component.
     ///
@@ -42,5 +46,22 @@ namespace Model {
     ///
     /// @returns number of state variables needed by this component
     virtual Eigen::Index needed_number_of_states() const = 0;
+
+    /// \brief The first index, this Equationcomponent "owns".
+    ///
+    /// Most equation components write only to their own indices between
+    /// #start_state_index (inclusive) and #after_state_index (exclusive).
+    /// There are exceptions though, e.g. instances of \ref
+    /// Model::Gas::Gasnode "Gasnode".
+    Eigen::Index state_startindex{-1};
+
+    /// \brief The first index after #start_state_index, that is not "owned" by
+    /// this Equationcomponent.
+    ///
+    /// Most equation components write only to their own indices between
+    /// #start_state_index (inclusive) and #after_state_index (exclusive).
+    /// There are exceptions though, e.g. instances of
+    /// \ref Model::Gas::Gasnode "Gasnode".
+    Eigen::Index state_afterindex{-1};
   };
 } // namespace Model

@@ -67,4 +67,22 @@ namespace Model {
     return state_afterindex;
   }
 
+  Eigen::Index SimpleStatecomponent::get_state_startindex() const {
+    if (state_startindex < 0) {
+      gthrow(
+          {"state_startindex < 0. Probably ", __func__, " was called ",
+           "before calling set_indices().\n This is forbidden."});
+    }
+    return state_startindex;
+  }
+  Eigen::Index SimpleStatecomponent::get_state_afterindex() const {
+    if (state_afterindex < 0) {
+      gthrow(
+          {"state_afterindex < 0. Probably ", __func__,
+           " was called "
+           "before calling set_indices().\n This is forbidden."});
+    }
+    return state_afterindex;
+  }
+
 } // namespace Model

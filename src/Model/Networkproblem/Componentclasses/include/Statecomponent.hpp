@@ -43,10 +43,10 @@ namespace Model {
     Eigen::Index get_number_of_states() const;
 
     /// \brief getter for #start_state_index
-    Eigen::Index get_state_startindex() const;
+    virtual Eigen::Index get_state_startindex() const = 0;
 
     /// \brief getter for #after_state_index
-    Eigen::Index get_state_afterindex() const;
+    virtual Eigen::Index get_state_afterindex() const = 0;
 
     virtual void add_results_to_json(nlohmann::json &) = 0;
 
@@ -80,22 +80,5 @@ namespace Model {
     /// Data holds an array of jsons, whose layout depends on the component in
     /// question.
     nlohmann::json component_output;
-
-    /// \brief The first index, this Equationcomponent "owns".
-    ///
-    /// Most equation components write only to their own indices between
-    /// #start_state_index (inclusive) and #after_state_index (exclusive).
-    /// There are exceptions though, e.g. instances of \ref
-    /// Model::Gas::Gasnode "Gasnode".
-    Eigen::Index state_startindex{-1};
-
-    /// \brief The first index after #start_state_index, that is not "owned" by
-    /// this Equationcomponent.
-    ///
-    /// Most equation components write only to their own indices between
-    /// #start_state_index (inclusive) and #after_state_index (exclusive).
-    /// There are exceptions though, e.g. instances of
-    /// \ref Model::Gas::Gasnode "Gasnode".
-    Eigen::Index state_afterindex{-1};
   };
 } // namespace Model
