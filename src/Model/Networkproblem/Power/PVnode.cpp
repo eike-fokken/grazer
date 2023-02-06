@@ -26,7 +26,7 @@ namespace Model::Power {
 
   void PVnode::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double new_time,
-      Eigen::Ref<Eigen::VectorXd const> const &last_state,
+      Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
       Eigen::Ref<Eigen::VectorXd const> const &new_state,
       Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {
     auto V_index = get_state_startindex();
