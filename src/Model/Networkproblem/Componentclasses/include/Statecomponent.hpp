@@ -22,12 +22,6 @@ class Mock_OptimizableObject;
 namespace Model {
 
   class Statecomponent {
-    /** \brief SimpleStatecomponent is a friend of Statecomponent to give it
-     * access to #start_state_index and #after_state_index.
-     */
-    friend class SimpleStatecomponent;
-    friend class Networkproblem;
-    friend class ::Mock_OptimizableObject;
 
   public:
     static nlohmann::json get_initial_schema() = delete;

@@ -34,9 +34,6 @@ namespace Model {
    * Equationcomponent.
    */
   class Controlcomponent : public Equationcomponent {
-    /** \brief SimpleControlcomponent is a friend of Controlcomponent to
-     * give it access to #control_startindex and #control_afterindex.
-     */
 
   public:
     static nlohmann::json get_control_schema() = delete;

@@ -408,6 +408,8 @@ private:
     return std::string();
   }
 
+  Eigen::Index state_startindex{-1};
+  Eigen::Index state_afterindex{-1};
   /** \brief The first control index, this Controlcomponent "owns".
    */
   Eigen::Index control_startindex{-1};
@@ -486,6 +488,14 @@ public:
     state_afterindex = state_startindex + number_of_states;
     return state_afterindex;
   }
+
+  /** \brief getter for #start_state_index
+   */
+  Eigen::Index get_state_startindex() const final { return state_startindex; }
+
+  /** \brief getter for #after_state_index
+   */
+  Eigen::Index get_state_afterindex() const final { return state_afterindex; }
 
   void add_results_to_json(nlohmann::json &) final {
     assert(false); // never call me!
