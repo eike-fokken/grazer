@@ -15,7 +15,9 @@
  *
  */
 #include "SimpleControlcomponent.hpp"
+#include "Exception.hpp"
 #include "InterpolatingVector.hpp"
+
 namespace Model {
 
   void set_simple_control_values(
@@ -48,6 +50,24 @@ namespace Model {
     auto number_of_controls = needed_number_of_controls_per_time_point();
     control_afterindex = next_free_index + number_of_controls;
 
+    return control_afterindex;
+  }
+
+  Eigen::Index SimpleControlcomponent::get_control_startindex() const {
+    if (control_startindex < 0) {
+      gthrow(
+          {"control_startindex < 0. Probably ", __func__, " was called ",
+           "before calling set_indices().\n This is forbidden."});
+    }
+    return control_startindex;
+  }
+  Eigen::Index SimpleControlcomponent::get_control_afterindex() const {
+    if (control_afterindex < 0) {
+      gthrow(
+          {"control_afterindex < 0. Probably ", __func__,
+           " was called "
+           "before calling set_indices().\n This is forbidden."});
+    }
     return control_afterindex;
   }
 

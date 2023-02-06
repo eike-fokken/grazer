@@ -37,10 +37,6 @@ namespace Model {
     /** \brief SimpleControlcomponent is a friend of Controlcomponent to
      * give it access to #control_startindex and #control_afterindex.
      */
-    friend class SimpleControlcomponent;
-    friend class Networkproblem;
-    friend class ::Mock_OptimizableObject;
-    friend class ::TestControlComponent_for_ControlStateCache;
 
   public:
     static nlohmann::json get_control_schema() = delete;
@@ -78,13 +74,21 @@ namespace Model {
 
     Eigen::Index get_number_of_controls_per_timepoint() const;
 
-    /** \brief getter for #start_control_index
+    /** \brief getter for the start of this components control indices.
+     *
+     * If you override this function, it should probably be the same as in e.g.
+     * #SimpleControlcomponent and you probably need a data member Eigen::Index
+     * control_startindex.
      */
-    Eigen::Index get_control_startindex() const;
+    virtual Eigen::Index get_control_startindex() const = 0;
 
-    /** \brief getter for #after_control_index
+    /** \brief getter for the first index after this components control indices.
+     *
+     * If you override this function, it should probably be the same as in e.g.
+     * #SimpleControlcomponent and you probably need a data member Eigen::Index
+     * control_afterindex.
      */
-    Eigen::Index get_control_afterindex() const;
+    virtual Eigen::Index get_control_afterindex() const = 0;
 
     /** \brief Fills the indices owned by this component with control values
      */
@@ -108,13 +112,5 @@ namespace Model {
     virtual std::string componentclass() = 0;
     virtual std::string componenttype() = 0;
     virtual std::string id() = 0;
-    /** \brief The first control index, this Controlcomponent "owns".
-     */
-    Eigen::Index control_startindex{-1};
-
-    /** \brief The first control index after #start_control_index, that is
-     * not "owned" by this Controlcomponent.
-     */
-    Eigen::Index control_afterindex{-1};
   };
 } // namespace Model

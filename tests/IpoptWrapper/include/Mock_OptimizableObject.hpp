@@ -362,7 +362,19 @@ public:
 
   Eigen::Index set_control_indices(Eigen::Index next_index) final {
     control_startindex = next_index;
-    control_afterindex = control_startindex + number_of_controls;
+    control_afterindex = get_control_startindex() + number_of_controls;
+    return get_control_afterindex();
+  }
+
+  /** \brief getter for #start_control_index
+   */
+  Eigen::Index get_control_startindex() const final {
+    return control_startindex;
+  }
+
+  /** \brief getter for #after_control_index
+   */
+  Eigen::Index get_control_afterindex() const final {
     return control_afterindex;
   }
 
@@ -395,6 +407,15 @@ private:
     assert(false);
     return std::string();
   }
+
+  /** \brief The first control index, this Controlcomponent "owns".
+   */
+  Eigen::Index control_startindex{-1};
+
+  /** \brief The first control index after #start_control_index, that is
+   * not "owned" by this Controlcomponent.
+   */
+  Eigen::Index control_afterindex{-1};
 
 public:
   //// Cost components:

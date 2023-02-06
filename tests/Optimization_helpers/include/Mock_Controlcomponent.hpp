@@ -29,6 +29,10 @@ public:
   Derivative *df_dlast_state;
   Derivative *df_dcontrol;
 
+  MOCK_METHOD(Eigen::Index, get_control_startindex, (), (const, final));
+
+  MOCK_METHOD(Eigen::Index, get_control_afterindex, (), (const, final));
+
   MOCK_METHOD(void, setup, (), (final));
 
   void evaluate(

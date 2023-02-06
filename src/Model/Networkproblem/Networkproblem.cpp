@@ -374,6 +374,24 @@ namespace Model {
     return next_free_index;
   }
 
+  Eigen::Index Networkproblem::get_control_startindex() const {
+    if (control_startindex < 0) {
+      gthrow(
+          {"control_startindex < 0. Probably ", __func__, " was called ",
+           "before calling set_indices().\n This is forbidden."});
+    }
+    return control_startindex;
+  }
+  Eigen::Index Networkproblem::get_control_afterindex() const {
+    if (control_afterindex < 0) {
+      gthrow(
+          {"control_afterindex < 0. Probably ", __func__,
+           " was called "
+           "before calling set_indices().\n This is forbidden."});
+    }
+    return control_afterindex;
+  }
+
   void Networkproblem::setup() {
     for (auto *equationcomponent : equationcomponents) {
       equationcomponent->setup();
@@ -558,6 +576,20 @@ namespace Model {
   std::string Networkproblem::componentclass() { gthrow({"Never call me!"}); }
   std::string Networkproblem::componenttype() { return get_type(); }
   std::string Networkproblem::id() { gthrow({"Never call me!"}); }
+
+  // ////////////////////////////////////////////////////////////////////////////
+  // // Switchcomponent methods
+  // ////////////////////////////////////////////////////////////////////////////
+
+  // Eigen::Index
+  // Networkproblem::set_switch_indices(Eigen::Index next_free_index) {
+  //   switch_startindex = next_free_index;
+  //   for (auto *switchcomponent : switchcomponents) {
+  //     next_free_index = switchcomponent->set_switch_indices(next_free_index);
+  //   }
+  //   switch_afterindex = next_free_index;
+  //   return next_free_index;
+  // }
 
   /////////////////////////////////////////////////////////
   // other methods:

@@ -27,6 +27,14 @@ namespace Model {
   public:
     Eigen::Index set_control_indices(Eigen::Index next_free_index) final;
 
+    /** \brief getter for #start_control_index
+     */
+    Eigen::Index get_control_startindex() const final;
+
+    /** \brief getter for #after_control_index
+     */
+    Eigen::Index get_control_afterindex() const final;
+
   private:
     /// \brief Returns number of control variables needed by this component.
     ///
@@ -35,5 +43,14 @@ namespace Model {
     ///
     /// @returns number of control variables needed by this component
     virtual Eigen::Index needed_number_of_controls_per_time_point() const = 0;
+
+    /** \brief The first control index, this Controlcomponent "owns".
+     */
+    Eigen::Index control_startindex{-1};
+
+    /** \brief The first control index after #start_control_index, that is
+     * not "owned" by this Controlcomponent.
+     */
+    Eigen::Index control_afterindex{-1};
   };
 } // namespace Model

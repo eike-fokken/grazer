@@ -39,6 +39,10 @@ public:
   rootfunction *f;
   Derivative *df;
 
+  MOCK_METHOD(Eigen::Index, get_control_startindex, (), (const, final));
+
+  MOCK_METHOD(Eigen::Index, get_control_afterindex, (), (const, final));
+
   MOCK_METHOD(void, setup, (), (final));
 
   MOCK_METHOD(

@@ -121,6 +121,14 @@ namespace Model {
         Aux::InterpolatingVector_Base &full_control_vector,
         nlohmann::json const &control_json) const final;
 
+    /** \brief getter for #start_control_index
+     */
+    Eigen::Index get_control_startindex() const final;
+
+    /** \brief getter for #after_control_index
+     */
+    Eigen::Index get_control_afterindex() const final;
+
     void set_lower_bounds(
         Aux::InterpolatingVector_Base &lower_bounds_vector,
         nlohmann::json const &lower_bounds_json) const final;
@@ -136,6 +144,15 @@ namespace Model {
         nlohmann::json &json) final;
 
   private:
+    /** \brief The first control index, this Controlcomponent "owns".
+     */
+    Eigen::Index control_startindex{-1};
+
+    /** \brief The first control index after #start_control_index, that is
+     * not "owned" by this Controlcomponent.
+     */
+    Eigen::Index control_afterindex{-1};
+
     std::string componentclass() final;
     std::string componenttype() final;
     std::string id() final;
@@ -200,6 +217,20 @@ namespace Model {
     void set_constraint_upper_bounds(
         Aux::InterpolatingVector_Base &full_control_vector,
         nlohmann::json const &constraint_upper_bounds_json) const final;
+
+    // ////////////////////////////////////////////////////////////////////////////
+    // // Switchcomponent methods
+    // ////////////////////////////////////////////////////////////////////////////
+
+    // Eigen::Index set_switch_indices(Eigen::Index next_free_index) final;
+
+    // void set_initial_switches(
+    //     Aux::InterpolatingVector_Base &full_switch_vector,
+    //     nlohmann::json const &switch_json) const final;
+
+    // void save_switches_to_json(
+    //     Aux::InterpolatingVector_Base const &switches,
+    //     nlohmann::json &json) final;
 
     /////////////////////////////////////////////////////////
     // other methods:

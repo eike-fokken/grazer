@@ -20,12 +20,14 @@
 #include "Costcomponent.hpp"
 #include "Equationcomponent.hpp"
 #include "Statecomponent.hpp"
+#include "Switchcomponent.hpp"
 
 namespace Model {
 
   class OptimizableObject :
       public Statecomponent,
       public Controlcomponent,
+      // public Switchcomponent,
       public Constraintcomponent,
       public Costcomponent {};
 
