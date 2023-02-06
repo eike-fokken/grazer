@@ -227,6 +227,23 @@ namespace Model {
     return next_free_index;
   }
 
+  Eigen::Index Networkproblem::get_state_startindex() const {
+    if (state_startindex < 0) {
+      gthrow(
+          {"state_startindex < 0. Probably ", __func__, " was called ",
+           "before calling set_indices().\n This is forbidden."});
+    }
+    return state_startindex;
+  }
+  Eigen::Index Networkproblem::get_state_afterindex() const {
+    if (state_afterindex < 0) {
+      gthrow(
+          {"state_afterindex < 0. Probably ", __func__,
+           " was called "
+           "before calling set_indices().\n This is forbidden."});
+    }
+    return state_afterindex;
+  }
   ////////////////////////////////////////////////////////////////////////////
   // Controlcomponent methods
   ////////////////////////////////////////////////////////////////////////////
