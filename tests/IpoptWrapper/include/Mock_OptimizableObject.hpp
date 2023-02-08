@@ -198,6 +198,7 @@ class Mock_OptimizableObject final : public Model::OptimizableObject {
 public:
   Eigen::Index const number_of_states;
   Eigen::Index const number_of_controls;
+  Eigen::Index const number_of_switches{0};
   Eigen::Index const number_of_constraints;
 
   equation_function *E;
@@ -394,16 +395,39 @@ public:
     assert(false); // never call me!
   }
 
+  /////////////////////////////////////////////////////////////////////////////
+  /////// Switchcomponent methods /////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+  Eigen::Index set_switch_indices(Eigen::Index next_index) final {
+    switch_startindex = next_index;
+    switch_afterindex = get_switch_startindex() + number_of_switches;
+    return get_switch_afterindex();
+  }
+
+  /** \brief getter for #start_switch_index
+   */
+  Eigen::Index get_switch_startindex() const final { return switch_startindex; }
+
+  /** \brief getter for #after_switch_index
+   */
+  Eigen::Index get_switch_afterindex() const final { return switch_afterindex; }
+
+  // not needed:
+  void set_initial_switches(
+      Aux::InterpolatingVector_Base &, nlohmann::json const &) const final {
+    assert(false); // never call me!
+  }
+
 private:
-  std::string componentclass() final {
+  std::string componentclass() const final {
     assert(false);
     return std::string();
   }
-  std::string componenttype() final {
+  std::string componenttype() const final {
     assert(false);
     return std::string();
   }
-  std::string id() final {
+  std::string id() const final {
     assert(false);
     return std::string();
   }
@@ -418,6 +442,14 @@ private:
    * not "owned" by this Controlcomponent.
    */
   Eigen::Index control_afterindex{-1};
+  /** \brief The first switch index, this Switchcomponent "owns".
+   */
+  Eigen::Index switch_startindex{-1};
+
+  /** \brief The first switch index after #start_switch_index, that is
+   * not "owned" by this Switchcomponent.
+   */
+  Eigen::Index switch_afterindex{-1};
 
 public:
   //// Cost components:
