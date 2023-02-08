@@ -573,9 +573,11 @@ namespace Model {
     }
   }
 
-  std::string Networkproblem::componentclass() { gthrow({"Never call me!"}); }
-  std::string Networkproblem::componenttype() { return get_type(); }
-  std::string Networkproblem::id() { gthrow({"Never call me!"}); }
+  std::string Networkproblem::componentclass() const {
+    gthrow({"Never call me!"});
+  }
+  std::string Networkproblem::componenttype() const { return get_type(); }
+  std::string Networkproblem::id() const { gthrow({"Never call me!"}); }
 
   /////////////////////////////////////////////////////////
   // other methods:

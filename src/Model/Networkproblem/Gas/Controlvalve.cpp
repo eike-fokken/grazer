@@ -121,10 +121,10 @@ namespace Model::Gas {
     new_print_helper(new_output, comp_type, get_type());
   }
 
-  std::string Controlvalve::componentclass() {
+  std::string Controlvalve::componentclass() const {
     return Aux::component_class(*this);
   }
-  std::string Controlvalve::componenttype() { return get_type(); }
-  std::string Controlvalve::id() { return get_id(); }
+  std::string Controlvalve::componenttype() const { return get_type(); }
+  std::string Controlvalve::id() const { return get_id(); }
 
 } // namespace Model::Gas

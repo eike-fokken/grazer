@@ -80,15 +80,15 @@ public:
       (const, final));
 
 private:
-  std::string componentclass() final {
+  std::string componentclass() const final {
     assert(false);
     return std::string();
   }
-  std::string componenttype() final {
+  std::string componenttype() const final {
     assert(false);
     return std::string();
   }
-  std::string id() final {
+  std::string id() const final {
     assert(false);
     return std::string();
   }
