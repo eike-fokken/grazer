@@ -174,9 +174,9 @@ namespace Model {
         Aux::InterpolatingVector_Base const &controls, nlohmann::json &json);
 
   private:
-    virtual std::string componentclass() = 0;
-    virtual std::string componenttype() = 0;
-    virtual std::string id() = 0;
+    virtual std::string componentclass() const = 0;
+    virtual std::string componenttype() const = 0;
+    virtual std::string id() const = 0;
     /** \brief The first control index, this Controlcomponent "owns".
      */
     Eigen::Index control_startindex{-1};
