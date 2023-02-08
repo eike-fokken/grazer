@@ -81,9 +81,9 @@ namespace Model::Gas {
     void add_results_to_json(nlohmann::json &new_output) final;
 
   private:
-    std::string componentclass() final;
-    std::string componenttype() final;
-    std::string id() final;
+    std::string componentclass() const final;
+    std::string componenttype() const final;
+    std::string id() const final;
   };
 
 } // namespace Model::Gas

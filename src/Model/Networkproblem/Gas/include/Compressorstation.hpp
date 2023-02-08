@@ -84,9 +84,9 @@ namespace Model::Gas {
     Eigen::Index needed_number_of_controls_per_time_point() const final;
 
   private:
-    std::string componentclass() final;
-    std::string componenttype() final;
-    std::string id() final;
+    std::string componentclass() const final;
+    std::string componenttype() const final;
+    std::string id() const final;
 
   public:
     ///////////////////////////////////////////////////////////

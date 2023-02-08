@@ -24,6 +24,7 @@ namespace Aux {
   class InterpolatingVector_Base;
   class Matrixhandler;
 } // namespace Aux
+
 namespace Model {
 
   /** \brief Interface class for components that depend on switches.
@@ -32,13 +33,6 @@ namespace Model {
    * Equationcomponent.
    */
   class Switchcomponent {
-    // /** \brief SimpleControlcomponent is a friend of Controlcomponent to
-    //  * give it access to #control_startindex and #control_afterindex.
-    //  */
-    // friend class SimpleControlcomponent;
-    // friend class Networkproblem;
-    // friend class ::Mock_OptimizableObject;
-    // friend class ::TestControlComponent_for_ControlStateCache;
 
   public:
     static nlohmann::json get_switch_schema() = delete;
@@ -56,13 +50,21 @@ namespace Model {
 
     Eigen::Index get_number_of_switches_per_timepoint() const;
 
-    /** \brief getter for #start_switch_index
+    /** \brief getter for the start of this components switch indices.
+     *
+     * If you override this function, it should probably be the same as in e.g.
+     * #SimpleSwitchcomponent and you probably need a data member Eigen::Index
+     * switch_startindex.
      */
-    Eigen::Index get_switch_startindex() const;
+    virtual Eigen::Index get_switch_startindex() const = 0;
 
-    /** \brief getter for #after_switch_index
+    /** \brief getter for the first index after this components switch indices.
+     *
+     * If you override this function, it should probably be the same as in e.g.
+     * #SimpleSwitchcomponent and you probably need a data member Eigen::Index
+     * switch_afterindex.
      */
-    Eigen::Index get_switch_afterindex() const;
+    virtual Eigen::Index get_switch_afterindex() const = 0;
 
     /** \brief Fills the indices owned by this component with switch values
      */
@@ -75,20 +77,18 @@ namespace Model {
         Aux::InterpolatingVector_Base const &switches, nlohmann::json &json);
 
   private:
-    /** These are also defined in Controlcomponent but are overridden by the
-     * same functions.
+    /** \brief Returns the high-level class of component, "nodes" or
+     * "connections".
+     *
+     * This is needed to write jsons, that have separate entries for nodes and
+     * edges.
      */
-    virtual std::string componentclass() = 0;
-    virtual std::string componenttype() = 0;
-    virtual std::string id() = 0;
-
-    /** \brief The first switch index, this Switchcomponent "owns".
+    virtual std::string componentclass() const = 0;
+    /** \brief Returns the type of component, "nodes" or "connections".
+     *
+     * This is needed to write jsons.
      */
-    Eigen::Index switch_startindex{-1};
-
-    /** \brief The first switch index after #start_switch_index, that is
-     * not "owned" by this Switchcomponent.
-     */
-    Eigen::Index switch_afterindex{-1};
+    virtual std::string componenttype() const = 0;
+    virtual std::string id() const = 0;
   };
 } // namespace Model

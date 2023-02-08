@@ -24,8 +24,7 @@ namespace Aux {
   class InterpolatingVector_Base;
   class Matrixhandler;
 } // namespace Aux
-class Mock_OptimizableObject;
-class TestControlComponent_for_ControlStateCache;
+
 namespace Model {
 
   /** \brief Interface class for components that depend on controls.
@@ -106,8 +105,18 @@ namespace Model {
         Aux::InterpolatingVector_Base const &controls, nlohmann::json &json);
 
   private:
-    virtual std::string componentclass() = 0;
-    virtual std::string componenttype() = 0;
-    virtual std::string id() = 0;
+    /** \brief Returns the high-level class of component, "nodes" or
+     * "connections".
+     *
+     * This is needed to write jsons, that have separate entries for nodes and
+     * edges.
+     */
+    virtual std::string componentclass() const = 0;
+    /** \brief Returns the type of component, "nodes" or "connections".
+     *
+     * This is needed to write jsons.
+     */
+    virtual std::string componenttype() const = 0;
+    virtual std::string id() const = 0;
   };
 } // namespace Model

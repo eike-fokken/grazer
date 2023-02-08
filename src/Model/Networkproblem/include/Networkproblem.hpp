@@ -175,9 +175,41 @@ namespace Model {
      */
     Eigen::Index control_afterindex{-1};
 
-    std::string componentclass() final;
-    std::string componenttype() final;
-    std::string id() final;
+    std::string componentclass() const final;
+    std::string componenttype() const final;
+    std::string id() const final;
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Switchcomponent methods
+    ////////////////////////////////////////////////////////////////////////////
+
+    void set_initial_switches(
+        Aux::InterpolatingVector_Base &full_switch_vector,
+        nlohmann::json const &switch_json) const final;
+
+    /** \brief getter for #start_switch_index
+     */
+    Eigen::Index get_switch_startindex() const final;
+
+    /** \brief getter for #after_switch_index
+     */
+    Eigen::Index get_switch_afterindex() const final;
+
+    Eigen::Index set_switch_indices(Eigen::Index next_free_index) final;
+
+    void save_switches_to_json(
+        Aux::InterpolatingVector_Base const &switches,
+        nlohmann::json &json) final;
+
+  private:
+    /** \brief The first switch index, this Switchcomponent "owns".
+     */
+    Eigen::Index switch_startindex{-1};
+
+    /** \brief The first switch index after #start_switch_index, that is
+     * not "owned" by this Switchcomponent.
+     */
+    Eigen::Index switch_afterindex{-1};
 
     /////////////////////////////////////////////////////////
     // cost function methods:
@@ -265,6 +297,7 @@ namespace Model {
     std::vector<Equationcomponent *> equationcomponents;
     std::vector<Statecomponent *> statecomponents;
     std::vector<Controlcomponent *> controlcomponents;
+    std::vector<Switchcomponent *> switchcomponents;
     std::vector<Costcomponent *> costcomponents;
     std::vector<Constraintcomponent *> constraintcomponents;
   };

@@ -4,6 +4,8 @@ Statecomponent.cpp
 SimpleStatecomponent.cpp
 Controlcomponent.cpp
 SimpleControlcomponent.cpp
+Switchcomponent.cpp
+SimpleSwitchcomponent.cpp
 
 Costcomponent.cpp
 Constraintcomponent.cpp

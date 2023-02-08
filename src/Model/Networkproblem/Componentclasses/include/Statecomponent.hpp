@@ -42,9 +42,18 @@ namespace Model {
     /// \brief getter for #after_state_index
     virtual Eigen::Index get_state_afterindex() const = 0;
 
-    virtual void add_results_to_json(nlohmann::json &) = 0;
+    /** \brief adds results of #componentjson  to json.
+     *
+     * The values stored within the class are passed to an outer json, so that
+     * it can be used, e.g. to be written to a file.
+     */
+    virtual void add_results_to_json(nlohmann::json &json) = 0;
 
-    /// \brief Stores computed values in an output json.
+    /** \brief Stores computed values into #component_output for later use.
+     *
+     * @param time The timepoint of the computed values
+     * @param state Statevector containing the values.
+     */
     virtual void
     json_save(double time, Eigen::Ref<Eigen::VectorXd const> const &state)
         = 0;

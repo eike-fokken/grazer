@@ -138,6 +138,9 @@ namespace Model {
       if (auto controlcomponent = dynamic_cast<Controlcomponent *>(node)) {
         controlcomponents.push_back(controlcomponent);
       }
+      if (auto switchcomponent = dynamic_cast<Switchcomponent *>(node)) {
+        switchcomponents.push_back(switchcomponent);
+      }
       if (auto costcomponent = dynamic_cast<Costcomponent *>(node)) {
         costcomponents.push_back(costcomponent);
       }
@@ -156,6 +159,9 @@ namespace Model {
       }
       if (auto controlcomponent = dynamic_cast<Controlcomponent *>(edge)) {
         controlcomponents.push_back(controlcomponent);
+      }
+      if (auto switchcomponent = dynamic_cast<Switchcomponent *>(edge)) {
+        switchcomponents.push_back(switchcomponent);
       }
       if (auto costcomponent = dynamic_cast<Costcomponent *>(edge)) {
         costcomponents.push_back(costcomponent);
@@ -409,6 +415,72 @@ namespace Model {
     return control_afterindex;
   }
 
+  ////////////////////////////////////////////////////////////////////////////
+  // Switchcomponent methods
+  ////////////////////////////////////////////////////////////////////////////
+
+  void Networkproblem::set_initial_switches(
+      Aux::InterpolatingVector_Base &switchler,
+      nlohmann::json const &switch_json) const {
+
+    auto ids = get_ids_of_objects(switchcomponents);
+    check_components_in_json(switchcomponents, switch_json, "switch.json");
+    for (auto const &component : {"nodes", "connections"}) {
+      if (not switch_json.contains(component)) {
+        continue;
+      }
+      for (auto const &componenttype : switch_json[component]) {
+        for (auto const &componentjson : componenttype) {
+
+          auto iterator = std::find(
+              ids.begin(), ids.end(), componentjson["id"].get<std::string>());
+          if (iterator != ids.end()) {
+            auto index = iterator - ids.begin();
+            switchcomponents[static_cast<size_t>(index)]->set_initial_switches(
+                switchler, componentjson);
+          }
+        }
+      }
+    }
+  }
+
+  Eigen::Index
+  Networkproblem::set_switch_indices(Eigen::Index next_free_index) {
+    switch_startindex = next_free_index;
+    for (auto *switchcomponent : switchcomponents) {
+      next_free_index = switchcomponent->set_switch_indices(next_free_index);
+    }
+    switch_afterindex = next_free_index;
+    return next_free_index;
+  }
+
+  Eigen::Index Networkproblem::get_switch_startindex() const {
+    if (switch_startindex < 0) {
+      gthrow(
+          {"switch_startindex < 0. Probably ", __func__, " was called ",
+           "before calling set_indices().\n This is forbidden."});
+    }
+    return switch_startindex;
+  }
+  Eigen::Index Networkproblem::get_switch_afterindex() const {
+    if (switch_afterindex < 0) {
+      gthrow(
+          {"switch_afterindex < 0. Probably ", __func__,
+           " was called "
+           "before calling set_indices().\n This is forbidden."});
+    }
+    return switch_afterindex;
+  }
+
+  void Networkproblem::save_switches_to_json(
+      Aux::InterpolatingVector_Base const &switches, nlohmann::json &json) {
+    for (auto *switchcomponent : switchcomponents) {
+      switchcomponent->save_switches_to_json(switches, json);
+    }
+  }
+
+  ///////////////////////////////////////////////
+
   void Networkproblem::setup() {
     for (auto *equationcomponent : equationcomponents) {
       equationcomponent->setup();
@@ -590,9 +662,11 @@ namespace Model {
     }
   }
 
-  std::string Networkproblem::componentclass() { gthrow({"Never call me!"}); }
-  std::string Networkproblem::componenttype() { return get_type(); }
-  std::string Networkproblem::id() { gthrow({"Never call me!"}); }
+  std::string Networkproblem::componentclass() const {
+    gthrow({"Never call me!"});
+  }
+  std::string Networkproblem::componenttype() const { return get_type(); }
+  std::string Networkproblem::id() const { gthrow({"Never call me!"}); }
 
   // ////////////////////////////////////////////////////////////////////////////
   // // Switchcomponent methods

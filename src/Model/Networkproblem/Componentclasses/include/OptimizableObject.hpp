@@ -27,7 +27,7 @@ namespace Model {
   class OptimizableObject :
       public Statecomponent,
       public Controlcomponent,
-      // public Switchcomponent,
+      public Switchcomponent,
       public Constraintcomponent,
       public Costcomponent {};
 

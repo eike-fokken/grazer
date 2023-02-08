@@ -172,10 +172,10 @@ namespace Model::Gas {
       double /*new_time*/, Eigen::Ref<Eigen::VectorXd const> const & /*state*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {}
 
-  std::string Compressorstation::componentclass() {
+  std::string Compressorstation::componentclass() const {
     return Aux::component_class(*this);
   }
-  std::string Compressorstation::componenttype() { return get_type(); }
-  std::string Compressorstation::id() { return get_id(); }
+  std::string Compressorstation::componenttype() const { return get_type(); }
+  std::string Compressorstation::id() const { return get_id(); }
 
 } // namespace Model::Gas
