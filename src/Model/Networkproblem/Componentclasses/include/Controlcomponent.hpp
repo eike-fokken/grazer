@@ -171,7 +171,8 @@ namespace Model {
         nlohmann::json const &upper_bound_json) const = 0;
 
     virtual void save_controls_to_json(
-        Aux::InterpolatingVector_Base const &controls, nlohmann::json &json);
+        Aux::InterpolatingVector_Base const &controls,
+        nlohmann::json &json) const = 0;
 
   private:
     virtual std::string componentclass() const = 0;

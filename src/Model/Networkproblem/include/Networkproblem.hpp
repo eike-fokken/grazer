@@ -129,7 +129,7 @@ namespace Model {
 
     void save_controls_to_json(
         Aux::InterpolatingVector_Base const &controls,
-        nlohmann::json &json) final;
+        nlohmann::json &json) const final;
 
   private:
     std::string componentclass() const final;

@@ -108,6 +108,12 @@ public:
       ((Aux::InterpolatingVector_Base &), (nlohmann::json const &)),
       (const, final));
 
+  MOCK_METHOD(
+      void, save_controls_to_json,
+      ((Aux::InterpolatingVector_Base const &controls),
+       (nlohmann::json & json)),
+      (const, final));
+
   std::string componentclass() const final {
     assert(false);
     return std::string();
