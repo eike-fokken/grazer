@@ -567,7 +567,8 @@ namespace Model {
   }
 
   void Networkproblem::save_controls_to_json(
-      Aux::InterpolatingVector_Base const &controls, nlohmann::json &json) {
+      Aux::InterpolatingVector_Base const &controls,
+      nlohmann::json &json) const {
     for (auto *controlcomponent : controlcomponents) {
       controlcomponent->save_controls_to_json(controls, json);
     }

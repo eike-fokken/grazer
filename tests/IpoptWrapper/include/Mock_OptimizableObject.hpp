@@ -366,6 +366,9 @@ public:
     return control_afterindex;
   }
 
+  void save_controls_to_json(
+      Aux::InterpolatingVector_Base const & /*controls*/,
+      nlohmann::json & /*json*/) const final {}
   // not needed:
   void set_initial_controls(
       Aux::InterpolatingVector_Base &, nlohmann::json const &) const final {

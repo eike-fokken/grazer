@@ -27,6 +27,10 @@ namespace Model {
   public:
     Eigen::Index set_control_indices(Eigen::Index next_free_index) final;
 
+    void save_controls_to_json(
+        Aux::InterpolatingVector_Base const &controls,
+        nlohmann::json &json) const final;
+
   private:
     /// \brief Returns number of control variables needed by this component.
     ///
