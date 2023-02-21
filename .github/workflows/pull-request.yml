@@ -8,7 +8,7 @@ on:
 
 jobs:
   format-check:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v3
     - name: Check_clang-format_style
@@ -32,7 +32,7 @@ jobs:
         include:
         - name: Linux-Docs
           compiler: g++-9
-          os: ubuntu-18.04
+          os: ubuntu-20.04
           dep-install: sudo apt-get update && sudo apt-get install -y cmake ninja-build texlive-latex-extra doxygen graphviz
           build_type: Debug
           binary-path: /build/src/Grazer/grazer
@@ -40,21 +40,21 @@ jobs:
           generator-command: -G"Ninja"
         - name: Linux-GNU
           compiler: g++-9
-          os: ubuntu-18.04
+          os: ubuntu-20.04
           dep-install: sudo apt-get update && sudo apt-get install -y cmake ninja-build
           build_type: Debug
           binary-path: /build/src/Grazer/grazer
           generator-command: -G"Ninja"
         - name: Linux-Clang
-          compiler: clang++-9
-          os: ubuntu-18.04
+          compiler: clang++-10
+          os: ubuntu-20.04
           dep-install: sudo apt-get update && sudo apt-get install -y cmake clang ninja-build
           build_type: Debug
           binary-path: /build/src/Grazer/grazer
           generator-command: -G"Ninja"
         - name: Linux-Clang-libc++
-          compiler: clang++-9
-          os: ubuntu-18.04
+          compiler: clang++-10
+          os: ubuntu-20.04
           dep-install: sudo apt-get update && sudo apt-get install -y cmake clang libc++abi-9-dev  libc++-9-dev ninja-build
           build_type: Debug
           build_with_libcpp: ON
@@ -68,8 +68,8 @@ jobs:
           dep-install: brew install bash metis ninja; echo "/usr/local/bin" >> $GITHUB_PATH; echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> $GITHUB_ENV; echo "FC=gfortran-11" >> $GITHUB_ENV;
           generator-command: -G"Ninja"
         - name: Release-Test
-          os: ubuntu-20.04
-          compiler: clang++-10
+          os: ubuntu-22.04
+          compiler: clang++-12
           dep-install: sudo apt-get update && sudo apt-get install -y cmake ninja-build
           build_type: Release
           binary-path: /build/src/Grazer/grazer
