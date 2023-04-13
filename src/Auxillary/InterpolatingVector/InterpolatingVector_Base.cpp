@@ -14,7 +14,7 @@
  * express or implied.  See your chosen license for details.
  *
  */
-#include "InterpolatingVector.hpp"
+#include "InterpolatingVector_Base.hpp"
 
 #include "Exception.hpp"
 #include "Mathfunctions.hpp"
@@ -250,6 +250,11 @@ namespace Aux {
         interpolation_points.data(), size());
   }
 
+  std::vector<double> const &
+  InterpolatingVector_Base::get_interpolation_points_vector() const {
+    return interpolation_points;
+  }
+
   Eigen::VectorXd InterpolatingVector_Base::operator()(double t) const {
     if (t >= interpolation_points.back()) {
       if (t > interpolation_points.back() + Aux::EPSILON) {
@@ -374,245 +379,6 @@ namespace Aux {
       return false;
     }
     return true;
-  }
-
-  ////////////////////////////////////////////////////////////////
-  // InterpolatingVector:
-  ////////////////////////////////////////////////////////////////
-
-  InterpolatingVector::InterpolatingVector() : InterpolatingVector_Base() {}
-  InterpolatingVector::InterpolatingVector(
-      Interpolation_data data, Eigen::Index _inner_length) :
-      InterpolatingVector_Base(data, _inner_length),
-      values(
-          _inner_length * static_cast<Eigen::Index>(data.number_of_entries)) {}
-
-  InterpolatingVector::InterpolatingVector(
-      std::vector<double> _interpolation_points, Eigen::Index _inner_length) :
-      InterpolatingVector_Base(_interpolation_points, _inner_length),
-      values(
-          _inner_length
-          * static_cast<Eigen::Index>(_interpolation_points.size())) {}
-
-  InterpolatingVector::InterpolatingVector(
-      Eigen::Ref<Eigen::VectorXd const> const &_interpolation_points,
-      Eigen::Index _inner_length) :
-      InterpolatingVector_Base(_interpolation_points, _inner_length),
-      values(
-          _inner_length
-          * static_cast<Eigen::Index>(_interpolation_points.size())) {}
-
-  InterpolatingVector &
-  InterpolatingVector::operator=(InterpolatingVector_Base const &other) {
-    assignment_helper(other);
-    this->values = other.get_allvalues();
-    return *this;
-  }
-
-  InterpolatingVector &
-  InterpolatingVector::operator=(InterpolatingVector const &other) {
-    assignment_helper(other);
-    this->values = other.values;
-    return *this;
-  }
-
-  InterpolatingVector::InterpolatingVector(
-      InterpolatingVector_Base const &other) :
-      InterpolatingVector_Base(other), values(other.get_allvalues()) {}
-
-  Eigen::Ref<Eigen::VectorXd> InterpolatingVector::allvalues() {
-    return values;
-  }
-
-  InterpolatingVector::InterpolatingVector(
-      InterpolatingVector &&other) noexcept = default;
-
-  Eigen::Ref<Eigen::VectorXd const> const
-  InterpolatingVector::allvalues() const {
-    return values;
-  }
-
-  InterpolatingVector InterpolatingVector::construct_and_interpolate_from(
-      Eigen::VectorXd interpolation_points, Eigen::Index inner_length,
-      InterpolatingVector_Base const &values) {
-    InterpolatingVector result(interpolation_points, inner_length);
-    result.interpolate_from(values);
-    return result;
-  }
-
-  InterpolatingVector InterpolatingVector::construct_from_json(
-      nlohmann::json const &json, nlohmann::json const &schema) {
-    Aux::schema::validate_json(json, schema);
-
-    std::vector<double> interpolation_points;
-
-    std::string name;
-    if (json["data"].front().contains("x")) {
-      name = "x";
-    } else {
-      name = "time";
-    }
-    for (auto const &[index, entry] : json["data"].items()) {
-      interpolation_points.push_back(entry[name]);
-    }
-
-    auto inner_length
-        = static_cast<Eigen::Index>(json["data"].front()["values"].size());
-    InterpolatingVector interpolatingVector(interpolation_points, inner_length);
-
-    auto size = interpolation_points.size();
-    for (size_t i = 0; i != size; ++i) {
-      Eigen::VectorXd a(json["data"][i]["values"].size());
-      for (size_t index = 0; index != json["data"][i]["values"].size();
-           ++index) {
-        a[static_cast<Eigen::Index>(index)]
-            = json["data"][i]["values"][index].get<double>();
-      }
-      interpolatingVector.mut_timestep(static_cast<Eigen::Index>(i)) = a;
-    }
-    return interpolatingVector;
-  }
-
-  MappedInterpolatingVector::MappedInterpolatingVector(
-      Interpolation_data data, Eigen::Index _inner_length, double *array,
-      Eigen::Index number_of_elements) :
-      InterpolatingVector_Base(data, _inner_length),
-      mapped_values(array, number_of_elements) {
-    if (get_inner_length() * size() != number_of_elements) {
-      gthrow(
-          {"Given number of elements of mapped storage differs from needed "
-           "number of elements as given in other data in "
-           "MappedInterpolatingVector!"});
-    }
-  }
-
-  MappedInterpolatingVector::MappedInterpolatingVector(
-      std::vector<double> _interpolation_points, Eigen::Index _inner_length,
-      double *array, Eigen::Index number_of_elements) :
-      InterpolatingVector_Base(_interpolation_points, _inner_length),
-      mapped_values(array, number_of_elements) {
-    if (get_inner_length() * size() != number_of_elements) {
-      gthrow(
-          {"Given number of elements of mapped storage differs from needed ",
-           "number of elements as given in other data in ",
-           "MappedInterpolatingVector!"});
-    }
-  }
-
-  MappedInterpolatingVector::MappedInterpolatingVector(
-      Eigen::Ref<Eigen::VectorXd const> const &_interpolation_points,
-      Eigen::Index _inner_length, double *array,
-      Eigen::Index number_of_elements) :
-      InterpolatingVector_Base(_interpolation_points, _inner_length),
-      mapped_values(array, number_of_elements) {
-    if (get_inner_length() * size() != number_of_elements) {
-      gthrow(
-          {"Given number of elements of mapped storage differs from needed ",
-           "number of elements as given in other data in ",
-           "MappedInterpolatingVector!"});
-    }
-  }
-
-  MappedInterpolatingVector &
-  MappedInterpolatingVector::operator=(InterpolatingVector_Base const &other) {
-    if (not have_same_structure(other, *this)) {
-      gthrow(
-          {"You are trying to assign an InterpolatingVector with a different "
-           "structure to this InterpolatingVector.\nThis is not permitted "
-           "through the InterpolatingVector_Base interface."});
-    }
-    allvalues() = other.get_allvalues();
-    assignment_helper(other);
-    return *this;
-  }
-
-  MappedInterpolatingVector &
-  MappedInterpolatingVector::operator=(MappedInterpolatingVector const &other) {
-    if (not have_same_structure(other, *this)) {
-      gthrow(
-          {"You are trying to assign an InterpolatingVector with a different "
-           "structure to this MappedInterpolatingVector.\nThis is not "
-           "permitted."});
-    }
-    allvalues() = other.mapped_values;
-    assignment_helper(other);
-    return *this;
-  }
-
-  Eigen::Ref<Eigen::VectorXd> MappedInterpolatingVector::allvalues() {
-    return mapped_values;
-  }
-  Eigen::Ref<Eigen::VectorXd const> const
-  MappedInterpolatingVector::allvalues() const {
-    return mapped_values;
-  }
-
-  ConstMappedInterpolatingVector::ConstMappedInterpolatingVector(
-      Interpolation_data data, Eigen::Index _inner_length, double const *array,
-      Eigen::Index number_of_elements) :
-      InterpolatingVector_Base(data, _inner_length),
-      mapped_values(array, number_of_elements) {
-    if (get_inner_length() * size() != number_of_elements) {
-      gthrow(
-          {"Given number of elements of mapped storage differs from needed "
-           "number of elements as given in other data in "
-           "MappedInterpolatingVector!"});
-    }
-  }
-
-  ConstMappedInterpolatingVector::ConstMappedInterpolatingVector(
-      std::vector<double> _interpolation_points, Eigen::Index _inner_length,
-      double const *array, Eigen::Index number_of_elements) :
-      InterpolatingVector_Base(_interpolation_points, _inner_length),
-      mapped_values(array, number_of_elements) {
-    if (get_inner_length() * size() != number_of_elements) {
-      gthrow(
-          {"Given number of elements of mapped storage differs from needed ",
-           "number of elements as given in other data in ",
-           "MappedInterpolatingVector!"});
-    }
-  }
-
-  ConstMappedInterpolatingVector::ConstMappedInterpolatingVector(
-      Eigen::Ref<Eigen::VectorXd const> const &_interpolation_points,
-      Eigen::Index _inner_length, double const *array,
-      Eigen::Index number_of_elements) :
-      InterpolatingVector_Base(_interpolation_points, _inner_length),
-      mapped_values(array, number_of_elements) {
-    if (get_inner_length() * size() != number_of_elements) {
-      gthrow(
-          {"Given number of elements of mapped storage differs from needed ",
-           "number of elements as given in other data in ",
-           "MappedInterpolatingVector!"});
-    }
-  }
-
-  void ConstMappedInterpolatingVector::reset_values(
-      double const *array, Eigen::Index number_of_elements) {
-    if (number_of_elements != this->get_total_number_of_values()) {
-      gthrow(
-          {"You can only reset ConstMappedInterpolatingVector to an array of "
-           "the same size as before."});
-    }
-    new (&mapped_values)
-        Eigen::Map<Eigen::VectorXd const>(array, number_of_elements);
-  }
-
-  Eigen::Ref<Eigen::VectorXd> ConstMappedInterpolatingVector::allvalues() {
-    gthrow(
-        {"You are trying to get a mutable reference to mapped values in ",
-         "ConstMappedInterpolatingVector.\n", "This is forbidden.",
-         "The fact that you see this error message means, that somewhere in ",
-         "your code a non-const object of type ConstMappedInterpolatingVector ",
-         "is constructed. This is allowed but you may not call any non-const ",
-         "method in InterpolatingVector_Base on such object!\n",
-         "As of now, forbidden (non-const methods) are:\n",
-         "mut_timestep(...)\n", "push_to_index(...)\n",
-         "set_values_in_bulk(...)"});
-  }
-  Eigen::Ref<Eigen::VectorXd const> const
-  ConstMappedInterpolatingVector::allvalues() const {
-    return mapped_values;
   }
 
 } // namespace Aux
