@@ -4,5 +4,4 @@ add_library(interpolatingVector STATIC InterpolatingVector_Base.cpp BackedInterp
 target_link_libraries(interpolatingVector PRIVATE exception mathfunctions aux_schema_validation misc)
 target_link_libraries(interpolatingVector PUBLIC timedata)
 
-target_include_directories(interpolatingVector PRIVATE private_include)
 target_include_directories(interpolatingVector PUBLIC include)

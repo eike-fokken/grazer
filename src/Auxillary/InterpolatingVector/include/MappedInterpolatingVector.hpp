@@ -17,6 +17,17 @@ namespace Aux {
         Eigen::Index inner_length, double *array,
         Eigen::Index number_of_elements);
 
+    /** \brief provide a view into another InterpolatingVector.
+     *
+     * @param supervector The vector of which to create the view.
+     * @param start_index The first index to be part of the view.
+     * @param after_index The end index of the view, first index not to be part
+     * of the view.
+     */
+    MappedInterpolatingVector(
+        InterpolatingVector_Base &supervector, Eigen::Index start_index,
+        Eigen::Index after_index);
+
     // We cannot have a copy constructor because a MappedInterpolatingVector
     // needs an underlying storage.
     MappedInterpolatingVector(MappedInterpolatingVector const &other) = delete;
@@ -36,6 +47,19 @@ namespace Aux {
      */
     MappedInterpolatingVector &
     operator=(MappedInterpolatingVector const &other);
+
+    /** \brief give derived classes access to the pointer to the start of the
+     * data
+     *
+     * @returns pointer to the start of all values.
+     */
+    double *get_value_pointer() final;
+
+    /** \brief give derived classes access to the pointer to the start of the
+     * data
+     * @returns pointer to the start of all values.
+     */
+    double const *get_value_pointer() const final;
 
   private:
     Eigen::Ref<Eigen::VectorXd> allvalues() final;
@@ -57,7 +81,24 @@ namespace Aux {
         Eigen::Index inner_length, double const *array,
         Eigen::Index number_of_elements);
 
+    ConstMappedInterpolatingVector(
+        InterpolatingVector_Base const &supervector, Eigen::Index start_index,
+        Eigen::Index after_index);
+
     void reset_values(double const *array, Eigen::Index number_of_elements);
+
+    /** \brief give derived classes access to the pointer to the start of the
+     * data
+     *
+     * @returns pointer to the start of all values.
+     */
+    double *get_value_pointer() final;
+
+    /** \brief give derived classes access to the pointer to the start of the
+     * data
+     * @returns pointer to the start of all values.
+     */
+    double const *get_value_pointer() const final;
 
   private:
     Eigen::Ref<Eigen::VectorXd> allvalues() final;

@@ -37,6 +37,7 @@ namespace Aux {
       double first_point, double last_point, int number_of_entries);
 
   class InterpolatingVector_Base {
+
   public:
     virtual ~InterpolatingVector_Base();
     InterpolatingVector_Base();
@@ -64,6 +65,19 @@ namespace Aux {
     InterpolatingVector_Base(InterpolatingVector_Base &&other) noexcept;
 
   public:
+    /** \brief give derived classes access to the pointer to the start of the
+     * data
+     *
+     * @returns pointer to the start of all values.
+     */
+    virtual double *get_value_pointer() = 0;
+
+    /** \brief give derived classes access to the pointer to the start of the
+     * data
+     * @returns pointer to the start of all values.
+     */
+    virtual double const *get_value_pointer() const = 0;
+
     void set_values_in_bulk(Eigen::Ref<Eigen::VectorXd const> const &values);
     void setZero();
 
@@ -71,6 +85,7 @@ namespace Aux {
 
     Eigen::Index get_total_number_of_values() const;
     Eigen::Map<Eigen::VectorXd const> get_interpolation_points() const;
+    std::vector<double> const &get_interpolation_points_vector() const;
 
     Eigen::Index get_inner_length() const;
 

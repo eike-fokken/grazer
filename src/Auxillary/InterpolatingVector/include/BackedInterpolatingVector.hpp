@@ -30,6 +30,19 @@ namespace Aux {
     // move constructor:
     InterpolatingVector(InterpolatingVector &&other) noexcept;
 
+    /** \brief give derived classes access to the pointer to the start of the
+     * data
+     *
+     * @returns pointer to the start of all values.
+     */
+    double *get_value_pointer() final;
+
+    /** \brief give derived classes access to the pointer to the start of the
+     * data
+     * @returns pointer to the start of all values.
+     */
+    double const *get_value_pointer() const final;
+
   private:
     Eigen::Ref<Eigen::VectorXd> allvalues() final;
     Eigen::Ref<Eigen::VectorXd const> const allvalues() const final;
