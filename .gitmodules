@@ -9,7 +9,6 @@
 [submodule "json-schema-validator"]
 	path = json-schema-validator
 	url = https://github.com/pboettch/json-schema-validator
-	shallow = true
 [submodule "pcg-cpp"]
 	path = pcg-cpp
 	url = https://github.com/imneme/pcg-cpp
