@@ -6,9 +6,6 @@
 	path = eigen
 	url = https://gitlab.com/libeigen/eigen.git
 	shallow = true
-[submodule "json-schema-validator"]
-	path = json-schema-validator
-	url = https://github.com/pboettch/json-schema-validator
 [submodule "pcg-cpp"]
 	path = pcg-cpp
 	url = https://github.com/imneme/pcg-cpp
