@@ -1,5 +1,5 @@
-cmake_minimum_required (VERSION 3.9)
-# 3.9 is needed for CheckIPOSupported and for doxygen_add_docs.
+cmake_minimum_required (VERSION 3.14)
+# 3.14 is needed for schema-validator
 
 # Version has its own file so that changes can trigger github workflows:
 include(Version.cmake)
@@ -47,10 +47,13 @@ set(JSON_BuildTests OFF CACHE INTERNAL "")
 # need to install it when your main project gets installed.
 set(JSON_Install ON CACHE INTERNAL "")
 set(JSON_SystemInclude On)
+
 # something seems to activate that, if not deactivated here:
 set(JSON_MultipleHeaders Off)
-add_subdirectory(nlohmann_json)
+# add_subdirectory(nlohmann_json)
 
+
+set(FETCHCONTENT_SOURCE_DIR_NLOHMANN_JSON "${CMAKE_CURRENT_SOURCE_DIR}/nlohmann_json/")
 if(BUILD_TESTS)
   set(BUILD_TESTS OFF)
   add_subdirectory(json-schema-validator)
