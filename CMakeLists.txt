@@ -63,7 +63,7 @@ else()
 endif()
 
 
-
+option(DEVEL_RELEASE "True, if not a real release, only for development, if true disables lto" ON)
 # An option to exclude IPO from the release type to make better use of a compiler cache (like ccache) for development:
 if (NOT DEVEL_RELEASE)
 
