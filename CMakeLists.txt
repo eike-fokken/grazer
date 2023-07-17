@@ -86,6 +86,22 @@ else()
   message(STATUS "To reactivate it, try disabling the option DEVEL_RELEASE.")
   message(STATUS "")
 endif()
+
+
+# Activate better lto for known compiler/linker combinations""
+if (CMAKE_INTERPROCEDURAL_OPTIMIZATION AND (CMAKE_CXX_COMPILER_ID MATCHES "GNU" AND ((NOT CMAKE_EXE_LINKER_FLAGS MATCHES "fuse-ld") OR CMAKE_EXE_LINKER_FLAGS MATCHES "fuse-ld=mold")))
+  message(STATUS "Using linker plugin lto with GCC.")
+  add_compile_options("-fuse-linker-plugin")
+endif()
+
+if (CMAKE_INTERPROCEDURAL_OPTIMIZATION AND (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
+  message(STATUS "Using thin lto with clang.")
+  add_compile_options("-flto=thin")
+  add_link_options("-flto")
+endif()
+
+
+
 # add_compile_options(-fopenmp)
 
 
