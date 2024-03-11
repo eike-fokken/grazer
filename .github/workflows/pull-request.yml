@@ -10,7 +10,7 @@ jobs:
   format-check:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Check_clang-format_style
       uses: jidicula/clang-format-action@v4.11.0
       with: 
@@ -91,7 +91,7 @@ jobs:
 
     steps:
     - name: Checkout_Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         submodules: recursive
     
