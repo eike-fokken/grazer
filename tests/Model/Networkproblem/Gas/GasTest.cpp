@@ -786,7 +786,7 @@ TEST_F(GasTEST, Pipe_evaluate) {
   double actual_Delta_x = length;
 
   Model::Balancelaw::Isothermaleulerequation bl(pipe_topology);
-  Model::Scheme::Implicitboxscheme scheme;
+  Model::Scheme::Implicitboxscheme<2> scheme;
   scheme.evaluate_point(
       expected_result, last_time, new_time, actual_Delta_x, last_left,
       last_right, new_left, new_right, bl);
@@ -849,7 +849,7 @@ TEST_F(GasTEST, Pipe_set_initial_conditions) {
       pipe_initial, pipe->get_initial_schema());
 
   for (int ipoint = 0; ipoint != pipe->get_number_of_points(); ++ipoint) {
-    Eigen::Vector2d point = bl->state(bl->p_qvol_from_p_qvol_bar(
+    Eigen::Vector2d point = bl.state(bl.p_qvol_from_p_qvol_bar(
         expected_values(ipoint * pipe->get_Delta_x())));
     for (int ivar = 0; ivar != vals_per_point; ++ivar) {
       EXPECT_DOUBLE_EQ(point[ivar], new_state[ipoint * vals_per_point + ivar]);
@@ -919,7 +919,7 @@ TEST_F(GasTEST, Pipe_d_evaluate_d_new_state) {
   Eigen::Matrix4d DenseJ = J;
 
   Model::Balancelaw::Isothermaleulerequation bl(pipe_topology);
-  Model::Scheme::Implicitboxscheme scheme;
+  Model::Scheme::Implicitboxscheme<2> scheme;
   double Delta_x = length;
   auto last_left = last_state.segment<2>(0);
   auto last_right = last_state.segment<2>(2);
@@ -1006,7 +1006,7 @@ TEST_F(GasTEST, Pipe_d_evaluate_d_last_state) {
   Eigen::Matrix4d DenseJ = J;
 
   Model::Balancelaw::Isothermaleulerequation bl(pipe_topology);
-  Model::Scheme::Implicitboxscheme scheme;
+  Model::Scheme::Implicitboxscheme<2> scheme;
   double Delta_x = length;
   auto last_left = last_state.segment<2>(0);
   auto last_right = last_state.segment<2>(2);

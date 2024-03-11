@@ -15,13 +15,13 @@
  *
  */
 #pragma once
-#include "Pipe_Balancelaw.hpp"
+#include "Balancelaw.hpp"
 #include <Eigen/Dense>
 #include <nlohmann/json.hpp>
 
 namespace Model::Balancelaw {
 
-  class Isothermaleulerequation : public Pipe_Balancelaw {
+  class Isothermaleulerequation : public Balancelaw<2> {
 
   public:
     Isothermaleulerequation(nlohmann::json const &json);
@@ -34,26 +34,26 @@ namespace Model::Balancelaw {
     Eigen::Matrix2d
     dsource_dstate(Eigen::Ref<Eigen::Vector2d const> state) const final;
 
-    Eigen::Vector2d p_qvol(Eigen::Ref<Eigen::Vector2d const> state) const final;
+    Eigen::Vector2d p_qvol(Eigen::Ref<Eigen::Vector2d const> state) const;
     Eigen::Matrix2d
-    dp_qvol_dstate(Eigen::Ref<Eigen::Vector2d const> state) const final;
+    dp_qvol_dstate(Eigen::Ref<Eigen::Vector2d const> state) const;
 
-    Eigen::Vector2d state(Eigen::Ref<Eigen::Vector2d const> p_qvol) const final;
-    double p_pascal_from_p_bar(double p) const final;
-    Eigen::Vector2d p_qvol_from_p_qvol_bar(
-        Eigen::Ref<Eigen::Vector2d const> p_qvol_bar) const final;
+    Eigen::Vector2d state(Eigen::Ref<Eigen::Vector2d const> p_qvol) const;
+    double p_pascal_from_p_bar(double p) const;
+    Eigen::Vector2d
+    p_qvol_from_p_qvol_bar(Eigen::Ref<Eigen::Vector2d const> p_qvol_bar) const;
 
-    double p_bar_from_p_pascal(double p) const final;
-    double dp_bar_from_p_pascal_dp_pascal(double p) const final;
+    double p_bar_from_p_pascal(double p) const;
+    double dp_bar_from_p_pascal_dp_pascal(double p) const;
 
-    Eigen::Vector2d p_qvol_bar_from_p_qvol(
-        Eigen::Ref<Eigen::Vector2d const> p_qvol) const final;
+    Eigen::Vector2d
+    p_qvol_bar_from_p_qvol(Eigen::Ref<Eigen::Vector2d const> p_qvol) const;
     Eigen::Matrix2d dp_qvol_bar_from_p_qvold_p_qvol(
-        Eigen::Ref<Eigen::Vector2d const> p_qvol) const final;
+        Eigen::Ref<Eigen::Vector2d const> p_qvol) const;
 
-    double p(double rho) const final;
-    double dp_drho(double rho) const final;
-    double rho(double rho) const final;
+    double p(double rho) const;
+    double dp_drho(double rho) const;
+    double rho(double rho) const;
 
     static double
     lambda_non_laminar(double Re, double diameter, double roughness);

@@ -14,6 +14,8 @@
  * express or implied.  See your chosen license for details.
  *
  */
+#include "Exception.hpp"
+#include "Implicitboxscheme.hpp"
 #include "Threepointscheme.hpp"
 #include <memory>
 #include <nlohmann/json.hpp>
@@ -21,6 +23,13 @@
 
 namespace Model::Scheme {
 
-  std::unique_ptr<Scheme::Threepointscheme>
-  make_threepointscheme(nlohmann::json const &json);
-}
+  template <int Dimension>
+  std::unique_ptr<Scheme::Threepointscheme<Dimension>>
+  make_threepointscheme(nlohmann::json const &json) {
+    if (json["scheme"] == "Implicitboxscheme") {
+      return std::make_unique<Implicitboxscheme<Dimension>>();
+    } else {
+      gthrow({"Unknown type of scheme!"});
+    }
+  }
+} // namespace Model::Scheme
