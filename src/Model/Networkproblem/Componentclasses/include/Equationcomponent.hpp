@@ -56,7 +56,8 @@ namespace Model {
     virtual void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
-        Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const
+        = 0;
 
     /** \brief Carries out steps that need to be taken before the Newton method
      * for a time step can start.
@@ -88,7 +89,8 @@ namespace Model {
     virtual void d_evaluate_d_new_state(
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
-        Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const
+        = 0;
 
     /** \brief derivative of Equationcomponent::evaluate w.r.t. \p last_state.
      *
@@ -109,7 +111,8 @@ namespace Model {
     virtual void d_evaluate_d_last_state(
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
-        Eigen::Ref<Eigen::VectorXd const> const &new_state) const = 0;
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const
+        = 0;
   };
 
 } // namespace Model

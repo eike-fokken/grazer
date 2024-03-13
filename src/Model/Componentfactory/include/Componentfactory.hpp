@@ -46,9 +46,8 @@ namespace Model::Componentfactory {
   template <typename Component>
   constexpr void check_class_hierarchy_properties() {
     static_assert(
-        not(std::is_base_of_v<
-                Equationcomponent,
-                Component> and std::is_base_of_v<Controlcomponent, Component>),
+        not(std::is_base_of_v<Equationcomponent, Component>
+            and std::is_base_of_v<Controlcomponent, Component>),
         "\n\n\nYou have a Component type that inherits both from "
         "Equationcomponent and Controlcomponent! This is forbidden, as their "
         "evaluate methods share the same functionality.\n\nPLEASE ONLY "
@@ -136,7 +135,8 @@ namespace Model::Componentfactory {
      * @return nlohmann::json
      */
     virtual nlohmann::json
-    get_schema(bool allow_required_defaults, bool include_external) const = 0;
+    get_schema(bool allow_required_defaults, bool include_external) const
+        = 0;
 
     virtual std::optional<nlohmann::json>
     get_boundary_schema(bool allow_required_defaults) const = 0;
@@ -205,7 +205,8 @@ namespace Model::Componentfactory {
      */
     virtual std::unique_ptr<Network::Edge> make_instance(
         nlohmann::json &topology,
-        std::vector<std::unique_ptr<Network::Node>> &nodes) const = 0;
+        std::vector<std::unique_ptr<Network::Node>> &nodes) const
+        = 0;
   };
 
   /**

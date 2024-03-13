@@ -47,7 +47,8 @@ namespace Model::Gas {
     /// It is the responsibility of the edge to decide what that means.
     virtual Eigen::Vector2d get_boundary_p_qvol_bar(
         Direction direction,
-        Eigen::Ref<Eigen::VectorXd const> const &state) const = 0;
+        Eigen::Ref<Eigen::VectorXd const> const &state) const
+        = 0;
 
     /// @brief Set the derivatives with respect to the boundary states.
     ///
@@ -60,7 +61,8 @@ namespace Model::Gas {
     virtual void dboundary_p_qvol_dstate(
         Direction direction, Aux::Matrixhandler &jacobianhandler,
         Eigen::RowVector2d function_derivative, Eigen::Index rootvalues_index,
-        Eigen::Ref<Eigen::VectorXd const> const &state) const = 0;
+        Eigen::Ref<Eigen::VectorXd const> const &state) const
+        = 0;
 
   private:
     Eigen::Vector2d
