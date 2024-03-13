@@ -43,17 +43,20 @@ namespace Model {
     virtual void evaluate_constraint(
         Eigen::Ref<Eigen::VectorXd> constraint_values, double time,
         Eigen::Ref<Eigen::VectorXd const> const &state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const
+        = 0;
 
     virtual void d_evaluate_constraint_d_state(
         Aux::Matrixhandler &constraint_new_state_jacobian_handler, double time,
         Eigen::Ref<Eigen::VectorXd const> const &state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const
+        = 0;
 
     virtual void d_evaluate_constraint_d_control(
         Aux::Matrixhandler &constraint_control_jacobian_handler, double time,
         Eigen::Ref<Eigen::VectorXd const> const &state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const
+        = 0;
 
     /** \brief This function sets the indices #start_constraint_index and
      * #after_constraint_index.
@@ -77,11 +80,13 @@ namespace Model {
 
     virtual void set_constraint_lower_bounds(
         Aux::InterpolatingVector_Base &full_control_vector,
-        nlohmann::json const &constraint_lower_bounds_json) const = 0;
+        nlohmann::json const &constraint_lower_bounds_json) const
+        = 0;
 
     virtual void set_constraint_upper_bounds(
         Aux::InterpolatingVector_Base &full_control_vector,
-        nlohmann::json const &constraint_upper_bounds_json) const = 0;
+        nlohmann::json const &constraint_upper_bounds_json) const
+        = 0;
 
   private:
     /** \brief The first index, this Constraintcomponent "owns".

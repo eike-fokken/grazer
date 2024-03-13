@@ -15,7 +15,6 @@
  *
  */
 #include "Pipe.hpp"
-#include "Balancelaw_factory.hpp"
 #include "Coloroutput.hpp"
 #include "Edge.hpp"
 #include "Exception.hpp"
@@ -24,7 +23,6 @@
 #include "Isothermaleulerequation.hpp"
 #include "Mathfunctions.hpp"
 #include "Matrixhandler.hpp"
-#include "Pipe_Balancelaw.hpp"
 #include "Scheme_factory.hpp"
 #include "Threepointscheme.hpp"
 #include "make_schema.hpp"
@@ -84,8 +82,8 @@ namespace Model::Gas {
       Delta_x(
           unit::length.parse_to_si(topology["length"])
           / (number_of_points - 1)),
-      balancelaw(Balancelaw::make_pipe_balancelaw(topology)),
-      scheme{Scheme::make_threepointscheme(topology)} {}
+      isothermaleulerequation(topology),
+      scheme{Scheme::make_threepointscheme<2>(topology)} {}
 
   Pipe::~Pipe() {}
 
@@ -105,7 +103,7 @@ namespace Model::Gas {
 
       scheme->evaluate_point(
           rootvalue_segment, last_time, new_time, Delta_x, last_left,
-          last_right, new_left, new_right, *balancelaw);
+          last_right, new_left, new_right, isothermaleulerequation);
     }
   }
 
@@ -124,7 +122,7 @@ namespace Model::Gas {
       Eigen::Matrix2d current_derivative_left
           = scheme->devaluate_point_d_new_left(
               last_time, new_time, Delta_x, last_left, last_right, new_left,
-              new_right, *balancelaw);
+              new_right, isothermaleulerequation);
 
       jacobianhandler.add_to_coefficient(
           i, i - 1, current_derivative_left(0, 0));
@@ -137,7 +135,7 @@ namespace Model::Gas {
       Eigen::Matrix2d current_derivative_right
           = scheme->devaluate_point_d_new_right(
               last_time, new_time, Delta_x, last_left, last_right, new_left,
-              new_right, *balancelaw);
+              new_right, isothermaleulerequation);
 
       jacobianhandler.add_to_coefficient(
           i, i + 1, current_derivative_right(0, 0));
@@ -165,7 +163,7 @@ namespace Model::Gas {
       Eigen::Matrix2d current_derivative_left
           = scheme->devaluate_point_d_last_left(
               last_time, new_time, Delta_x, last_left, last_right, new_left,
-              new_right, *balancelaw);
+              new_right, isothermaleulerequation);
 
       jacobianhandler.add_to_coefficient(
           i, i - 1, current_derivative_left(0, 0));
@@ -178,7 +176,7 @@ namespace Model::Gas {
       Eigen::Matrix2d current_derivative_right
           = scheme->devaluate_point_d_last_right(
               last_time, new_time, Delta_x, last_left, last_right, new_left,
-              new_right, *balancelaw);
+              new_right, isothermaleulerequation);
 
       jacobianhandler.add_to_coefficient(
           i, i + 1, current_derivative_right(0, 0));
@@ -212,8 +210,8 @@ namespace Model::Gas {
       Eigen::Vector2d current_state
           = state.segment<2>(get_state_startindex() + 2 * i);
       double current_rho = current_state[0];
-      double current_p_bar
-          = balancelaw->p_bar_from_p_pascal(balancelaw->p(current_rho));
+      double current_p_bar = isothermaleulerequation.p_bar_from_p_pascal(
+          isothermaleulerequation.p(current_rho));
       double current_q = current_state[1];
       double x = i * Delta_x;
       nlohmann::json pressure_json;
@@ -237,8 +235,8 @@ namespace Model::Gas {
     // Unfortunately the argument and return types do not match.
     // Therefore we declare a lambda, that takes a VectorXd and returns a
     // VectorXd for passing to set_simple_initial_values.
-    Balancelaw::Pipe_Balancelaw const *bl = balancelaw.get();
-    auto transform = [bl](Eigen::Ref<Eigen::VectorXd const> const &vector)
+    auto const &isoeuler = isothermaleulerequation;
+    auto transform = [isoeuler](Eigen::Ref<Eigen::VectorXd const> const &vector)
         -> Eigen::VectorXd {
       if (vector.size() != 2) {
         gthrow(
@@ -247,7 +245,8 @@ namespace Model::Gas {
              "The right size is 2."});
       }
       Eigen::Vector2d argument = vector;
-      Eigen::VectorXd result = bl->state(bl->p_qvol_from_p_qvol_bar(argument));
+      Eigen::VectorXd result
+          = isoeuler.state(isoeuler.p_qvol_from_p_qvol_bar(argument));
       return result;
     };
 
@@ -260,8 +259,8 @@ namespace Model::Gas {
       Direction direction,
       Eigen::Ref<Eigen::VectorXd const> const &state) const {
     Eigen::Vector2d b_state = get_boundary_state(direction, state);
-    Eigen::Vector2d p_qvol = balancelaw->p_qvol(b_state);
-    return balancelaw->p_qvol_bar_from_p_qvol(p_qvol);
+    Eigen::Vector2d p_qvol = isothermaleulerequation.p_qvol(b_state);
+    return isothermaleulerequation.p_qvol_bar_from_p_qvol(p_qvol);
   }
 
   void Pipe::dboundary_p_qvol_dstate(
@@ -270,11 +269,12 @@ namespace Model::Gas {
       Eigen::Ref<Eigen::VectorXd const> const &state) const {
     Eigen::Vector2d boundary_state = get_boundary_state(direction, state);
 
-    Eigen::Vector2d p_qvol = balancelaw->p_qvol(boundary_state);
+    Eigen::Vector2d p_qvol = isothermaleulerequation.p_qvol(boundary_state);
 
-    Eigen::Matrix2d dp_qvol_dstate = balancelaw->dp_qvol_dstate(boundary_state);
+    Eigen::Matrix2d dp_qvol_dstate
+        = isothermaleulerequation.dp_qvol_dstate(boundary_state);
     Eigen::Matrix2d dpqvolbar_dpqvol
-        = balancelaw->dp_qvol_bar_from_p_qvold_p_qvol(p_qvol);
+        = isothermaleulerequation.dp_qvol_bar_from_p_qvold_p_qvol(p_qvol);
 
     Eigen::Matrix2d dpqvol_bar_dstate = dpqvolbar_dpqvol * dp_qvol_dstate;
 
@@ -289,8 +289,8 @@ namespace Model::Gas {
         rootvalues_index, q_index, derivative[1]);
   }
 
-  Balancelaw::Pipe_Balancelaw const *Pipe::get_balancelaw() const {
-    return balancelaw.get();
+  Balancelaw::Isothermaleulerequation const &Pipe::get_balancelaw() const {
+    return isothermaleulerequation;
   }
 
   int Pipe::get_number_of_points() const { return number_of_points; }

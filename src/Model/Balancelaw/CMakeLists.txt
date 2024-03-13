@@ -1,6 +1,6 @@
 add_library(balancelaw STATIC
   Isothermaleulerequation.cpp
-  Balancelaw_factory.cpp)
+  )
 
 target_link_libraries(balancelaw PRIVATE
 exception

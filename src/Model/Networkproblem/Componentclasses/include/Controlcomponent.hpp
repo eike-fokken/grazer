@@ -57,7 +57,8 @@ namespace Model {
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const
+        = 0;
 
     /** \brief Carries out steps that need to be taken before the Newton
      * method for a time step can start.
@@ -93,7 +94,8 @@ namespace Model {
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const
+        = 0;
 
     /** \brief derivative of Controlcomponent::evaluate w.r.t. \p
      * last_state.
@@ -114,7 +116,8 @@ namespace Model {
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const
+        = 0;
 
     /** \brief derivative of Controlcomponent::evaluate w.r.t. \p control.
      *
@@ -134,7 +137,8 @@ namespace Model {
         Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
         Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state,
-        Eigen::Ref<Eigen::VectorXd const> const &control) const = 0;
+        Eigen::Ref<Eigen::VectorXd const> const &control) const
+        = 0;
 
     /** \brief This function sets the indices #start_control_index and
      * #after_control_index.
@@ -160,19 +164,23 @@ namespace Model {
 
     virtual void set_initial_controls(
         Aux::InterpolatingVector_Base &full_control_vector,
-        nlohmann::json const &control_json) const = 0;
+        nlohmann::json const &control_json) const
+        = 0;
 
     virtual void set_lower_bounds(
         Aux::InterpolatingVector_Base &full_lower_bound_vector,
-        nlohmann::json const &lower_bound_json) const = 0;
+        nlohmann::json const &lower_bound_json) const
+        = 0;
 
     virtual void set_upper_bounds(
         Aux::InterpolatingVector_Base &full_upper_bound_vector,
-        nlohmann::json const &upper_bound_json) const = 0;
+        nlohmann::json const &upper_bound_json) const
+        = 0;
 
     virtual void save_controls_to_json(
         Aux::InterpolatingVector_Base const &controls,
-        nlohmann::json &json) const = 0;
+        nlohmann::json &json) const
+        = 0;
 
   private:
     virtual std::string componentclass() const = 0;

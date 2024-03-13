@@ -42,7 +42,8 @@ namespace Optimization {
 
     virtual bool supply_constraint_jacobian_indices(
         Eigen::Ref<Eigen::VectorX<Ipopt::Index>> Rowindices,
-        Eigen::Ref<Eigen::VectorX<Ipopt::Index>> Colindices) const = 0;
+        Eigen::Ref<Eigen::VectorX<Ipopt::Index>> Colindices) const
+        = 0;
 
     virtual Eigen::Index get_total_no_controls() const = 0;
     virtual Eigen::Index get_total_no_constraints() const = 0;

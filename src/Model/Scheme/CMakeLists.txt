@@ -1,10 +1,11 @@
-add_library(scheme STATIC
-  Implicitboxscheme.cpp
-  Scheme_factory.cpp)
+add_library(scheme INTERFACE
+  # Implicitboxscheme.cpp
+  # Scheme_factory.cpp
+)
 
-target_link_libraries(scheme PRIVATE
+target_link_libraries(scheme INTERFACE
   balancelaw
   exception)
 
-target_include_directories(scheme PUBLIC
+target_include_directories(scheme INTERFACE
   include)

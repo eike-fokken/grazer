@@ -15,57 +15,93 @@
  *
  */
 #pragma once
+#include "Balancelaw.hpp"
 #include "Threepointscheme.hpp"
 #include <Eigen/Sparse>
 
-namespace Model::Balancelaw {
-  class Pipe_Balancelaw;
-} // namespace Model::Balancelaw
-
 namespace Model::Scheme {
 
-  class Implicitboxscheme : public Threepointscheme {
+  template <int Dimension>
+  class Implicitboxscheme : public Threepointscheme<Dimension> {
   public:
     ~Implicitboxscheme() {}
     /// Computes the implicit box scheme at one point.
     void evaluate_point(
-        Eigen::Ref<Eigen::Vector2d> result, double last_time, double new_time,
-        double Delta_x, Eigen::Ref<Eigen::Vector2d const> last_left,
-        Eigen::Ref<Eigen::Vector2d const> last_right,
-        Eigen::Ref<Eigen::Vector2d const> new_left,
-        Eigen::Ref<Eigen::Vector2d const> new_right,
-        Model::Balancelaw::Pipe_Balancelaw const &bl) const final;
+        Eigen::Ref<Eigen::Vector<double, Dimension>> result, double last_time,
+        double new_time, double Delta_x,
+        Eigen::Ref<Eigen::Vector<double, Dimension> const> last_left,
+        Eigen::Ref<Eigen::Vector<double, Dimension> const> last_right,
+        Eigen::Ref<Eigen::Vector<double, Dimension> const> new_left,
+        Eigen::Ref<Eigen::Vector<double, Dimension> const> new_right,
+        Model::Balancelaw::Balancelaw<Dimension> const &bl) const final {
 
-    Eigen::Matrix2d devaluate_point_d_new_left(
-        double last_time, double new_time, double Delta_x,
-        Eigen::Ref<Eigen::Vector2d const> last_left,
-        Eigen::Ref<Eigen::Vector2d const> last_right,
-        Eigen::Ref<Eigen::Vector2d const> new_left,
-        Eigen::Ref<Eigen::Vector2d const> new_right,
-        Model::Balancelaw::Pipe_Balancelaw const &bl) const final;
+      double Delta_t = new_time - last_time;
+      result = 0.5 * (new_left + new_right) - 0.5 * (last_left + last_right)
+               - Delta_t / Delta_x * (bl.flux(new_left) - bl.flux(new_right))
+               - 0.5 * Delta_t * (bl.source(new_right) + bl.source(new_left));
+    }
 
-    Eigen::Matrix2d devaluate_point_d_new_right(
+    Eigen::Matrix<double, Dimension, Dimension> devaluate_point_d_new_left(
         double last_time, double new_time, double Delta_x,
-        Eigen::Ref<Eigen::Vector2d const> last_left,
-        Eigen::Ref<Eigen::Vector2d const> last_right,
-        Eigen::Ref<Eigen::Vector2d const> new_left,
-        Eigen::Ref<Eigen::Vector2d const> new_right,
-        Model::Balancelaw::Pipe_Balancelaw const &bl) const final;
+        Eigen::Ref<Eigen::Vector<double, Dimension> const> /*last_left*/,
+        Eigen::Ref<Eigen::Vector<double, Dimension> const> /*last_right*/,
+        Eigen::Ref<Eigen::Vector<double, Dimension> const> new_left,
+        Eigen::Ref<Eigen::Vector<double, Dimension> const> /*new_right*/,
+        Model::Balancelaw::Balancelaw<Dimension> const &bl) const final {
+      double Delta_t = new_time - last_time;
+      Eigen::Matrix<double, Dimension, Dimension> jac;
+      Eigen::Matrix<double, Dimension, Dimension> id;
+      id.setIdentity();
+      jac = 0.5 * id - Delta_t / Delta_x * bl.dflux_dstate(new_left)
+            - 0.5 * Delta_t * bl.dsource_dstate(new_left);
+      return jac;
+    }
 
-    Eigen::Matrix2d devaluate_point_d_last_left(
+    Eigen::Matrix<double, Dimension, Dimension> devaluate_point_d_new_right(
         double last_time, double new_time, double Delta_x,
-        Eigen::Ref<Eigen::Vector2d const> last_left,
-        Eigen::Ref<Eigen::Vector2d const> last_right,
-        Eigen::Ref<Eigen::Vector2d const> new_left,
-        Eigen::Ref<Eigen::Vector2d const> new_right,
-        Model::Balancelaw::Pipe_Balancelaw const &bl) const final;
+        Eigen::Ref<Eigen::Vector<double, Dimension> const> /*last_left*/,
+        Eigen::Ref<Eigen::Vector<double, Dimension> const> /*last_right*/,
+        Eigen::Ref<Eigen::Vector<double, Dimension> const> /*new_left*/,
+        Eigen::Ref<Eigen::Vector<double, Dimension> const> new_right,
+        Model::Balancelaw::Balancelaw<Dimension> const &bl) const final {
 
-    Eigen::Matrix2d devaluate_point_d_last_right(
-        double last_time, double new_time, double Delta_x,
-        Eigen::Ref<Eigen::Vector2d const> last_left,
-        Eigen::Ref<Eigen::Vector2d const> last_right,
-        Eigen::Ref<Eigen::Vector2d const> new_left,
-        Eigen::Ref<Eigen::Vector2d const> new_right,
-        Model::Balancelaw::Pipe_Balancelaw const &bl) const final;
+      double Delta_t = new_time - last_time;
+      Eigen::Matrix<double, Dimension, Dimension> jac;
+      Eigen::Matrix<double, Dimension, Dimension> id;
+      id.setIdentity();
+      jac = 0.5 * id + Delta_t / Delta_x * bl.dflux_dstate(new_right)
+            - 0.5 * Delta_t * bl.dsource_dstate(new_right);
+      return jac;
+    }
+
+    Eigen::Matrix<double, Dimension, Dimension> devaluate_point_d_last_left(
+        double /*last_time*/, double /*new_time*/, double /*Delta_x*/,
+        Eigen::Ref<Eigen::Vector<double, Dimension> const> /*last_left*/,
+        Eigen::Ref<Eigen::Vector<double, Dimension> const> /*last_right*/,
+        Eigen::Ref<Eigen::Vector<double, Dimension> const> /*new_left*/,
+        Eigen::Ref<Eigen::Vector<double, Dimension> const> /*new_right*/,
+        Model::Balancelaw::Balancelaw<Dimension> const & /*bl*/) const final {
+
+      Eigen::Matrix<double, Dimension, Dimension> jac;
+      Eigen::Matrix<double, Dimension, Dimension> id;
+      id.setIdentity();
+      jac = -0.5 * id;
+      return jac;
+    }
+
+    Eigen::Matrix<double, Dimension, Dimension> devaluate_point_d_last_right(
+        double /*last_time*/, double /*new_time*/, double /*Delta_x*/,
+        Eigen::Ref<Eigen::Vector<double, Dimension> const> /*last_left*/,
+        Eigen::Ref<Eigen::Vector<double, Dimension> const> /*last_right*/,
+        Eigen::Ref<Eigen::Vector<double, Dimension> const> /*new_left*/,
+        Eigen::Ref<Eigen::Vector<double, Dimension> const> /*new_right*/,
+        Model::Balancelaw::Balancelaw<Dimension> const & /*bl*/) const final {
+
+      Eigen::Matrix<double, Dimension, Dimension> jac;
+      Eigen::Matrix<double, Dimension, Dimension> id;
+      id.setIdentity();
+      jac = -0.5 * id;
+      return jac;
+    }
   };
 } // namespace Model::Scheme

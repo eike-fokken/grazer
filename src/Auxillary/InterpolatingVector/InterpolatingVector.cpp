@@ -424,8 +424,8 @@ namespace Aux {
     return values;
   }
 
-  InterpolatingVector::InterpolatingVector(
-      InterpolatingVector &&other) noexcept = default;
+  InterpolatingVector::InterpolatingVector(InterpolatingVector &&other) noexcept
+      = default;
 
   Eigen::Ref<Eigen::VectorXd const> const
   InterpolatingVector::allvalues() const {

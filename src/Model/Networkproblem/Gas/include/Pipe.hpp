@@ -18,14 +18,8 @@
 #include "Edge.hpp"
 #include "Equationcomponent.hpp"
 #include "Gasedge.hpp"
-
-namespace Model::Balancelaw {
-  class Pipe_Balancelaw;
-}
-
-namespace Model::Scheme {
-  class Threepointscheme;
-}
+#include "Isothermaleulerequation.hpp"
+#include "Threepointscheme.hpp"
 
 namespace Model::Gas {
 
@@ -80,7 +74,7 @@ namespace Model::Gas {
         Eigen::RowVector2d function_derivative, Eigen::Index rootvalues_index,
         Eigen::Ref<Eigen::VectorXd const> const &state) const final;
 
-    Balancelaw::Pipe_Balancelaw const *get_balancelaw() const;
+    Balancelaw::Isothermaleulerequation const &get_balancelaw() const;
 
     int get_number_of_points() const;
     double get_Delta_x() const;
@@ -89,9 +83,8 @@ namespace Model::Gas {
     double get_length() const;
     int const number_of_points;
     double const Delta_x;
-
-    std::unique_ptr<Balancelaw::Pipe_Balancelaw const> balancelaw;
-    std::unique_ptr<Scheme::Threepointscheme const> scheme;
+    Balancelaw::Isothermaleulerequation const isothermaleulerequation;
+    std::unique_ptr<Scheme::Threepointscheme<2> const> scheme;
   };
 
 } // namespace Model::Gas

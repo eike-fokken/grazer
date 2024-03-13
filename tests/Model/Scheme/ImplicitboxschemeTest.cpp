@@ -45,7 +45,7 @@ TEST(testImplicitboxscheme, evaluate_point) {
 
   Eigen::Vector2d result;
 
-  Model::Scheme::Implicitboxscheme scheme;
+  Model::Scheme::Implicitboxscheme<2> scheme;
   scheme.evaluate_point(
       result, last_time, new_time, Delta_x, last_left, last_right, new_left,
       new_right, bl);
@@ -87,7 +87,7 @@ TEST(testImplicitboxscheme, devaluate_point_d_new_left) {
   Eigen::Vector2d new_left = new_state.segment<2>(0);
   Eigen::Vector2d new_right = new_state.segment<2>(2);
 
-  Model::Scheme::Implicitboxscheme scheme;
+  Model::Scheme::Implicitboxscheme<2> scheme;
 
   Eigen::Vector2d result_h0;
   Eigen::Vector2d result_mh0;
@@ -173,7 +173,7 @@ TEST(testImplicitboxscheme, devaluate_point_d_last_left) {
   Eigen::Vector2d new_left = new_state.segment<2>(0);
   Eigen::Vector2d new_right = new_state.segment<2>(2);
 
-  Model::Scheme::Implicitboxscheme scheme;
+  Model::Scheme::Implicitboxscheme<2> scheme;
 
   Eigen::Vector2d result_h0;
   Eigen::Vector2d result_mh0;
@@ -256,7 +256,7 @@ TEST(testImplicitboxscheme, devaluate_point_d_new_right) {
   Eigen::Vector2d new_left = new_state.segment<2>(0);
   Eigen::Vector2d new_right = new_state.segment<2>(2);
 
-  Model::Scheme::Implicitboxscheme scheme;
+  Model::Scheme::Implicitboxscheme<2> scheme;
 
   Eigen::Vector2d result_h0;
   Eigen::Vector2d result_mh0;
@@ -340,7 +340,7 @@ TEST(testImplicitboxscheme, devaluate_point_d_last_right) {
   Eigen::Vector2d new_left = new_state.segment<2>(0);
   Eigen::Vector2d new_right = new_state.segment<2>(2);
 
-  Model::Scheme::Implicitboxscheme scheme;
+  Model::Scheme::Implicitboxscheme<2> scheme;
 
   Eigen::Vector2d result_h0;
   Eigen::Vector2d result_mh0;
