@@ -14,7 +14,7 @@ jobs:
     - name: Check_clang-format_style
       uses: jidicula/clang-format-action@v4.11.0
       with: 
-        clang-format-version: "11"
+        clang-format-version: "16"
     
 
   build-and-test:
