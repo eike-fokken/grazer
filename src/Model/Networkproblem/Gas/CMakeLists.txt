@@ -2,6 +2,7 @@ add_library(gas STATIC
   Gasedge.cpp
   Gasnode.cpp
   Flowboundarynode.cpp
+  Pressureboundarynode.cpp
 
   Source.cpp
   Sink.cpp

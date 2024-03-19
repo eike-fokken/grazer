@@ -11,13 +11,12 @@
 #include "Networkproblem.hpp"
 #include "Pipe.hpp"
 #include "Shortpipe.hpp"
-#include <filesystem>
+
 #include <gtest/gtest.h>
 #include <memory>
 #include <sstream>
-#include <stdexcept>
+
 #include <string>
-#include <type_traits>
 #include <vector>
 
 nlohmann::json source_json(std::string id, double flowstart, double flowend);
@@ -350,6 +349,205 @@ TEST_F(GasTEST, Source_d_evaluate_d_new_state) {
   EXPECT_DOUBLE_EQ(DenseJ(4, 5), 1);
   for (Eigen::Index i = 0; i != 8; ++i) {
     if (i == 5) {
+      continue;
+    }
+    EXPECT_DOUBLE_EQ(DenseJ(4, i), 0.0);
+  }
+}
+
+TEST_F(GasTEST, Pressureboundarynode_evaluate) {
+
+  double pressure0start = 88.0;
+  double pressure0end = 10.0;
+
+  double pressure1start = -23.0;
+  double pressure1end = -440.0;
+
+  double pressure2start = -383.0;
+  double pressure2end = 81.0;
+
+  // Using these is a code smell: But actually only the name changes for
+  // Pressureboundarynode. Therefore we go with it...
+
+  // TODO create a new pressureboundarynode_json function or make source_json
+  // more general and rename it.
+  auto node0_json = source_json("node0", pressure0start, pressure0end);
+  auto node1_json = source_json("node1", pressure1start, pressure1end);
+  auto node2_json = source_json("node2", pressure2start, pressure2end);
+
+  auto shortpipe01_json = shortpipe_json("shortpipe01", node0_json, node1_json);
+  auto shortpipe20_json = shortpipe_json("shortpipe20", node2_json, node0_json);
+
+  auto np_json = make_full_json(
+      {{"Pressureboundarynode", {node0_json, node1_json, node2_json}}},
+      {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
+
+  auto netprob = make_Networkproblem(np_json);
+  netprob->init();
+  auto number_of_variables = netprob->get_number_of_states();
+  double sp01_pressure_start = 810;
+  double sp01_flow_start = -4;
+  double sp01_pressure_end = 125;
+  double sp01_flow_end = 1000;
+
+  nlohmann::json initial01;
+  {
+    Eigen::Vector2d cond0(sp01_pressure_start, sp01_flow_start);
+    Eigen::Vector2d cond1(sp01_pressure_end, sp01_flow_end);
+    initial01 = make_value_json("shortpipe01", "x", cond0, cond1);
+  }
+  double sp20_pressure_start = 811;
+  double sp20_flow_start = -8;
+  double sp20_pressure_end = 131;
+  double sp20_flow_end = 1111;
+
+  nlohmann::json initial20;
+  {
+    Eigen::Vector2d cond0(sp20_pressure_start, sp20_flow_start);
+    Eigen::Vector2d cond1(sp20_pressure_end, sp20_flow_end);
+    initial20 = make_value_json("shortpipe20", "x", cond0, cond1);
+  }
+
+  auto initial_json
+      = make_initial_json({}, {{"Shortpipe", {initial01, initial20}}});
+
+  double last_time = 0.0;
+  double new_time = 0.0;
+  Eigen::VectorXd rootvalues(number_of_variables);
+  rootvalues.setZero();
+  Eigen::VectorXd last_state(number_of_variables);
+  Eigen::VectorXd new_state(number_of_variables);
+
+  netprob->set_initial_values(new_state, initial_json);
+
+  // The following are not needed, as the gas components up to now are not
+  // controlled.  But to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
+  netprob->evaluate(
+      rootvalues, last_time, new_time, last_state, new_state, control);
+
+  // node0:
+
+  EXPECT_DOUBLE_EQ(rootvalues[0], sp01_pressure_start - pressure0start);
+  EXPECT_DOUBLE_EQ(rootvalues[7], sp20_pressure_end - pressure0start);
+  // node 1:
+  EXPECT_DOUBLE_EQ(rootvalues[3], sp01_pressure_end - pressure1start);
+
+  // node 2:
+  EXPECT_DOUBLE_EQ(rootvalues[4], sp20_pressure_start - pressure2start);
+}
+
+TEST_F(GasTEST, Pressureboundarynode_d_evaluate_d_new_state) {
+
+  double pressure0start = 88.0;
+  double pressure0end = 10.0;
+
+  double pressure1start = -23.0;
+  double pressure1end = -440.0;
+
+  double pressure2start = -383.0;
+  double pressure2end = 81.0;
+
+  // Using these is a code smell: But actually only the name changes for
+  // Pressureboundarynode. Therefore we go with it...
+
+  // TODO create a new pressureboundarynode_json function or make source_json
+  // more general and rename it.
+  auto node0_json = source_json("node0", pressure0start, pressure0end);
+  auto node1_json = source_json("node1", pressure1start, pressure1end);
+  auto node2_json = source_json("node2", pressure2start, pressure2end);
+
+  auto shortpipe01_json = shortpipe_json("shortpipe01", node0_json, node1_json);
+  auto shortpipe20_json = shortpipe_json("shortpipe20", node2_json, node0_json);
+
+  auto np_json = make_full_json(
+      {{"Pressureboundarynode", {node0_json, node1_json, node2_json}}},
+      {{"Shortpipe", {shortpipe01_json, shortpipe20_json}}});
+
+  auto netprob = make_Networkproblem(np_json);
+  netprob->init();
+  auto number_of_variables = netprob->get_number_of_states();
+  double sp01_pressure_start = 810;
+  double sp01_flow_start = -4;
+  double sp01_pressure_end = 125;
+  double sp01_flow_end = 1000;
+
+  nlohmann::json initial01;
+  {
+    Eigen::Vector2d cond0(sp01_pressure_start, sp01_flow_start);
+    Eigen::Vector2d cond1(sp01_pressure_end, sp01_flow_end);
+    initial01 = make_value_json("shortpipe01", "x", cond0, cond1);
+  }
+  double sp20_pressure_start = 811;
+  double sp20_flow_start = -8;
+  double sp20_pressure_end = 131;
+  double sp20_flow_end = 1111;
+
+  nlohmann::json initial20;
+  {
+    Eigen::Vector2d cond0(sp20_pressure_start, sp20_flow_start);
+    Eigen::Vector2d cond1(sp20_pressure_end, sp20_flow_end);
+    initial20 = make_value_json("shortpipe20", "x", cond0, cond1);
+  }
+  auto initial_json
+      = make_initial_json({}, {{"Shortpipe", {initial01, initial20}}});
+
+  double last_time = 0.0;
+  double new_time = 0.0;
+  Eigen::VectorXd rootvalues(number_of_variables);
+  rootvalues.setZero();
+  Eigen::VectorXd last_state(number_of_variables);
+  Eigen::VectorXd new_state(number_of_variables);
+
+  netprob->set_initial_values(new_state, initial_json);
+
+  Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
+  Aux::Triplethandler handler(J);
+
+  // The following are not needed, as the gas components up to now are not
+  // controlled.  But to satisfy the interface, we must provide them.
+  Eigen::VectorXd last_control;
+  Eigen::VectorXd control;
+  netprob->d_evaluate_d_new_state(
+      handler, last_time, new_time, last_state, new_state, control);
+  handler.set_matrix();
+
+  Eigen::MatrixXd DenseJ = J;
+
+  Eigen::MatrixXd comparison_matrix;
+
+  // node0:
+  EXPECT_DOUBLE_EQ(DenseJ(0, 0), 1.0);
+  for (Eigen::Index i = 0; i != 8; ++i) {
+    if (i == 0) {
+      continue;
+    }
+    EXPECT_DOUBLE_EQ(DenseJ(0, i), 0.0);
+  }
+
+  EXPECT_DOUBLE_EQ(DenseJ(7, 6), 1);
+  for (Eigen::Index i = 0; i != 8; ++i) {
+    if (i == 6) {
+      continue;
+    }
+    // std::cout << "J(7," << i << "): " << DenseJ(7, i) << std::endl;
+    EXPECT_DOUBLE_EQ(DenseJ(7, i), 0.0);
+  }
+
+  // node1:
+  EXPECT_DOUBLE_EQ(DenseJ(3, 2), 1.0);
+  for (Eigen::Index i = 0; i != 8; ++i) {
+    if (i == 2) {
+      continue;
+    }
+    EXPECT_DOUBLE_EQ(DenseJ(3, i), 0.0);
+  }
+
+  // node2:
+  EXPECT_DOUBLE_EQ(DenseJ(4, 4), 1);
+  for (Eigen::Index i = 0; i != 8; ++i) {
+    if (i == 4) {
       continue;
     }
     EXPECT_DOUBLE_EQ(DenseJ(4, i), 0.0);

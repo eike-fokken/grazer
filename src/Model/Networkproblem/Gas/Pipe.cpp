@@ -267,15 +267,13 @@ namespace Model::Gas {
       Direction direction, Aux::Matrixhandler &jacobianhandler,
       Eigen::RowVector2d function_derivative, Eigen::Index rootvalues_index,
       Eigen::Ref<Eigen::VectorXd const> const &state) const {
+
     Eigen::Vector2d boundary_state = get_boundary_state(direction, state);
-
     Eigen::Vector2d p_qvol = isothermaleulerequation.p_qvol(boundary_state);
-
     Eigen::Matrix2d dp_qvol_dstate
         = isothermaleulerequation.dp_qvol_dstate(boundary_state);
     Eigen::Matrix2d dpqvolbar_dpqvol
         = isothermaleulerequation.dp_qvol_bar_from_p_qvold_p_qvol(p_qvol);
-
     Eigen::Matrix2d dpqvol_bar_dstate = dpqvolbar_dpqvol * dp_qvol_dstate;
 
     Eigen::RowVector2d derivative;
