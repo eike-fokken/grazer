@@ -10,13 +10,13 @@ using nlohmann::json;
 
 class TestDefaults : public ::testing::Test {
 public:
-  const static json defaults_pipe;
-  const static json schema_pipe;
-  const static json pipe_1;
-  const static json pipe_2;
+  static json const defaults_pipe;
+  static json const schema_pipe;
+  static json const pipe_1;
+  static json const pipe_2;
 };
 
-const json TestDefaults::defaults_pipe = R"(
+json const TestDefaults::defaults_pipe = R"(
 {
   "meta": "test",
   "dimensions": {
@@ -28,7 +28,7 @@ const json TestDefaults::defaults_pipe = R"(
 } 
 )"_json;
 
-const json TestDefaults::schema_pipe = R"(
+json const TestDefaults::schema_pipe = R"(
 {
   "type": "object",
   "required": ["dimensions"],
@@ -52,13 +52,13 @@ const json TestDefaults::schema_pipe = R"(
 }
 )"_json;
 
-const json TestDefaults::pipe_1 = R"(
+json const TestDefaults::pipe_1 = R"(
 {
   "meta": "some string"
 }
 )"_json;
 
-const json TestDefaults::pipe_2 = R"(
+json const TestDefaults::pipe_2 = R"(
 {
   "dimensions": {
     "length": {

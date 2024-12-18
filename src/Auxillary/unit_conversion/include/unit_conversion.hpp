@@ -40,8 +40,8 @@ namespace Aux::unit {
    *
    */
   class Conversion {
-    const double multiplicator;
-    const double offset;
+    double const multiplicator;
+    double const offset;
 
   public:
     Conversion(double multiplicator, double offset = 0);
@@ -56,15 +56,15 @@ namespace Aux::unit {
    */
   class Measure {
   public:
-    const std::string name;
+    std::string const name;
 
   private:
-    const std::map<std::string, Conversion> conversion_map;
+    std::map<std::string, Conversion> const conversion_map;
 
   public:
     Measure(
-        const std::string name,
-        const std::map<std::string, Conversion> conversion_map);
+        std::string const name,
+        std::map<std::string, Conversion> const conversion_map);
     /**
      * @brief Get the schema for a Json describing this Measurement
      *
@@ -82,16 +82,16 @@ namespace Aux::unit {
     double parse_to_si(json const json_measurement) const;
   };
 
-  extern const Measure length;
-  extern const Measure area;
-  extern const Measure volume;
-  extern const Measure pressure;
-  extern const Measure frequency;
-  extern const Measure force;
-  extern const Measure power;
-  extern const Measure mass;
-  extern const Measure volume_flux;
-  extern const Measure temperature;
+  extern Measure const length;
+  extern Measure const area;
+  extern Measure const volume;
+  extern Measure const pressure;
+  extern Measure const frequency;
+  extern Measure const force;
+  extern Measure const power;
+  extern Measure const mass;
+  extern Measure const volume_flux;
+  extern Measure const temperature;
 
   /**
    * @brief parses a string which is the prefix of a unit (e.g. "500 k" of "500
@@ -117,7 +117,7 @@ namespace Aux::unit {
    */
   double parse_prefix_si(std::string const &prefix);
 
-  const std::tuple<std::string, Conversion> parse_unit(
+  std::tuple<std::string, Conversion> const parse_unit(
       std::string const &unit,
       std::map<std::string, Conversion> const &unit_map);
 

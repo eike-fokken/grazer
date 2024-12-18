@@ -37,7 +37,7 @@ namespace Model::Gas {
 
     Flowboundarynode(nlohmann::json const &data);
 
-    ~Flowboundarynode(){};
+    ~Flowboundarynode() {};
 
     void setup() final;
 

@@ -51,17 +51,17 @@ namespace Optimization {
 
     /** Method to return the objective value */
     bool eval_f(
-        Ipopt::Index n, const Ipopt::Number *x, bool new_x,
+        Ipopt::Index n, Ipopt::Number const *x, bool new_x,
         Ipopt::Number &obj_value) final;
 
     /** Method to return the gradient of the objective */
     bool eval_grad_f(
-        Ipopt::Index n, const Ipopt::Number *x, bool new_x,
+        Ipopt::Index n, Ipopt::Number const *x, bool new_x,
         Ipopt::Number *grad_f) final;
 
     /** Method to return the constraint residuals */
     bool eval_g(
-        Ipopt::Index n, const Ipopt::Number *x, bool new_x, Ipopt::Index m,
+        Ipopt::Index n, Ipopt::Number const *x, bool new_x, Ipopt::Index m,
         Ipopt::Number *g) final;
 
     /** Method to return:
@@ -69,7 +69,7 @@ namespace Optimization {
      *   2) The values of the Jacobian (if "values" is not NULL)
      */
     bool eval_jac_g(
-        Ipopt::Index n, const Ipopt::Number *x, bool new_x, Ipopt::Index m,
+        Ipopt::Index n, Ipopt::Number const *x, bool new_x, Ipopt::Index m,
         Ipopt::Index nele_jac, Ipopt::Index *iRow, Ipopt::Index *jCol,
         Ipopt::Number *values) final;
 
@@ -77,10 +77,10 @@ namespace Optimization {
      * store/write the solution
      */
     void finalize_solution(
-        Ipopt::SolverReturn status, Ipopt::Index n, const Ipopt::Number *x,
-        const Ipopt::Number *z_L, const Ipopt::Number *z_U, Ipopt::Index m,
-        const Ipopt::Number *g, const Ipopt::Number *lambda,
-        Ipopt::Number obj_value, const Ipopt::IpoptData *ip_data,
+        Ipopt::SolverReturn status, Ipopt::Index n, Ipopt::Number const *x,
+        Ipopt::Number const *z_L, Ipopt::Number const *z_U, Ipopt::Index m,
+        Ipopt::Number const *g, Ipopt::Number const *lambda,
+        Ipopt::Number obj_value, Ipopt::IpoptData const *ip_data,
         Ipopt::IpoptCalculatedQuantities *ip_cq) final;
 
     Eigen::VectorXd get_best_solution() const;

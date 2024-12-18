@@ -28,7 +28,7 @@ namespace Aux {
 
   public:
     Matrixhandler() = delete;
-    Matrixhandler(Eigen::SparseMatrix<double> &_matrix) : matrix(_matrix){};
+    Matrixhandler(Eigen::SparseMatrix<double> &_matrix) : matrix(_matrix) {};
 
     virtual ~Matrixhandler();
 

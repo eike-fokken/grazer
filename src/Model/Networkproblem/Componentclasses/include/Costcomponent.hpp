@@ -29,7 +29,7 @@ namespace Model {
     Costcomponent(double cost_weight);
     Costcomponent(double cost_weight, double penalty_weight);
 
-    virtual ~Costcomponent(){};
+    virtual ~Costcomponent() {};
 
     virtual double evaluate_cost(
         double new_time, Eigen::Ref<Eigen::VectorXd const> const &state,

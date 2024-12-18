@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
       = boundarydata["boundaryConditions"]["linearBoundaryCondition"];
 
   for (auto itr = conditions.begin(); itr != conditions.end(); ++itr) {
-    auto res = std::find_if(bdcond.begin(), bdcond.end(), [itr](const json &x) {
+    auto res = std::find_if(bdcond.begin(), bdcond.end(), [itr](json const &x) {
       auto it = x.find("id");
       return it != x.end() and it.value() == (*itr)["id"];
     });
@@ -195,7 +195,7 @@ int main(int argc, char *argv[]) {
   json Vphi;
   for (auto &powernode : nodes["powerGridNode"]) {
     auto res = std::find_if(
-        bdcond.begin(), bdcond.end(), [powernode](const json &x) {
+        bdcond.begin(), bdcond.end(), [powernode](json const &x) {
           auto it = x.find("id");
           return it != x.end() and it.value() == powernode["id"];
         });
@@ -341,7 +341,7 @@ json get_node_type_json(json boundarydata) {
   json nodes;
   for (auto itr = conditions.begin(); itr != conditions.end(); ++itr) {
 
-    auto res = std::find_if(nodes.begin(), nodes.end(), [itr](const json &x) {
+    auto res = std::find_if(nodes.begin(), nodes.end(), [itr](json const &x) {
       auto it = x.find("id");
       return it != x.end() and it.value() == (*itr)["id"];
     });

@@ -9,7 +9,7 @@
 class NodeTEST : public ::testing::Test {
 
 public:
-  NodeTEST() : node(R"({"id":"N1"})"_json){};
+  NodeTEST() : node(R"({"id":"N1"})"_json) {};
 
   Network::Node node;
 };

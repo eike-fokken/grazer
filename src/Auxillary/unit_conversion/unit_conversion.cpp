@@ -21,7 +21,7 @@
 #include <sstream>
 
 namespace Aux::unit {
-  const Measure length{
+  Measure const length{
       "length",
       {{"m", 1.0},
        {"in", 0.0254},
@@ -29,9 +29,9 @@ namespace Aux::unit {
        {"yd", 0.9144},
        {"mi", 1609.344}}};
 
-  const Measure area{"area", {{"m^2", 1.0}, {"ac", 4046.9}, {"acre", 4046.9}}};
+  Measure const area{"area", {{"m^2", 1.0}, {"ac", 4046.9}, {"acre", 4046.9}}};
 
-  const Measure volume{
+  Measure const volume{
       "volume",
       {
           {"m^3", 1.0},
@@ -39,27 +39,27 @@ namespace Aux::unit {
           {"l", 1e-3},
       }};
 
-  const Measure pressure{
+  Measure const pressure{
       "pressure",
       {{"Pa", 1.0}, {"bar", 1e5}, {"atm", 101325}, {"psi", 6894.757}}};
 
-  const Measure frequency{
+  Measure const frequency{
       "frequency",
       {{"Hz", 1.0}, {"per_min", 1.0 / 60.0}, {"per_minute", 1.0 / 60.0}}};
 
-  const Measure force{"force", {{"N", 1.0}}};
+  Measure const force{"force", {{"N", 1.0}}};
 
-  const Measure power{"power", {{"W", 1.0}, {"PS", 735.49875}}};
+  Measure const power{"power", {{"W", 1.0}, {"PS", 735.49875}}};
 
-  const Measure mass{
+  Measure const mass{
       "mass",
       {{"g", 0.001}, {"t", 1000}, {"oz", 0.028349523125}, {"lb", 0.45359237}}};
 
-  const Measure volume_flux{
+  Measure const volume_flux{
       "volume",
       {{"m_cube_per_s", 1.0}, {"1000m_cube_per_hour", 1000.0 / 3600.0}}};
 
-  const Measure temperature{
+  Measure const temperature{
       "temperature",
       {{"K", Conversion(1)},
        {"C", Conversion(1, 273.15)},
@@ -67,7 +67,7 @@ namespace Aux::unit {
        {"F", Conversion(5.0 / 9.0, 459.67 * 5.0 / 9.0)}}};
 
   // https://en.wikipedia.org/wiki/Metric_prefix#List_of_SI_prefixes
-  const std::map<std::string, Conversion> si_prefixes{
+  std::map<std::string, Conversion> const si_prefixes{
       {"Y", 1e24}, {"Z", 1e21},  {"E", 1e18},  {"P", 1e15},  {"T", 1e12},
       {"G", 1e9},  {"M", 1e6},   {"k", 1e3},   {"h", 100},   {"da", 10},
       {"", 1},     {"d", 0.1},   {"c", 1e-2},  {"m", 1e-3},  {"mu", 1e-6},
@@ -118,8 +118,8 @@ namespace Aux::unit {
   }
 
   Measure::Measure(
-      const std::string provided_name,
-      const std::map<std::string, Conversion> conv_map) :
+      std::string const provided_name,
+      std::map<std::string, Conversion> const conv_map) :
       name(provided_name), conversion_map(conv_map) {}
 
   double Measure::parse_to_si(json const measurement) const {
@@ -130,7 +130,7 @@ namespace Aux::unit {
     return conv(measurement["value"].get<double>() * parse_prefix_si(prefix));
   }
 
-  const std::tuple<std::string, Conversion> parse_unit(
+  std::tuple<std::string, Conversion> const parse_unit(
       std::string const &unit,
       std::map<std::string, Conversion> const &unit_map) {
     auto unit_size = unit.size();

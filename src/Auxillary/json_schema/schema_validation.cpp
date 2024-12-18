@@ -60,7 +60,7 @@ void Aux::schema::validate_json(json const &data, json const &schema) {
   json_validator validator;
   try {
     validator.set_root_schema(schema);
-  } catch (const std::exception &e) {
+  } catch (std::exception const &e) {
     std::ostringstream o;
     o << "Couldn't validate the data, because the schema itself if faulty: "
       << e.what() << "\n";
@@ -71,15 +71,15 @@ void Aux::schema::validate_json(json const &data, json const &schema) {
   try {
     class prettyhandler : public nlohmann::json_schema::error_handler {
       void error(
-          const json::json_pointer &ptr, const json &instance,
-          const std::string &message) final {
+          json::json_pointer const &ptr, json const &instance,
+          std::string const &message) final {
         throw std::invalid_argument(
             std::string("At ") + ptr.to_string() + " of "
             + instance.dump(1, '\t') + " - " + message + "\n");
       }
     } handler;
     validator.validate(data, handler);
-  } catch (const std::exception &e) {
+  } catch (std::exception const &e) {
     std::ostringstream o;
     std::string helper;
     if (data.contains("id")) {

@@ -75,7 +75,7 @@ namespace Model::Gas {
 
   void Shortcomponent::set_initial_values(
       Eigen::Ref<Eigen::VectorXd> new_state,
-      const nlohmann::json &initial_json) const {
+      nlohmann::json const &initial_json) const {
     set_simple_initial_values(
         this, new_state, initial_json, get_initial_schema(), 2);
   }

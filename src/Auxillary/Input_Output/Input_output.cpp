@@ -27,7 +27,7 @@ namespace io {
   namespace fs = std::filesystem;
 
   bool absolute_file_path_in_root(
-      const fs::path &problem_root_path, const fs::path &filepath) {
+      fs::path const &problem_root_path, fs::path const &filepath) {
     auto absolute_path = (problem_root_path / filepath).lexically_normal();
 
     auto [root_end_iterator, ignored_value] = std::mismatch(
@@ -153,7 +153,7 @@ namespace io {
       std::vector<std::string> filenames_to_create) {
     namespace fs = std::filesystem;
     fs::path problem_files = output_directory / fs::path("problem");
-    const auto copyOptions = fs::copy_options::recursive;
+    auto const copyOptions = fs::copy_options::recursive;
     fs::copy(problem_directory, problem_files, copyOptions);
 
     for (auto const &filename : filenames_to_create) {

@@ -39,9 +39,9 @@ namespace Model::Gas {
 
   void Controlvalve::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double, double /*new_time*/,
-      const Eigen::Ref<const Eigen::VectorXd> & /*last_state*/,
-      const Eigen::Ref<const Eigen::VectorXd> &new_state,
-      const Eigen::Ref<const Eigen::VectorXd> &control) const {
+      Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const &new_state,
+      Eigen::Ref<Eigen::VectorXd const> const &control) const {
 
     Eigen::Vector2d pressure_control(control[get_control_startindex()], 0.0);
 
@@ -53,9 +53,9 @@ namespace Model::Gas {
   void Controlvalve::d_evaluate_d_new_state(
       Aux::Matrixhandler &jacobianhandler, double /*last_time*/,
       double /*new_time*/,
-      const Eigen::Ref<const Eigen::VectorXd> & /*last_state*/,
-      const Eigen::Ref<const Eigen::VectorXd> & /*new_state*/,
-      const Eigen::Ref<const Eigen::VectorXd> & /*control*/) const {
+      Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {
     auto start_p_index = get_boundary_state_index(start);
     auto start_q_index = start_p_index + 1;
     auto end_p_index = get_boundary_state_index(end);
@@ -74,9 +74,9 @@ namespace Model::Gas {
   void Controlvalve::d_evaluate_d_last_state(
       Aux::Matrixhandler & /*jacobianhandler*/, double /*last_time*/,
       double /*new_time*/,
-      const Eigen::Ref<const Eigen::VectorXd> & /*last_state*/,
-      const Eigen::Ref<const Eigen::VectorXd> & /*new_state*/,
-      const Eigen::Ref<const Eigen::VectorXd> & /*control*/) const {}
+      Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/,
+      Eigen::Ref<Eigen::VectorXd const> const & /*control*/) const {}
 
   void Controlvalve::d_evaluate_d_control(
       Aux::Matrixhandler &jacobianhandler, double /*last_time*/,

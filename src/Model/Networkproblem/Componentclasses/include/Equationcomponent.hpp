@@ -41,7 +41,7 @@ namespace Model {
   class Equationcomponent : public Equation_base {
 
   public:
-    virtual ~Equationcomponent(){};
+    virtual ~Equationcomponent() {};
 
     /** \brief evaluates the model equations into rootvalues.
      *

@@ -154,10 +154,10 @@ namespace Optimization {
   }
   void IpoptWrapper::finalize_solution(
       Ipopt::SolverReturn status, Ipopt::Index number_of_controls,
-      const Ipopt::Number *x, const Ipopt::Number * /* z_L */,
-      const Ipopt::Number * /* z_U */, Ipopt::Index number_of_constraints,
-      const Ipopt::Number *g, const Ipopt::Number * /* lambda */,
-      Ipopt::Number obj_value, const Ipopt::IpoptData * /* ip_data */,
+      Ipopt::Number const *x, Ipopt::Number const * /* z_L */,
+      Ipopt::Number const * /* z_U */, Ipopt::Index number_of_constraints,
+      Ipopt::Number const *g, Ipopt::Number const * /* lambda */,
+      Ipopt::Number obj_value, Ipopt::IpoptData const * /* ip_data */,
       Ipopt::IpoptCalculatedQuantities * /* ip_cq */) {
     if (status != Ipopt::SUCCESS) {
       std::cout << "\n\n\nFAILED TO FIND AN OPTIMUM:\nIpopt status was: "

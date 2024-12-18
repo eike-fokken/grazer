@@ -10,7 +10,7 @@
 
 namespace Eigen {
   template <typename Derived>
-  void to_json(nlohmann::json &j, const MatrixBase<Derived> &eig);
+  void to_json(nlohmann::json &j, MatrixBase<Derived> const &eig);
 }
 
 // this is for T = double or T = Eigen::Vector...
@@ -32,7 +32,7 @@ nlohmann::json make_initial_json(
     std::map<std::string, std::vector<nlohmann::json>> edgemap);
 
 template <typename Derived>
-void Eigen::to_json(nlohmann::json &j, const MatrixBase<Derived> &eig) {
+void Eigen::to_json(nlohmann::json &j, MatrixBase<Derived> const &eig) {
   EIGEN_STATIC_ASSERT_VECTOR_ONLY(MatrixBase<Derived>);
   // static_assert(eig.cols() == 1,
   //               "This function is only for vectors, not for

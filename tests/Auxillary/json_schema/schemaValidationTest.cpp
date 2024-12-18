@@ -9,14 +9,14 @@ using nlohmann::json;
 class JsonValidationData : public ::testing::Test {
 
 public:
-  const static json valid_schema;
-  const static json valid_data;
-  const static json missing_data;
-  const static json invalid_data;
-  const static json invalid_schema;
+  static json const valid_schema;
+  static json const valid_data;
+  static json const missing_data;
+  static json const invalid_data;
+  static json const invalid_schema;
 };
 
-const json JsonValidationData::valid_schema = R"(
+json const JsonValidationData::valid_schema = R"(
   {
     "$schema": "http://json-schema.org/draft-07/schema",
     "title": "Test Schema",
@@ -29,7 +29,7 @@ const json JsonValidationData::valid_schema = R"(
   }
   )"_json;
 
-const json JsonValidationData::valid_data = R"(
+json const JsonValidationData::valid_data = R"(
   {
     "$schema":  "my_test_schema",
     "title": "Valid Test Data",
@@ -37,7 +37,7 @@ const json JsonValidationData::valid_data = R"(
   }
 )"_json;
 
-const json JsonValidationData::missing_data = R"(
+json const JsonValidationData::missing_data = R"(
   {
     "$schema":  "my_test_schema",
     "title": "Missing Test Data",
@@ -45,7 +45,7 @@ const json JsonValidationData::missing_data = R"(
   }
 )"_json;
 
-const json JsonValidationData::invalid_data = R"(
+json const JsonValidationData::invalid_data = R"(
   {
     "$schema":  "my_test_schema",
     "title": "Invalid Test Data",
@@ -53,7 +53,7 @@ const json JsonValidationData::invalid_data = R"(
   }
 )"_json;
 
-const json JsonValidationData::invalid_schema
+json const JsonValidationData::invalid_schema
     = R"( {"type": "invalid Schema"} )"_json;
 
 TEST_F(JsonValidationData, happyPath) {

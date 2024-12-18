@@ -98,6 +98,6 @@ namespace Model::Balancelaw {
 
     static Eigen::Matrix4d const set_coeff_helper_matrix();
 
-    static const Eigen::Matrix4d coeff_helper_matrix;
+    static Eigen::Matrix4d const coeff_helper_matrix;
   };
 } // namespace Model::Balancelaw

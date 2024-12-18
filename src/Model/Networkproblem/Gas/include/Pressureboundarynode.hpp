@@ -37,7 +37,7 @@ namespace Model::Gas {
 
     Pressureboundarynode(nlohmann::json const &data);
 
-    ~Pressureboundarynode(){};
+    ~Pressureboundarynode() {};
 
     void setup() final;
 

@@ -37,7 +37,7 @@ namespace Model::Power {
     static nlohmann::json get_initial_schema();
 
     Powernode(nlohmann::json const &topology);
-    ~Powernode(){};
+    ~Powernode() {};
 
     double get_G() const;
     double get_B() const;

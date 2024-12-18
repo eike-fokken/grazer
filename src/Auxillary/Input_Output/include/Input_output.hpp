@@ -31,8 +31,8 @@ namespace io {
    * If no, throws.
    */
   bool absolute_file_path_in_root(
-      const std::filesystem::path &problem_root_path,
-      const std::filesystem::path &filepath);
+      std::filesystem::path const &problem_root_path,
+      std::filesystem::path const &filepath);
 
   /** attaches the number of milliseconds since 1970 as a string to its argument
    * filename.

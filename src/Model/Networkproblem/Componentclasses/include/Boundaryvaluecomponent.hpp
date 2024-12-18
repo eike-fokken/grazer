@@ -21,7 +21,7 @@ namespace Model {
 
   class Boundaryvaluecomponent {
   protected:
-    Boundaryvaluecomponent(){};
+    Boundaryvaluecomponent() {};
 
   public:
     static nlohmann::json get_boundary_schema() = delete;
