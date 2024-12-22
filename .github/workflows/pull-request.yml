@@ -61,7 +61,7 @@ jobs:
           binary-path: /build/src/Grazer/grazer
           generator-command: -G"Ninja"
         - name: MacOS-Clang
-          os: macos-latest
+          os: macos-14
           compiler: clang++
           build_type: Debug
           binary-path: /build/src/Grazer/grazer
