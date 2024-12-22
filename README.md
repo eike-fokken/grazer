@@ -23,6 +23,10 @@ development there.
 ### Installing all dependencies
 
 #### MacOS
+NOTE: There are no automatic checks anymore for macos. I assume that everything
+should run smoothly but I disabled the build tests on mac as I couldn't get them
+to work after the github runners switched to arm mac. The following hints were
+found when someone with a Mac was still contributing to grazer:
 
 On MacOS, the most convenient way to install all of Grazer's dependencies is by
 using [Homebrew](https://brew.sh/). After Homebrew is installed, entering
