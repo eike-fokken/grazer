@@ -1,4 +1,4 @@
-# add_compile_options("-march=native")
+add_compile_options("-Wno-switch-default")
 
 add_subdirectory(Model)
 add_subdirectory(Newtonsolver)
