@@ -65,7 +65,7 @@ jobs:
           compiler: clang++
           build_type: Debug
           binary-path: /build/src/Grazer/grazer
-          dep-install: brew install bash metis ninja pkg-config; echo "/usr/local/bin" >> $GITHUB_PATH; echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> $GITHUB_ENV; echo "FC=gfortran-11" >> $GITHUB_ENV;
+          dep-install: brew install bash metis ninja pkg-config; echo "/usr/local/bin" >> $GITHUB_PATH; echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> $GITHUB_ENV; echo "FC=gfortran-14" >> $GITHUB_ENV;
           generator-command: -G"Ninja"
         - name: Release-Test
           os: ubuntu-22.04
