@@ -61,7 +61,7 @@ jobs:
           binary-path: /build/src/Grazer/grazer
           generator-command: -G"Ninja"
         - name: MacOS-Clang
-          os: macos-14
+          os: macos-latest
           compiler: clang++
           build_type: Debug
           binary-path: /build/src/Grazer/grazer
@@ -82,7 +82,8 @@ jobs:
       CTEST_OUTPUT_ON_FAILURE: 1
       BUILD_WITH_LIBCPP: ${{ matrix.build_with_libcpp }}
       # acts like a ternary:
-      CCACHE_OPTIONS: ${{'-D CMAKE_CXX_COMPILER_LAUNCHER=ccache -D CMAKE_C_COMPILER_LAUNCHER=ccache'}}
+      # CCACHE_OPTIONS: ${{'-D CMAKE_CXX_COMPILER_LAUNCHER=ccache -D CMAKE_C_COMPILER_LAUNCHER=ccache'}}
+
     # The CMake configure and build commands are platform agnostic and should work equally
     # well on Windows or Mac.  You can convert this to a matrix build if you need
     # cross-platform coverage.
@@ -95,10 +96,10 @@ jobs:
       with:
         submodules: recursive
     
-    - name: Set_up_CCache
-      uses: hendrikmuhs/ccache-action@v1 
-      with:
-        key: ${{ matrix.name }}
+    # - name: Set_up_CCache
+    #   uses: hendrikmuhs/ccache-action@v1 
+    #   with:
+    #     key: ${{ matrix.name }}
 
 
     - name: Install_Dependencies
