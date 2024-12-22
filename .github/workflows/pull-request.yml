@@ -17,6 +17,9 @@ jobs:
         clang-format-version: "16"
     
 
+  # 2024.12.22: I disabled the macos pipeline because of hard-to-debug errors
+  # with the arm macos runner. If you have a mac and know how to reinstate a
+  # working macos runner, feel free to do so!
   build-and-test:
     if: github.event.pull_request.draft == false
     strategy:
@@ -27,7 +30,6 @@ jobs:
         - Linux-GNU
         - Linux-Clang
         - Linux-Clang-libc++
-        - MacOS-Clang
         - Release-Test
         include:
         - name: Linux-Docs
@@ -59,13 +61,6 @@ jobs:
           build_type: Debug
           build_with_libcpp: ON
           binary-path: /build/src/Grazer/grazer
-          generator-command: -G"Ninja"
-        - name: MacOS-Clang
-          os: macos-latest
-          compiler: clang++
-          build_type: Debug
-          binary-path: /build/src/Grazer/grazer
-          dep-install: brew install bash metis ninja pkg-config; echo "/usr/local/bin" >> $GITHUB_PATH; echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> $GITHUB_ENV; echo "FC=gfortran-11" >> $GITHUB_ENV;
           generator-command: -G"Ninja"
         - name: Release-Test
           os: ubuntu-22.04
