@@ -52,7 +52,7 @@ jobs:
         include:
         - name: ubuntu-latest
           os: ubuntu-latest
-          compiler: clang++-10
+          compiler: clang++-18
           binary-path: /build/src/Grazer/grazer
           dep-install: sudo apt-get install -y cmake clang-10 
         - name: MacOS
@@ -114,11 +114,11 @@ jobs:
 
   Documentation:
     needs: generate-binaries
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
       BUILD_TYPE: Debug 
-      CXX: g++-9
+      CXX: g++-13
       CTEST_OUTPUT_ON_FAILURE: 1
 
     steps:

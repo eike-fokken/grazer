@@ -33,7 +33,7 @@ jobs:
         - Release-Test
         include:
         - name: Linux-Docs
-          compiler: g++-9
+          compiler: g++-13
           os: ubuntu-latest
           dep-install: sudo apt-get update && sudo apt-get install -y cmake ninja-build texlive-latex-extra doxygen graphviz
           build_type: Debug
@@ -41,21 +41,21 @@ jobs:
           specific-target: --target doxygen user_guide
           generator-command: -G"Ninja"
         - name: Linux-GNU
-          compiler: g++-9
+          compiler: g++-13
           os: ubuntu-latest
           dep-install: sudo apt-get update && sudo apt-get install -y cmake ninja-build
           build_type: Debug
           binary-path: /build/src/Grazer/grazer
           generator-command: -G"Ninja"
         - name: Linux-Clang
-          compiler: clang++-10
+          compiler: clang++-18
           os: ubuntu-latest
           dep-install: sudo apt-get update && sudo apt-get install -y cmake clang ninja-build
           build_type: Debug
           binary-path: /build/src/Grazer/grazer
           generator-command: -G"Ninja"
         - name: Linux-Clang-libc++
-          compiler: clang++-10
+          compiler: clang++-18
           os: ubuntu-latest
           dep-install: sudo apt-get update && sudo apt-get install -y cmake clang libc++abi-10-dev  libc++-10-dev ninja-build
           build_type: Debug
