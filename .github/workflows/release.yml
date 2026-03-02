@@ -54,7 +54,7 @@ jobs:
           os: ubuntu-latest
           compiler: clang++-18
           binary-path: /build/src/Grazer/grazer
-          dep-install: sudo apt-get install -y cmake clang-10 
+          dep-install: sudo apt-get install -y cmake clang-18
         - name: MacOS
           os: macos-latest
           compiler: clang++
