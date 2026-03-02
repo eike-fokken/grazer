@@ -8,7 +8,7 @@ name: Release
 jobs:
   create-release:
     name: Create_Release
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.get_version.outputs.version }}
     steps:
@@ -47,11 +47,11 @@ jobs:
       fail-fast: false
       matrix:
         name:
-        - ubuntu-20.04
+        - ubuntu-latest
         - MacOS
         include:
-        - name: ubuntu-20.04
-          os: ubuntu-20.04
+        - name: ubuntu-latest
+          os: ubuntu-latest
           compiler: clang++-10
           binary-path: /build/src/Grazer/grazer
           dep-install: sudo apt-get install -y cmake clang-10 
@@ -114,7 +114,7 @@ jobs:
 
   Documentation:
     needs: generate-binaries
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
       BUILD_TYPE: Debug 
