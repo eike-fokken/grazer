@@ -52,9 +52,9 @@ jobs:
         include:
         - name: ubuntu-latest
           os: ubuntu-latest
-          compiler: clang++-18
+          compiler: clang++-19
           binary-path: /build/src/Grazer/grazer
-          dep-install: sudo apt-get install -y cmake clang-18
+          dep-install: sudo apt-get install -y cmake clang-19
         - name: MacOS
           os: macos-latest
           compiler: clang++
