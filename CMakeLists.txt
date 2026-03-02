@@ -52,8 +52,13 @@ set(JSON_SystemInclude On)
 set(JSON_MultipleHeaders Off)
 # add_subdirectory(nlohmann_json)
 
+set(nlohmann_json_VERSION "v3.12.0")
+include(FetchContent)
 
-set(FETCHCONTENT_SOURCE_DIR_NLOHMANN_JSON "${CMAKE_CURRENT_SOURCE_DIR}/nlohmann_json/")
+FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz)
+FetchContent_MakeAvailable(json)
+
+
 if(BUILD_TESTS)
   set(BUILD_TESTS OFF)
   add_subdirectory(json-schema-validator)
@@ -147,7 +152,7 @@ include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/eigen/")
 # discouraged (although not necessarily well documented as such) to use
 # include(...) for pulling in other CMake projects anyways.
 
-include_directories (SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/nlohmann_json/single_include/")
+include_directories (SYSTEM "${CMAKE_CURRENT_BINARY_DIR}/_deps/json-src/single_include")
 
 
 # This includes the pcg random number generator suite.
