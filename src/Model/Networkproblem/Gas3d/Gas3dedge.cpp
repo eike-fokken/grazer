@@ -14,8 +14,8 @@
  * express or implied.  See your chosen license for details.
  *
  */
-#include "Exception.hpp"
 #include "Gas3dedge.hpp"
+#include "Exception.hpp"
 #include "Idobject.hpp"
 #include "make_schema.hpp"
 #include <string>
@@ -35,32 +35,36 @@ namespace Model::Gas3d {
     }
   }
 
-  int Gas3dedge::init_vals_per_interpol_point() { return 2; }
+  int Gas3dedge::init_vals_per_interpol_point() { return 3; }
 
-  Eigen::Index Gas3dedge::give_away_start_index() const {
+  Eigen::VectorXi Gas3dedge::give_away_start_indices() const {
     if (get_state_startindex() < 0 or get_state_afterindex() < 0) {
       gthrow(
           {"This function: ", __FUNCTION__,
            " can only be called after set_state_indices(...) has been "
            "called."});
     }
-    return get_state_startindex();
+    Eigen::Index equation_index0 = get_state_startindex();
+    Eigen::Index equation_index1 = equation_index0 + 1;
+    return Eigen::Vector2i(equation_index0, equation_index1);
   }
 
-  Eigen::Index Gas3dedge::give_away_end_index() const {
+  Eigen::VectorXi Gas3dedge::give_away_end_indices() const {
     if (get_state_startindex() < 0 or get_state_afterindex() < 0) {
       gthrow(
           {"This function: ", __FUNCTION__,
            " can only be called after set_state_indices(...) has been "
            "called."});
     }
-    return (get_state_afterindex() - 1);
+    return Eigen::VectorXi(get_state_afterindex() - 1);
   }
-  Eigen::Index Gas3dedge::boundary_equation_index(Direction direction) const {
+
+  Eigen::VectorXi
+  Gas3dedge::boundary_equation_indices(Direction direction) const {
     if (direction == start) {
-      return give_away_start_index();
+      return give_away_start_indices();
     } else if (direction == end) {
-      return give_away_end_index();
+      return give_away_end_indices();
     } else {
       auto *this_idobject = dynamic_cast<Network::Idobject const *>(this);
       if (!this_idobject) {
@@ -75,7 +79,7 @@ namespace Model::Gas3d {
   }
 
   Eigen::Index Gas3dedge::get_equation_start_index() const {
-    return get_starting_state_index() + 1; // Nofstates/2;
+    return get_starting_state_index() + 2; // Nofstates/2;
   }
   Eigen::Index Gas3dedge::get_equation_after_index() const {
     return get_state_afterindex() - 1; // - Nofstates / 2 + 1 ;
@@ -86,21 +90,7 @@ namespace Model::Gas3d {
   }
 
   Eigen::Index Gas3dedge::get_ending_state_index() const {
-
-    // This is a hack and should be refactored
-    if (get_state_afterindex() - get_state_startindex() == 2) {
-      auto *this_idobject = dynamic_cast<Network::Idobject const *>(this);
-      if (!this_idobject) {
-        gthrow(
-            {"This gasedge is not and Idobject, which should never happen!"});
-      }
-      gthrow(
-          {"Edge: ", this_idobject->get_id(),
-           " has only two variables, therefore this function should not have "
-           "been called!"});
-    }
-
-    return get_state_afterindex() - 2;
+    return get_state_afterindex() - 3;
   }
 
   Eigen::Index Gas3dedge::get_boundary_state_index(Direction direction) const {
@@ -120,19 +110,19 @@ namespace Model::Gas3d {
            this_idobject->get_id()});
     }
   }
-  Eigen::Vector2d Gas3dedge::get_starting_state(
+  Eigen::Vector3d Gas3dedge::get_starting_state(
       Eigen::Ref<Eigen::VectorXd const> const &state) const {
-    Eigen::Vector2d starting_state
-        = state.segment<2>(get_starting_state_index());
+    Eigen::Vector3d starting_state
+        = state.segment<3>(get_starting_state_index());
     return starting_state;
   }
 
-  Eigen::Vector2d Gas3dedge::get_ending_state(
+  Eigen::Vector3d Gas3dedge::get_ending_state(
       Eigen::Ref<Eigen::VectorXd const> const &state) const {
-    Eigen::Vector2d ending_state = state.segment<2>(get_ending_state_index());
+    Eigen::Vector3d ending_state = state.segment<3>(get_ending_state_index());
     return ending_state;
   }
-  Eigen::Vector2d Gas3dedge::get_boundary_state(
+  Eigen::Vector3d Gas3dedge::get_boundary_state(
       Direction direction,
       Eigen::Ref<Eigen::VectorXd const> const &state) const {
     if (direction == start) {

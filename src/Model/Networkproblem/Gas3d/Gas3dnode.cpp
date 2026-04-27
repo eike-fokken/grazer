@@ -14,11 +14,11 @@
  * express or implied.  See your chosen license for details.
  *
  */
+#include "Gas3dnode.hpp"
 #include "Coloroutput.hpp"
 #include "Edge.hpp"
 #include "Exception.hpp"
 #include "Gas3dedge.hpp"
-#include "Gas3dnode.hpp"
 #include "Matrixhandler.hpp"
 #include <iostream>
 

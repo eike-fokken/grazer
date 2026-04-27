@@ -32,7 +32,7 @@ namespace Model::Gas3d {
     static int init_vals_per_interpol_point();
 
     virtual std::string get_gas_type() const = 0;
-    Eigen::Index boundary_equation_index(Direction direction) const;
+    Eigen::VectorXi boundary_equation_indices(Direction direction) const;
 
     Eigen::Index get_boundary_state_index(Direction direction) const;
 
@@ -40,39 +40,18 @@ namespace Model::Gas3d {
     Eigen::Index get_equation_after_index() const;
 
     /// Returns the boundary
-    Eigen::Vector2d get_boundary_state(
+    Eigen::Vector3d get_boundary_state(
         Direction direction,
         Eigen::Ref<Eigen::VectorXd const> const &state) const;
 
-    /// returns the boundary state expressed in pressure and volumetric flow.
-    /// It is the responsibility of the edge to decide what that means.
-    virtual Eigen::Vector2d get_boundary_p_qvol_bar(
-        Direction direction,
-        Eigen::Ref<Eigen::VectorXd const> const &state) const
-        = 0;
-
-    /// @brief Set the derivatives with respect to the boundary states.
-    ///
-    /// If (p,qvol) = phi(rho,q), then this function must compute
-    /// \code{.cpp}dF/dState = function_derivative*phi'\endcode and call
-    /// \code{.cpp}
-    /// jacobianhandler.add_to_coefficient(rootvalues_index, rho_index,
-    /// dF/dState[0]); jacobianhandler.add_to_coefficient(rootvalues_index,
-    /// q_index, dF/dState[1]); \endcode
-    virtual void dboundary_p_qvol_dstate(
-        Direction direction, Aux::Matrixhandler &jacobianhandler,
-        Eigen::RowVector2d function_derivative, Eigen::Index rootvalues_index,
-        Eigen::Ref<Eigen::VectorXd const> const &state) const
-        = 0;
-
   private:
-    Eigen::Vector2d
+    Eigen::Vector3d
     get_starting_state(Eigen::Ref<Eigen::VectorXd const> const &state) const;
-    Eigen::Vector2d
+    Eigen::Vector3d
     get_ending_state(Eigen::Ref<Eigen::VectorXd const> const &state) const;
 
-    Eigen::Index give_away_start_index() const;
-    Eigen::Index give_away_end_index() const;
+    Eigen::VectorXi give_away_start_indices() const;
+    Eigen::VectorXi give_away_end_indices() const;
 
     Eigen::Index get_starting_state_index() const;
     Eigen::Index get_ending_state_index() const;
