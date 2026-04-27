@@ -94,8 +94,8 @@ TEST_F(TestDefaults, too_many_defaults) {
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
     EXPECT_THAT(
-        e.what(),
-        testing::HasSubstr("defaults contain the key \"unknown\", which is not "
-                           "defined in the JSON Schema"));
+        e.what(), testing::HasSubstr(
+                      "defaults contain the key \"unknown\", which is not "
+                      "defined in the JSON Schema"));
   }
 }

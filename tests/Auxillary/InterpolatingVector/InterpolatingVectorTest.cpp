@@ -475,8 +475,9 @@ TEST(InterpolatingVector_Base, assignment_Mapped_fail) {
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
     EXPECT_THAT(
-        e.what(), testing::HasSubstr("This is not permitted through the "
-                                     "InterpolatingVector_Base interface."));
+        e.what(), testing::HasSubstr(
+                      "This is not permitted through the "
+                      "InterpolatingVector_Base interface."));
   }
 }
 

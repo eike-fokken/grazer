@@ -46,8 +46,9 @@ namespace Model::Gas {
 
   Flowboundarynode::Flowboundarynode(nlohmann::json const &data) :
       Gasnode(data),
-      boundaryvalue(Aux::InterpolatingVector::construct_from_json(
-          data["boundary_values"], get_boundary_schema())) {}
+      boundaryvalue(
+          Aux::InterpolatingVector::construct_from_json(
+              data["boundary_values"], get_boundary_schema())) {}
 
   void Flowboundarynode::setup() { gasnode_setup_helper(); }
 

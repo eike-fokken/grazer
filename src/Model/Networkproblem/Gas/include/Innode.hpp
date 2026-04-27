@@ -29,7 +29,7 @@ namespace Model::Gas {
     // Maybe we should incorporate the min and max pressure later on...
     using Gasnode::Gasnode;
 
-    virtual ~Innode(){};
+    virtual ~Innode() {};
 
     void setup() final;
 

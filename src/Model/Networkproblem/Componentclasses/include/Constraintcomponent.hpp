@@ -38,7 +38,7 @@ namespace Model {
   public:
     static nlohmann::json get_constraint_schema() = delete;
 
-    virtual ~Constraintcomponent(){};
+    virtual ~Constraintcomponent() {};
 
     virtual void evaluate_constraint(
         Eigen::Ref<Eigen::VectorXd> constraint_values, double time,

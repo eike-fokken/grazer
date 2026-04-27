@@ -40,7 +40,7 @@ namespace Model {
   public:
     static nlohmann::json get_control_schema() = delete;
 
-    virtual ~Controlcomponent(){};
+    virtual ~Controlcomponent() {};
 
     /** \brief evaluates the model equations into rootvalues.
      *

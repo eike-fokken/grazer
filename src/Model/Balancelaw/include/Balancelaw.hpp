@@ -23,7 +23,7 @@ namespace Model::Balancelaw {
   template <int Dimension> class Balancelaw {
 
   public:
-    Balancelaw(){};
+    Balancelaw() {};
 
     virtual ~Balancelaw() {}
     virtual Eigen::Vector<double, Dimension>

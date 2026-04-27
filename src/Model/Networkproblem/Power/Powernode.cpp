@@ -56,8 +56,9 @@ namespace Model::Power {
 
   Powernode::Powernode(nlohmann::json const &topology) :
       Node(topology),
-      boundaryvalue(Aux::InterpolatingVector::construct_from_json(
-          topology["boundary_values"], get_boundary_schema())),
+      boundaryvalue(
+          Aux::InterpolatingVector::construct_from_json(
+              topology["boundary_values"], get_boundary_schema())),
       G(topology["G"]),
       B(topology["B"]) {}
 

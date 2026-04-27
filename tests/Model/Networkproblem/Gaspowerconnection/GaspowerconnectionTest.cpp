@@ -78,8 +78,9 @@ TEST_F(GaspowerconnectionTEST, smoothing_polynomial) {
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
     EXPECT_THAT(
-        e.what(), testing::HasSubstr("You can't call this function for values "
-                                     "of q bigger than"));
+        e.what(), testing::HasSubstr(
+                      "You can't call this function for values "
+                      "of q bigger than"));
   }
   try {
     gp->smoothing_polynomial(-gp->kappa - 1);
@@ -87,8 +88,9 @@ TEST_F(GaspowerconnectionTEST, smoothing_polynomial) {
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
     EXPECT_THAT(
-        e.what(), testing::HasSubstr("You can't call this function for values "
-                                     "of q bigger than"));
+        e.what(), testing::HasSubstr(
+                      "You can't call this function for values "
+                      "of q bigger than"));
   }
 }
 
@@ -135,8 +137,9 @@ TEST_F(GaspowerconnectionTEST, dsmoothing_polynomial) {
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
     EXPECT_THAT(
-        e.what(), testing::HasSubstr("You can't call this function for values "
-                                     "of q bigger than"));
+        e.what(), testing::HasSubstr(
+                      "You can't call this function for values "
+                      "of q bigger than"));
   }
   try {
     gp->dsmoothing_polynomial_dq(-gp->kappa - 1);
@@ -144,8 +147,9 @@ TEST_F(GaspowerconnectionTEST, dsmoothing_polynomial) {
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
     EXPECT_THAT(
-        e.what(), testing::HasSubstr("You can't call this function for values "
-                                     "of q bigger than"));
+        e.what(), testing::HasSubstr(
+                      "You can't call this function for values "
+                      "of q bigger than"));
   }
 
   double h = sqrt(Aux::EPSILON);

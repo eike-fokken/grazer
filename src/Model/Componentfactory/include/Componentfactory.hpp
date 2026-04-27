@@ -115,7 +115,7 @@ namespace Model::Componentfactory {
    *
    */
   struct AbstractComponentType {
-    virtual ~AbstractComponentType(){};
+    virtual ~AbstractComponentType() {};
 
     /**
      * @brief get the name of the component used inside the topology.json
@@ -165,7 +165,7 @@ namespace Model::Componentfactory {
    * and Power_factory
    */
   struct AbstractNodeType : public AbstractComponentType {
-    virtual ~AbstractNodeType(){};
+    virtual ~AbstractNodeType() {};
 
     /**
      * @brief Create an instance of this NodeType
@@ -193,7 +193,7 @@ namespace Model::Componentfactory {
    * and Power_factory
    */
   struct AbstractEdgeType : public AbstractComponentType {
-    virtual ~AbstractEdgeType(){};
+    virtual ~AbstractEdgeType() {};
 
     /**
      * @brief Create an instance of this EdgeType
@@ -235,7 +235,7 @@ namespace Model::Componentfactory {
                  "whether an edge was added to the Nodechooser.");
 
     NodeType(nlohmann::json const &all_defaults) :
-        defaults(all_defaults.value(ConcreteNode::get_type(), R"({})"_json)){};
+        defaults(all_defaults.value(ConcreteNode::get_type(), R"({})"_json)) {};
 
     nlohmann::json const defaults;
     nlohmann::json const &get_defaults() const final { return defaults; }
@@ -269,8 +269,9 @@ namespace Model::Componentfactory {
     std::optional<nlohmann::json> get_boundary_schema(
         [[maybe_unused]] bool allow_required_defaults) const final {
       if constexpr (std::is_base_of_v<Boundaryvaluecomponent, ConcreteNode>) {
-        return std::optional(get_component_boundary_schema<ConcreteNode>(
-            defaults, allow_required_defaults));
+        return std::optional(
+            get_component_boundary_schema<ConcreteNode>(
+                defaults, allow_required_defaults));
       } else {
         return std::nullopt;
       }
@@ -279,8 +280,9 @@ namespace Model::Componentfactory {
     std::optional<nlohmann::json> get_control_schema(
         [[maybe_unused]] bool allow_required_defaults) const final {
       if constexpr (std::is_base_of_v<Controlcomponent, ConcreteNode>) {
-        return std::optional(get_component_control_schema<ConcreteNode>(
-            defaults, allow_required_defaults));
+        return std::optional(
+            get_component_control_schema<ConcreteNode>(
+                defaults, allow_required_defaults));
       } else {
         return std::nullopt;
       }
@@ -338,7 +340,7 @@ namespace Model::Componentfactory {
                  ": ConcreteEdge must inherit from Network::Edge.\n Check "
                  "whether a node was added to the Edgechooser.");
     EdgeType(nlohmann::json const &all_defaults) :
-        defaults(all_defaults.value(ConcreteEdge::get_type(), R"({})"_json)){};
+        defaults(all_defaults.value(ConcreteEdge::get_type(), R"({})"_json)) {};
 
     nlohmann::json const defaults;
     nlohmann::json const &get_defaults() const final { return defaults; }
@@ -373,8 +375,9 @@ namespace Model::Componentfactory {
     std::optional<nlohmann::json> get_boundary_schema(
         [[maybe_unused]] bool allow_required_defaults) const final {
       if constexpr (std::is_base_of_v<Boundaryvaluecomponent, ConcreteEdge>) {
-        return std::optional(get_component_boundary_schema<ConcreteEdge>(
-            defaults, allow_required_defaults));
+        return std::optional(
+            get_component_boundary_schema<ConcreteEdge>(
+                defaults, allow_required_defaults));
       } else {
         return std::nullopt;
       }
@@ -383,8 +386,9 @@ namespace Model::Componentfactory {
     std::optional<nlohmann::json> get_control_schema(
         [[maybe_unused]] bool allow_required_defaults) const final {
       if constexpr (std::is_base_of_v<Controlcomponent, ConcreteEdge>) {
-        return std::optional(get_component_control_schema<ConcreteEdge>(
-            defaults, allow_required_defaults));
+        return std::optional(
+            get_component_control_schema<ConcreteEdge>(
+                defaults, allow_required_defaults));
       } else {
         return std::nullopt;
       }

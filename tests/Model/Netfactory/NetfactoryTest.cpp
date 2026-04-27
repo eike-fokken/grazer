@@ -164,9 +164,9 @@ TEST(build_node_vectorTEST, node_type_not_known) {
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
     EXPECT_THAT(
-        e.what(),
-        testing::HasSubstr("node type Unknown_type_node, given in the topology "
-                           "file, is unknown to grazer"));
+        e.what(), testing::HasSubstr(
+                      "node type Unknown_type_node, given in the topology "
+                      "file, is unknown to grazer"));
   }
 }
 
@@ -269,9 +269,9 @@ TEST(build_edge_vectorTEST, edge_type_not_known) {
            << __FILE__ << ":" << __LINE__ << "\nshould have thrown!";
   } catch (std::runtime_error &e) {
     EXPECT_THAT(
-        e.what(),
-        testing::HasSubstr("edge type Unknown_type_edge, given in the topology "
-                           "file, is unknown to grazer"));
+        e.what(), testing::HasSubstr(
+                      "edge type Unknown_type_edge, given in the topology "
+                      "file, is unknown to grazer"));
   }
 }
 

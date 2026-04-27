@@ -63,9 +63,10 @@ namespace Optimization {
       Aux::InterpolatingVector_Base const &_constraint_lower_bounds,
       Aux::InterpolatingVector_Base const &_constraint_upper_bounds) :
       problem(std::move(_problem)),
-      init(std::make_unique<Initialvalues>(
-          _initial_controls, _lower_bounds, _upper_bounds,
-          _constraint_lower_bounds, _constraint_upper_bounds)),
+      init(
+          std::make_unique<Initialvalues>(
+              _initial_controls, _lower_bounds, _upper_bounds,
+              _constraint_lower_bounds, _constraint_upper_bounds)),
       cache(std::move(_cache)),
       state_timepoints(_state_timepoints),
       control_timepoints(_control_timepoints),
