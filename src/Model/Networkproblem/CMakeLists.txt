@@ -1,6 +1,7 @@
 add_subdirectory(Componentclasses)
 add_subdirectory(Power)
 add_subdirectory(Gas)
+add_subdirectory(Gas3d)
 add_subdirectory(Gaspowerconnection)
 
 add_library(networkproblem STATIC Networkproblem.cpp)
