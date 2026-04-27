@@ -19,13 +19,14 @@
 #include "SimpleStatecomponent.hpp"
 #include <Eigen/Sparse>
 
-namespace Model::Gas {
+namespace Model::Gas3d {
 
   enum Direction { start = 1, end = -1 };
 
   std::string Direction_string(Direction direction);
-  /// @brief This class is a base class for all Gas edges with a 2x2 balance law
-  class Gasedge : public SimpleStatecomponent {
+  /// @brief This class is a base class for all Gas3d edges with a 2x2 balance
+  /// law
+  class Gas3dedge : public SimpleStatecomponent {
 
   public:
     static int init_vals_per_interpol_point();
@@ -77,4 +78,4 @@ namespace Model::Gas {
     Eigen::Index get_ending_state_index() const;
   };
 
-} // namespace Model::Gas
+} // namespace Model::Gas3d

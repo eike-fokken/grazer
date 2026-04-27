@@ -14,19 +14,19 @@
  * express or implied.  See your chosen license for details.
  *
  */
-#include "Gasnode.hpp"
 #include "Coloroutput.hpp"
 #include "Edge.hpp"
 #include "Exception.hpp"
-#include "Gasedge.hpp"
+#include "Gas3dedge.hpp"
+#include "Gas3dnode.hpp"
 #include "Matrixhandler.hpp"
 #include <iostream>
 
-namespace Model::Gas {
+namespace Model::Gas3d {
 
-  Gasnode::~Gasnode() {}
+  Gas3dnode::~Gas3dnode() {}
 
-  void Gasnode::evaluate_flow_node_balance(
+  void Gas3dnode::evaluate_flow_node_balance(
       Eigen::Ref<Eigen::VectorXd> rootvalues,
       Eigen::Ref<Eigen::VectorXd const> const &state,
       double prescribed_qvol) const {
@@ -58,7 +58,7 @@ namespace Model::Gas {
     for (auto it = std::next(directed_attached_gas_edges.begin());
          it != directed_attached_gas_edges.end(); ++it) {
       auto direction = it->first;
-      Gasedge *edge = it->second;
+      Gas3dedge *edge = it->second;
       auto current_p_qvol = edge->get_boundary_p_qvol_bar(direction, state);
       auto current_p = current_p_qvol[0];
       auto current_qvol = current_p_qvol[1];
@@ -71,7 +71,7 @@ namespace Model::Gas {
     }
   }
 
-  void Gasnode::evaluate_flow_node_derivative(
+  void Gas3dnode::evaluate_flow_node_derivative(
       Aux::Matrixhandler &jacobianhandler,
       Eigen::Ref<Eigen::VectorXd const> const &state) const {
 
@@ -107,7 +107,7 @@ namespace Model::Gas {
     auto last_iterator = std::prev(directed_attached_gas_edges.end());
     for (auto it = second_iterator; it != last_iterator; ++it) {
       auto direction = it->first;
-      Gasedge *edge = it->second;
+      Gas3dedge *edge = it->second;
 
       auto current_equation_index = edge->boundary_equation_index(direction);
       Eigen::RowVector2d dF_old_dpq_now(1.0, 0.0);
@@ -135,7 +135,7 @@ namespace Model::Gas {
         dirlast, jacobianhandler, dF_last_dpq_last, last_equation_index, state);
   }
 
-  void Gasnode::gasnode_setup_helper() {
+  void Gas3dnode::gasnode_setup_helper() {
 
     if (directed_attached_gas_edges.size() != 0) {
       std::cout << YELLOW << "You are calling setup a second time!" << RESET
@@ -146,7 +146,7 @@ namespace Model::Gas {
     // <<std::endl; std::cout << "number of end edges: " <<
     // get_ending_edges().size() <<std::endl;
     for (auto &startedge : get_starting_edges()) {
-      auto startgasedge = dynamic_cast<Gasedge *>(startedge);
+      auto startgasedge = dynamic_cast<Gas3dedge *>(startedge);
       if (!startgasedge) {
         std::cout << __FILE__ << ":" << __LINE__ << " Warning: The non-gasedge"
                   << startedge->get_id() << " is attached at node " << get_id()
@@ -157,7 +157,7 @@ namespace Model::Gas {
       directed_attached_gas_edges.push_back({start, startgasedge});
     }
     for (auto &endedge : get_ending_edges()) {
-      auto endgasedge = dynamic_cast<Gasedge *>(endedge);
+      auto endgasedge = dynamic_cast<Gas3dedge *>(endedge);
       if (!endgasedge) {
         std::cout << __FILE__ << ":" << __LINE__ << " Warning: The non-gasedge"
                   << endedge->get_id() << " is attached at node " << get_id()
@@ -176,4 +176,4 @@ namespace Model::Gas {
     }
   }
 
-} // namespace Model::Gas
+} // namespace Model::Gas3d

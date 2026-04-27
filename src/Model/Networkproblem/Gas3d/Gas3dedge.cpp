@@ -14,13 +14,13 @@
  * express or implied.  See your chosen license for details.
  *
  */
-#include "Gasedge.hpp"
 #include "Exception.hpp"
+#include "Gas3dedge.hpp"
 #include "Idobject.hpp"
 #include "make_schema.hpp"
 #include <string>
 
-namespace Model::Gas {
+namespace Model::Gas3d {
 
   std::string Direction_string(Direction direction) {
     if (direction == start) {
@@ -35,9 +35,9 @@ namespace Model::Gas {
     }
   }
 
-  int Gasedge::init_vals_per_interpol_point() { return 2; }
+  int Gas3dedge::init_vals_per_interpol_point() { return 2; }
 
-  Eigen::Index Gasedge::give_away_start_index() const {
+  Eigen::Index Gas3dedge::give_away_start_index() const {
     if (get_state_startindex() < 0 or get_state_afterindex() < 0) {
       gthrow(
           {"This function: ", __FUNCTION__,
@@ -47,7 +47,7 @@ namespace Model::Gas {
     return get_state_startindex();
   }
 
-  Eigen::Index Gasedge::give_away_end_index() const {
+  Eigen::Index Gas3dedge::give_away_end_index() const {
     if (get_state_startindex() < 0 or get_state_afterindex() < 0) {
       gthrow(
           {"This function: ", __FUNCTION__,
@@ -56,7 +56,7 @@ namespace Model::Gas {
     }
     return (get_state_afterindex() - 1);
   }
-  Eigen::Index Gasedge::boundary_equation_index(Direction direction) const {
+  Eigen::Index Gas3dedge::boundary_equation_index(Direction direction) const {
     if (direction == start) {
       return give_away_start_index();
     } else if (direction == end) {
@@ -74,18 +74,18 @@ namespace Model::Gas {
     }
   }
 
-  Eigen::Index Gasedge::get_equation_start_index() const {
+  Eigen::Index Gas3dedge::get_equation_start_index() const {
     return get_starting_state_index() + 1; // Nofstates/2;
   }
-  Eigen::Index Gasedge::get_equation_after_index() const {
+  Eigen::Index Gas3dedge::get_equation_after_index() const {
     return get_state_afterindex() - 1; // - Nofstates / 2 + 1 ;
   }
 
-  Eigen::Index Gasedge::get_starting_state_index() const {
+  Eigen::Index Gas3dedge::get_starting_state_index() const {
     return get_state_startindex();
   }
 
-  Eigen::Index Gasedge::get_ending_state_index() const {
+  Eigen::Index Gas3dedge::get_ending_state_index() const {
 
     // This is a hack and should be refactored
     if (get_state_afterindex() - get_state_startindex() == 2) {
@@ -103,7 +103,7 @@ namespace Model::Gas {
     return get_state_afterindex() - 2;
   }
 
-  Eigen::Index Gasedge::get_boundary_state_index(Direction direction) const {
+  Eigen::Index Gas3dedge::get_boundary_state_index(Direction direction) const {
     if (direction == start) {
       return get_starting_state_index();
     } else if (direction == end) {
@@ -120,19 +120,19 @@ namespace Model::Gas {
            this_idobject->get_id()});
     }
   }
-  Eigen::Vector2d Gasedge::get_starting_state(
+  Eigen::Vector2d Gas3dedge::get_starting_state(
       Eigen::Ref<Eigen::VectorXd const> const &state) const {
     Eigen::Vector2d starting_state
         = state.segment<2>(get_starting_state_index());
     return starting_state;
   }
 
-  Eigen::Vector2d Gasedge::get_ending_state(
+  Eigen::Vector2d Gas3dedge::get_ending_state(
       Eigen::Ref<Eigen::VectorXd const> const &state) const {
     Eigen::Vector2d ending_state = state.segment<2>(get_ending_state_index());
     return ending_state;
   }
-  Eigen::Vector2d Gasedge::get_boundary_state(
+  Eigen::Vector2d Gas3dedge::get_boundary_state(
       Direction direction,
       Eigen::Ref<Eigen::VectorXd const> const &state) const {
     if (direction == start) {
@@ -151,4 +151,4 @@ namespace Model::Gas {
            this_idobject->get_id()});
     }
   }
-} // namespace Model::Gas
+} // namespace Model::Gas3d

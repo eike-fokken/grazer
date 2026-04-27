@@ -17,19 +17,19 @@
 #pragma once
 #include "Boundaryvaluecomponent.hpp"
 #include "Equationcomponent.hpp"
-#include "Gasnode.hpp"
+#include "Gas3dnode.hpp"
 #include "InterpolatingVector.hpp"
 #include "Node.hpp"
 #include <nlohmann/json.hpp>
 #include <string>
 
-namespace Model::Gas {
+namespace Model::Gas3d {
 
   nlohmann::json revert_boundary_conditions(nlohmann::json const &data);
 
   class Flowboundarynode :
       public Equationcomponent,
-      public Gasnode,
+      public Gas3dnode,
       public Boundaryvaluecomponent {
 
   public:
@@ -37,7 +37,7 @@ namespace Model::Gas {
 
     Flowboundarynode(nlohmann::json const &data);
 
-    ~Flowboundarynode(){};
+    ~Flowboundarynode() {};
 
     void setup() final;
 
@@ -60,4 +60,4 @@ namespace Model::Gas {
     Aux::InterpolatingVector const boundaryvalue;
   };
 
-} // namespace Model::Gas
+} // namespace Model::Gas3d

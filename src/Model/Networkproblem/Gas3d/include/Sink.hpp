@@ -17,7 +17,7 @@
 #pragma once
 #include "Flowboundarynode.hpp"
 
-namespace Model::Gas {
+namespace Model::Gas3d {
 
   class Sink final : public Flowboundarynode {
 
@@ -27,4 +27,4 @@ namespace Model::Gas {
     Sink(nlohmann::json const &data);
   };
 
-} // namespace Model::Gas
+} // namespace Model::Gas3d

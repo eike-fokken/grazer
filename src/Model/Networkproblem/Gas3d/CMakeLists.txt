@@ -1,6 +1,6 @@
 add_library(gas3d STATIC
-  Gasedge.cpp
-  Gasnode.cpp
+  Gas3dedge.cpp
+  Gas3dnode.cpp
   Flowboundarynode.cpp
 
   Source.cpp

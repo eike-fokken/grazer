@@ -37,7 +37,7 @@
 #include <string>
 #include <type_traits>
 
-namespace Model::Gas {
+namespace Model::Gas3d {
 
   std::string Pipe::get_type() { return "Pipe"; }
   std::string Pipe::get_gas_type() const { return get_type(); }
@@ -296,4 +296,4 @@ namespace Model::Gas {
 
   double Pipe::get_length() const { return (number_of_points - 1) * Delta_x; }
 
-} // namespace Model::Gas
+} // namespace Model::Gas3d

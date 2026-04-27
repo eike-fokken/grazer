@@ -20,7 +20,7 @@
 #include <Flowboundarynode.hpp>
 #include <iostream>
 
-namespace Model::Gas {
+namespace Model::Gas3d {
 
   nlohmann::json revert_boundary_conditions(nlohmann::json const &data) {
 
@@ -45,9 +45,10 @@ namespace Model::Gas {
   }
 
   Flowboundarynode::Flowboundarynode(nlohmann::json const &data) :
-      Gasnode(data),
-      boundaryvalue(Aux::InterpolatingVector::construct_from_json(
-          data["boundary_values"], get_boundary_schema())) {}
+      Gas3dnode(data),
+      boundaryvalue(
+          Aux::InterpolatingVector::construct_from_json(
+              data["boundary_values"], get_boundary_schema())) {}
 
   void Flowboundarynode::setup() { gasnode_setup_helper(); }
 
@@ -80,4 +81,4 @@ namespace Model::Gas {
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const {}
 
-} // namespace Model::Gas
+} // namespace Model::Gas3d

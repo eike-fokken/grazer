@@ -17,15 +17,15 @@
 #pragma once
 #include "Edge.hpp"
 #include "Equationcomponent.hpp"
-#include "Gasedge.hpp"
+#include "Gas3dedge.hpp"
 #include "Isothermaleulerequation.hpp"
 #include "Threepointscheme.hpp"
 
-namespace Model::Gas {
+namespace Model::Gas3d {
 
   class Pipe final :
       public Equationcomponent,
-      public Gasedge,
+      public Gas3dedge,
       public Network::Edge {
   public:
     static std::string get_type();
@@ -87,4 +87,4 @@ namespace Model::Gas {
     std::unique_ptr<Scheme::Threepointscheme<2> const> scheme;
   };
 
-} // namespace Model::Gas
+} // namespace Model::Gas3d

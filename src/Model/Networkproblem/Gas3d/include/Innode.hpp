@@ -15,21 +15,21 @@
  *
  */
 #pragma once
-#include <Gasnode.hpp>
+#include <Gas3dnode.hpp>
 
-namespace Model::Gas {
+namespace Model::Gas3d {
 
   /// This class represents an inner node of the gas network, that neither
   /// injects gas nor takes gas out.
-  class Innode final : public Equationcomponent, public Gasnode {
+  class Innode final : public Equationcomponent, public Gas3dnode {
 
   public:
     static std::string get_type();
 
     // Maybe we should incorporate the min and max pressure later on...
-    using Gasnode::Gasnode;
+    using Gas3dnode::Gas3dnode;
 
-    virtual ~Innode(){};
+    virtual ~Innode() {};
 
     void setup() final;
 
@@ -49,4 +49,4 @@ namespace Model::Gas {
         Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const final;
   };
 
-} // namespace Model::Gas
+} // namespace Model::Gas3d

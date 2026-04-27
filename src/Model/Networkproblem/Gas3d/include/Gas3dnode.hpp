@@ -16,17 +16,17 @@
  */
 #pragma once
 #include "Equationcomponent.hpp"
-#include "Gasedge.hpp"
+#include "Gas3dedge.hpp"
 #include "Node.hpp"
 
-namespace Model::Gas {
+namespace Model::Gas3d {
 
-  class Gasnode : public Network::Node {
+  class Gas3dnode : public Network::Node {
 
   public:
     using Node::Node;
 
-    ~Gasnode() override;
+    ~Gas3dnode() override;
 
     /// Claims outer indices of attached edges.
     void gasnode_setup_helper();
@@ -41,10 +41,10 @@ namespace Model::Gas {
         Aux::Matrixhandler &jacobianhandler,
         Eigen::Ref<Eigen::VectorXd const> const &state) const;
 
-    std::vector<std::pair<Direction, Gasedge *>> directed_attached_gas_edges;
+    std::vector<std::pair<Direction, Gas3dedge *>> directed_attached_gas_edges;
 
   private:
     /// \brief number of state variables, this component needs.
     static constexpr int number_of_state_variables{0};
   };
-} // namespace Model::Gas
+} // namespace Model::Gas3d

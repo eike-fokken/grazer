@@ -17,7 +17,7 @@
 #pragma once
 #include "Flowboundarynode.hpp"
 
-namespace Model::Gas {
+namespace Model::Gas3d {
 
   class Source final : public Flowboundarynode {
 
@@ -27,4 +27,4 @@ namespace Model::Gas {
     using Flowboundarynode::Flowboundarynode;
   };
 
-} // namespace Model::Gas
+} // namespace Model::Gas3d

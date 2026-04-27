@@ -16,8 +16,8 @@
  */
 #include "Source.hpp"
 
-namespace Model::Gas {
+namespace Model::Gas3d {
 
   std::string Source::get_type() { return "Source"; }
 
-} // namespace Model::Gas
+} // namespace Model::Gas3d

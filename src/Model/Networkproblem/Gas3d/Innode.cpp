@@ -17,7 +17,7 @@
 #include <Innode.hpp>
 #include <iostream>
 
-namespace Model::Gas {
+namespace Model::Gas3d {
 
   std::string Innode::get_type() { return "Innode"; }
 
@@ -42,4 +42,4 @@ namespace Model::Gas {
       Eigen::Ref<Eigen::VectorXd const> const & /*last_state*/,
       Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const {}
 
-} // namespace Model::Gas
+} // namespace Model::Gas3d
