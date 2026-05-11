@@ -18,6 +18,11 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
+if(POLICY CMP0135)
+	cmake_policy(SET CMP0135 NEW)
+	set(CMAKE_POLICY_DEFAULT_CMP0135 NEW)
+endif()
+
 # for debug builds with gcc use the debug configuration of the standard libraries:
 
 # We don't do that with Clang, although there is _LIBCPP_DEBUG, because
