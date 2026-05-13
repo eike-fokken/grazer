@@ -65,15 +65,6 @@ namespace Model::Gas3d {
         Eigen::Ref<Eigen::VectorXd> new_state,
         nlohmann::json const &initial_json) const final;
 
-    Eigen::Vector2d get_boundary_p_qvol_bar(
-        Direction direction,
-        Eigen::Ref<Eigen::VectorXd const> const &state) const final;
-
-    void dboundary_p_qvol_dstate(
-        Direction direction, Aux::Matrixhandler &jacobianhandler,
-        Eigen::RowVector2d function_derivative, Eigen::Index rootvalues_index,
-        Eigen::Ref<Eigen::VectorXd const> const &state) const final;
-
     Balancelaw::Isothermaleulerequation const &get_balancelaw() const;
 
     int get_number_of_points() const;
