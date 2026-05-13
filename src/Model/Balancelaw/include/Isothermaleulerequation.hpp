@@ -53,7 +53,7 @@ namespace Model::Balancelaw {
 
     double p(double rho) const;
     double dp_drho(double rho) const;
-    double rho(double rho) const;
+    double rho(double p) const;
 
     static double
     lambda_non_laminar(double Re, double diameter, double roughness);

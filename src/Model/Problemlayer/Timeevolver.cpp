@@ -128,18 +128,17 @@ namespace Model {
       Eigen::Ref<Eigen::VectorXd const> const &control,
       Controlcomponent &problem) {
     Solver::Solutionstruct solstruct;
+
     int retry = 0;
-    if (use_simplified_newton) {
-      retry = 0;
-    } else {
+    if (not use_simplified_newton) {
       retry = retries;
     }
+
     bool use_full_jacobian = true;
     if (use_simplified_newton) {
       use_full_jacobian = false;
-    } else {
-      use_full_jacobian = true;
     }
+
     Eigen::VectorXd new_state_backup = new_state;
     while (not solstruct.success) {
       new_state = new_state_backup;
