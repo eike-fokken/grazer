@@ -1,5 +1,6 @@
 add_library(balancelaw STATIC
   Isothermaleulerequation.cpp
+  TwoGasMixture.cpp
   )
 
 target_link_libraries(balancelaw PRIVATE
