@@ -7,7 +7,7 @@ add_library(gas3d STATIC
   Sink.cpp
   Innode.cpp
 
-  Pipe.cpp)
+  MixedPipe.cpp)
 
 target_link_libraries(gas3d PRIVATE
 matrixhandler

@@ -23,7 +23,7 @@
 
 namespace Model::Gas3d {
 
-  class Pipe final :
+  class MixedPipe final :
       public Equationcomponent,
       public Gas3dedge,
       public Network::Edge {
@@ -34,11 +34,11 @@ namespace Model::Gas3d {
     static nlohmann::json get_schema();
     static nlohmann::json get_initial_schema();
 
-    Pipe(
+    MixedPipe(
         nlohmann::json const &topology,
         std::vector<std::unique_ptr<Network::Node>> &nodes);
 
-    ~Pipe() final;
+    ~MixedPipe() final;
 
     void evaluate(
         Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,

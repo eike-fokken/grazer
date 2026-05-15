@@ -14,7 +14,7 @@
  * express or implied.  See your chosen license for details.
  *
  */
-#include "Pipe.hpp"
+#include "MixedPipe.hpp"
 #include "Coloroutput.hpp"
 #include "Edge.hpp"
 #include "Exception.hpp"
@@ -39,14 +39,14 @@
 
 namespace Model::Gas3d {
 
-  std::string Pipe::get_type() { return "Pipe"; }
-  std::string Pipe::get_gas_type() const { return get_type(); }
+  std::string MixedPipe::get_type() { return "MixedPipe"; }
+  std::string MixedPipe::get_gas_type() const { return get_type(); }
 
-  int Pipe::init_vals_per_interpol_point() { return 2; }
+  int MixedPipe::init_vals_per_interpol_point() { return 2; }
 
   namespace unit = Aux::unit;
 
-  nlohmann::json Pipe::get_schema() {
+  nlohmann::json MixedPipe::get_schema() {
     nlohmann::json schema = Network::Edge::get_schema();
 
     Aux::schema::add_required(schema, "length", unit::length.get_schema());
@@ -62,15 +62,15 @@ namespace Model::Gas3d {
     return schema;
   }
 
-  nlohmann::json Pipe::get_initial_schema() {
+  nlohmann::json MixedPipe::get_initial_schema() {
     std::optional<int> interpol_points = std::nullopt;
     std::vector<nlohmann::json> contains_x
         = {R"({"maximum": 0, "minimum": 0})"_json}; // there is a point <= 0
     return Aux::schema::make_initial_schema(
-        interpol_points, Pipe::init_vals_per_interpol_point(), contains_x);
+        interpol_points, MixedPipe::init_vals_per_interpol_point(), contains_x);
   }
 
-  Pipe::Pipe(
+  MixedPipe::MixedPipe(
       nlohmann::json const &topology,
       std::vector<std::unique_ptr<Network::Node>> &nodes) :
       Network::Edge(topology, nodes),
@@ -85,9 +85,9 @@ namespace Model::Gas3d {
       isothermaleulerequation(topology),
       scheme{Scheme::make_threepointscheme<2>(topology)} {}
 
-  Pipe::~Pipe() {}
+  MixedPipe::~MixedPipe() {}
 
-  void Pipe::evaluate(
+  void MixedPipe::evaluate(
       Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
@@ -107,7 +107,7 @@ namespace Model::Gas3d {
     }
   }
 
-  void Pipe::d_evaluate_d_new_state(
+  void MixedPipe::d_evaluate_d_new_state(
       Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
@@ -148,7 +148,7 @@ namespace Model::Gas3d {
     }
   }
 
-  void Pipe::d_evaluate_d_last_state(
+  void MixedPipe::d_evaluate_d_last_state(
       Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
@@ -189,20 +189,20 @@ namespace Model::Gas3d {
     }
   }
 
-  void Pipe::setup() { setup_output_json_helper(get_id()); }
+  void MixedPipe::setup() { setup_output_json_helper(get_id()); }
 
-  Eigen::Index Pipe::needed_number_of_states() const {
+  Eigen::Index MixedPipe::needed_number_of_states() const {
     return 2 * number_of_points;
   }
 
-  void Pipe::add_results_to_json(nlohmann::json &new_output) {
+  void MixedPipe::add_results_to_json(nlohmann::json &new_output) {
     auto &this_output_json = get_output_json_ref();
     std::string comp_type = Aux::component_class(*this);
     new_output[comp_type][get_type()].push_back(std::move(this_output_json));
   }
 
-  void
-  Pipe::json_save(double time, Eigen::Ref<Eigen::VectorXd const> const &state) {
+  void MixedPipe::json_save(
+      double time, Eigen::Ref<Eigen::VectorXd const> const &state) {
 
     nlohmann::json current_value;
     current_value["time"] = time;
@@ -228,7 +228,7 @@ namespace Model::Gas3d {
     output_json["data"].push_back(std::move(current_value));
   }
 
-  void Pipe::set_initial_values(
+  void MixedPipe::set_initial_values(
       Eigen::Ref<Eigen::VectorXd> new_state,
       nlohmann::json const &initial_json) const {
 
@@ -255,13 +255,15 @@ namespace Model::Gas3d {
         Delta_x, transform);
   }
 
-  Balancelaw::Isothermaleulerequation const &Pipe::get_balancelaw() const {
+  Balancelaw::Isothermaleulerequation const &MixedPipe::get_balancelaw() const {
     return isothermaleulerequation;
   }
 
-  int Pipe::get_number_of_points() const { return number_of_points; }
-  double Pipe::get_Delta_x() const { return Delta_x; }
+  int MixedPipe::get_number_of_points() const { return number_of_points; }
+  double MixedPipe::get_Delta_x() const { return Delta_x; }
 
-  double Pipe::get_length() const { return (number_of_points - 1) * Delta_x; }
+  double MixedPipe::get_length() const {
+    return (number_of_points - 1) * Delta_x;
+  }
 
 } // namespace Model::Gas3d
