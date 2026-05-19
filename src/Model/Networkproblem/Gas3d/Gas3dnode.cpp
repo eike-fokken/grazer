@@ -34,10 +34,15 @@ namespace Model::Gas3d {
     if (directed_attached_gas_edges.empty()) {
       return;
     }
+
+    auto starting_gas_edges = get_typed_starting_edges<Gas3dedge>();
+    auto ending_gas_edges = get_typed_ending_edges<Gas3dedge>();
+
     auto [dir0, edge0] = directed_attached_gas_edges.front();
-    auto p_qvol0 = edge0->get_boundary_p_qvol_bar(dir0, state);
-    auto p0 = p_qvol0[0];
-    auto q0 = p_qvol0[1];
+    auto boundary_state_0 = edge0->get_boundary_state(dir0, state);
+    auto rho1_0 = boundary_state_0[0];
+    auto rho2_0 = boundary_state_0[1];
+    auto q_0 = boundary_state_0[2];
 
     double old_p = p0;
     auto old_equation_index = edge0->boundary_equation_index(dir0);
