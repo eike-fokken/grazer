@@ -61,6 +61,28 @@ namespace Network {
     /// This function returns vector pointers of ending edges
     std::vector<Network::Edge *> get_ending_edges() const;
 
+    template <typename T> std::vector<T *> get_typed_starting_edges() const {
+      std::vector<T *> starting_typed_edges;
+      for (auto *edge : get_starting_edges()) {
+        auto *typed_edge = dynamic_cast<T *>(edge);
+        if (typed_edge) {
+          starting_typed_edges.push_back(typed_edge);
+        }
+      }
+      return starting_typed_edges;
+    }
+
+    template <typename T> std::vector<T *> get_typed_ending_edges() const {
+      std::vector<T *> ending_typed_edges;
+      for (auto *edge : get_ending_edges()) {
+        auto *typed_edge = dynamic_cast<T *>(edge);
+        if (typed_edge) {
+          ending_typed_edges.push_back(typed_edge);
+        }
+      }
+      return ending_typed_edges;
+    }
+
   private:
     struct Edgecollection {
       std::vector<Network::Edge *> starting_edges;

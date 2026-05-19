@@ -34,6 +34,12 @@ namespace Model::Balancelaw {
     Eigen::Matrix2d
     dsource_dstate(Eigen::Ref<Eigen::Vector2d const> state) const final;
 
+    std::array<Eigen::Vector2d, 2>
+    eigen_vectors(Eigen::Ref<Eigen::Vector2d const> state) const final;
+
+    Eigen::Vector2d
+    eigen_values(Eigen::Ref<Eigen::Vector2d const> state) const final;
+
     Eigen::Vector2d p_qvol(Eigen::Ref<Eigen::Vector2d const> state) const;
     Eigen::Matrix2d
     dp_qvol_dstate(Eigen::Ref<Eigen::Vector2d const> state) const;

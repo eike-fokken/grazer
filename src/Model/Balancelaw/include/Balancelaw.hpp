@@ -16,7 +16,7 @@
  */
 #pragma once
 #include <Eigen/Dense>
-#include <Eigen/src/Core/util/Constants.h>
+#include <array>
 
 namespace Model::Balancelaw {
 
@@ -35,8 +35,26 @@ namespace Model::Balancelaw {
 
     virtual Eigen::Vector<double, Dimension>
     source(Eigen::Ref<Eigen::Vector<double, Dimension> const> state) const = 0;
+
     virtual Eigen::Matrix<double, Dimension, Dimension> dsource_dstate(
         Eigen::Ref<Eigen::Vector<double, Dimension> const> state) const
         = 0;
+
+    virtual Eigen::Vector<double, Dimension>
+    eigen_values(Eigen::Ref<Eigen::Vector<double, Dimension> const> state) const
+        = 0;
+
+    static_assert(
+        Dimension >= 0,
+        "This only works with non-negative dimensions! This assert makes the "
+        "following static_cast legal");
+
+    virtual std::array<
+        Eigen::Vector<double, Dimension>,
+        static_cast<long unsigned int>(Dimension)>
+    eigen_vectors(
+        Eigen::Ref<Eigen::Vector<double, Dimension> const> state) const
+        = 0;
   };
+
 } // namespace Model::Balancelaw

@@ -18,6 +18,8 @@
 #include "Exception.hpp"
 #include "Mathfunctions.hpp"
 #include "unit_conversion.hpp"
+#include <Eigen/Dense>
+#include <cmath>
 
 namespace Model::Balancelaw {
 
@@ -132,6 +134,34 @@ namespace Model::Balancelaw {
                + lambda_non_laminar(Re, diameter, roughness) * std::abs(q));
     }
     return dsource;
+  }
+
+  std::array<Eigen::Vector2d, 2> Isothermaleulerequation::eigen_vectors(
+      Eigen::Ref<Eigen::Vector2d const> state) const {
+    auto current_eigen_values = eigen_values(state);
+    auto lambda_1 = current_eigen_values[0];
+    auto lambda_2 = current_eigen_values[1];
+
+    auto r1 = Eigen::Vector2d(-1.0, -lambda_1);
+    auto r2 = Eigen::Vector2d(1.0, lambda_2);
+
+    return {r1, r2};
+  }
+
+  Eigen::Vector2d Isothermaleulerequation::eigen_values(
+      Eigen::Ref<Eigen::Vector2d const> state) const {
+    double rho = state[0];
+    double q = state[1];
+
+    auto p_prime = dp_drho(rho);
+
+    double lambda_left_going = q / rho - std::sqrt(p_prime);
+    double lambda_right_going = q / rho + std::sqrt(p_prime);
+
+    assert(lambda_left_going < 0);
+    assert(lambda_right_going > 0);
+
+    return Eigen::Vector2d(lambda_left_going, lambda_right_going);
   }
 
   Eigen::Vector2d Isothermaleulerequation::p_qvol(
