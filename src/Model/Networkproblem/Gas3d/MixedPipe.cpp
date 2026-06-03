@@ -20,11 +20,11 @@
 #include "Exception.hpp"
 #include "Get_base_component.hpp"
 #include "Implicitboxscheme.hpp"
-#include "Isothermaleulerequation.hpp"
 #include "Mathfunctions.hpp"
 #include "Matrixhandler.hpp"
 #include "Scheme_factory.hpp"
 #include "Threepointscheme.hpp"
+#include "TwoGasMixture.hpp"
 #include "make_schema.hpp"
 #include "unit_conversion.hpp"
 
@@ -82,8 +82,8 @@ namespace Model::Gas3d {
       Delta_x(
           unit::length.parse_to_si(topology["length"])
           / (number_of_points - 1)),
-      isothermaleulerequation(topology),
-      scheme{Scheme::make_threepointscheme<2>(topology)} {}
+      mixed_gas_law(topology),
+      scheme{Scheme::make_threepointscheme<3>(topology)} {}
 
   MixedPipe::~MixedPipe() {}
 
@@ -103,7 +103,7 @@ namespace Model::Gas3d {
 
       scheme->evaluate_point(
           rootvalue_segment, last_time, new_time, Delta_x, last_left,
-          last_right, new_left, new_right, isothermaleulerequation);
+          last_right, new_left, new_right, mixed_gas_law);
     }
   }
 
@@ -119,10 +119,10 @@ namespace Model::Gas3d {
       auto new_left = new_state.segment<2>(i - 1);
       auto new_right = new_state.segment<2>(i + 1);
 
-      Eigen::Matrix2d current_derivative_left
+      Eigen::Matrix3d current_derivative_left
           = scheme->devaluate_point_d_new_left(
               last_time, new_time, Delta_x, last_left, last_right, new_left,
-              new_right, isothermaleulerequation);
+              new_right, mixed_gas_law);
 
       jacobianhandler.add_to_coefficient(
           i, i - 1, current_derivative_left(0, 0));
@@ -132,10 +132,10 @@ namespace Model::Gas3d {
       jacobianhandler.add_to_coefficient(
           i + 1, i, current_derivative_left(1, 1));
 
-      Eigen::Matrix2d current_derivative_right
+      Eigen::Matrix3d current_derivative_right
           = scheme->devaluate_point_d_new_right(
               last_time, new_time, Delta_x, last_left, last_right, new_left,
-              new_right, isothermaleulerequation);
+              new_right, mixed_gas_law);
 
       jacobianhandler.add_to_coefficient(
           i, i + 1, current_derivative_right(0, 0));
@@ -160,10 +160,10 @@ namespace Model::Gas3d {
       auto new_left = new_state.segment<2>(i - 1);
       auto new_right = new_state.segment<2>(i + 1);
 
-      Eigen::Matrix2d current_derivative_left
+      Eigen::Matrix3d current_derivative_left
           = scheme->devaluate_point_d_last_left(
               last_time, new_time, Delta_x, last_left, last_right, new_left,
-              new_right, isothermaleulerequation);
+              new_right, mixed_gas_law);
 
       jacobianhandler.add_to_coefficient(
           i, i - 1, current_derivative_left(0, 0));
@@ -173,10 +173,10 @@ namespace Model::Gas3d {
       jacobianhandler.add_to_coefficient(
           i + 1, i, current_derivative_left(1, 1));
 
-      Eigen::Matrix2d current_derivative_right
+      Eigen::Matrix3d current_derivative_right
           = scheme->devaluate_point_d_last_right(
               last_time, new_time, Delta_x, last_left, last_right, new_left,
-              new_right, isothermaleulerequation);
+              new_right, mixed_gas_law);
 
       jacobianhandler.add_to_coefficient(
           i, i + 1, current_derivative_right(0, 0));
@@ -210,8 +210,8 @@ namespace Model::Gas3d {
       Eigen::Vector2d current_state
           = state.segment<2>(get_state_startindex() + 2 * i);
       double current_rho = current_state[0];
-      double current_p_bar = isothermaleulerequation.p_bar_from_p_pascal(
-          isothermaleulerequation.p(current_rho));
+      double current_p_bar
+          = mixed_gas_law.p_bar_from_p_pascal(mixed_gas_law.p(current_rho));
       double current_q = current_state[1];
       double x = i * Delta_x;
       nlohmann::json pressure_json;
@@ -232,31 +232,13 @@ namespace Model::Gas3d {
       Eigen::Ref<Eigen::VectorXd> new_state,
       nlohmann::json const &initial_json) const {
 
-    // Unfortunately the argument and return types do not match.
-    // Therefore we declare a lambda, that takes a VectorXd and returns a
-    // VectorXd for passing to set_simple_initial_values.
-    auto const &isoeuler = isothermaleulerequation;
-    auto transform = [isoeuler](Eigen::Ref<Eigen::VectorXd const> const &vector)
-        -> Eigen::VectorXd {
-      if (vector.size() != 2) {
-        gthrow(
-            {"A vector of the wrong size: ", std::to_string(vector.size()),
-             ", was supplied to the transformation function.\n",
-             "The right size is 2."});
-      }
-      Eigen::Vector2d argument = vector;
-      Eigen::VectorXd result
-          = isoeuler.state(isoeuler.p_qvol_from_p_qvol_bar(argument));
-      return result;
-    };
-
     set_simple_initial_values(
         this, new_state, initial_json, get_initial_schema(), number_of_points,
-        Delta_x, transform);
+        Delta_x);
   }
 
-  Balancelaw::Isothermaleulerequation const &MixedPipe::get_balancelaw() const {
-    return isothermaleulerequation;
+  Balancelaw::TwoGasMixture const &MixedPipe::get_balancelaw() const {
+    return mixed_gas_law;
   }
 
   int MixedPipe::get_number_of_points() const { return number_of_points; }

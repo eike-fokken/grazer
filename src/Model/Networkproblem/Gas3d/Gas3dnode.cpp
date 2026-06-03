@@ -35,6 +35,12 @@ namespace Model::Gas3d {
       return;
     }
 
+    // edges that transport gas from this node into the edge:
+    std::vector<Gas3dedge *> outflow_edges;
+
+    // edges that transport gas into this node from the edge:
+    std::vector<Gas3dedge *> inflow_edges;
+
     auto starting_gas_edges = get_typed_starting_edges<Gas3dedge>();
     auto ending_gas_edges = get_typed_ending_edges<Gas3dedge>();
 

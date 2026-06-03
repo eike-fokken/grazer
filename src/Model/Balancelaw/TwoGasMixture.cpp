@@ -19,6 +19,7 @@
 #include "Mathfunctions.hpp"
 #include "unit_conversion.hpp"
 #include <Eigen/src/Core/Matrix.h>
+#include <cmath>
 #include <string>
 
 namespace Model::Balancelaw {
@@ -68,6 +69,65 @@ namespace Model::Balancelaw {
     return Eigen::Matrix3d::Zero();
   }
 
+  Eigen::Vector3d
+  TwoGasMixture::eigen_values(Eigen::Ref<Eigen::Vector3d const> state) const {
+
+    // Density:
+    auto _rho = rho(state);
+    if (_rho <= 0) {
+      gthrow(
+          {"The total gas density >>", std::to_string(_rho),
+           "<< is non-positive, this case cannot be "
+           "handled!"});
+    }
+
+    // Pressure:
+    auto _p = p(state);
+
+    // Gas velocity:
+    auto _u = u(state);
+
+    auto average_speed_of_sound = std::sqrt(_p / _rho);
+    auto lambda1 = _u - average_speed_of_sound;
+    auto lambda2 = _u;
+    auto lambda3 = _u + average_speed_of_sound;
+
+    return Eigen::Vector3d{lambda1, lambda2, lambda3};
+  }
+
+  std::array<Eigen::Vector3d, 3>
+  TwoGasMixture::eigen_vectors(Eigen::Ref<Eigen::Vector3d const> state) const {
+    auto _eigen_values = eigen_values(state);
+
+    // Density:
+    auto _rho = rho(state);
+    if (_rho <= 0) {
+      gthrow(
+          {"The total gas density >>", std::to_string(_rho),
+           "<< is non-positive, this case cannot be "
+           "handled!"});
+    }
+
+    // 1. eigenvector:
+    auto lambda1 = _eigen_values[0];
+    auto r1 = Eigen::Vector3d(rho1(state), rho2(state), _rho * lambda1);
+
+    // 2. eigenvector:
+    auto lambda2 = _eigen_values[1];
+    auto sigma1_squared = sigma1 * sigma1;
+    auto sigma2_squared = sigma2 * sigma2;
+
+    auto r2 = Eigen::Vector3d(
+        sigma2_squared, -sigma1_squared,
+        (sigma2_squared - sigma1_squared) * lambda2);
+
+    // 3. eigenvector:
+    auto lambda3 = _eigen_values[2];
+    auto r3 = Eigen::Vector3d(rho1(state), rho2(state), _rho * lambda3);
+
+    return {r1, r2, r3};
+  }
+
   double TwoGasMixture::rho(Eigen::Ref<Eigen::Vector3d const> state) const {
     return rho1(state) + rho2(state);
   }
@@ -86,14 +146,14 @@ namespace Model::Balancelaw {
   }
 
   double TwoGasMixture::u(Eigen::Ref<Eigen::Vector3d const> state) const {
-    double const r = rho(state);
-    if (r <= 0) {
+    double const _rho = rho(state);
+    if (_rho <= 0) {
       gthrow(
-          {"The total gas density >>", std::to_string(r),
+          {"The total gas density >>", std::to_string(_rho),
            "<< is non-positive, this case cannot be "
            "handled!"});
     }
-    return q(state) / r;
+    return q(state) / _rho;
   }
 
   Eigen::RowVector3d TwoGasMixture::drho_dstate(

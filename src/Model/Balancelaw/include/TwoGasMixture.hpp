@@ -34,32 +34,35 @@ namespace Model::Balancelaw {
     Eigen::Matrix3d
     dsource_dstate(Eigen::Ref<Eigen::Vector3d const> state) const final;
 
-  private:
-    double const sigma1;
-    double const sigma2;
-    /** \brief Total density of the gas, sum of the component densities.
-     */
-    double rho(Eigen::Ref<Eigen::Vector3d const> state) const;
+    Eigen::Vector3d
+    eigen_values(Eigen::Ref<Eigen::Vector3d const> state) const final;
 
-    /** \brief Density of the first gas component.
-     */
-    double rho1(Eigen::Ref<Eigen::Vector3d const> state) const;
-
-    /** \brief Density of the second gas component.
-     */
-    double rho2(Eigen::Ref<Eigen::Vector3d const> state) const;
-
-    /** \brief Total gas flow.
-     */
-    double q(Eigen::Ref<Eigen::Vector3d const> state) const;
+    std::array<Eigen::Vector3d, 3>
+    eigen_vectors(Eigen::Ref<Eigen::Vector3d const> state) const final;
 
     /** \brief Gas pressure.
      */
-    double p(Eigen::Ref<Eigen::Vector3d const> state) const;
+    [[nodiscard]] double p(Eigen::Ref<Eigen::Vector3d const> state) const;
+
+    /** \brief Total density of the gas, sum of the component densities.
+     */
+    [[nodiscard]] double rho(Eigen::Ref<Eigen::Vector3d const> state) const;
+
+    /** \brief Density of the first gas component.
+     */
+    [[nodiscard]] double rho1(Eigen::Ref<Eigen::Vector3d const> state) const;
+
+    /** \brief Density of the second gas component.
+     */
+    [[nodiscard]] double rho2(Eigen::Ref<Eigen::Vector3d const> state) const;
+
+    /** \brief Total gas flow.
+     */
+    [[nodiscard]] double q(Eigen::Ref<Eigen::Vector3d const> state) const;
 
     /** \brief The gas velocity. Is equal for both components.
      */
-    double u(Eigen::Ref<Eigen::Vector3d const> state) const;
+    [[nodiscard]] double u(Eigen::Ref<Eigen::Vector3d const> state) const;
 
     [[nodiscard]] Eigen::RowVector3d
     drho_dstate(Eigen::Ref<Eigen::Vector3d const> state) const;
@@ -78,5 +81,9 @@ namespace Model::Balancelaw {
 
     [[nodiscard]] Eigen::RowVector3d
     du_dstate(Eigen::Ref<Eigen::Vector3d const> state) const;
+
+  private:
+    double const sigma1;
+    double const sigma2;
   };
 } // namespace Model::Balancelaw

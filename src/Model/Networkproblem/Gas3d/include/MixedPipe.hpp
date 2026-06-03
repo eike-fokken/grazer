@@ -18,8 +18,8 @@
 #include "Edge.hpp"
 #include "Equationcomponent.hpp"
 #include "Gas3dedge.hpp"
-#include "Isothermaleulerequation.hpp"
 #include "Threepointscheme.hpp"
+#include "TwoGasMixture.hpp"
 
 namespace Model::Gas3d {
 
@@ -65,7 +65,7 @@ namespace Model::Gas3d {
         Eigen::Ref<Eigen::VectorXd> new_state,
         nlohmann::json const &initial_json) const final;
 
-    Balancelaw::Isothermaleulerequation const &get_balancelaw() const;
+    Balancelaw::TwoGasMixture const &get_balancelaw() const;
 
     int get_number_of_points() const;
     double get_Delta_x() const;
@@ -74,8 +74,8 @@ namespace Model::Gas3d {
     double get_length() const;
     int const number_of_points;
     double const Delta_x;
-    Balancelaw::Isothermaleulerequation const isothermaleulerequation;
-    std::unique_ptr<Scheme::Threepointscheme<2> const> scheme;
+    Balancelaw::TwoGasMixture const mixed_gas_law;
+    std::unique_ptr<Scheme::Threepointscheme<3> const> scheme;
   };
 
 } // namespace Model::Gas3d
