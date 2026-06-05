@@ -2,6 +2,8 @@
 #include "Equationcomponent_test_helpers.hpp"
 #include "Flowboundarynode.hpp"
 #include "Gas_factory.hpp"
+#include "Gasedge.hpp"
+#include "Gasnode.hpp"
 #include "Implicitboxscheme.hpp"
 #include "Innode.hpp"
 #include "InterpolatingVector.hpp"
@@ -92,8 +94,8 @@ TEST_F(GasTEST, Shortpipe_evaluate) {
   netprob->evaluate(
       rootvalues, last_time, new_time, last_state, new_state, control);
 
-  EXPECT_DOUBLE_EQ(rootvalues[1], pressure_start - pressure_end);
-  EXPECT_DOUBLE_EQ(rootvalues[2], flow_start - flow_end);
+  EXPECT_DOUBLE_EQ(rootvalues[0], pressure_start - pressure_end);
+  EXPECT_DOUBLE_EQ(rootvalues[1], flow_start - flow_end);
 }
 
 TEST_F(GasTEST, Shortpipe_d_evaluate_d_new_state) {
@@ -155,15 +157,15 @@ TEST_F(GasTEST, Shortpipe_d_evaluate_d_new_state) {
 
   Eigen::Matrix4d DenseJ = J;
 
-  EXPECT_DOUBLE_EQ(DenseJ(1, 0), 1.0);
-  EXPECT_DOUBLE_EQ(DenseJ(1, 1), 0.0);
-  EXPECT_DOUBLE_EQ(DenseJ(1, 2), -1.0);
-  EXPECT_DOUBLE_EQ(DenseJ(1, 3), 0.0);
+  EXPECT_DOUBLE_EQ(DenseJ(0, 0), 1.0);
+  EXPECT_DOUBLE_EQ(DenseJ(0, 1), 0.0);
+  EXPECT_DOUBLE_EQ(DenseJ(0, 2), -1.0);
+  EXPECT_DOUBLE_EQ(DenseJ(0, 3), 0.0);
 
-  EXPECT_DOUBLE_EQ(DenseJ(2, 0), 0.0);
-  EXPECT_DOUBLE_EQ(DenseJ(2, 1), 1.0);
-  EXPECT_DOUBLE_EQ(DenseJ(2, 2), 0.0);
-  EXPECT_DOUBLE_EQ(DenseJ(2, 3), -1.0);
+  EXPECT_DOUBLE_EQ(DenseJ(1, 0), 0.0);
+  EXPECT_DOUBLE_EQ(DenseJ(1, 1), 1.0);
+  EXPECT_DOUBLE_EQ(DenseJ(1, 2), 0.0);
+  EXPECT_DOUBLE_EQ(DenseJ(1, 3), -1.0);
 }
 
 TEST_F(GasTEST, Source_evaluate) {
@@ -233,16 +235,38 @@ TEST_F(GasTEST, Source_evaluate) {
   netprob->evaluate(
       rootvalues, last_time, new_time, last_state, new_state, control);
 
+  auto &net = netprob->get_network();
+
+  auto *sp01 = dynamic_cast<Model::Gas::Shortpipe *>(
+      net.get_edge_by_id("shortpipe01"));
+  auto node0_boundary_eq_index_0
+      = sp01->boundary_equation_index(Model::Gas::start);
+
+  auto *sp20 = dynamic_cast<Model::Gas::Shortpipe *>(
+      net.get_edge_by_id("shortpipe20"));
+  auto node0_boundary_eq_index_1
+      = sp20->boundary_equation_index(Model::Gas::end);
+
+  auto node1_boundary_eq_index = sp01->boundary_equation_index(Model::Gas::end);
+
+  auto node2_boundary_eq_index
+      = sp20->boundary_equation_index(Model::Gas::start);
+
   // node0:
-  EXPECT_DOUBLE_EQ(rootvalues[0], -sp01_pressure_start + sp20_pressure_end);
   EXPECT_DOUBLE_EQ(
-      rootvalues[7], -flow0start + sp01_flow_start - sp20_flow_end);
+      rootvalues[node0_boundary_eq_index_0],
+      -sp01_pressure_start + sp20_pressure_end);
+  EXPECT_DOUBLE_EQ(
+      rootvalues[node0_boundary_eq_index_1],
+      -flow0start + sp01_flow_start - sp20_flow_end);
 
   // node 1:
-  EXPECT_DOUBLE_EQ(rootvalues[3], -flow1start - sp01_flow_end);
+  EXPECT_DOUBLE_EQ(
+      rootvalues[node1_boundary_eq_index], -flow1start - sp01_flow_end);
 
   // node 2:
-  EXPECT_DOUBLE_EQ(rootvalues[4], -flow2start + sp20_flow_start);
+  EXPECT_DOUBLE_EQ(
+      rootvalues[node2_boundary_eq_index], -flow2start + sp20_flow_start);
 }
 
 TEST_F(GasTEST, Source_d_evaluate_d_new_state) {
@@ -985,12 +1009,12 @@ TEST_F(GasTEST, Pipe_evaluate) {
 
   Model::Balancelaw::Isothermaleulerequation bl(pipe_topology);
   Model::Scheme::Implicitboxscheme<2> scheme;
-  scheme.evaluate_point(
+  scheme.evaluate_point_internal(
       expected_result, last_time, new_time, actual_Delta_x, last_left,
       last_right, new_left, new_right, bl);
 
-  EXPECT_DOUBLE_EQ(expected_result[0], rootvalues.segment<2>(1)[0]);
-  EXPECT_DOUBLE_EQ(expected_result[1], rootvalues.segment<2>(1)[1]);
+  EXPECT_DOUBLE_EQ(expected_result[0], rootvalues.segment<2>(0)[0]);
+  EXPECT_DOUBLE_EQ(expected_result[1], rootvalues.segment<2>(0)[1]);
 }
 
 TEST_F(GasTEST, Pipe_set_initial_conditions) {

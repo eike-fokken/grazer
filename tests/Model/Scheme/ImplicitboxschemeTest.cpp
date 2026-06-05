@@ -46,7 +46,8 @@ TEST(testImplicitboxscheme, evaluate_point) {
   Eigen::Vector2d result;
 
   Model::Scheme::Implicitboxscheme<2> scheme;
-  scheme.evaluate_point(
+
+  scheme.evaluate_point_internal(
       result, last_time, new_time, Delta_x, last_left, last_right, new_left,
       new_right, bl);
 
@@ -92,11 +93,11 @@ TEST(testImplicitboxscheme, devaluate_point_d_new_left) {
   Eigen::Vector2d result_h0;
   Eigen::Vector2d result_mh0;
 
-  scheme.evaluate_point(
+  scheme.evaluate_point_internal(
       result_h0, last_time, new_time, Delta_x, last_left, last_right,
       new_left + h0, new_right, bl);
 
-  scheme.evaluate_point(
+  scheme.evaluate_point_internal(
       result_mh0, last_time, new_time, Delta_x, last_left, last_right,
       new_left - h0, new_right, bl);
 
@@ -116,11 +117,11 @@ TEST(testImplicitboxscheme, devaluate_point_d_new_left) {
       finite_difference_threshold);
   Eigen::Vector2d result_h1;
   Eigen::Vector2d result_mh1;
-  scheme.evaluate_point(
+  scheme.evaluate_point_internal(
       result_h1, last_time, new_time, Delta_x, last_left, last_right,
       new_left + h1, new_right, bl);
 
-  scheme.evaluate_point(
+  scheme.evaluate_point_internal(
       result_mh1, last_time, new_time, Delta_x, last_left, last_right,
       new_left - h1, new_right, bl);
 
@@ -178,11 +179,11 @@ TEST(testImplicitboxscheme, devaluate_point_d_last_left) {
   Eigen::Vector2d result_h0;
   Eigen::Vector2d result_mh0;
 
-  scheme.evaluate_point(
+  scheme.evaluate_point_internal(
       result_h0, last_time, new_time, Delta_x, last_left + h0, last_right,
       new_left, new_right, bl);
 
-  scheme.evaluate_point(
+  scheme.evaluate_point_internal(
       result_mh0, last_time, new_time, Delta_x, last_left - h0, last_right,
       new_left, new_right, bl);
 
@@ -202,11 +203,11 @@ TEST(testImplicitboxscheme, devaluate_point_d_last_left) {
       finite_difference_threshold);
   Eigen::Vector2d result_h1;
   Eigen::Vector2d result_mh1;
-  scheme.evaluate_point(
+  scheme.evaluate_point_internal(
       result_h1, last_time, new_time, Delta_x, last_left + h1, last_right,
       new_left, new_right, bl);
 
-  scheme.evaluate_point(
+  scheme.evaluate_point_internal(
       result_mh1, last_time, new_time, Delta_x, last_left - h1, last_right,
       new_left, new_right, bl);
 
@@ -261,11 +262,11 @@ TEST(testImplicitboxscheme, devaluate_point_d_new_right) {
   Eigen::Vector2d result_h0;
   Eigen::Vector2d result_mh0;
 
-  scheme.evaluate_point(
+  scheme.evaluate_point_internal(
       result_h0, last_time, new_time, Delta_x, last_left, last_right, new_left,
       new_right + h0, bl);
 
-  scheme.evaluate_point(
+  scheme.evaluate_point_internal(
       result_mh0, last_time, new_time, Delta_x, last_left, last_right, new_left,
       new_right - h0, bl);
 
@@ -286,11 +287,11 @@ TEST(testImplicitboxscheme, devaluate_point_d_new_right) {
 
   Eigen::Vector2d result_h1;
   Eigen::Vector2d result_mh1;
-  scheme.evaluate_point(
+  scheme.evaluate_point_internal(
       result_h1, last_time, new_time, Delta_x, last_left, last_right, new_left,
       new_right + h1, bl);
 
-  scheme.evaluate_point(
+  scheme.evaluate_point_internal(
       result_mh1, last_time, new_time, Delta_x, last_left, last_right, new_left,
       new_right - h1, bl);
 
@@ -345,11 +346,11 @@ TEST(testImplicitboxscheme, devaluate_point_d_last_right) {
   Eigen::Vector2d result_h0;
   Eigen::Vector2d result_mh0;
 
-  scheme.evaluate_point(
+  scheme.evaluate_point_internal(
       result_h0, last_time, new_time, Delta_x, last_left, last_right + h0,
       new_left, new_right, bl);
 
-  scheme.evaluate_point(
+  scheme.evaluate_point_internal(
       result_mh0, last_time, new_time, Delta_x, last_left, last_right - h0,
       new_left, new_right, bl);
 
@@ -370,11 +371,11 @@ TEST(testImplicitboxscheme, devaluate_point_d_last_right) {
 
   Eigen::Vector2d result_h1;
   Eigen::Vector2d result_mh1;
-  scheme.evaluate_point(
+  scheme.evaluate_point_internal(
       result_h1, last_time, new_time, Delta_x, last_left, last_right + h1,
       new_left, new_right, bl);
 
-  scheme.evaluate_point(
+  scheme.evaluate_point_internal(
       result_mh1, last_time, new_time, Delta_x, last_left, last_right - h1,
       new_left, new_right, bl);
 
