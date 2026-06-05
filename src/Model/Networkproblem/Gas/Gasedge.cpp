@@ -68,7 +68,7 @@ namespace Model::Gas {
   }
   Eigen::Index Gasedge::get_equation_after_index() const {
     return get_state_afterindex()
-           - 2; // Last two indices are for boundary values.
+           - 2; // Last two indices are for boundary conditions..
   }
 
   Eigen::Index Gasedge::get_starting_state_index() const {

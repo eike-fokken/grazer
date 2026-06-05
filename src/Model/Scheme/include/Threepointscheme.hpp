@@ -41,9 +41,8 @@ namespace Model::Scheme {
     virtual void evaluate_point(
         Eigen::Index current_equation_index, double Delta_x,
         Balancelaw::Balancelaw<Dimension> const &balance_law,
-        Eigen::Ref<Eigen::Vector<double, Dimension>> rootvalues,
-        double last_time, double new_time,
-        Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd> rootvalues, double last_time,
+        double new_time, Eigen::Ref<Eigen::VectorXd const> const &last_state,
         Eigen::Ref<Eigen::VectorXd const> const &new_state) const
         = 0;
 
