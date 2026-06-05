@@ -26,9 +26,9 @@ namespace Model::Scheme {
   public:
     ~Implicitboxscheme() {}
     /// Computes the implicit box scheme at one point.
-    void evaluate_point(
-        Eigen::Ref<Eigen::Vector<double, Dimension>> result, double last_time,
-        double new_time, double Delta_x,
+    void evaluate_point_internal(
+        Eigen::Ref<Eigen::Vector<double, Dimension>> rootvalues_segment,
+        double last_time, double new_time, double Delta_x,
         Eigen::Ref<Eigen::Vector<double, Dimension> const> last_left,
         Eigen::Ref<Eigen::Vector<double, Dimension> const> last_right,
         Eigen::Ref<Eigen::Vector<double, Dimension> const> new_left,
@@ -36,9 +36,32 @@ namespace Model::Scheme {
         Model::Balancelaw::Balancelaw<Dimension> const &bl) const final {
 
       double Delta_t = new_time - last_time;
-      result = 0.5 * (new_left + new_right) - 0.5 * (last_left + last_right)
-               - Delta_t / Delta_x * (bl.flux(new_left) - bl.flux(new_right))
-               - 0.5 * Delta_t * (bl.source(new_right) + bl.source(new_left));
+      rootvalues_segment
+          = 0.5 * (new_left + new_right) - 0.5 * (last_left + last_right)
+            - Delta_t / Delta_x * (bl.flux(new_left) - bl.flux(new_right))
+            - 0.5 * Delta_t * (bl.source(new_right) + bl.source(new_left));
+    }
+
+    void evaluate_point(
+        Eigen::Index current_equation_index, double Delta_x,
+        Balancelaw::Balancelaw<Dimension> const &balance_law,
+        Eigen::Ref<Eigen::Vector<double, Dimension>> rootvalues,
+        double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const final {
+
+      auto rootvalue_segment
+          = rootvalues.template segment<Dimension>(current_equation_index);
+
+      auto last_left = last_state.segment<Dimension>(current_equation_index);
+      auto last_right
+          = last_state.segment<Dimension>(current_equation_index + 2);
+      auto new_left = new_state.segment<Dimension>(current_equation_index);
+      auto new_right = new_state.segment<Dimension>(current_equation_index + 2);
+
+      evaluate_point_internal(
+          rootvalue_segment, last_time, new_time, Delta_x, last_left,
+          last_right, new_left, new_right, balance_law);
     }
 
     Eigen::Matrix<double, Dimension, Dimension> devaluate_point_d_new_left(
@@ -103,5 +126,80 @@ namespace Model::Scheme {
       jac = -0.5 * id;
       return jac;
     }
+
+    void d_evaluate_point_d_new_state(
+        Eigen::Index current_equation_index, double Delta_x,
+        Balancelaw::Balancelaw<Dimension> const &balance_law,
+        Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const final {
+      // maybe use Eigen::Ref here to avoid copies.
+      auto last_left = last_state.segment<Dimension>(current_equation_index);
+      auto last_right
+          = last_state.segment<Dimension>(current_equation_index + Dimension);
+      auto new_left = new_state.segment<Dimension>(current_equation_index);
+      auto new_right
+          = new_state.segment<Dimension>(current_equation_index + Dimension);
+
+      Eigen::Matrix<double, Dimension, Dimension> current_derivative_left
+          = devaluate_point_d_new_left(
+              last_time, new_time, Delta_x, last_left, last_right, new_left,
+              new_right, balance_law);
+
+      Eigen::Matrix<double, Dimension, Dimension> current_derivative_right
+          = devaluate_point_d_new_right(
+              last_time, new_time, Delta_x, last_left, last_right, new_left,
+              new_right, balance_law);
+
+      for (auto j = 0; j != Dimension; ++j) {
+        for (auto k = 0; k != Dimension; ++k) {
+          jacobianhandler.add_to_coefficient(
+              current_equation_index + j, current_equation_index + k,
+              current_derivative_left(j, k));
+          jacobianhandler.add_to_coefficient(
+              current_equation_index + j,
+              current_equation_index + Dimension + k,
+              current_derivative_right(j, k));
+        }
+      }
+    }
+    void d_evaluate_point_d_last_state(
+        Eigen::Index current_equation_index, double Delta_x,
+        Balancelaw::Balancelaw<Dimension> const &balance_law,
+        Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const final {
+
+      auto last_left = last_state.segment<Dimension>(current_equation_index);
+      auto last_right
+          = last_state.segment<Dimension>(current_equation_index + Dimension);
+      auto new_left = new_state.segment<Dimension>(current_equation_index);
+      auto new_right
+          = new_state.segment<Dimension>(current_equation_index + Dimension);
+
+      Eigen::Matrix<double, Dimension, Dimension> current_derivative_left
+          = devaluate_point_d_last_left(
+              last_time, new_time, Delta_x, last_left, last_right, new_left,
+              new_right, balance_law);
+
+      Eigen::Matrix<double, Dimension, Dimension> current_derivative_right
+          = devaluate_point_d_last_right(
+              last_time, new_time, Delta_x, last_left, last_right, new_left,
+              new_right, balance_law);
+
+      for (auto j = 0; j != Dimension; ++j) {
+        for (auto k = 0; k != Dimension; ++k) {
+          jacobianhandler.add_to_coefficient(
+              current_equation_index + j, current_equation_index + k,
+              current_derivative_left(j, k));
+          jacobianhandler.add_to_coefficient(
+              current_equation_index + j,
+              current_equation_index + Dimension + k,
+              current_derivative_right(j, k));
+        }
+      }
+    }
   };
+
+  Implicitboxscheme<2> schema;
 } // namespace Model::Scheme

@@ -70,9 +70,6 @@ namespace Model::Gas {
     Eigen::Vector2d
     get_ending_state(Eigen::Ref<Eigen::VectorXd const> const &state) const;
 
-    Eigen::Index give_away_start_index() const;
-    Eigen::Index give_away_end_index() const;
-
     Eigen::Index get_starting_state_index() const;
     Eigen::Index get_ending_state_index() const;
   };

@@ -5,7 +5,8 @@ add_library(scheme INTERFACE
 
 target_link_libraries(scheme INTERFACE
   balancelaw
-  exception)
+  exception
+  matrixhandler)
 
 target_include_directories(scheme INTERFACE
   include)

@@ -37,30 +37,19 @@ namespace Model::Gas {
 
   int Gasedge::init_vals_per_interpol_point() { return 2; }
 
-  Eigen::Index Gasedge::give_away_start_index() const {
-    if (get_state_startindex() < 0 or get_state_afterindex() < 0) {
-      gthrow(
-          {"This function: ", __FUNCTION__,
-           " can only be called after set_state_indices(...) has been "
-           "called."});
-    }
-    return get_state_startindex();
-  }
-
-  Eigen::Index Gasedge::give_away_end_index() const {
-    if (get_state_startindex() < 0 or get_state_afterindex() < 0) {
-      gthrow(
-          {"This function: ", __FUNCTION__,
-           " can only be called after set_state_indices(...) has been "
-           "called."});
-    }
-    return (get_state_afterindex() - 1);
-  }
   Eigen::Index Gasedge::boundary_equation_index(Direction direction) const {
+
+    if (get_state_startindex() < 0 or get_state_afterindex() < 0) {
+      gthrow(
+          {"This function: ", __FUNCTION__,
+           " can only be called after set_state_indices(...) has been "
+           "called."});
+    }
+
     if (direction == start) {
-      return give_away_start_index();
+      return get_state_afterindex() - 2;
     } else if (direction == end) {
-      return give_away_end_index();
+      return get_state_afterindex() - 1;
     } else {
       auto *this_idobject = dynamic_cast<Network::Idobject const *>(this);
       if (!this_idobject) {
@@ -75,10 +64,11 @@ namespace Model::Gas {
   }
 
   Eigen::Index Gasedge::get_equation_start_index() const {
-    return get_starting_state_index() + 1; // Nofstates/2;
+    return get_starting_state_index();
   }
   Eigen::Index Gasedge::get_equation_after_index() const {
-    return get_state_afterindex() - 1; // - Nofstates / 2 + 1 ;
+    return get_state_afterindex()
+           - 2; // Last two indices are for boundary values.
   }
 
   Eigen::Index Gasedge::get_starting_state_index() const {

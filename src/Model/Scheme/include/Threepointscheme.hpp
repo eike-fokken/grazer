@@ -16,6 +16,8 @@
  */
 #pragma once
 #include "Balancelaw.hpp"
+#include "Exception.hpp"
+#include "Matrixhandler.hpp"
 #include <Eigen/Sparse>
 
 namespace Model::Scheme {
@@ -26,7 +28,7 @@ namespace Model::Scheme {
     virtual ~Threepointscheme() {}
 
     /// Computes the scheme at one point.
-    virtual void evaluate_point(
+    virtual void evaluate_point_internal(
         Eigen::Ref<Eigen::Vector<double, Dimension>> result, double last_time,
         double new_time, double Delta_x,
         Eigen::Ref<Eigen::Vector<double, Dimension> const> last_left,
@@ -34,6 +36,15 @@ namespace Model::Scheme {
         Eigen::Ref<Eigen::Vector<double, Dimension> const> new_left,
         Eigen::Ref<Eigen::Vector<double, Dimension> const> new_right,
         Model::Balancelaw::Balancelaw<Dimension> const &bl) const
+        = 0;
+
+    virtual void evaluate_point(
+        Eigen::Index current_equation_index, double Delta_x,
+        Balancelaw::Balancelaw<Dimension> const &balance_law,
+        Eigen::Ref<Eigen::Vector<double, Dimension>> rootvalues,
+        double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const
         = 0;
 
     /// The derivative with respect to \code{.cpp}new_left\endcode
@@ -78,6 +89,21 @@ namespace Model::Scheme {
         Eigen::Ref<Eigen::Vector<double, Dimension> const> new_left,
         Eigen::Ref<Eigen::Vector<double, Dimension> const> new_right,
         Model::Balancelaw::Balancelaw<Dimension> const &bl) const
+        = 0;
+
+    virtual void d_evaluate_point_d_new_state(
+        Eigen::Index current_equation_index, double Delta_x,
+        Balancelaw::Balancelaw<Dimension> const &balance_law,
+        Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const
+        = 0;
+    virtual void d_evaluate_point_d_last_state(
+        Eigen::Index current_equation_index, double Delta_x,
+        Balancelaw::Balancelaw<Dimension> const &balance_law,
+        Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
+        Eigen::Ref<Eigen::VectorXd const> const &last_state,
+        Eigen::Ref<Eigen::VectorXd const> const &new_state) const
         = 0;
   };
 } // namespace Model::Scheme
