@@ -328,6 +328,23 @@ TEST_F(GasTEST, Source_d_evaluate_d_new_state) {
 
   netprob->set_initial_values(new_state, initial_json);
 
+  auto &net = netprob->get_network();
+
+  auto *sp01 = dynamic_cast<Model::Gas::Shortpipe *>(
+      net.get_edge_by_id("shortpipe01"));
+  auto node0_boundary_eq_index_0
+      = sp01->boundary_equation_index(Model::Gas::start);
+
+  auto *sp20 = dynamic_cast<Model::Gas::Shortpipe *>(
+      net.get_edge_by_id("shortpipe20"));
+  auto node0_boundary_eq_index_1
+      = sp20->boundary_equation_index(Model::Gas::end);
+
+  auto node1_boundary_eq_index = sp01->boundary_equation_index(Model::Gas::end);
+
+  auto node2_boundary_eq_index
+      = sp20->boundary_equation_index(Model::Gas::start);
+
   Eigen::SparseMatrix<double> J(new_state.size(), new_state.size());
   Aux::Triplethandler handler(J);
 
@@ -341,41 +358,43 @@ TEST_F(GasTEST, Source_d_evaluate_d_new_state) {
 
   Eigen::MatrixXd DenseJ = J;
 
+  std::cout << DenseJ << std::endl;
   // node0:
-  EXPECT_DOUBLE_EQ(DenseJ(0, 0), -1);
-  EXPECT_DOUBLE_EQ(DenseJ(0, 6), 1);
+
+  EXPECT_DOUBLE_EQ(DenseJ(node0_boundary_eq_index_0, 0), -1);
+  EXPECT_DOUBLE_EQ(DenseJ(node0_boundary_eq_index_0, 6), 1);
   for (Eigen::Index i = 0; i != 8; ++i) {
     if (i == 0 or i == 6) {
       continue;
     }
-    EXPECT_DOUBLE_EQ(DenseJ(0, i), 0.0);
+    EXPECT_DOUBLE_EQ(DenseJ(node0_boundary_eq_index_0, i), 0.0);
   }
 
-  EXPECT_DOUBLE_EQ(DenseJ(7, 1), 1);
-  EXPECT_DOUBLE_EQ(DenseJ(7, 7), -1);
+  EXPECT_DOUBLE_EQ(DenseJ(node0_boundary_eq_index_1, 1), 1);
+  EXPECT_DOUBLE_EQ(DenseJ(node0_boundary_eq_index_1, 7), -1);
   for (Eigen::Index i = 0; i != 8; ++i) {
     if (i == 1 or i == 7) {
       continue;
     }
-    EXPECT_DOUBLE_EQ(DenseJ(7, i), 0.0);
+    EXPECT_DOUBLE_EQ(DenseJ(node0_boundary_eq_index_1, i), 0.0);
   }
 
   // node1:
-  EXPECT_DOUBLE_EQ(DenseJ(3, 3), -1);
+  EXPECT_DOUBLE_EQ(DenseJ(node1_boundary_eq_index, 3), -1);
   for (Eigen::Index i = 0; i != 8; ++i) {
     if (i == 3) {
       continue;
     }
-    EXPECT_DOUBLE_EQ(DenseJ(3, i), 0.0);
+    EXPECT_DOUBLE_EQ(DenseJ(node1_boundary_eq_index, i), 0.0);
   }
 
   // node2:
-  EXPECT_DOUBLE_EQ(DenseJ(4, 5), 1);
+  EXPECT_DOUBLE_EQ(DenseJ(node2_boundary_eq_index, 5), 1);
   for (Eigen::Index i = 0; i != 8; ++i) {
     if (i == 5) {
       continue;
     }
-    EXPECT_DOUBLE_EQ(DenseJ(4, i), 0.0);
+    EXPECT_DOUBLE_EQ(DenseJ(node2_boundary_eq_index, i), 0.0);
   }
 }
 
