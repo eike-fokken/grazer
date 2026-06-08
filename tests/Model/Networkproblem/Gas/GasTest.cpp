@@ -358,7 +358,6 @@ TEST_F(GasTEST, Source_d_evaluate_d_new_state) {
 
   Eigen::MatrixXd DenseJ = J;
 
-  std::cout << DenseJ << std::endl;
   // node0:
 
   EXPECT_DOUBLE_EQ(DenseJ(node0_boundary_eq_index_0, 0), -1);
@@ -463,6 +462,23 @@ TEST_F(GasTEST, Pressureboundarynode_evaluate) {
 
   netprob->set_initial_values(new_state, initial_json);
 
+  auto &net = netprob->get_network();
+
+  auto *sp01 = dynamic_cast<Model::Gas::Shortpipe *>(
+      net.get_edge_by_id("shortpipe01"));
+  auto node0_boundary_eq_index_0
+      = sp01->boundary_equation_index(Model::Gas::start);
+
+  auto *sp20 = dynamic_cast<Model::Gas::Shortpipe *>(
+      net.get_edge_by_id("shortpipe20"));
+  auto node0_boundary_eq_index_1
+      = sp20->boundary_equation_index(Model::Gas::end);
+
+  auto node1_boundary_eq_index = sp01->boundary_equation_index(Model::Gas::end);
+
+  auto node2_boundary_eq_index
+      = sp20->boundary_equation_index(Model::Gas::start);
+
   // The following are not needed, as the gas components up to now are not
   // controlled.  But to satisfy the interface, we must provide them.
   Eigen::VectorXd last_control;
@@ -472,13 +488,20 @@ TEST_F(GasTEST, Pressureboundarynode_evaluate) {
 
   // node0:
 
-  EXPECT_DOUBLE_EQ(rootvalues[0], sp01_pressure_start - pressure0start);
-  EXPECT_DOUBLE_EQ(rootvalues[7], sp20_pressure_end - pressure0start);
+  EXPECT_DOUBLE_EQ(
+      rootvalues[node0_boundary_eq_index_0],
+      sp01_pressure_start - pressure0start);
+  EXPECT_DOUBLE_EQ(
+      rootvalues[node0_boundary_eq_index_1],
+      sp20_pressure_end - pressure0start);
   // node 1:
-  EXPECT_DOUBLE_EQ(rootvalues[3], sp01_pressure_end - pressure1start);
+  EXPECT_DOUBLE_EQ(
+      rootvalues[node1_boundary_eq_index], sp01_pressure_end - pressure1start);
 
   // node 2:
-  EXPECT_DOUBLE_EQ(rootvalues[4], sp20_pressure_start - pressure2start);
+  EXPECT_DOUBLE_EQ(
+      rootvalues[node2_boundary_eq_index],
+      sp20_pressure_start - pressure2start);
 }
 
 TEST_F(GasTEST, Pressureboundarynode_d_evaluate_d_new_state) {
@@ -560,40 +583,58 @@ TEST_F(GasTEST, Pressureboundarynode_d_evaluate_d_new_state) {
 
   Eigen::MatrixXd comparison_matrix;
 
+  auto &net = netprob->get_network();
+
+  auto *sp01 = dynamic_cast<Model::Gas::Shortpipe *>(
+      net.get_edge_by_id("shortpipe01"));
+  auto node0_boundary_eq_index_0
+      = sp01->boundary_equation_index(Model::Gas::start);
+
+  auto *sp20 = dynamic_cast<Model::Gas::Shortpipe *>(
+      net.get_edge_by_id("shortpipe20"));
+  auto node0_boundary_eq_index_1
+      = sp20->boundary_equation_index(Model::Gas::end);
+
+  auto node1_boundary_eq_index = sp01->boundary_equation_index(Model::Gas::end);
+
+  auto node2_boundary_eq_index
+      = sp20->boundary_equation_index(Model::Gas::start);
+
   // node0:
-  EXPECT_DOUBLE_EQ(DenseJ(0, 0), 1.0);
+  EXPECT_DOUBLE_EQ(DenseJ(node0_boundary_eq_index_0, 0), 1.0);
   for (Eigen::Index i = 0; i != 8; ++i) {
     if (i == 0) {
       continue;
     }
-    EXPECT_DOUBLE_EQ(DenseJ(0, i), 0.0);
+    EXPECT_DOUBLE_EQ(DenseJ(node0_boundary_eq_index_0, i), 0.0);
   }
 
-  EXPECT_DOUBLE_EQ(DenseJ(7, 6), 1);
+  EXPECT_DOUBLE_EQ(DenseJ(node0_boundary_eq_index_1, 6), 1);
   for (Eigen::Index i = 0; i != 8; ++i) {
     if (i == 6) {
       continue;
     }
-    // std::cout << "J(7," << i << "): " << DenseJ(7, i) << std::endl;
-    EXPECT_DOUBLE_EQ(DenseJ(7, i), 0.0);
+    // std::cout << "J(7," << i << "): " << DenseJ(node0_boundary_eq_index_1, i)
+    // << std::endl;
+    EXPECT_DOUBLE_EQ(DenseJ(node0_boundary_eq_index_1, i), 0.0);
   }
 
   // node1:
-  EXPECT_DOUBLE_EQ(DenseJ(3, 2), 1.0);
+  EXPECT_DOUBLE_EQ(DenseJ(node1_boundary_eq_index, 2), 1.0);
   for (Eigen::Index i = 0; i != 8; ++i) {
     if (i == 2) {
       continue;
     }
-    EXPECT_DOUBLE_EQ(DenseJ(3, i), 0.0);
+    EXPECT_DOUBLE_EQ(DenseJ(node1_boundary_eq_index, i), 0.0);
   }
 
   // node2:
-  EXPECT_DOUBLE_EQ(DenseJ(4, 4), 1);
+  EXPECT_DOUBLE_EQ(DenseJ(node2_boundary_eq_index, 4), 1);
   for (Eigen::Index i = 0; i != 8; ++i) {
     if (i == 4) {
       continue;
     }
-    EXPECT_DOUBLE_EQ(DenseJ(4, i), 0.0);
+    EXPECT_DOUBLE_EQ(DenseJ(node2_boundary_eq_index, i), 0.0);
   }
 }
 
@@ -657,6 +698,23 @@ TEST_F(GasTEST, Sink_evaluate) {
 
   netprob->set_initial_values(new_state, initial_json);
 
+  auto &net = netprob->get_network();
+
+  auto *sp01 = dynamic_cast<Model::Gas::Shortpipe *>(
+      net.get_edge_by_id("shortpipe01"));
+  auto node0_boundary_eq_index_0
+      = sp01->boundary_equation_index(Model::Gas::start);
+
+  auto *sp20 = dynamic_cast<Model::Gas::Shortpipe *>(
+      net.get_edge_by_id("shortpipe20"));
+  auto node0_boundary_eq_index_1
+      = sp20->boundary_equation_index(Model::Gas::end);
+
+  auto node1_boundary_eq_index = sp01->boundary_equation_index(Model::Gas::end);
+
+  auto node2_boundary_eq_index
+      = sp20->boundary_equation_index(Model::Gas::start);
+
   // The following are not needed, as the gas components up to now are not
   // controlled.  But to satisfy the interface, we must provide them.
   Eigen::VectorXd last_control;
@@ -666,14 +724,20 @@ TEST_F(GasTEST, Sink_evaluate) {
 
   // Note that for sinks the boundary conditions should have the opposite signs
   // compared to sources. node0:
-  EXPECT_DOUBLE_EQ(rootvalues[0], -sp01_pressure_start + sp20_pressure_end);
-  EXPECT_DOUBLE_EQ(rootvalues[7], flow0start + sp01_flow_start - sp20_flow_end);
+  EXPECT_DOUBLE_EQ(
+      rootvalues[node0_boundary_eq_index_0],
+      -sp01_pressure_start + sp20_pressure_end);
+  EXPECT_DOUBLE_EQ(
+      rootvalues[node0_boundary_eq_index_1],
+      flow0start + sp01_flow_start - sp20_flow_end);
 
   // node 1:
-  EXPECT_DOUBLE_EQ(rootvalues[3], flow1start - sp01_flow_end);
+  EXPECT_DOUBLE_EQ(
+      rootvalues[node1_boundary_eq_index], flow1start - sp01_flow_end);
 
   // node 2:
-  EXPECT_DOUBLE_EQ(rootvalues[4], flow2start + sp20_flow_start);
+  EXPECT_DOUBLE_EQ(
+      rootvalues[node2_boundary_eq_index], flow2start + sp20_flow_start);
 }
 
 TEST_F(GasTEST, Sink_d_evaluate_d_new_state) {
@@ -748,41 +812,58 @@ TEST_F(GasTEST, Sink_d_evaluate_d_new_state) {
 
   Eigen::MatrixXd DenseJ = J;
 
+  auto &net = netprob->get_network();
+
+  auto *sp01 = dynamic_cast<Model::Gas::Shortpipe *>(
+      net.get_edge_by_id("shortpipe01"));
+  auto node0_boundary_eq_index_0
+      = sp01->boundary_equation_index(Model::Gas::start);
+
+  auto *sp20 = dynamic_cast<Model::Gas::Shortpipe *>(
+      net.get_edge_by_id("shortpipe20"));
+  auto node0_boundary_eq_index_1
+      = sp20->boundary_equation_index(Model::Gas::end);
+
+  auto node1_boundary_eq_index = sp01->boundary_equation_index(Model::Gas::end);
+
+  auto node2_boundary_eq_index
+      = sp20->boundary_equation_index(Model::Gas::start);
+
   // node0:
-  EXPECT_DOUBLE_EQ(DenseJ(0, 0), -1);
-  EXPECT_DOUBLE_EQ(DenseJ(0, 6), 1);
+  EXPECT_DOUBLE_EQ(DenseJ(node0_boundary_eq_index_0, 0), -1);
+  EXPECT_DOUBLE_EQ(DenseJ(node0_boundary_eq_index_0, 6), 1);
   for (Eigen::Index i = 0; i != 8; ++i) {
     if (i == 0 or i == 6) {
       continue;
     }
-    EXPECT_DOUBLE_EQ(DenseJ(0, i), 0.0);
+    EXPECT_DOUBLE_EQ(DenseJ(node0_boundary_eq_index_0, i), 0.0);
   }
 
-  EXPECT_DOUBLE_EQ(DenseJ(7, 1), 1);
-  EXPECT_DOUBLE_EQ(DenseJ(7, 7), -1);
+  EXPECT_DOUBLE_EQ(DenseJ(node0_boundary_eq_index_1, 1), 1);
+  EXPECT_DOUBLE_EQ(DenseJ(node0_boundary_eq_index_1, 7), -1);
   for (Eigen::Index i = 0; i != 8; ++i) {
     if (i == 1 or i == 7) {
       continue;
     }
-    EXPECT_DOUBLE_EQ(DenseJ(7, i), 0.0);
+    EXPECT_DOUBLE_EQ(DenseJ(node0_boundary_eq_index_1, i), 0.0);
   }
 
   // node1:
-  EXPECT_DOUBLE_EQ(DenseJ(3, 3), -1);
+  EXPECT_DOUBLE_EQ(DenseJ(node1_boundary_eq_index, 3), -1);
   for (Eigen::Index i = 0; i != 8; ++i) {
     if (i == 3) {
       continue;
     }
-    EXPECT_DOUBLE_EQ(DenseJ(3, i), 0.0);
+    EXPECT_DOUBLE_EQ(DenseJ(node1_boundary_eq_index, i), 0.0);
   }
 
   // node2:
-  EXPECT_DOUBLE_EQ(DenseJ(4, 5), 1);
+  EXPECT_DOUBLE_EQ(DenseJ(node2_boundary_eq_index, 5), 1);
   for (Eigen::Index i = 0; i != 8; ++i) {
     if (i == 5) {
       continue;
     }
-    EXPECT_DOUBLE_EQ(DenseJ(4, i), 0.0);
+    EXPECT_DOUBLE_EQ(DenseJ(node2_boundary_eq_index, i), 0.0);
   }
 }
 
@@ -847,15 +928,35 @@ TEST_F(GasTEST, Innode_evaluate) {
   netprob->evaluate(
       rootvalues, last_time, new_time, last_state, new_state, control);
 
+  auto &net = netprob->get_network();
+
+  auto *sp01 = dynamic_cast<Model::Gas::Shortpipe *>(
+      net.get_edge_by_id("shortpipe01"));
+  auto node0_boundary_eq_index_0
+      = sp01->boundary_equation_index(Model::Gas::start);
+
+  auto *sp20 = dynamic_cast<Model::Gas::Shortpipe *>(
+      net.get_edge_by_id("shortpipe20"));
+  auto node0_boundary_eq_index_1
+      = sp20->boundary_equation_index(Model::Gas::end);
+
+  auto node1_boundary_eq_index = sp01->boundary_equation_index(Model::Gas::end);
+
+  auto node2_boundary_eq_index
+      = sp20->boundary_equation_index(Model::Gas::start);
+
   // node0:
-  EXPECT_DOUBLE_EQ(rootvalues[0], -sp01_pressure_start + sp20_pressure_end);
-  EXPECT_DOUBLE_EQ(rootvalues[7], sp01_flow_start - sp20_flow_end);
+  EXPECT_DOUBLE_EQ(
+      rootvalues[node0_boundary_eq_index_0],
+      -sp01_pressure_start + sp20_pressure_end);
+  EXPECT_DOUBLE_EQ(
+      rootvalues[node0_boundary_eq_index_1], sp01_flow_start - sp20_flow_end);
 
   // node 1:
-  EXPECT_DOUBLE_EQ(rootvalues[3], -sp01_flow_end);
+  EXPECT_DOUBLE_EQ(rootvalues[node1_boundary_eq_index], -sp01_flow_end);
 
   // node 2:
-  EXPECT_DOUBLE_EQ(rootvalues[4], sp20_flow_start);
+  EXPECT_DOUBLE_EQ(rootvalues[node2_boundary_eq_index], sp20_flow_start);
 }
 
 TEST_F(GasTEST, Innode_d_evaluate_d_new_state) {
@@ -922,43 +1023,60 @@ TEST_F(GasTEST, Innode_d_evaluate_d_new_state) {
       handler, last_time, new_time, last_state, new_state, control);
   handler.set_matrix();
 
+  auto &net = netprob->get_network();
+
+  auto *sp01 = dynamic_cast<Model::Gas::Shortpipe *>(
+      net.get_edge_by_id("shortpipe01"));
+  auto node0_boundary_eq_index_0
+      = sp01->boundary_equation_index(Model::Gas::start);
+
+  auto *sp20 = dynamic_cast<Model::Gas::Shortpipe *>(
+      net.get_edge_by_id("shortpipe20"));
+  auto node0_boundary_eq_index_1
+      = sp20->boundary_equation_index(Model::Gas::end);
+
+  auto node1_boundary_eq_index = sp01->boundary_equation_index(Model::Gas::end);
+
+  auto node2_boundary_eq_index
+      = sp20->boundary_equation_index(Model::Gas::start);
+
   Eigen::MatrixXd DenseJ = J;
 
   // node0:
-  EXPECT_DOUBLE_EQ(DenseJ(0, 0), -1);
-  EXPECT_DOUBLE_EQ(DenseJ(0, 6), 1);
+  EXPECT_DOUBLE_EQ(DenseJ(node0_boundary_eq_index_0, 0), -1);
+  EXPECT_DOUBLE_EQ(DenseJ(node0_boundary_eq_index_0, 6), 1);
   for (Eigen::Index i = 0; i != 8; ++i) {
     if (i == 0 or i == 6) {
       continue;
     }
-    EXPECT_DOUBLE_EQ(DenseJ(0, i), 0.0);
+    EXPECT_DOUBLE_EQ(DenseJ(node0_boundary_eq_index_0, i), 0.0);
   }
 
-  EXPECT_DOUBLE_EQ(DenseJ(7, 1), 1);
-  EXPECT_DOUBLE_EQ(DenseJ(7, 7), -1);
+  EXPECT_DOUBLE_EQ(DenseJ(node0_boundary_eq_index_1, 1), 1);
+  EXPECT_DOUBLE_EQ(DenseJ(node0_boundary_eq_index_1, 7), -1);
   for (Eigen::Index i = 0; i != 8; ++i) {
     if (i == 1 or i == 7) {
       continue;
     }
-    EXPECT_DOUBLE_EQ(DenseJ(7, i), 0.0);
+    EXPECT_DOUBLE_EQ(DenseJ(node0_boundary_eq_index_1, i), 0.0);
   }
 
   // node1:
-  EXPECT_DOUBLE_EQ(DenseJ(3, 3), -1);
+  EXPECT_DOUBLE_EQ(DenseJ(node1_boundary_eq_index, 3), -1);
   for (Eigen::Index i = 0; i != 8; ++i) {
     if (i == 3) {
       continue;
     }
-    EXPECT_DOUBLE_EQ(DenseJ(3, i), 0.0);
+    EXPECT_DOUBLE_EQ(DenseJ(node1_boundary_eq_index, i), 0.0);
   }
 
   // node2:
-  EXPECT_DOUBLE_EQ(DenseJ(4, 5), 1);
+  EXPECT_DOUBLE_EQ(DenseJ(node2_boundary_eq_index, 5), 1);
   for (Eigen::Index i = 0; i != 8; ++i) {
     if (i == 5) {
       continue;
     }
-    EXPECT_DOUBLE_EQ(DenseJ(4, i), 0.0);
+    EXPECT_DOUBLE_EQ(DenseJ(node2_boundary_eq_index, i), 0.0);
   }
 }
 
@@ -1174,15 +1292,15 @@ TEST_F(GasTEST, Pipe_d_evaluate_d_new_state) {
       last_time, new_time, Delta_x, last_right, last_right, new_right,
       new_right, bl);
 
-  EXPECT_DOUBLE_EQ(DenseJ(1, 0), dleft(0, 0));
-  EXPECT_DOUBLE_EQ(DenseJ(1, 1), dleft(0, 1));
-  EXPECT_DOUBLE_EQ(DenseJ(1, 2), dright(0, 0));
-  EXPECT_DOUBLE_EQ(DenseJ(1, 3), dright(0, 1));
+  EXPECT_DOUBLE_EQ(DenseJ(0, 0), dleft(0, 0));
+  EXPECT_DOUBLE_EQ(DenseJ(0, 1), dleft(0, 1));
+  EXPECT_DOUBLE_EQ(DenseJ(0, 2), dright(0, 0));
+  EXPECT_DOUBLE_EQ(DenseJ(0, 3), dright(0, 1));
 
-  EXPECT_DOUBLE_EQ(DenseJ(2, 0), dleft(1, 0));
-  EXPECT_DOUBLE_EQ(DenseJ(2, 1), dleft(1, 1));
-  EXPECT_DOUBLE_EQ(DenseJ(2, 2), dright(1, 0));
-  EXPECT_DOUBLE_EQ(DenseJ(2, 3), dright(1, 1));
+  EXPECT_DOUBLE_EQ(DenseJ(1, 0), dleft(1, 0));
+  EXPECT_DOUBLE_EQ(DenseJ(1, 1), dleft(1, 1));
+  EXPECT_DOUBLE_EQ(DenseJ(1, 2), dright(1, 0));
+  EXPECT_DOUBLE_EQ(DenseJ(1, 3), dright(1, 1));
 }
 
 TEST_F(GasTEST, Pipe_d_evaluate_d_last_state) {
@@ -1261,15 +1379,15 @@ TEST_F(GasTEST, Pipe_d_evaluate_d_last_state) {
       last_time, new_time, Delta_x, last_right, last_right, new_right,
       new_right, bl);
 
-  EXPECT_DOUBLE_EQ(DenseJ(1, 0), dleft(0, 0));
-  EXPECT_DOUBLE_EQ(DenseJ(1, 1), dleft(0, 1));
-  EXPECT_DOUBLE_EQ(DenseJ(1, 2), dright(0, 0));
-  EXPECT_DOUBLE_EQ(DenseJ(1, 3), dright(0, 1));
+  EXPECT_DOUBLE_EQ(DenseJ(0, 0), dleft(0, 0));
+  EXPECT_DOUBLE_EQ(DenseJ(0, 1), dleft(0, 1));
+  EXPECT_DOUBLE_EQ(DenseJ(0, 2), dright(0, 0));
+  EXPECT_DOUBLE_EQ(DenseJ(0, 3), dright(0, 1));
 
-  EXPECT_DOUBLE_EQ(DenseJ(2, 0), dleft(1, 0));
-  EXPECT_DOUBLE_EQ(DenseJ(2, 1), dleft(1, 1));
-  EXPECT_DOUBLE_EQ(DenseJ(2, 2), dright(1, 0));
-  EXPECT_DOUBLE_EQ(DenseJ(2, 3), dright(1, 1));
+  EXPECT_DOUBLE_EQ(DenseJ(1, 0), dleft(1, 0));
+  EXPECT_DOUBLE_EQ(DenseJ(1, 1), dleft(1, 1));
+  EXPECT_DOUBLE_EQ(DenseJ(1, 2), dright(1, 0));
+  EXPECT_DOUBLE_EQ(DenseJ(1, 3), dright(1, 1));
 }
 
 nlohmann::json source_json(std::string id, double flowstart, double flowend) {
