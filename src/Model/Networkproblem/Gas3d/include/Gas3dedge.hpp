@@ -32,7 +32,15 @@ namespace Model::Gas3d {
     static int init_vals_per_interpol_point();
 
     virtual std::string get_gas_type() const = 0;
-    Eigen::VectorXi boundary_equation_indices(Direction direction) const;
+
+    /// @brief Returns wether the flow at the given side enters the edge (true)
+    /// or leaves it (false).
+    bool has_oriented_flow(
+        Direction direction,
+        Eigen::Ref<Eigen::VectorXd const> const &state) const;
+
+    Eigen::Index boundary_equation_index(Direction direction) const;
+    Eigen::Index extra_outflow_boundary_index() const;
 
     Eigen::Index get_boundary_state_index(Direction direction) const;
 

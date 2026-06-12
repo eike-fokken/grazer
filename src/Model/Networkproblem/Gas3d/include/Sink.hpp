@@ -19,12 +19,22 @@
 
 namespace Model::Gas3d {
 
+  nlohmann::json revert_first_boundary_conditions(nlohmann::json const &data);
+
   class Sink final : public Flowboundarynode {
 
   public:
+    Sink(nlohmann::json const &data);
+
     static std::string get_type();
 
-    Sink(nlohmann::json const &data);
+    static nlohmann::json get_boundary_schema();
+
+  private:
+    Aux::InterpolatingVector const boundaryvalue;
+
+    double prescribed_flow_value(double time) const final;
+    double prescribed_component_1_share(double time) const final;
   };
 
 } // namespace Model::Gas3d

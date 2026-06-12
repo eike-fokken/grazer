@@ -20,6 +20,7 @@
 #include "Exception.hpp"
 #include "Gas3dedge.hpp"
 #include "Matrixhandler.hpp"
+#include "MixedPipe.hpp"
 #include <iostream>
 
 namespace Model::Gas3d {
@@ -28,30 +29,32 @@ namespace Model::Gas3d {
 
   void Gas3dnode::evaluate_flow_node_balance(
       Eigen::Ref<Eigen::VectorXd> rootvalues,
-      Eigen::Ref<Eigen::VectorXd const> const &state,
-      double prescribed_qvol) const {
+      Eigen::Ref<Eigen::VectorXd const> const &state, double prescribed_flow,
+      double prescribed_component_1_share) const {
 
     if (directed_attached_gas_edges.empty()) {
       return;
     }
 
-    // edges that transport gas from this node into the edge:
-    std::vector<Gas3dedge *> outflow_edges;
+    // edges with direction and gas flow direction information:
+    std::vector<std::tuple<Direction, bool /*is_outflowing*/, MixedPipe *>>
+        flow_directed_pipes;
+    for (auto const &[dir, gasedge] : directed_attached_gas_edges) {
+      auto *pipe = dynamic_cast<MixedPipe *>(gasedge);
 
-    // edges that transport gas into this node from the edge:
-    std::vector<Gas3dedge *> inflow_edges;
+      auto outflowing
+          = ((static_cast<double>(dir) * pipe->get_balancelaw().u(state)) > 0);
+      flow_directed_pipes.push_back({dir, outflowing, pipe});
+    }
 
-    auto starting_gas_edges = get_typed_starting_edges<Gas3dedge>();
-    auto ending_gas_edges = get_typed_ending_edges<Gas3dedge>();
+    auto &[dir0, outflowing0, pipe0] = flow_directed_pipes.front();
 
-    auto [dir0, edge0] = directed_attached_gas_edges.front();
-    auto boundary_state_0 = edge0->get_boundary_state(dir0, state);
-    auto rho1_0 = boundary_state_0[0];
-    auto rho2_0 = boundary_state_0[1];
-    auto q_0 = boundary_state_0[2];
+    auto boundary_state_0 = pipe0->get_boundary_state(dir0, state);
+    auto q0 = boundary_state_0[2];
+    auto p0 = pipe0->get_balancelaw().p(boundary_state_0);
 
     double old_p = p0;
-    auto old_equation_index = edge0->boundary_equation_index(dir0);
+    auto old_equation_index = pipe0->boundary_equation_index(dir0);
 
     // We will write the flow balance into the last index:
     auto last_direction = directed_attached_gas_edges.back().first;
@@ -61,25 +64,49 @@ namespace Model::Gas3d {
 
     // prescribed boundary condition is like an attached pipe ending at this
     // node...
-    rootvalues[last_equation_index] = -1.0 * prescribed_qvol;
+    rootvalues[last_equation_index] = -1.0 * prescribed_flow;
     rootvalues[last_equation_index] += static_cast<int>(dir0) * q0;
 
     // std::cout << "number of gas edges: " <<
     // directed_attached_gas_edges.size() <<std::endl;
-    for (auto it = std::next(directed_attached_gas_edges.begin());
-         it != directed_attached_gas_edges.end(); ++it) {
-      auto direction = it->first;
-      Gas3dedge *edge = it->second;
-      auto current_p_qvol = edge->get_boundary_p_qvol_bar(direction, state);
-      auto current_p = current_p_qvol[0];
-      auto current_qvol = current_p_qvol[1];
+    for (auto it = std::next(flow_directed_pipes.begin());
+         it != flow_directed_pipes.end(); ++it) {
+      auto &[dir, _, pipe] = (*it);
+      auto current_state = pipe->get_boundary_state(dir, state);
+      auto current_p = pipe->get_balancelaw().p(current_state);
+      auto current_q = current_state[2];
       rootvalues[old_equation_index] = current_p - old_p;
-      old_equation_index = edge->boundary_equation_index(direction);
+      old_equation_index = pipe->boundary_equation_index(dir);
       old_p = current_p;
 
-      rootvalues[last_equation_index]
-          += static_cast<int>(direction) * current_qvol;
+      rootvalues[last_equation_index] += static_cast<int>(dir) * current_q;
     }
+
+    // Now we do the outgoing pipe equations:
+
+    std::vector<std::pair<Direction, MixedPipe *>> outgoing_pipes;
+    for (auto const &[dir, outgoing, pipe] : flow_directed_pipes) {
+      if (outgoing) {
+        outgoing_pipes.push_back({dir, pipe});
+      }
+    }
+
+    if (outgoing_pipes.empty()) {
+      return;
+    }
+    auto &[out_dir0, out_pipe0] = outgoing_pipes.front();
+
+    auto out_boundary_state_0 = pipe0->get_boundary_state(dir0, state);
+    auto _q0 = boundary_state_0[2];
+    auto out_p0 = pipe0->get_balancelaw().p(boundary_state_0);
+
+    auto last_out_equation_index = outgoing_pipes.back()
+
+                                   // prescribed boundary condition is like an
+                                   // attached pipe ending at this node...
+                                   rootvalues[last_equation_index]
+        = -1.0 * prescribed_flow;
+    rootvalues[last_equation_index] += static_cast<int>(dir0) * q0;
   }
 
   void Gas3dnode::evaluate_flow_node_derivative(
@@ -103,8 +130,8 @@ namespace Model::Gas3d {
       return;
     }
 
-    // In all other cases we now have to make pressure derivatives and the other
-    // flow derivatives:
+    // In all other cases we now have to make pressure derivatives and the
+    // other flow derivatives:
 
     // first edge is special (sets only one p-derivative)
     Eigen::RowVector2d dF_0_dpq_0(-1.0, 0.0);

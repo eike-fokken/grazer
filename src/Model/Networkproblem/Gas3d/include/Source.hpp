@@ -22,9 +22,17 @@ namespace Model::Gas3d {
   class Source final : public Flowboundarynode {
 
   public:
+    Source(nlohmann::json const &data);
+
     static std::string get_type();
 
-    using Flowboundarynode::Flowboundarynode;
+    static nlohmann::json get_boundary_schema();
+
+  private:
+    Aux::InterpolatingVector const boundaryvalue;
+
+    double prescribed_flow_value(double time) const final;
+    double prescribed_component_1_share(double time) const final;
   };
 
 } // namespace Model::Gas3d

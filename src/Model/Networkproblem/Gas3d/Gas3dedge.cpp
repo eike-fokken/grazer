@@ -59,12 +59,32 @@ namespace Model::Gas3d {
     return Eigen::VectorXi(get_state_afterindex() - 1);
   }
 
-  Eigen::VectorXi
-  Gas3dedge::boundary_equation_indices(Direction direction) const {
+  bool Gas3dedge::has_oriented_flow(
+      Direction direction,
+      Eigen::Ref<Eigen::VectorXd const> const &state) const {
+
+    auto boundary_flow = get_boundary_state(direction, state)[2];
     if (direction == start) {
-      return give_away_start_indices();
+      return (boundary_flow > 0);
+    } else {
+      assert(direction == end);
+      return (boundary_flow < 0);
+    }
+  }
+
+  Eigen::Index Gas3dedge::boundary_equation_index(Direction direction) const {
+
+    if (get_state_startindex() < 0 or get_state_afterindex() < 0) {
+      gthrow(
+          {"This function: ", __FUNCTION__,
+           " can only be called after set_state_indices(...) has been "
+           "called."});
+    }
+
+    if (direction == start) {
+      return get_state_afterindex() - 3;
     } else if (direction == end) {
-      return give_away_end_indices();
+      return get_state_afterindex() - 2;
     } else {
       auto *this_idobject = dynamic_cast<Network::Idobject const *>(this);
       if (!this_idobject) {
@@ -78,11 +98,25 @@ namespace Model::Gas3d {
     }
   }
 
+  Eigen::Index Gas3dedge::extra_outflow_boundary_index() const {
+    if (get_state_startindex() < 0 or get_state_afterindex() < 0) {
+      gthrow(
+          {"This function: ", __FUNCTION__,
+           " can only be called after set_state_indices(...) has been "
+           "called."});
+    }
+
+    return get_state_afterindex() - 1;
+  }
+
   Eigen::Index Gas3dedge::get_equation_start_index() const {
-    return get_starting_state_index() + 2; // Nofstates/2;
+    // Put boundary conditions always at the end, no matter at what side the
+    // boundary node is.
+    return get_starting_state_index();
   }
   Eigen::Index Gas3dedge::get_equation_after_index() const {
-    return get_state_afterindex() - 1; // - Nofstates / 2 + 1 ;
+    return get_state_afterindex() - 3; // The last state indices for equations
+                                       // are reserved for boundary conditions.
   }
 
   Eigen::Index Gas3dedge::get_starting_state_index() const {

@@ -25,17 +25,15 @@
 
 namespace Model::Gas3d {
 
-  nlohmann::json revert_boundary_conditions(nlohmann::json const &data);
-
   class Flowboundarynode :
       public Equationcomponent,
       public Gas3dnode,
       public Boundaryvaluecomponent {
 
   public:
-    static nlohmann::json get_boundary_schema();
+    static nlohmann::json get_boundary_schema() = delete;
 
-    Flowboundarynode(nlohmann::json const &data);
+    using Gas3dnode::Gas3dnode;
 
     ~Flowboundarynode() {};
 
@@ -57,7 +55,7 @@ namespace Model::Gas3d {
         Eigen::Ref<Eigen::VectorXd const> const & /*new_state*/) const final;
 
   private:
-    Aux::InterpolatingVector const boundaryvalue;
+    virtual double prescribed_flow_value(double time) const = 0;
+    virtual double prescribed_component_1_share(double time) const = 0;
   };
-
 } // namespace Model::Gas3d

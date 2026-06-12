@@ -42,7 +42,7 @@ namespace Model::Gas3d {
   std::string MixedPipe::get_type() { return "MixedPipe"; }
   std::string MixedPipe::get_gas_type() const { return get_type(); }
 
-  int MixedPipe::init_vals_per_interpol_point() { return 2; }
+  int MixedPipe::init_vals_per_interpol_point() { return 3; }
 
   namespace unit = Aux::unit;
 
@@ -92,18 +92,10 @@ namespace Model::Gas3d {
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     for (auto i = get_equation_start_index(); i != get_equation_after_index();
-         i += 2) {
-
-      auto rootvalue_segment = rootvalues.segment<2>(i);
-
-      auto last_left = last_state.segment<2>(i - 1);
-      auto last_right = last_state.segment<2>(i + 1);
-      auto new_left = new_state.segment<2>(i - 1);
-      auto new_right = new_state.segment<2>(i + 1);
-
+         i += 3) {
       scheme->evaluate_point(
-          rootvalue_segment, last_time, new_time, Delta_x, last_left,
-          last_right, new_left, new_right, mixed_gas_law);
+          i, Delta_x, mixed_gas_law, rootvalues, last_time, new_time,
+          last_state, new_state);
     }
   }
 
@@ -112,87 +104,28 @@ namespace Model::Gas3d {
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     for (auto i = get_equation_start_index(); i != get_equation_after_index();
-         i += 2) {
-      // maybe use Eigen::Ref here to avoid copies.
-      auto last_left = last_state.segment<2>(i - 1);
-      auto last_right = last_state.segment<2>(i + 1);
-      auto new_left = new_state.segment<2>(i - 1);
-      auto new_right = new_state.segment<2>(i + 1);
-
-      Eigen::Matrix3d current_derivative_left
-          = scheme->devaluate_point_d_new_left(
-              last_time, new_time, Delta_x, last_left, last_right, new_left,
-              new_right, mixed_gas_law);
-
-      jacobianhandler.add_to_coefficient(
-          i, i - 1, current_derivative_left(0, 0));
-      jacobianhandler.add_to_coefficient(i, i, current_derivative_left(0, 1));
-      jacobianhandler.add_to_coefficient(
-          i + 1, i - 1, current_derivative_left(1, 0));
-      jacobianhandler.add_to_coefficient(
-          i + 1, i, current_derivative_left(1, 1));
-
-      Eigen::Matrix3d current_derivative_right
-          = scheme->devaluate_point_d_new_right(
-              last_time, new_time, Delta_x, last_left, last_right, new_left,
-              new_right, mixed_gas_law);
-
-      jacobianhandler.add_to_coefficient(
-          i, i + 1, current_derivative_right(0, 0));
-      jacobianhandler.add_to_coefficient(
-          i, i + 2, current_derivative_right(0, 1));
-      jacobianhandler.add_to_coefficient(
-          i + 1, i + 1, current_derivative_right(1, 0));
-      jacobianhandler.add_to_coefficient(
-          i + 1, i + 2, current_derivative_right(1, 1));
+         i += 3) {
+      scheme->d_evaluate_point_d_new_state(
+          i, Delta_x, mixed_gas_law, jacobianhandler, last_time, new_time,
+          last_state, new_state);
     }
   }
-
   void MixedPipe::d_evaluate_d_last_state(
       Aux::Matrixhandler &jacobianhandler, double last_time, double new_time,
       Eigen::Ref<Eigen::VectorXd const> const &last_state,
       Eigen::Ref<Eigen::VectorXd const> const &new_state) const {
     for (auto i = get_equation_start_index(); i != get_equation_after_index();
-         i += 2) {
-      // maybe use Eigen::Ref here to avoid copies.
-      auto last_left = last_state.segment<2>(i - 1);
-      auto last_right = last_state.segment<2>(i + 1);
-      auto new_left = new_state.segment<2>(i - 1);
-      auto new_right = new_state.segment<2>(i + 1);
-
-      Eigen::Matrix3d current_derivative_left
-          = scheme->devaluate_point_d_last_left(
-              last_time, new_time, Delta_x, last_left, last_right, new_left,
-              new_right, mixed_gas_law);
-
-      jacobianhandler.add_to_coefficient(
-          i, i - 1, current_derivative_left(0, 0));
-      jacobianhandler.add_to_coefficient(i, i, current_derivative_left(0, 1));
-      jacobianhandler.add_to_coefficient(
-          i + 1, i - 1, current_derivative_left(1, 0));
-      jacobianhandler.add_to_coefficient(
-          i + 1, i, current_derivative_left(1, 1));
-
-      Eigen::Matrix3d current_derivative_right
-          = scheme->devaluate_point_d_last_right(
-              last_time, new_time, Delta_x, last_left, last_right, new_left,
-              new_right, mixed_gas_law);
-
-      jacobianhandler.add_to_coefficient(
-          i, i + 1, current_derivative_right(0, 0));
-      jacobianhandler.add_to_coefficient(
-          i, i + 2, current_derivative_right(0, 1));
-      jacobianhandler.add_to_coefficient(
-          i + 1, i + 1, current_derivative_right(1, 0));
-      jacobianhandler.add_to_coefficient(
-          i + 1, i + 2, current_derivative_right(1, 1));
+         i += 3) {
+      scheme->d_evaluate_point_d_last_state(
+          i, Delta_x, mixed_gas_law, jacobianhandler, last_time, new_time,
+          last_state, new_state);
     }
   }
 
   void MixedPipe::setup() { setup_output_json_helper(get_id()); }
 
   Eigen::Index MixedPipe::needed_number_of_states() const {
-    return 2 * number_of_points;
+    return 3 * number_of_points;
   }
 
   void MixedPipe::add_results_to_json(nlohmann::json &new_output) {
@@ -207,19 +140,23 @@ namespace Model::Gas3d {
     nlohmann::json current_value;
     current_value["time"] = time;
     for (int i = 0; i != number_of_points; ++i) {
-      Eigen::Vector2d current_state
-          = state.segment<2>(get_state_startindex() + 2 * i);
-      double current_rho = current_state[0];
-      double current_p_bar
-          = mixed_gas_law.p_bar_from_p_pascal(mixed_gas_law.p(current_rho));
-      double current_q = current_state[1];
+      Eigen::Vector3d current_state
+          = state.segment<3>(get_state_startindex() + 3 * i);
+      double current_rho1 = current_state[0];
+      double current_rho2 = current_state[1];
+      double current_q = current_state[2];
       double x = i * Delta_x;
-      nlohmann::json pressure_json;
-      nlohmann::json flow_json;
-      pressure_json["x"] = x;
-      pressure_json["value"] = current_p_bar;
-      current_value["pressure"].push_back(pressure_json);
+      nlohmann::json rho1_json;
+      rho1_json["x"] = x;
+      rho1_json["value"] = current_rho1;
+      current_value["rho1"].push_back(rho1_json);
 
+      nlohmann::json rho2_json;
+      rho2_json["x"] = x;
+      rho2_json["value"] = current_rho2;
+      current_value["rho2"].push_back(rho2_json);
+
+      nlohmann::json flow_json;
       flow_json["x"] = x;
       flow_json["value"] = current_q;
       current_value["flow"].push_back(flow_json);

@@ -69,6 +69,51 @@ namespace Model::Balancelaw {
     return Eigen::Matrix3d::Zero();
   }
 
+  double
+  TwoGasMixture::lambda_1(Eigen::Ref<Eigen::Vector3d const> state) const {
+    // Density:
+    auto _rho = rho(state);
+    if (_rho <= 0) {
+      gthrow(
+          {"The total gas density >>", std::to_string(_rho),
+           "<< is non-positive, this case cannot be "
+           "handled!"});
+    }
+
+    // Pressure:
+    auto _p = p(state);
+
+    // Gas velocity:
+    auto _u = u(state);
+
+    auto average_speed_of_sound = std::sqrt(_p / _rho);
+    return _u - average_speed_of_sound;
+  }
+  double
+  TwoGasMixture::lambda_2(Eigen::Ref<Eigen::Vector3d const> state) const {
+    return u(state);
+  }
+  double
+  TwoGasMixture::lambda_3(Eigen::Ref<Eigen::Vector3d const> state) const {
+    // Density:
+    auto _rho = rho(state);
+    if (_rho <= 0) {
+      gthrow(
+          {"The total gas density >>", std::to_string(_rho),
+           "<< is non-positive, this case cannot be "
+           "handled!"});
+    }
+
+    // Pressure:
+    auto _p = p(state);
+
+    // Gas velocity:
+    auto _u = u(state);
+
+    auto average_speed_of_sound = std::sqrt(_p / _rho);
+    return _u + average_speed_of_sound;
+  }
+
   Eigen::Vector3d
   TwoGasMixture::eigen_values(Eigen::Ref<Eigen::Vector3d const> state) const {
 
@@ -137,8 +182,31 @@ namespace Model::Balancelaw {
   double TwoGasMixture::rho2(Eigen::Ref<Eigen::Vector3d const> state) const {
     return state[1];
   }
+
+  double TwoGasMixture::component_share1(
+      Eigen::Ref<Eigen::Vector3d const> state) const {
+    auto r1 = rho1(state);
+    auto r2 = rho2(state);
+
+    return r1 / (r1 + r2);
+  }
+
+  double TwoGasMixture::component_share2(
+      Eigen::Ref<Eigen::Vector3d const> state) const {
+    return 1 - component_share1(state);
+  }
+
   double TwoGasMixture::q(Eigen::Ref<Eigen::Vector3d const> state) const {
     return state[2];
+  }
+
+  double TwoGasMixture::q1(Eigen::Ref<Eigen::Vector3d const> state) const {
+
+    return u(state) * state[0];
+  }
+
+  double TwoGasMixture::q2(Eigen::Ref<Eigen::Vector3d const> state) const {
+    return u(state) * state[1];
   }
 
   double TwoGasMixture::p(Eigen::Ref<Eigen::Vector3d const> state) const {
@@ -169,6 +237,20 @@ namespace Model::Balancelaw {
   Eigen::RowVector3d TwoGasMixture::drho2_dstate(
       Eigen::Ref<Eigen::Vector3d const> /*state*/) const {
     return Eigen::RowVector3d(0.0, 1.0, 0.0);
+  }
+
+  Eigen::RowVector3d TwoGasMixture::dcomponent_share1_dstate(
+      Eigen::Ref<Eigen::Vector3d const> state) const {
+    return 1 / rho(state)
+           * Eigen::RowVector3d(
+               component_share2(state), -component_share1(state), 0);
+  }
+
+  Eigen::RowVector3d TwoGasMixture::dcomponent_share2_dstate(
+      Eigen::Ref<Eigen::Vector3d const> state) const {
+    return 1 / rho(state)
+           * Eigen::RowVector3d(
+               -component_share2(state), component_share1(state), 0);
   }
 
   Eigen::RowVector3d

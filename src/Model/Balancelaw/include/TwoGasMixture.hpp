@@ -37,6 +37,10 @@ namespace Model::Balancelaw {
     Eigen::Vector3d
     eigen_values(Eigen::Ref<Eigen::Vector3d const> state) const final;
 
+    double lambda_1(Eigen::Ref<Eigen::Vector3d const> state) const;
+    double lambda_2(Eigen::Ref<Eigen::Vector3d const> state) const;
+    double lambda_3(Eigen::Ref<Eigen::Vector3d const> state) const;
+
     std::array<Eigen::Vector3d, 3>
     eigen_vectors(Eigen::Ref<Eigen::Vector3d const> state) const final;
 
@@ -56,9 +60,27 @@ namespace Model::Balancelaw {
      */
     [[nodiscard]] double rho2(Eigen::Ref<Eigen::Vector3d const> state) const;
 
+    /** \brief Density share of the first gas component.
+     */
+    [[nodiscard]] double
+    component_share1(Eigen::Ref<Eigen::Vector3d const> state) const;
+
+    /** \brief Density share of the first gas component.
+     */
+    [[nodiscard]] double
+    component_share2(Eigen::Ref<Eigen::Vector3d const> state) const;
+
     /** \brief Total gas flow.
      */
     [[nodiscard]] double q(Eigen::Ref<Eigen::Vector3d const> state) const;
+
+    /** \brief Flow part of constituent 1.
+     */
+    [[nodiscard]] double q1(Eigen::Ref<Eigen::Vector3d const> state) const;
+
+    /** \brief Flow part of constituent 2.
+     */
+    [[nodiscard]] double q2(Eigen::Ref<Eigen::Vector3d const> state) const;
 
     /** \brief The gas velocity. Is equal for both components.
      */
@@ -72,6 +94,12 @@ namespace Model::Balancelaw {
 
     [[nodiscard]] Eigen::RowVector3d
     drho2_dstate(Eigen::Ref<Eigen::Vector3d const> state) const;
+
+    [[nodiscard]] Eigen::RowVector3d
+    dcomponent_share1_dstate(Eigen::Ref<Eigen::Vector3d const> state) const;
+
+    [[nodiscard]] Eigen::RowVector3d
+    dcomponent_share2_dstate(Eigen::Ref<Eigen::Vector3d const> state) const;
 
     [[nodiscard]] Eigen::RowVector3d
     dq_dstate(Eigen::Ref<Eigen::Vector3d const> state) const;
