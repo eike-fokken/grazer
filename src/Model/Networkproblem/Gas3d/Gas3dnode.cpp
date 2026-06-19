@@ -29,8 +29,8 @@ namespace Model::Gas3d {
 
   void Gas3dnode::evaluate_flow_node_balance(
       Eigen::Ref<Eigen::VectorXd> rootvalues,
-      Eigen::Ref<Eigen::VectorXd const> const &state, double prescribed_flow,
-      double prescribed_component_1_share) const {
+      Eigen::Ref<Eigen::VectorXd const> const &state,
+      double prescribed_flow) const {
 
     if (directed_attached_gas_edges.empty()) {
       return;
@@ -39,6 +39,7 @@ namespace Model::Gas3d {
     // edges with direction and gas flow direction information:
     std::vector<std::tuple<Direction, bool /*is_outflowing*/, MixedPipe *>>
         flow_directed_pipes;
+
     for (auto const &[dir, gasedge] : directed_attached_gas_edges) {
       auto *pipe = dynamic_cast<MixedPipe *>(gasedge);
 
@@ -47,7 +48,7 @@ namespace Model::Gas3d {
       flow_directed_pipes.push_back({dir, outflowing, pipe});
     }
 
-    auto &[dir0, outflowing0, pipe0] = flow_directed_pipes.front();
+    auto &[dir0, _outflowing0, pipe0] = flow_directed_pipes.front();
 
     auto boundary_state_0 = pipe0->get_boundary_state(dir0, state);
     auto q0 = boundary_state_0[2];
@@ -65,6 +66,9 @@ namespace Model::Gas3d {
     // prescribed boundary condition is like an attached pipe ending at this
     // node...
     rootvalues[last_equation_index] = -1.0 * prescribed_flow;
+
+    // As we only iterate over all later indices, we now set the flow
+    // contribution of the first pipe:
     rootvalues[last_equation_index] += static_cast<int>(dir0) * q0;
 
     // std::cout << "number of gas edges: " <<
@@ -81,32 +85,6 @@ namespace Model::Gas3d {
 
       rootvalues[last_equation_index] += static_cast<int>(dir) * current_q;
     }
-
-    // Now we do the outgoing pipe equations:
-
-    std::vector<std::pair<Direction, MixedPipe *>> outgoing_pipes;
-    for (auto const &[dir, outgoing, pipe] : flow_directed_pipes) {
-      if (outgoing) {
-        outgoing_pipes.push_back({dir, pipe});
-      }
-    }
-
-    if (outgoing_pipes.empty()) {
-      return;
-    }
-    auto &[out_dir0, out_pipe0] = outgoing_pipes.front();
-
-    auto out_boundary_state_0 = pipe0->get_boundary_state(dir0, state);
-    auto _q0 = boundary_state_0[2];
-    auto out_p0 = pipe0->get_balancelaw().p(boundary_state_0);
-
-    auto last_out_equation_index = outgoing_pipes.back()
-
-                                   // prescribed boundary condition is like an
-                                   // attached pipe ending at this node...
-                                   rootvalues[last_equation_index]
-        = -1.0 * prescribed_flow;
-    rootvalues[last_equation_index] += static_cast<int>(dir0) * q0;
   }
 
   void Gas3dnode::evaluate_flow_node_derivative(
@@ -117,61 +95,113 @@ namespace Model::Gas3d {
       return;
     }
 
-    auto [dir0, edge0] = directed_attached_gas_edges.front();
-    auto [dirlast, edgelast] = directed_attached_gas_edges.back();
-    auto last_equation_index = edgelast->boundary_equation_index(dirlast);
-    //    rootvalues[last_equation_index]=dir0*state0[1];
+    // edges with direction and gas flow direction information:
+    std::vector<std::tuple<Direction, bool /*is_outflowing*/, MixedPipe *>>
+        flow_directed_pipes;
 
-    Eigen::RowVector2d dF_last_dpq_0(0.0, dir0);
-    edge0->dboundary_p_qvol_dstate(
-        dir0, jacobianhandler, dF_last_dpq_0, last_equation_index, state);
-    // if there is only one attached edge, we are done:
-    if (edge0 == edgelast) {
+    for (auto const &[dir, gasedge] : directed_attached_gas_edges) {
+      auto *pipe = dynamic_cast<MixedPipe *>(gasedge);
+
+      auto outflowing
+          = ((static_cast<double>(dir) * pipe->get_balancelaw().u(state)) > 0);
+      flow_directed_pipes.push_back({dir, outflowing, pipe});
+    }
+
+    auto &[dir0, _outflowing, pipe0] = flow_directed_pipes.front();
+    auto &[dirlast, _last_outflowing, pipelast] = flow_directed_pipes.back();
+    auto last_equation_index = pipelast->boundary_equation_index(dirlast);
+
+    // rootvalues[last_equation_index] = -1.0 * prescribed_flow;
+    // rootvalues[last_equation_index] += static_cast<int>(dir0) * q0;
+
+    auto q0_index = pipelast->get_boundary_state_index(dirlast) + 2;
+    jacobianhandler.add_to_coefficient(
+        last_equation_index, q0_index, static_cast<double>(dir0));
+
+    // if there is only one attached pipe, we are done:
+    if (pipe0 == pipelast) {
       return;
     }
 
     // In all other cases we now have to make pressure derivatives and the
     // other flow derivatives:
 
-    // first edge is special (sets only one p-derivative)
-    Eigen::RowVector2d dF_0_dpq_0(-1.0, 0.0);
-    auto old_equation_index = edge0->boundary_equation_index(dir0);
+    // first pipe is special (sets only one p-derivative)
+    auto old_equation_index = pipe0->boundary_equation_index(dir0);
+    auto old_state = pipe0->get_boundary_state(dir0, state);
 
-    edge0->dboundary_p_qvol_dstate(
-        dir0, jacobianhandler, dF_0_dpq_0, old_equation_index, state);
+    // equation is p_next - p_current = 0
+    // This is the reason for the minus sign.
+    Eigen::RowVector3d dF_0_dstate_0
+        = -pipe0->get_balancelaw().dp_dstate(old_state);
+    for (Eigen::Index i = 0; i != 3; ++i) {
+      jacobianhandler.add_to_coefficient(
+          old_equation_index, pipe0->get_boundary_state_index(dir0) + i,
+          dF_0_dstate_0[i]);
+    }
 
-    // first and last attached edge are special:
-    auto second_iterator = std::next(directed_attached_gas_edges.begin());
-    auto last_iterator = std::prev(directed_attached_gas_edges.end());
+    // first and last attached pipe are special:
+    auto second_iterator = std::next(flow_directed_pipes.begin());
+    auto last_iterator = std::prev(flow_directed_pipes.end());
     for (auto it = second_iterator; it != last_iterator; ++it) {
-      auto direction = it->first;
-      Gas3dedge *edge = it->second;
+      auto &[direction, _current_outflowing, pipe] = *it;
 
-      auto current_equation_index = edge->boundary_equation_index(direction);
-      Eigen::RowVector2d dF_old_dpq_now(1.0, 0.0);
-      Eigen::RowVector2d dF_now_dpq_now(-1.0, 0.0);
-      Eigen::RowVector2d dF_last_dpq_now(0.0, direction);
+      auto current_equation_index = pipe->boundary_equation_index(direction);
+      auto current_state = pipe->get_boundary_state(direction, state);
+      Eigen::RowVector3d dF_old_dstate_now
+          = pipe->get_balancelaw().dp_dstate(current_state);
+      Eigen::RowVector3d dF_now_dstate_now
+          = -pipe->get_balancelaw().dp_dstate(current_state);
+      Eigen::RowVector3d dF_last_dstate_now(0.0, 0.0, direction);
 
       // Let the attached edge write out the derivative:
-      edge->dboundary_p_qvol_dstate(
-          direction, jacobianhandler, dF_old_dpq_now, old_equation_index,
-          state);
-      edge->dboundary_p_qvol_dstate(
-          direction, jacobianhandler, dF_now_dpq_now, current_equation_index,
-          state);
-      edge->dboundary_p_qvol_dstate(
-          direction, jacobianhandler, dF_last_dpq_now, last_equation_index,
-          state);
+
+      for (Eigen::Index i = 0; i != 3; ++i) {
+        jacobianhandler.add_to_coefficient(
+            old_equation_index, pipe->get_boundary_state_index(direction) + i,
+            dF_old_dstate_now[i]);
+      }
+      for (Eigen::Index i = 0; i != 3; ++i) {
+        jacobianhandler.add_to_coefficient(
+            current_equation_index,
+            pipe->get_boundary_state_index(direction) + i,
+            dF_now_dstate_now[i]);
+      }
+
+      for (Eigen::Index i = 0; i != 3; ++i) {
+        jacobianhandler.add_to_coefficient(
+            last_equation_index, pipe->get_boundary_state_index(direction) + i,
+            dF_last_dstate_now[i]);
+      }
+
       old_equation_index = current_equation_index;
     }
     // last edge:
-    Eigen::RowVector2d dF_old_dpq_last(1.0, 0.0);
-    edgelast->dboundary_p_qvol_dstate(
-        dirlast, jacobianhandler, dF_old_dpq_last, old_equation_index, state);
+
+    auto last_state = pipelast->get_boundary_state(dirlast, state);
+    Eigen::RowVector3d dF_old_dstate_last
+        = pipelast->get_balancelaw().dp_dstate(last_state);
+
+    for (Eigen::Index i = 0; i != 3; ++i) {
+      jacobianhandler.add_to_coefficient(
+          old_equation_index, pipelast->get_boundary_state_index(dirlast) + i,
+          dF_old_dstate_last[i]);
+    }
+
+    Eigen::RowVector3d dF_last_dstate_last(0.0, 0.0, dirlast);
     Eigen::RowVector2d dF_last_dpq_last(0.0, dirlast);
-    edgelast->dboundary_p_qvol_dstate(
-        dirlast, jacobianhandler, dF_last_dpq_last, last_equation_index, state);
+
+    for (Eigen::Index i = 0; i != 3; ++i) {
+      jacobianhandler.add_to_coefficient(
+          last_equation_index, pipelast->get_boundary_state_index(dirlast) + i,
+          dF_last_dstate_last[i]);
+    }
   }
+
+  void Gas3dnode::evaluate_additional_outgoing_derivative(
+      Aux::Matrixhandler &jacobianhandler,
+      Eigen::Ref<Eigen::VectorXd const> const &state, double prescribed_flow,
+      double prescribed_component_1_share, bool boundary_node) const {}
 
   void Gas3dnode::gasnode_setup_helper() {
 
