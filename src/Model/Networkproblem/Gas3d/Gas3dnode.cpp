@@ -87,6 +87,11 @@ namespace Model::Gas3d {
     }
   }
 
+  void Gas3dnode::evaluate_additional_outgoing_balance(
+      Eigen::Ref<Eigen::VectorXd> rootvalues,
+      Eigen::Ref<Eigen::VectorXd const> const &state, double prescribed_flow,
+      double prescribed_component_1_share, bool boundary_node) const {}
+
   void Gas3dnode::evaluate_flow_node_derivative(
       Aux::Matrixhandler &jacobianhandler,
       Eigen::Ref<Eigen::VectorXd const> const &state) const {
