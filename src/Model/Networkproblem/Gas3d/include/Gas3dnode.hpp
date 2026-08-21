@@ -37,8 +37,8 @@ namespace Model::Gas3d {
      */
     void evaluate_flow_node_balance(
         Eigen::Ref<Eigen::VectorXd> rootvalues,
-        Eigen::Ref<Eigen::VectorXd const> const &state,
-        double prescribed_flow) const;
+        Eigen::Ref<Eigen::VectorXd const> const &state, double prescribed_flow,
+        double prescribed_component_1_share) const;
 
     /** \brief Set the additional mixing conditions.
      *
@@ -46,7 +46,7 @@ namespace Model::Gas3d {
      */
     void evaluate_additional_outgoing_balance(
         Eigen::Ref<Eigen::VectorXd> rootvalues,
-        Eigen::Ref<Eigen::VectorXd const> const &state, double prescribed_flow,
+        Eigen::Ref<Eigen::VectorXd const> const &state,
         double prescribed_component_1_share, bool boundary_node) const;
 
     void evaluate_flow_node_derivative(
@@ -55,7 +55,7 @@ namespace Model::Gas3d {
 
     void evaluate_additional_outgoing_derivative(
         Aux::Matrixhandler &jacobianhandler,
-        Eigen::Ref<Eigen::VectorXd const> const &state, double prescribed_flow,
+        Eigen::Ref<Eigen::VectorXd const> const &state,
         double prescribed_component_1_share, bool boundary_node) const;
 
     std::vector<std::pair<Direction, Gas3dedge *>> directed_attached_gas_edges;
