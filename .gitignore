@@ -70,3 +70,7 @@ gui/env
 **/__pycache__
 gui/dist
 gui/build
+
+
+# AI stuff
+opencode.json
