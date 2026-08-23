@@ -42,9 +42,11 @@ namespace Model::Gas3d {
 
     for (auto const &[dir, gasedge] : directed_attached_gas_edges) {
       auto *pipe = dynamic_cast<MixedPipe *>(gasedge);
-
+      auto this_boundary_state = pipe->get_boundary_state(dir, state);
       auto outflowing
-          = ((static_cast<double>(dir) * pipe->get_balancelaw().u(state)) > 0);
+          = ((static_cast<double>(dir)
+              * pipe->get_balancelaw().u(this_boundary_state))
+             > 0);
       flow_directed_pipes.push_back({dir, outflowing, pipe});
     }
 
@@ -89,7 +91,7 @@ namespace Model::Gas3d {
 
   void Gas3dnode::evaluate_additional_outgoing_balance(
       Eigen::Ref<Eigen::VectorXd> rootvalues,
-      Eigen::Ref<Eigen::VectorXd const> const &state,
+      Eigen::Ref<Eigen::VectorXd const> const &state, double prescribed_flow,
       double prescribed_component_1_share, bool boundary_node) const {
 
     if (directed_attached_gas_edges.empty()) {
@@ -98,39 +100,59 @@ namespace Model::Gas3d {
 
     // Collect outgoing pipes (flow leaving the node):
     std::vector<std::pair<Direction, MixedPipe *>> outgoing_pipes;
+    std::vector<std::pair<Direction, MixedPipe *>> ingoing_pipes;
     for (auto const &[dir, gasedge] : directed_attached_gas_edges) {
       auto *pipe = dynamic_cast<MixedPipe *>(gasedge);
+      auto this_boundary_state = pipe->get_boundary_state(dir, state);
       auto outflowing
-          = ((static_cast<double>(dir) * pipe->get_balancelaw().u(state)) > 0);
+          = ((static_cast<double>(dir)
+              * pipe->get_balancelaw().u(this_boundary_state))
+             > 0);
       if (outflowing) {
         outgoing_pipes.push_back({dir, pipe});
+      } else {
+        assert( // We can't have zero flow!
+            ((static_cast<double>(dir)
+              * pipe->get_balancelaw().u(this_boundary_state))
+             < 0));
+        ingoing_pipes.push_back({dir, pipe});
       }
     }
 
     // No outgoing pipes -> no additional conditions.
     if (outgoing_pipes.empty()) {
+      assert(ingoing_pipes.empty());
       return;
     }
 
-    // The first outgoing pipe is the reference for the component share.
-    auto &[ref_dir, ref_pipe] = outgoing_pipes.front();
-    auto ref_state = ref_pipe->get_boundary_state(ref_dir, state);
-    auto ref_share = ref_pipe->get_balancelaw().component_share1(ref_state);
+    // Here we set the component share of the mixed pipe.
 
-    // For a boundary node the reference share is prescribed from outside:
+    double ingoing_component1_flow = 0;
+    double ingoing_full_flow = 0;
+
     if (boundary_node) {
-      rootvalues[ref_pipe->extra_outflow_boundary_index()]
-          = ref_share - prescribed_component_1_share;
+      ingoing_full_flow += prescribed_flow;
+      ingoing_component1_flow += prescribed_component_1_share * prescribed_flow;
+    }
+    for (auto const &[in_dir, in_pipe] : ingoing_pipes) {
+      auto in_boundary_state = in_pipe->get_boundary_state(in_dir, state);
+      auto in_q = static_cast<double>(in_dir)
+                  * in_pipe->get_balancelaw().q(in_boundary_state);
+      auto component1_share
+          = in_pipe->get_balancelaw().component_share1(in_boundary_state);
+      ingoing_component1_flow += component1_share * in_q;
+      ingoing_full_flow += in_q;
     }
 
-    // All other outgoing pipes are tied to the reference share:
-    for (auto it = std::next(outgoing_pipes.begin());
-         it != outgoing_pipes.end(); ++it) {
-      auto &[dir, pipe] = *it;
-      auto current_state = pipe->get_boundary_state(dir, state);
-      auto current_share = pipe->get_balancelaw().component_share1(current_state);
-      rootvalues[pipe->extra_outflow_boundary_index()]
-          = current_share - ref_share;
+    assert(ingoing_full_flow != 0.0);
+    auto outgoing_component1_share
+        = ingoing_component1_flow / ingoing_full_flow;
+
+    for (auto const &[out_dir, out_pipe] : outgoing_pipes) {
+      auto out_boundary_state = out_pipe->get_boundary_state(out_dir, state);
+      rootvalues[out_pipe->extra_outflow_boundary_index()]
+          = outgoing_component1_share
+            - out_pipe->get_balancelaw().component_share1(out_boundary_state);
     }
   }
 
@@ -247,62 +269,11 @@ namespace Model::Gas3d {
 
   void Gas3dnode::evaluate_additional_outgoing_derivative(
       Aux::Matrixhandler &jacobianhandler,
-      Eigen::Ref<Eigen::VectorXd const> const &state,
+      Eigen::Ref<Eigen::VectorXd const> const &state, double prescribed_flow,
       double /*prescribed_component_1_share*/, bool boundary_node) const {
 
     if (directed_attached_gas_edges.empty()) {
       return;
-    }
-
-    // Collect outgoing pipes (flow leaving the node):
-    std::vector<std::pair<Direction, MixedPipe *>> outgoing_pipes;
-    for (auto const &[dir, gasedge] : directed_attached_gas_edges) {
-      auto *pipe = dynamic_cast<MixedPipe *>(gasedge);
-      auto outflowing
-          = ((static_cast<double>(dir) * pipe->get_balancelaw().u(state)) > 0);
-      if (outflowing) {
-        outgoing_pipes.push_back({dir, pipe});
-      }
-    }
-
-    if (outgoing_pipes.empty()) {
-      return;
-    }
-
-    // The first outgoing pipe is the reference for the component share.
-    auto &[ref_dir, ref_pipe] = outgoing_pipes.front();
-    auto ref_state = ref_pipe->get_boundary_state(ref_dir, state);
-    auto dref_share_dstate
-        = ref_pipe->get_balancelaw().dcomponent_share1_dstate(ref_state);
-    auto ref_state_index = ref_pipe->get_boundary_state_index(ref_dir);
-    auto ref_equation_index = ref_pipe->extra_outflow_boundary_index();
-
-    // For a boundary node the reference share is prescribed from outside:
-    if (boundary_node) {
-      for (Eigen::Index i = 0; i != 3; ++i) {
-        jacobianhandler.add_to_coefficient(
-            ref_equation_index, ref_state_index + i, dref_share_dstate[i]);
-      }
-    }
-
-    // All other outgoing pipes are tied to the reference share:
-    for (auto it = std::next(outgoing_pipes.begin());
-         it != outgoing_pipes.end(); ++it) {
-      auto &[dir, pipe] = *it;
-      auto current_state = pipe->get_boundary_state(dir, state);
-      auto current_share_dstate
-          = pipe->get_balancelaw().dcomponent_share1_dstate(current_state);
-      auto current_state_index = pipe->get_boundary_state_index(dir);
-      auto current_equation_index = pipe->extra_outflow_boundary_index();
-
-      for (Eigen::Index i = 0; i != 3; ++i) {
-        jacobianhandler.add_to_coefficient(
-            current_equation_index, current_state_index + i,
-            current_share_dstate[i]);
-        jacobianhandler.add_to_coefficient(
-            current_equation_index, ref_state_index + i,
-            -dref_share_dstate[i]);
-      }
     }
   }
 

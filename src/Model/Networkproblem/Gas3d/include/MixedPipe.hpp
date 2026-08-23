@@ -69,9 +69,9 @@ namespace Model::Gas3d {
 
     int get_number_of_points() const;
     double get_Delta_x() const;
+    double get_length() const;
 
   private:
-    double get_length() const;
     int const number_of_points;
     double const Delta_x;
     Balancelaw::TwoGasMixture const mixed_gas_law;
