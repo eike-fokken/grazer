@@ -92,37 +92,23 @@ namespace Model::Gas3d {
   void Gas3dnode::evaluate_additional_outgoing_balance(
       Eigen::Ref<Eigen::VectorXd> rootvalues,
       Eigen::Ref<Eigen::VectorXd const> const &state, double prescribed_flow,
-      double prescribed_component_1_share, bool boundary_node) const {
+      double prescribed_component_1_share, bool inflow_boundary_node) const {
 
     if (directed_attached_gas_edges.empty()) {
       return;
     }
 
-    // Collect outgoing pipes (flow leaving the node):
-    std::vector<std::pair<Direction, MixedPipe *>> outgoing_pipes;
-    std::vector<std::pair<Direction, MixedPipe *>> ingoing_pipes;
-    for (auto const &[dir, gasedge] : directed_attached_gas_edges) {
-      auto *pipe = dynamic_cast<MixedPipe *>(gasedge);
-      auto this_boundary_state = pipe->get_boundary_state(dir, state);
-      auto outflowing
-          = ((static_cast<double>(dir)
-              * pipe->get_balancelaw().u(this_boundary_state))
-             > 0);
-      if (outflowing) {
-        outgoing_pipes.push_back({dir, pipe});
-      } else {
-        assert( // We can't have zero flow!
-            ((static_cast<double>(dir)
-              * pipe->get_balancelaw().u(this_boundary_state))
-             < 0));
-        ingoing_pipes.push_back({dir, pipe});
-      }
-    }
+    auto [ingoing_pipes, outgoing_pipes] = get_in_and_outgoing_pipes(state);
 
-    // No outgoing pipes -> no additional conditions.
-    if (outgoing_pipes.empty()) {
-      assert(ingoing_pipes.empty());
-      return;
+    if (outgoing_pipes.empty() and prescribed_flow <= 0) {
+      gthrow(
+          {"You cannot have no outgoing pipes and no outflow boundary "
+           "condition!"});
+    }
+    if (ingoing_pipes.empty() and prescribed_flow >= 0) {
+      gthrow(
+          {"You cannot have no ingoing pipes and no inflow boundary "
+           "condition!"});
     }
 
     // Here we set the component share of the mixed pipe.
@@ -130,7 +116,7 @@ namespace Model::Gas3d {
     double ingoing_component1_flow = 0;
     double ingoing_full_flow = 0;
 
-    if (boundary_node) {
+    if (inflow_boundary_node) {
       ingoing_full_flow += prescribed_flow;
       ingoing_component1_flow += prescribed_component_1_share * prescribed_flow;
     }
@@ -270,10 +256,38 @@ namespace Model::Gas3d {
   void Gas3dnode::evaluate_additional_outgoing_derivative(
       Aux::Matrixhandler &jacobianhandler,
       Eigen::Ref<Eigen::VectorXd const> const &state, double prescribed_flow,
-      double /*prescribed_component_1_share*/, bool boundary_node) const {
+      double /*prescribed_component_1_share*/,
+      bool inflow_boundary_node) const {
 
     if (directed_attached_gas_edges.empty()) {
       return;
+    }
+    auto [ingoing_pipes, outgoing_pipes] = get_in_and_outgoing_pipes(state);
+
+    if (outgoing_pipes.empty() and prescribed_flow <= 0) {
+      gthrow(
+          {"You cannot have no outgoing pipes and no outflow boundary "
+           "condition!"});
+    }
+    if (ingoing_pipes.empty() and prescribed_flow >= 0) {
+      gthrow(
+          {"You cannot have no ingoing pipes and no inflow boundary "
+           "condition!"});
+    }
+    for (auto const &[dir, gasedge] : outgoing_pipes) {
+      auto boundary_state = gasedge->get_boundary_state(dir, state);
+      auto dcomp1_share_dstate
+          = gasedge->get_balancelaw().dcomponent_share1_dstate(boundary_state);
+      for (Eigen::Index i = 0; i != 3; ++i) {
+        jacobianhandler.add_to_coefficient(
+            gasedge->extra_outflow_boundary_index(),
+            gasedge->get_boundary_state_index(dir) + i,
+            -dcomp1_share_dstate[i]);
+      }
+      static_assert(
+          false,
+          "You still need to add the derivative with respect to the ingoing "
+          "pipe states, e.g. the flows, but also the component1_shares!");
     }
   }
 
@@ -316,6 +330,35 @@ namespace Model::Gas3d {
                 << std::endl;
       return;
     }
+  }
+
+  std::pair<
+      std::vector<std::pair<Direction, MixedPipe *>>,
+      std::vector<std::pair<Direction, MixedPipe *>>>
+  Gas3dnode::get_in_and_outgoing_pipes(
+      Eigen::Ref<Eigen::VectorXd const> const &state) const {
+    // Collect outgoing pipes (flow leaving the node):
+    std::vector<std::pair<Direction, MixedPipe *>> outgoing_pipes;
+    std::vector<std::pair<Direction, MixedPipe *>> ingoing_pipes;
+    for (auto const &[dir, gasedge] : directed_attached_gas_edges) {
+      auto *pipe = dynamic_cast<MixedPipe *>(gasedge);
+      auto this_boundary_state = pipe->get_boundary_state(dir, state);
+      auto outflowing
+          = ((static_cast<double>(dir)
+              * pipe->get_balancelaw().u(this_boundary_state))
+             > 0);
+      if (outflowing) {
+        outgoing_pipes.push_back({dir, pipe});
+      } else {
+        assert( // We can't have zero flow!
+            ((static_cast<double>(dir)
+              * pipe->get_balancelaw().u(this_boundary_state))
+             < 0));
+        ingoing_pipes.push_back({dir, pipe});
+      }
+    }
+
+    return {ingoing_pipes, outgoing_pipes};
   }
 
 } // namespace Model::Gas3d

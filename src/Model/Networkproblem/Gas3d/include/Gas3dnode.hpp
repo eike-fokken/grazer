@@ -21,6 +21,7 @@
 
 namespace Model::Gas3d {
 
+  class MixedPipe;
   class Gas3dnode : public Network::Node {
 
   public:
@@ -47,7 +48,7 @@ namespace Model::Gas3d {
     void evaluate_additional_outgoing_balance(
         Eigen::Ref<Eigen::VectorXd> rootvalues,
         Eigen::Ref<Eigen::VectorXd const> const &state, double prescribed_flow,
-        double prescribed_component_1_share, bool boundary_node) const;
+        double prescribed_component_1_share, bool inflow_boundary_node) const;
 
     void evaluate_flow_node_derivative(
         Aux::Matrixhandler &jacobianhandler,
@@ -61,6 +62,12 @@ namespace Model::Gas3d {
     std::vector<std::pair<Direction, Gas3dedge *>> directed_attached_gas_edges;
 
   private:
+    std::pair<
+        std::vector<std::pair<Direction, MixedPipe *>>,
+        std::vector<std::pair<Direction, MixedPipe *>>>
+    get_in_and_outgoing_pipes(
+        Eigen::Ref<Eigen::VectorXd const> const &state) const;
+
     /// \brief number of state variables, this component needs.
     static constexpr int number_of_state_variables{0};
   };
